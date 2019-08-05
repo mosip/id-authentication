@@ -93,16 +93,21 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, Components.PACKET_AES_ENCRYPTOR,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, String.valueOf(ApplicationContext.map().get(RegistrationConstants.KEY_SPLITTER)));
+			return CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey,
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.KEY_SPLITTER)));
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
-					RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
+					RegistrationExceptionConstants.REG_INVALID_DATA_ERROR_CODE.getErrorMessage(),
+					mosipInvalidDataException);
 		} catch (MosipInvalidKeyException mosipInvalidKeyException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
-					RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
+					RegistrationExceptionConstants.REG_INVALID_KEY_ERROR_CODE.getErrorMessage(),
+					mosipInvalidKeyException);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.AES_ENCRYPTION_MANAGER,
-					runtimeException.toString());
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_AES_ENCRYPTION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_AES_ENCRYPTION_EXCEPTION.getErrorMessage(),
+					runtimeException);
 		}
 	}
 

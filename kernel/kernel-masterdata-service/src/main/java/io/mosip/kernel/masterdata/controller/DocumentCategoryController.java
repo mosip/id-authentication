@@ -23,6 +23,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.swagger.annotations.Api;
@@ -36,6 +40,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  * @author Neha
  * @author Ritesh Sinha
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -179,6 +184,44 @@ public class DocumentCategoryController {
 		ResponseWrapper<PageDto<DocumentCategoryExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(documentCategoryService.getAllDocCategories(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API to search document Category.
+	 * 
+	 * @param request
+	 *            the request DTO {@link SearchDto} wrapped in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. multiple entities based on the search values
+	 *         required.
+	 */
+	@ResponseFilter
+	@PostMapping("/documentcategories/search")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> searchDocCategories(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentCategoryService.searchDocCategories(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/documentcategories/filtervalues")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	public ResponseWrapper<FilterResponseDto> docCategoriesFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentCategoryService.docCategoriesFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 }

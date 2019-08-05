@@ -42,7 +42,7 @@ public class DocumentScanFacade {
 	public byte[] getScannedDocument() throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		InputStream inputStream = this.getClass().getResourceAsStream(RegistrationConstants.DOC_STUB_PATH);
 
@@ -101,7 +101,7 @@ public class DocumentScanFacade {
 	public BufferedImage getScannedDocumentFromScanner() throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.scan();
 
@@ -119,7 +119,7 @@ public class DocumentScanFacade {
 	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.getImageBytesFromBufferedImage(bufferedImage);
 
@@ -137,7 +137,7 @@ public class DocumentScanFacade {
 	public byte[] asImage(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.asImage(bufferedImages);
 
@@ -155,7 +155,7 @@ public class DocumentScanFacade {
 	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.asPDF(bufferedImages);
 

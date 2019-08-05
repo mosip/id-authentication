@@ -178,6 +178,11 @@ public class MessageNotificationServiceImpl
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ApisResourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.name(), e);
 		}
 
 		return response;

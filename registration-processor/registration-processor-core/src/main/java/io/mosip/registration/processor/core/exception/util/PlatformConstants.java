@@ -16,6 +16,8 @@ public final class PlatformConstants {
 
 	public static final String RPR_PACKET_GENERATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PGS-";
 
+	public static final String RPR_PACKET_REQUEST_HANDLER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RHS-";
+
 	/** The Constant RPR_PACKET_RECEIVER_MODULE. */
 	public static final String RPR_PACKET_RECEIVER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PKR-";
 

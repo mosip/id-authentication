@@ -140,7 +140,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	/** The packet archiver. */
 	@Autowired
 	private PacketArchiver packetArchiver;
-	
+
 	/*
 	 * java class to trim exception message
 	 */

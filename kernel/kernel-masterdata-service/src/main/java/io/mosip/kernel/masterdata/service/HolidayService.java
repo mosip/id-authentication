@@ -8,6 +8,11 @@ import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -16,6 +21,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * 
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
+ * @author Uday Kumar
  * @since 1.0.0
  */
 public interface HolidayService {
@@ -105,4 +111,22 @@ public interface HolidayService {
 	 * @return the response i.e. pages containing the holidays
 	 */
 	public PageDto<HolidayExtnDto> getHolidays(int pageNumber, int pageSize, String sortBy, String orderBy);
+	
+	/**
+	 * Method to search holidays based on filters provided.
+	 * 
+	 * @param dto
+	 *            the search DTO.
+	 * @return the {@link PageResponseDto}.
+	 */
+	public PageResponseDto<HolidaySearchDto> searchHolidays(SearchDto dto);
+
+	/**
+	 * Method to filter holidays based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto);
 }

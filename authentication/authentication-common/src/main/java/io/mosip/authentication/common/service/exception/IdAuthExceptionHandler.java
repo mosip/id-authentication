@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.exception;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,6 +23,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
+import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
@@ -41,6 +44,7 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class IDAExceptionHandler - Spring MVC Exceptions as defined in
@@ -61,10 +65,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The Constant EVENT_EXCEPTION. */
 	private static final String EVENT_EXCEPTION = "Exception";
 
+	private static final String INTERNAL = "/internal";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
-	
+
 	@Autowired
 	private HttpServletRequest servletRequest;
 
@@ -86,8 +91,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(), ex.toString() + "\n Request : "
-				+ request + "\n Status returned : " + HttpStatus.OK + "\n" + ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
+				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.OK + "\n"
+						+ ExceptionUtils.getStackTrace(ex));
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Changing exception",
@@ -143,12 +149,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdAuthenticationAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdAuthenticationBaseException ex, WebRequest request) {
 
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, "Entered handleIdUsageException",
-				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION,
+				"Entered handleIdUsageException", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(),
 				ex.toString() + "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
-
 		Throwable e = ex;
 		while (e.getCause() != null) {
 			if (e.getCause() instanceof BaseCheckedException
@@ -167,16 +172,21 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex the exception occurred
+	 * @param ex      the exception occurred
 	 * @param request the request
 	 * @return Object .
 	 */
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
-				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response",
+				"Entered buildExceptionResponse", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+		String type = null;
 		String contextPath = request.getContextPath();
 		String[] splitedContext = contextPath.split("/");
 		String requestReceived = splitedContext[splitedContext.length - 1];
+		if (requestReceived.equalsIgnoreCase("internal")) {
+			String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+			type = fetchInternalAuthtype(reqUrl);
+		}
 		List<AuthError> errors = null;
 		Object response;
 		if (ex instanceof IdAuthenticationBaseException) {
@@ -184,39 +194,37 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
 
-			//Retrived error codes and error messages are in reverse order.
+			// Retrived error codes and error messages are in reverse order.
 			Collections.reverse(errorCodes);
 			Collections.reverse(errorMessages);
 			if (ex instanceof IDDataValidationException) {
 				IDDataValidationException validationException = (IDDataValidationException) ex;
 				List<Object[]> args = validationException.getArgs();
 				List<String> actionArgs = validationException.getActionargs();
-				errors = IntStream.range(0, errorCodes.size())
-						.mapToObj(i -> {
-							String errorMessage;
-							if (args != null && !args.isEmpty()) {
-								errorMessage = String.format(errorMessages.get(i), args.get(i));
-							} else {
-								errorMessage = errorMessages.get(i);
-							}
-							
-							String actionMessage;
-							if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.contains(null)) {
-								actionMessage = String.format(actionArgs.get(i), args.get(i));
-							} else {
-								actionMessage = actionArgs.get(i);
-							}
-							
-							return createAuthError(validationException, errorCodes.get(i), errorMessage, actionMessage);
-						})
-						.distinct().collect(Collectors.toList());
+				errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> {
+					String errorMessage;
+					if (args != null && !args.isEmpty()) {
+						errorMessage = String.format(errorMessages.get(i), args.get(i));
+					} else {
+						errorMessage = errorMessages.get(i);
+					}
+
+					String actionMessage;
+					if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.contains(null)) {
+						actionMessage = String.format(actionArgs.get(i), args.get(i));
+					} else {
+						actionMessage = actionArgs.get(i);
+					}
+
+					return createAuthError(validationException, errorCodes.get(i), errorMessage, actionMessage);
+				}).distinct().collect(Collectors.toList());
 			} else {
 				errors = IntStream.range(0, errorCodes.size())
 						.mapToObj(i -> createAuthError(baseException, errorCodes.get(i), errorMessages.get(i), null))
 						.distinct().collect(Collectors.toList());
 			}
 
-			response = frameErrorResponse(requestReceived, errors);
+			response = frameErrorResponse(requestReceived, type, errors);
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
 			return response;
@@ -224,16 +232,36 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return null;
 	}
-	
+
+	private static String fetchInternalAuthtype(String reqURL) {
+		String type = null;
+		if (reqURL != null && !reqURL.isEmpty()) {
+			String[] path = reqURL.split(INTERNAL);
+			if (path[1] != null && !path[1].isEmpty()) {
+				String[] urlPath = path[1].split("/");
+				String contextPath = urlPath[1];
+				if (!StringUtils.isEmpty(contextPath)) {
+					if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
+						type = IdAuthCommonConstants.OTP;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
+						type = IdAuthCommonConstants.AUTH_TRANSACTIONS;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
+						type = IdAuthCommonConstants.AUTH_TYPE;
+					}
+				}
+			}
+		}
+		return type;
+	}
+
 	/**
-	 * This method used to construct response
-	 * respective to the request received
+	 * This method used to construct response respective to the request received
 	 *
 	 * @param requestReceived the fetched for the servlet path
-	 * @param errors the errors
+	 * @param errors          the errors
 	 * @return the object
 	 */
-	private static Object frameErrorResponse(String requestReceived, List<AuthError> errors) {
+	private static Object frameErrorResponse(String requestReceived, String type, List<AuthError> errors) {
 		String responseTime = DateUtils.getUTCCurrentDateTimeString();
 		switch (requestReceived) {
 		case "kyc":
@@ -248,6 +276,24 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			otpResponseDTO.setErrors(errors);
 			otpResponseDTO.setResponseTime(responseTime);
 			return otpResponseDTO;
+		case "internal":
+			if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
+				OtpResponseDTO internalotpresponsedto = new OtpResponseDTO();
+				internalotpresponsedto.setErrors(errors);
+				internalotpresponsedto.setResponseTime(responseTime);
+				return internalotpresponsedto;
+			} else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
+				AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+				autnTxnResponseDto.setErrors(errors);
+				autnTxnResponseDto.setResponseTime(responseTime);
+				return autnTxnResponseDto;
+			} else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
+			}
+
 		default:
 			AuthResponseDTO authResp = new AuthResponseDTO();
 			ResponseDTO res = new ResponseDTO();

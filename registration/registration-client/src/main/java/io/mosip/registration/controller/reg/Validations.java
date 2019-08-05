@@ -264,10 +264,17 @@ public class Validations extends BaseController {
 						labelBundle.getString(label) + " " + messageBundle.getString(RegistrationConstants.REG_DDC_004),
 						showAlert);
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
+					Label nodeLabel= (Label)parentPane.lookup("#"+node.getId()+"Label");
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
 						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicTextFieldOnType");
+					});	
+					nodeLabel.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicFieldLabelOnType");
+					});	
 					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			}
@@ -414,7 +421,7 @@ public class Validations extends BaseController {
 										+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
 								false);
 
-						LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						LOGGER.error("UIN VALIDATION FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 						uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 						uinId.requestFocus();
@@ -439,7 +446,7 @@ public class Validations extends BaseController {
 									applicationLabelBundle.getString(regId.getId()) + " "
 											+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
 									false);
-							LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
+							LOGGER.error("RID VALIDATION FAILED", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage()
 											+ ExceptionUtils.getStackTrace(invalidRidException));
 							regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
@@ -530,7 +537,7 @@ public class Validations extends BaseController {
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
-				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.REFERENCE_ID_NO_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:

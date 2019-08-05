@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.core.cbeffutil.entity;
 
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
 
 /**
@@ -11,35 +12,24 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
  */
 public class SBInfo {
 
-	private Long formatOwner;
-	private Long formatType;
+	private RegistryIDType format;
 
 	public SBInfo(SBInfoBuilder sBInfoBuilder) {
-		this.formatOwner = sBInfoBuilder.formatOwner;
-		this.formatType = sBInfoBuilder.formatType;
+		this.format = sBInfoBuilder.format;
 	}
 
-	public Long getFormatOwner() {
-		return formatOwner;
-	}
-
-	public Long getFormatType() {
-		return formatType;
+	public RegistryIDType getFormat() {
+		return format;
 	}
 
 	public static class SBInfoBuilder {
-		private Long formatOwner;
-		private Long formatType;
+		private RegistryIDType format;
 
-		public SBInfoBuilder setFormatOwner(Long formatOwner) {
-			this.formatOwner = formatOwner;
+		public SBInfoBuilder setFormatOwner(RegistryIDType format) {
+			this.format = format;
 			return this;
 		}
 
-		public SBInfoBuilder setFormatType(Long formatType) {
-			this.formatType = formatType;
-			return this;
-		}
 
 		public SBInfo build() {
 			return new SBInfo(this);
@@ -48,11 +38,8 @@ public class SBInfo {
 
 	public SBInfoType toSBInfoType() {
 		SBInfoType sBInfoType = new SBInfoType();
-		if (getFormatType() > 0) {
-			sBInfoType.setFormatType(getFormatType());
-		}
-		if (getFormatOwner() > 0) {
-			sBInfoType.setFormatOwner(getFormatOwner());
+		if (getFormat() !=null) {
+			sBInfoType.setFormat(getFormat());
 		}
 		return sBInfoType;
 	}

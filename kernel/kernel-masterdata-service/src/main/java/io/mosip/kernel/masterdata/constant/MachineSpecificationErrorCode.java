@@ -12,7 +12,8 @@ public enum MachineSpecificationErrorCode {
 	MACHINE_SPECIFICATION_DELETE_EXCEPTION("KER-MSD-086",
 			"Error occurred while deleteding Machine Specification details"),
 
-	MACHINE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-122", "Cannot delete dependency found");
+	MACHINE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-122", "Cannot delete dependency found"),
+	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-349","No Machine exist for Machine Type name:%s");
 
 	private final String errorCode;
 	private final String errorMessage;

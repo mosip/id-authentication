@@ -18,4 +18,6 @@ public interface ZoneUserRepository extends BaseRepository<ZoneUser, ZoneUserId>
 
 	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
 	public List<ZoneUser> findByUserIdNonDeleted(String userId);
+	@Query("FROM ZoneUser zu WHERE zu.userId=?1 and zu.langCode=?2 and (zu.isDeleted IS NULL OR zu.isDeleted = false) ")
+	public ZoneUser findByUserIdAndLangCodeNonDeleted(String userId, String langCode);
 }

@@ -1,5 +1,5 @@
 ## ID Authentication
-ID Authentication (IDA) is the authentication module of MOSIP, used to authenticate Individuals using their UIN/VID. 
+ID Authentication (IDA) is the authentication module of MOSIP, used to authenticate Individuals using their UIN/VID, via a Partner. 
 
 List of authentication types supported by MOSIP are - 
 1. OTP Auth
@@ -7,14 +7,23 @@ List of authentication types supported by MOSIP are -
 3. Biometric Auth (includes Fingerprint, IRIS and Face)
 4. Static Pin Auth
 
-Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs)   
+Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-API)   
 
-### Project Structure
-**authentication-** This is the parent project with common dependencies and plugins. This project has below sub-modules - 
-- `core` - This module named as `auth-core` defines all the core utilities, SPIs, exceptions and constants required for authentication service
-- `service` - This module named as `auth-service` contains all the auth services to be used to authenticate an Individual
 
-### Build Steps
-Below commands should be run in the parent project **authentication**
-1. `mvn clean install`
-2. `mvn sonar:sonar -PDEV` 
+**Configuration**
+Configurations used for ID Repo are available in [mosip-config](https://github.com/mosip/mosip-config)
+
+### Build
+Below command should be run in the parent project **authentication**
+`mvn clean install`
+
+### Deploy
+Below command should be executed to run any service locally in specific profile and local configurations - 
+`java -Dspring.profiles.active=<profile> -jar <jar-name>.jar`
+
+Below command should be executed to run any service locally in specific profile and `remote` configurations - 
+`java -Dspring.profiles.active=<profile> -Dspring.cloud.config.uri=<config-url> -Dspring.cloud.config.label=<config-label> -jar <jar-name>.jar`
+
+Below command should be executed to run a docker image - 
+`docker run -it -p <host-port>:<container-port> -e active_profile_env={profile} -e spring_config_label_env= {branch} -e spring_config_url_env={config_server_url} <docker-registry-IP:docker-registry-port/<docker-image>`
+ 

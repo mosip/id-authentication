@@ -1,1 +1,0 @@
-{"id":"mosip.id.create","version":"v1","responsetime":"2019-06-12T12:25:56.805Z","metadata":null,"response":null,"errors":[{"errorCode":"IDR-IDC-002","message":"Missing input parameter - identity/residenceStatus"},{"errorCode":"IDR-IDC-002","message":"Missing input parameter - identity/CNIENumber"}]}

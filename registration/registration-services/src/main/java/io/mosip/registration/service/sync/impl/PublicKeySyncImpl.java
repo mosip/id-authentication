@@ -167,7 +167,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
 							null);
 					LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-							"Public key sync succesfull...");
+							"Public key sync successful...");
 				} else {
 
 					responseDTO = setErrorResponse(responseDTO,

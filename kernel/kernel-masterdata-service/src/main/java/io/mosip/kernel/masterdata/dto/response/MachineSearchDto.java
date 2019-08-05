@@ -88,13 +88,23 @@ public class MachineSearchDto extends BaseDto {
 	private LocalDateTime validityDateTime;
 
 	/**
-	 * 
+	 * Zone Code for Machine.
 	 */
 	private String zoneCode;
-	
+
 	/**
-	 * 
+	 * Zone name for Machine.
 	 */
 	private String zone;
+
+	/**
+	 * Machine Type name of Machine.
+	 */
+	private String machineTypeName;
+
+	/**
+	 * Machine center mapping status.
+	 */
+	private String mapStatus;
 
 }

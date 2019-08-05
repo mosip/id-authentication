@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,6 +100,7 @@ public class PreRegZipHandlingServiceTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void extractPreRegZipFileTest() throws Exception {
 		Mockito.doAnswer((idObject) -> {

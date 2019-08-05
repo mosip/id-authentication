@@ -158,7 +158,7 @@ public class ResponseSignatureAdvice {
 		}
 
 		LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
-				"succesfully leaving response signature method...");
+				"successfully leaving response signature method...");
 
 		return restClientResponse;
 

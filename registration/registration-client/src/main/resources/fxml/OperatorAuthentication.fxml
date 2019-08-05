@@ -40,9 +40,9 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" GridPane.valignment="TOP">
+                        <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                          <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/arrowLeft.png" />
                                  </image>
@@ -609,9 +609,9 @@
 													<children>
 														<GridPane fx:id="fingerPrintScanButtonPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
 															<children>
-																<Button mnemonicParsing="false" onAction="#validateFingerprint" prefHeight="${fingerPrintScanButtonPane.height}" prefWidth="${fingerPrintScanButtonPane.width}" styleClass="scanButton" text="%scan">
+																<Button fx:id='fpScanBtn' mnemonicParsing="false" onAction="#validateFingerprint" prefHeight="${fingerPrintScanButtonPane.height}" prefWidth="${fingerPrintScanButtonPane.width}" styleClass="scanButton" text="%scan">
 																	<graphic>
-																		<ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+																		<ImageView fx:id="fpScanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
 																			<image>
 																				<Image url="@../images/scan.png" />
 																			</image>
@@ -844,9 +844,9 @@
 													<children>
 														<GridPane fx:id="irisScanButtonPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
 															<children>
-																<Button mnemonicParsing="false" onAction="#validateIris" prefHeight="${irisScanButtonPane.height}" prefWidth="${irisScanButtonPane.width}" styleClass="scanButton" text="%scan">
+																<Button fx:id="irisScanBtn" mnemonicParsing="false" onAction="#validateIris" prefHeight="${irisScanButtonPane.height}" prefWidth="${irisScanButtonPane.width}" styleClass="scanButton" text="%scan">
 																	<graphic>
-																		<ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+																		<ImageView fx:id="irisScanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
 																			<image>
 																				<Image url="@../images/scan.png" />
 																			</image>
@@ -1079,9 +1079,9 @@
 													<children>
 														<GridPane fx:id="faceScanButtonPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
 															<children>
-																<Button mnemonicParsing="false" onAction="#validateFace" prefHeight="${faceScanButtonPane.height}" prefWidth="${faceScanButtonPane.width}" styleClass="scanButton" text="%scan">
+																<Button fx:id="faceScanBtn" mnemonicParsing="false" onAction="#validateFace" prefHeight="${faceScanButtonPane.height}" prefWidth="${faceScanButtonPane.width}" styleClass="scanButton" text="%scan">
 																	<graphic>
-																		<ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+																		<ImageView fx:id="faceScanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
 																			<image>
 																				<Image url="@../images/scan.png" />
 																			</image>

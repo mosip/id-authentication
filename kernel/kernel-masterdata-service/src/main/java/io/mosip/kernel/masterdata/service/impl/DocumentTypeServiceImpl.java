@@ -19,6 +19,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -247,7 +248,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	public FilterResponseDto documentTypeFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DocumentType.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(DocumentType.class, filterDto, filterValueDto)
 						.forEach(filterValue -> {
@@ -284,6 +285,32 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			}
 		}
 		return pageDto;
+	}
+
+	@Override
+	public DocumentTypeResponseDto getAllDocumentTypeByLaguageCode(String langCode) {
+		DocumentTypeResponseDto documentTypeResponseDto = new DocumentTypeResponseDto();
+		List<DocumentTypeDto> documentTypeDtoList = new ArrayList<>();
+		List<DocumentType> documentTypesList = new ArrayList<>();
+		try {
+			documentTypesList = documentTypeRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.parseException(e));
+		}
+
+		if (!(documentTypesList.isEmpty())) {
+			documentTypesList.forEach(documentType -> {
+				DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+				MapperUtils.map(documentType, documentTypeDto);
+				documentTypeDtoList.add(documentTypeDto);
+			});
+		} else {
+			throw new DataNotFoundException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		documentTypeResponseDto.setDocumenttypes(documentTypeDtoList);
+		return documentTypeResponseDto;
 	}
 
 }

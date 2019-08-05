@@ -138,7 +138,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_026
 	 */
-	BOOKING_STATUS_CANNOT_BE_ALTERED("Booking status cannot be altered"),
+	BOOKING_CANNOT_BE_DONE("Appointment re-booking cannot be done within"),
 
 	/**
 	 * ErrorMessage for PRG_TRL_APP_027
@@ -172,7 +172,9 @@ public enum ErrorMessages {
 	
 	JSON_PROCESSING_EXCEPTION("Json processing exception"),
 	
-	REG_CENTER_ID_NOT_FOUND("Registration center id not found");
+	REG_CENTER_ID_NOT_FOUND("Registration center id not found"),
+	
+	CANCEL_BOOKING_CANNOT_BE_DONE("Appointment cancelling cannot be done within");
 	/**
 	 * @param code
 	 */

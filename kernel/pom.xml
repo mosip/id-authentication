@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.18</version>
+		<version>0.9.1</version>
 	</parent>
 
 
@@ -202,6 +202,7 @@
 					<configuration>
 						<skip>false</skip>
 						<useFile>false</useFile>
+						<skipTests>true</skipTests>
 					</configuration>
 				</plugin>
 				<plugin>

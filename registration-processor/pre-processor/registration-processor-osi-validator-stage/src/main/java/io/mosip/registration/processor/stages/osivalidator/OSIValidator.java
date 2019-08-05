@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
@@ -258,7 +256,6 @@ public class OSIValidator {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(operatorId);
 		pathSegments.add(creationDate);
-		try {
 
 			userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments, "", "",
 					UserResponseDto.class);
@@ -289,7 +286,6 @@ public class OSIValidator {
 				throw e;
 			}
 
-		}
 		return userResponse;
 	}
 

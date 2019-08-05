@@ -37,6 +37,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
@@ -47,6 +49,12 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private WebView webView;
+	
+	@FXML
+	private Button backBtn;
+
+	@FXML
+	private ImageView backImageView;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -67,16 +75,27 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	private Button nextButton;
 
 	private String consentText;
-	
+
 	private StringBuilder templateContent;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+
+		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
+
 		nextButton.setDisable(true);
 
 		String key = RegistrationConstants.REG_CONSENT + applicationContext.getApplicationLanguage();
 		consentText = getValueFromApplicationContext(key);
-		
+
 		templateContent = new StringBuilder();
 
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -175,6 +194,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
 		}
 		String ackTemplateText = templateContent.toString();
+		if(ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
+			ackTemplateText = ackTemplateText.replace("} / ${", "}  ${");
+		}
 
 		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 			templateGenerator.setConsentText(consentText);
@@ -287,15 +309,17 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
-
-			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+			
+			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO().stream().count();
 
-			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getIrisDetailsDTO().stream().count();
 			if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
-			} else if (fingerPrintCount > 0) {
+			} else if(getRegistrationDTOFromSession().isUpdateUINChild() && (fingerPrintCount > 0 || irisCount > 0)){
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, true);
+			} else  if (fingerPrintCount > 0) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 			} else if (irisCount > 0) {
 
@@ -308,12 +332,15 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			if((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
 						RegistrationConstants.GUARDIAN_BIOMETRIC);
 			} else {
-				if (RegistrationConstants.ENABLE
-						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+				if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+					registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+							RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION);
+				} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
 					registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
 							RegistrationConstants.FINGERPRINT_CAPTURE);
 				} else if (RegistrationConstants.ENABLE

@@ -23,14 +23,16 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmSecDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -54,7 +56,7 @@ import io.swagger.annotations.ApiParam;
  *
  */
 @RestController
-@Api(tags = { "Registration" })
+@Api(tags = { "Registration Center" })
 public class RegistrationCenterController {
 
 	/**
@@ -276,25 +278,6 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * This method creates registration center by Admin.
-	 * 
-	 * @param reqRegistrationCenterDto
-	 *            the request DTO for creating registration center.
-	 * @return RegistrationCenterPostResponseDto return the created registration
-	 *         center DTO.
-	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@ResponseFilter
-	@PostMapping("/registrationcenters")
-	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterReqAdmDto> reqRegistrationCenterDto) {
-		ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				registrationCenterService.createRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
-		return responseWrapper;
-	}
-
-	/**
 	 * This method updates registration center by Admin.
 	 * 
 	 * @param reqRegistrationCenterDto
@@ -309,7 +292,7 @@ public class RegistrationCenterController {
 
 		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				registrationCenterService.updateRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
+				registrationCenterService.updateRegistrationCenter1(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 
@@ -327,6 +310,60 @@ public class RegistrationCenterController {
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to filter Registration Center based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PostMapping("/registrationcenters/filtervalues")
+	public ResponseWrapper<FilterResponseDto> registrationCenterFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService.registrationCenterFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * This method creates registration center by Admin.
+	 * 
+	 * @param reqRegistrationCenterDto
+	 *            the request DTO for creating registration center.
+	 * @return RegistrationCenterPostResponseDto return the created registration
+	 *         center DTO.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PostMapping("/registrationcenters")
+	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenter(
+			@RequestBody RequestWrapper<RegistrationCenterReqAdmSecDto> reqRegistrationCenterDto) {
+		ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
+
+	/**
+	 * API to decommission registration center based on ID.
+	 * 
+	 * @param regCenterID
+	 *            the center ID of the reg-center which needs to be decommissioned.
+	 * @return ID Response : returns the ID in response, if the reg-center gets
+	 *         decommissioned
+	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters/decommission/{regCenterID}")
+	public ResponseWrapper<IdResponseDto> decommissionRegCenter(@PathVariable("regCenterID") String regCenterID) {
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService.decommissionRegCenter(regCenterID));
 		return responseWrapper;
 	}
 }

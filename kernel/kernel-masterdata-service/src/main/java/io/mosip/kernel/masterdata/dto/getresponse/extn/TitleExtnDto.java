@@ -19,17 +19,18 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "Title", description = "Title details")
 public class TitleExtnDto extends BaseDto {
 
+	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
-	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.STARTSWITH,FilterTypeEnum.CONTAINS})
+	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@ApiModelProperty(value = "titleName", required = true, dataType = "java.lang.String")
 	private String titleName;
 
 	@ApiModelProperty(value = "titleDescription", required = true, dataType = "java.lang.String")
 	private String titleDescription;
-    
-	@FilterType(types= {FilterTypeEnum.EQUALS})
+
+	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 
