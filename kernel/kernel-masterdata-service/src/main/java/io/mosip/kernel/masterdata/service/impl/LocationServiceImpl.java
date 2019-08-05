@@ -216,52 +216,10 @@ public class LocationServiceImpl implements LocationService {
 		List<LocationDto> locations = new ArrayList<>();
 		List<Location> savedEntities = null;
 
-		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
-		if (ids.size() > 1) {
-			throw new RequestException("KER-MSD-XXX1",
-					"Location Code should not be different for a Location in different languages");
-		}
+		// request validation
+		requestValidation(request, errors, locations);
 
-		Optional<LocationDto> defaultLanguage = request.stream()
-				.filter(i -> i.getLangCode().equals(languageUtils.getPrimaryLanguage())).findAny();
-		if (!defaultLanguage.isPresent()) {
-			throw new RequestException("KER-MSD-XXX2",
-					"Location data is not present in the default language :" + languageUtils.getPrimaryLanguage());
-		}
-
-		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
-		if (levels.size() > 1) {
-			throw new RequestException("KER-MSD-XXX2",
-					"Location hierarchy level should not be different for a Location in different languages");
-		}
-
-		// Validating requests
-		for (LocationDto dto : request) {
-			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
-				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
-				if (!validations.isEmpty()) {
-					validations.forEach(
-							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
-					throw new ValidationException(errors);
-				} else {
-					locations.add(dto);
-				}
-			} else if (dto.getLangCode() != null && languageUtils.getSecondaryLanguages().contains(dto.getLangCode())) {
-				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
-				if (!validations.isEmpty()) {
-					validations.forEach(
-							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
-				} else {
-					locations.add(dto);
-				}
-
-			} else {
-				errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-						"Invalid language code : " + dto.getLangCode()));
-			}
-		}
+		dataValidation(request);
 
 		Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
 		// if data present in all the configured languages then setting isActive as
@@ -306,6 +264,56 @@ public class LocationServiceImpl implements LocationService {
 		response.setErrors(errors);
 		response.setResponse(dtos);
 		return response;
+	}
+
+	private void requestValidation(List<LocationDto> request, List<ServiceError> errors, List<LocationDto> locations) {
+		for (LocationDto dto : request) {
+			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
+				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
+				if (!validations.isEmpty()) {
+					validations.forEach(
+							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
+					throw new ValidationException(errors);
+				} else {
+					locations.add(dto);
+				}
+			} else if (dto.getLangCode() != null && languageUtils.getSecondaryLanguages().contains(dto.getLangCode())) {
+				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
+				if (!validations.isEmpty()) {
+					validations.forEach(
+							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
+				} else {
+					locations.add(dto);
+				}
+
+			} else {
+				errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						"Invalid language code : " + dto.getLangCode()));
+			}
+		}
+	}
+
+	private void dataValidation(List<LocationDto> request) {
+		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
+		if (ids.size() > 1) {
+			throw new RequestException("KER-MSD-XXX1",
+					"Location Code should not be different for a Location in different languages");
+		}
+
+		Optional<LocationDto> defaultLanguage = request.stream()
+				.filter(i -> i.getLangCode().equals(languageUtils.getPrimaryLanguage())).findAny();
+		if (!defaultLanguage.isPresent()) {
+			throw new RequestException("KER-MSD-XXX2",
+					"Location data is not present in the default language :" + languageUtils.getPrimaryLanguage());
+		}
+
+		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
+		if (levels.size() > 1) {
+			throw new RequestException("KER-MSD-XXX2",
+					"Location hierarchy level should not be different for a Location in different languages");
+		}
 	}
 
 	/**
