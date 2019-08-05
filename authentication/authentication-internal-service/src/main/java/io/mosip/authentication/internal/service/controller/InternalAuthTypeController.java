@@ -14,15 +14,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
+import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -31,13 +35,17 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
+import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
 import io.mosip.authentication.internal.service.validator.AuthtypeStatusValidator;
+import io.mosip.authentication.internal.service.validator.UpdateAuthtypeStatusValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The {@code InternalAuthTxnController} use to fetch Auth Transaction
@@ -57,13 +65,38 @@ public class InternalAuthTypeController {
 	@Autowired
 	private AuthtypeStatusService authtypeStatusService;
 
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.setValidator(authtypeStatusValidator);
-	}
+	@Autowired
+	private UpdateAuthtypeStatusValidator updateAuthtypeStatusValidator;
+
+	@Autowired
+	private UpdateAuthtypeStatusService updateAuthtypeStatusService;
 
 	@Autowired
 	Environment environment;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(authtypeStatusValidator, updateAuthtypeStatusValidator);
+	}
+
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
+	@PostMapping(path = "/internal/authtypes/status", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
+			@ApiResponse(code = 400, message = "Request authenticated failed") })
+	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(
+			@Validated @RequestBody AuthTypeStatusDto authTypeStatusDto, @ApiIgnore Errors e) {
+		try {
+			DataValidationUtil.validate(e);
+			updateAuthtypeStatusService.updateAuthtypeStatus(authTypeStatusDto);
+		} catch (IDDataValidationException e1) {
+
+		} catch (IdAuthenticationBusinessException e2) {
+
+		}
+
+		return null;
+	}
 
 	/**
 	 * To fetch Auth Type status based on Individual's details
