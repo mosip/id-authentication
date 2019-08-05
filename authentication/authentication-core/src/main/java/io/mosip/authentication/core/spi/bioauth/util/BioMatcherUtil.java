@@ -81,12 +81,15 @@ public class BioMatcherUtil {
 		if (reqBIR.isPresent()) {
 			Score[] match;
 			try {
+				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "entityBIR size",
+						"entityBIR size >>>" + entityBIR.length);
 				match = getBioSdkInstance().match(reqBIR.get(), entityBIR,
 						null);
+				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "match score size",
+						"match size >>>" + match.length);
 				Arrays.asList(match).stream().forEach(score -> logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"internal score Value >>>" +score.getInternalScore()));
-				internalScore = match.length == 1 ? match[0].getInternalScore()
-						: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
+				internalScore = Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"Threshold Value >>>" + internalScore);
 			} catch (BiometricException e) {
