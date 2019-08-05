@@ -231,8 +231,8 @@ public class LocationServiceImpl implements LocationService {
 					&& languageUtils.getConfiguredLanguages().containsAll(languages)) {
 				locations.forEach(i -> i.setIsActive(true));
 			} else {
-				throw new RequestException("KER-MSD-XXX3",
-						"Cannot Activate the Location as data is not present in all the required languages");
+				throw new RequestException(LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorCode(),
+						LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorMessage());
 			}
 		}
 
@@ -240,8 +240,9 @@ public class LocationServiceImpl implements LocationService {
 		for (LocationDto dto : locations) {
 			List<Location> list = locationRepository.findByNameAndLevel(dto.getName(), dto.getHierarchyLevel());
 			if (list != null && !list.isEmpty()) {
-				throw new RequestException("KER-MSD-XXX2",
-						String.format("Location %s already exist under the hierarchy", dto.getName()));
+				throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
+						String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
+								dto.getName()));
 			}
 		}
 
@@ -266,6 +267,16 @@ public class LocationServiceImpl implements LocationService {
 		return response;
 	}
 
+	/**
+	 * Method to perform the basic request validation
+	 * 
+	 * @param request
+	 *            request to be validated
+	 * @param errors
+	 *            list of service errors
+	 * @param locations
+	 *            adding validation location to this list
+	 */
 	private void requestValidation(List<LocationDto> request, List<ServiceError> errors, List<LocationDto> locations) {
 		for (LocationDto dto : request) {
 			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
@@ -289,30 +300,37 @@ public class LocationServiceImpl implements LocationService {
 				}
 
 			} else {
-				errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-						"Invalid language code : " + dto.getLangCode()));
+				errors.add(new ServiceError(LocationErrorCode.INVALID_LANG_CODE.getErrorCode(),
+						String.format(LocationErrorCode.INVALID_LANG_CODE.getErrorMessage(), dto.getLangCode())));
 			}
 		}
 	}
 
+	/**
+	 * Method to perform the business validation for the location
+	 * 
+	 * @param request
+	 *            list of location to be validated
+	 */
 	private void dataValidation(List<LocationDto> request) {
 		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
 		if (ids.size() > 1) {
-			throw new RequestException("KER-MSD-XXX1",
-					"Location Code should not be different for a Location in different languages");
+			throw new RequestException(LocationErrorCode.DIFFERENT_LOC_CODE.getErrorCode(),
+					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
 		}
 
 		Optional<LocationDto> defaultLanguage = request.stream()
 				.filter(i -> i.getLangCode().equals(languageUtils.getPrimaryLanguage())).findAny();
 		if (!defaultLanguage.isPresent()) {
-			throw new RequestException("KER-MSD-XXX2",
-					"Location data is not present in the default language :" + languageUtils.getPrimaryLanguage());
+			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
+					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
+							languageUtils.getPrimaryLanguage()));
 		}
 
 		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
 		if (levels.size() > 1) {
-			throw new RequestException("KER-MSD-XXX2",
-					"Location hierarchy level should not be different for a Location in different languages");
+			throw new RequestException(LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorCode(),
+					LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorMessage());
 		}
 	}
 
