@@ -71,7 +71,7 @@ The authentication and authorization in the MOSIP platform is handled in the a c
 
 3. Annotate the server method which have to be protected with the "Role" information. 
 
-Reference: https://github.com/mosip/mosip/wiki/Auth-SpringBoot-User-Guide
+Reference: https://github.com/mosip/mosip-docs/wiki/Auth-SpringBoot-User-Guide
 
 
 **Implementing Auth in JavaFX application**
@@ -105,7 +105,7 @@ Reference: https://github.com/mosip/mosip/wiki/Auth-SpringBoot-User-Guide
 ![Angular authentication keeep alive flow](_images/kernel-authentication-keepalive-prereg.jpg)
 
 
-Reference: https://github.com/mosip/mosip/wiki/Auth-Angular-User-Guide
+Reference: https://github.com/mosip/mosip-docs/wiki/Auth-Angular-User-Guide
 
 
 **Data stores for different applications**
@@ -136,7 +136,4 @@ Reference: https://github.com/mosip/mosip/wiki/Auth-Angular-User-Guide
 
 ![Sequence Diagram](_images/kernel-authn-sequencediagram.jpg)
 
-## Implementation
 
-
-**kernel-auth-service** [README](../../../kernel/kernel-auth-service/README.md)

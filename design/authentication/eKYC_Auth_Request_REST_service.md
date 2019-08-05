@@ -44,7 +44,7 @@ Below admin configurations should be available before implementing the solution.
 **3. Solution**   
 KYC Auth REST service addresses the above requirements as explained below.
 
-1.	Partner needs to construct a POST request with below details and send to Request URL `/idauthentication/v1/identity/kyc/` - [Sample Request Body](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identitykyc)
+1.	Partner needs to construct a POST request with below details and send to Request URL `/idauthentication/v1/identity/kyc/` - [Sample Request Body](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#ekyc-service-public)
 2.	Authenticate and Authorize Partner and MISP using their Policy and LicenseKey respectively
 3.	Validate 'requestTime' for incoming Auth Requests for valid format and timestamp < 30 minutes (configurable value) from current time
 4. Integrate with kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
@@ -56,7 +56,7 @@ KYC Auth REST service addresses the above requirements as explained below.
 7. 	Upon successful authentication, retrive the KYC details from ID Repository, filter the fields based on the allowed attributes in the Policy.
 8.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 9.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel’s SmsNotifier and EmailNotifier to their stored phone/email respectively.
-10.	Respond to Partner with below success KYC Auth response - [Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-1)
+10.	Respond to Partner with below success KYC Auth response - [Sample Response](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#success-response-1)
 
 **3.1. Class Diagram:**   
 The below class diagram shows relationship between all the classes which are required for KYC authentication service.

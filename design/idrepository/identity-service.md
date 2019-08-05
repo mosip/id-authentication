@@ -62,7 +62,7 @@ The key solution considerations are
 
 ***2.2.1.	Create Identity***     
 
-MOSIP Modules can use ID Repo API spec available here - [Create ID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#create-id) - to create Identity of an Individual    
+MOSIP Modules can use ID Repo API spec available here - [Create ID API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#post-idrepositoryv1identity) - to create Identity of an Individual    
 
 1. 	Receive RID, ID JSON, CBEFFs and associated documents of proofs
 2. 	Integrate with kernel-idvalidator-uin, kernel-idvalidator-rid to validate incoming UIN and RID
@@ -80,7 +80,7 @@ Below sequence diagram for create Identity service shows sequence of operations 
 
 ***2.2.2.	Update Identity***   
 
-MOSIP Products can use ID Repo API spec available here - [Update ID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#update-id) - to update Identity of an Individual    
+MOSIP Products can use ID Repo API spec available here - [Update ID API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#patch-idrepositoryv1identity) - to update Identity of an Individual    
 1. 	Receive RID and ID JSON or CBEFF or associated documents of proofs
 2.	Integrate with Kernel UIN validator to validate UIN     
 3.	Once the request is successfully validated, update Identity details in UIN and UIN_detail tables, CBEFF and documents of proof in DFS, and biometric and document references in uin_biometric and uin_document tables respectively.   
@@ -94,7 +94,7 @@ Default configuration of UIN status has ACTIVATED, BLOCKED and DEACTIVATED. This
 
 ***2.2.3.	Get Identity By UIN***   
 
-MOSIP Products can use ID Repo API spec available here - [Retrieve ID By UIN API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#read-id-by-uin) - to retrieve Identity of an Individual by providing a UIN.    
+MOSIP Products can use ID Repo API spec available here - [Retrieve ID By UIN API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#get-idrepositoryv1identityuinuintypebio) - to retrieve Identity of an Individual by providing a UIN.    
 1. 	Integrate with Kernel UIN validator to validate UIN     
 2.	Once the request is successfully validated, retrieve Identity details in UIN and UIN_detail tables   
 
@@ -104,7 +104,7 @@ Below sequence diagram for create Identity service shows sequence of operations 
 
 ***2.2.4.	Get Identity By RID***   
 
-MOSIP Products can use ID Repo API spec available here - [Retrieve ID By RID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#read-id-by-rid) - to retrieve Identity of an Individual by providing a RID.    
+MOSIP Products can use ID Repo API spec available here - [Retrieve ID By RID API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#get-idrepositoryv1identityridridtypebio) - to retrieve Identity of an Individual by providing a RID.    
 1. 	Integrate with Kernel RID validator to validate RID     
 2.	Once the request is successfully validated, retrieve latest Identity details to the mapped UIN from UIN and UIN_detail tables   
 

@@ -78,9 +78,9 @@ insert into reg.global_param values ('mosip.kernel.idobjectvalidator.file-storag
 
 insert into reg.global_param values ('mosip.kernel.idobjectvalidator.property-source','mosip.kernel.idobjectvalidator.property-source','LOCAL','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
 
-insert into reg.global_param values ('mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.new-registration','mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.new-registration','fullName,dateOfBirth|age,gender,addressLine1,region,province,city,localAdministrativeAuthority,postalCode,residenceStatus','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
+insert into reg.global_param values ('mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.new-registration','mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.new-registration','fullName,dateOfBirth|age,gender,addressLine1,region,province,city,zone,postalCode,residenceStatus,referenceIdentityNumber','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
-insert into reg.global_param values ('mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.child-registration','mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.child-registration','fullName,dateOfBirth|age,gender,addressLine1,region,province,city,localAdministrativeAuthority,postalCode,residenceStatus,parentOrGuardianName,parentOrGuardianRID|parentOrGuardianUIN,parentOrGuardianBiometrics','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
+insert into reg.global_param values ('mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.child-registration','mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.child-registration','fullName,dateOfBirth|age,gender,addressLine1,region,province,city,zone,postalCode,residenceStatus,referenceIdentityNumber,parentOrGuardianName,parentOrGuardianRID|parentOrGuardianUIN,parentOrGuardianBiometrics','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
 insert into reg.global_param values ('mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.lost-uin','mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client.lost-uin','','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
@@ -94,7 +94,7 @@ insert into reg.global_param values ('mosip.id.validation.identity.email','mosip
 
 insert into reg.global_param values ('mosip.id.validation.identity.postalCode','mosip.id.validation.identity.postalCode','^[(?i)A-Z0-9]{5}$','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
-insert into reg.global_param values ('mosip.id.validation.identity.CNIENumber','mosip.id.validation.identity.CNIENumber','^([0-9]{10,30})$','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
+insert into reg.global_param values ('mosip.id.validation.identity.referenceIdentityNumber','mosip.id.validation.identity.referenceIdentityNumber','^([0-9]{10,30})$','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
 insert into reg.global_param values ('mosip.id.validation.identity.age','mosip.id.validation.identity.age','^(150|1[0-4][0-9]|[1-9]?[0-9])$','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 

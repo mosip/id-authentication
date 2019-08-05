@@ -3,32 +3,32 @@
 
 **Background**
 - Exposing the API to Registration client will provide with the list of Pre-Registration IDs for which they wants to get Pre-Registration Data.
-- Expose the API to Registration Processer will provide with the list of Pre-Registration IDs for which it wants to update Pre-Registration status.
+- Expose the API to Registration Processor will provide with the list of Pre-Registration IDs for which it wants to update Pre-Registration status.
 
 
 The target users are -
-   - Registration Client and Registration Processer
+   - Registration Client and Registration Processor
 
 The key requirements are -
 - Create the REST API to Registration client, list of Pre-Registration IDs for which it wants to get Pre-Registration Data.
 
 - Another REST API to Registration client, they will provide Pre-Registration Id to get the pre-registration data in zipped format. which consisting of ID.json and Documents.
 
-- Create the REST API to Registration Processer will provide with the list of Pre-Registration IDs for which they consumed.
+- Create the REST API to Registration Processor will provide with the list of Pre-Registration IDs for which they consumed.
 
 The key non-functional requirements are
 
 - Security :
-    - The Pre-Registartion securly share the pre-registration data to registration client.
-    - Reponse signature.
+    - The Pre-Registration securely share the pre-registration data to registration client.
+    - Response signature.
 	
 - Log the each state of the data sync:
     -   As a security measures the Pre-Id/registration client/registration processor information should not be logged.
 
 - Audit :
-    - User ID, RC ID, Transaction ID, Timestamp should be stored into the DB for audit purpose.
+    - User ID, RC ID, Transaction ID, Time-stamp should be stored into the DB for audit purpose.
     - Pre-reg Id and important detail of the applicant should not be audited.
-	- Registartion processor ID, Transaction ID, Timestamp should be stored into the DB for audit purpose.
+	- Registration processor ID, Transaction ID, Time-stamp should be stored into the DB for audit purpose.
 
 -   Exception :
     -   Any exception occurred during the pre-registration data sync, the same will be reported to the registration client in a understandable exception.
@@ -36,7 +36,7 @@ The key non-functional requirements are
 	
 **NFRs -**
 
-1. Pre registration would expose Datasynch service. this is REST over HTTPS.
+1. Pre registration would expose Data-sync service. this is REST over HTTPS.
 
 2. Registration client would call the service
 
@@ -46,9 +46,9 @@ The key non-functional requirements are
 
 5. multiple clients and pre registration is source of data.
 
-6. registration client should be online to get the data.
+6. registration client should be on-line to get the data.
 
-7. NO intermidiate server to suport mobility of registration client.
+7. NO intermediate server to support mobility of registration client.
 
 8. HTTPS provides end point security.
 
@@ -60,7 +60,7 @@ The key non-functional requirements are
 
 - Create a REST API as '/sync' POST Method, which accept the Data Sync JSON object from the request body.
 
-- The JSON object contains Registration Center ID, Appoointment Date Range(Start Date, End Date).
+- The JSON object contains Registration Center ID, Appointment Date Range(Start Date, End Date).
 
 - The System will generate a Transaction ID and  fetch all the Pre-Registrations within the Date Range(Start Range, End Date) and for the Registration Center ID received.
 
@@ -72,16 +72,16 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration data-sync service sync all](_images/_class_diagram/data-sync-service.png)
+![pre-registration-data-sync-service-sync-all](_images/_class_diagram/data-sync-service.png)
 
 **Sequence Diagram**
 
-![pre-registration data-sync service sync all](_images/_sequence_diagram/dataSync-reterive-all-preRegIds.png)
+![pre-registration-data-sync-service-sync -all](_images/_sequence_diagram/dataSync-retrieve-all-preRegIds.png)
 
 
 
 
-**Reterive Pre-Registartions:**
+**Reterive Pre-Registrations:**
 
 - Create a REST API as '/sync' GET Method, which accept the pre-registration id from the request path parameter.
 
@@ -91,17 +91,17 @@ The key non-functional requirements are
 
 	 Step2: fetch all the document metadata and prepare the JSON structure and append it to the ID JSON object. fetch the perticular document, if successful go to next step otherwise throw an exception.
 
-	 Step3: preapre a zip file and ResponseDTO.{zip file structure need to discuss}
+	 Step3: prepare a zip file and ResponseDTO.{zip file structure need to discuss}
 
 -   Audit the exception/start/exit of the each stages of the data sync mechanism using AuditManager component.
 
 **Class Diagram**
 
-![pre-registration data-sync service sync data](_images/_class_diagram/data-sync-service.png)
+![pre-registration-data-sync-service-sync-data](_images/_class_diagram/data-sync-service.png)
 
 **Sequence Diagram**
 
-![pre-registration data-sync service sync data](_images/_sequence_diagram/dataSync-reterive-data.png)
+![pre-registration-data-sync-service-sync-data](_images/_sequence_diagram/dataSync-retrieve-data.png)
 
 
 
@@ -114,21 +114,21 @@ The key non-functional requirements are
 
 - The System will generate a Transaction ID and store all the Pre-Registration ids in "prereg-i_processed_prereg_list" table and update in "prereg-processed_prereg_list" table.
 
-- The "prereg-i_processed_prereg_list" table is not permanent, for maintanance purpose database team can truncate this table.
+- The "prereg-i_processed_prereg_list" table is not permanent, for maintenance purpose database team can truncate this table.
 
-- A batch job need to be running to update the application.demoraphic table with "Processed" status.
+- A batch job need to be running to update the application.demographic table with "Processed" status.
 
-- Once Pre-Registration successfully processed. System will send an Acknowledgement of the Receipt ("need to be check BA(Vyas)")
+- Once Pre-Registration successfully processed. System will send an Acknowledgment of the Receipt ("need to be check BA(Vyas)")
 
 - Audit the exception/start/exit of the each stages of the reverse data sync mechanism using AuditManager component.
 
 **Class Diagram**
 
-![pre-registration data-sync service sync consumed](_images/_class_diagram/data-sync-service-consumed.png)
+![pre-registration-data-sync-service-sync -consumed](_images/_class_diagram/data-sync-service-consumed.png)
 
 **Sequence Diagram**
 
-![pre-registration data-sync service sync consumed]((_images/_sequence_diagram/dataSync-consumed-preRegId.png)
+![pre-registration-data-sync-service-sync -consumed](_images/_sequence_diagram/dataSync-consumed-preRegId.png)
 
 
 **Success / Error Code** 
@@ -158,7 +158,7 @@ Component Name | Module Name | Description |
 
 **User Story References**
 
-  **User Story No.**|**Reference Link**
-
+  **User Story No.**|**Reference Link**|
+  -----|----------|
   **MOS-668**      |     <https://mosipid.atlassian.net/browse/MOS-668>
   **MOS-1999**       |    <https://mosipid.atlassian.net/browse/MOS-1999>

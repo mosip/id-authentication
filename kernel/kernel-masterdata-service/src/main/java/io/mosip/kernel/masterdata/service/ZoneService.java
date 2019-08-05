@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
+import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 
 /**
@@ -30,4 +31,6 @@ public interface ZoneService {
 	 * @return {@link List} of {@link ZoneExtnDto}
 	 */
 	public List<ZoneExtnDto> getUserLeafZone(String langCode);
+
+	public ZoneNameResponseDto getZoneNameBasedOnLangCodeAndUserID(String userID, String langCode);
 }

@@ -128,6 +128,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private JobConfigurationService jobConfigurationService;
 
+	@SuppressWarnings("unchecked")
 	public void setLastUpdateTime() {
 		try {
 			String latestUpdateTime = ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs()
@@ -897,8 +898,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
 								.with(location -> location.setLocalAdministrativeAuthority(
-										individualIdentity.getLocalAdministrativeAuthority() != null
-												? individualIdentity.getLocalAdministrativeAuthority().get(0).getValue()
+										individualIdentity.getZone() != null
+												? individualIdentity.getZone().get(0).getValue()
 												: null))
 								.with(location -> location.setPostalCode(
 										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()

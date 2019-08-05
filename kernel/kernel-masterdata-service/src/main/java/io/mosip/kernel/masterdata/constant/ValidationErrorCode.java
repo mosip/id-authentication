@@ -16,7 +16,9 @@ public enum ValidationErrorCode {
 	FILTER_COLUMN_DOESNT_EXIST("KER-MSD-323","Filter Type for column %s is not supported"), 
 	FILTER_COLUMN_NOT_SUPPORTED("KER-MSD-324","Received Filter Type not supported"),
 	COLUMN_DOESNT_EXIST_FILTER("KER-MSD-348","Received column does not support filter"),
+	CONSTRAINT_VIOLATION("KER-MSD-xxx","Contraint Violation-"),
 	INVALID_COLUMN_NAME("KER-MSD-325","Invalid Column Name passed");
+
 
 	/**
 	 * Error Code

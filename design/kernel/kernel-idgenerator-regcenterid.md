@@ -30,7 +30,3 @@ A center ID can be generated for various centers in the MOSIP platform. Once a u
 ![Class Diagram](_images/kernel-idgenerator-cd.png)
 
 
-## Implementation
-
-
-**kernel-idgenerator-regcenterid** [README](../../../kernel/kernel-idgenerator-regcenterid/README.md)

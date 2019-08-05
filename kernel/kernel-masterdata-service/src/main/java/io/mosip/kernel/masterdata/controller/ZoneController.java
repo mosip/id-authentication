@@ -10,9 +10,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -61,6 +63,14 @@ public class ZoneController {
 		ResponseWrapper<List<ZoneExtnDto>> response = new ResponseWrapper<>();
 		response.setResponse(zoneService.getUserLeafZone(langCode));
 		return response;
+	}
+
+	@GetMapping("/username")
+	public ResponseWrapper<ZoneNameResponseDto> getZoneNameBasedOnUserIDAndLangCode(
+			@RequestParam("userID") String userID, @RequestParam("langCode") String langCode) {
+		ResponseWrapper<ZoneNameResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(zoneService.getZoneNameBasedOnLangCodeAndUserID(userID, langCode));
+		return responseWrapper;
 	}
 
 }

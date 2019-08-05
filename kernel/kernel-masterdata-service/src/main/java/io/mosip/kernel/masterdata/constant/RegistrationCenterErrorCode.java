@@ -29,6 +29,32 @@ public enum RegistrationCenterErrorCode {
 	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
 	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s"),
 	NO_ZONE_AVAILABLE("KER-MSD-340","Zone %s doesn't exist"),
+
+	
+	PRIMARY_LANGUAGE_EXCEPTION("KER-MSD-XXX", "Received data is not present in Primary Language supported by MOSIP"),
+	SECONDARY_LANGUAGE_EXCEPTION("KER-MSD-XXX", "%s Language does not supported by MOSIP"),
+	REGISTRATION_CENTER_ID("KER-MSD-XXX","%s gievn Registartion Center Id is not present in DB"),
+	REGISTRATION_CENTER_ALL_Lang("KER-MSD-XXX","For the given ID data is present in all supported Language code of the MOSIP, So go for Edit"),
+	
+	
+	ID_NOT_UNIQUE("KER-MSD-xx2","Please make sure that all entered IDs are same-%s"),
+	CENTER_TYPE_CODE_NOT_UNIQUE("KER-MSD-xx2","Please make sure that all entered Center-Type-Code are same-%s"),
+	LATITUDE_NOT_UNIQUE("KER-MSD-xx3","Please make sure that all entered Latitude are same-%s"),
+	LONGITUDE_NOT_UNIQUE("KER-MSD-xx4","Please make sure that all entered Longitude are same-%s"),
+	CONTACT_PHONE_NOT_UNIQUE("KER-MSD-xx5","Please make sure that all entered Contact-Phone are same-%s"),
+	WORKING_HOURS_NOT_UNIQUE("KER-MSD-xx6","Please make sure that all entered Working-Hours are same-%s"),
+	CENTER_STRART_TIME_NOT_UNIQUE("KER-MSD-xx7","Please make sure that all entered Center-Start-Time are same-%s"),
+	CENTER_END_TIME_NOT_UNIQUE("KER-MSD-xx8","Please make sure that all entered Center-End-Time are same-%s"),
+	LUNCH_START_TIME_NOT_UNIQUE("KER-MSD-xx9","Please make sure that all entered Lunch-Start-Time are same-%s"),
+	LUNCH_END_TIME_NOT_UNIQUE("KER-MSD-x10","Please make sure that all entered Luncg-End-Time are same-%s"),
+	TIME_ZONE_NOT_UNIQUE("KER-MSD-x11","Please make sure that all entered Time-Zone are same-%s"),
+	HOLIDAY_LOCATION_CODE_NOT_UNIQUE("KER-MSD-x14","Please make sure that all entered Holiday-Location-Code are same-%s"),
+	ZONE_CODE_NOT_UNIQUE("KER-MSD-x15","Please make sure that all entered Zone-Code are same-%s"),
+	ID_SIZE("KER-MSD-x16","Please make sure that ID size must be between 1-10 charectors-%s"),
+	ID_LANGUAGE("KER-MSD-x16","for the given %s-id records not in MOSIP supported language"),
+	IS_ACTIVE("KER-MSD-x17", "%d- id is already Active"),
+	
+
 	INVALIDE_ZONE("KER-MSD-346", "Received Zone Code does not belong to the User"),
 	USER_ZONE_NOT_FOUND("KER-MSD-341","No zone assigned to the user"),
 	MAPPED_TO_DEVICE("KER-MSD-350","Cannot Decommission the Registration Center, as some devices are mapped to the Registration Center"),
@@ -36,7 +62,6 @@ public enum RegistrationCenterErrorCode {
 	MAPPED_TO_MACHINE("KER-MSD-351","Cannot Decommission the Registration Center, as some machines are mapped to the Registration Center"),
 	DECOMMISSION_FAILED("KER-MSD-354","Internal Server Error"),
 	INVALID_RCID_LENGTH("KER-MSD-353","Center ID specified for decommission has invalid length");
-
 
 
 	private final String errorCode;

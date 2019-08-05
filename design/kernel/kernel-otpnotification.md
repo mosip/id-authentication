@@ -57,10 +57,3 @@ HttpStatus: 202 Accepted
 
 ![Class Diagram](_images/kernel-otpnotification-cd.png)
 
-
-
-
-## Implementation
-
-
-**kernel-otpnotification-service** [README](../../../kernel/kernel-otpnotification-service/README.md)

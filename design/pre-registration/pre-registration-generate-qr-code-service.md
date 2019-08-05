@@ -23,17 +23,19 @@ The key non-functional requirements are
 
 - Create a REST API as '/generateQRCode' with POST method, which accept the pre-registration data in string format.
 
-- Internally call an KERNEL API to generate QR code which return bytearray. If it generate sucessfully send the response otherwise throw an respetive exception.
+- Internally call an KERNEL API to generate QR code which return byte-array. If it generate successfully send the response otherwise throw an respective exception.
 
 **Class Diagram**
-![pre-registration generateQRCode](_images/_class_diagram/pre-registration-generateQRCode.png)
+![pre-registration generateQRCode](_images/_class_diagram/generateQRCode.png)
+
 **Sequence Diagram**
 ![pre-registration generateQRCode](_images/_sequence_diagram/QRcodeGenerate-generate.png)
 
 **Error Code** 
-  Code   |       Type  | Message|
------|----------|-------------|
-PRG_ACK-006 |  Error   |  QRCODE_FAILED_TO_GENERATE.
+
+Code|Type| Message
+-----|----------|-------------
+PRG_ACK-006|Error|  QRCODE_FAILED_TO_GENERATE.
 
   
 

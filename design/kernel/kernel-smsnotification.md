@@ -46,8 +46,3 @@ HttpStatus: 202 Accepted
 ![Class Diagram](_images/kernel-smsnotification-cd.png)
 
 
-
-## Implementation
-
-
-**kernel-smsnotification-service** [README](../../../kernel/kernel-smsnotification-service/README.md)

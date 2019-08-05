@@ -37,7 +37,7 @@ MOSIP Products can use Identity Auth Internal REST service to authenticate an In
 **2. Solution**   
 Identity Auth Internal REST service addresses the above requirements as explained below.
 
-1.	MOSIP Products to construct a **POST** request with below details and send to Request URL `/idauthentication/v1/identity/auth/internal` - [Sample Request Body](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identityauthinternal)
+1.	MOSIP Products to construct a **POST** request with below details and send to Request URL `/idauthentication/v1/identity/auth/internal` - [Sample Request Body](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#authentication-service-internal)
 2.	Validate 'requestTime' for incoming Auth Requests for valid format and timestamp < 30 minutes (configurable value) from current time
 3.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. 
 5.	Once the above validations are successful, Auth request is then validated based on biometric - Fingerprint/IRIS/Face - authentications present in input request. For these types of authentications, below are types of inputs supported –     
@@ -45,7 +45,7 @@ a.	Fingerprint – Image and Minutiae based
 b.	Iris – Image based    
 c.	Face – Image based 
 6.	Retrieve Identity details of the Individual based on UIN from ID Repository
-7.	Respond with below success Auth response - [Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-3)
+7.	Respond with below success Auth response - [Sample Response](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#success-response-3)
 
 **2.1. Class Diagram:**   
 The below class diagram shows relationship between all the classes which are required for Bio authentication service.

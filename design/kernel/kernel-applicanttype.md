@@ -117,8 +117,3 @@ biometricAvailable: true,false
 ![Module Diagram](_images/kernel-applicanttype.jpg)
 
 
-
-## Implementation
-
-
-**kernel-applicanttype-api** [README](../../../kernel/kernel-applicanttype-api/README.md)

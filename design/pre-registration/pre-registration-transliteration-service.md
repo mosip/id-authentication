@@ -17,16 +17,16 @@ The key requirements -
 
 -   Create the REST API to transliterate the value based on language. which internally call the ICU4j API.
 
-- Internally call an ICU4j API to generate transliterated value. If it transliterated sucessfully send the response otherwise throw an respetive exception.
+- Internally call an ICU4j API to generate transliterated value. If it transliterated successfully send the response otherwise throw an respective exception.
 
-**Class Diagram**
-![pre-registration transliterate](_images/_class_diagram/pre-registration-transliterate.png)
+
 **Sequence Diagram**
-![pre-registration transliterate](_images/_sequence_diagram/pre-registration-transliterate.png)
+![pre-registration transliterate](_images/_sequence_diagram/transliteration-transliterate.png)
 
 **Error Code** 
-  Code   |       Type  | Message|
------|----------|-------------|
+
+  Code   |       Type  | Message
+-----|----------|-------------
 PRG-TRA-001 |  Error   |  Failed to transliterate
 
   

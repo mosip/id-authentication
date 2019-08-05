@@ -28,6 +28,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -41,6 +42,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -84,6 +86,12 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 	@Autowired
 	FilterTypeValidator filterValidator;
+	
+	@Autowired
+	private DeviceUtils deviceUtil;
+	
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -325,20 +333,36 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 		}
 		dto.getFilters().removeAll(removeList);
+		Pagination pagination = dto.getPagination();
+		List<SearchSort> sort = dto.getSort();
+		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+		dto.setSort(Collections.emptyList());
 		if (filterValidator.validate(DeviceSpecificationExtnDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter optionalFilterForDeviceTypeName = new OptionalFilter(deviceCodeFilter);
 			Page<DeviceSpecification> page = masterDataSearchHelper.searchMasterdata(DeviceSpecification.class, dto,
 					new OptionalFilter[] { optionalFilter, optionalFilterForDeviceTypeName });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				pageDto = PageUtils.pageResponse(page);
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSpecificationExtnDto.class);
-				pageDto.setData(devices);
+				setDeviceTypeName(devices);
+				pageDto = pageUtils.sortPage(devices, sort, pagination);
 			}
 
 		}
 
 		return pageDto;
+	}
+	
+	private void setDeviceTypeName(List<DeviceSpecificationExtnDto> devicesSpecifications) {
+		List<DeviceType> deviceTypes = deviceUtil.getDeviceTypes();
+		devicesSpecifications.forEach(deviceSpec -> {
+			deviceTypes.forEach(mt -> {
+				if (deviceSpec.getDeviceTypeCode().equals(mt.getCode())
+						&& deviceSpec.getLangCode().equals(mt.getLangCode())) {
+					deviceSpec.setDeviceTypeName(mt.getName());   
+				}
+			});
+		});
 	}
 
 	private List<SearchFilter> buildDeviceTypeSearchFilter(List<DeviceType> deviceTypes) {

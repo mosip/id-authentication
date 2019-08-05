@@ -37,9 +37,3 @@ This library can be used to interact with SoftHsm key store. It contains several
 ![kernel_keymanager-softhsm_classdiagram](_images/kernel-keymanager-softhsm-cd.png)
 
 
-
-
-## Implementation
-
-
-**kernel-keymanager-softhsm** [README](../../../kernel/kernel-keymanager-softhsm/ReadMe.md)

@@ -34,14 +34,14 @@ MOSIP Partner will request for an OTP on behalf of an Individual
 OTP Request REST service addresses the above requirement -  
 
 1.	MOSIP Partner to construct a POST request with below details and send to Request URL 
-`/idauthentication/v1/otp/` - [Sample Request Body](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1otp)
+`/idauthentication/v1/otp/` - [Sample Request Body](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#otp-request-service-public)
 2.	Authenticate and Authorize MOSIP Partner.
 3.	Validate “reqTime” for incoming OTP Requests for valid format and timestamp < 20mins from current time
 4.	Integrate with kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
 5.	Create OTP using OTP key in the format using OtpUtil- <product_id>_<uin_ref_id>_<txn_id>_<mua_code>
 6.	Retrieve mode of communication with Individual using admin config to send generated OTP
 7.	Integrate with Kernel SmsNotifier and EmailNotifier to send the generated OTP to their stored phone/email respectively.
-8.	Respond to MOSIP Partner with success Auth response - [Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-2)
+8.	Respond to MOSIP Partner with success Auth response - [Sample Response](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#success-response-2)
 
 **2.1. Class Diagram**
 

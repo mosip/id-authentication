@@ -163,7 +163,7 @@ Sample Request Body –
 **2.1. Component Diagram**   
 Below component diagram shows all the components that work together during authentication process
 
-![Identity Auth Component Diagram](_images/Identity_Auth_Component_Diagram.PNG)
+![Identity Auth Component Diagram](_images/Identity_Auth_Component_Diagram.png)
 
 Below are the details on each of the above components:
 -	***IDAuthFilter*** – A Spring Filter to intercept AuthRequest and perform TSP authentication/authorization
@@ -181,7 +181,7 @@ Below are the details on each of the above components:
 
 **2.2. Exception Handling:**   
 Below exception hierarchy shows how IDAuthentication will handle exceptions
-![Identity Auth Exception Handling Class Diagram](_images/Identity_Auth_Exception_Handling.PNG)
+![Identity Auth Exception Handling Class Diagram](_images/Identity_Auth_Exception_Handling.png)
 
 -	***IDAuthDaoException*** – This exception will wrap all database related exceptions thrown by Dao layer 
 -	***IDAuthBusinessException*** – This exception handles all business logic related issues, any business condition not met, issues in communicating with external APIs, etc. It also wraps all IDAuthenticationDaoException
@@ -192,6 +192,6 @@ Below exception hierarchy shows how IDAuthentication will handle exceptions
 
 **2.3. Class Diagram:**   
 
-![Identity Auth Class Diagram](_images/Identity_Auth_Class_Diagram.PNG)
+![Identity Auth Class Diagram](_images/Identity_Auth_Class_Diagram.png)
 
 **2.4. Sequence Diagram:**   

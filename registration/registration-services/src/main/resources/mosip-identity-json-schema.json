@@ -62,6 +62,12 @@
 				"residenceStatus": {
 					"$ref": "#/definitions/simpleType"
 				},
+				"referenceIdentityNumber": {
+					"type": "string"
+				},
+				"zone": {
+					"$ref": "#/definitions/simpleType"
+				},
 				"parentOrGuardianName": {
 					"$ref": "#/definitions/simpleType"
 				},

@@ -102,11 +102,6 @@ license/permission?licenseKey=gR7Mw7tA7S7qifkf&tspId=9837
 
 
 
-## Implementation
-
-
-**kernel-otpmanager-service** [README](../../../kernel/kernel-otpmanager-service/README.md)
-
 
 
 

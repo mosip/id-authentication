@@ -28,9 +28,3 @@ A MISP ID can be generated for each MISP. There are configurations during the MI
 
 
 ![Class Diagram](_images/kernel-idgenerator-cd.png)
-
-
-## Implementation
-
-
-**kernel-idgenerator-mispid** [README](../../../kernel/kernel-idgenerator-mispid/README.md)

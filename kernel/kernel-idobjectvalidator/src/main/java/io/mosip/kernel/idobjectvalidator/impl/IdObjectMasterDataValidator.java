@@ -149,7 +149,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 			validateProvince(identityString, errorList);
 			validateCity(identityString, errorList);
 			validatePostalCode(identityString, errorList);
-			validateLocalAdministrativeAuthority(identityString, errorList);
+			validateZone(identityString, errorList);
 			validateDocuments(identityString, errorList);
 			if (errorList.isEmpty()) {
 				return true;
@@ -460,23 +460,23 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	}
 	
 	/**
-	 * Validate local administrative authority.
+	 * Validate Zone.
 	 *
 	 * @param identityString the identity string
 	 * @param errorList the error list
 	 */
-	private void validateLocalAdministrativeAuthority(String identityString, List<ServiceError> errorList) {
-		SetValuedMap<String, String> localAdministrativeAuthorityMap = new HashSetValuedHashMap<>();
-		Set<String> localAdminAuthNameList = locationHierarchyDetails
-				.get(IdObjectValidatorLocationMapping.LOCAL_ADMINISTRATIVE_AUTHORITY.getLevel());
-		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).stream()
+	private void validateZone(String identityString, List<ServiceError> errorList) {
+		SetValuedMap<String, String> zoneMap = new HashSetValuedHashMap<>();
+		Set<String> zoneList = locationHierarchyDetails
+				.get(IdObjectValidatorLocationMapping.ZONE.getLevel());
+		Optional.ofNullable(zoneList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(localAdministrativeAuthorityMap::putAll));
+						.ifPresent(zoneMap::putAll));
 		JsonPath langPath = JsonPath
-				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_LANGUAGE_PATH.getValue());
+				.compile(IdObjectValidatorConstant.IDENTITY_ZONE_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath
-				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_VALUE_PATH.getValue());
+				.compile(IdObjectValidatorConstant.IDENTITY_ZONE_VALUE_PATH.getValue());
 		List<String> valuePathList = valuePath.read(identityString, PATH_LIST_OPTIONS);
 		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size())
 			.filter(index -> languageList
@@ -488,8 +488,8 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		dataMap.entrySet().stream()
 			.filter(entry -> {
 				String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
-					return localAdministrativeAuthorityMap.containsKey(lang)
-							&& !localAdministrativeAuthorityMap.get(lang).contains(entry.getValue().getValue());
+					return zoneMap.containsKey(lang)
+							&& !zoneMap.get(lang).contains(entry.getValue().getValue());
 			})
 			.forEach(entry -> errorList
 					.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),

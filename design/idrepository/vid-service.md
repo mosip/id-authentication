@@ -59,7 +59,7 @@ The key solution considerations are
 
 ***2.2.1.	Create VID***     
 
-MOSIP Modules can use VID API spec available here - [Create VID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#create-vid) - to create Virtual Identity of an Individual, based on a given VID Policy.    
+MOSIP Modules can use VID API spec available here - [Create VID API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#post-idrepositoryv1vid) - to create Virtual Identity of an Individual, based on a given VID Policy.    
 
 1. 	Receive UIN and VID Type as an input to generate a VID
 2. 	Integrate with kernel-idvalidator-uin to validate incoming UIN
@@ -76,7 +76,7 @@ Below sequence diagram for create VID service shows the above sequence of operat
 
 ***2.2.2.	Retrieve UIN for a given VID***   
 
-MOSIP Modules can use VID API spec available here - [Update ID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#retrieve-uin-by-vid) - to retrieve Virtual Identity of a given UIN.   
+MOSIP Modules can use VID API spec available here - [Update ID API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#get-idrepositoryv1vidvid) - to retrieve Virtual Identity of a given UIN.   
 
 1. 	Receive VID as input
 2.	Check if VID status is _ACTIVE_
@@ -90,7 +90,7 @@ Below sequence diagram for retrieve UIN by VID service shows the above sequence 
 
 ***2.2.3.	Update VID Status***     
 
-MOSIP Modules can use VID API spec available here - [Update VID Status API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#patch-idrepositoryv1vidvid) - to update status of existing Virtual Identity of an Individual.    
+MOSIP Modules can use VID API spec available here - [Update VID Status API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#patch-idrepositoryv1vidvid) - to update status of existing Virtual Identity of an Individual.    
 
 1. 	Receive VID and status to be updated as an input
 2. 	Integrate with kernel-idvalidator-vid to validate incoming VID
@@ -105,7 +105,7 @@ Below sequence diagram for update VID status service shows the above sequence of
 
 ***2.2.4.	Regenerate VID***   
 
-MOSIP Modules can use VID API spec available here - [Update ID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#post-idrepositoryv1vidvidregenerate) - to regenerate Virtual Identity of a given UIN, with the same VID policy as existing VID.   
+MOSIP Modules can use VID API spec available here - [Update ID API Spec](https://github.com/mosip/mosip-docs/wiki/ID-Repository-API#post-idrepositoryv1vidvidregenerate) - to regenerate Virtual Identity of a given UIN, with the same VID policy as existing VID.   
 
 1. 	Receive VID as input
 2. 	Integrate with kernel-idvalidator-vid to validate incoming VID

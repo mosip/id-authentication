@@ -85,8 +85,24 @@ public class DeviceSearchDto extends BaseDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
 	
+	/**
+	 * Zone Code for Device.
+	 */
 	private String zoneCode;
 	
+	/**
+	 * Zone name for Device.
+	 */
 	private String zone;
+	
+	/**
+	 * Device Type name of Device.
+	 */
+	private String deviceTypeName;
+
+	/**
+	 * Device center mapping status.
+	 */
+	private String mapStatus;
 
 }

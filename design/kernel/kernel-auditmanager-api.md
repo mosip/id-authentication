@@ -29,9 +29,3 @@ This library can be used to audit events and operations. It has method exposed t
 
 ![ERD](_images/kernel-auditmanager-erd.png)
 
-
-
-## Implementation
-
-
-**kernel-auditmanager-api** [README](../../../kernel/kernel-auditmanager-api/ReadMe.md)

@@ -21,9 +21,5 @@ The list of master data cards can be retreived from an REST API and the each cli
 ![Sequence Diagram](_images/admin-mastercards.jpg)
 
 
-## Implementation
-
-
-**admin-login** [README](../../../admin/admin-login/README.md)
 
 
