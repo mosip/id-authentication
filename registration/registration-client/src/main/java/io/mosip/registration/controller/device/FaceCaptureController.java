@@ -467,7 +467,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (capturedImage != null)
 			capturedImage.flush();
 		else
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FACE_SCANNING_ERROR);
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
 			saveBiometricDetailsBtn.setDisable(false);
