@@ -111,7 +111,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			ApplicationContext.map().remove("CAPTURE_EXCEPTION");
 			if(captureResponseDto==null)
 				throw new RegBaseCheckedException("202","Decice is not available");
-			if(captureResponseDto.getError().getErrorCode().matches("202|403|404"))
+			if(captureResponseDto.getError().getErrorCode().matches("202|403|404|409"))
 				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 			captureResponseData =  captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
 			bioType=captureResponseData.getBioSubType();
@@ -593,7 +593,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(eyeType);
 		if(captureResponseDto==null)
 			throw new RegBaseCheckedException("202","Device is not available");
-		if(captureResponseDto.getError().getErrorCode().matches("202|403|404"))
+		if(captureResponseDto.getError().getErrorCode().matches("202|403|404|409"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		
 		detailsDTO.setIrises(new ArrayList<IrisDetailsDTO>());
