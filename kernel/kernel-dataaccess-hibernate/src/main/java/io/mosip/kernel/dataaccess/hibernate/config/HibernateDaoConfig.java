@@ -24,6 +24,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -191,6 +192,11 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	}
 	
 	
+	@Bean
+	public RestTemplate restTemplate()
+	{
+		return new RestTemplate();
+	}
 	@Profile("!test")
 	@Bean
 	public EncryptionInterceptor encryptionInterceptor() {
