@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,12 +79,9 @@ public class LocationController {
 
 	@ResponseFilter
 	@PostMapping()
-	public ResponseWrapper<PostLocationCodeResponseDto> createLocationHierarchyDetails(
-			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
-
-		ResponseWrapper<PostLocationCodeResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(locationHierarchyService.createLocationHierarchy(locationRequestDto.getRequest()));
-		return responseWrapper;
+	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocationHierarchyDetails(
+			@RequestBody RequestWrapper<List<LocationDto>> locationRequestDto) {
+		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
 	}
 
 	/**
