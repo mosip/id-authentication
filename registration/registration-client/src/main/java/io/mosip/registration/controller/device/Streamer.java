@@ -50,6 +50,12 @@ public class Streamer {
 					}
 					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.STREAMING_PREP_MESSAGE);
 					urlStream = mosipBioDeviceManager.stream(bioType);
+					if(urlStream==null) {
+						scanPopUpViewController.enableCloseButton();
+						scanPopUpViewController.setScanningMsg(RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"));
+						isRunning=false;
+						return;
+					}
 					scanPopUpViewController.enableCloseButton();
 					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.STREAMING_INIT_MESSAGE);
 				} catch (RegBaseCheckedException | IOException | NullPointerException e1) {
