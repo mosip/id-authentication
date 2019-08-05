@@ -1,4 +1,4 @@
-package io.mosip.registration.processor;
+package io.mosip.registration.processor.transaction.api;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
