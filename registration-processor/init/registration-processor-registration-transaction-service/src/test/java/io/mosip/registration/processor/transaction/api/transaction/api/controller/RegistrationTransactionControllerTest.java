@@ -50,7 +50,7 @@ import io.mosip.registration.processor.transaction.api.transaction.api.config.Re
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = RegistrationTransactionBeanConfigTest.class)
-@TestPropertySource(locations = "classpath:bootstrap.properties")
+@TestPropertySource(locations = "classpath:application.properties")
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
 public class RegistrationTransactionControllerTest {
 	@InjectMocks
@@ -74,11 +74,7 @@ public class RegistrationTransactionControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private static final String INVALIDTOKENMESSAGE = "Authorization Token Not Available In The Header";
-	private static final String REG_TRANSACTION_SERVICE_ID = "mosip.registration.processor.registration.transaction.id";
-	private static final String REG_TRANSACTION_APPLICATION_VERSION = "mosip.registration.processor.transaction.version";
-	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	private static final String RESPONSE_SIGNATURE = "Response-Signature";
+	
 	
 	@Before
 	public void setUp() {
