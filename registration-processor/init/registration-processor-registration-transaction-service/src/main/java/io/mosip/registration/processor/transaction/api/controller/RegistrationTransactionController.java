@@ -40,6 +40,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * RegistrationTransactionController class to retreive transaction details
+ * @author Jyoti Prakash Nayak
+ *
+ */
 @RefreshScope
 @RestController
 @Api(tags = "Registration Status")
@@ -66,6 +71,15 @@ public class RegistrationTransactionController {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 	
+	/**
+	 * get transaction details for the given registration id
+	 * 
+	 * @param rid registration id
+	 * @param langCode language code
+	 * @param request servlet request
+	 * @return list of RegTransactionResponseDTOs 
+	 * @throws Exception
+	 */
 	@GetMapping(path = "/search/{langCode}/{rid}")
 	@ApiOperation(value = "Get the transaction entity/entities")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Transaction Entity/Entities successfully fetched"),
@@ -101,6 +115,11 @@ public class RegistrationTransactionController {
 		}
 	}
 
+	/**
+	 * build the registration transaction response
+	 * @param dtoList registration transaction dtos
+	 * @return registration transaction response
+	 */
 	private RegTransactionResponseDTO buildRegistrationTransactionResponse(List<RegistrationTransactionDto> dtoList) {
 		RegTransactionResponseDTO regTransactionResponseDTO= new RegTransactionResponseDTO();
 		if (Objects.isNull(regTransactionResponseDTO.getId())) {
@@ -113,6 +132,11 @@ public class RegistrationTransactionController {
 		return regTransactionResponseDTO;
 	}
 
+	/**
+	 * convert registration transaction response dto to json string
+	 * @param dto registration transaction response dto
+	 * @return
+	 */
 	private String buildSignatureRegistrationTransactionResponse(RegTransactionResponseDTO dto) {
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(dto);
