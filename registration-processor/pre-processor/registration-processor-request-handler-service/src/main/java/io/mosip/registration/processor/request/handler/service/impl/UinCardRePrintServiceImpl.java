@@ -51,15 +51,19 @@ import io.mosip.registration.processor.request.handler.upload.validator.RequestH
 @Service
 public class UinCardRePrintServiceImpl {
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The packet creation service. */
 	@Autowired
 	private PacketCreationService packetCreationService;
 
+	/** The sync upload encryption service. */
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
 
@@ -67,24 +71,43 @@ public class UinCardRePrintServiceImpl {
 	@Autowired
 	private RequestHandlerRequestValidator validator;
 
+	/** The utilities. */
 	@Autowired
 	Utilities utilities;
 
+	/** The vid type. */
 	@Value("${registration.processor.id.repo.vidType}")
 	private String vidType;
 
+	/** The Constant VID_CREATE_ID. */
 	public static final String VID_CREATE_ID = "registration.processor.id.repo.generate";
 
+	/** The Constant REG_PROC_APPLICATION_VERSION. */
 	public static final String REG_PROC_APPLICATION_VERSION = "registration.processor.id.repo.vidVersion";
 
+	/** The Constant DATETIME_PATTERN. */
 	public static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
+	/** The Constant UIN. */
 	public static final String UIN = "UIN";
 
+	/** The Constant VID. */
 	public static final String VID = "VID";
 
+	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinCardRePrintServiceImpl.class);
 
+	/**
+	 * Creates the packet.
+	 *
+	 * @param uinCardRePrintRequestDto
+	 *            the uin card re print request dto
+	 * @return the packet generator res dto
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("unchecked")
 	public PacketGeneratorResDto createPacket(UinCardRePrintRequestDto uinCardRePrintRequestDto)
 			throws RegBaseCheckedException, IOException {
@@ -131,8 +154,8 @@ public class UinCardRePrintServiceImpl {
 							"UinCardRePrintServiceImpl::createPacket():: post CREATEVID service call started with request data : "
 									+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
 
-					response = (VidResponseDTO) restClientService.postApi(ApiName.CREATEVID, "", "",
-							request, VidResponseDTO.class);
+					response = (VidResponseDTO) restClientService.postApi(ApiName.CREATEVID, "", "", request,
+							VidResponseDTO.class);
 
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
@@ -184,6 +207,25 @@ public class UinCardRePrintServiceImpl {
 		return packetGeneratorResDto;
 	}
 
+	/**
+	 * Creates the registration DTO object.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param registrationType
+	 *            the registration type
+	 * @param centerId
+	 *            the center id
+	 * @param machineId
+	 *            the machine id
+	 * @param vid
+	 *            the vid
+	 * @param cardType
+	 *            the card type
+	 * @return the registration DTO
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
 			String machineId, String vid, String cardType) throws RegBaseCheckedException {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
@@ -198,6 +240,23 @@ public class UinCardRePrintServiceImpl {
 
 	}
 
+	/**
+	 * Gets the registration meta data DTO.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param registrationType
+	 *            the registration type
+	 * @param centerId
+	 *            the center id
+	 * @param machineId
+	 *            the machine id
+	 * @param vid
+	 *            the vid
+	 * @param cardType
+	 *            the card type
+	 * @return the registration meta data DTO
+	 */
 	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String uin, String registrationType, String centerId,
 			String machineId, String vid, String cardType) {
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
@@ -212,6 +271,13 @@ public class UinCardRePrintServiceImpl {
 
 	}
 
+	/**
+	 * Gets the demographic DTO.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the demographic DTO
+	 */
 	private DemographicDTO getDemographicDTO(String uin) {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
@@ -223,6 +289,17 @@ public class UinCardRePrintServiceImpl {
 		return demographicDTO;
 	}
 
+	/**
+	 * Generate registration id.
+	 *
+	 * @param centerId
+	 *            the center id
+	 * @param machineId
+	 *            the machine id
+	 * @return the string
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private String generateRegistrationId(String centerId, String machineId) throws RegBaseCheckedException {
 
 		List<String> pathsegments = new ArrayList<>();
@@ -266,6 +343,15 @@ public class UinCardRePrintServiceImpl {
 		return rid;
 	}
 
+	/**
+	 * Checks if is valid uin VID.
+	 *
+	 * @param uinCardRePrintRequestDto
+	 *            the uin card re print request dto
+	 * @return true, if is valid uin VID
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	public boolean isValidUinVID(UinCardRePrintRequestDto uinCardRePrintRequestDto) throws RegBaseCheckedException {
 		boolean isValid = false;
 		if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase(UIN)) {
