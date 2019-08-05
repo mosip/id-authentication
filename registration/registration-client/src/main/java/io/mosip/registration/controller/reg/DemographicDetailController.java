@@ -2117,10 +2117,11 @@ public class DemographicDetailController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				// Set Exception Photo Type Description
-				faceCaptureController
-						.setExceptionFaceDescriptionText(getRegistrationDTOFromSession().isUpdateUINNonBiometric()
-								|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
-										&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)));
+				boolean isParentOrGuardianBiometricsCaptured = getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+						|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+								&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
+				documentScanController.setExceptionDescriptionText(isParentOrGuardianBiometricsCaptured);
+				faceCaptureController.setExceptionFaceDescriptionText(isParentOrGuardianBiometricsCaptured);
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
