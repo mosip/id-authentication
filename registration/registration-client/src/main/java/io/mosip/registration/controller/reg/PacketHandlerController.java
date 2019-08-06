@@ -296,12 +296,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 					btnNode.setManaged(false);
 				}
 			});
-		}		
-		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());		
+		}
+		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
 		if (ts != null) {
 			DateTimeFormatter format = DateTimeFormatter
 					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
-			lastBiometricTime.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
+			lastBiometricTime
+					.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
 		}
 		preRegistrationSyncTime();
 
@@ -897,8 +898,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 								.with(location -> location.setRegion(individualIdentity.getRegion() != null
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
-								.with(location -> location.setLocalAdministrativeAuthority(
-										individualIdentity.getZone() != null
+								.with(location -> location
+										.setLocalAdministrativeAuthority(individualIdentity.getZone() != null
 												? individualIdentity.getZone().get(0).getValue()
 												: null))
 								.with(location -> location.setPostalCode(
@@ -972,8 +973,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -1075,6 +1075,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
 			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage());
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
