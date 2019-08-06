@@ -91,9 +91,8 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			} else {
 
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
-				long difference = ChronoUnit.DAYS.between(new Date().toInstant(), validDate.toInstant());
 
-				if (difference <= 0) {
+				if (validDate.compareTo(new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0) {
 
 					responseDTO = insertPublickey(triggerPoint);
 
@@ -117,6 +116,10 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(regBaseCheckedException));
 			responseDTO = setErrorResponse(new ResponseDTO(), regBaseCheckedException.getMessage(), null);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(runtimeException));
+			responseDTO = setErrorResponse(new ResponseDTO(), runtimeException.getMessage(), null);
 		}
 
 		LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
