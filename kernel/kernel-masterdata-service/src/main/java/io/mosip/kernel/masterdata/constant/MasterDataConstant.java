@@ -36,5 +36,3 @@ public class MasterDataConstant {
 	public static final String DOC_CATEGORY_AND_DOC_TYPE_UNMAPPING_SUCCESS_MESSAGE = "Document Category %s - Document Type Mapping %s is updated successfully";
 
 }
-
-
