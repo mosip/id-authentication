@@ -13,7 +13,11 @@ import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.dto.AuditResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class AuditHelper - helper class that makes async rest call to audit
@@ -23,6 +27,9 @@ import io.mosip.kernel.core.http.RequestWrapper;
  */
 @Component
 public class AuditHelper {
+
+	/** The mosipLogger. */
+	private static Logger mosipLogger = IdRepoLogger.getLogger(AuditHelper.class);
 
 	/** The rest helper. */
 	@Autowired
@@ -47,11 +54,17 @@ public class AuditHelper {
 	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, IdType idType,String desc)
-			throws IdRepoDataValidationException {
+			 {
 		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(module, event, id,idType, desc);
-		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDTO.class);
-		 restHelper.requestAsync(restRequest);
+		RestRequestDTO restRequest;
+		try {
+			restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+					AuditResponseDTO.class);
+			restHelper.requestAsync(restRequest);
+		} catch (IdRepoDataValidationException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), "AuditRequestFactory", e.getClass().getName(),
+					"Exception : " + ExceptionUtils.getStackTrace(e));
+		}
 	}
 
 }
