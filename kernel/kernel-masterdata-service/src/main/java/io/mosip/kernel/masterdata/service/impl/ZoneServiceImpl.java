@@ -83,7 +83,7 @@ public class ZoneServiceImpl implements ZoneService {
 		ZoneUser zoneUser = null;
 		Zone zone = null;
 		try {
-			zoneUser = zoneUserRepository.findByUserIdAndLangCodeNonDeleted(userID, langCode);
+			zoneUser = zoneUserRepository.findZoneByUserIdNonDeleted(userID);
 			if (zoneUser == null) {
 				throw new DataNotFoundException(ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorCode(),
 						ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorMessage());
