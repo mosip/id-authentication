@@ -184,7 +184,7 @@ public class OSIValidator {
 						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				String userId;
-				if (regOsi.getOfficerId() != null || !regOsi.getOfficerId().isEmpty()) {
+				if (regOsi.getOfficerId() != null && !regOsi.getOfficerId().isEmpty()) {
 					userId = regOsi.getOfficerId();
 				}else {
 					userId = regOsi.getSupervisorId();
