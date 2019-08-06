@@ -292,7 +292,7 @@ public class RegistrationCenterController {
 
 		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				registrationCenterService.updateRegistrationCenter1(reqRegistrationCenterDto.getRequest()));
+				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 
