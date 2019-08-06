@@ -794,9 +794,9 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
 				getSecondaryLanguageLabel("localAdminAuthority"));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
-				getValue(individualIdentity.getLocalAdministrativeAuthority(), platformLanguageCode));
+				getValue(individualIdentity.getZone(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
-				getSecondaryLanguageValue(individualIdentity.getLocalAdministrativeAuthority(), localLanguageCode));
+				getSecondaryLanguageValue(individualIdentity.getZone(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("mobileNo"));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
@@ -822,7 +822,8 @@ public class TemplateGenerator extends BaseService {
 				applicationLanguageProperties.getString("cniOrPinNumber"));
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
 				getSecondaryLanguageLabel("cniOrPinNumber"));
-		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(individualIdentity.getCnieNumber()));
+		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
+				getValue(individualIdentity.getReferenceIdentityNumber()));
 		boolean isChild = individualIdentity.getParentOrGuardianName() != null;
 
 		if (isChild || registration.isUpdateUINNonBiometric()) {

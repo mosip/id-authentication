@@ -48,5 +48,10 @@ public class MachineSpecificationExtnDto extends BaseDto {
 	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
+	
+	/**
+	 * Machine Type Name.
+	 */
+	private String machineTypeName;
 
 }
