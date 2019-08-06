@@ -85,22 +85,7 @@ public final class StatusConstants {
     public static final String RE_PROCESS_MODULE_SUCCESS = RE_PROCESS_MODULE+ SUCCESS;
     public static final String RE_PROCESS_MODULE_FAILED = RE_PROCESS_MODULE+ FAILED;
 
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
     //System Exceptions
     public static final String SYSTEM_EXCEPTION_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX + SYSTEM_EXCEPTION;
-
-    
-
 
 }
