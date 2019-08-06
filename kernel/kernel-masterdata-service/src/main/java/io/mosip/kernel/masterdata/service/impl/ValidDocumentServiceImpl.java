@@ -232,8 +232,8 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				Page<ValidDocument> documents = masterdataSearchHelper.searchMasterdata(ValidDocument.class,
 						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
 				if (!documents.hasContent()) {
-					throw new RequestException(ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
-							ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
+					throw new RequestException(ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorCode(),
+							ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorMessage());
 				}
 				removeList.add(filter);
 				addList.addAll(buildValidDocumentTypeSearchFilter(documents.getContent()));
