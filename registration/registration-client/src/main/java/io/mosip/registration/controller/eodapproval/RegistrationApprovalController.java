@@ -331,34 +331,40 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
-		List<RegistrationApprovalDTO> listData = null;
-		List<RegistrationApprovalVO> registrationApprovalVO = new ArrayList<>();
+		try {
+			List<RegistrationApprovalDTO> listData = null;
+			List<RegistrationApprovalVO> registrationApprovalVO = new ArrayList<>();
 
-		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
+			listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
-		if (!listData.isEmpty()) {
+			if (!listData.isEmpty()) {
 
-			int count=1;
-			for (RegistrationApprovalDTO approvalDTO : listData) {
-				registrationApprovalVO.add(new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
-								approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
-			}
-			int rowNum = 0;
-			for(RegistrationApprovalDTO approvalDTO : listData) {
-				packetIds.put(approvalDTO.getId(), rowNum++);
-			}
-			
-			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-			observableList = FXCollections.observableArrayList(registrationApprovalVO);
-			wrapListAndAddFiltering(observableList);
-		} else {
-			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
-			if(observableList != null) {
-				observableList.clear();
+				int count = 1;
+				for (RegistrationApprovalDTO approvalDTO : listData) {
+					registrationApprovalVO.add(
+							new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
+									approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
+				}
+				int rowNum = 0;
+				for (RegistrationApprovalDTO approvalDTO : listData) {
+					packetIds.put(approvalDTO.getId(), rowNum++);
+				}
+
+				// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+				observableList = FXCollections.observableArrayList(registrationApprovalVO);
 				wrapListAndAddFiltering(observableList);
+			} else {
+				approveRegistrationRootSubPane.disableProperty().set(true);
+				table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
+				if (observableList != null) {
+					observableList.clear();
+					wrapListAndAddFiltering(observableList);
+				}
+				filterField.clear();
 			}
-			filterField.clear();
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getErrorText());
 		}
 
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
