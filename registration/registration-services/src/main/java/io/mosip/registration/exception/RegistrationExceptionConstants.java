@@ -131,7 +131,20 @@ public enum RegistrationExceptionConstants {
 	
 	//Notification Service
 	NOTIFICATION_MANDATORY_CHECK_SMS_EXCEPTION(PACKET_CREATION_EXP_CODE + "NSI-001", "Message and Number can not be null"),
-	NOTIFICATION_MANDATORY_CHECK_EMAIL_EXCEPTION(PACKET_CREATION_EXP_CODE + "NSI-002", "Message and Email can not be null");
+	NOTIFICATION_MANDATORY_CHECK_EMAIL_EXCEPTION(PACKET_CREATION_EXP_CODE + "NSI-002", "Message and Email can not be null"),
+	REG_PKT_FILE_NAME_EXCEPTION(PACKET_CREATION_EXP_CODE + "PUS-002", "File name is missing"),
+	REG_PKT_CLIENT_STATUS(PACKET_CREATION_EXP_CODE + "PUS-003", "Packet client status code is missing"),
+	REG_PKT_CLIENT_STATUS_COMMENTS(PACKET_CREATION_EXP_CODE + "PUS-004", "Packet client status comments is missing"),
+	REG_PKT_SERVER_STATUS(PACKET_CREATION_EXP_CODE + "PUS-005", "Packet server status is missing"),
+	REG_PKT_STATUS(PACKET_CREATION_EXP_CODE + "PUS-006", "Packet status value is missing"),
+	REG_PKT_HASH(PACKET_CREATION_EXP_CODE + "PUS-007", "Packet hash is missing"),
+	REG_PKT_SUPERVISOR_STATUS(PACKET_CREATION_EXP_CODE + "PUS-008", "Supervisor status is missing"),
+	REG_PKT_SUPERVISOR_COMMENTS(PACKET_CREATION_EXP_CODE + "PUS-009", "Supervisor comments is missing"),
+	REG_PKT_ENCODED_STRING(PACKET_CREATION_EXP_CODE + "PUS-010", "Encoded string can not be empty or null"),
+	REG_PKT_TRIGGER_PT(PACKET_CREATION_EXP_CODE + "PUS-010", "Trigger point can not be empty or null"),
+	REG_PKT_ID(PACKET_CREATION_EXP_CODE + "PUS-011", "Packet id can not be empty or null"),
+	REG_PKT_UPLD_EXCEPTION(PACKET_CREATION_EXP_CODE + "PUS-001", "Upload Packet missing");
+
 	/**
 	 * The constructor
 	 */
