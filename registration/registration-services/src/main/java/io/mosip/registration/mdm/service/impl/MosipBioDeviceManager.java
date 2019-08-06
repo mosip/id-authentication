@@ -100,15 +100,11 @@ public class MosipBioDeviceManager {
 			url = buildUrl(port, MosipBioDeviceConstants.DEVICE_INFO_ENDPOINT);
 			/* check if the service is available for the current port */
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
-				System.out.println(url);
 				List<LinkedHashMap<String, String>> deviceInfoResponseDtos =null;
-				
-				
-				String reponse =(String)  mosipBioDeviceIntegrator
+				String response =(String)  mosipBioDeviceIntegrator
 						.getDeviceInfo(url, Object[].class);
-				
 				try {
-					deviceInfoResponseDtos = mapper.readValue(reponse, List.class);
+					deviceInfoResponseDtos = mapper.readValue(response, List.class);
 				} catch (IOException exception) {
 					throw new RegBaseCheckedException("202", "Device not found");
 				}

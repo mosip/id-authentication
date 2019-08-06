@@ -68,7 +68,7 @@ public class BioDevice {
 			put("LEFT", 1);
 			put("RIGHT", 2);
 			put("THUMBS", 3);
-			put("FACE",0);
+			put("FACE", 0);
 			put("DOUBLE", 3);
 		}
 	};
@@ -115,7 +115,7 @@ public class BioDevice {
 			}
 		}
 	}
-	
+
 	public InputStream stream() throws IOException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.STREAM_ENDPOINT;

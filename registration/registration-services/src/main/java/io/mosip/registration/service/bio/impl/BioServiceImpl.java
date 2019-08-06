@@ -334,20 +334,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 					"Scanning of fingerprints details for user registration completed");
 
 			return scannedFingerPrints;
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(
-					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),
-					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorMessage());
-		} catch (RuntimeException runtimeException) {
+		} catch (Exception runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"Exception while scanning fingerprints details for user registration: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
-
-			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_SCAN_EXP,
-					String.format(
-							"Exception while scanning fingerprints details for user registration: %s caused by %s",
-							runtimeException.getMessage(), runtimeException.getCause()));
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorMessage());
 		}
 	}
 
@@ -633,7 +627,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			double qualityScore = 0;
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				qualityScore = (double) scannedIrisMap.get(RegistrationConstants.IMAGE_SCORE_KEY);
-			}
+			} 
 
 			IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
