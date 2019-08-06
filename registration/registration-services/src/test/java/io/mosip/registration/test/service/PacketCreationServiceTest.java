@@ -16,7 +16,6 @@ import java.util.WeakHashMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -176,18 +175,14 @@ public class PacketCreationServiceTest {
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
 
-	@Ignore
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseCheckedException.class)
 	public void testJsonValidationException() throws Exception {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
-		/*
-		 * when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any()))
-		 * .thenThrow(new RegBaseCheckedException("errorCode", "errorMessage"));
-		 */
+		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator)
+				.validateIdObject(Mockito.any(), Mockito.any());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
