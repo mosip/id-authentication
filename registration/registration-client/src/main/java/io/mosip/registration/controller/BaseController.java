@@ -377,7 +377,7 @@ public class BaseController {
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -497,6 +497,7 @@ public class BaseController {
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
+					clearRegistrationData();
 				} else {
 					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
 							RegistrationConstants.ENABLE);
@@ -534,9 +535,7 @@ public class BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-		webCameraController.closeWebcam();
-		clearRegistrationData();
-		clearOnboardData();
+		webCameraController.closeWebcam();		
 		goToHomePage();
 
 	}
