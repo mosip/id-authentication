@@ -1,8 +1,13 @@
 package io.mosip.registration.dao.impl;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.repositories.PolicySyncRepository;
@@ -51,7 +56,16 @@ public class PolicySyncDAOImpl implements PolicySyncDAO {
 	 */
 	@Override
 	public KeyStore getPublicKey(String refId) {
-		return policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(refId);
+		List<KeyStore> keyStoreList = policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(refId);
+		Date currentDate = new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime());
+		
+		
+		if(!keyStoreList.isEmpty()) {
+			return keyStoreList.stream().filter(keyStore -> (keyStore.getValidFromDtimes().compareTo(currentDate) <=0 
+					&& keyStore.getValidTillDtimes().compareTo(currentDate) >0)).findFirst().orElseGet(null);
+			
+		}
+		return null;
 	}
 
 }
