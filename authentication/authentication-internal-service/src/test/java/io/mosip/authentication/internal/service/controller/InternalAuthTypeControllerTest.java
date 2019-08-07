@@ -25,7 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -43,7 +42,7 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 public class InternalAuthTypeControllerTest {
 
 	@InjectMocks
-	InternalAuthTypeController authTypeController;
+	InternalRetrieveAuthTypeController authTypeController;
 
 	@InjectMocks
 	private AuthtypeStatusValidator authtypeStatusValidator;
@@ -86,7 +85,7 @@ public class InternalAuthTypeControllerTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AuthtypeLock> valueList = getAuthtypeList();
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valueList);
 		ResponseEntity<AuthtypeResponseDto> authTypeStatus = authTypeController.getAuthTypeStatus(IdType.UIN.getType(),
 				"9172985031");
 	}
@@ -106,7 +105,7 @@ public class InternalAuthTypeControllerTest {
 				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage()));
 		List<AuthtypeLock> valueList = getAuthtypeList();
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valueList);
 		try {
 			authTypeController.getAuthTypeStatus(IdType.UIN.getType(), "9172985031");
 		} catch (IdAuthenticationAppException e) {

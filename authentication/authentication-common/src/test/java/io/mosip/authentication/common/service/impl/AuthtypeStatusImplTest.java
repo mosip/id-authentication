@@ -50,7 +50,7 @@ public class AuthtypeStatusImplTest {
 		authtypeLock.setAuthtypecode("bio-FMR");
 		authtypeLock.setStatuscode("y");
 		valuelist.add(authtypeLock);
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
 	}
 

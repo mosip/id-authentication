@@ -86,6 +86,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		super.consumeRequest(requestWrapper, requestBody);
 		authenticateRequest(requestWrapper);
 
+		decipherAndValidateRequest(requestWrapper, requestBody);
+
+	}
+
+	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
+			throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
@@ -97,7 +103,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
-
 	}
 
 	/**

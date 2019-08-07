@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -18,7 +17,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface AuthLockRepository extends BaseRepository<AuthtypeLock, Integer> {
 
-	@Query(value = "Select * from ida.auth_transaction where uin=:individualId ORDER BY cr_dtimes DESC", nativeQuery = true)
-	public List<AuthtypeLock> findByUin(@Param("individualId") String individualId, Pageable pagaeable);
+	@Query(value = "Select * from ida.uin_auth_lock where uin=:individualId ORDER BY cr_dtimes DESC", nativeQuery = true)
+	public List<AuthtypeLock> findByUin(@Param("individualId") String individualId);
 
 }

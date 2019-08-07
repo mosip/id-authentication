@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
@@ -17,6 +16,7 @@ import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
-			authTypeLockList = authLockRepository.findByUin(uin, PageRequest.of(0, 1));
+			authTypeLockList = authLockRepository.findByUin(uin);
 		}
 		return processAuthtypeList(authTypeLockList);
 	}
@@ -66,7 +66,7 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 			authtypeStatus.setAuthType(authtypecode);
 			authtypeStatus.setAuthSubType(null);
 		}
-		boolean isLocked = authtypeLock.getStatuscode().equalsIgnoreCase("y") ? true : false;
+		boolean isLocked = authtypeLock.getStatuscode().equalsIgnoreCase(Boolean.TRUE.toString());
 		authtypeStatus.setLocked(isLocked);
 		return authtypeStatus;
 	}
