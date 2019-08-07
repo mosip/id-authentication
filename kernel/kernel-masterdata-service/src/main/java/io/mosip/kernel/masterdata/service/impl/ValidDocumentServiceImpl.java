@@ -57,6 +57,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -227,24 +228,29 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		List<DocumentCategoryTypeMappingExtnDto> validDocs = new ArrayList<>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
+		List<SearchFilter> addList1 = new ArrayList<>();
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (column.equalsIgnoreCase("docCategoryCode")) {
 
 				Page<ValidDocument> documents = masterdataSearchHelper.searchMasterdata(ValidDocument.class,
 						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
-
+				if (!documents.hasContent()) {
+					throw new RequestException(ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorCode(),
+							ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorMessage());
+				}
 				removeList.add(filter);
 				addList.addAll(buildValidDocumentTypeSearchFilter(documents.getContent()));
-				addList.addAll(buildValidDocumentCategorySearchFilter(documents.getContent()));
+				addList1.addAll(buildValidDocumentCategorySearchFilter(documents.getContent()));
 			}
 		}
 		dto.getFilters().removeAll(removeList);
-
-		Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
+		Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
+				new OptionalFilter[] { new OptionalFilter(addList) });
 		Page<DocumentCategory> pageCategory = masterdataSearchHelper.searchMasterdata(DocumentCategory.class, dto,
-				null);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
+				new OptionalFilter[] { new OptionalFilter(addList1) });
+		if ((page.getContent() != null && !page.getContent().isEmpty())
+				&& (pageCategory.getContent() != null && !pageCategory.getContent().isEmpty())) {
 
 			page.getContent().forEach(documentType -> {
 				DocumentCategoryTypeMappingExtnDto documentTypeExtnDto = new DocumentCategoryTypeMappingExtnDto();
