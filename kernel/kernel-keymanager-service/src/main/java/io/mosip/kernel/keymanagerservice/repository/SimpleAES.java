@@ -1,4 +1,4 @@
-package io.mosip.kernel.keymanagerservice.repository;
+/*package io.mosip.kernel.keymanagerservice.repository;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -146,3 +146,4 @@ public class SimpleAES {
 	}
 
 }
+*/
