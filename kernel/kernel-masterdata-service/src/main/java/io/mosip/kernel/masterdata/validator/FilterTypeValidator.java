@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 
 /**
@@ -47,26 +49,39 @@ public class FilterTypeValidator {
 	}
 
 	private <T> void validateFilter(Class<T> target, List<ServiceError> errors, SearchFilter filter) {
-		if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
-			Field[] childFields = target.getDeclaredFields();
-			Field[] superFields = target.getSuperclass().getDeclaredFields();
-			List<Field> fieldList = new ArrayList<>();
-			fieldList.addAll(Arrays.asList(childFields));
-			if (superFields != null)
-				fieldList.addAll(Arrays.asList(superFields));
-			Optional<Field> field = fieldList.stream().filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName()))
-					.findFirst();
-			if (!field.isPresent()) {
-				errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(), String
-						.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())));
-			} else if (!containsFilter(field.get(), filter.getType())) {
-				errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-						String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-								filter.getColumnName(), filter.getType())));
+		if (filter.getColumnName() != null && !filter.getColumnName().isEmpty()) {
+			if (filter.getType() != null && !filter.getType().isEmpty()) {
+				if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
+					Field[] childFields = target.getDeclaredFields();
+					Field[] superFields = target.getSuperclass().getDeclaredFields();
+					List<Field> fieldList = new ArrayList<>();
+					fieldList.addAll(Arrays.asList(childFields));
+					if (superFields != null)
+						fieldList.addAll(Arrays.asList(superFields));
+					Optional<Field> field = fieldList.stream()
+							.filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName())).findFirst();
+					if (!field.isPresent()) {
+						errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+								String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(),
+										filter.getColumnName())));
+					} else if (!containsFilter(field.get(), filter.getType())) {
+						errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+								String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+										filter.getColumnName(), filter.getType())));
+					}
+				} else {
+					errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(), String
+							.format(ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
+				}
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
+						String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
+								filter.getColumnName()));
+
 			}
 		} else {
-			errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(),
-					String.format(ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
+			throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+					MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
 		}
 	}
 
