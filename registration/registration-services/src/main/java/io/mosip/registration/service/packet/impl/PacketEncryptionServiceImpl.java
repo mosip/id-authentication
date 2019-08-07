@@ -30,6 +30,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.security.AESEncryptionService;
@@ -43,7 +44,7 @@ import io.mosip.registration.service.security.AESEncryptionService;
  * @since 1.0.0
  */
 @Service
-public class PacketEncryptionServiceImpl implements PacketEncryptionService {
+public class PacketEncryptionServiceImpl extends BaseService implements PacketEncryptionService {
 
 	/**
 	 * Class to encrypt the data using AES Algorithm
@@ -89,7 +90,12 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encryption had been started");
 
+		String rid = registrationDTO == null ? "RID not available" : registrationDTO.getRegistrationId();
+
 		try {
+			// Validate the input parameters and required configuration parameters
+			validateInputData(registrationDTO, packetZipData);
+
 			// Encrypt the packet
 			byte[] encryptedPacket = aesEncryptionService.encrypt(packetZipData);
 
@@ -152,7 +158,26 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					RegistrationExceptionConstants.REG_PACKET_ENCRYPTION_EXCEPTION.getErrorMessage(), runtimeException);
 		} finally {
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Process end for RID  : [ " + registrationDTO.getRegistrationId() + " ] ");
+					String.format("Registration Process end for RID  : [ %s ] ", rid));
 		}
 	}
+
+	private void validateInputData(final RegistrationDTO registration, final byte[] dataToBeEncrypted)
+			throws RegBaseCheckedException {
+		if (ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE) == null
+				|| !String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))
+						.matches(RegistrationConstants.NUMBER_REGEX)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SIZE_INVALID);
+		}
+
+		if (registration == null || isStringEmpty(registration.getRegistrationId())
+				|| registration.getAuditLogStartTime() == null || registration.getAuditLogEndTime() == null) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_AUDIT_DATES_MISSING);
+		}
+
+		if (isByteArrayEmpty(dataToBeEncrypted)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_TO_BE_ENCRYPTED_INVALID);
+		}
+	}
+
 }
