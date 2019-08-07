@@ -1703,7 +1703,6 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void TestIdObjectvalidator() {
 		AuthRequestDTO demoauthrequest = new AuthRequestDTO();
