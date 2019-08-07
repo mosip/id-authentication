@@ -975,7 +975,7 @@ public class BaseController {
 
 				clearOnboardData();
 				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
-						RegistrationConstants.ENABLE);
+						RegistrationConstants.DISABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
