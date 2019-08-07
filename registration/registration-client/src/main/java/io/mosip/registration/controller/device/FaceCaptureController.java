@@ -248,34 +248,31 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
-
-		if (true) {
-			try {
-				Stage primaryStage = new Stage();
-				primaryStage.initStyle(StageStyle.UNDECORATED);
-				FXMLLoader loader = BaseController
-						.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
-				Parent webCamRoot = loader.load();
-
-				WebCameraController cameraController = loader.getController();
-				cameraController.init(this, imageType);
-				Scene scene = new Scene(webCamRoot);
-				ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-				scene.getStylesheets()
-						.add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-				primaryStage.setScene(scene);
-				primaryStage.initModality(Modality.WINDOW_MODAL);
-				primaryStage.initOwner(fXComponents.getStage());
-				cameraController.setWebCameraStage(primaryStage);
-				primaryStage.show();
-			} catch (IOException ioException) {
-				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-			}
+		if (bioService.isMdmEnabled())
 			streamer.startStream(RegistrationConstants.FACE_FULLFACE, webCameraController.camImageView, null);
-		} else {
+		else if (!webCameraController.isWebcamPluggedIn()) 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
+
+		try {
+			Stage primaryStage = new Stage();
+			primaryStage.initStyle(StageStyle.UNDECORATED);
+			FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+			Parent webCamRoot = loader.load();
+
+			WebCameraController cameraController = loader.getController();
+			cameraController.init(this, imageType);
+			Scene scene = new Scene(webCamRoot);
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+			scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(fXComponents.getStage());
+			cameraController.setWebCameraStage(primaryStage);
+			primaryStage.show();
+		} catch (IOException ioException) {
+			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 	}
 

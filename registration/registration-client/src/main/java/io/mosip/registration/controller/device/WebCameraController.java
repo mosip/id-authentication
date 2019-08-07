@@ -96,14 +96,10 @@ public class WebCameraController extends BaseController implements Initializable
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
-		/*if (bioService.isMdmEnabled()) {*/
-			if (true) {
+		if (bioService.isMdmEnabled()) {
 			camImageView.setVisible(true);
 			webcamera.setVisible(false);
-			/*streamer.startStream(RegistrationConstants.FACE_FULLFACE, camImageView, null);*/
 		} else {
-			camImageView.setVisible(false);
-			webcamera.setVisible(true);
 			JPanel jPanelWindow = photoProvider.getCameraPanel();
 			webcamera.setContent(jPanelWindow);
 		}
@@ -138,8 +134,7 @@ public class WebCameraController extends BaseController implements Initializable
 			capturedImage.flush();
 		}
 		CaptureResponseDto captureResponseDto =null;
-		/*if (bioService.isMdmEnabled()) {*/
-		if (true) {
+		if (bioService.isMdmEnabled()) {
 
 			captureResponseDto = bioService.captureFace();
 			if (null != captureResponseDto && null!=captureResponseDto.getMosipBioDeviceDataResponses()) {
