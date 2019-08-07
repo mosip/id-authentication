@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.jms.Message;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
+import org.assertj.core.util.Arrays;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -373,7 +374,10 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
 				if (abisIdentifyResponseDto.getCandidateList() != null) {
 					CandidatesDto[] candidatesDtos = abisIdentifyResponseDto.getCandidateList().getCandidates();
-					saveCandiateDtos(candidatesDtos, abisResponseDto);
+					if (!Arrays.isNullOrEmpty(candidatesDtos)) {
+						saveCandiateDtos(candidatesDtos, abisResponseDto);
+					}
+
 				}
 
 				updteAbisRequestProcessed(abisIdentifyResponseDto, abisCommonRequestDto);

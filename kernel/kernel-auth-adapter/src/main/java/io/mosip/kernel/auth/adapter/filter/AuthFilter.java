@@ -52,7 +52,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
 				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/",
 				"**/authenticate/**", "/**/actuator/**", "/**/authmanager/**","/sendOtp",
-				"/validateOtp", "/invalidateToken", "/config", "/login", "/logout","/validateOTP","/sendOTP","/**/login","/**/logout","/**/admin/**","/**/masterdata/**","**/**"};
+				"/validateOtp", "/invalidateToken", "/config", "/login", "/logout","/validateOTP","/sendOTP","/**/login","/**/logout","/**/admin/**"};
 
 	}
 
@@ -79,13 +79,16 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
 		Cookie[] cookies = httpServletRequest.getCookies();
+		//System.out.println("\nInside Auth Filter");
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
 					token = cookie.getValue();
+					//System.out.println("Cookie token with Auth header " + cookie.getValue());
 				}
 			}
 		}
+		//System.out.println("Outside Auth Filter\n");
 		if (token == null) {
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),

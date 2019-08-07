@@ -4,7 +4,9 @@ import static org.mockito.Mockito.when;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -70,14 +72,16 @@ public class RSAEncryptionServiceTest {
 	public void rsaPacketCreation() throws RegBaseCheckedException {
 		byte[] key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
 				.getBytes();
+		List<KeyStore> keyStoreList = new ArrayList<>();
 		KeyStore keyStore = new KeyStore();
 		keyStore.setPublicKey(key);
+		keyStoreList.add(keyStore);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 		
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
-		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
@@ -96,14 +100,16 @@ public class RSAEncryptionServiceTest {
 	public void invalidKeySpecTest() throws RegBaseCheckedException {
 		byte[] key = "MIIBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgIxusCzIYkOkWjG65eeLGNSXoNghIiH1wj1lxW1ZGqr35gM4od_5MXTmRAVamgFlPko8zfFgli-h0c2yLsPbPC2IGrHLB0FQp_MaCAst2xzQvG73nAr8Fkh-geJJ0KRvZE6TCYXNdRVczHfcxctyS4PGHCrHYv6GURzDlQ5SGmXko-xA92ULxpVrD-mYlZ7uOvr92dRJGR15p-D7cNXdBWwpc812aKTwYpHd719fryXrQ4JDrdeNXsjn7Q9BlehObc_MdAn1q3glsfx_VkuYhctT-vOEHiynkKfPlSMRd041U6pGNKgoqEuyvUlTRT7SgZQgzV9m0MEhWP9peehliQIDAQAB"
 				.getBytes();
+		List<KeyStore> keyStoreList = new ArrayList<>();
 		KeyStore keyStore = new KeyStore();
 		keyStore.setPublicKey(key);
+		keyStoreList.add(keyStore);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
-		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
@@ -115,8 +121,10 @@ public class RSAEncryptionServiceTest {
 	@Test(expected = RegBaseCheckedException.class)
 	public void invalidAlgorithmTest() throws Exception {
 		byte[] key = "feee3c3x33r3".getBytes();
+		List<KeyStore> keyStoreList = new ArrayList<>();
 		KeyStore keyStore = new KeyStore();
 		keyStore.setPublicKey(key);
+		keyStoreList.add(keyStore);
 		byte[] decodedbytes = "e".getBytes();
 		byte[] sessionbytes = "sesseion".getBytes();
 
@@ -129,7 +137,7 @@ public class RSAEncryptionServiceTest {
 				.thenReturn(decodedbytes);
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
-		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStore);
+		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		
 

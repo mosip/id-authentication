@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -191,11 +193,16 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	}
 	
 	
-	@Profile("!test")
-	@Bean
-	public EncryptionInterceptor encryptionInterceptor() {
-		return new EncryptionInterceptor();
-	}
+//	@Bean
+//	public RestTemplate restTemplate()
+//	{
+//		return new RestTemplate();
+//	}
+//	@Profile("!test")
+//	@Bean
+//	public EncryptionInterceptor encryptionInterceptor() {
+//		return new EncryptionInterceptor();
+//	}
 
 	/**
 	 * Function to associate the specified value with the specified key in the map.
@@ -219,13 +226,14 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 		if (property.equals(HibernatePersistenceConstant.HIBERNATE_EJB_INTERCEPTOR)) {
 			try {
 				if (environment.containsProperty(property)) {
-					jpaProperties.put(property,encryptionInterceptor());
-	//						BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
+					jpaProperties.put(property,
+							//encryptionInterceptor());
+							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
 				/**
 				 * We can add a default interceptor whenever we require here.
 				 */
-			} catch (BeanInstantiationException e) {
+			} catch (BeanInstantiationException | ClassNotFoundException e) {
 				LOGGER.error("Error while configuring Interceptor.");
 			}
 		} else {

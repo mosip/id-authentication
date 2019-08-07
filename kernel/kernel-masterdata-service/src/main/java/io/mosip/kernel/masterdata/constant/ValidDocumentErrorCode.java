@@ -14,7 +14,8 @@ public enum ValidDocumentErrorCode {
 	VALID_DOCUMENT_INSERT_EXCEPTION("KER-MSD-071","Exception during inserting data into db"),
 	VALID_DOCUMENT_NOT_FOUND_EXCEPTION("KER-MSD-016","Valid document not found"),
 	VALID_DOCUMENT_DELETE_EXCEPTION("KER-MSD-113","Error occurred while deleting a mapping of Document Category and Document Type details"),
-	VALID_DOCUMENT_FETCH_EXCEPTION("KER-MSD-XXX", "Error occurred while fetching Document Categories and Document Types");
+	VALID_DOCUMENT_FETCH_EXCEPTION("KER-MSD-XXX", "Error occurred while fetching Document Categories and Document Types"),
+	DOCUMENT_CATEGORY_NOT_FOUND("KER-MSD-355","No Document Category found for the Document Category Code Received");
 
 	/**
 	 * The errorCode.

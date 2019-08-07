@@ -87,7 +87,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/v1/authmanager/authorize/admin/validateToken}")
+	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/r2/v1/authmanager/authorize/admin/validateToken}")
 	private String adminValidateUrl;
 	
 	@Value("${auth.jwt.base:Mosip-Token}")
@@ -113,7 +113,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		token = authToken.getToken();
 		MosipUserDto mosipUserDto = null;
 		//added for keycloak impl
-		
+		if (token.startsWith(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX)) {
+             
              response = getKeycloakValidatedUserResponse(token);
              List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
      		if (!validationErrorsList.isEmpty()) {
@@ -125,7 +126,17 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
      					MosipUserDto.class);
      		} catch (Exception e) {
      			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-     		}			
+     		}
+		}else {
+		Claims claims;
+		try {
+			claims = getClaims(token);
+		} catch (Exception e1) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e1.getMessage(), e1);
+		}
+		mosipUserDto = buildDto(claims);
+		}
+			
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
 		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
@@ -175,6 +186,9 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	private ResponseEntity<String> getValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
+		// System.out.println("\nInside Auth Handler");
+		// System.out.println("Token details " + System.currentTimeMillis() + " : " +
+		// token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {

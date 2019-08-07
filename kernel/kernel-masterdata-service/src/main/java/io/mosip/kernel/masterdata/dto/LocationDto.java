@@ -6,13 +6,11 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import io.mosip.kernel.masterdata.validator.CustomIntegerDeserializer;
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -21,7 +19,8 @@ import lombok.Data;
  *
  */
 @Data
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class LocationDto {
 
 	@Size(min = 1, max = 36)
@@ -33,9 +32,8 @@ public class LocationDto {
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	private String name;
 
-	@JsonDeserialize(using = CustomIntegerDeserializer.class)
 	@Range(min = 0)
-	private int hierarchyLevel;
+	private short hierarchyLevel;
 
 	@Size(min = 1, max = 64)
 	@NotBlank
@@ -43,7 +41,6 @@ public class LocationDto {
 
 	private String parentLocCode;
 
-	@ValidLangCode
 	@Size(min = 1, max = 3)
 	@NotBlank
 	private String langCode;

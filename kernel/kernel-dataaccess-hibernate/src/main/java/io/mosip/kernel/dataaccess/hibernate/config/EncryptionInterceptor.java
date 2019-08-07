@@ -62,45 +62,45 @@ public class EncryptionInterceptor extends EmptyInterceptor {
 
 	private boolean doSaveOrloadAction(Object entity, Object[] state, String[] propertyNames, Type[] types,
 			String url) {
-		try {
-			reqParams = new ArrayList<>();
-
-			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(url);
-			HttpHeaders headers = new HttpHeaders();
-			Map<String, Object> params = new HashMap<>();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<RequestWrapper<String>> en = new HttpEntity<>(headers);
-			String uriBuilder = regbuilder.build().encode().toUriString();
-
-			Field[] fields = entity.getClass().getDeclaredFields();
-			for (Field field : fields) {
-				if (field.isAnnotationPresent(Encrypted.class)) {
-					System.out.println("field name  " + field.getName());
-					reqParams.add(field.getName());
-
-				}
-			}
-			for (int i = 0; i < propertyNames.length; i++) {
-				if (reqParams.contains(propertyNames[i])) {
-					System.out.println("Value " + state[i]);
-					uriBuilder += "/{data}";
-					params.put("data", state[i]);
-					ResponseEntity<ResponseWrapper<String>> responseEntity = restTemplate.exchange(uriBuilder,
-							HttpMethod.GET, en, new ParameterizedTypeReference<ResponseWrapper<String>>() {
-							}, params);
-					if (responseEntity.getBody().getErrors() != null
-							&& !responseEntity.getBody().getErrors().isEmpty()) {
-						// error
-					}
-					state[i] = responseEntity.getBody().getResponse();
-				}
-			}
-
-			return true;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
+//		try {
+//			reqParams = new ArrayList<>();
+//
+//			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(url);
+//			HttpHeaders headers = new HttpHeaders();
+//			Map<String, Object> params = new HashMap<>();
+//			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+//			HttpEntity<RequestWrapper<String>> en = new HttpEntity<>(headers);
+//			String uriBuilder = regbuilder.build().encode().toUriString();
+//
+//			Field[] fields = entity.getClass().getDeclaredFields();
+//			for (Field field : fields) {
+//				if (field.isAnnotationPresent(Encrypted.class)) {
+//					System.out.println("field name  " + field.getName());
+//					reqParams.add(field.getName());
+//
+//				}
+//			}
+//			for (int i = 0; i < propertyNames.length; i++) {
+//				if (reqParams.contains(propertyNames[i])) {
+//					System.out.println("Value " + state[i]);
+//					uriBuilder += "/{data}";
+//					params.put("data", state[i]);
+//					ResponseEntity<ResponseWrapper<String>> responseEntity = restTemplate.exchange(uriBuilder,
+//							HttpMethod.GET, en, new ParameterizedTypeReference<ResponseWrapper<String>>() {
+//							}, params);
+//					if (responseEntity.getBody().getErrors() != null
+//							&& !responseEntity.getBody().getErrors().isEmpty()) {
+//						// error
+//					}
+//					state[i] = responseEntity.getBody().getResponse();
+//				}
+//			}
+//
+//			return true;
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		return true;
 	}
 }

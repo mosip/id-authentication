@@ -9,14 +9,11 @@ import lombok.Data;
 @Data
 public class RegistrationCenterReqAdmSecDto {
 	
-	//@NotBlank
-	//@Size(max=10)
-	private String id;
 
 	@NotBlank
 	List<RegCenterPostReqPrimAdmDto> registrationCenterDtos;
 	
-	//RegCenterPostReqPrimAdmDto registrationCenterDto;
+	
 
 
 }

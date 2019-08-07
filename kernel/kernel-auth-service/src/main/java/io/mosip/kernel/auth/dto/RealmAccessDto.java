@@ -1,5 +1,7 @@
 package io.mosip.kernel.auth.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 

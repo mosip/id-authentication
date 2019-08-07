@@ -65,12 +65,11 @@ public class IndividualIdentity extends Identity {
 	/** The email. */
 	private String email;
 
-	/** The CNIE number. */
-	@JsonProperty("CNIENumber")
-	private String cnieNumber;
+	/** Reference Identity number. */
+	private String referenceIdentityNumber;
 
-	/** The local administrative authority. */
-	private List<ValuesDTO> localAdministrativeAuthority;
+	/** The Zone. */
+	private List<ValuesDTO> zone;
 
 	/** The parent or guardian RID. */
 	private BigInteger parentOrGuardianRID;
