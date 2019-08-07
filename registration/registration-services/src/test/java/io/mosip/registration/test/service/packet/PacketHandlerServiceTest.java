@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -36,16 +37,20 @@ public class PacketHandlerServiceTest {
 	@Before
 	public void initialize() {
 		mockedSuccessResponse = new ResponseDTO();
+		mockedSuccessResponse.setSuccessResponseDTO(new  SuccessResponseDTO());
 	}
 
 	@Test
 	public void testHandle() throws RegBaseCheckedException {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		registrationDTO.setRegistrationId("10010100100002420190805063005");
+
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class))).thenReturn("Packet Creation".getBytes());
 		Mockito.when(
 				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
 
-		Assert.assertSame(mockedSuccessResponse, packetHandlerServiceImpl.handle(new RegistrationDTO()));
+		Assert.assertNotNull(packetHandlerServiceImpl.handle(registrationDTO).getSuccessResponseDTO());
 	}
 
 	@Test
@@ -61,6 +66,8 @@ public class PacketHandlerServiceTest {
 	@Test
 	public void testHandlerException() throws RegBaseCheckedException {
 		RegBaseUncheckedException exception = new RegBaseUncheckedException("errorCode", "errorMsg");
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		registrationDTO.setRegistrationId("");
 
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class)))
 				.thenThrow(exception);
@@ -68,7 +75,7 @@ public class PacketHandlerServiceTest {
 				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
 
-		Assert.assertNotNull(packetHandlerServiceImpl.handle(new RegistrationDTO()).getErrorResponseDTOs());
+		Assert.assertNotNull(packetHandlerServiceImpl.handle(registrationDTO).getErrorResponseDTOs());
 	}
 
 	@Test
@@ -81,7 +88,22 @@ public class PacketHandlerServiceTest {
 				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
 
-		Assert.assertNotNull(packetHandlerServiceImpl.handle(new RegistrationDTO()).getErrorResponseDTOs());
+		Assert.assertNotNull(packetHandlerServiceImpl.handle(null).getErrorResponseDTOs());
+	}
+
+	@Test
+	public void testHandlerAuthenticationException() throws RegBaseCheckedException {
+		RegBaseCheckedException exception = new RegBaseCheckedException(
+				RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode(),
+				RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorMessage());
+
+		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class)))
+				.thenThrow(exception);
+		Mockito.when(
+				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				.thenReturn(mockedSuccessResponse);
+
+		Assert.assertNotNull(packetHandlerServiceImpl.handle(null).getErrorResponseDTOs());
 	}
 
 }

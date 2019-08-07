@@ -97,19 +97,28 @@ public class NotificationServiceTest {
 		Assert.assertEquals("success", responseDTO.getSuccessResponseDTO().getMessage());
 	}
 
-	@Test
+	@Test(expected=RegBaseCheckedException.class)
 	public void sendSMSFailuretest() throws ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject(),Mockito.anyString()))
-				.thenThrow(HttpClientErrorException.class);
+				.thenThrow(RegBaseCheckedException.class);
 		ResponseDTO responseDTO = notificationServiceImpl.sendSMS("Hi", null, "regid");
 		Assert.assertEquals("Unable to send SMS Notification", responseDTO.getErrorResponseDTOs().get(0).getMessage());
 	}
 
-	@Test
+	@Test(expected=RegBaseCheckedException.class)
 	public void sendEmailFailuretest() throws ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(NotificationDTO.class),Mockito.anyString()))
-				.thenThrow(HttpClientErrorException.class);
+				.thenThrow(RegBaseCheckedException.class);
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", null, "regid");
+		Assert.assertEquals("Unable to send EMAIL Notification",
+				responseDTO.getErrorResponseDTOs().get(0).getMessage());
+	}
+	
+	@Test
+	public void sendEmailFailure() throws ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(NotificationDTO.class),Mockito.anyString()))
+				.thenThrow(HttpClientErrorException.class);
+		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", "9994019595", "regid");
 		Assert.assertEquals("Unable to send EMAIL Notification",
 				responseDTO.getErrorResponseDTOs().get(0).getMessage());
 	}

@@ -1075,6 +1075,10 @@ public class RegistrationConstants {
 	private static final String DEVICE_ONBOARDING_SERVICE = REG_SERVICE_CODE + "DVO-";
 	public static final String UPDATE_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-232";
 
+	public static final String PACKET_RETRIVE_STATUS_EXCEPTION = REG_SERVICE_CODE + "PRS - 233";
+	public static final String PACKET_UPDATE_STATUS_EXCEPTION = REG_SERVICE_CODE + "PUS - 234";
+
+
 	// Exceptions
 	private static final String REG_UI_CODE = "REG-UI";
 

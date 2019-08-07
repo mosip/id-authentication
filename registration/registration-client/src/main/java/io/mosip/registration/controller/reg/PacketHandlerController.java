@@ -262,52 +262,60 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		setImagesOnHover();
+		try {
+			setImagesOnHover();
 
-		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
-				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
-			eodProcessGridPane.setVisible(false);
-			eodLabel.setVisible(false);
-		}
-		setLastUpdateTime();
-		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
-		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
+			if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
+					&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
+				eodProcessGridPane.setVisible(false);
+				eodLabel.setVisible(false);
+			}
+			setLastUpdateTime();
+			pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
+			reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
-		List<RegistrationApprovalDTO> pendingApprovalRegistrations = registrationApprovalService
-				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
-		List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
-		List<String> configuredFieldsfromDB = Arrays.asList(
-				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
+			List<RegistrationApprovalDTO> pendingApprovalRegistrations = registrationApprovalService
+					.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
-		if (!pendingApprovalRegistrations.isEmpty()) {
-			pendingApprovalCountLbl
-					.setText(pendingApprovalRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
-		}
-		if (!reRegisterRegistrations.isEmpty()) {
-			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
-		}
-		if (!(getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))
-				.equalsIgnoreCase(RegistrationConstants.ENABLE)
-				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
-			vHolder.getChildren().forEach(btnNode -> {
-				if (btnNode instanceof GridPane && btnNode.getId() != null
-						&& btnNode.getId().equals(uinUpdateGridPane.getId())) {
-					btnNode.setVisible(false);
-					btnNode.setManaged(false);
-				}
-			});
-		}		
-		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());		
-		if (ts != null) {
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
-			lastBiometricTime.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
-		}
-		preRegistrationSyncTime();
+			List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
+			List<String> configuredFieldsfromDB = Arrays.asList(
+					getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
 
-		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
-				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-			lostUINPane.setVisible(false);
+			if (!pendingApprovalRegistrations.isEmpty()) {
+				pendingApprovalCountLbl
+						.setText(pendingApprovalRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+			}
+			if (!reRegisterRegistrations.isEmpty()) {
+				reRegistrationCountLbl
+						.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+			}
+			if (!(getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)
+					|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
+				vHolder.getChildren().forEach(btnNode -> {
+					if (btnNode instanceof GridPane && btnNode.getId() != null
+							&& btnNode.getId().equals(uinUpdateGridPane.getId())) {
+						btnNode.setVisible(false);
+						btnNode.setManaged(false);
+					}
+				});
+			}
+			Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
+			if (ts != null) {
+				DateTimeFormatter format = DateTimeFormatter
+						.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+				lastBiometricTime
+						.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
+			}
+			preRegistrationSyncTime();
+
+			if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				lostUINPane.setVisible(false);
+			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- Home Page Loading", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
 
@@ -897,8 +905,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 								.with(location -> location.setRegion(individualIdentity.getRegion() != null
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
-								.with(location -> location.setLocalAdministrativeAuthority(
-										individualIdentity.getZone() != null
+								.with(location -> location
+										.setLocalAdministrativeAuthority(individualIdentity.getZone() != null
 												? individualIdentity.getZone().get(0).getValue()
 												: null))
 								.with(location -> location.setPostalCode(
@@ -972,8 +980,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -1075,6 +1082,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
 			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage());
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));

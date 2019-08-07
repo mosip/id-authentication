@@ -28,8 +28,9 @@ public interface RegistrationApprovalService {
 	 *            the status based on which registration packets have to be
 	 *            retrieved
 	 * @return list of packets
+	 * @throws RegBaseCheckedException 
 	 */
-	List<RegistrationApprovalDTO> getEnrollmentByStatus(String status);
+	List<RegistrationApprovalDTO> getEnrollmentByStatus(String status) throws RegBaseCheckedException;
 	
 	/**
 	 * {@code packetUpdateStatus} method to update the Client Status Code and Client
