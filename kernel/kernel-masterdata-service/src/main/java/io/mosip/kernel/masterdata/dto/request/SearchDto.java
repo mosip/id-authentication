@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class SearchDto {
 
 	@NotNull
+	@Valid
 	private List<SearchFilter> filters;
 
 	@NotNull
