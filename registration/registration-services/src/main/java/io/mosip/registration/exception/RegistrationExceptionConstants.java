@@ -97,6 +97,9 @@ public enum RegistrationExceptionConstants {
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
 	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
 	
+	//Template Service
+	TEMPLATE_CHECK_EXCEPTION(PACKET_CREATION_EXP_CODE + "TSI-001", "Template Type Code / Language Code cannot be null"),
+	
 	// TPM
 	TPM_UTIL_SIGN_ERROR("TPM-UTL-001", "Exception while signing the data using TPM"),
 	TPM_UTIL_VALIDATE_SIGN_ERROR("TPM-UTL-002",
