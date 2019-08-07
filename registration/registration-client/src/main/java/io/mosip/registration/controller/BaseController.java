@@ -56,6 +56,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -826,6 +827,9 @@ public class BaseController {
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 		return writeNotificationTemplate;
 	}
@@ -971,7 +975,7 @@ public class BaseController {
 
 				clearOnboardData();
 				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
-						RegistrationConstants.ENABLE);
+						RegistrationConstants.DISABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
