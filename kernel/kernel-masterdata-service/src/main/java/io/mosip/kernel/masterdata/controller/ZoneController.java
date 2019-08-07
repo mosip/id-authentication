@@ -65,7 +65,7 @@ public class ZoneController {
 		return response;
 	}
 
-	@GetMapping("/username")
+	@GetMapping("/zonename")
 	public ResponseWrapper<ZoneNameResponseDto> getZoneNameBasedOnUserIDAndLangCode(
 			@RequestParam("userID") String userID, @RequestParam("langCode") String langCode) {
 		ResponseWrapper<ZoneNameResponseDto> responseWrapper = new ResponseWrapper<>();
