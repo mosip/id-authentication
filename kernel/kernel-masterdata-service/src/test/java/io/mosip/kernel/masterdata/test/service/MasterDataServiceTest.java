@@ -38,8 +38,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPostReqPrimAdmDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -643,20 +643,20 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
-	List<RegCenterPostReqPrimAdmDto> requestNotAllLang = null;
-	List<RegCenterPostReqPrimAdmDto> requestDuplicateLang = null;
-	List<RegCenterPostReqPrimAdmDto> requestSetLongitudeInvalide = null;
-	List<RegCenterPostReqPrimAdmDto> requestCenterTime = null;
-	List<RegCenterPostReqPrimAdmDto> requestLunchTime = null;
-	List<RegCenterPostReqPrimAdmDto> requestZoneCode = null;
-	RegCenterPostReqPrimAdmDto registrationCenterDto1  = null; 
-	RegCenterPostReqPrimAdmDto registrationCenterDto2  = null; 
-	RegCenterPostReqPrimAdmDto registrationCenterDto3  = null; 
-	RegCenterPostReqPrimAdmDto registrationCenterDto4  = null; 
-	RegCenterPostReqPrimAdmDto registrationCenterDto5 = null;
-	RegCenterPostReqPrimAdmDto registrationCenterDto6 = null;
-	RegCenterPostReqPrimAdmDto registrationCenterDto7 = null;
-	RegCenterPostReqPrimAdmDto registrationCenterDto8 = null;
+	List<RegCenterPostReqDto> requestNotAllLang = null;
+	List<RegCenterPostReqDto> requestDuplicateLang = null;
+	List<RegCenterPostReqDto> requestSetLongitudeInvalide = null;
+	List<RegCenterPostReqDto> requestCenterTime = null;
+	List<RegCenterPostReqDto> requestLunchTime = null;
+	List<RegCenterPostReqDto> requestZoneCode = null;
+	RegCenterPostReqDto registrationCenterDto1  = null; 
+	RegCenterPostReqDto registrationCenterDto2  = null; 
+	RegCenterPostReqDto registrationCenterDto3  = null; 
+	RegCenterPostReqDto registrationCenterDto4  = null; 
+	RegCenterPostReqDto registrationCenterDto5 = null;
+	RegCenterPostReqDto registrationCenterDto6 = null;
+	RegCenterPostReqDto registrationCenterDto7 = null;
+	RegCenterPostReqDto registrationCenterDto8 = null;
 	
 	@MockBean
 	ZoneUtils zoneUtils;
@@ -695,7 +695,7 @@ public class MasterDataServiceTest {
 		requestZoneCode = new ArrayList<>();
 		
 		// 1st obj
-	    registrationCenterDto1 = new RegCenterPostReqPrimAdmDto();
+	    registrationCenterDto1 = new RegCenterPostReqDto();
 		registrationCenterDto1.setName("TEST CENTER");
 		registrationCenterDto1.setAddressLine1("Address Line 1");
 		registrationCenterDto1.setAddressLine2("Address Line 2");
@@ -723,7 +723,7 @@ public class MasterDataServiceTest {
 		requestZoneCode.add(registrationCenterDto1);
 		
 		// 2nd obj
-		registrationCenterDto2 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto2 = new RegCenterPostReqDto();
 		registrationCenterDto2.setName("TEST CENTER");
 		registrationCenterDto2.setAddressLine1("Address Line 1");
 		registrationCenterDto2.setAddressLine2("Address Line 2");
@@ -751,7 +751,7 @@ public class MasterDataServiceTest {
 		requestZoneCode.add(registrationCenterDto2);
 
 		// 3rd obj
-		registrationCenterDto3 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto3 = new RegCenterPostReqDto();
 		registrationCenterDto3.setName("TEST CENTER");
 		registrationCenterDto3.setAddressLine1("Address Line 1");
 		registrationCenterDto3.setAddressLine2("Address Line 2");
@@ -773,7 +773,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto3.setWorkingHours("9");
 		registrationCenterDto3.setZoneCode("JRD");
 		
-		registrationCenterDto4 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto4 = new RegCenterPostReqDto();
 		registrationCenterDto4.setName("TEST CENTER");
 		registrationCenterDto4.setAddressLine1("Address Line 1");
 		registrationCenterDto4.setAddressLine2("Address Line 2");
@@ -796,7 +796,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto4.setZoneCode("JRD");
 		requestSetLongitudeInvalide.add(registrationCenterDto4);
 		
-		registrationCenterDto5 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto5 = new RegCenterPostReqDto();
 		registrationCenterDto5.setName("TEST CENTER");
 		registrationCenterDto5.setAddressLine1("Address Line 1");
 		registrationCenterDto5.setAddressLine2("Address Line 2");
@@ -820,7 +820,7 @@ public class MasterDataServiceTest {
 		requestDuplicateLang.add(registrationCenterDto5);
 		requestDuplicateLang.add(registrationCenterDto5);
 		
-		registrationCenterDto6 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto6 = new RegCenterPostReqDto();
 		registrationCenterDto6.setName("TEST CENTER");
 		registrationCenterDto6.setAddressLine1("Address Line 1");
 		registrationCenterDto6.setAddressLine2("Address Line 2");
@@ -843,7 +843,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto6.setZoneCode("JRD");
 		requestCenterTime.add(registrationCenterDto6);
 		
-		registrationCenterDto7 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto7 = new RegCenterPostReqDto();
 		registrationCenterDto7.setName("TEST CENTER");
 		registrationCenterDto7.setAddressLine1("Address Line 1");
 		registrationCenterDto7.setAddressLine2("Address Line 2");
@@ -866,7 +866,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto7.setZoneCode("JRD");
 		requestLunchTime.add(registrationCenterDto7);
 		
-		registrationCenterDto8 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto8 = new RegCenterPostReqDto();
 		registrationCenterDto8.setName("TEST CENTER");
 		registrationCenterDto8.setAddressLine1("Address Line 1");
 		registrationCenterDto8.setAddressLine2("Address Line 2");
@@ -908,22 +908,22 @@ public class MasterDataServiceTest {
 	}
 	
 	
-	List<RegistrationCenterPutReqAdmDto> updRequestNotAllLang = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestInvalideID = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestDuplicateIDLang = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestSetLongitudeInvalide = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestCenterTime = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestLunchTime = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestZoneCode = null;
+	List<RegCenterPutReqDto> updRequestNotAllLang = null;
+	List<RegCenterPutReqDto> updRequestInvalideID = null;
+	List<RegCenterPutReqDto> updRequestDuplicateIDLang = null;
+	List<RegCenterPutReqDto> updRequestSetLongitudeInvalide = null;
+	List<RegCenterPutReqDto> updRequestCenterTime = null;
+	List<RegCenterPutReqDto> updRequestLunchTime = null;
+	List<RegCenterPutReqDto> updRequestZoneCode = null;
 	
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto1 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto2 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto3 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto4 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto5 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto6 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto7 = null;
-	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto8 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto1 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto2 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto3 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto4 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto5 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto6 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto7 = null;
+	RegCenterPutReqDto registrationCenterPutReqAdmDto8 = null;
 	
 	private void updateRegistrationCenter() {
 		
@@ -957,7 +957,7 @@ public class MasterDataServiceTest {
 		updRequestZoneCode = new ArrayList<>();
 		
 		// 1st obj
-		registrationCenterPutReqAdmDto1 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto1 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto1.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto1.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto1.setAddressLine2("Address Line 2");
@@ -988,7 +988,7 @@ public class MasterDataServiceTest {
 		updRequestZoneCode.add(registrationCenterPutReqAdmDto1);
 		
 		// 2nd obj
-		registrationCenterPutReqAdmDto2 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto2 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto2.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto2.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto2.setAddressLine2("Address Line 2");
@@ -1019,7 +1019,7 @@ public class MasterDataServiceTest {
 		updRequestZoneCode.add(registrationCenterPutReqAdmDto2);
 
 		// 3rd obj
-		registrationCenterPutReqAdmDto3 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto3 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto3.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto3.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto3.setAddressLine2("Address Line 2");
@@ -1045,7 +1045,7 @@ public class MasterDataServiceTest {
 		updRequestInvalideID.add(registrationCenterPutReqAdmDto3);
 		
 		
-		registrationCenterPutReqAdmDto4 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto4 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto4.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto4.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto4.setAddressLine2("Address Line 2");
@@ -1070,7 +1070,7 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto4.setZoneCode("JRD");
 		updRequestSetLongitudeInvalide.add(registrationCenterPutReqAdmDto4);
 		
-		registrationCenterPutReqAdmDto5 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto5 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto5.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto5.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto5.setAddressLine2("Address Line 2");
@@ -1097,7 +1097,7 @@ public class MasterDataServiceTest {
 		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
 		
 		
-		registrationCenterPutReqAdmDto6 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto6 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto6.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto6.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto6.setAddressLine2("Address Line 2");
@@ -1122,7 +1122,7 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto6.setZoneCode("JRD");
 		updRequestCenterTime.add(registrationCenterPutReqAdmDto6);
 		
-		registrationCenterPutReqAdmDto7 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto7 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto7.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto7.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto7.setAddressLine2("Address Line 2");
@@ -1147,7 +1147,7 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto7.setZoneCode("JRD");
 		updRequestLunchTime.add(registrationCenterPutReqAdmDto7);
 		
-		registrationCenterPutReqAdmDto8 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto8 = new RegCenterPutReqDto();
 		registrationCenterPutReqAdmDto8.setName("TEST CENTER");
 		registrationCenterPutReqAdmDto8.setAddressLine1("Address Line 1");
 		registrationCenterPutReqAdmDto8.setAddressLine2("Address Line 2");
