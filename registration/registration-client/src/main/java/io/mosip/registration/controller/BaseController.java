@@ -377,7 +377,7 @@ public class BaseController {
 				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -975,7 +975,7 @@ public class BaseController {
 
 				clearOnboardData();
 				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
-						RegistrationConstants.DISABLE);
+						RegistrationConstants.ENABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
