@@ -59,7 +59,7 @@ public class FilterTypeValidator {
 					if (superFields != null)
 						fieldList.addAll(Arrays.asList(superFields));
 					Optional<Field> field = fieldList.stream()
-							.filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName())).findFirst();
+							.filter(i -> i.getName().equals(filter.getColumnName())).findFirst();
 					if (!field.isPresent()) {
 						errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
 								String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(),
