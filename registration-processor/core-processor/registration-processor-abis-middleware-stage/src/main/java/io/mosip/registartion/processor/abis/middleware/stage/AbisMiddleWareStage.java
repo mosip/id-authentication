@@ -108,6 +108,9 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
+	
+	@Value("{registration.processor.abis.threshold}")
+	private int abisThreshold;
 
 	/** server port number. */
 	@Value("${server.port}")
@@ -375,7 +378,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				if (abisIdentifyResponseDto.getCandidateList() != null) {
 					CandidatesDto[] candidatesDtos = abisIdentifyResponseDto.getCandidateList().getCandidates();
 					if (!Arrays.isNullOrEmpty(candidatesDtos)) {
-						saveCandiateDtos(candidatesDtos, abisResponseDto);
+						saveCandiateDtos(candidatesDtos, abisResponseDto,bioRefId.get(0));
 					}
 
 				}
@@ -583,22 +586,27 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		return abisResponseDto;
 	}
 
-	private void updateAbisResponseDetail(CandidatesDto candidatesDto, AbisResponseDto abisResponseDto) {
-		AbisResponseDetEntity abisResponseDetEntity = new AbisResponseDetEntity();
-		AbisResponseDetPKEntity abisResponseDetPKEntity = new AbisResponseDetPKEntity();
-		abisResponseDetPKEntity.setAbisRespId(abisResponseDto.getId());
-		abisResponseDetPKEntity.setMatchedBioRefId(candidatesDto.getReferenceId());
-		abisResponseDetEntity.setId(abisResponseDetPKEntity);
-		if (candidatesDto.getScaledScore() != null) {
-			abisResponseDetEntity.setScore(Integer.valueOf(candidatesDto.getScaledScore()));
-		} else {
-			abisResponseDetEntity.setScore(null);
+	private void updateAbisResponseDetail(CandidatesDto candidatesDto, AbisResponseDto abisResponseDto,
+			String bioRefId) {
+		int scaledScore = 0;
+		if (candidatesDto.getReferenceId() != bioRefId) {
+			if (candidatesDto.getScaledScore() != null) {
+				scaledScore = Integer.valueOf(candidatesDto.getScaledScore());
 
+			}
+			if (scaledScore >= abisThreshold) {
+				AbisResponseDetEntity abisResponseDetEntity = new AbisResponseDetEntity();
+				AbisResponseDetPKEntity abisResponseDetPKEntity = new AbisResponseDetPKEntity();
+				abisResponseDetPKEntity.setAbisRespId(abisResponseDto.getId());
+				abisResponseDetPKEntity.setMatchedBioRefId(candidatesDto.getReferenceId());
+				abisResponseDetEntity.setId(abisResponseDetPKEntity);
+				abisResponseDetEntity.setScore(scaledScore);
+				abisResponseDetEntity.setCrBy(SYSTEM);
+				abisResponseDetEntity.setUpdBy(SYSTEM);
+				abisResponseDetEntity.setIsDeleted(false);
+				abisResponseDetailRepositary.save(abisResponseDetEntity);
+			}
 		}
-		abisResponseDetEntity.setCrBy(SYSTEM);
-		abisResponseDetEntity.setUpdBy(SYSTEM);
-		abisResponseDetEntity.setIsDeleted(false);
-		abisResponseDetailRepositary.save(abisResponseDetEntity);
 
 	}
 
@@ -632,9 +640,9 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 
 	}
 
-	private void saveCandiateDtos(CandidatesDto[] candidatesDtos, AbisResponseDto abisResponseDto) {
+	private void saveCandiateDtos(CandidatesDto[] candidatesDtos, AbisResponseDto abisResponseDto,String bioRefId) {
 		for (CandidatesDto candidatesDto : candidatesDtos) {
-			updateAbisResponseDetail(candidatesDto, abisResponseDto);
+			updateAbisResponseDetail(candidatesDto, abisResponseDto,bioRefId);
 		}
 	}
 
