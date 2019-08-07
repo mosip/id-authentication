@@ -6,7 +6,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -16,11 +18,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -49,39 +52,46 @@ import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
+import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
-import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
-
+/**
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
+@Component
 public class AvailabilityUtil {
-	
+
 	/**
 	 * Reference for ${preregistration.availability.sync} from property file
 	 */
 	@Value("${preregistration.availability.sync}")
 	int syncDays;
-	
+
 	@Value("${version}")
 	String versionUrl;
 
 	@Value("${mosip.preregistration.booking.availability.sync.id}")
 	String idUrlSync;
-	
+
 	@Value("${mosip.primary-language}")
 	String primaryLang;
-	
+
 	@Value("${notification.url}")
 	private String notificationResourseurl;
-	
+
 	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
-	
+
 	@Value("${mosip.batch.token.authmanager.appId}")
 	private String auditUserId;
 
@@ -90,34 +100,37 @@ public class AvailabilityUtil {
 	 */
 	@Value("${holiday.url}")
 	String holidayListUrl;
-	
+
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-	
+
 	/**
 	 * Reference for ${regCenter.url} from property file
 	 */
 	@Value("${regCenter.url}")
 	String regCenterUrl;
-	
+
+	@Value("${batch.appointment.cancel}")
+	String cancelResourceUrl;
+
 	/**
 	 * Autowired reference for {@link #batchServiceDAO}
 	 */
 	@Autowired
 	private BatchJpaRepositoryImpl batchServiceDAO;
-	
+
 	@Autowired
 	private AuditLogUtil auditLogUtil;
-	
+
 	/**
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */
 	@Autowired
 	RestTemplate restTemplate;
-	
+
 	private Logger log = LoggerConfiguration.logConfig(AvailabilityUtil.class);
-	
-	public MainResponseDTO<String> addAvailability() {
+
+	public MainResponseDTO<String> addAvailability(HttpHeaders headers) {
 		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		response.setId(idUrlSync);
@@ -125,14 +138,14 @@ public class AvailabilityUtil {
 		boolean isSaveSuccess = false;
 		try {
 			LocalDate endDate = LocalDate.now().plusDays(syncDays - 1);
-			List<RegistrationCenterDto> regCenter =getRegCenterMasterData();
+			List<RegistrationCenterDto> regCenter = getRegCenterMasterData(headers);
 			List<RegistrationCenterDto> regCenterDtos = regCenter.stream()
 					.filter(regCenterDto -> regCenterDto.getLangCode().equals(primaryLang))
 					.collect(Collectors.toList());
 			List<String> regCenterDumped = batchServiceDAO.findRegCenter(LocalDate.now());
 			for (RegistrationCenterDto regDto : regCenterDtos) {
 				List<LocalDate> insertedDate = batchServiceDAO.findDistinctDate(LocalDate.now(), regDto.getId());
-				List<String> holidaylist =getHolidayListMasterData(regDto);
+				List<String> holidaylist = getHolidayListMasterData(regDto,headers);
 				regCenterDumped.remove(regDto.getId());
 				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
 						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
@@ -153,8 +166,8 @@ public class AvailabilityUtil {
 											regBookingEntityList.get(i).getDemographicEntity().getPreRegistrationId())
 											.equals(StatusCodes.BOOKED.getCode())) {
 										cancelBooking(regBookingEntityList.get(i).getDemographicEntity()
-												.getPreRegistrationId(), true);
-										sendNotification(regBookingEntityList.get(i));
+												.getPreRegistrationId(),headers);
+										sendNotification(regBookingEntityList.get(i),headers);
 									}
 								}
 							}
@@ -169,16 +182,16 @@ public class AvailabilityUtil {
 			}
 			if (!regCenterDumped.isEmpty()) {
 				for (int i = 0; i < regCenterDumped.size(); i++) {
-					List<RegistrationBookingEntity> entityList = batchServiceDAO.findAllPreIdsByregID(regCenterDumped.get(i),
-							LocalDate.now());
+					List<RegistrationBookingEntity> entityList = batchServiceDAO
+							.findAllPreIdsByregID(regCenterDumped.get(i), LocalDate.now());
 					if (!entityList.isEmpty()) {
 						for (int j = 0; j < entityList.size(); j++) {
 							if (batchServiceDAO
 									.getDemographicStatus(
 											entityList.get(j).getDemographicEntity().getPreRegistrationId())
 									.equals(StatusCodes.BOOKED.getCode())) {
-								cancelBooking(entityList.get(j).getDemographicEntity().getPreRegistrationId(), true);
-								sendNotification(entityList.get(j));
+								cancelBooking(entityList.get(j).getDemographicEntity().getPreRegistrationId(),headers);
+								sendNotification(entityList.get(j),headers);
 							}
 						}
 					}
@@ -195,22 +208,67 @@ public class AvailabilityUtil {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
 						"Availability for booking successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString(), auditUserId,
-						auditUsername, null);
+						AuditLogVariables.MULTIPLE_ID.toString(), auditUserId, auditUsername, null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"addAvailability failed", AuditLogVariables.NO_ID.toString(),auditUserId,
-						auditUsername, null);
+						"addAvailability failed", AuditLogVariables.NO_ID.toString(), auditUserId, auditUsername, null);
 			}
 		}
 		response.setResponsetime(getCurrentResponseTime());
 		response.setResponse("MASTER_DATA_SYNCED_SUCCESSFULLY");
 		return response;
 	}
-	
-	private void cancelBooking(String preRegistrationId, boolean b) {
-		// TODO Auto-generated method stub
-		
+
+	private boolean cancelBooking(String preRegistrationId,HttpHeaders headers) {
+
+		log.info("sessionId", "idType", "id", "In cancelBooking method of Availability Util");
+		try {
+			Map<String, Object> params = new HashMap<>();
+			params.put("preRegistrationId", preRegistrationId);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(cancelResourceUrl + "/batch/appointment/");
+			//headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<MainResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder += "{preRegistrationId}";
+			log.info("sessionId", "idType", "id", "In cancelBooking method of Availability Util URL- " + uriBuilder);
+
+			ResponseEntity<MainResponseDTO<CancelBookingResponseDTO>> respEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.PUT, httpEntity,
+					new ParameterizedTypeReference<MainResponseDTO<CancelBookingResponseDTO>>() {
+					}, params);
+
+			if (respEntity.getBody().getErrors() == null) {
+				ObjectMapper mapper = new ObjectMapper();
+				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
+						.convertValue(respEntity.getBody().getResponse(), PreRegistartionStatusDTO.class);
+
+				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
+
+				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
+					if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+						throw new NoRecordFoundException(ErrorCodes.PRG_PAM_BAT_016.getCode(),
+								ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
+					}
+
+					else {
+						throw new NoRecordFoundException(ErrorCodes.PRG_PAM_BAT_017.getCode(),
+								ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
+					}
+
+				}
+			} else {
+				for (ExceptionJSONInfoDTO dto : respEntity.getBody().getErrors()) {
+					throw new NoRecordFoundException(dto.getErrorCode(), dto.getMessage());
+				}
+
+			}
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In cancelBooking method of Availability Util for HttpClientErrorException- " + ex.getMessage());
+			throw new NoRecordFoundException(ErrorCodes.PRG_PAM_BAT_018.getCode(),
+					ErrorMessages.CANCEL_BOOKING_BATCH_CALL_FAILED.getMessage());
+		}
+		return true;
 	}
 
 	/**
@@ -218,13 +276,13 @@ public class AvailabilityUtil {
 	 * 
 	 * @return List of RegistrationCenterDto
 	 */
-	public List<RegistrationCenterDto> getRegCenterMasterData() {
+	public List<RegistrationCenterDto> getRegCenterMasterData(HttpHeaders headers) {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			/*HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);*/
 			HttpEntity<RequestWrapper<RegistrationCenterResponseDto>> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
@@ -252,14 +310,14 @@ public class AvailabilityUtil {
 		}
 		return regCenter;
 	}
-	
+
 	/**
 	 * This method will call kernel service holiday list
 	 * 
 	 * @param regDto
 	 * @return List of string
 	 */
-	public List<String> getHolidayListMasterData(RegistrationCenterDto regDto) {
+	public List<String> getHolidayListMasterData(RegistrationCenterDto regDto,HttpHeaders headers) {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
@@ -267,8 +325,6 @@ public class AvailabilityUtil {
 			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
 			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RequestWrapper<RegistrationCenterHolidayDto>> httpHolidayEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder2.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
@@ -298,7 +354,7 @@ public class AvailabilityUtil {
 		}
 		return holidaylist;
 	}
-	
+
 	/**
 	 * This method will do booking time slots.
 	 * 
@@ -364,7 +420,7 @@ public class AvailabilityUtil {
 			}
 		}
 	}
-	
+
 	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime, LocalTime toTime,
 			BatchJpaRepositoryImpl batchServiceDAO) {
 		log.info("sessionId", "idType", "id", "In saveAvailability method of Booking Service Util");
@@ -387,7 +443,7 @@ public class AvailabilityUtil {
 		}
 		batchServiceDAO.saveAvailability(avaEntity);
 	}
-	
+
 	/**
 	 * This method is used as Null checker for different input keys.
 	 *
@@ -413,7 +469,7 @@ public class AvailabilityUtil {
 	 * @param registrationBookingEntity
 	 * @throws JsonProcessingException
 	 */
-	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) throws JsonProcessingException {
+	public void sendNotification(RegistrationBookingEntity registrationBookingEntity,HttpHeaders headers) throws JsonProcessingException {
 		log.info("sessionId", "idType", "id", "In sendNotification method of Booking Service");
 		NotificationDTO notification = new NotificationDTO();
 		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
@@ -424,9 +480,9 @@ public class AvailabilityUtil {
 		notification.setAppointmentTime(time);
 		notification.setAdditionalRecipient(false);
 		notification.setIsBatch(true);
-		emailNotification(notification, primaryLang);
+		emailNotification(notification, primaryLang,headers);
 	}
-	
+
 	/**
 	 * 
 	 * @param notificationDTO
@@ -434,11 +490,10 @@ public class AvailabilityUtil {
 	 * @return NotificationResponseDTO
 	 * @throws JsonProcessingException
 	 */
-	public void emailNotification(NotificationDTO notificationDTO, String langCode) throws JsonProcessingException {
+	public void emailNotification(NotificationDTO notificationDTO, String langCode,HttpHeaders headers) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
-		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
-		HttpHeaders headers = new HttpHeaders();
+		//HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setTimeZone(TimeZone.getDefault());
@@ -447,7 +502,7 @@ public class AvailabilityUtil {
 			request.setId("mosip.pre-registration.notification.notify");
 			request.setVersion("1.0");
 			request.setRequesttime(new Date());
-			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			//headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
 			emailMap.add("NotificationRequestDTO", mapper.writeValueAsString(request));
 			emailMap.add("langCode", langCode);
@@ -468,12 +523,12 @@ public class AvailabilityUtil {
 
 		}
 	}
-	
+
 	public String getCurrentResponseTime() {
 		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of Booking Service Util");
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
-	
+
 	/**
 	 * This method is used to audit all the booking events
 	 * 

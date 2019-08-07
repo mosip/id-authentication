@@ -25,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjob.model.LoginUser;
 import io.mosip.preregistration.batchjob.model.ResponseWrapper;
+import io.mosip.preregistration.batchjob.utils.AvailabilityUtil;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
@@ -42,6 +43,9 @@ public class AvailabilitySyncTasklet implements Tasklet {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private AvailabilityUtil availabilityUtil;
 
 	@Value("${bookingAvailablity.url}")
 	String bookingAvailablityUrl;
@@ -95,6 +99,8 @@ public class AvailabilitySyncTasklet implements Tasklet {
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(bookingAvailablityUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
+			
+			availabilityUtil.addAvailability(headers);
 			
 			HttpEntity<MainResponseDTO<String>> entity = new HttpEntity<>(headers);
 

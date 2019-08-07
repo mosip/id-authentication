@@ -43,6 +43,9 @@ public class ConsumedStatusTasklet implements Tasklet {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private ConsumedStatusUtil consumeJob;
 
 	@Value("${updateConsumedStatus.url}")
 	String updateConsumedUrl;
@@ -105,7 +108,6 @@ public class ConsumedStatusTasklet implements Tasklet {
 					"In UpdateConsumedStatusTasklet method of Batch Service URL- " + uriBuilder);
 			restTemplate.exchange(uriBuilder, HttpMethod.PUT, entity, MainResponseDTO.class);*/
 			
-			ConsumedStatusUtil consumeJob=new ConsumedStatusUtil();
 			consumeJob.demographicConsumedStatus();
 
 		} catch (Exception e) {

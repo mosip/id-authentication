@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -33,6 +34,7 @@ import io.mosip.preregistration.core.util.GenericUtil;
  * @since 1.0.0
  *
  */
+@Component
 public class ExpiredStatusUtil {
 
 	/** The Constant LOGGER. */

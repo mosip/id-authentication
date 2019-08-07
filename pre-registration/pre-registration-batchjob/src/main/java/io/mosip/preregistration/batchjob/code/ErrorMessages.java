@@ -27,7 +27,10 @@ public enum ErrorMessages {
 	NOTIFICATION_CALL_FAILED("Notification service call failed"),//PRG_PAM_BAT_012
 	AVAILABILITY_TABLE_NOT_ACCESSABLE("Availablity table not accessible"),//PRG_PAM_BAT_013
 	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id"),//PRG_PAM_BAT_014
-	RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID("Record not found for date range and reg center id");//PRG_PAM_BAT_015
+	RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID("Record not found for date range and reg center id"),//PRG_PAM_BAT_015
+	BOOKING_DATA_NOT_FOUND("Booking data not found"),//PRG_PAM_BAT_016
+	APPOINTMENT_CANNOT_BE_CANCELED("Appointment cannot be canceled"),//PRG_PAM_BAT_017
+	CANCEL_BOOKING_BATCH_CALL_FAILED("Cancel appointment service call failed");//PRG_PAM_BAT_018
 	
 	/**
 	 * @param code

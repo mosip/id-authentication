@@ -54,23 +54,23 @@ public class PreRegistrationBatchJobConfig {
 		return stepBuilderFactory.get("consumedStatusStep").tasklet(consumedStatusTasklet).build();
 	}
 	
-	/*@Bean
+	@Bean
 	public Step availabilitySyncStep() {
 		return stepBuilderFactory.get("availabilitySyncStep").tasklet(availabilitySyncTasklet).build();
-	}*/
+	}
 	
 	@Bean
 	public Step expiredStatusStep() {
 		return stepBuilderFactory.get("expiredStatusStep").tasklet(expiredStatusTasklet).build();
 	}
 	
-	/*@Bean
+	@Bean
 	public Job availabilitySyncJob(){
 		return this.jobBuilderFactory.get("availabilitySyncJob")
 				   .incrementer(new RunIdIncrementer())
 				   .start(availabilitySyncStep())
 				   .build();
-	}*/
+	}
 	@Bean
 	public Job consumedStatusJob() {
 		return this.jobBuilderFactory.get("consumedStatusJob")
