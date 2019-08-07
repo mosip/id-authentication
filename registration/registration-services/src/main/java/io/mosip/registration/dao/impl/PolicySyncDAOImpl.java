@@ -62,7 +62,7 @@ public class PolicySyncDAOImpl implements PolicySyncDAO {
 		
 		if(!keyStoreList.isEmpty()) {
 			return keyStoreList.stream().filter(keyStore -> (keyStore.getValidFromDtimes().compareTo(currentDate) <=0 
-					&& keyStore.getValidTillDtimes().compareTo(currentDate) >0)).findFirst().orElseGet(null);
+					&& keyStore.getValidTillDtimes().compareTo(currentDate) >0)).findFirst().orElse(null);
 			
 		}
 		return null;
