@@ -1046,7 +1046,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 	}
 
 	private void populateBiometrics() {
-		biometricTypecombo.getItems().addAll(masterSync.getBiometricType(ApplicationContext.applicationLanguage()));
+		try {
+			biometricTypecombo.getItems().addAll(masterSync.getBiometricType(ApplicationContext.applicationLanguage()));
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - LOADING_BIOMETRICS - RENDER_COMBOBOXES", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+		}
 	}
 
 	private boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {

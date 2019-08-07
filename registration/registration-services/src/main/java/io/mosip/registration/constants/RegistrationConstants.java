@@ -1513,5 +1513,9 @@ public class RegistrationConstants {
 	public static final String EYETOOLTIP="View Details";
 	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
 	
+	public static final String LANG_CODE_MANDATORY="language code is mandatory...";
+	public static final String CODE_AND_LANG_CODE_MANDATORY="code and language code is mandatory...";
+	public static final String TRIGGER_POINT_MSG="trigger point is mandatory...";
+	
 
 }
