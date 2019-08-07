@@ -1,9 +1,10 @@
 package io.mosip.registration.test.dao.impl;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -44,11 +45,12 @@ public class PolicySyncDAOTest {
 	}
 	
 	@Test
-	@Ignore
 	public void getPublicKey() {
 		List<KeyStore> keyStoreList = new ArrayList<>();
 		KeyStore keyStore = new KeyStore();
 		keyStore.setCreatedBy("createdBy");
+		keyStore.setValidFromDtimes(Timestamp.valueOf(LocalDateTime.now()));
+		keyStore.setValidTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
 		keyStoreList.add(keyStore);
 		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		policySyncDAOImpl.getPublicKey(Mockito.anyString());

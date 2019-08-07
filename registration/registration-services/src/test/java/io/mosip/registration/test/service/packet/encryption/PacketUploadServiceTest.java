@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -75,8 +74,7 @@ public class PacketUploadServiceTest {
 		assertEquals(regList, packetUploadServiceImpl.getSynchedPackets());
 	}
 
-	@Ignore
-	@Test
+	@Test(expected = RegBaseCheckedException.class)
 	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
@@ -100,8 +98,7 @@ public class PacketUploadServiceTest {
 		assertEquals("Success", packetUploadServiceImpl.pushPacket(f).getSuccessResponseDTO().getCode());
 	}
 
-	@Ignore
-	@Test
+	@Test(expected = RegBaseCheckedException.class)
 	public void testPushPacketNegativeCase() throws URISyntaxException, RegBaseCheckedException,
 			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
@@ -159,8 +156,7 @@ public class PacketUploadServiceTest {
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
-	@Ignore
-	@Test(expected = RegBaseUncheckedException.class)
+	@Test(expected = RegBaseCheckedException.class)
 	public void testRuntimeException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f = new File("");
@@ -237,8 +233,7 @@ public class PacketUploadServiceTest {
 
 	}
 
-	@Ignore
-	@Test(expected = RegBaseUncheckedException.class)
+	@Test(expected = RegBaseCheckedException.class)
 	public void testRuntimeException1() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		Registration registration = new Registration();
