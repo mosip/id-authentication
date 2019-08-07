@@ -54,6 +54,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
+import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
  * This implementation class to handle the pre-registration data
@@ -64,6 +65,9 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
  */
 @Service
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
+
+	@Autowired
+	private RegIdObjectValidator idObjectValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -215,9 +219,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				IndividualIdentity individualIdentity = (IndividualIdentity) JsonUtils.jsonStringToJavaObject(
 						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
-				/*idObjectValidator.validateIdObject(
+				idObjectValidator.validateIdObject(
 						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),
-						RegistrationConstants.PACKET_TYPE_NEW);*/
+						RegistrationConstants.PACKET_TYPE_NEW);
 
 			}
 		} catch (IOException exception) {
