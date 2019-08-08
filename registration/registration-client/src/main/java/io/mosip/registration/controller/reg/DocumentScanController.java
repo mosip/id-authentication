@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +176,8 @@ public class DocumentScanController extends BaseController {
 	private Button backBtn;
 	@FXML
 	private ImageView backImageView;
+	@FXML
+	private Label biometricExceptionReq;
 
 	/**
 	 * @return the bioExceptionToggleLabel1
@@ -1069,5 +1072,29 @@ public class DocumentScanController extends BaseController {
 
 	public void setScannedPages(List<BufferedImage> scannedPages) {
 		this.scannedPages = scannedPages;
+	}
+
+	/**
+	 * Sets the value of the biometric exception required based on the individual
+	 * whose biometric exceptions has to be captured. If exception of Parent or
+	 * Guardian is required, text will be displayed as Parent Or guardian biometrics
+	 * exception required. While for Individual, text will be displayed as Biometric
+	 * exception required.
+	 * 
+	 * @param isParentOrGuardianBiometricsCaptured
+	 *            boolean value indicating whose biometric exception has to be
+	 *            captured either individual or parent/ guardian
+	 */
+	public void setExceptionDescriptionText(boolean isParentOrGuardianBiometricsCaptured) {
+		ResourceBundle applicationLanguage = ApplicationContext.applicationLanguageBundle();
+
+		String exceptionFaceDescription = applicationLanguage.getString("biometricexceptionrequired");
+
+		if (isParentOrGuardianBiometricsCaptured) {
+			exceptionFaceDescription = applicationLanguage.getString("parentOrGuardian").concat(" ")
+					.concat(exceptionFaceDescription.toLowerCase());
+		}
+
+		biometricExceptionReq.setText(exceptionFaceDescription);
 	}
 }

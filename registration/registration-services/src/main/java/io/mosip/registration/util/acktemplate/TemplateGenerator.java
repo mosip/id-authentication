@@ -294,13 +294,18 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.PARENT_PHOTO_CAPTURED,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		}
+
+		boolean isParentOrGuardianBiometricsCaptured = registration.isUpdateUINNonBiometric()
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+						&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
+
 		if (isChild || registration.isUpdateUINNonBiometric()) {
 			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace() != null && registration
 					.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace() != null) {
 				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO()
 						.getExceptionFace().getFace();
 				setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties,
-						localProperties);
+						localProperties, isParentOrGuardianBiometricsCaptured);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
@@ -309,7 +314,8 @@ public class TemplateGenerator extends BaseService {
 		} else if (registration.getBiometricDTO().getApplicantBiometricDTO().isHasExceptionPhoto()) {
 			byte[] exceptionImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
 					.getFace();
-			setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties, localProperties);
+			setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties, localProperties,
+					isParentOrGuardianBiometricsCaptured);
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
 			templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
@@ -339,16 +345,30 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void setUpExceptionPhoto(byte[] exceptionImageBytes, Map<String, Object> templateValues,
-			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties) {
+			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties,
+			boolean isParentOrGuardianExceptionPhotoCapture) {
 		templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION,
 				RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL,
-				applicationLanguageProperties.getString("exceptionphoto"));
-		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_LOCAL_LANG_LABEL,
-				getSecondaryLanguageLabel("exceptionphoto"));
+				getExceptionPhotoLabel(isParentOrGuardianExceptionPhotoCapture,
+						applicationLanguageProperties.getString("exceptionphoto"), applicationLanguageProperties));
+		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_LOCAL_LANG_LABEL, getExceptionPhotoLabel(
+				isParentOrGuardianExceptionPhotoCapture, getSecondaryLanguageLabel("exceptionphoto"), localProperties));
 		String exceptionImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
 		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE,
 				RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + exceptionImageEncodedBytes);
+	}
+
+	private String getExceptionPhotoLabel(boolean isParentOrGuardianExceptionPhotoCapture, String exceptionPhotoLabel,
+			ResourceBundle resourceBundle) {
+		String exceptionFaceDescription = exceptionPhotoLabel;
+
+		if (isParentOrGuardianExceptionPhotoCapture) {
+			exceptionFaceDescription = resourceBundle.getString("parentOrGuardian").concat(" ")
+					.concat(exceptionFaceDescription.toLowerCase());
+		}
+
+		return exceptionFaceDescription;
 	}
 
 	private void setUpBiometricContent(Map<String, Object> templateValues, RegistrationDTO registration,
@@ -794,9 +814,9 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
 				getSecondaryLanguageLabel("localAdminAuthority"));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
-				getValue(individualIdentity.getLocalAdministrativeAuthority(), platformLanguageCode));
+				getValue(individualIdentity.getZone(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
-				getSecondaryLanguageValue(individualIdentity.getLocalAdministrativeAuthority(), localLanguageCode));
+				getSecondaryLanguageValue(individualIdentity.getZone(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("mobileNo"));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
@@ -822,7 +842,8 @@ public class TemplateGenerator extends BaseService {
 				applicationLanguageProperties.getString("cniOrPinNumber"));
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
 				getSecondaryLanguageLabel("cniOrPinNumber"));
-		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(individualIdentity.getCnieNumber()));
+		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
+				getValue(individualIdentity.getReferenceIdentityNumber()));
 		boolean isChild = individualIdentity.getParentOrGuardianName() != null;
 
 		if (isChild || registration.isUpdateUINNonBiometric()) {

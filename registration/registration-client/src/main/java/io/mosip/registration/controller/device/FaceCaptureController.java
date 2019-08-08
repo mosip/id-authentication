@@ -128,6 +128,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private ImageView startOverImageView;
 	@FXML
 	private Button startOverBtn;
+	@FXML
+	private Label exceptionImageLabel;
 
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
@@ -256,7 +258,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				primaryStage.initModality(Modality.WINDOW_MODAL);
 				primaryStage.initOwner(fXComponents.getStage());
 				cameraController.setWebCameraStage(primaryStage);
-				primaryStage.show();				
+				primaryStage.show();
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
@@ -527,16 +529,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	public void clearExceptionImage() {
-		exceptionBufferedImage = null;
-		exceptionImageCaptured=false;
-		exceptionImage.setImage(defaultExceptionImage);
-		BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
-		if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
-			applicantBiometricDTO.getExceptionFace().setFace(null);
-			applicantBiometricDTO.getExceptionFace().setPhotographName(null);
-			applicantBiometricDTO.setHasExceptionPhoto(false);
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+
+			exceptionBufferedImage = null;
+			exceptionImageCaptured = false;
+			exceptionImage.setImage(defaultExceptionImage);
+			BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
+			if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
+				applicantBiometricDTO.getExceptionFace().setFace(null);
+				applicantBiometricDTO.getExceptionFace().setPhotographName(null);
+				applicantBiometricDTO.setHasExceptionPhoto(false);
+			}
+			disableNextButton();
 		}
-		disableNextButton();
 	}
 
 	/**
@@ -865,5 +870,28 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (!validateApplicantImage()) {
 			saveBiometricDetailsBtn.setDisable(true);
 		}
+	}
+
+	/**
+	 * Sets the value of the exception photo based on the individual whose exception
+	 * photo has to be captured. If exception photo of Parent or Guardian is
+	 * required, text will be displayed as Parent Or guardian exception photo. While
+	 * for Individual, text will be displayed as Exception photo.
+	 * 
+	 * @param isParentOrGuardianBiometricsCaptured
+	 *            boolean value indicating whose exception photo has to be captured
+	 *            either individual or parent/ guardian
+	 */
+	public void setExceptionFaceDescriptionText(boolean isParentOrGuardianBiometricsCaptured) {
+		ResourceBundle applicationLanguage = ApplicationContext.applicationLanguageBundle();
+
+		String exceptionFaceDescription = applicationLanguage.getString("exceptionimage");
+
+		if (isParentOrGuardianBiometricsCaptured) {
+			exceptionFaceDescription = applicationLanguage.getString("parentOrGuardian").concat(" ")
+					.concat(exceptionFaceDescription.toLowerCase());
+		}
+
+		exceptionImageLabel.setText(exceptionFaceDescription);
 	}
 }

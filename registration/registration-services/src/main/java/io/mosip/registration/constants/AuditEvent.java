@@ -56,6 +56,9 @@ public enum AuditEvent {
 	REG_DOC_POB_SCAN("REG-EVT-035", USER_EVENT.getCode(), "REG_DOC_POB_SCAN", "PoB: Click of Scan"),
 	REG_DOC_POB_VIEW("REG-EVT-036", USER_EVENT.getCode(), "REG_DOC_POB_VIEW", "PoB: View"),
 	REG_DOC_POB_DELETE("REG-EVT-037", USER_EVENT.getCode(), "REG_DOC_POB_DELETE", "PoB: Delete"),
+	REG_DOC_POE_SCAN("REG-EVT-147", USER_EVENT.getCode(), "REG_DOC_POB_SCAN", "PoB: Click of Scan"),
+	REG_DOC_POE_VIEW("REG-EVT-148", USER_EVENT.getCode(), "REG_DOC_POB_VIEW", "PoB: View"),
+	REG_DOC_POE_DELETE("REG-EVT-149", USER_EVENT.getCode(), "REG_DOC_POB_DELETE", "PoB: Delete"),
 	REG_DOC_NEXT("REG-EVT-038", USER_EVENT.getCode(), "REG_DOC_NEXT", "Click of Next after uploading documents"),
 	REG_DOC_BACK("REG-EVT-039", USER_EVENT.getCode(), "REG_DOC_BACK", "Click of Back to demographic details"),
 

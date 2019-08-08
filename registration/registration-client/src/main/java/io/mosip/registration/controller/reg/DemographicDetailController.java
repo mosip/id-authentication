@@ -43,6 +43,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
+import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -683,6 +684,8 @@ public class DemographicDetailController extends BaseController {
 	private Label ageOrDOBLocalLanguageLabel;
 	@FXML
 	private Label ageOrDOBLabel;
+	@Autowired
+	private FaceCaptureController faceCaptureController;
 
 	/*
 	 * (non-Javadoc)
@@ -1545,7 +1548,7 @@ public class DemographicDetailController extends BaseController {
 												province, provinceLocalLanguage, isComboBoxValueNotRequired(province))))
 								.with(identity -> identity.setCity(buildDemoComboValues(platformLanguageCode,
 										localLanguageCode, city, cityLocalLanguage, isComboBoxValueNotRequired(city))))
-								.with(identity -> identity.setLocalAdministrativeAuthority(
+								.with(identity -> identity.setZone(
 										buildDemoComboValues(platformLanguageCode, localLanguageCode,
 												localAdminAuthority, localAdminAuthorityLocalLanguage,
 												isComboBoxValueNotRequired(localAdminAuthority))))
@@ -1555,7 +1558,7 @@ public class DemographicDetailController extends BaseController {
 										.setPhone(buildDemoTextValue(mobileNo, isTextFieldNotRequired(mobileNo))))
 								.with(identity -> identity
 										.setEmail(buildDemoTextValue(emailId, isTextFieldNotRequired(emailId))))
-								.with(identity -> identity.setCnieNumber(
+								.with(identity -> identity.setReferenceIdentityNumber(
 										buildDemoTextValue(cniOrPinNumber, isTextFieldNotRequired(cniOrPinNumber))))
 								.with(identity -> identity.setParentOrGuardianRID(
 										buildDemoObjectValue(parentRegId, isTextFieldNotRequired(parentRegId))))
@@ -1803,12 +1806,12 @@ public class DemographicDetailController extends BaseController {
 			emailId.setText(individualIdentity.getEmail());
 			ageField.setText(individualIdentity.getAge() == null ? RegistrationConstants.EMPTY
 					: String.valueOf(individualIdentity.getAge()));
-			cniOrPinNumber.setText(individualIdentity.getCnieNumber());
+			cniOrPinNumber.setText(individualIdentity.getReferenceIdentityNumber());
 			postalCodeLocalLanguage.setText(individualIdentity.getPostalCode());
 			postalCodeLocalLanguage.setAccessibleHelp(individualIdentity.getPostalCode());
 			mobileNoLocalLanguage.setText(individualIdentity.getPhone());
 			emailIdLocalLanguage.setText(individualIdentity.getEmail());
-			cniOrPinNumberLocalLanguage.setText(individualIdentity.getCnieNumber());
+			cniOrPinNumberLocalLanguage.setText(individualIdentity.getReferenceIdentityNumber());
 			parentRegId.setText(individualIdentity.getParentOrGuardianRID() == null ? ""
 					: String.valueOf(individualIdentity.getParentOrGuardianRID()));
 			parentUinId.setText(individualIdentity.getParentOrGuardianUIN() == null ? ""
@@ -1835,7 +1838,7 @@ public class DemographicDetailController extends BaseController {
 			}
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
-					individualIdentity.getLocalAdministrativeAuthority());
+					individualIdentity.getZone());
 
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 
@@ -2112,6 +2115,13 @@ public class DemographicDetailController extends BaseController {
 
 				auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+				// Set Exception Photo Type Description
+				boolean isParentOrGuardianBiometricsCaptured = getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+						|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+								&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
+				documentScanController.setExceptionDescriptionText(isParentOrGuardianBiometricsCaptured);
+				faceCaptureController.setExceptionFaceDescriptionText(isParentOrGuardianBiometricsCaptured);
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
