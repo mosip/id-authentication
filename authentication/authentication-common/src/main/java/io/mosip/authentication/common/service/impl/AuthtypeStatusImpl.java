@@ -51,6 +51,17 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		return processAuthtypeList(authTypeLockList);
 	}
 
+	public List<AuthtypeStatus> fetchAuthtypeStatus(String individualId, String individualIdType)
+			throws IdAuthenticationBusinessException {
+		List<AuthtypeLock> authTypeLockList = new ArrayList<>();
+		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
+		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
+			String uin = String.valueOf(idResDTO.get(UIN_KEY));
+			authTypeLockList = authLockRepository.findByUin(uin);
+		}
+		return processAuthtypeList(authTypeLockList);
+	}
+
 	private List<AuthtypeStatus> processAuthtypeList(List<AuthtypeLock> authtypelockList) {
 		return authtypelockList.stream().map(this::getAuthTypeStatus).collect(Collectors.toList());
 	}

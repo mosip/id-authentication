@@ -171,7 +171,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			if (!authTxn.get().getRefId().equalsIgnoreCase(hashedIdvid)) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
 						"OTP id mismatch");
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_ID_MISMATCH);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 			validOtpAuth = true;
 		}

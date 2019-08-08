@@ -24,7 +24,6 @@ public enum IdAuthenticationErrorConstants {
 	BLOCKED_OTP_VALIDATE("IDA-OTA-007", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-008", "OTP Notification Channel not provided"),
 	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
-	OTP_ID_MISMATCH("IDA-OTA-010", "Input transactionID does not match transactionID of OTP Request"),
 	
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",

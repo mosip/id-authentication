@@ -54,6 +54,22 @@ public class AuthtypeStatusImplTest {
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
 	}
 
+	@Test
+	public void TestvalidfetchAuthtypeStatuswithParam() throws IdAuthenticationBusinessException {
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AuthtypeLock> valuelist = new ArrayList<>();
+		AuthtypeLock authtypeLock = new AuthtypeLock();
+		authtypeLock.setAuthtypecode("bio-FMR");
+		authtypeLock.setStatuscode("y");
+		valuelist.add(authtypeLock);
+		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valuelist);
+		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("9172985031",
+				IdType.UIN.getType());
+	}
+
 	private AuthtypeRequestDto getAuthTypeRequestDto() {
 		AuthtypeRequestDto authtypeRequestDto = new AuthtypeRequestDto();
 		authtypeRequestDto.setIndividualId("9172985031");
