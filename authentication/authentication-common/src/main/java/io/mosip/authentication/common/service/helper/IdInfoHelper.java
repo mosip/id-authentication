@@ -41,6 +41,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -339,6 +341,10 @@ public class IdInfoHelper {
 							entityValueFetcher, matchType, strategy, reqInfo, partnerId);
 
 					Map<String, Object> matchProperties = input.getMatchProperties();
+					if(matchType.getCategory() == Category.BIO) {
+						reqInfo.put(CbeffConstant.class.getName(), String.valueOf(matchProperties.get(CbeffConstant.class.getName())));
+						reqInfo.put(SingleType.class.getName(), ((SingleType) matchProperties.get(SingleType.class.getName())).value());
+					}
 					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType,
