@@ -14,6 +14,7 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -55,11 +56,19 @@ public class RSAEncryptionServiceImpl extends BaseService implements RSAEncrypti
 			LOGGER.info(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
 
+			// Validate the input parameters and required configuration parameters
+			validateInputData(sessionKey);
+
 			String centerMachineId = getCenterId(getStationId(getMacAddress())) + "_" + getStationId(getMacAddress());
 
 			// encrypt AES Session Key using RSA public key
-			PublicKey publicKey = PublicKeyGenerationUtil
-					.generatePublicKey(policySyncDAO.getPublicKey(centerMachineId).getPublicKey());
+			KeyStore rsaPublicKey = policySyncDAO.getPublicKey(centerMachineId);
+			if (rsaPublicKey == null) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_RSA_PUBLIC_KEY_NOT_FOUND.getErrorCode(),
+						RegistrationExceptionConstants.REG_RSA_PUBLIC_KEY_NOT_FOUND.getErrorMessage());
+			}
+			PublicKey publicKey = PublicKeyGenerationUtil.generatePublicKey(rsaPublicKey.getPublicKey());
 
 			return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException compileTimeException) {
@@ -71,6 +80,12 @@ public class RSAEncryptionServiceImpl extends BaseService implements RSAEncrypti
 			throw new RegBaseUncheckedException(
 					RegistrationExceptionConstants.REG_RUNTIME_RSA_ENCRYPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_RUNTIME_RSA_ENCRYPTION.getErrorMessage(), runtimeException);
+		}
+	}
+
+	private void validateInputData(final byte[] dataToBeEncrypted) throws RegBaseCheckedException {
+		if (isByteArrayEmpty(dataToBeEncrypted)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_DATA_FOR_RSA_ENCRYPTION);
 		}
 	}
 

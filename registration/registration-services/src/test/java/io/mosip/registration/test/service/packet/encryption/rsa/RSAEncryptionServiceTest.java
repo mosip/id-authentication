@@ -81,7 +81,6 @@ public class RSAEncryptionServiceTest {
 		
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
-		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
@@ -90,10 +89,10 @@ public class RSAEncryptionServiceTest {
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
-	public void testNullData() throws RegBaseCheckedException {
-		when(policySyncDAO.findByMaxExpireTime()).thenReturn(null);
+	public void testRuntimeException() throws RegBaseCheckedException {
+		when(policySyncDAO.getPublicKey(Mockito.anyString())).thenThrow(new RuntimeException("Data not found"));
 
-		rsaEncryptionServiceImpl.encrypt(null);
+		rsaEncryptionServiceImpl.encrypt("data".getBytes());
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
@@ -109,7 +108,6 @@ public class RSAEncryptionServiceTest {
 
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
-		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		
 		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
@@ -137,11 +135,21 @@ public class RSAEncryptionServiceTest {
 				.thenReturn(decodedbytes);
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
-		Mockito.when(policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(Mockito.anyString())).thenReturn(keyStoreList);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
-		
 
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void rsaPublicKeyNotFound() throws RegBaseCheckedException {
+		when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(null);
+
+		rsaEncryptionServiceImpl.encrypt("data".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void invalidDataForEncryption() throws RegBaseCheckedException {
+		rsaEncryptionServiceImpl.encrypt(null);
 	}
 
 }
