@@ -167,8 +167,18 @@ public enum RegistrationExceptionConstants {
 	REG_MASTER_SYNC_SERVICE_IMPL("REG-MSS-001","master sync service mandatory fields are missing."),
 	REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE("REG-MSS-002","master sync service language code mandatory fields is missing."),
 	REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE("REG-MSS-003","master sync service code and language code mandatory fields is missing."),
-	REG_TRIGGER_POINT_MISSING("REG-TGP-001","trigger point is mandatory fields and it is missing.");
+	REG_TRIGGER_POINT_MISSING("REG-TGP-001","trigger point is mandatory fields and it is missing."),
+	
+	//Login
+	REG_LOGIN_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
+	REG_LOGIN_AUTH_TYPE_EXCEPTION("REG-LSI-002","Authentication Type cannot be null or empty."),
+	REG_LOGIN_ROLES_EXCEPTION("REG-LSI-003","Roles cannot be null or empty."),
+	REG_LOGIN_CENTER_ID_EXCEPTION("REG-LSI-004","Registration Center Id cannot be null or empty."),
+	REG_LOGIN_LANG_CODE_EXCEPTION("REG-LSI-005","Language Code cannot be null or empty."),
+	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty.");
 
+
+	
 	/**
 	 * The constructor
 	 */

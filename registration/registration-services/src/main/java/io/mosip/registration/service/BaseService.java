@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -371,6 +372,18 @@ public class BaseService {
 	 */
 	protected boolean isListEmpty(List<?> listToBeValidated) {
 		return listToBeValidated == null || listToBeValidated.isEmpty();
+	}
+	
+	/**
+	 * Validates the input {@link Set} is either <code>null</code> or empty
+	 * 
+	 * @param setToBeValidated
+	 *            the {@link Set} object to be validated
+	 * @return <code>true</code> if {@link Set} is either <code>null</code> or
+	 *         empty, else <code>false</code>
+	 */
+	protected boolean isSetEmpty(Set<?> setToBeValidated) {
+		return setToBeValidated == null || setToBeValidated.isEmpty();
 	}
 
 	/**

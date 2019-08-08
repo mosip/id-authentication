@@ -980,13 +980,15 @@ public class LoginController extends BaseController implements Initializable {
 
 		String val = loginService.validateInvalidLogin(userDTO, errorMessage, invalidLoginCount, invalidLoginTime);
 
-		if (val.equalsIgnoreCase(RegistrationConstants.ERROR)) {
-			generateAlert(RegistrationConstants.ERROR, unlockMessage);
-			loadLoginScreen();
-		} else if (val.equalsIgnoreCase(errorMessage)) {
-			generateAlert(RegistrationConstants.ERROR, errorMessage);
-		} else {
-			validate = Boolean.valueOf(val);
+		if ("" != val) {
+			if (val.equalsIgnoreCase(RegistrationConstants.ERROR)) {
+				generateAlert(RegistrationConstants.ERROR, unlockMessage);
+				loadLoginScreen();
+			} else if (val.equalsIgnoreCase(errorMessage)) {
+				generateAlert(RegistrationConstants.ERROR, errorMessage);
+			} else {
+				validate = Boolean.valueOf(val);
+			}
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
