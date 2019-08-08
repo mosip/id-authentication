@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistrationCenterPutResponseDto {
 	private List<RegistrationCenterExtnDto> registrationCenters ;
-	private List<RegistrationCenterPutReqAdmDto> notUpdatedRegCenters;
+	private List<RegistrationCenterPutReqAdmDto> notUpdatedRegistrationCenters;
+	private List<RegistrationCenterExtnDto> newRegistartionCenters;
 
 }

@@ -108,7 +108,8 @@ public class RegistrationStatusServiceImpl
 			description.setMessage("Registration status added successfully");
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 					null, registrationStatusDto.getLatestTransactionTypeCode(), "Added registration status record",
-					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
+					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment(),
+					registrationStatusDto.getSubStatusCode());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
@@ -157,7 +158,7 @@ public class RegistrationStatusServiceImpl
 		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 				latestTransactionId, registrationStatusDto.getLatestTransactionTypeCode(),
 				"updated registration status record", registrationStatusDto.getLatestTransactionStatusCode(),
-				registrationStatusDto.getStatusComment());
+				registrationStatusDto.getStatusComment(),registrationStatusDto.getSubStatusCode());
 		transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 		transactionDto.setReferenceIdType("updated registration record");
 		transcationStatusService.addRegistrationTransaction(transactionDto);

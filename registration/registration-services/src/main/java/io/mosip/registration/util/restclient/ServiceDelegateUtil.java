@@ -408,7 +408,7 @@ public class ServiceDelegateUtil {
 		}
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
-				"Completed reparing Header for web-service request");
+				"Completed preparing Header for web-service request");
 	}
 
 	/**

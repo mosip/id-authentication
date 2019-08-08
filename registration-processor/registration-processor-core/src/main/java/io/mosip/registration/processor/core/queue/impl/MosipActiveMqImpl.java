@@ -1,14 +1,19 @@
 package io.mosip.registration.processor.core.queue.impl;
 
+import java.io.IOException;
+
 import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.Destination;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.transport.TransportListener;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -40,33 +45,38 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
               private Connection connection;
               private Session session;
               private Destination destination;
+              private static final String LINE_SEPERATOR = "----------------";
 
               /**
               * The method to set up session and destination
               * 
                * @param mosipActiveMq The Mosip ActiveMq instance
               */
-              private void setup(MosipActiveMq mosipActiveMq) {
-                             regProcLogger.debug("----------------", "--------------",
-                                                          "--------------", "-------------- ");
-                             try {
-                                           this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
-                                     regProcLogger.debug("-----SETUP-----", "-----SETUP-----",
-                                                                        "-----CONNECTION-----", "-----CONNECTION----- "+this.connection);
-                                           if (session == null) {
-                                                          connection.start();
-                                                          this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                                                          regProcLogger.debug("-----SETUP-----", "-----SETUP-----",
-                                                                                      "-----SESSION-----", "-----SESSION----- "+this.session);
-                                           }
-                             } catch (JMSException e) {
-                                           regProcLogger.error("-----SETUP-----", "-----SETUP-----",
-                                                                        "-----EXCEPTION-----", "-----EXCEPTION----- "+ExceptionUtils.getFullStackTrace(e));
-                                           throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_MQI_CONNECTION_UNAVAILABLE.getMessage(),
-                                                                        e);
-                             }
+	private void setup(MosipActiveMq mosipActiveMq) {
+		regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "In ActiveMq setUp ", LINE_SEPERATOR);
+		try {
+			this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
+			regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----CONNECTION-----",
+					LINE_SEPERATOR + this.connection);
+			regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----SESSION-----", LINE_SEPERATOR + this.session);
+			ActiveMQConnection activemQConn = (ActiveMQConnection)connection;
+			activemQConn.addTransportListener(new TransportExceptionListener());
+			if (session == null) {
+				connection.start();
+				this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+				regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----NEW CONNECTION-----",
+						LINE_SEPERATOR + this.connection);
+				regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----NEW SESSION-----",
+						LINE_SEPERATOR + this.session);
+			}
+		} catch (JMSException e) {
+			regProcLogger.error(LINE_SEPERATOR, LINE_SEPERATOR, "-----EXCEPTION While starting connection -----",
+					LINE_SEPERATOR + ExceptionUtils.getFullStackTrace(e));
+			throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_MQI_CONNECTION_UNAVAILABLE.getMessage(),
+					e);
+		}
 
-              }
+	}
 
               /*
               * (non-Javadoc)

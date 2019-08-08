@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.repositories.RegAuditRepository;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
@@ -70,8 +70,8 @@ public class AuditDAOImpl implements AuditDAO {
 
 			return audits;
 		} catch (RuntimeException exception) {
-			throw new RegBaseUncheckedException(RegistrationConstants.UPDATE_SYNC_AUDIT, exception.getMessage(),
-					exception);
+			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_GET_AUDITS_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_GET_AUDITS_EXCEPTION.getErrorMessage(), exception);
 		}
 	}
 

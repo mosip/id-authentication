@@ -1,5 +1,8 @@
 package io.mosip.registration.jobs.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +14,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
@@ -48,8 +52,7 @@ public class UserSaltSyncJob extends BaseJob {
 	/**
 	 * Execute internal.
 	 *
-	 * @param context
-	 *            the context
+	 * @param context the context
 	 */
 	/*
 	 * (non-Javadoc)
@@ -83,6 +86,9 @@ public class UserSaltSyncJob extends BaseJob {
 					RegistrationConstants.APPLICATION_ID,
 					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
+		} catch (RegBaseCheckedException checkedException) {
+			LOGGER.error(LoggerConstants.USER_SALT_SYNC_STATUS_JOB_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(checkedException));
 		}
 
 		LOGGER.info(LoggerConstants.USER_SALT_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -95,7 +101,12 @@ public class UserSaltSyncJob extends BaseJob {
 		LOGGER.info(LoggerConstants.USER_SALT_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		this.responseDTO = userSaltDetailsService.getUserSaltDetails(triggerPoint);
+		try {
+			this.responseDTO = userSaltDetailsService.getUserSaltDetails(triggerPoint);
+		} catch (RegBaseCheckedException checkedException) {
+			LOGGER.error(LoggerConstants.USER_SALT_SYNC_STATUS_JOB_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(checkedException));
+		}
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(LoggerConstants.USER_SALT_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,

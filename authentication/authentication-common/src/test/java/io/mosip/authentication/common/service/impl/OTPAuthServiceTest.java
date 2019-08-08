@@ -105,7 +105,7 @@ public class OTPAuthServiceTest {
 		request.setOtp("123455");
 		authreqdto.setRequest(request);
 		authreqdto.setIndividualId("12345");
-		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(null);
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(null);
 		try {
 			otpauthserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(), "123456");
 		} catch (IdAuthenticationBusinessException ex) {
@@ -133,7 +133,7 @@ public class OTPAuthServiceTest {
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "1234567890",
@@ -185,7 +185,7 @@ public class OTPAuthServiceTest {
 		autTxn.setRequestTrnId("1234567890");
 		autTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash("123456".getBytes())));
 		autntxnList.add(autTxn);
-		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456"));
 	}
@@ -204,7 +204,7 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("232323", "123456"));
 	}
@@ -316,7 +316,7 @@ public class OTPAuthServiceTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
 		otpAuthRequestDTO.setRequestedAuth(authType);
-		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
@@ -346,7 +346,7 @@ public class OTPAuthServiceTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
 		otpAuthRequestDTO.setRequestedAuth(authType);
-		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");

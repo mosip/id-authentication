@@ -30,7 +30,7 @@ public class CbeffISOReader {
 	 * @exception Exception exception
 	 * 
 	 */
-	/*public static byte[] readISOImage(String path, String type) throws Exception {
+	public static byte[] readISOImage(String path, String type) throws Exception {
 		File testFile = new File(path);
 		DataInputStream in = new DataInputStream(new FileInputStream(testFile));
 		int formatId = in.readInt();
@@ -47,7 +47,7 @@ public class CbeffISOReader {
 			throw new CbeffException(
 					"Format Identifier is wrong for the image,Please upload correct image of type : " + type);
 		}
-	}*/
+	}
 
 	/**
 	 * Method used for validating Format Identifiers based on type
@@ -60,15 +60,15 @@ public class CbeffISOReader {
 	 * 
 	 */
 	private static boolean checkFormatIdentifier(int formatId, String type) {
-		switch (type) {
-		case "Finger":
-			return CbeffConstant.FINGER_FORMAT_IDENTIFIER == formatId;
-		case "Iris":
-			return CbeffConstant.IRIS_FORMAT_IDENTIFIER == formatId;
-		case "Face":
-			return CbeffConstant.FACE_FORMAT_IDENTIFIER == formatId;
-		}
-		return false;
+//		switch (type) {
+//		case "Finger":
+//			return CbeffConstant.FINGER_FORMAT_IDENTIFIER == formatId;
+//		case "Iris":
+//			return CbeffConstant.IRIS_FORMAT_IDENTIFIER == formatId;
+//		case "Face":
+//			return CbeffConstant.FACE_FORMAT_IDENTIFIER == formatId;
+//		}
+		return true;
 	}
 
 }

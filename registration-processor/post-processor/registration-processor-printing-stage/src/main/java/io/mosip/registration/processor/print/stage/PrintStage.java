@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 import javax.jms.Message;
 import org.apache.activemq.command.ActiveMQBytesMessage;
@@ -29,17 +30,23 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.IdType;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
@@ -223,7 +230,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
-				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getMessage());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				registrationStatusDto
@@ -233,7 +240,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
-				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getMessage());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto
@@ -433,7 +440,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				if (status.equalsIgnoreCase(SUCCESS)) {
 					isTransactionSuccessful = true;
 					description = "Print and Post Completed for the regId : " + registrationId;
-					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusComment(StatusUtil.PRINT_POST_COMPLETED.getMessage());
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 					registrationStatusDto.setLatestTransactionTypeCode(
@@ -445,7 +452,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 					messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
 					messageDTO.setRid(registrationId);
 					description = "Re-Send uin card with regId " + registrationId + " for printing";
-					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusComment(StatusUtil.RESEND_UIN_CARD.getMessage());
 					registrationStatusDto.setLatestTransactionStatusCode(RESEND);
 					registrationStatusDto.setLatestTransactionTypeCode(
 							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());

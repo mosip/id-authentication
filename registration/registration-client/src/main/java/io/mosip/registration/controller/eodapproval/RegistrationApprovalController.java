@@ -61,6 +61,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -134,6 +136,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@FXML
 	private ToggleButton rejectionBtn;
+	
+	@FXML
+	private ImageView approvalImageView;
+	@FXML
+	private ImageView rejectionImageView;
 
 	/** Button for authentication. */
 
@@ -175,6 +182,20 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private Map<String, Integer> packetIds = new HashMap<>();
 
+	/**
+	 * @return the primaryStage
+	 */
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	/**
+	 * @param primaryStage the primaryStage to set
+	 */
+	public void setPrimaryStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -183,10 +204,22 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		Image rejectInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.WRONG_IMAGE_PATH));
+		Image rejectImage = new Image(getClass().getResourceAsStream(RegistrationConstants.REJECT_IMAGE_PATH));
+		
+		rejectionBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				rejectionImageView.setImage(rejectInWhite);
+			} else {
+				rejectionImageView.setImage(rejectImage);
+			}
+		});
+		
 		reloadTableView();
 		tableCellColorChangeListener();
 		id.setResizable(false);
 		statusComment.setResizable(false);
+		disableColumnsReorder(table);
 	}
 
 	private void tableCellColorChangeListener() {
@@ -298,34 +331,40 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	private void populateTable() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
-		List<RegistrationApprovalDTO> listData = null;
-		List<RegistrationApprovalVO> registrationApprovalVO = new ArrayList<>();
+		try {
+			List<RegistrationApprovalDTO> listData = null;
+			List<RegistrationApprovalVO> registrationApprovalVO = new ArrayList<>();
 
-		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
+			listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
-		if (!listData.isEmpty()) {
+			if (!listData.isEmpty()) {
 
-			int count=1;
-			for (RegistrationApprovalDTO approvalDTO : listData) {
-				registrationApprovalVO.add(new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
-								approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
-			}
-			int rowNum = 0;
-			for(RegistrationApprovalDTO approvalDTO : listData) {
-				packetIds.put(approvalDTO.getId(), rowNum++);
-			}
-			
-			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-			observableList = FXCollections.observableArrayList(registrationApprovalVO);
-			wrapListAndAddFiltering(observableList);
-		} else {
-			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
-			if(observableList != null) {
-				observableList.clear();
+				int count = 1;
+				for (RegistrationApprovalDTO approvalDTO : listData) {
+					registrationApprovalVO.add(
+							new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
+									approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
+				}
+				int rowNum = 0;
+				for (RegistrationApprovalDTO approvalDTO : listData) {
+					packetIds.put(approvalDTO.getId(), rowNum++);
+				}
+
+				// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+				observableList = FXCollections.observableArrayList(registrationApprovalVO);
 				wrapListAndAddFiltering(observableList);
+			} else {
+				approveRegistrationRootSubPane.disableProperty().set(true);
+				table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
+				if (observableList != null) {
+					observableList.clear();
+					wrapListAndAddFiltering(observableList);
+				}
+				filterField.clear();
 			}
-			filterField.clear();
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getErrorText());
 		}
 
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
@@ -365,6 +404,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		table.getSelectionModel().selectFirst();
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
+			approvalBtn.setDisable(false);
+			rejectionBtn.setDisable(false);
+		}else {
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
+			approvalBtn.setDisable(true);
+			rejectionBtn.setDisable(true);
 		}
 	}
 

@@ -110,6 +110,11 @@ public class TokenValidator {
 				if (role.contains(assignedRole))
 					return true;
 			}
+		}else if (url.contains("transaction")) {
+			for (String assignedRole : APIAuthorityList.REGISTRATIONTRANSACTION.getList()) {
+				if (role.contains(assignedRole))
+					return true;
+			}
 		} else if (url.contains("manual")) {
 			for (String assignedRole : APIAuthorityList.MANUALVERIFICTION.getList()) {
 				if (role.contains(assignedRole))
@@ -140,8 +145,8 @@ public class TokenValidator {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
-		} else if (url.contains("packetgenerator")) {
-			for (String assignedRole : APIAuthorityList.PACKETGENERATOR.getList()) {
+		} else if (url.contains("requesthandler")) {
+			for (String assignedRole : APIAuthorityList.REQUESTHANDLER.getList()) {
 				if (role.contains(assignedRole))
 					return true;
 			}

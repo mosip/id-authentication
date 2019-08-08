@@ -322,8 +322,8 @@ public class DataProvider {
 						.with(identity -> identity.setPostalCode("605110"))
 						.with(identity -> identity.setPhone("8889992233"))
 						.with(identity -> identity.setEmail("john.lawerence@gmail.com"))
-						.with(identity -> identity.setCnieNumber("123456789012"))
-						.with(identity -> identity.setLocalAdministrativeAuthority((List<ValuesDTO>)Builder.build(LinkedList.class)
+						.with(identity -> identity.setReferenceIdentityNumber("123456789012"))
+						.with(identity -> identity.setZone((List<ValuesDTO>)Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
 										.with(value -> value.setValue("Local Admin")).get()))
@@ -417,6 +417,8 @@ public class DataProvider {
 		registrationMetaDataDTO.setMachineId("yyeqy26356");
 		registrationMetaDataDTO.setRegistrationCategory("New");
 		registrationMetaDataDTO.setApplicantTypeCode("007");
+		registrationMetaDataDTO.setDeviceId("11143");
+		registrationMetaDataDTO.setConsentOfApplicant("Yes");
 		
 		return registrationMetaDataDTO;
 	}
@@ -426,6 +428,8 @@ public class DataProvider {
 		osiDataDTO.setOperatorID("op0r0s12");
 		osiDataDTO.setSupervisorID("s9ju2jhu");
 		osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+		osiDataDTO.setOperatorAuthenticatedByPassword(true);
+		osiDataDTO.setSuperviorAuthenticatedByPIN(true);
 		return osiDataDTO;
 	}
 

@@ -30,6 +30,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.security.AESEncryptionService;
@@ -43,7 +44,7 @@ import io.mosip.registration.service.security.AESEncryptionService;
  * @since 1.0.0
  */
 @Service
-public class PacketEncryptionServiceImpl implements PacketEncryptionService {
+public class PacketEncryptionServiceImpl extends BaseService implements PacketEncryptionService {
 
 	/**
 	 * Class to encrypt the data using AES Algorithm
@@ -87,24 +88,30 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	@Override
 	public ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException {
-		LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-				APPLICATION_ID, "Packet encryption had been started");
+		LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encryption had been started");
+
+		String rid = registrationDTO == null ? "RID not available" : registrationDTO.getRegistrationId();
+
 		try {
+			// Validate the input parameters and required configuration parameters
+			validateInputData(registrationDTO, packetZipData);
+
 			// Encrypt the packet
 			byte[] encryptedPacket = aesEncryptionService.encrypt(packetZipData);
-			
-			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Packet encrypted successfully");
-			
+
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encrypted successfully");
+
 			// Validate the size of the generated registration packet
-			long maxPacketSizeInBytes = Long.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))) * 1024 * 1024;
+			long maxPacketSizeInBytes = Long.valueOf(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))) * 1024 * 1024;
 			if (encryptedPacket.length > maxPacketSizeInBytes) {
 				LOGGER.error(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
-						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());
+						String.format("%s --> %s",
+								RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorCode(),
+								RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage()));
 			}
 
-			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Packet size validated successfully");
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet size validated successfully");
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
@@ -130,7 +137,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					.get());
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Sync'ed audit logs updated");
+					APPLICATION_ID, "Sync audit logs updated");
 			
 			auditFactory.audit(AuditEvent.PACKET_ENCRYPTED, Components.PACKET_ENCRYPTOR,
 					registrationDTO.getRegistrationId(), AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
@@ -146,11 +153,31 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			return responseDTO;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ENCRYPTION_MANAGER,
-					runtimeException.toString());
-		}finally {
-			LOGGER.info(LOG_PKT_ENCRYPTION,APPLICATION_NAME,APPLICATION_ID, 
-					"Registrtaion Process end for RID  : [ " + registrationDTO.getRegistrationId() + " ] ");
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_ENCRYPTION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_ENCRYPTION_EXCEPTION.getErrorMessage(), runtimeException);
+		} finally {
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
+					String.format("Registration Process end for RID  : [ %s ] ", rid));
 		}
 	}
+
+	private void validateInputData(final RegistrationDTO registration, final byte[] dataToBeEncrypted)
+			throws RegBaseCheckedException {
+		if (ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE) == null
+				|| !String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))
+						.matches(RegistrationConstants.NUMBER_REGEX)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SIZE_INVALID);
+		}
+
+		if (registration == null || isStringEmpty(registration.getRegistrationId())
+				|| registration.getAuditLogStartTime() == null || registration.getAuditLogEndTime() == null) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_AUDIT_DATES_MISSING);
+		}
+
+		if (isByteArrayEmpty(dataToBeEncrypted)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_TO_BE_ENCRYPTED_INVALID);
+		}
+	}
+
 }

@@ -1,18 +1,27 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.IndividualTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.IndividualTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +33,7 @@ import io.swagger.annotations.ApiResponses;
  * This controller class provides crud operation on individual type.
  * 
  * @author Bal Vikash Sharma
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -76,6 +86,42 @@ public class IndividualTypeController {
 		ResponseWrapper<PageDto<IndividualTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(individualTypeService.getIndividualTypes(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API to search Individual Types.
+	 * 
+	 * @param request
+	 *            the request DTO {@link SearchDto} wrapped in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. multiple entities based on the search values
+	 *         required.
+	 */
+	@ResponseFilter
+	@PostMapping("/search")
+	public ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> searchIndividuals(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(individualTypeService.searchIndividuals(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseDto> individualsFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(individualTypeService.individualsFilterValues(requestWrapper.getRequest()));
 		return responseWrapper;
 	}
 }

@@ -26,6 +26,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.MessageBusUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.retry.verticle.constants.ReprocessorConstants;
@@ -226,8 +227,9 @@ public class ReprocessorStage extends MosipVerticleAPIManager {
 							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS_FAILED.toString());
 							dto.setLatestTransactionTypeCode(
 									RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
-							dto.setStatusComment("Reprocess count has exceeded the configured attempts");
+							dto.setStatusComment(StatusUtil.RE_PROCESS_FAILED.getMessage());
 							dto.setStatusCode(RegistrationStatusCode.REPROCESS_FAILED.toString());
+							dto.setSubStatusCode(StatusUtil.RE_PROCESS_FAILED.getCode());
 							object.setRid(registrationId);
 							object.setIsValid(false);
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
@@ -255,8 +257,8 @@ public class ReprocessorStage extends MosipVerticleAPIManager {
 							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 							dto.setLatestTransactionTypeCode(
 									RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
-							dto.setStatusComment("Reprocess Completed");
-
+							dto.setStatusComment(StatusUtil.RE_PROCESS_COMPLETED.getMessage());
+							dto.setSubStatusCode(StatusUtil.RE_PROCESS_COMPLETED.getCode());
 							description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
 
 						}

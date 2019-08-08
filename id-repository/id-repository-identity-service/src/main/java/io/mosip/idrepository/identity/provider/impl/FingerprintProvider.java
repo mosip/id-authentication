@@ -19,6 +19,7 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -41,22 +42,25 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIR, BIR> {
 	@Override
 	public List<BIR> convertFIRtoFMR(List<BIR> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = filterTimestamp(listOfBIR);
-		 return listOfBIR.parallelStream()
-				.filter(bir -> Objects.nonNull(bir.getBdbInfo()) && bir.getBdbInfo().getFormatType().equals(7l)
-						&& bir.getBdbInfo().getFormatOwner().equals(257l)
+		return listOfBIR.parallelStream()
+				.filter(bir -> Objects.nonNull(bir.getBdbInfo())
+						&& bir.getBdbInfo().getFormat().getType().contentEquals("7")
+						&& bir.getBdbInfo().getFormat().getOrganization().contentEquals("257")
 						&& Objects.nonNull(latestcreationDate.get(bir.getBdbInfo().getSubtype().toString()))
 						&& DateUtils.isSameInstant(latestcreationDate.get(bir.getBdbInfo().getSubtype().toString()),
 								bir.getBdbInfo().getCreationDate()))
 				.map(bir -> new BIR.BIRBuilder().withBdb(convertToFMR(bir))
 						.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-						.withBdbInfo(Optional.ofNullable(bir.getBdbInfo())
-								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder().withFormatOwner(257l).withFormatType(2l)
-										.withQuality(bdbInfo.getQuality()).withType(bdbInfo.getType())
-										.withSubtype(bdbInfo.getSubtype()).withPurpose(PurposeType.IDENTIFY)
-										.withLevel(ProcessedLevelType.PROCESSED).withCreationDate(LocalDateTime.now())
-										.build())
-								.orElseGet(() -> null))
-						.build())
+						.withBdbInfo(Optional.ofNullable(bir.getBdbInfo()).map(bdbInfo -> {
+							RegistryIDType registryIDType = new RegistryIDType();
+							registryIDType.setOrganization("257");
+							registryIDType.setType("2");
+							return new BDBInfo.BDBInfoBuilder().withFormat(registryIDType)
+									.withQuality(bdbInfo.getQuality()).withType(bdbInfo.getType())
+									.withSubtype(bdbInfo.getSubtype()).withPurpose(PurposeType.IDENTIFY)
+									.withLevel(ProcessedLevelType.PROCESSED).withCreationDate(LocalDateTime.now())
+									.build();
+						}).orElseGet(() -> null)).build())
 				.collect(Collectors.toList());
 	}
 
@@ -69,8 +73,9 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIR, BIR> {
 	private Map<String, LocalDateTime> filterTimestamp(List<BIR> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = new HashMap<>();
 		listOfBIR.stream()
-				.filter(bir -> Objects.nonNull(bir.getBdbInfo()) && bir.getBdbInfo().getFormatType().equals(7l)
-						&& bir.getBdbInfo().getFormatOwner().equals(257l))
+				.filter(bir -> Objects.nonNull(bir.getBdbInfo())
+						&& bir.getBdbInfo().getFormat().getType().contentEquals("7")
+						&& bir.getBdbInfo().getFormat().getOrganization().contentEquals("257"))
 				.forEach(bir -> Optional.ofNullable(bir.getBdbInfo()).ifPresent(bdbInfo -> {
 					if (latestcreationDate.containsKey(bdbInfo.getSubtype().toString())) {
 						latestcreationDate.compute(bdbInfo.getSubtype().toString(),

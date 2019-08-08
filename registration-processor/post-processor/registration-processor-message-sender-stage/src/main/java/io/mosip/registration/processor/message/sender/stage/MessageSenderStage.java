@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +51,8 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.constants.MessageSenderConstant;
@@ -184,6 +186,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
@@ -222,7 +225,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				else if (registrationStatusDto.getRegistrationType()
 						.equalsIgnoreCase(SyncTypeDto.DEACTIVATED.getValue()))
 					type = NotificationTemplateType.UIN_UPDATE;
-
 			} else {
 				type = map.getTemplateType(status);
 			}
@@ -234,8 +236,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			String[] ccEMailList = null;
 
 			if (notificationTypes == null || notificationTypes.isEmpty()) {
-				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_FAILED + id + "::"
-						+ PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
+				description.setMessage(StatusUtil.TEMPLATE_CONFIGURATION_NOT_FOUND.getMessage());
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), object.getRid(),
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getMessage());
@@ -248,23 +249,15 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				ccEMailList = notificationEmails.split("\\|");
 			}
 
-			sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType, messageSenderDto);
+			boolean isNotificationSuccess = sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType, messageSenderDto, description);
 
-			isTransactionSuccessful = true;
-			description.setMessage(MessageSenderConstant.MESSAGE_SENDER_NOTIF_SUCC + id);
-
-			registrationStatusDto.setStatusComment(description.getMessage());
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-
-			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(),
-					registrationStatusDto.getLatestRegistrationTransactionId(),
-					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
-					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
-
-			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
-			transactionDto.setReferenceIdType(MessageSenderConstant.REFERENCE_TYPE_ID);
-			transactionStatusService.addRegistrationTransaction(transactionDto);
+			if(isNotificationSuccess){
+				isTransactionSuccessful = true;
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+			}else{
+				isTransactionSuccessful = false;
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			}
 
 			object.setIsValid(Boolean.TRUE);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -274,23 +267,34 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, e.getMessage() + ExceptionUtils.getStackTrace(e));
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_EPTN_MISSING + id + "::" + e.getMessage());
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + e.getMessage()));
 		} catch (TemplateNotFoundException tnf) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_TEMP_MISSING + id + "::" + tnf.getMessage());
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + tnf.getMessage()));
 		} catch (FSAdapterException e) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_PACKET_STORE + id);
+					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + ExceptionUtils.getStackTrace(e));
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 		} catch (Exception ex) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_INTERNAL_ERROR + id + "::" + ex.getMessage());
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 		} finally {
+			registrationStatusDto.setStatusComment(description.getMessage());
+			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
+					registrationStatusDto.getRegistrationId(),
+					registrationStatusDto.getLatestRegistrationTransactionId(),
+					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
+					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment(),
+                    registrationStatusDto.getSubStatusCode());
+			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
+			transactionDto.setReferenceIdType(MessageSenderConstant.REFERENCE_TYPE_ID);
+			transactionStatusService.addRegistrationTransaction(transactionDto);
+
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
@@ -317,32 +321,67 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 *            the all notification types
 	 * @param regType
 	 * @param messageSenderDto
+	 * @param description
 	 * @throws Exception
 	 *             the exception
 	 */
-	private void sendNotification(String id, Map<String, Object> attributes, String[] ccEMailList,
-			String[] allNotificationTypes, String regType, MessageSenderDto messageSenderDto) throws Exception {
+	private boolean sendNotification(String id, Map<String, Object> attributes, String[] ccEMailList,
+									 String[] allNotificationTypes, String regType, MessageSenderDto messageSenderDto, LogDescription description) throws Exception {
+		boolean isNotificationSuccess = false;
+		boolean isSMSSuccess = true, isEmailSuccess = true;
 		for (String notificationType : allNotificationTypes) {
-
 			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(messageSenderDto)) {
-
-				service.sendSmsNotification(messageSenderDto.getSmsTemplateCode().name(), id,
-						messageSenderDto.getIdType(), attributes, regType);
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-						MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
-
+				isSMSSuccess = SendSms(id, attributes, regType, messageSenderDto, description);
 			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(messageSenderDto)) {
-
-				service.sendEmailNotification(messageSenderDto.getEmailTemplateCode().name(), id,
-						messageSenderDto.getIdType(), attributes, ccEMailList, messageSenderDto.getSubject(), null,
-						regType);
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-						MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
-
+				isEmailSuccess = sendEmail(id, attributes, ccEMailList, regType, messageSenderDto, description);
 			} else {
 				throw new TemplateNotFoundException(MessageSenderStatusMessage.TEMPLATE_NOT_FOUND);
 			}
 		}
+
+		if(isEmailSuccess && isSMSSuccess) {
+			isNotificationSuccess = true;
+			description.setMessage(MessageSenderConstant.MESSAGE_SENDER_NOTIF_SUCC + id);
+		}
+
+		return isNotificationSuccess;
+	}
+
+	private boolean sendEmail(String id, Map<String, Object> attributes, String[] ccEMailList, String regType, MessageSenderDto messageSenderDto, LogDescription description) throws Exception {
+		boolean isEmailSuccess = false;
+		try {
+			ResponseDto emailResponse = service.sendEmailNotification(messageSenderDto.getEmailTemplateCode().name(), id,
+					messageSenderDto.getIdType(), attributes, ccEMailList, messageSenderDto.getSubject(), null,
+					regType);
+			if(emailResponse.getStatus().equals("success")){
+				isEmailSuccess = true;
+			}else{
+				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_EMAIL_FAILED + id);
+			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+					MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
+		}catch(TemplateGenerationFailedException | ApisResourceAccessException e){
+			description.setMessage(e.getMessage());
+		}
+		return isEmailSuccess;
+	}
+
+	private boolean SendSms(String id, Map<String, Object> attributes, String regType, MessageSenderDto messageSenderDto, LogDescription description) throws ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+		boolean isSmsSuccess = false;
+		try {
+			SmsResponseDto smsResponse = service.sendSmsNotification(messageSenderDto.getSmsTemplateCode().name(), id,
+					messageSenderDto.getIdType(), attributes, regType);
+			if(smsResponse.getStatus().equals("success")) {
+				isSmsSuccess = true;
+			}else{
+				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_SMS_FAILED + id);
+			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
+					MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
+		}catch(TemplateGenerationFailedException | ApisResourceAccessException e){
+			description.setMessage(e.getMessage());
+		}
+		return isSmsSuccess;
 	}
 
 	/**
