@@ -167,6 +167,8 @@ public class RegistrationUIConstants {
 	public static final String PHOTO = bundle.getString("PHOTO");
 	public static final String TAKE_PHOTO = bundle.getString("TAKE_PHOTO");
 	public static final String PACKET_CREATION_DISK_SPACE_CHECK = bundle.getString("PACKET_CREATION_DISK_SPACE_CHECK");
+	public static final String SECONDARY_LANG_MISSING = bundle.getString("SECONDARY_LANG_MISSING");
+	public static final String PRIMARY_LANG_MISSING = bundle.getString("PRIMARY_LANG_MISSING");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");

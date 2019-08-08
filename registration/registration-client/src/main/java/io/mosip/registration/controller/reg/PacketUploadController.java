@@ -191,6 +191,7 @@ public class PacketUploadController extends BaseController implements Initializa
 					if (!packetsToBeSynced.isEmpty()) {
 						String packetSyncStatus = packetSynchService.packetSync(packetsToBeSynced);
 						if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
+							selectAllCheckBox.setSelected(false);
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_FAILURE);
 						}
 					}
@@ -539,7 +540,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		table.setDisable(synchedPackets.isEmpty());
 		saveToDevice.setVisible(!synchedPackets.isEmpty());
 		uploadBtn.setVisible(!synchedPackets.isEmpty());
-
+		selectAllCheckBox.setSelected(false);
 		List<PacketStatusVO> packetsToBeExport = new ArrayList<>();
 		int count = 1;
 		for (PacketStatusDTO packet : synchedPackets) {
@@ -612,6 +613,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			stage.setScene(scene);
 			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			stage.show();
+			selectAllCheckBox.setSelected(false);
 			stage.setOnCloseRequest((e) -> {
 				saveToDevice.setDisable(false);
 				loadInitialPage();

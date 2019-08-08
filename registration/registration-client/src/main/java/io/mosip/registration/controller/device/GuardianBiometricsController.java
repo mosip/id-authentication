@@ -891,7 +891,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Clearing the captured biometric data");
 
-		if (getRegistrationDTOFromSession() != null) {
+		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (Boolean) SessionContext.map().remove(RegistrationConstants.IS_Child))) {
 			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.setFingerprintDetailsDTO(new ArrayList<>());
 

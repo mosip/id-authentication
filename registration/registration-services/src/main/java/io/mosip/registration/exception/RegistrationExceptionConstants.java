@@ -15,17 +15,50 @@ import static io.mosip.registration.constants.RegistrationConstants.REG_ACK_EXP_
  */
 public enum RegistrationExceptionConstants {
 
-	REG_SOCKET_ERROR_CODE(PACKET_CREATION_EXP_CODE +"SMA-001", "No socket is available"),
-	REG_NO_SUCH_ALGORITHM_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AKM-001", "No such algorithm available for input"),
-	REG_INVALID_DATA_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AEM-001", "Invalid Data for Packet Encryption"),
-	REG_INVALID_KEY_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AEM-002", "Invalid key for input"),
-	REG_INVALID_KEY_SEED_ERROR_CODE("REG-PRO-PAC-009", "Invalid seeds for key generation"),
 	REG_IO_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCM-001", "IO exception"),
+
+	// PacketHandlerService
+	REG_PACKET_CREATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PHS-001", "The packet zip file is either null or empty"),
+
+	// PacketCreationService
 	REG_JSON_PROCESSING_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-001", "Exception while parsing object to JSON"),
+	REG_PACKET_CREATION_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-002", "Unable to create packet zip from RegistrationDTO"),
+	REG_PACKET_BIO_CBEFF_GENERATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-002", "Exception while creating CBEFF file for biometrics"),
+
+	// AuditDAO
+	REG_GET_AUDITS_EXCEPTION(PACKET_CREATION_EXP_CODE + "ADA-001", "Unable to fetch Audit Logs based on provided dates"),
+
+	// PacketMetaInfoConverter
+	REG_PACKET_METAINFO_CONVERSION_EXCEPTION(PACKET_CREATION_EXP_CODE + "PMC-001", "Unable to create Packet Meta Info from RegistrationDTO"),
+
+	// ZipCreationService
+	REG_ADD_ENTRY_TO_ZIP_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCS-001", "Exception while adding the file to the zip output stream"),
+	REG_IO_ZIP_CREATION_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCS-002", "Exception while closing the zip output stream"),
+	REG_ZIP_CREATION_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCS-003", "Exception while creating packet zip file form RegistrationDTO and provided input files"),
+
+	// PacketEncryptionService
+	REG_PACKET_ENCRYPTION_EXCEPTION(PACKET_CREATION_EXP_CODE + "PES-001", "Exception while encrypting the packet zip"),
+	REG_PACKET_SIZE_EXCEEDED_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PES-002", "Registration packet size exceeded the configured file size"),
+
+	// AESEncryptionService
+	REG_INVALID_DATA_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AES-001", "Invalid Data for Packet Encryption using Symmetric Algorithm"),
+	REG_INVALID_KEY_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AES-002", "Invalid Key for Packet Encryption using Symmetric Algorithm"),
+	REG_PACKET_AES_ENCRYPTION_EXCEPTION(PACKET_CREATION_EXP_CODE + "AES-003", "Exception while Encrypting the packet zip"),
+
+	// RSAEncryptionService
+	REG_INVALID_DATA_RSA_ENCRYPTION(PACKET_CREATION_EXP_CODE + "RSA-001", "Invalid Key or Algorithm for encrypting the data using Assymmetric algorithm"),
+	REG_RUNTIME_RSA_ENCRYPTION(PACKET_CREATION_EXP_CODE + "RSA-002", "Exception while Encrypting the packet zip using Assymmetric algorithm"),
+
+	// StorageService
+	REG_PACKET_STORAGE_EXCEPTION(PACKET_CREATION_EXP_CODE + "SSI-001", "Exception while storing the packet in configured location"),
+	REG_PACKET_STORAGE_RUNTIME_EXCEPTION(PACKET_CREATION_EXP_CODE + "SSI-002", "Runtime Exception while storing the packet in configured location"),
+
+	// RegistrationDAO
+	REG_PACKET_SAVE_TO_DB_EXCEPTION(PACKET_CREATION_EXP_CODE + "RDA-001", "Exception while saving the registration details to DB"),
+
 	REG_FILE_NOT_FOUND_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-001", "File not found for input path"),
 	REG_IO_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "RKG-001", "Input-output relation failed"),
 	REG_CLASS_NOT_FOUND_ERROR_CODE(PACKET_CREATION_EXP_CODE + "SDU-001", "Class not found for input"),
-	REG_PACKET_CREATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PHS-001", "Exception while creating Registration"),
 	REG_FTP_CONNECTION_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-002","Error in ftp connection"),
 	REG_TEMPLATE_IO_EXCEPTION(REG_ACK_EXP_CODE + "TES","Exception while writing the template into file"),
 	REG_FTP_PROPERTIES_SET_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-003","Error in ftp properties"),
@@ -46,8 +79,6 @@ public enum RegistrationExceptionConstants {
 	REG_FINGERPRINT_SCANNING_ERROR(RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_EXP_CODE+"FCS-002", "Exception while scanning fingerprints of the individual"),
 	REG_OTP_VALIDATION("REG-OV-001","Erroe while validating the otp"),
 	REG_PACKET_DATE_PARSER_CODE(PACKET_CREATION_EXP_CODE + "TGE-001", "Exception while parsing the date to display in acknowledgement receipt"),
-	REG_PACKET_SIZE_EXCEEDED_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PES-001", "Registration packet size exceeded the configured file size"),
-	REG_PACKET_BIO_CBEFF_GENERATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-002", "Exception while creating CBEFF file for biometrics"),
 	REG_PACKET_JSON_VALIDATOR_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-003", "Exception while validating ID json file"),
 	AUTHZ_ADDING_AUTHZ_HEADER("REG-RCA-001", "Exception while invoking web-service request"),
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),

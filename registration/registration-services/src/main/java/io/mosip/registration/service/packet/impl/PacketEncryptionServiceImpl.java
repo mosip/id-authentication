@@ -87,24 +87,25 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	@Override
 	public ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException {
-		LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-				APPLICATION_ID, "Packet encryption had been started");
+		LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encryption had been started");
+
 		try {
 			// Encrypt the packet
 			byte[] encryptedPacket = aesEncryptionService.encrypt(packetZipData);
-			
-			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Packet encrypted successfully");
-			
+
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encrypted successfully");
+
 			// Validate the size of the generated registration packet
-			long maxPacketSizeInBytes = Long.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))) * 1024 * 1024;
+			long maxPacketSizeInBytes = Long.valueOf(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PKT_SIZE))) * 1024 * 1024;
 			if (encryptedPacket.length > maxPacketSizeInBytes) {
 				LOGGER.error(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
-						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());
+						String.format("%s --> %s",
+								RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorCode(),
+								RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage()));
 			}
 
-			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Packet size validated successfully");
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet size validated successfully");
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
@@ -146,11 +147,12 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			return responseDTO;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ENCRYPTION_MANAGER,
-					runtimeException.toString());
-		}finally {
-			LOGGER.info(LOG_PKT_ENCRYPTION,APPLICATION_NAME,APPLICATION_ID, 
-					"Registrtaion Process end for RID  : [ " + registrationDTO.getRegistrationId() + " ] ");
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_ENCRYPTION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_ENCRYPTION_EXCEPTION.getErrorMessage(), runtimeException);
+		} finally {
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Process end for RID  : [ " + registrationDTO.getRegistrationId() + " ] ");
 		}
 	}
 }
