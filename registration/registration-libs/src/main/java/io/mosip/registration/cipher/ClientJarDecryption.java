@@ -189,7 +189,6 @@ public class ClientJarDecryption extends Application {
 							updateMessage(DB_NOT_FOUND);
 
 							updateMessage(TERMINATING_APPLICATION);
-							Thread.sleep(3000);
 
 							exit();
 						}
