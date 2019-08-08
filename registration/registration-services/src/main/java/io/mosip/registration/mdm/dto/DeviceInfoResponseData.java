@@ -23,7 +23,8 @@ public class DeviceInfoResponseData {
 	private DeviceInfo deviceInfo;
 	private String deviceInfoSignature;
 	private String serviceVersion;
+	private String[] deviceSubId;
+	private Error error;
 	private String callbackId;
-	private String deviceSubId;
 
 }

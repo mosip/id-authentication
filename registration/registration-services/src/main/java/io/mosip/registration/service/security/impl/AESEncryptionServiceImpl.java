@@ -29,6 +29,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.service.security.RSAEncryptionService;
 
@@ -40,7 +41,7 @@ import io.mosip.registration.service.security.RSAEncryptionService;
  *
  */
 @Service
-public class AESEncryptionServiceImpl implements AESEncryptionService {
+public class AESEncryptionServiceImpl extends BaseService implements AESEncryptionService {
 
 	/**
 	 * Instance of {@link Logger}
@@ -71,6 +72,9 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 		LOGGER.info(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encryption had been started");
 
 		try {
+			// Validate the input parameters and required configuration parameters
+			validateInputData(dataToEncrypt);
+
 			// Enable AES 256 bit encryption
 			Security.setProperty("crypto.policy", "unlimited");
 			
@@ -108,6 +112,17 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 					RegistrationExceptionConstants.REG_PACKET_AES_ENCRYPTION_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_AES_ENCRYPTION_EXCEPTION.getErrorMessage(),
 					runtimeException);
+		}
+	}
+
+	private void validateInputData(final byte[] dataToBeEncrypted) throws RegBaseCheckedException {
+		if (ApplicationContext.map().get(RegistrationConstants.KEY_SPLITTER) == null
+				|| ApplicationContext.map().get(RegistrationConstants.KEY_SPLITTER).toString().isEmpty()) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_KEY_SPLITTER_INVALID);
+		}
+
+		if (isByteArrayEmpty(dataToBeEncrypted)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_TO_BE_ENCRYPTED_INVALID);
 		}
 	}
 

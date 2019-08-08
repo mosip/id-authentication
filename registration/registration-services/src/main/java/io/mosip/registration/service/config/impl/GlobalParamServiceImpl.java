@@ -298,35 +298,42 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Update global param started");
 
-		// Primary Key
-		GlobalParamId globalParamId = new GlobalParamId();
-		globalParamId.setCode(code);
-		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+		if(code!=null && val!=null) {
+			// Primary Key
+			GlobalParamId globalParamId = new GlobalParamId();
+			globalParamId.setCode(code);
+			globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 
-		// Get Current global param
-		GlobalParam globalParam = globalParamDAO.get(globalParamId);
+			// Get Current global param
+			GlobalParam globalParam = globalParamDAO.get(globalParamId);
 
-		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
-		if (globalParam == null) {
-			globalParam = new GlobalParam();
-			globalParam.setGlobalParamId(globalParamId);
-			globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-			globalParam.setCrDtime(time);
+			Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+			if (globalParam == null) {
+				globalParam = new GlobalParam();
+				globalParam.setGlobalParamId(globalParamId);
+				globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				globalParam.setCrDtime(time);
 
+			}
+			globalParam.setVal(val);
+			globalParam.setName(code);
+			globalParam.setIsActive(true);
+			globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			globalParam.setUpdDtimes(time);
+
+			// Update Global Param
+			globalParamDAO.update(globalParam);
+
+			updateApplicationMap(code, val);
+
+			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"Update global param ended");
 		}
-		globalParam.setVal(val);
-		globalParam.setName(code);
-		globalParam.setIsActive(true);
-		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-		globalParam.setUpdDtimes(time);
-
-		// Update Global Param
-		globalParamDAO.update(globalParam);
-
-		updateApplicationMap(code, val);
-
+		else {
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Update global param ended");
+				"Not Update global param because of code or val is null value");
+		}
+		
 
 	}
 

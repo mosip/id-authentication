@@ -34,6 +34,8 @@ import io.mosip.registration.processor.core.packet.dto.abis.ReferenceIdDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -119,6 +121,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 		LogDescription description = new LogDescription();
 		object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 		Boolean isTransactionSuccessful = false;
@@ -174,11 +177,13 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 			object.setInternalError(Boolean.TRUE);
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+			registrationStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 			if (transactionTypeCode.equalsIgnoreCase(AbisHandlerStageConstant.DEMOGRAPHIC_VERIFICATION)) {
 				registrationStatusDto.setRegistrationStageName(AbisHandlerStageConstant.DEMO_DEDUPE_STAGE);
 			} else if (transactionTypeCode.equalsIgnoreCase(AbisHandlerStageConstant.BIOGRAPHIC_VERIFICATION)) {
 				registrationStatusDto.setRegistrationStageName(AbisHandlerStageConstant.BIO_DEDUPE_STAGE);
 			}
+			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -261,6 +266,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		abisIdentifyRequestDto.setVer(AbisHandlerStageConstant.VERSION);
 		abisIdentifyRequestDto.setRequestId(id);
 		abisIdentifyRequestDto.setReferenceId(bioRefId);
+		abisIdentifyRequestDto.setReferenceUrl(url+"/"+ bioRefId);
 		abisIdentifyRequestDto.setTimestamp(AbisHandlerStageConstant.TIMESTAMP);
 		abisIdentifyRequestDto.setMaxResults(maxResults);
 		abisIdentifyRequestDto.setTargetFPIR(targetFPIR);
@@ -275,7 +281,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						"Potential Match Records are Not Found for Demo Dedupe Potential Match");
-				throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
+				throw new AbisHandlerException(description.getMessage());
 			}
 			List<ReferenceIdDto> referenceIdDtos = new ArrayList<>();
 
@@ -394,7 +400,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 		abisInsertRequestDto.setId(AbisHandlerStageConstant.MOSIP_ABIS_INSERT);
 		abisInsertRequestDto.setReferenceId(bioRefId);
-		abisInsertRequestDto.setReferenceURL(url + "/" + regId);
+		abisInsertRequestDto.setReferenceURL(url + "/" + bioRefId);
 		abisInsertRequestDto.setRequestId(id);
 		abisInsertRequestDto.setTimestamp(AbisHandlerStageConstant.TIMESTAMP);
 		abisInsertRequestDto.setVer(AbisHandlerStageConstant.VERSION);

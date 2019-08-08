@@ -97,6 +97,9 @@ public enum RegistrationExceptionConstants {
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
 	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
 	
+	//Template Service
+	TEMPLATE_CHECK_EXCEPTION(PACKET_CREATION_EXP_CODE + "TSI-001", "Template Type Code / Language Code cannot be null"),
+	
 	// TPM
 	TPM_UTIL_SIGN_ERROR("TPM-UTL-001", "Exception while signing the data using TPM"),
 	TPM_UTIL_VALIDATE_SIGN_ERROR("TPM-UTL-002",
@@ -159,8 +162,23 @@ public enum RegistrationExceptionConstants {
 	REG_PKT_ENCODED_STRING(PACKET_CREATION_EXP_CODE + "PUS-010", "Encoded string can not be empty or null"),
 	REG_PKT_TRIGGER_PT(PACKET_CREATION_EXP_CODE + "PUS-010", "Trigger point can not be empty or null"),
 	REG_PKT_ID(PACKET_CREATION_EXP_CODE + "PUS-011", "Packet id can not be empty or null"),
-	REG_PKT_UPLD_EXCEPTION(PACKET_CREATION_EXP_CODE + "PUS-001", "Upload Packet missing");
+	REG_PKT_UPLD_EXCEPTION(PACKET_CREATION_EXP_CODE + "PUS-001", "Upload Packet missing"),
+	
+	REG_MASTER_SYNC_SERVICE_IMPL("REG-MSS-001","master sync service mandatory fields are missing."),
+	REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE("REG-MSS-002","master sync service language code mandatory fields is missing."),
+	REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE("REG-MSS-003","master sync service code and language code mandatory fields is missing."),
+	REG_TRIGGER_POINT_MISSING("REG-TGP-001","trigger point is mandatory fields and it is missing."),
+	
+	//Login
+	REG_LOGIN_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
+	REG_LOGIN_AUTH_TYPE_EXCEPTION("REG-LSI-002","Authentication Type cannot be null or empty."),
+	REG_LOGIN_ROLES_EXCEPTION("REG-LSI-003","Roles cannot be null or empty."),
+	REG_LOGIN_CENTER_ID_EXCEPTION("REG-LSI-004","Registration Center Id cannot be null or empty."),
+	REG_LOGIN_LANG_CODE_EXCEPTION("REG-LSI-005","Language Code cannot be null or empty."),
+	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty.");
 
+
+	
 	/**
 	 * The constructor
 	 */

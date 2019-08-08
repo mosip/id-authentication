@@ -6,6 +6,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.pdf.BidiOrder;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -33,6 +36,7 @@ import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
+import io.mosip.registration.mdm.dto.DeviceInfo;
 import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
 import io.mosip.registration.mdm.util.MosioBioDeviceHelperUtil;
@@ -96,9 +100,14 @@ public class MosipBioDeviceManager {
 			url = buildUrl(port, MosipBioDeviceConstants.DEVICE_INFO_ENDPOINT);
 			/* check if the service is available for the current port */
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
-
-				List<LinkedHashMap<String, String>> deviceInfoResponseDtos = (List<LinkedHashMap<String, String>>) mosipBioDeviceIntegrator
+				List<LinkedHashMap<String, String>> deviceInfoResponseDtos =null;
+				String response =(String)  mosipBioDeviceIntegrator
 						.getDeviceInfo(url, Object[].class);
+				try {
+					deviceInfoResponseDtos = mapper.readValue(response, List.class);
+				} catch (IOException exception) {
+					throw new RegBaseCheckedException("202", "Device not found");
+				}
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
@@ -175,44 +184,18 @@ public class MosipBioDeviceManager {
 			bioDevice.setRunningPort(port);
 			bioDevice.setRunningUrl(getRunningurl());
 			bioDevice.setMosipBioDeviceIntegrator(mosipBioDeviceIntegrator);
-
-			String deviceSubType = deviceInfoResponse.getSubType();
-			switch (deviceInfoResponse.getType().toUpperCase()) {
-
-			case MosipBioDeviceConstants.VALUE_FINGERPRINT:
-				if (StringUtils.isNotEmpty(deviceInfoResponse.getSubType())) {
-					deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + deviceSubType,
-							bioDevice);
-				}
-
-				break;
-			case MosipBioDeviceConstants.VALUE_FACE:
-
-				deviceRegistry.put(MosipBioDeviceConstants.VALUE_FACE, bioDevice);
-				LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-						bioDevice + " device type is being added in the device registry");
-				break;
-			case MosipBioDeviceConstants.VALUE_IRIS:
-
-				if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
-					deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
-							+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-				} else if (MosipBioDeviceConstants.VALUE_DOUBLE.equalsIgnoreCase(deviceSubType)) {
-					deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
-							+ MosipBioDeviceConstants.VALUE_DOUBLE, bioDevice);
-				}
-				break;
-			case MosipBioDeviceConstants.VALUE_VEIN:
-				deviceRegistry.put(MosipBioDeviceConstants.VALUE_VEIN, bioDevice);
-				break;
-
-			default:
-				break;
-			}
-		} else {
-			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-					"Device response is invalid for device running at port number" + port);
-		}
+			DeviceInfo deviceInfo = deviceInfoResponse.getDeviceInfo();
+			bioDevice.setDeviceId(deviceInfo.getDeviceId());
+			bioDevice.setFirmWare(deviceInfo.getFirmware());
+			bioDevice.setDeviceProviderName(deviceInfo.getDeviceProviderName());
+			bioDevice.setDeviceProviderId(deviceInfo.getDeviceProviderId());
+			bioDevice.setDeviceModel(deviceInfo.getDeviceModel());
+			bioDevice.setDeviceMake(deviceInfo.getDeviceMake());
+			bioDevice.setDeviceExpiry(deviceInfo.getDeviceExpiry());
+			bioDevice.setCertification(deviceInfo.getCertification());
+			bioDevice.setTimestamp(deviceInfo.getTimestamp());
+			deviceRegistry.put(bioDevice.getDeviceType().toUpperCase()+RegistrationConstants.UNDER_SCORE+bioDevice.getDeviceSubType().toUpperCase(), bioDevice);
+		}	
 	}
 
 	/**
@@ -239,29 +222,95 @@ public class MosipBioDeviceManager {
 	 * @return CaptureResponseDto - captured biometric values from the device
 	 * @throws RegBaseCheckedException
 	 *             - generalised exception with errorCode and errorMessage
+	 * @throws IOException 
 	 */
-	public CaptureResponseDto scan(String deviceType) throws RegBaseCheckedException {
+	public CaptureResponseDto scan(String deviceType) throws RegBaseCheckedException, IOException {
 
+		BioDevice bioDevice = findDeviceToScan(deviceType);
+		if (bioDevice != null) {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device found in the device registery");
+			return bioDevice.capture();
+		} else {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device not found in the device registery");
+			return null;
+		}
+
+	}
+	
+	/**
+	 * Triggers the biometric capture based on the device type and returns the
+	 * biometric value from MDM
+	 * 
+	 * @param deviceType
+	 *            - The type of the device
+	 * @return CaptureResponseDto - captured biometric values from the device
+	 * @throws RegBaseCheckedException
+	 *             - generalised exception with errorCode and errorMessage
+	 * @throws IOException 
+	 */
+	public CaptureResponseDto authScan(String deviceType) throws RegBaseCheckedException, IOException {
+
+		BioDevice bioDevice = findDeviceToScan(deviceType);
+		InputStream streaming =  stream(deviceType);
+		if (bioDevice != null) {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device found in the device registery");
+			CaptureResponseDto captureResponse =  bioDevice.capture();
+			if(captureResponse.getError().getErrorCode().matches("202|403|404")) {
+				streaming.close();
+			}
+			return captureResponse;
+
+		} else {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device not found in the device registery");
+			return null;
+		}
+
+	}
+	
+	
+
+
+	private BioDevice findDeviceToScan(String deviceType) throws RegBaseCheckedException {
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID, "Enter scan method");
 
 		/*
 		 * fetch and store the bio device list from MDM if the device registry does not
 		 * contain the requested devices
 		 */
+		String deviceId="";
+		if(deviceType.contains("FINGERPRINT_SLAB")) {
+			deviceId=deviceType.substring("FINGERPRINT_SLAB".length()+1, deviceType.length());
+			deviceType="FINGERPRINT_SLAB";
+		}else if (deviceType.contains("IRIS_DOUBLE")) {
+			deviceType="IRIS_DOUBLE";
+			deviceId="DOUBLE";
+		}
+		if(deviceType.contains("FACE_FULL")) {
+			deviceId=deviceType.substring("FACE_FULL".length()+1, deviceType.length());
+			deviceType="FACE_FULL FACE";
+		}
 		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
 			init();
 		}
 		BioDevice bioDevice = deviceRegistry.get(deviceType);
-		if (bioDevice != null) {
-			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-					"Device found in the device registry");
-			return bioDevice.capture();
-		} else {
-			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-					"Device not found in the device registry");
-			throw new RegBaseCheckedException();
-		}
+		if(bioDevice==null)
+			return null;
+		bioDevice.buildDeviceSubId(deviceId);
+		return bioDevice;
+	}
+	
+	public InputStream stream(String deviceType) throws RegBaseCheckedException, IOException {
 
+		BioDevice bioDevice=null;
+			bioDevice = findDeviceToScan(deviceType);
+			if (bioDevice != null) 
+				return bioDevice.stream();
+			return null;
+	
 	}
 
 	/**
@@ -303,7 +352,7 @@ public class MosipBioDeviceManager {
 
 			CaptureResponseBioDto captureResponseBioDtos = captureResponseDto.getMosipBioDeviceDataResponses().get(0);
 			if (null != captureResponseBioDtos && null != captureResponseBioDtos.getCaptureResponseData()) {
-				return captureResponseBioDtos.getCaptureResponseData().getBioExtract();
+				return Base64.getDecoder().decode(captureResponseBioDtos.getCaptureResponseData().getBioExtract());
 			}
 		}
 		return capturedByte;

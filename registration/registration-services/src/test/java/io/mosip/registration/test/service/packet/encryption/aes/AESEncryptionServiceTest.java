@@ -83,8 +83,9 @@ public class AESEncryptionServiceTest {
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void aesEncryptionRuntimeExpTest() throws RegBaseCheckedException {
-		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		aesEncryptionServiceImpl.encrypt(null);
+		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes()))
+				.thenThrow(new RuntimeException("Invalid data"));
+		aesEncryptionServiceImpl.encrypt("data".getBytes());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -111,6 +112,29 @@ public class AESEncryptionServiceTest {
 		.thenThrow(MosipInvalidDataException.class);
 
 		aesEncryptionServiceImpl.encrypt("dataToEncrypt".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void keySplitterParamNotFound() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(new HashMap<>()).when(ApplicationContext.class, "map");
+
+		aesEncryptionServiceImpl.encrypt(null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void keySplitterParamInvalid() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.KEY_SPLITTER, RegistrationConstants.EMPTY);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+		aesEncryptionServiceImpl.encrypt(null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void dataToBeEncryptedInvalid() throws Exception {
+		aesEncryptionServiceImpl.encrypt(null);
 	}
 
 }

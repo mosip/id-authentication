@@ -38,6 +38,7 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.doc.category.DocumentCategoryService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
@@ -198,7 +199,6 @@ public class DocumentScanController extends BaseController {
 
 		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
 		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
-
 		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
 			if (newValue) {
 				backImageView.setImage(backInWhite);
@@ -328,6 +328,10 @@ public class DocumentScanController extends BaseController {
 				LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			} catch (RegBaseCheckedException checkedException) {
+				LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID,
+						checkedException.getMessage() + ExceptionUtils.getStackTrace(checkedException));
 			}
 
 			if (documentCategoryDtos != null && !documentCategoryDtos.isEmpty()) {

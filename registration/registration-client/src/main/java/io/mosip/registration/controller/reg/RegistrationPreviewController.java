@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
@@ -31,6 +32,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import javafx.event.ActionEvent;
@@ -49,7 +51,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private WebView webView;
-	
+
 	@FXML
 	private Button backBtn;
 
@@ -181,42 +183,47 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	public void setUpPreviewContent() {
 		LOGGER.info("REGISTRATION - UI - REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Setting up preview content has been started");
+		try {
+			if (templateContent.length() == 0) {
+				String platformLanguageCode = ApplicationContext.applicationLanguage();
+				templateContent
+						.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
+				templateContent
+						.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
+				templateContent
+						.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
+				templateContent
+						.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
+			}
+			String ackTemplateText = templateContent.toString();
+			if (ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
+				ackTemplateText = ackTemplateText.replace("} / ${", "}  ${");
+			}
 
-		if (templateContent.length() == 0) {
-			String platformLanguageCode = ApplicationContext.applicationLanguage();
-			templateContent
-					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_1, platformLanguageCode));
-			templateContent
-					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_2, platformLanguageCode));
-			templateContent
-					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_3, platformLanguageCode));
-			templateContent
-					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
-		}
-		String ackTemplateText = templateContent.toString();
-		if(ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
-			ackTemplateText = ackTemplateText.replace("} / ${", "}  ${");
-		}
-
-		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
-			templateGenerator.setConsentText(consentText);
-			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
-					getRegistrationDTOFromSession(), templateManagerBuilder, RegistrationConstants.TEMPLATE_PREVIEW);
-			if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
-				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
-						.get(RegistrationConstants.TEMPLATE_NAME);
-				webView.getEngine().loadContent(stringWriter.toString());
-				webView.getEngine().documentProperty()
-						.addListener((observableValue, oldValue, document) -> listenToButton(document));
+			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
+				templateGenerator.setConsentText(consentText);
+				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText,
+						getRegistrationDTOFromSession(), templateManagerBuilder,
+						RegistrationConstants.TEMPLATE_PREVIEW);
+				if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
+					Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
+							.get(RegistrationConstants.TEMPLATE_NAME);
+					webView.getEngine().loadContent(stringWriter.toString());
+					webView.getEngine().documentProperty()
+							.addListener((observableValue, oldValue, document) -> listenToButton(document));
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
+					clearRegistrationData();
+					goToHomePageFromRegistration();
+				}
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
 				clearRegistrationData();
 				goToHomePageFromRegistration();
 			}
-		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_PREVIEW_PAGE);
-			clearRegistrationData();
-			goToHomePageFromRegistration();
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
 
@@ -309,7 +316,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
-			
+
 			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO().stream().count();
 
@@ -317,9 +324,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 					.getIrisDetailsDTO().stream().count();
 			if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
-			} else if(getRegistrationDTOFromSession().isUpdateUINChild() && (fingerPrintCount > 0 || irisCount > 0)){
+			} else if (getRegistrationDTOFromSession().isUpdateUINChild() && (fingerPrintCount > 0 || irisCount > 0)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, true);
-			} else  if (fingerPrintCount > 0) {
+			} else if (fingerPrintCount > 0) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 			} else if (irisCount > 0) {
 

@@ -14,7 +14,7 @@ import lombok.Setter;
 public class DeviceInfo {
 
 	private String deviceId;
-	private String deviceSubId;
+	private String[] deviceSubId;
 	private String firmware;
 	private String deviceProviderName;
 	private String deviceProviderId;
