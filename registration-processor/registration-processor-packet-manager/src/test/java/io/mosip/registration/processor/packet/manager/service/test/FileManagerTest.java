@@ -26,7 +26,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
@@ -216,13 +215,6 @@ public class FileManagerTest {
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenThrow(new SftpException(0, fileNameWithoutExtn));
 		impl.cleanUp(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, sftpDto);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testgetSftpConnectionException() throws IOException, JSchException, JschConnectionException {
-
-		FileManagerImpl manager = new FileManagerImpl();
-		manager.getSftpConnection(sftpDto);
 	}
 
 }

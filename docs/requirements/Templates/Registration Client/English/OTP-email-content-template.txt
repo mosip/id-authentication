@@ -1,2 +1,0 @@
-Dear $name,
-OTP for username $username is $otp and is valid for $validTime minutes (Generated on $date at $time hrs).

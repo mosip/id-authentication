@@ -1,11 +1,22 @@
 package io.mosip.registration.constants;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.ResourceBundle;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.context.ApplicationContext;
 
 public class RegistrationUIConstants {
 
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationUIConstants.class);
+	
 	// Key values to read value from messages.properties file
 
 	public static final ResourceBundle bundle = ApplicationContext.applicationMessagesBundle();
@@ -13,7 +24,16 @@ public class RegistrationUIConstants {
 	public static final String MINUTES = bundle.getString("MINUTES");
 
 	public static String getMessageLanguageSpecific(String key) {
-		return bundle.getString(key);
+		String message = "ERROR";
+		try {
+			message = bundle.getString(key);
+		}catch(Exception runtimeException) {
+			LOGGER.error("REGISTRATION_UI_CONSTANTS", APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s -> Exception while initializing Fingerprint Capture page for user registration  %s",
+							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException)));
+		}
+		return message;
 	}
 
 	// ALERT
@@ -72,6 +92,8 @@ public class RegistrationUIConstants {
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
 	public static final String FACE_CAPTURE_ERROR = bundle.getString("FACE_CAPTURE_ERROR");
+	public static final String EXCEPTION_PHOTO_CAPTURE_ERROR = bundle.getString("EXCEPTION_PHOTO_CAPTURE_ERROR");
+	public static final String PARENT_FACE_CAPTURE_ERROR = bundle.getString("PARENT_FACE_CAPTURE_ERROR");
 	public static final String FACE_SCANNING_ERROR = bundle.getString("FACE_SCANNING_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
@@ -117,7 +139,7 @@ public class RegistrationUIConstants {
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");
 	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = bundle
 			.getString("DEMOGRAPHIC_DETAILS_ERROR_CONTEXT");
-
+	
 	// REGISTRATION
 	public static final String AGE_WARNING = bundle.getString("AGE_WARNING");
 	public static final String TO = bundle.getString("TO");
@@ -127,6 +149,9 @@ public class RegistrationUIConstants {
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("porDocuments");
 	public static final String DOB_DOCUMENT_EMPTY = bundle.getString("dobDocuments");
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
+	public static final String STREAMING_PREP_MESSAGE = bundle.getString("STREAMING_PREP_MESSAGE");
+	public static final String STREAMING_INIT_MESSAGE = bundle.getString("STREAMING_INIT_MESSAGE");
+	public static final String CAPTURING = bundle.getString("CAPTURING");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
@@ -164,6 +189,9 @@ public class RegistrationUIConstants {
 	public static final String LEFT_IRIS = bundle.getString("LEFT_IRIS");
 	public static final String PHOTO = bundle.getString("PHOTO");
 	public static final String TAKE_PHOTO = bundle.getString("TAKE_PHOTO");
+	public static final String PACKET_CREATION_DISK_SPACE_CHECK = bundle.getString("PACKET_CREATION_DISK_SPACE_CHECK");
+	public static final String SECONDARY_LANG_MISSING = bundle.getString("SECONDARY_LANG_MISSING");
+	public static final String PRIMARY_LANG_MISSING = bundle.getString("PRIMARY_LANG_MISSING");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
@@ -345,4 +373,17 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 
 	// AUTH TOKEN
 	public static String UNABLE_TO_GET_AUTH_TOKEN = bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
+	
+	// PAGE NAVIGATION
+	public static final String PAGE_NAVIGATION_MESSAGE = bundle.getString("PAGE_NAVIGATION_MESSAGE");
+	public static final String PAGE_NAVIGATION_CONFIRM = bundle.getString("PAGE_NAVIGATION_CONFIRM");
+	public static final String PAGE_NAVIGATION_CANCEL = bundle.getString("PAGE_NAVIGATION_CANCEL");
+	
+	// SYNC DATE TIME
+	public static final String LAST_DOWNLOADED = bundle.getString("LAST_DOWNLOADED");
+	public static final String LAST_UPDATED = bundle.getString("LAST_UPDATED");
+	
+	//Alert
+	public static final String ALERT_NOTE_LABEL = bundle.getString("ALERT_NOTE_LABEL");
+	public static final String ALERT_FAILED_LABEL = bundle.getString("ALERT_FAILED_LABEL");
 }

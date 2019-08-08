@@ -22,6 +22,7 @@ import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.template.impl.TemplateServiceImpl;
 
@@ -107,7 +108,7 @@ public class TemplateServiceTest {
 	}
 	
 	@Test
-	public void createReceiptTest() {
+	public void createReceiptTest() throws RegBaseCheckedException {
 		Template template = new Template();
 		template.setId("T01");
 		template.setFileTxt("sample text");
@@ -126,7 +127,7 @@ public class TemplateServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
-	public void getHtmlTemplateExceptionTest() {
+	public void getHtmlTemplateExceptionTest() throws RegBaseCheckedException {
 		TemplateServiceImpl temp = new TemplateServiceImpl();
 		TemplateServiceImpl spyTemp = Mockito.spy(temp);
 
@@ -135,5 +136,21 @@ public class TemplateServiceTest {
 		String ack = spyTemp.getHtmlTemplate("ackTemplate", "eng");
 
 		assertNull(ack);
+	}
+	
+	@Test(expected = RegBaseCheckedException.class)
+	public void getHtmlTemplateNullTest() throws RegBaseCheckedException {
+		TemplateServiceImpl temp = new TemplateServiceImpl();
+		TemplateServiceImpl spyTemp = Mockito.spy(temp);
+
+		spyTemp.getHtmlTemplate("", "eng");
+	}
+	
+	@Test(expected = RegBaseCheckedException.class)
+	public void getHtmlTemplateLangCodeNullTest() throws RegBaseCheckedException {
+		TemplateServiceImpl temp = new TemplateServiceImpl();
+		TemplateServiceImpl spyTemp = Mockito.spy(temp);
+
+		spyTemp.getHtmlTemplate("acktemplate", "");
 	}
 }

@@ -28,6 +28,7 @@ import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -306,16 +307,8 @@ public class CbeffToBiometricUtil {
 	 * @return the list
 	 */
 	public List<BIR> convertBIRTYPEtoBIR(List<BIRType> listOfBIR) {
-		return listOfBIR.parallelStream().map(bir -> new BIR.BIRBuilder().withBdb(bir.getBDB())
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(Optional.ofNullable(bir.getBDBInfo())
-						.map(bdbInfo -> new BDBInfo.BDBInfoBuilder().withIndex(bdbInfo.getIndex())
-								.withFormatOwner(bdbInfo.getFormatOwner()).withFormatType(bdbInfo.getFormatType())
-								.withQuality(bdbInfo.getQuality()).withType(bdbInfo.getType())
-								.withSubtype(bdbInfo.getSubtype()).withPurpose(bdbInfo.getPurpose())
-								.withLevel(bdbInfo.getLevel()).withCreationDate(bdbInfo.getCreationDate()).build())
-						.orElseGet(() -> null))
-				.build()).collect(Collectors.toList());
+		
+		return cbeffutil.convertBIRTypeToBIR(listOfBIR);
 	}
 
 	/**

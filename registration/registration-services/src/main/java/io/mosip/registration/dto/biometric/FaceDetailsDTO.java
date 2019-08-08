@@ -32,5 +32,8 @@ public class FaceDetailsDTO extends BaseDTO {
 
 	/** The compressed photo for QR Code. */
 	private byte[] compressedFacePhoto;
+	
+	/** The face. */
+	private byte[] faceISO;
 
 }

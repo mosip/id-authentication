@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.18</version>
+		<version>0.9.1</version>
 	</parent>
 
 	<groupId>io.mosip.authentication</groupId>
@@ -25,6 +25,7 @@
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
+		<module>authentication-demo-app</module>
 		<!-- <module>authentication-vid-service</module>
 		<module>authentication-staticpin-service</module> -->
 	</modules>

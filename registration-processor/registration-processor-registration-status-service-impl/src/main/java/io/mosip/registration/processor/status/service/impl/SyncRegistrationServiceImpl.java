@@ -258,7 +258,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			return true;
 		}  else if (SyncTypeDto.RES_UPDATE.getValue().equals(value)) {
 			return true;
-		} else {
+		}  else if (SyncTypeDto.RES_REPRINT.getValue().equals(value)) {
+			return true;
+		}  else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
 

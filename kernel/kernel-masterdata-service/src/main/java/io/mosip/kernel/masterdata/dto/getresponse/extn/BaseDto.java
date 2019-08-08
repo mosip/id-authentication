@@ -17,14 +17,14 @@ import lombok.Data;
 @Data
 @ApiModel(value = "base dto", description = "this class will contains metadata")
 public class BaseDto {
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
+	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 
 	@ApiModelProperty(value = "createdBy", required = true, dataType = "java.lang.String")
 	private String createdBy;
 
-	@FilterType(types = { FilterTypeEnum.BETWEEN})
+	@FilterType(types = { FilterTypeEnum.BETWEEN })
 	@ApiModelProperty(value = "createdBy", required = true, dataType = "java.time.LocalDateTime")
 	private LocalDateTime createdDateTime;
 

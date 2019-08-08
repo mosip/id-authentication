@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.biometric;
 
+import java.util.List;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -12,6 +14,26 @@ public class IrisDetailsDTO extends BaseDTO {
 
 	/** The iris. */
 	private byte[] iris;
+	
+	private byte[] irisIso;
+	
+	private boolean captured;
+
+	public boolean isCaptured() {
+		return captured;
+	}
+
+	public void setCaptured(boolean captured) {
+		this.captured = captured;
+	}
+
+	public byte[] getIrisIso() {
+		return irisIso;
+	}
+
+	public void setIrisIso(byte[] irisIso) {
+		this.irisIso = irisIso;
+	}
 
 	/** The iris image name. */
 	protected String irisImageName;
@@ -21,6 +43,16 @@ public class IrisDetailsDTO extends BaseDTO {
 
 	/** The is force captured. */
 	protected boolean isForceCaptured;
+	
+	private List<IrisDetailsDTO> irises;
+
+	public List<IrisDetailsDTO> getIrises() {
+		return irises;
+	}
+
+	public void setIrises(List<IrisDetailsDTO> irises) {
+		this.irises = irises;
+	}
 
 	/** The iris type. */
 	protected String irisType;

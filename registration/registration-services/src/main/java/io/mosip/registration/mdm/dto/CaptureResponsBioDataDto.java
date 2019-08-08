@@ -11,20 +11,19 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CaptureResponsBioDataDto {
 
+public class CaptureResponsBioDataDto {
 	private String deviceCode;
 	private String deviceProviderID;
 	private String deviceServiceID;
 	private String deviceServiceVersion;
 	private String bioType;
 	private String bioSubType;
-	private String bioSegmentedType;
 	private String mosipProcess;
 	private String env;
 	private byte[] bioValue;
-	private byte[] bioExtract;
-	private String transactionID;
+	private String bioExtract;
+	private String registrationID;
 	private String timestamp;
 	private String requestedScore;
 	private String qualityScore;

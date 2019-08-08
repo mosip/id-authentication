@@ -6,6 +6,7 @@ import java.util.List;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * This DTO class contains the Registration details.
@@ -16,6 +17,7 @@ import lombok.Data;
  *
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class RegistrationDTO extends BaseDTO {
 
 	private BiometricDTO biometricDTO;
@@ -31,5 +33,6 @@ public class RegistrationDTO extends BaseDTO {
 	private boolean isUpdateUINNonBiometric;	
 	private boolean isNameNotUpdated;	
 	private boolean isUpdateUINChild;
+	private boolean isAgeCalculatedByDOB;
 	
 }

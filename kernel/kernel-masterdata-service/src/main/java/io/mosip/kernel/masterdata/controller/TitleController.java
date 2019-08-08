@@ -189,8 +189,14 @@ public class TitleController {
 		return responseWrapper;
 	}
 	
+	/**
+	 * Filter templates.
+	 *
+	 * @param request the request
+	 * @return {@link FilterResponseDto}
+	 */
 	@ResponseFilter
-	@PostMapping("title/filter")
+	@PostMapping("title/filtervalues")
 	@ApiOperation(value = "filter title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })

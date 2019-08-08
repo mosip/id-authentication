@@ -71,6 +71,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
@@ -138,6 +139,8 @@ public class PacketUploadController extends BaseController implements Initializa
 	private ObservableList<PacketStatusVO> observableList;
 
 	private SortedList<PacketStatusVO> sortedList;
+	
+	private Stage stage;
 
 	/**
 	 * This method is used to Sync as well as upload the packets.
@@ -145,7 +148,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	 */
 	public void syncAndUploadPacket() {
 
-		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNC_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
 		observableList.clear();
 		table.refresh();
@@ -190,6 +193,7 @@ public class PacketUploadController extends BaseController implements Initializa
 					if (!packetsToBeSynced.isEmpty()) {
 						String packetSyncStatus = packetSynchService.packetSync(packetsToBeSynced);
 						if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
+							selectAllCheckBox.setSelected(false);
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SYNC_FAILURE);
 						}
 					}
@@ -538,7 +542,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		table.setDisable(synchedPackets.isEmpty());
 		saveToDevice.setVisible(!synchedPackets.isEmpty());
 		uploadBtn.setVisible(!synchedPackets.isEmpty());
-
+		selectAllCheckBox.setSelected(false);
 		List<PacketStatusVO> packetsToBeExport = new ArrayList<>();
 		int count = 1;
 		for (PacketStatusDTO packet : synchedPackets) {
@@ -571,6 +575,8 @@ public class PacketUploadController extends BaseController implements Initializa
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
 		regDate.setResizable(false);
+		
+		disableColumnsReorder(table);
 		// fileColumn.setResizable(false);
 		// statusColumn.setResizable(false);
 	}
@@ -579,7 +585,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	private void displayStatus(List<PacketStatusDTO> filesToDisplay) {
 		Platform.runLater(() -> {
 
-			Stage stage = new Stage();
+			stage = new Stage();
 
 			stage.setTitle(RegistrationUIConstants.PACKET_UPLOAD_HEADER_NAME);
 			stage.setWidth(500);
@@ -607,7 +613,9 @@ public class PacketUploadController extends BaseController implements Initializa
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);
 			stage.setScene(scene);
+			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			stage.show();
+			selectAllCheckBox.setSelected(false);
 			stage.setOnCloseRequest((e) -> {
 				saveToDevice.setDisable(false);
 				loadInitialPage();
@@ -676,4 +684,14 @@ public class PacketUploadController extends BaseController implements Initializa
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(RegistrationConstants.EOD_PROCESS_DATE_FORMAT_FOR_FILE);
 		return LocalDateTime.now().format(format);
 	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+	
+	
 }

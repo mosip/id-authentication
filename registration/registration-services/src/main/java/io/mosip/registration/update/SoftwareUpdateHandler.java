@@ -421,7 +421,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	private Manifest getLocalManifest() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Geting  of local manifest started");
+				"Getting  of local manifest started");
 
 		File localManifestFile = new File(manifestFile);
 
@@ -432,7 +432,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Geting  of local manifest completed");
+				"Getting  of local manifest completed");
 		return localManifest;
 	}
 

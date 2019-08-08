@@ -1,13 +1,17 @@
 package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +20,16 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryTypeMappingExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ValidDocumentExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
 import io.swagger.annotations.Api;
@@ -33,10 +42,12 @@ import io.swagger.annotations.ApiResponses;
  * Controller class to create and delete valid document.
  * 
  * @author Ritesh Sinha
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
 @RestController
+@Validated
 @Api(tags = { "ValidDocument" })
 public class ValidDocumentController {
 
@@ -93,7 +104,7 @@ public class ValidDocumentController {
 	 *            types should be fetch
 	 * @return the valid documents
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/validdocuments/{languagecode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a languagecode")
@@ -118,7 +129,7 @@ public class ValidDocumentController {
 	 * 
 	 * @return the response i.e. pages containing the valid documents.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/validdocuments/all")
 	@ApiOperation(value = "Retrieve all the document categories and associated document types with additional metadata", notes = "Retrieve all the document categories and associated document types with the additional metadata")
@@ -131,6 +142,80 @@ public class ValidDocumentController {
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
 		ResponseWrapper<PageDto<ValidDocumentExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.getValidDocuments(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * POST API to search document type-category mapping
+	 * 
+	 * @param request
+	 *            input from user
+	 * @return dto containing mapped doc type-cat values
+	 */
+	@ResponseFilter
+	@PostMapping("/validdocuments/search")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageDto<DocumentCategoryTypeMappingExtnDto>> searchValidDocument(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageDto<DocumentCategoryTypeMappingExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.searchValidDocument(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * POST API to filter document type-category mapping
+	 * 
+	 * @param request
+	 *            input from user
+	 * @return column values of input request
+	 */
+	@ResponseFilter
+	@PostMapping("/validdocuments/filtervalues")
+	public ResponseWrapper<FilterResponseDto> categoryTypeFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.categoryTypeFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	
+	/**
+	 * Api to map Document Category to a Document Type.
+	 * 
+	 * @param docCatCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
+	 * @return the DocCategoryAndTypeMappingResponseDto.
+	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/validdocuments/map/{doccategorycode}/{doctypecode}")
+	public ResponseWrapper<DocCategoryAndTypeMappingResponseDto> mapDocCategoryAndDocType(
+			@PathVariable("doccategorycode") @NotBlank @Size(min = 1, max = 36) String docCatCode, @PathVariable("doctypecode") @NotBlank @Size(min = 1, max = 36) String docTypeCode) {
+
+		ResponseWrapper<DocCategoryAndTypeMappingResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.mapDocCategoryAndDocType(docCatCode, docTypeCode));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Api to un-map Document Category from a Document Type.
+	 * 
+	 * @param docCatCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
+	 * @return the DocCategoryAndTypeMappingResponseDto.
+	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/validdocuments/unmap/{doccategorycode}/{doctypecode}")
+	public ResponseWrapper<DocCategoryAndTypeMappingResponseDto> unmapDocCategoryAndDocType(
+			@PathVariable("doccategorycode") @NotBlank @Size(min = 1, max = 36) String docCatCode, @PathVariable("doctypecode") @NotBlank @Size(min = 1, max = 36) String docTypeCode) {
+
+		ResponseWrapper<DocCategoryAndTypeMappingResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.unmapDocCategoryAndDocType(docCatCode, docTypeCode));
 		return responseWrapper;
 	}
 }

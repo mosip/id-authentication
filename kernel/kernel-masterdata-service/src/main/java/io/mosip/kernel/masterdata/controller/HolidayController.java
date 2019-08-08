@@ -25,6 +25,11 @@ import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -172,6 +177,40 @@ public class HolidayController {
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
 		ResponseWrapper<PageDto<HolidayExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.getHolidays(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to search Holiday based on filters provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the pages of {@link HolidaySearchDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/search")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to filter Holiday based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<FilterResponseDto> holidayFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 

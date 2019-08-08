@@ -5,6 +5,11 @@ package io.mosip.kernel.core.cbeffutil.entity;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
+import org.w3c.dom.Element;
+
+import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
@@ -23,8 +28,7 @@ public class BIR {
 	private byte[] bdb;
 	private byte[] sb;
 	private SBInfo sbInfo;
-	private List<Object> element;
-	private List<BIR> birList;
+	private List<JAXBElement<String>> element;
 
 	public BIR(BIRBuilder birBuilder) {
 		this.version = birBuilder.version;
@@ -40,7 +44,7 @@ public class BIR {
 	/**
 	 * @return the element
 	 */
-	public List<Object> getElement() {
+	public List<JAXBElement<String>> getElement() {
 		return element;
 	}
 
@@ -93,20 +97,6 @@ public class BIR {
 		return sbInfo;
 	}
 
-	/**
-	 * @return the sbInfo
-	 */
-	public List<BIR> getBirList() {
-		return birList;
-	}
-	
-	/**
-	 * @param birList the birList to set
-	 */
-	public void setBirList(List<BIR> birList) {
-		this.birList = birList;
-	}
-
 	public static class BIRBuilder {
 		private BIRVersion version;
 		private BIRVersion cbeffversion;
@@ -115,10 +105,10 @@ public class BIR {
 		private byte[] bdb;
 		private byte[] sb;
 		private SBInfo sbInfo;
-		private List<Object> element;
+		private List<JAXBElement<String>> element;
 
-		public BIRBuilder withElement(List<Object> element) {
-			this.element = element;
+		public BIRBuilder withElement(List<JAXBElement<String>> list) {
+			this.element = list;
 			return this;
 		}
 
@@ -165,8 +155,10 @@ public class BIR {
 
 	public BIRType toBIRType(BIR bir) {
 		BIRType bIRType = new BIRType();
+		if (bir.getVersion() != null)
+			bIRType.setVersion(bir.getVersion().toVersion());
 		if (bir.getCbeffversion() != null)
-			bIRType.setVersion(bir.getCbeffversion().toVersion());
+			bIRType.setCBEFFVersion(bir.getCbeffversion().toVersion());
 		bIRType.setBDB(getBdb());
 		bIRType.setSB(getSb());
 		if (bir.getBirInfo() != null)

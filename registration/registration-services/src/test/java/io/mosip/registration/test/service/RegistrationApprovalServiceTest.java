@@ -73,7 +73,7 @@ public class RegistrationApprovalServiceTest {
 	}
 
 	@Test
-	public void testGetEnrollmentByStatus() {
+	public void testGetEnrollmentByStatus() throws RegBaseCheckedException {
 		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();
@@ -139,5 +139,20 @@ public class RegistrationApprovalServiceTest {
 	public void testValidateException() throws RegBaseCheckedException {
 		when( registrationDAO.getEnrollmentByStatus(Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
 		registrationApprovalServiceImpl.getEnrollmentByStatus("ON_HOLD");
+	}
+	
+	@Test(expected = RegBaseCheckedException.class)
+	public void testValidateException1() throws RegBaseCheckedException {
+		registrationApprovalServiceImpl.getEnrollmentByStatus("");
+	}
+	
+	@Test(expected = RegBaseCheckedException.class)
+	public void testValidateException2() throws RegBaseCheckedException {
+		registrationApprovalServiceImpl.updateRegistration("123","","");
+	}
+	
+	@Test(expected = RegBaseCheckedException.class)
+	public void testValidateException3() throws RegBaseCheckedException {
+		registrationApprovalServiceImpl.updateRegistration("","","REGISTERED");
 	}
 }
