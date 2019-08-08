@@ -107,8 +107,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				"PacketGeneratorServiceImpl ::createPacket()::entry");
 		byte[] packetZipBytes = null;
 		if (validator.isValidCenter(request.getCenterId()) && validator.isValidMachine(request.getMachineId())
-				&& validator.isValidUin(request.getUin())
-				&& validator.isValidRegistrationType(request.getRegistrationType())) {
+				&& validator.isValidRegistrationTypeAndUin(request.getRegistrationType(), request.getUin())) {
 			try {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", "Packet Generator Validation successfull");
