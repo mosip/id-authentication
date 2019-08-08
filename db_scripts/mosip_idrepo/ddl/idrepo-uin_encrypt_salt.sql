@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_repo
+-- Table Name 	: idrepo.uin_encrypt_salt
+-- Purpose    	: UIN Encript Salt: Stores the salt used to encrypt an uin of an individual in the encryption algorithm.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: idrepo.uin_encrypt_salt | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin_encrypt_salt CASCADE;
 CREATE TABLE idrepo.uin_encrypt_salt(
@@ -25,6 +38,3 @@ COMMENT ON COLUMN idrepo.uin_encrypt_salt.upd_by IS 'Updated By : ID or name of 
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin_encrypt_salt.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
 -- ddl-end --
-ALTER TABLE idrepo.uin_encrypt_salt OWNER TO sysadmin;
--- ddl-end --
-

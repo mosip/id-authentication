@@ -1,32 +1,32 @@
--- create table section ------------------------------------------------------------
--- schema 		: reg  		- registration schema
--- table 		: reason_list  - reg reason_list list
--- table alias  : rsnlst	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.reason_list
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section --------------------------------------------------------------------
+-- object: reg.reason_list | type: TABLE --
+-- DROP TABLE IF EXISTS reg.reason_list CASCADE;
+CREATE TABLE reg.reason_list(
+	code character varying(36) NOT NULL,
+	name character varying(64) NOT NULL,
+	descr character varying(256),
+	rsncat_code character varying(36) NOT NULL,
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_rsnlst_code PRIMARY KEY (code,rsncat_code,lang_code)
 
-	create table reg.reason_list ( 
-	
-		code character varying(36) not null ,
-		
-		name  character varying (64) not null ,			
-		descr character varying (256) ,
-	
-		rsncat_code  character varying(36) not null ,    -- reg.reason_category.code
-		
-		lang_code  character varying(3) not null ,		-- reg.language.code
-	
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes timestamp ,
-		is_deleted 	boolean,
-		del_dtimes	timestamp 
-	)
-;
-
--- keys section ---------------------------------------------------------------------------
-alter table reg.reason_list add constraint pk_rsnlst_code primary key (code, rsncat_code, lang_code)
- ;
-
+);
+-- ddl-end --

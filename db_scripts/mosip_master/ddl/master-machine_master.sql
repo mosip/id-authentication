@@ -1,24 +1,37 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_master
+-- Table Name 	: master.machine_master
+-- Purpose    	: Machine Master : Contains list of approved Machines and  details,  like laptop, desktop, dongle etc used at registration centers. Valid Machines with active status only allowed at registration centers for respective functionalities. Machine onboarding are handled through admin application/portal by the user who is having the Machine onboarding authority.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: master.machine_master | type: TABLE --
 -- DROP TABLE IF EXISTS master.machine_master CASCADE;
 CREATE TABLE master.machine_master(
-	id 				character varying(10) NOT NULL,
-	name 			character varying(64) NOT NULL,
-	mac_address 	character varying(64) NOT NULL,
-	serial_num 		character varying(64) NOT NULL,
-	ip_address 		character varying(17),
+	id character varying(10) NOT NULL,
+	name character varying(64) NOT NULL,
+	mac_address character varying(64) NOT NULL,
+	serial_num character varying(64) NOT NULL,
+	ip_address character varying(17),
 	validity_end_dtimes timestamp,
-	mspec_id 			character varying(36) NOT NULL,
-	public_key 			bytea,
-	key_index 			character varying(128),
-	zone_code 		character varying(36) NOT NULL,
-	lang_code 		character varying(3) NOT NULL,
-	is_active 		boolean NOT NULL,
-	cr_by 			character varying(256) NOT NULL,
-	cr_dtimes 		timestamp NOT NULL,
-	upd_by 			character varying(256),
-	upd_dtimes 		timestamp,
-	is_deleted 		boolean,
-	del_dtimes 		timestamp,
+	mspec_id character varying(36) NOT NULL,
+	public_key bytea,
+	key_index character varying(128),
+	zone_code character varying(36) NOT NULL,
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
 	CONSTRAINT pk_machm_id PRIMARY KEY (id,lang_code)
 
 );

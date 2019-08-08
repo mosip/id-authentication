@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : pmp.misp
+-- Purpose    : MISP: MISP, acronym for MOSIP Identity Service Provider, stores the master list of MISPs.
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: pmp.misp | type: TABLE --
 -- DROP TABLE IF EXISTS pmp.misp CASCADE;
 CREATE TABLE pmp.misp(
@@ -48,6 +61,3 @@ COMMENT ON COLUMN pmp.misp.is_deleted IS 'IS_Deleted : Flag to mark whether the 
 -- ddl-end --
 COMMENT ON COLUMN pmp.misp.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE pmp.misp OWNER TO sysadmin;
--- ddl-end --
-
