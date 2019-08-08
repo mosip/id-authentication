@@ -32,6 +32,7 @@ public class AuthtypeLock {
 	@Column(name = "uin_hash")
 	private String hashedUin;
 
+	@Id
 	@NotNull
 	@Column(name = "auth_type_code")
 	private String authtypecode;
@@ -41,7 +42,6 @@ public class AuthtypeLock {
 	@Column(name = "lock_request_datetime")
 	private LocalDateTime lockrequestDTtimes;
 
-	@Id
 	@NotNull
 	@Column(name = "lock_start_datetime")
 	private LocalDateTime lockstartDTtimes;
@@ -82,8 +82,8 @@ public class AuthtypeLock {
 	static class Compositeclass implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private String uin;
+		private String authtypecode;
 		private LocalDateTime lockrequestDTtimes;
-		private LocalDateTime lockstartDTtimes;
 	}
 
 }
