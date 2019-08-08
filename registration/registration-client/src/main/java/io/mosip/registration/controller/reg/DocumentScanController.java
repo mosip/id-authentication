@@ -198,7 +198,6 @@ public class DocumentScanController extends BaseController {
 
 		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
 		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
-
 		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
 			if (newValue) {
 				backImageView.setImage(backInWhite);

@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerService;
@@ -265,35 +266,47 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	private void performingAllSyncOperations(List<String> val, String keyIndex, final boolean isInitialSetUp) {
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
-		ResponseDTO userResponseDTO = new ResponseDTO();
-		ResponseDTO userSaltResponse = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-			val.add(RegistrationConstants.RESTART);
-		}
+		try {
 
-		ResponseDTO masterResponseDTO = null;
-		if (isInitialSetUp) {
-			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
-		} else {
-			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER);
-		}
-		if (null != masterResponseDTO.getSuccessResponseDTO()) {
-			userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			if (null != userResponseDTO.getSuccessResponseDTO()) {
-				userSaltResponse = userSaltDetailsService
-						.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			ResponseDTO responseDTO = globalParamService.synchConfigData(false);
+			ResponseDTO userResponseDTO = new ResponseDTO();
+			ResponseDTO userSaltResponse = new ResponseDTO();
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+			if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
+				val.add(RegistrationConstants.RESTART);
 			}
-		}
-		if (((masterResponseDTO.getErrorResponseDTOs() != null || userResponseDTO.getErrorResponseDTOs() != null
-				|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
-				|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
+
+			ResponseDTO masterResponseDTO = null;
+			if (isInitialSetUp) {
+				masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+						RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
+
+			} else {
+				masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+						RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+			}
+			if (null != masterResponseDTO && null != masterResponseDTO.getSuccessResponseDTO()) {
+				userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+				if (null != userResponseDTO.getSuccessResponseDTO()) {
+					userSaltResponse = userSaltDetailsService
+							.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+				}
+			}
+			if ((((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
+					|| userResponseDTO.getErrorResponseDTOs() != null
+					|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
+					|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
+				val.add(RegistrationConstants.FAILURE);
+			} else {
+				val.add(RegistrationConstants.SUCCESS);
+			}
+		} catch (RegBaseCheckedException exRegBaseCheckedException) {
 			val.add(RegistrationConstants.FAILURE);
-		} else {
-			val.add(RegistrationConstants.SUCCESS);
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(exRegBaseCheckedException));
 		}
 	}
 

@@ -67,10 +67,13 @@ public class RegistrationConstants {
 	public static final String FINGER_PANE = "fingerPane";
 	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
 	public static final String FIN="FIN";
-	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
-	public static final String MDM_ENVIRONMENT = "DEV";
-	public static final int MDM_TIMEOUT = 1000;
-	public static final String MDM_VERSION="0.1";
+	public static final String FINGER_SLAB = "FINGERPRINT_SLAB";
+	public static final String FINGERPRINT_SLAB_LEFT = "FINGERPRINT_SLAB_LEFT";
+	public static final String FINGERPRINT_SLAB_RIGHT = "FINGERPRINT_SLAB_RIGHT";
+	public static final String FINGERPRINT_SLAB_THUMBS = "FINGERPRINT_SLAB_THUMBS";
+	public static final String MDM_ENVIRONMENT = "Staging";
+	public static final int MDM_TIMEOUT = 10000;
+	public static final String MDM_VERSION="1.0";
 	
 	public static final String IRIS_PANE = "irisPane";
 	public static final String IRIS_IMAGE_LOCAL="/images/leftEye.png";
@@ -184,6 +187,7 @@ public class RegistrationConstants {
 	public static final String PWORD = "PWD";
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
+	public static final String FACE_FULLFACE = "FACE_FULL FACE";
 	public static final String IRIS = "IRIS";
 	
 	public static final String FNR = "FNR";
@@ -1362,6 +1366,7 @@ public class RegistrationConstants {
 	
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
+	public static final String QOUTE = "\"";
 	public static final String DOB_MESSAGE = "dobMessage";
 	public static final String DD = "dd";
 	public static final String MM = "mm";
@@ -1485,16 +1490,18 @@ public class RegistrationConstants {
 	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
 
 		{
-			put("leftIndex", "LEFT_INDEX");
-			put("leftLittle", "LEFT_LITTLE");
-			put("leftMiddle", "LEFT_MIDDLE");
-			put("leftRing", "LEFT_RING");
-			put("leftThumb", "LEFT_THUMB");
-			put("rightIndex", "RIGHT_INDEX");
-			put("rightLittle", "RIGHT_LITTLE");
-			put("rightMiddle", "RIGHT_MIDDLE");
-			put("rightRing", "RIGHT_RING");
-			put("rightThumb", "RIGHT_THUMB");
+			put("leftIndex", "LF_INDEX");
+			put("leftLittle", "LF_LITTLE");
+			put("leftMiddle", "LF_MIDDLE");
+			put("leftRing", "LF_RING");
+			put("leftThumb", "LF_THUMB");
+			put("rightIndex", "RF_INDEX");
+			put("rightLittle", "RF_LITTLE");
+			put("rightMiddle", "RF_MIDDLE");
+			put("rightRing", "RF_RING");
+			put("rightThumb", "RF_THUMB");
+			put("LeftEye", "L_IRIS");
+			put("RightEye", "R_IRIS");
 			put("LeftEye.png", "LEFT");
 			put("RightEye.png", "RIGHT");
 		}
@@ -1512,6 +1519,10 @@ public class RegistrationConstants {
 	public static final int YEAR = 3;
 	public static final String EYETOOLTIP="View Details";
 	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
+	
+	public static final String LANG_CODE_MANDATORY="language code is mandatory...";
+	public static final String CODE_AND_LANG_CODE_MANDATORY="code and language code is mandatory...";
+	public static final String TRIGGER_POINT_MSG="trigger point is mandatory...";
 	
 
 }

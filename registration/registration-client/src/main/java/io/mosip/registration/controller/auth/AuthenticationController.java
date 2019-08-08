@@ -371,7 +371,7 @@ public class AuthenticationController extends BaseController implements Initiali
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 				}
 			} catch (RegBaseCheckedException | IOException exception) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
 			}
 		}
 	}

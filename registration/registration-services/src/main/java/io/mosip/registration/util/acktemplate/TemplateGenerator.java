@@ -481,7 +481,7 @@ public class TemplateGenerator extends BaseService {
 							.isEmpty()) {
 						for (FingerprintDetailsDTO fingerprint : registration.getBiometricDTO()
 								.getIntroducerBiometricDTO().getFingerprintDetailsDTO()) {
-							if (fingerprint.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+							if (fingerprint.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 								templateValues.put(RegistrationConstants.TEMPLATE_CHILD_LEFT,
 										RegistrationConstants.PARENT_STYLE);
 								templateValues.put(RegistrationConstants.PARENT_RIGHT_SLAP,
@@ -490,7 +490,7 @@ public class TemplateGenerator extends BaseService {
 										RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 								templateValues.put(RegistrationConstants.TEMPLATE_LEFT_INDEX_FINGER,
 										RegistrationConstants.TEMPLATE_RIGHT_MARK);
-							} else if (fingerprint.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+							} else if (fingerprint.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 								templateValues.put(RegistrationConstants.TEMPLATE_CHILD_RIGHT,
 										RegistrationConstants.PARENT_STYLE);
 								templateValues.put(RegistrationConstants.PARENT_LEFT_SLAP,
@@ -499,7 +499,7 @@ public class TemplateGenerator extends BaseService {
 										RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 								templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_LITTLE_FINGER,
 										RegistrationConstants.TEMPLATE_RIGHT_MARK);
-							} else if (fingerprint.getFingerType().contains(RegistrationConstants.THUMBS)) {
+							} else if (fingerprint.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)) {
 								templateValues.put(RegistrationConstants.TEMPLATE_CHILD_THUMBS,
 										RegistrationConstants.PARENT_STYLE);
 								templateValues.put(RegistrationConstants.PARENT_LEFT_SLAP,
@@ -949,20 +949,20 @@ public class TemplateGenerator extends BaseService {
 						.getFingerprintDetailsDTO();
 			}
 			for (FingerprintDetailsDTO fpDetailsDTO : fingerprintDetailsDTO) {
-				if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+				if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 					leftPalmCaptured = true;
 					byte[] leftPalmBytes = fpDetailsDTO.getFingerPrint();
 					String leftPalmEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(leftPalmBytes, false));
 					templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_SLAP,
 							RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftPalmEncodedBytes);
-				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 					rightPalmCaptured = true;
 					byte[] rightPalmBytes = fpDetailsDTO.getFingerPrint();
 					String rightPalmEncodedBytes = StringUtils
 							.newStringUtf8(Base64.encodeBase64(rightPalmBytes, false));
 					templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_SLAP,
 							RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightPalmEncodedBytes);
-				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.THUMBS)) {
+				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)) {
 					thumbsCaptured = true;
 					byte[] thumbsBytes = fpDetailsDTO.getFingerPrint();
 					String thumbsEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(thumbsBytes, false));
@@ -1469,7 +1469,7 @@ public class TemplateGenerator extends BaseService {
 		for (FingerprintDetailsDTO availableFinger : availableFingers) {
 			List<FingerprintDetailsDTO> segmentedFingers = availableFinger.getSegmentedFingerprints();
 			for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
-				fingersQuality.put(segmentedFinger.getFingerType(), segmentedFinger.getQualityScore());
+				fingersQuality.put(segmentedFinger.getFingerType().substring(0,1).toLowerCase()+segmentedFinger.getFingerType().substring(1).replaceAll(RegistrationConstants.SPACE, ""), segmentedFinger.getQualityScore());
 			}
 		}
 
