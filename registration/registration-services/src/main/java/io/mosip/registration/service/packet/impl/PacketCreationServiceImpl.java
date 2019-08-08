@@ -358,10 +358,9 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 				// Add Iris
 				if (isListNotEmpty(biometricInfoDTO.getIrisDetailsDTO())) {
 					for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
-
-						BIR bir = buildBIR(iris.getIris(), CbeffConstant.FORMAT_TYPE_IRIS,
+						BIR bir = buildBIR(iris.getIrisIso(), CbeffConstant.FORMAT_TYPE_IRIS,
 								(int) Math.round(iris.getQualityScore()), Arrays.asList(SingleType.IRIS),
-								Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
+								Arrays.asList(iris.getIrisType().toLowerCase().contains("left")
 										? SingleAnySubtypeType.LEFT.value()
 										: SingleAnySubtypeType.RIGHT.value()));
 
@@ -371,7 +370,10 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 				}
 
 				// Add Face
-				createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFace().getFace(),
+				byte[] faceBytes = biometricInfoDTO.getFace().getFaceISO() != null
+						? biometricInfoDTO.getFace().getFaceISO()
+						: biometricInfoDTO.getFace().getFace();
+				createFaceBIR(personType, birUUIDs, birs, faceBytes,
 						(int) Math.round(biometricInfoDTO.getFace().getQualityScore()),
 						RegistrationConstants.VALIDATION_TYPE_FACE);
 
@@ -403,7 +405,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 			int qualityScore, String imageType) {
 		if (image != null) {
 			// TODO: Replace the stub image with original image once Face SDK is implemented
-			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
+			BIR bir = buildBIR(image, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
 					Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
@@ -442,13 +444,13 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 						|| personType.equals(RegistrationConstants.INTRODUCER))
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
+						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage());
 						birs.add(bir);
 						birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
 								bir.getBdbInfo().getIndex());
 					}
 				} else {
-					BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
+					BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrintISOImage());
 					birs.add(bir);
 					birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(),
 							bir.getBdbInfo().getIndex());

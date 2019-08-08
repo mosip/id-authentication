@@ -61,11 +61,6 @@
 		</dependency>
 
 		<!-- Biometric identy SDK -->
-		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>identy-BioSDK</artifactId>
-			<version>1.0</version>
-		</dependency>
 
 	</dependencies>
 </project>

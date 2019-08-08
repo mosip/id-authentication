@@ -33,6 +33,7 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -356,8 +357,12 @@ public class HeaderController extends BaseController {
 	public void intiateRemapProcess() {
 		if (pageNavigantionAlert()) {
 
-			masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			try {
+				masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+						RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			} catch (RegBaseCheckedException exMasterSync) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_FAILURE);
+			}
 
 			if (!isMachineRemapProcessStarted()) {
 

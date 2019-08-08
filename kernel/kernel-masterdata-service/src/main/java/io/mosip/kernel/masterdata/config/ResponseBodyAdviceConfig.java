@@ -61,7 +61,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 				body.setId(requestWrapper.getId());
 				body.setVersion(requestWrapper.getVersion());
 			}
-			//body.setErrors(null);
+			body.setErrors(null);
 			return body;
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ResponseBodyAdviceConfig.class);

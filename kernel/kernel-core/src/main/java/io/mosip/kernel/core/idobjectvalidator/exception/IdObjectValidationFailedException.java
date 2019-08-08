@@ -39,7 +39,7 @@ public class IdObjectValidationFailedException extends BaseCheckedException {
 	 */
 	public IdObjectValidationFailedException(IdObjectValidatorErrorConstant errorConstant,
 			List<ServiceError> errors) {
-		errors.parallelStream().forEach(error -> super.addInfo(error.getErrorCode(), error.getMessage()));
+		errors.stream().forEach(error -> super.addInfo(error.getErrorCode(), error.getMessage()));
 	}
 
 }

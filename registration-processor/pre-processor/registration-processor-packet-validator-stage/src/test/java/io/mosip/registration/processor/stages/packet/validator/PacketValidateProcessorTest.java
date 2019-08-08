@@ -77,6 +77,7 @@ import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoServic
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -369,6 +370,7 @@ public class PacketValidateProcessorTest {
 		JSONObject jsonObject = Mockito.mock(JSONObject.class);
 		Mockito.when(utility.getUIn(any())).thenReturn(12345678l);
 		Mockito.when(utility.retrieveIdrepoJson(any())).thenReturn(jsonObject);
+		Mockito.when(utility.retrieveIdrepoJsonStatus(any())).thenReturn("ACTIVE");
 
 		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jsonObject);
 		PowerMockito.when(JsonUtil.getJSONObject(jsonObject, "individualBiometrics")).thenReturn(jsonObject);
@@ -689,6 +691,17 @@ public class PacketValidateProcessorTest {
 	@Test
 	public void testBAseUncheckedExceptions() throws IdObjectValidationFailedException, IdObjectIOException {
 		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenThrow(new IdObjectValidationFailedException("", ""));
+
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
+
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+	
+	@Test
+	public void testRegprocesCheckExceptions() throws IdObjectValidationFailedException, IdObjectIOException, IdRepoAppException, ApisResourceAccessException, IOException {
+	//	Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenThrow(new IdObjectValidationFailedException("", ""));
+		Mockito.when(utility.retrieveIdrepoJsonStatus(any())).thenReturn("DEACTIVATED");
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 
