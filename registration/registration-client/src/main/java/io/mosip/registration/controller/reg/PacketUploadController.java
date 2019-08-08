@@ -139,7 +139,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	private ObservableList<PacketStatusVO> observableList;
 
 	private SortedList<PacketStatusVO> sortedList;
-	
+
 	private Stage stage;
 
 	/**
@@ -158,10 +158,9 @@ public class PacketUploadController extends BaseController implements Initializa
 				if (!selectedPackets.isEmpty()) {
 					List<PacketStatusDTO> packetsToBeSynced = new ArrayList<>();
 					selectedPackets.forEach(packet -> {
-						if (packet.getPacketServerStatus() == null
-								|| !packet.getPacketServerStatus()
-										.equalsIgnoreCase(RegistrationConstants.SERVER_STATUS_RESEND)
-								|| !RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
+						if ((packet.getPacketServerStatus() == null || !RegistrationConstants.SERVER_STATUS_RESEND
+								.equalsIgnoreCase(packet.getPacketServerStatus()))
+								&& !RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
 										.equalsIgnoreCase(packet.getPacketClientStatus())) {
 							PacketStatusDTO packetStatusVO = new PacketStatusDTO();
 							packetStatusVO.setClientStatusComments(packet.getClientStatusComments());
@@ -324,7 +323,8 @@ public class PacketUploadController extends BaseController implements Initializa
 
 									synchedPacket.setUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-									if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+									if (regBaseCheckedException.getErrorCode().equals(
+											RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
 										tableMap.put(synchedPacket.getFileName(),
 												RegistrationUIConstants.AUTH_ADVICE_FAILURE);
 									} else {
@@ -575,7 +575,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
 		regDate.setResizable(false);
-		
+
 		disableColumnsReorder(table);
 		// fileColumn.setResizable(false);
 		// statusColumn.setResizable(false);
@@ -692,6 +692,5 @@ public class PacketUploadController extends BaseController implements Initializa
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
-	
-	
+
 }
