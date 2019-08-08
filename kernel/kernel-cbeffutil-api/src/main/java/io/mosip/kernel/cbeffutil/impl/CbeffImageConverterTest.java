@@ -1,6 +1,7 @@
 package io.mosip.kernel.cbeffutil.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,12 +22,10 @@ public class CbeffImageConverterTest {
 	long recordLength = headerLength + dataLength;
 	
 	DataOutputStream dataOut = new DataOutputStream(fos);
-	
 	dataOut.writeInt(0x46495200);			/* 4 */
 	dataOut.writeInt(0x30313000);				/* + 4 = 8 */
 
 	writeLong(recordLength, dataOut, 6);			/* + 6 = 14 */
-
 	dataOut.writeShort(0);			/* + 2 = 16 */
 	dataOut.writeShort(31);			/* +2 = 18 */
 	dataOut.writeByte(1);		/* + 1 = 19 */

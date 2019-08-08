@@ -221,7 +221,7 @@ public class PacketSynchServiceImplTest {
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RuntimeException());
 		Mockito.when(HMACUtils.generateHash(Mockito.anyString().getBytes())).thenReturn("asa".getBytes());
-		packetSynchServiceImpl.packetSync("123456789");
+		packetSynchServiceImpl.packetSync("");
 	}
 
 	@Test(expected = RegBaseCheckedException.class)

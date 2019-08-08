@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -856,305 +857,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return filterResponseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-<<<<<<< HEAD
-	 * createRegistrationCenterAdminPriSecLang(java.util.List)
-	 */
-	@Transactional
-	@Override
-	public RegistrationCenterPostResponseDto createRegistrationCenter(
-			RegistrationCenterReqAdmSecDto registrationCenterReqAdmSecDtos) {
-		// reqRegistrationCenterDto
-		RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
-		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-		RegistrationCenterHistory registrationCenterHistoryEntity = null;
-
-		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
-		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
-		List<String> inputLangCodeList = new ArrayList<>();
-		String uniqueId = "";
-
-		List<RegCenterPostReqPrimAdmDto> regCenterPostReqPrimAdmDtos = registrationCenterReqAdmSecDtos
-				.getRegistrationCenterDtos();
-		// call method to validate given ID
-		uniqueId = registrationCenterValidator.givenIdValidation(registrationCenterReqAdmSecDtos, uniqueId);
-
-		List<RegCenterPostReqPrimAdmDto> validateRegistrationCenterDtos = new ArrayList<>();
-		List<RegCenterPostReqPrimAdmDto> constraintViolationedSecList = new ArrayList<>();
-		List<ServiceError> errors = new ArrayList<>();
-
-		// Method to validate all mandatory fields of both primary and secondary
-		// language input objects
-		registrationCenterValidator.validatePrimarySencodaryLangMandatoryFields(regCenterPostReqPrimAdmDtos,
-				registrationCenterPostResponseDto, inputLangCodeList, validateRegistrationCenterDtos,
-				constraintViolationedSecList, errors);
-
-		// validate to if Records with duplicate language code
-		if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
-			throw new RequestException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorMessage());
-		}
-
-		try {
-			// call method generate ID or validate with DB
-			uniqueId = generateIdOrvalidateWithDB(uniqueId);
-
-			for (RegCenterPostReqPrimAdmDto registrationCenterDto : validateRegistrationCenterDtos) {
-				// creating registration center
-				RegistrationCenter registrationCenter;
-				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
-						registrationCenterEntity.getClass());
-
-				registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity, registrationCenterDto);
-
-				/*
-				 * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
-				 * calling RegistrationCenterIdGenerator API method
-				 * generateRegistrationCenterId().
-				 * 
-				 */
-				registrationCenterEntity.setId(uniqueId);
-				/*
-				 * at the time of creation of new Registration Center Number of Kiosks value
-				 * will be Zero always
-				 */
-				registrationCenterEntity.setNumberOfKiosks((short) 0);
-				/*
-				 * Deactivate a Center during first time creation since there will be no
-				 * machines initially mapped to the Center
-				 */
-				registrationCenterEntity.setIsActive(false);
-				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-				registrationCenterList.add(registrationCenter);
-
-				// creating registration center history
-				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
-						RegistrationCenterHistory.class);
-				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
-				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
-				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-			}
-
-		} catch (DataAccessLayerException | DataAccessException exception) {
-			throw new MasterDataServiceException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(exception));
-		}
-
-		registrationCenterDtoList = MapperUtils.mapAll(registrationCenterList, RegistrationCenterExtnDto.class);
-		registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
-		registrationCenterPostResponseDto.setConstraintViolatedSecLangList(constraintViolationedSecList);
-		return registrationCenterPostResponseDto;
-
-	}
-
-	// call method generate ID or validate with DB
-	private String generateIdOrvalidateWithDB(String uniqueId) {
-		if (uniqueId.isEmpty()) {
-			// Get RegistrationCenter Id by calling RegistrationCenterIdGenerator
-			// API
-			uniqueId = registrationCenterIdGenerator.generateRegistrationCenterId();
-
-		} else {
-			List<RegistrationCenter> renRegistrationCenters = registrationCenterRepository
-					.findByRegCenterIdAndIsDeletedFalseOrNull(uniqueId);
-			if (renRegistrationCenters.isEmpty()) {
-				// for the given ID, we don't have data in primary language
-				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorMessage(), uniqueId));
-			}
-		}
-		return uniqueId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * updateRegistrationCenter1(java.util.List)
-	 */
-	@Transactional
-	@Override
-	public RegistrationCenterPutResponseDto updateRegistrationCenter1(
-			List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto) {
-		RegistrationCenter updRegistrationCenter = null;
-		RegistrationCenter updRegistrationCenterEntity = null;
-		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
-		List<RegistrationCenterPutReqAdmDto> notUpdRegistrationCenterList = new ArrayList<>();
-		List<RegistrationCenter> updRegistrationCenterList = new ArrayList<>();
-		List<RegistrationCenter> newregistrationCenterList = new ArrayList<>();
-		List<RegistrationCenterExtnDto> newrRegistrationCenterDtoList = null;
-
-		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-
-		List<String> inputIdList = new ArrayList<>();
-		List<String> idLangList = new ArrayList<>();
-		List<String> langList = new ArrayList<>();
-		List<ServiceError> errors = new ArrayList<>();
-		String uniqueId = "";
-
-		// RegistrationCenterPutReqAdmDto regCenter = new
-		// RegistrationCenterPutReqAdmDto();
-
-		// call a method to validate Put request DTOs
-		registrationCenterValidator.validatePutRequest(registrationCenterPutReqAdmDto, notUpdRegistrationCenterList,
-				inputIdList, idLangList, langList, errors, uniqueId);
-		if (!errors.isEmpty()) {
-			throw new ValidationException(errors);
-		}
-		// validate to check duplicate pair of ID and LanguageCode
-		if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
-			throw new RequestException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
-		}
-
-		try {
-
-			// call method if isActive is True in input,then make true for all supported
-			// language by the country
-			isActiveTrueAllSupLang(registrationCenterPutReqAdmDto);
-
-			for (RegistrationCenterPutReqAdmDto registrationCenterDto : registrationCenterPutReqAdmDto) {
-
-				RegistrationCenter renRegistrationCenter = registrationCenterRepository
-						.findByIdAndLangCodeAndIsDeletedTrue(registrationCenterDto.getId(),
-								registrationCenterDto.getLangCode());
-
-				if (renRegistrationCenter != null) {
-
-					// updating registration center
-					updRegistrationCenterEntity = MetaDataUtils.setUpdateMetaData(registrationCenterDto,
-							renRegistrationCenter, false);
-
-					updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
-
-					// creating registration center history
-					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
-					MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
-					MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
-					registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
-					registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
-					registrationCenterHistoryRepository.create(registrationCenterHistory);
-
-					// adding into updated list
-					updRegistrationCenterList.add(updRegistrationCenter);
-				} else {
-					// if given Id and language code is not present in DB , find with only ID in DB
-					// is
-					// there any records, add notUpdRegistrationCenterList
-					List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
-							.findByRegCenterIdAndIsDeletedFalseOrNull(registrationCenterDto.getId());
-
-					// no recored are found for the ID
-					if (renRegistrationCenterList.isEmpty()) {
-						throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorCode(),
-								String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorMessage(),
-										registrationCenterDto.getId()));
-					}
-					// found record for ID
-					else {
-
-						// created new recored for the ID and Language which is not there in DB
-						registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
-								registrationCenterEntity.getClass());
-						registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity, registrationCenterDto);
-						// call a method to created new recored for the ID and Language which is not
-						// there in DB
-						newrRegistrationCenterDtoList = createRegCenterPut(newregistrationCenterList,
-								registrationCenterEntity, registrationCenterDto);
-					}
-				}
-
-			}
-
-		} catch (DataAccessLayerException | DataAccessException exception) {
-			throw new MasterDataServiceException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception));
-		}
-		RegistrationCenterPutResponseDto registrationCenterPutResponseDto = new RegistrationCenterPutResponseDto();
-		registrationCenterDtoList = MapperUtils.mapAll(updRegistrationCenterList, RegistrationCenterExtnDto.class);
-		registrationCenterPutResponseDto.setRegistrationCenters(registrationCenterDtoList);
-		registrationCenterPutResponseDto.setNotUpdatedRegCenters(notUpdRegistrationCenterList);
-		registrationCenterPutResponseDto.setNewRegCenters(newrRegistrationCenterDtoList);
-
-		return registrationCenterPutResponseDto;
-
-	}
-
-	private void isActiveTrueAllSupLang(List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto) {
-		if (registrationCenterPutReqAdmDto.get(0).getIsActive()) {
-			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(
-					registrationCenterPutReqAdmDto.get(0).getId(), registrationCenterPutReqAdmDto.get(0).getLangCode());
-			if (renRegistrationCenter.getIsActive()) {
-				throw new RequestException(RegistrationCenterErrorCode.IS_ACTIVE.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.IS_ACTIVE.getErrorMessage(),
-								registrationCenterPutReqAdmDto.get(0).getId()));
-			}
-
-			List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
-					.findByRegCenterIdAndIsDeletedFalseOrNull(registrationCenterPutReqAdmDto.get(0).getId());
-
-			Set<String> languageCodeDb = renRegistrationCenterList.stream().map(regObj -> regObj.getLangCode())
-					.collect(Collectors.toSet());
-			if (languageCodeDb.containsAll(supportedLanguages)) {
-				// to update isActive for
-
-				renRegistrationCenterList.forEach(i -> {
-					i.setIsActive(true);
-					i.setUpdatedBy(MetaDataUtils.getContextUser());
-					i.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
-
-					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
-					MapperUtils.map(i, registrationCenterHistory);
-					MapperUtils.setBaseFieldValue(i, registrationCenterHistory);
-					registrationCenterHistory.setEffectivetimes(i.getUpdatedDateTime());
-					registrationCenterHistory.setUpdatedDateTime(i.getUpdatedDateTime());
-					registrationCenterHistoryRepository.create(registrationCenterHistory);
-				});
-
-				registrationCenterRepository.saveAll(renRegistrationCenterList);
-
-			} else {
-				throw new RequestException(RegistrationCenterErrorCode.ID_LANGUAGE.getErrorCode(),
-						RegistrationCenterErrorCode.ID_LANGUAGE.getErrorMessage());
-			}
-
-		}
-	}
-
-	// call a method while updating to created new recored for the ID and Language
-	// which is not
-	// there in DB
-	private List<RegistrationCenterExtnDto> createRegCenterPut(List<RegistrationCenter> newregistrationCenterList,
-			RegistrationCenter registrationCenterEntity, RegistrationCenterPutReqAdmDto registrationCenterDto) {
-		List<RegistrationCenterExtnDto> newrRegistrationCenterDtoList;
-		RegistrationCenterHistory registrationCenterHistoryEntity;
-		RegistrationCenter registrationCenter;
-		registrationCenterEntity.setId(registrationCenterDto.getId());
-
-		registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-
-		newregistrationCenterList.add(registrationCenter);
-
-		// creating registration center history
-		registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
-				RegistrationCenterHistory.class);
-		registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
-		registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
-		registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-
-		newrRegistrationCenterDtoList = MapperUtils.mapAll(newregistrationCenterList, RegistrationCenterExtnDto.class);
-		return newrRegistrationCenterDtoList;
-	}
-
+	
 
 	@Override
 	@Transactional
@@ -1193,5 +896,310 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return idResponseDto;
 	}
+	
+	//megha
+	/*
+     * (non-Javadoc)
+     * 
+      * @see io.mosip.kernel.masterdata.service.RegistrationCenterService# <<<<<<<
+     * HEAD createRegistrationCenterAdminPriSecLang(java.util.List)
+     */
+     @Transactional
+     @Override
+     public RegistrationCenterPostResponseDto createRegistrationCenter(
+                  RegistrationCenterReqAdmSecDto registrationCenterReqAdmSecDtos) {
+           // reqRegistrationCenterDto
+           RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
+           RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+           RegistrationCenterHistory registrationCenterHistoryEntity = null;
+
+           List<RegistrationCenter> registrationCenterList = new ArrayList<>();
+           List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+           List<String> inputLangCodeList = new ArrayList<>();
+           String uniqueId = "";
+
+           List<RegCenterPostReqPrimAdmDto> regCenterPostReqPrimAdmDtos = registrationCenterReqAdmSecDtos
+                        .getRegistrationCenterDtos();
+           
+           List<RegCenterPostReqPrimAdmDto> validateRegistrationCenterDtos = new ArrayList<>();
+           List<RegCenterPostReqPrimAdmDto> constraintViolationedSecList = new ArrayList<>();
+           List<ServiceError> errors = new ArrayList<>();
+
+           // Method to validate all mandatory fields of both primary and secondary
+           // language input objects
+     registrationCenterValidator.validatePrimarySencodaryLangMandatoryFields(regCenterPostReqPrimAdmDtos,
+                        registrationCenterPostResponseDto, inputLangCodeList, validateRegistrationCenterDtos,
+                        constraintViolationedSecList, errors);
+
+           // validate to if Records with duplicate language code
+           if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
+                  throw new RequestException(
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorCode(),
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorMessage());
+           }
+
+           try {
+                  // call method generate ID or validate with DB
+                  uniqueId = generateIdOrvalidateWithDB(uniqueId);
+
+                  for (RegCenterPostReqPrimAdmDto registrationCenterDto : validateRegistrationCenterDtos) {
+                        // creating registration center
+                        RegistrationCenter registrationCenter;
+                        registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+                                      registrationCenterEntity.getClass());
+
+                  registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity, registrationCenterDto);
+
+                        /*
+                        * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
+                        * calling RegistrationCenterIdGenerator API method
+                        * generateRegistrationCenterId().
+                        * 
+                         */
+                         registrationCenterEntity.setId(uniqueId);
+                        /*
+                        * at the time of creation of new Registration Center Number of Kiosks value
+                        * will be Zero always
+                        */
+                         registrationCenterEntity.setNumberOfKiosks((short) 0);
+                        /*
+                        * Deactivate a Center during first time creation since there will be no
+                        * machines initially mapped to the Center
+                        */
+                         registrationCenterEntity.setIsActive(false);
+                        registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+                         registrationCenterList.add(registrationCenter);
+
+                        // creating registration center history
+                        registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+                                      RegistrationCenterHistory.class);
+                  registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+                  registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+                  registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+                  }
+
+           } catch (DataAccessLayerException | DataAccessException exception) {
+                  throw new MasterDataServiceException(
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
+                                            + ExceptionUtils.parseException(exception));
+           }
+
+           registrationCenterDtoList = MapperUtils.mapAll(registrationCenterList, RegistrationCenterExtnDto.class);
+     registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
+     registrationCenterPostResponseDto.setConstraintViolatedDataList(constraintViolationedSecList);
+           return registrationCenterPostResponseDto;
+
+     }
+
+     // call method generate ID or validate with DB
+     private String generateIdOrvalidateWithDB(String uniqueId) {
+           if (uniqueId.isEmpty()) {
+                  // Get RegistrationCenter Id by calling RegistrationCenterIdGenerator
+                  // API
+                  uniqueId = registrationCenterIdGenerator.generateRegistrationCenterId();
+
+           } else {
+                  List<RegistrationCenter> renRegistrationCenters = registrationCenterRepository
+                               .findByRegCenterIdAndIsDeletedFalseOrNull(uniqueId);
+                  if (renRegistrationCenters.isEmpty()) {
+                        // for the given ID, we don't have data in primary language
+                        throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorCode(),
+                               String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorMessage(), uniqueId));
+                  }
+           }
+           return uniqueId;
+     }
+     //-----------------------------------------update----------------------------------------
+     /*
+     * (non-Javadoc)
+     * 
+      * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+     * updateRegistrationCenter1(java.util.List)
+     */
+     @Transactional
+     @Override
+     public RegistrationCenterPutResponseDto updateRegistrationCenter(
+                  List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto) {
+           RegistrationCenter updRegistrationCenter = null;
+           RegistrationCenter updRegistrationCenterEntity = null;
+           List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+           List<RegistrationCenterPutReqAdmDto> notUpdRegistrationCenterList = new ArrayList<>();
+           List<RegistrationCenter> updRegistrationCenterList = new ArrayList<>();
+           List<RegistrationCenter> newregistrationCenterList = new ArrayList<>();
+           List<RegistrationCenterExtnDto> newrRegistrationCenterDtoList = null;
+
+           RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+
+           List<String> inputIdList = new ArrayList<>();
+           List<String> idLangList = new ArrayList<>();
+           List<String> langList = new ArrayList<>();
+           List<ServiceError> errors = new ArrayList<>();
+           
+
+           
+
+           // call a method to validate Put request DTOs
+     registrationCenterValidator.validatePutRequest(registrationCenterPutReqAdmDto, notUpdRegistrationCenterList,
+                        inputIdList, idLangList, langList, errors);
+           if (!errors.isEmpty()) {
+                  throw new ValidationException(errors);
+           }
+           // validate to check duplicate pair of ID and LanguageCode
+           if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+                  throw new RequestException(
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
+           }
+
+           try {
+
+                  // call method if isActive is True in input,then make true for all supported
+                  // language by the country
+                  isActiveTrueAllSupLang(registrationCenterPutReqAdmDto);
+
+                  for (RegistrationCenterPutReqAdmDto registrationCenterDto : registrationCenterPutReqAdmDto) {
+
+                        RegistrationCenter renRegistrationCenter = registrationCenterRepository
+                               .findByIdAndLangCodeAndIsDeletedTrue(registrationCenterDto.getId(),
+                                                   registrationCenterDto.getLangCode());
+
+                        if (renRegistrationCenter != null) {
+
+                               // updating registration center
+                               updRegistrationCenterEntity = MetaDataUtils.setUpdateMetaData(registrationCenterDto,
+                                            renRegistrationCenter, false);
+                        registrationCenterValidator.mapBaseDtoEntity(updRegistrationCenterEntity, registrationCenterDto);
+
+                               updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
+
+                               // creating registration center history
+                               RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+                               MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
+                               MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
+                        registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
+                        registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
+                        registrationCenterHistoryRepository.create(registrationCenterHistory);
+
+                               // adding into updated list
+                               updRegistrationCenterList.add(updRegistrationCenter);
+                        } else {
+                               // if given Id and language code is not present in DB , find with only ID in DB
+                               // is
+                               // there any records, add notUpdRegistrationCenterList
+                               List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
+                                     .findByRegCenterIdAndIsDeletedFalseOrNull(registrationCenterDto.getId());
+
+                               // no recored are found for the ID
+                               if (renRegistrationCenterList.isEmpty()) {
+                                     throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorCode(),
+                                            String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorMessage(),
+                                                                registrationCenterDto.getId()));
+                               }
+                               // found record for ID
+                               else {
+
+                                     // created new recored for the ID and Language which is not there in DB
+                                     registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+                                                   registrationCenterEntity.getClass());
+                               registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity, registrationCenterDto);
+                                     // call a method to created new recored for the ID and Language which is not
+                                     // there in DB
+                                      newrRegistrationCenterDtoList = createRegCenterPut(newregistrationCenterList,
+                                                   registrationCenterEntity, registrationCenterDto);
+                               }
+                        }
+
+                  }
+
+           } catch (DataAccessLayerException | DataAccessException exception) {
+                  throw new MasterDataServiceException(
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+                        RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
+                                            + ExceptionUtils.parseException(exception));
+           }
+           RegistrationCenterPutResponseDto registrationCenterPutResponseDto = new RegistrationCenterPutResponseDto();
+           registrationCenterDtoList = MapperUtils.mapAll(updRegistrationCenterList, RegistrationCenterExtnDto.class);
+     registrationCenterPutResponseDto.setRegistrationCenters(registrationCenterDtoList);
+     registrationCenterPutResponseDto.setNotUpdatedRegistrationCenters(notUpdRegistrationCenterList);
+     registrationCenterPutResponseDto.setNewRegistartionCenters(newrRegistrationCenterDtoList);
+
+           return registrationCenterPutResponseDto;
+
+     }
+
+    // @Transactional(propagation = Propagation.MANDATORY)
+     public void isActiveTrueAllSupLang(List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto) {
+           if (registrationCenterPutReqAdmDto.get(0).getIsActive() != null
+                        && registrationCenterPutReqAdmDto.get(0).getIsActive()) {
+                  // call method to check isActive is true already for the given object
+              isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
+
+                  List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
+                        .findByRegCenterIdAndIsDeletedFalseOrNull(registrationCenterPutReqAdmDto.get(0).getId());
+
+                  Set<String> languageCodeDb = renRegistrationCenterList.stream().map(regObj -> regObj.getLangCode())
+                               .collect(Collectors.toSet());
+                  if (languageCodeDb.containsAll(supportedLanguages)) {
+                        // to update isActive for
+
+                        renRegistrationCenterList.forEach(i -> {
+                               i.setIsActive(true);
+                               i.setUpdatedBy(MetaDataUtils.getContextUser());
+                               i.setUpdatedDateTime(MetaDataUtils.getCurrentDateTime());
+
+                               RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+                               MapperUtils.map(i, registrationCenterHistory);
+                               MapperUtils.setBaseFieldValue(i, registrationCenterHistory);
+                        registrationCenterHistory.setEffectivetimes(i.getUpdatedDateTime());
+                        registrationCenterHistory.setUpdatedDateTime(i.getUpdatedDateTime());
+                        registrationCenterHistoryRepository.create(registrationCenterHistory);
+                        });
+
+                  registrationCenterRepository.saveAll(renRegistrationCenterList);
+
+                  } else {
+                        throw new RequestException(RegistrationCenterErrorCode.ID_LANGUAGE.getErrorCode(),
+                                    RegistrationCenterErrorCode.ID_LANGUAGE.getErrorMessage());
+                  }
+
+           }
+     }
+
+     private void isActiveTrueAlreadyValidator(List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto) {
+           RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(
+                         registrationCenterPutReqAdmDto.get(0).getId(), registrationCenterPutReqAdmDto.get(0).getLangCode());
+           if (renRegistrationCenter.getIsActive() != null && renRegistrationCenter.getIsActive()) {
+                  throw new RequestException(RegistrationCenterErrorCode.IS_ACTIVE.getErrorCode(),
+                               RegistrationCenterErrorCode.IS_ACTIVE.getErrorMessage());
+           }
+     }
+
+     // call a method while updating to created new recored for the ID and Language
+     // which is not
+     // there in DB
+     private List<RegistrationCenterExtnDto> createRegCenterPut(List<RegistrationCenter> newregistrationCenterList,
+                  RegistrationCenter registrationCenterEntity, RegistrationCenterPutReqAdmDto registrationCenterDto) {
+           List<RegistrationCenterExtnDto> newrRegistrationCenterDtoList;
+           RegistrationCenterHistory registrationCenterHistoryEntity;
+           RegistrationCenter registrationCenter;
+       registrationCenterEntity.setId(registrationCenterDto.getId());
+
+           registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+
+           newregistrationCenterList.add(registrationCenter);
+
+           // creating registration center history
+           registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+                        RegistrationCenterHistory.class);
+     registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+     registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+     registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+
+           newrRegistrationCenterDtoList = MapperUtils.mapAll(newregistrationCenterList, RegistrationCenterExtnDto.class);
+           return newrRegistrationCenterDtoList;
+     }
+
+
 
 }

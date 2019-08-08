@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
@@ -28,6 +29,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.operator.UserDetailService;
 import io.mosip.registration.service.operator.UserOnboardService;
@@ -56,60 +58,69 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 	 * 
 	 * @see io.mosip.registration.service.UserDetailService#save()
 	 */
-	public synchronized ResponseDTO save(String triggerPoint) {
-
+	public synchronized ResponseDTO save(String triggerPoint) throws RegBaseCheckedException {
 		ResponseDTO responseDTO = new ResponseDTO();
-		ObjectMapper objectMapper = new ObjectMapper();
+		if (triggerPointNullCheck(triggerPoint)) {
 
-		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Entering into user detail save method...");
+			ObjectMapper objectMapper = new ObjectMapper();
 
-		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			try {
+			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+					"Entering into user detail save method...");
 
-				LinkedHashMap<String, Object> userDetailSyncResponse = centerIdNullCheck(triggerPoint);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				try {
 
-				if (null != userDetailSyncResponse && userDetailSyncResponse.size() > 0
-						&& null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+					LinkedHashMap<String, Object> userDetailSyncResponse = centerIdNullCheck(triggerPoint);
 
-					String jsonString = new ObjectMapper().writeValueAsString(
-							userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+					if (null != userDetailSyncResponse && userDetailSyncResponse.size() > 0
+							&& null != userDetailSyncResponse
+									.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
-					UserDetailResponseDto userDtlsSyncDto = objectMapper.readValue(jsonString,
-							UserDetailResponseDto.class);
+						String jsonString = new ObjectMapper().writeValueAsString(
+								userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
 
-					if (!userDtlsSyncDto.getUserDetails().isEmpty()) {
+						UserDetailResponseDto userDtlsSyncDto = objectMapper.readValue(jsonString,
+								UserDetailResponseDto.class);
 
-						userDetailDAO.save(userDtlsSyncDto);
-						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
-						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-								"User Detail Sync Success......");
+						if (!userDtlsSyncDto.getUserDetails().isEmpty()) {
+
+							userDetailDAO.save(userDtlsSyncDto);
+							responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
+							LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+									"User Detail Sync Success......");
+						} else {
+
+							LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+									"User Detail Sync Fail......");
+							setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+
+						}
+
 					} else {
 
 						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 								"User Detail Sync Fail......");
 						setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
-
 					}
 
-				} else {
-
-					LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "User Detail Sync Fail......");
+				} catch (RegBaseCheckedException | IOException exRegBaseCheckedException) {
+					LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+							exRegBaseCheckedException.getMessage()
+									+ ExceptionUtils.getStackTrace(exRegBaseCheckedException));
 					setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 				}
-
-			} catch (RegBaseCheckedException | IOException exRegBaseCheckedException) {
-				LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-						exRegBaseCheckedException.getMessage()
-								+ ExceptionUtils.getStackTrace(exRegBaseCheckedException));
+			} else {
+				LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						" Unable to sync user detail data as there is no internet connection");
 				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
-		} else {
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					" Unable to sync user detail data as there is no internet connection");
-			setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
-		}
 
-		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
+			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving into user detail save method");
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.TRIGGER_POINT_MSG);
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_TRIGGER_POINT_MISSING.getErrorCode(),
+					RegistrationExceptionConstants.REG_TRIGGER_POINT_MISSING.getErrorMessage());
+		}
 
 		return responseDTO;
 
@@ -203,6 +214,23 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		}
 
 		return userDetailSyncResponse;
+
+	}
+
+	/**
+	 * trigger point null check.
+	 *
+	 * @param triggerPoint the language code
+	 * @return true, if successful
+	 */
+	private boolean triggerPointNullCheck(String triggerPoint) {
+		if (StringUtils.isEmpty(triggerPoint)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"triggerPoint is missing it is a mandatory field.");
+			return false;
+		} else {
+			return true;
+		}
 
 	}
 }

@@ -1,10 +1,6 @@
 package io.mosip.registration.processor.print.service.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -67,6 +63,8 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * The Class PrintServiceImpl.
@@ -454,10 +452,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		if (value != null) {
 			CbeffToBiometricUtil util = new CbeffToBiometricUtil(cbeffutil);
 			List<String> subtype = new ArrayList<>();
-			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
-			if (photobyte != null) {
-				String imageString = IOUtils.toString(photobyte, "UTF-8");
-				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
+			byte[] photoByte = util.getImageBytes(value, FACE, subtype);
+			if (photoByte != null) {
+				int headerLength = 46;
+				DataInputStream dis = new DataInputStream(new ByteArrayInputStream(photoByte));
+				dis.skipBytes(headerLength);
+                String data = DatatypeConverter.printBase64Binary(IOUtils.toByteArray(dis));
+				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + data);
 				isPhotoSet = true;
 			}
 		}

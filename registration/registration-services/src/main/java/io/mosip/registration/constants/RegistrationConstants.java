@@ -1079,6 +1079,10 @@ public class RegistrationConstants {
 	private static final String DEVICE_ONBOARDING_SERVICE = REG_SERVICE_CODE + "DVO-";
 	public static final String UPDATE_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-232";
 
+	public static final String PACKET_RETRIVE_STATUS_EXCEPTION = REG_SERVICE_CODE + "PRS - 233";
+	public static final String PACKET_UPDATE_STATUS_EXCEPTION = REG_SERVICE_CODE + "PUS - 234";
+
+
 	// Exceptions
 	private static final String REG_UI_CODE = "REG-UI";
 
@@ -1515,6 +1519,10 @@ public class RegistrationConstants {
 	public static final int YEAR = 3;
 	public static final String EYETOOLTIP="View Details";
 	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
+	
+	public static final String LANG_CODE_MANDATORY="language code is mandatory...";
+	public static final String CODE_AND_LANG_CODE_MANDATORY="code and language code is mandatory...";
+	public static final String TRIGGER_POINT_MSG="trigger point is mandatory...";
 	
 
 }

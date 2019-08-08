@@ -10,13 +10,16 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.TemplateDao;
 import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.template.TemplateService;
 
 /**
@@ -79,19 +82,44 @@ public class TemplateServiceImpl implements TemplateService {
 		return ackTemplate;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.template.TemplateService#getHtmlTemplate(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.template.TemplateService#getHtmlTemplate(java.
+	 * lang.String, java.lang.String)
 	 */
-	public String getHtmlTemplate(String templateTypeCode, String langCode) {
+	public String getHtmlTemplate(String templateTypeCode, String langCode) throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
 				"Getting required template from DB started");
 
 		String templateText = null;
-		if (templateTypeCode != null && !templateTypeCode.isEmpty()
-				&& getTemplate(templateTypeCode, langCode).getFileTxt() != null) {
-			templateText = getTemplate(templateTypeCode, langCode).getFileTxt();
+
+		if (nullCheckForTemplate(templateTypeCode, langCode)) {
+			if (getTemplate(templateTypeCode, langCode).getFileTxt() != null) {
+				templateText = getTemplate(templateTypeCode, langCode).getFileTxt();
+			}
+		} else {
+			LOGGER.error("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
+					"Template Type Code / Lang code cannot be null");
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.TEMPLATE_CHECK_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.TEMPLATE_CHECK_EXCEPTION.getErrorMessage());
 		}
 
 		return templateText;
+	}
+
+	private boolean nullCheckForTemplate(String templateTypeCode, String langCode) {
+		if (StringUtils.isEmpty(templateTypeCode)) {
+			LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
+					"Template Type Code is empty or null");
+			return false;
+		} else if (StringUtils.isEmpty(langCode)) {
+			LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
+					"Lang Code is empty or null");
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

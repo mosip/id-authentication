@@ -56,6 +56,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -377,7 +378,7 @@ public class BaseController {
 				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -827,6 +828,9 @@ public class BaseController {
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 		return writeNotificationTemplate;
 	}

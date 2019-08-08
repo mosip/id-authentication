@@ -1,5 +1,7 @@
 package io.mosip.registration.test.service.packet.encryption;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -33,7 +36,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
 import io.mosip.registration.service.security.AESEncryptionService;
-import io.mosip.registration.test.util.datastub.DataProvider;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -61,7 +63,10 @@ public class PacketEncryptionServiceTest {
 	@Before
 	public void initialize() throws Exception {
 		
-		registrationDTO = DataProvider.getPacketDTO();
+		registrationDTO = new RegistrationDTO();
+		registrationDTO.setRegistrationId("10010100100002420190805063005");
+		registrationDTO.setAuditLogEndTime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		registrationDTO.setAuditLogStartTime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.REG_PKT_SIZE, "1");
 
@@ -104,7 +109,7 @@ public class PacketEncryptionServiceTest {
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
 		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
 
-		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
+		packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
 	}
 	
 	@Test
@@ -115,6 +120,74 @@ public class PacketEncryptionServiceTest {
 		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
 
 		packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void packetSizeParamNotFound() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(new HashMap<>()).when(ApplicationContext.class, "map");
+
+		packetEncryptionServiceImpl.encrypt(null, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void packetSizeParamInvalid() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.REG_PKT_SIZE, "wjj");
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+		packetEncryptionServiceImpl.encrypt(null, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void registrationDTONull() throws Exception {
+		packetEncryptionServiceImpl.encrypt(null, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void registrationIDInvalid() throws Exception {
+		RegistrationDTO registration = new RegistrationDTO();
+		registration.setRegistrationId(RegistrationConstants.EMPTY);
+
+		packetEncryptionServiceImpl.encrypt(registration, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void registrationAuditStartDateMissing() throws Exception {
+		RegistrationDTO registration = new RegistrationDTO();
+		registration.setRegistrationId("10010100100002420190805063005");
+
+		packetEncryptionServiceImpl.encrypt(registration, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void registrationAuditEndDateMissing() throws Exception {
+		RegistrationDTO registration = new RegistrationDTO();
+		registration.setRegistrationId("10010100100002420190805063005");
+		registration.setAuditLogStartTime(Timestamp.valueOf(LocalDateTime.now()));
+
+		packetEncryptionServiceImpl.encrypt(registration, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void dataToBeEncryptedNull() throws Exception {
+		RegistrationDTO registration = new RegistrationDTO();
+		registration.setRegistrationId("10010100100002420190805063005");
+		registration.setAuditLogStartTime(Timestamp.valueOf(LocalDateTime.now()));
+		registration.setAuditLogEndTime(Timestamp.valueOf(LocalDateTime.now()));
+
+		packetEncryptionServiceImpl.encrypt(registration, null);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void dataToBeEncryptedEmpty() throws Exception {
+		RegistrationDTO registration = new RegistrationDTO();
+		registration.setRegistrationId("10010100100002420190805063005");
+		registration.setAuditLogStartTime(Timestamp.valueOf(LocalDateTime.now()));
+		registration.setAuditLogEndTime(Timestamp.valueOf(LocalDateTime.now()));
+
+		packetEncryptionServiceImpl.encrypt(registration, new byte[0]);
 	}
 
 }
