@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceDataDto;
 import io.mosip.kernel.masterdata.dto.DeviceInfoDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
@@ -26,6 +28,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 @Service
+@Transactional
 public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 
 	@Autowired
@@ -33,7 +36,6 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 	@Autowired
 	private DeviceRegisterHistoryRepository deviceRegisterHistoryRepository;
 
-	@Transactional
 	@Override
 	public DeviceRegisterResponseDto registerDevice(DeviceRegisterDto request) {
 		DeviceRegister deviceRegisterEntity = new DeviceRegister();
@@ -65,12 +67,37 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 			throw new DeviceRegisterException("KER-MSD-xx",
 					"Error occur while registering device details " + ExceptionUtils.parseException(e));
 		}
-		DeviceRegisterResponseDto responseDto=new DeviceRegisterResponseDto();
-		DeviceRegResponseDto regResponseDto=new DeviceRegResponseDto();
+		DeviceRegisterResponseDto responseDto = new DeviceRegisterResponseDto();
+		DeviceRegResponseDto regResponseDto = new DeviceRegResponseDto();
 		regResponseDto.setDeviceCode(request.getDeviceData().getDeviceCode());
 		regResponseDto.setStatus("success");
 		responseDto.setResponse(regResponseDto);
 		return responseDto;
+	}
+
+	@Override
+	public DeviceRegisterResponseDto deRegisterDevice(DeRegisterDeviceRequestDto request) {
+		DeviceRegister deviceRegisterEntity = null;
+		DeviceRegisterHistory deviceRegisterHistory = new DeviceRegisterHistory();
+		String deviceCode = request.getDevice().getDeviceCode();
+		try {
+			deviceRegisterEntity = deviceRegisterRepository.findDeviceRegisterByCodeAndStatusCode(deviceCode);
+			if (deviceRegisterEntity != null) {
+				deviceRegisterEntity.setStatusCode("deregister");
+				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
+				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+				deviceRegisterRepository.update(deviceRegisterEntity);
+				deviceRegisterHistoryRepository.create(deviceRegisterHistory);
+			} else {
+				throw new DeviceRegisterException("KER-MSD-xx", "No register device found");
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new DeviceRegisterException("KER-MSD-xx",
+					"Error occur while deregistering device details " + ExceptionUtils.parseException(e));
+		}
+
+		return null;
 	}
 
 }
