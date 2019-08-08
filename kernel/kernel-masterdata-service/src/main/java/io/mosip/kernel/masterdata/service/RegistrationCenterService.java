@@ -225,7 +225,7 @@ public interface RegistrationCenterService {
     *         centers complete DTO
     */
 
-	public RegistrationCenterPutResponseDto updateRegistrationCenter1(
+	public RegistrationCenterPutResponseDto updateRegistrationCenter(
 			List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto);
 
 	/**

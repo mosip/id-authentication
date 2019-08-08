@@ -24,12 +24,12 @@ import lombok.NoArgsConstructor;
 public class HolidaySearchDto extends BaseDto {
 
 	@NotNull
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
+	@FilterType(types = { FilterTypeEnum.EQUALS })
 	private int holidayId;
 
 	@Size(min = 1, max = 36)
 	@NotBlank
-	private String names;
+	private String name;
 
 	@NotNull
 	@FilterType(types = { FilterTypeEnum.BETWEEN, FilterTypeEnum.EQUALS })

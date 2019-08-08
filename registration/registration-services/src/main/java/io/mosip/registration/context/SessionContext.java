@@ -118,8 +118,10 @@ public class SessionContext {
 	 * 
 	 * @return boolean 
 	 * 			   - Returns whether the Session context is getting created or not.
+	 * @throws IOException 
+	 * @throws RegBaseCheckedException 
 	 */
-	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO){
+	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException, IOException{
 		
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into creating Session Context");
@@ -197,8 +199,10 @@ public class SessionContext {
 	 *            - Authentication validator should contain user id, pwd, otp
 	 * 
 	 * @return boolean
+	 * @throws IOException 
+	 * @throws RegBaseCheckedException 
 	 */
-	private static boolean validateAuthMethods(UserDTO userDTO, String loginMethod, AuthenticationValidatorDTO authenticationValidatorDTO) {
+	private static boolean validateAuthMethods(UserDTO userDTO, String loginMethod, AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException, IOException {
 		switch (loginMethod) {
 		case RegistrationConstants.PWORD:
 			return validatePword(loginMethod, userDTO, authenticationValidatorDTO);
@@ -287,10 +291,11 @@ public class SessionContext {
 	 *            - Authentication validator should contain user id
 	 * 
 	 * @return boolean
+	 * @throws IOException 
+	 * @throws RegBaseCheckedException 
 	 */
-	private static boolean validateFingerprint(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+	private static boolean validateFingerprint(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException, IOException {
 		BioService bioService = applicationContext.getBean(BioService.class);
-		try {
 			if(bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto(authenticationValidatorDTO.getUserId()))) {				
 				createSessionContext();
 				SessionContext.authTokenDTO().setLoginMode(loginMethod);
@@ -302,9 +307,6 @@ public class SessionContext {
 				sessionContext = null;
 				return false;
 			}
-		} catch (RegBaseCheckedException | IOException exception) {
-			return false;
-		} 
 	}
 	
 	/**

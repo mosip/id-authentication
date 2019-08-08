@@ -74,7 +74,7 @@ public class PacketUploadServiceTest {
 		assertEquals(regList, packetUploadServiceImpl.getSynchedPackets());
 	}
 
-	@Test
+	@Test(expected = RegBaseCheckedException.class)
 	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
@@ -98,7 +98,7 @@ public class PacketUploadServiceTest {
 		assertEquals("Success", packetUploadServiceImpl.pushPacket(f).getSuccessResponseDTO().getCode());
 	}
 
-	@Test
+	@Test(expected = RegBaseCheckedException.class)
 	public void testPushPacketNegativeCase() throws URISyntaxException, RegBaseCheckedException,
 			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
@@ -156,7 +156,7 @@ public class PacketUploadServiceTest {
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
-	@Test(expected = RegBaseUncheckedException.class)
+	@Test(expected = RegBaseCheckedException.class)
 	public void testRuntimeException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f = new File("");
@@ -233,7 +233,7 @@ public class PacketUploadServiceTest {
 
 	}
 
-	@Test(expected = RegBaseUncheckedException.class)
+	@Test(expected = RegBaseCheckedException.class)
 	public void testRuntimeException1() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException,
 			HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		Registration registration = new Registration();

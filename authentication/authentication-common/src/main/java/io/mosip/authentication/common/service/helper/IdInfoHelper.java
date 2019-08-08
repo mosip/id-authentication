@@ -52,9 +52,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class IdInfoHelper {
 
-	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
-
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
@@ -349,7 +346,7 @@ public class IdInfoHelper {
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
-				logger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
 						" is not allowed for - ", matchType + " MatchType");
 			}
 

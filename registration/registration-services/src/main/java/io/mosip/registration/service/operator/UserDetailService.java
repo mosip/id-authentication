@@ -1,6 +1,7 @@
 package io.mosip.registration.service.operator;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * The {@code UserDetailService} represents to save the user related
@@ -40,7 +41,8 @@ public interface UserDetailService {
 	 * 				Batch trigger  - value is "system"
 	 * @return {@code ResponseDTO}
 	 * 				based on the result the response DTO will be formed and return to the caller.
+	 * @throws RegBaseCheckedException 
 	 */
-	public ResponseDTO save(String triggerpoint);
+	public ResponseDTO save(String triggerpoint) throws RegBaseCheckedException;
 
 }

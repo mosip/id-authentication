@@ -361,6 +361,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 				description = ManualVerificationConstants.VERIFICATION_REJECTED + registrationId;
+				messageDTO.setIsValid(Boolean.FALSE);
+				manualVerificationStage.sendMessage(messageDTO);
 			}
 			ManualVerificationEntity maVerificationEntity = basePacketRepository.update(manualVerificationEntity);
 			manualVerificationDTO.setStatusCode(maVerificationEntity.getStatusCode());

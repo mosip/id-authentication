@@ -139,6 +139,8 @@ public class PacketUploadController extends BaseController implements Initializa
 	private ObservableList<PacketStatusVO> observableList;
 
 	private SortedList<PacketStatusVO> sortedList;
+	
+	private Stage stage;
 
 	/**
 	 * This method is used to Sync as well as upload the packets.
@@ -583,7 +585,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	private void displayStatus(List<PacketStatusDTO> filesToDisplay) {
 		Platform.runLater(() -> {
 
-			Stage stage = new Stage();
+			stage = new Stage();
 
 			stage.setTitle(RegistrationUIConstants.PACKET_UPLOAD_HEADER_NAME);
 			stage.setWidth(500);
@@ -682,4 +684,14 @@ public class PacketUploadController extends BaseController implements Initializa
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(RegistrationConstants.EOD_PROCESS_DATE_FORMAT_FOR_FILE);
 		return LocalDateTime.now().format(format);
 	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+	
+	
 }

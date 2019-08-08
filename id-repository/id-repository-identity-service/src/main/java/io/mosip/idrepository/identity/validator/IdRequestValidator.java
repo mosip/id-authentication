@@ -242,7 +242,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 		} catch (IdObjectValidationFailedException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
-			IntStream.range(0, e.getErrorTexts().size()).boxed().parallel().forEach(index -> {
+			IntStream.range(0, e.getErrorTexts().size()).boxed().forEach(index ->
 				errors.rejectValue(REQUEST,
 						e.getCodes().get(index)
 								.equals(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode())
@@ -254,8 +254,8 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 												? IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage()
 												: IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 								Arrays.asList(e.getErrorTexts().get(index).split("-")[1].trim().split("\\|")).stream()
-										.collect(Collectors.joining(" | "))));
-			});
+										.collect(Collectors.joining(" | "))))
+			);
 		} catch (IdObjectIOException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));

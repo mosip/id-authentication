@@ -23,6 +23,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -106,8 +107,7 @@ public class SendNotificationController extends BaseController implements Initia
 	 * To generate email and SMS notification to the user after successful
 	 * registration
 	 * 
-	 * @param event
-	 *            - action to be happened on click of send button
+	 * @param event - action to be happened on click of send button
 	 */
 	@FXML
 	public void sendNotification(ActionEvent event) {
@@ -198,6 +198,9 @@ public class SendNotificationController extends BaseController implements Initia
 			} else {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI - SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage());
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
