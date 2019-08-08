@@ -245,6 +245,12 @@ public class GlobalParamServiceTest {
 
 		gloablContextParamServiceImpl.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
 	}
+	
+	@Test
+	public void updateNulltest() {
+		
+		gloablContextParamServiceImpl.update(null,null);
+	}
 
 	@Test
 	public void syncConfigDataUpdate()
