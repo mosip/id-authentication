@@ -68,9 +68,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 					servletPath.substring(servletPath.lastIndexOf("/") + 1, servletPath.length()) + "Verticle",
 					future -> healthCheckHandler.senderHealthHandler(future, vertx, sendAddress));
 		}
-		if (servletPath.contains("packetvalidator") || servletPath.contains("osi") || servletPath.contains("demo")
-				|| servletPath.contains("bio") || servletPath.contains("uin") || servletPath.contains("quality")
-				|| servletPath.contains("abishandler")) {
+		if (checkServletPathContainsCoreProcessor(servletPath)) {
 			healthCheckHandler.register("hdfscheck", healthCheckHandler::hdfsHealthChecker);
 			healthCheckHandler.register(
 					servletPath.substring(servletPath.lastIndexOf("/") + 1, servletPath.length()) + "Send", future -> {
@@ -113,6 +111,12 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
 		healthCheckHandler.register("diskSpace", healthCheckHandler::dispSpaceHealthChecker);
 		healthCheckHandler.register("db", healthCheckHandler::databaseHealthChecker);
+	}
+
+	private boolean checkServletPathContainsCoreProcessor(String servletPath) {
+		return servletPath.contains("packetvalidator") || servletPath.contains("osi") || servletPath.contains("demo")
+				|| servletPath.contains("bio") || servletPath.contains("uin") || servletPath.contains("quality")
+				|| servletPath.contains("abishandler");
 	}
 
 	/**

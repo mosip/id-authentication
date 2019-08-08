@@ -235,7 +235,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			Map<String, Object> attributes = new HashMap<>();
 			String[] ccEMailList = null;
 
-			if (notificationTypes == null || notificationTypes.isEmpty()) {
+			if (isNotificationTypesEmpty()) {
 				description.setMessage(StatusUtil.TEMPLATE_CONFIGURATION_NOT_FOUND.getMessage());
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), object.getRid(),
@@ -245,7 +245,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			}
 			String[] allNotificationTypes = notificationTypes.split("\\|");
 
-			if (notificationEmails != null && notificationEmails.length() > 0) {
+			if (isNotificationEmailsEmpty()) {
 				ccEMailList = notificationEmails.split("\\|");
 			}
 
@@ -306,6 +306,30 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private boolean isNotificationEmailsEmpty() {
+		return notificationEmails != null && notificationEmails.length() > 0;
+	}
+
+	private boolean isNotificationTypesEmpty() {
+		return notificationTypes == null || notificationTypes.isEmpty();
+	}
+
+	private NotificationTemplateType setNotificationTemplateType(InternalRegistrationStatusDto registrationStatusDto) {
+		NotificationTemplateType type = null;
+		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.LOST.getValue()))
+			type = NotificationTemplateType.LOST_UIN;
+		else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
+			type = NotificationTemplateType.UIN_CREATED;
+		else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
+			type = NotificationTemplateType.UIN_UPDATE;
+		else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.ACTIVATED.getValue()))
+			type = NotificationTemplateType.UIN_UPDATE;
+		else if (registrationStatusDto.getRegistrationType()
+				.equalsIgnoreCase(SyncTypeDto.DEACTIVATED.getValue()))
+			type = NotificationTemplateType.UIN_UPDATE;
+		return type;
 	}
 
 	/**

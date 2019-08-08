@@ -520,17 +520,9 @@ public class BioDedupeProcessor {
 				for (String matchedRegId : matchedRegIds) {
 					JSONObject matchedDemographicIdentity = idRepoService.getIdJsonFromIDRepo(matchedRegId,
 							utilities.getGetRegProcessorDemographicIdentity());
-					if (matchedDemographicIdentity != null) {
-						Map<String, String> matchedAttribute = getIdJson(matchedDemographicIdentity);
-						if (!matchedAttribute.isEmpty()) {
-							if (compareDemoDedupe(applicantAttribute, matchedAttribute, applicantKeysToMatch)) {
-								matchCount++;
-								demoMatchedIds.add(matchedRegId);
-							}
-							if (matchCount > 1)
-								break;
-						}
-					}
+					matchCount=	addMactchedRefId(matchedDemographicIdentity,matchCount,applicantAttribute,applicantKeysToMatch,demoMatchedIds,matchedRegId);
+					if (matchCount > 1)
+						break;
 				}
 
 				if (matchCount == 1) {
@@ -563,6 +555,20 @@ public class BioDedupeProcessor {
 			}
 
 		}
+	}
+
+	private int addMactchedRefId(JSONObject matchedDemographicIdentity, int matchCount, Map<String, String> applicantAttribute, List<String> applicantKeysToMatch, List<String> demoMatchedIds, String matchedRegId) throws IOException {
+		if (matchedDemographicIdentity != null) {
+			Map<String, String> matchedAttribute = getIdJson(matchedDemographicIdentity);
+			if (!matchedAttribute.isEmpty()) {
+				if (compareDemoDedupe(applicantAttribute, matchedAttribute, applicantKeysToMatch)) {
+					matchCount++;
+					demoMatchedIds.add(matchedRegId);
+				}
+				
+			}
+		}
+		return matchCount;
 	}
 
 	private boolean compareDemoDedupe(Map<String, String> applicantAttribute, Map<String, String> matchedAttribute,

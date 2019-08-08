@@ -263,7 +263,7 @@ public class OSIValidator {
 					registrationStatusDto.getRegistrationId(),
 					"OSIValidator::isUserActive()::User Details Api ended with response data : "
 							+ JsonUtil.objectMapperObjectToJson(userResponse));
-		
+
 
 		return userResponse;
 	}
@@ -462,7 +462,7 @@ public class OSIValidator {
 				}
 				String introducerUIN = numberToString(introducerUinNumber);
 				String introducerRID = numberToString(introducerRidNumber);
-				if (introducerUIN == null && introducerRID == null) {
+				if (isValidIntroducer(introducerUIN, introducerRID)) {
 					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 							.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET));
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
@@ -521,6 +521,10 @@ public class OSIValidator {
 				registrationId, "OSIValidator::isValidIntroducer()::exit");
 
 		return true;
+	}
+
+	private boolean isValidIntroducer(String introducerUIN, String introducerRID) {
+		return introducerUIN == null && introducerRID == null;
 	}
 
 	private String numberToString(Number number) {

@@ -138,9 +138,7 @@ public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 			if (applicantAge <= childAgeLimit && applicantAge > 0) {
 				applicantType = BiometricAuthenticationConstants.CHILD;
 			}
-			if ((registartionType.equalsIgnoreCase(RegistrationType.UPDATE.name())
-					|| registartionType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name()))
-					&& applicantType.equalsIgnoreCase(BiometricAuthenticationConstants.ADULT)) {
+			if (isUpdateAdultPacket(registartionType, applicantType)) {
 
 				JSONObject demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
 				JSONObject individualBioMetricLabel = JsonUtil.getJSONObject(demographicIdentity,
@@ -262,6 +260,12 @@ public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private boolean isUpdateAdultPacket(String registartionType, String applicantType) {
+		return (registartionType.equalsIgnoreCase(RegistrationType.UPDATE.name())
+				|| registartionType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name()))
+				&& applicantType.equalsIgnoreCase(BiometricAuthenticationConstants.ADULT);
 	}
 
 	private boolean idaAuthenticate(InputStream file, Long uin, InternalRegistrationStatusDto registrationStatusDto)

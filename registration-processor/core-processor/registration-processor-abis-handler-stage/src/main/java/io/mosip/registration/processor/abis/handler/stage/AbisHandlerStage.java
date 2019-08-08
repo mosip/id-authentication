@@ -127,7 +127,6 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		Boolean isTransactionSuccessful = false;
 		String regId = object.getRid();
 		InternalRegistrationStatusDto registrationStatusDto = null;
-		String bioRefId = null;
 		String transactionTypeCode = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "AbisHandlerStage::process()::entry");
@@ -148,16 +147,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 							AbisHandlerStageConstant.DETAILS_NOT_FOUND);
 					throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
 				}
-				List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
-
-				if (bioRefDtos.isEmpty()) {
-					bioRefId = getUUID();
-					insertInBioRef(regId, bioRefId);
-				} else {
-					bioRefId = bioRefDtos.get(0).getBioRefId();
-				}
-				createInsertRequest(abisQueueDetails, transactionId, bioRefId, regId, description);
-				createIdentifyRequest(abisQueueDetails, transactionId, bioRefId, transactionTypeCode, description);
+				createRequest(regId,abisQueueDetails,transactionId,description,transactionTypeCode);
 				object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			} else {
 				if (transactionTypeCode.equalsIgnoreCase(AbisHandlerStageConstant.DEMOGRAPHIC_VERIFICATION)) {
@@ -199,6 +189,20 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private void createRequest(String regId, List<AbisQueueDetails> abisQueueDetails, String transactionId, LogDescription description, String transactionTypeCode) {
+		List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
+		String bioRefId;
+		if (bioRefDtos.isEmpty()) {
+			bioRefId = getUUID();
+			insertInBioRef(regId, bioRefId);
+		} else {
+			bioRefId = bioRefDtos.get(0).getBioRefId();
+		}
+		createInsertRequest(abisQueueDetails, transactionId, bioRefId, regId, description);
+		createIdentifyRequest(abisQueueDetails, transactionId, bioRefId, transactionTypeCode, description);
+
 	}
 
 	/**
