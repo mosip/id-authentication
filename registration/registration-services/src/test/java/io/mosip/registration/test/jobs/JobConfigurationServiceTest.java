@@ -281,6 +281,15 @@ public class JobConfigurationServiceTest {
 		Assert.assertNotNull(
 				jobConfigurationService.executeJob("1234", RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM));
 	}
+	
+	@Test
+	public void executeJobNullTest() throws SchedulerException {
+		initiateJobTest();
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
+		Assert.assertNotNull(
+				jobConfigurationService.executeJob(null,null).getErrorResponseDTOs());
+	}
 
 	@Test
 	public void executeJobExceptionJobTest() throws SchedulerException {
