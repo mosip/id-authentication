@@ -16,6 +16,7 @@
   	<modules>
     	<module>registration-processor-message-sender-stage</module>
     	<module>registration-processor-printing-stage</module>
-		<module>registration-processor-print-service</module>   	
+		<module>registration-processor-print-service</module>   
+		<module>registration-processor-registration-transaction-service</module>
   </modules>
 </project>
