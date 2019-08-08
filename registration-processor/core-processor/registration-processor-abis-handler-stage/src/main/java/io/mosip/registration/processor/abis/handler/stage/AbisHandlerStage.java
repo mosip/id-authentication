@@ -266,7 +266,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		abisIdentifyRequestDto.setVer(AbisHandlerStageConstant.VERSION);
 		abisIdentifyRequestDto.setRequestId(id);
 		abisIdentifyRequestDto.setReferenceId(bioRefId);
-		abisIdentifyRequestDto.setReferenceUrl(null);
+		abisIdentifyRequestDto.setReferenceUrl(url+"/"+ bioRefId);
 		abisIdentifyRequestDto.setTimestamp(AbisHandlerStageConstant.TIMESTAMP);
 		abisIdentifyRequestDto.setMaxResults(maxResults);
 		abisIdentifyRequestDto.setTargetFPIR(targetFPIR);
@@ -400,7 +400,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 		abisInsertRequestDto.setId(AbisHandlerStageConstant.MOSIP_ABIS_INSERT);
 		abisInsertRequestDto.setReferenceId(bioRefId);
-		abisInsertRequestDto.setReferenceURL(url + "/" + regId);
+		abisInsertRequestDto.setReferenceURL(url + "/" + bioRefId);
 		abisInsertRequestDto.setRequestId(id);
 		abisInsertRequestDto.setTimestamp(AbisHandlerStageConstant.TIMESTAMP);
 		abisInsertRequestDto.setVer(AbisHandlerStageConstant.VERSION);
