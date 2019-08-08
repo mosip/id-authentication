@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -71,12 +72,12 @@ public class FilterValidationTest {
 		validator.validate(TestPojo.class, Arrays.asList(filter));
 	}
 
-	@Test(expected = ValidationException.class)
+	@Test(expected = RequestException.class)
 	public void testNoFilterValidate() {
 		validator.validate(TestPojo.class, Arrays.asList(noFilterType));
 	}
 
-	@Test(expected = ValidationException.class)
+	@Test(expected = RequestException.class)
 	public void testNoColumnValidate() {
 		validator.validate(TestPojo.class, Arrays.asList(noColumnFilter));
 	}
@@ -91,7 +92,7 @@ public class FilterValidationTest {
 		validator.validate(TestPojo.class, Arrays.asList(invalidColumn));
 	}
 
-	@Test(expected = ValidationException.class)
+	@Test(expected = RequestException.class)
 	public void testNullFilterValuesValidate() {
 		validator.validate(TestPojo.class, Arrays.asList(new SearchFilter()));
 	}
@@ -106,7 +107,7 @@ public class FilterValidationTest {
 		validator.validate(TestPojo.class, Arrays.asList());
 	}
 
-	@Test(expected=ValidationException.class)
+	@Test(expected = RequestException.class)
 	public void testEmptyFilterValuesListValidate() {
 		validator.validate(TestPojo.class, Arrays.asList(emptyColumnAndTypeFilter));
 	}
