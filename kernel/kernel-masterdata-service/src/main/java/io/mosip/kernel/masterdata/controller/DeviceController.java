@@ -19,6 +19,8 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
@@ -261,4 +263,5 @@ public class DeviceController {
 		return responseWrapper;
 	}
 
+	
 }
