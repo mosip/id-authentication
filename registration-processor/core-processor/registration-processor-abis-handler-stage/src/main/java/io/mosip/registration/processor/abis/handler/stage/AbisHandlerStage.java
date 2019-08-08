@@ -266,6 +266,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		abisIdentifyRequestDto.setVer(AbisHandlerStageConstant.VERSION);
 		abisIdentifyRequestDto.setRequestId(id);
 		abisIdentifyRequestDto.setReferenceId(bioRefId);
+		abisIdentifyRequestDto.setReferenceUrl(null);
 		abisIdentifyRequestDto.setTimestamp(AbisHandlerStageConstant.TIMESTAMP);
 		abisIdentifyRequestDto.setMaxResults(maxResults);
 		abisIdentifyRequestDto.setTargetFPIR(targetFPIR);
