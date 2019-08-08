@@ -319,7 +319,7 @@ public class MasterSyncServiceTest {
 
 	@SuppressWarnings("unused")
 	@Test
-	public void testExpectedNullException() throws JsonParseException, JsonMappingException, IOException {
+	public void testExpectedNullException() throws JsonParseException, JsonMappingException, IOException, RegBaseCheckedException {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
@@ -735,7 +735,7 @@ public class MasterSyncServiceTest {
 	}
 
 	@Test
-	public void findLocationByHierarchyCode() {
+	public void findLocationByHierarchyCode() throws RegBaseCheckedException {
 
 		List<Location> locations = new ArrayList<>();
 		Location locattion = new Location();
@@ -755,7 +755,7 @@ public class MasterSyncServiceTest {
 	}
 
 	@Test
-	public void findProvianceByHierarchyCode() {
+	public void findProvianceByHierarchyCode() throws RegBaseCheckedException {
 
 		List<Location> locations = new ArrayList<>();
 		Location locattion = new Location();
@@ -776,7 +776,7 @@ public class MasterSyncServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void findAllReasons() {
+	public void findAllReasons() throws RegBaseCheckedException {
 
 		List<ReasonCategory> allReason = new ArrayList<>();
 		ReasonCategory reasons = new ReasonCategory();
@@ -800,7 +800,7 @@ public class MasterSyncServiceTest {
 	}
 
 	@Test
-	public void findAllBlackWords() {
+	public void findAllBlackWords() throws RegBaseCheckedException {
 
 		List<BlacklistedWords> allBlackWords = new ArrayList<>();
 		BlacklistedWords blackWord = new BlacklistedWords();
@@ -818,7 +818,7 @@ public class MasterSyncServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void findDocumentCategories() {
+	public void findDocumentCategories() throws RegBaseCheckedException {
 
 		List<DocumentType> documents = new ArrayList<>();
 		DocumentType document = new DocumentType();
@@ -837,7 +837,7 @@ public class MasterSyncServiceTest {
 	}
 
 	@Test
-	public void findGender() {
+	public void findGender() throws RegBaseCheckedException {
 
 		List<Gender> genderList = new ArrayList<>();
 		Gender gender = new Gender();
@@ -854,7 +854,7 @@ public class MasterSyncServiceTest {
 	}
 
 	@Test
-	public void findIndividualType() {
+	public void findIndividualType() throws RegBaseCheckedException {
 
 		List<IndividualType> masterIndividualType = new ArrayList<>();
 		IndividualType individualTypeEntity = new IndividualType();
@@ -1085,7 +1085,7 @@ public class MasterSyncServiceTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	public void getBiometricTypeWithFingerprintEnable() {
+	public void getBiometricTypeWithFingerprintEnable() throws RegBaseCheckedException {
 		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "Y");
@@ -1107,7 +1107,7 @@ public class MasterSyncServiceTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	public void getBiometricTypeWithIrisEnable() {
+	public void getBiometricTypeWithIrisEnable() throws RegBaseCheckedException {
 		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "Y");
@@ -1129,7 +1129,7 @@ public class MasterSyncServiceTest {
 
 	@SuppressWarnings("static-access")
 	@Test
-	public void getBiometricTypeWithFingerprintDisble() {
+	public void getBiometricTypeWithFingerprintDisble() throws RegBaseCheckedException {
 		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "N");
@@ -1152,7 +1152,7 @@ public class MasterSyncServiceTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	public void getBiometricTypeWithIrisDisble() {
+	public void getBiometricTypeWithIrisDisble() throws RegBaseCheckedException {
 		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "N");
@@ -1346,5 +1346,68 @@ public class MasterSyncServiceTest {
 
 		masterSyncServiceImpl.getMasterSync("MDS_J00001", "System", "Index");
 	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNullLangCode() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getMasterSync("MDS_J00001", null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNull() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getMasterSync(null, "System");
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNullLangCod() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getMasterSync("MDS_J00001", null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNullCode() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getMasterSync("MDS_J00001", null,null);
+	}
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNullId() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getMasterSync(null, "System",null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNullIndex() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getMasterSync(null, null,"Index");
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void codeNotNullAllLangCode() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getAllReasonsList(null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void getAllBlackListedWords() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getAllBlackListedWords(null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void getGenderDtls() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getGenderDtls(null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void getBiometricType() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getBiometricType(null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void getIndividualType() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getIndividualType(null,"eng");
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void getIndividualTypeCode() throws RegBaseCheckedException {
+		masterSyncServiceImpl.getIndividualType("NFR",null);
+	}
+	
+	
+	
+	
 	
 }

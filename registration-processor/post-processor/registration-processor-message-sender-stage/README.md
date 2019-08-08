@@ -1,5 +1,29 @@
-# Registration-Processor Message Sender
+### registration-processor-message-sender-stage
 
+[Background & design](https://github.com/mosip/mosip/wiki/Registration-Processor)
+
+[Process Flow for Registration-Processor](https://github.com/mosip/mosip/blob/master/docs/requirements/FinalProcessFlows/MOSIP_Process%20Flow%201.19%20Reg%20Processor.pdf)
+
+This stage sends sms and email notification for different packets based on their trasaction type + transaction status code.
+
+##### Default Context Path and Port
+```
+server.port=8088
+eventbus.port=5721
+```
+##### Configurable Properties from Config Server
+```
+registration.processor.identityjson=RegistrationProcessorIdentity.json
+registration.processor.demographic.identity=identity
+registration.processor.notification.emails=
+registration.processor.uin.generated.subject=UIN Generated
+registration.processor.duplicate.uin.subject=Registration Failed because you have already Registered
+registration.processor.reregister.subject=Re-Register because there was a Technical Issue
+registration.processor.uin.activated.subject=Uin is activated successfully
+registration.processor.uin.deactivated.subject=Uin is deactivated
+registration.processor.updated.subject=UIN Details Updated
+```
+### Information related to putting placeholders in notification template
 We need to store templates in master table.
 The parameter FileText for a template will be sent as a message in sms or email.
 

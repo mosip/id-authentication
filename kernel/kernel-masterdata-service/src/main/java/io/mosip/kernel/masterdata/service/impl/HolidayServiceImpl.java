@@ -37,6 +37,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
@@ -83,6 +84,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private FilterColumnValidator filterColumnValidator;
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
+	@Autowired
+	private PageUtils pageUtils;
 
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:newHolidayDate,h.holidayId.holidayName = :newHolidayName   WHERE h.holidayId.locationCode = :locationCode and h.holidayId.holidayName = :holidayName and h.holidayId.holidayDate = :holidayDate and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 
@@ -349,7 +352,8 @@ public class HolidayServiceImpl implements HolidayService {
 				if (column.equalsIgnoreCase("name")) {
 					if (filterValidator.validate(LocationDto.class, Arrays.asList(filter))) {
 						Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
-								new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+								new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(),
+										dto.getLanguageCode()),
 								null);
 						List<SearchFilter> locationCodeFilter = buildLocationSearchFilter(locations.getContent());
 						if (locationCodeFilter.isEmpty()) {
@@ -363,13 +367,16 @@ public class HolidayServiceImpl implements HolidayService {
 				}
 			}
 			dto.getFilters().removeAll(removeList);
+			Pagination pagination = dto.getPagination();
+			List<SearchSort> sort = dto.getSort();
+			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+			dto.setSort(Collections.emptyList());
 			List<HolidaySearchDto> resultDto = new ArrayList<>();
 			if (filterValidator.validate(HolidaySearchDto.class, dto.getFilters())) {
 				OptionalFilter optionalFilter = new OptionalFilter(addList);
 				Page<Holiday> page = masterdataSearchHelper.searchMasterdata(Holiday.class, dto,
 						new OptionalFilter[] { optionalFilter });
 				if (page.getContent() != null && !page.getContent().isEmpty()) {
-					pageDto = PageUtils.pageResponse(page);
 					holidayDtos = MapperUtils.mapAll(page.getContent(), HolidayExtnDto.class);
 					Map<Integer, List<HolidayExtnDto>> holidayPerHolidayType = holidayDtos.stream()
 							.collect(Collectors.groupingBy(HolidayExtnDto::getHolidayId));
@@ -380,7 +387,7 @@ public class HolidayServiceImpl implements HolidayService {
 						resultDto.add(holidaySearchDto);
 					}
 				}
-				pageDto.setData(resultDto);
+				pageDto = pageUtils.sortPage(resultDto, sort, pagination);
 			}
 		} else {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -415,9 +422,9 @@ public class HolidayServiceImpl implements HolidayService {
 	 *            the list of Machine Type.
 	 * @return the list of {@link SearchFilter}.
 	 */
-	private List<SearchFilter> buildLocationSearchFilter(List<Location> Locations) {
-		if (Locations != null && !Locations.isEmpty())
-			return Locations.stream().filter(Objects::nonNull).map(this::buildLocations).collect(Collectors.toList());
+	private List<SearchFilter> buildLocationSearchFilter(List<Location> locations) {
+		if (locations != null && !locations.isEmpty())
+			return locations.stream().filter(Objects::nonNull).map(this::buildLocations).collect(Collectors.toList());
 		return Collections.emptyList();
 	}
 
@@ -444,7 +451,7 @@ public class HolidayServiceImpl implements HolidayService {
 			String locationNames = locations.stream().filter(i -> holidayLocations.contains(i.getCode()))
 					.map(Location::getName).collect(Collectors.joining(","));
 
-			searchDto.setNames(locationNames);
+			searchDto.setName(locationNames);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -84,4 +85,28 @@ public interface ValidDocumentService {
 	 * @return filter dto containing column names
 	 */
 	public FilterResponseDto categoryTypeFilterValues(FilterValueDto filterValueDto);
+	
+	
+	/**
+	 * This method maps a Document Category to a Document Type.
+	 * 
+	 * @param docCatCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
+	 * @return {@link DocCategoryAndTypeMappingResponseDto}.
+	 */
+	public DocCategoryAndTypeMappingResponseDto mapDocCategoryAndDocType(String docCatCode, String docTypeCode);
+	
+	/**
+	 * This method un-maps a Document Category from a Document Type.
+	 * 
+	 * @param docCatCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
+	 * @return {@link DocCategoryAndTypeMappingResponseDto}.
+	 */
+	public DocCategoryAndTypeMappingResponseDto unmapDocCategoryAndDocType(String docCatCode, String docTypeCode);
+
 }

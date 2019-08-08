@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.embed.swing.*?>
 <?import javafx.scene.control.*?>
@@ -29,6 +30,7 @@
         </rowConstraints>
          <children>
             <SwingNode fx:id="webcamera" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+            <ImageView fx:id="camImageView" fitHeight="300.0" fitWidth="325.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <GridPane GridPane.rowIndex="2">

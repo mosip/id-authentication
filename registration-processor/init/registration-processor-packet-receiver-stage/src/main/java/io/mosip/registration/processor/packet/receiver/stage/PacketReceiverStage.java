@@ -21,13 +21,13 @@ import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
 import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
-import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.RoutingContext;
 
@@ -182,7 +182,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
-				PacketReceiverResponseDTO responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
+				PacketReceiverResponseDTO responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusUtil.PACKET_RECEIVED.getMessage(), listObj);
 				this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 			}
 		} catch (IOException e) {

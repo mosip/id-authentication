@@ -14,6 +14,7 @@
   </properties>
   <modules>
     <module>registration-processor-packet-receiver-stage</module>
-  	<module>registration-processor-registration-status-service</module>  	
+	<module>registration-processor-registration-status-service</module>
+	<module>registration-processor-registration-transaction-service</module>
   </modules>
 </project>

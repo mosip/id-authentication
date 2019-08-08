@@ -105,7 +105,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN','ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(

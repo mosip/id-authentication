@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.dto.request;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -20,7 +19,7 @@ public class FilterValueDto {
 	@NotNull
 	@Valid
 	private List<FilterDto> filters;
-	@NotBlank
+	// @NotBlank
 	@ValidLangCode
 	private String languageCode;
 }

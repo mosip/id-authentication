@@ -9,9 +9,10 @@ package io.mosip.registration.mdm.constants;
  */
 public class MosipBioDeviceConstants {
 
-	public static final String DEVICE_INFO_ENDPOINT = "deviceInfo";
+	public static final String DEVICE_INFO_ENDPOINT = "info";
 	public static final String DEVICE_INFO_SERVICENAME = "mdm.deviceInfo";
 	public static final String CAPTURE_ENDPOINT = "capture";
+	public static final String STREAM_ENDPOINT = "stream";
 	public static final String CAPTURE_SERVICENAME = "mdm.capture";
 	public static final String DEVICE_DISCOVERY_ENDPOINT = "deviceDiscovery";
 	public static final String DEVICE_DISCOVERY_SERVICENAME = "mdm.deviceDiscovery";
