@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -200,13 +201,17 @@ public class BaseService {
 	 */
 	public String getStationId(String macAddress) {
 		String stationId = null;
-		try {
-			/* Get Station ID */
-			stationId = userOnboardDAO.getStationID(macAddress);
-		} catch (RegBaseCheckedException baseCheckedException) {
-			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
+		if (macAddress != null) {
+			try {
 
+				/* Get Station ID */
+				stationId = userOnboardDAO.getStationID(macAddress);
+
+			} catch (RegBaseCheckedException baseCheckedException) {
+				LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
+
+			}
 		}
 		return stationId;
 	}
@@ -273,16 +278,20 @@ public class BaseService {
 	 */
 	public String getGlobalConfigValueOf(String key) {
 
-		ApplicationContext.getInstance();
-		// Check application map
-		if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key) == null) {
+		String val = null;
+		if (key != null) {
+			ApplicationContext.getInstance();
+			// Check application map
+			if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key) == null) {
 
-			// Load Global params if application map is empty
-			ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
+				// Load Global params if application map is empty
+				ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
+			}
+
+			// Get Value of global param
+			val = (String) ApplicationContext.map().get(key);
 		}
-
-		// Get Value of global param
-		return (String) ApplicationContext.map().get(key);
+		return val;
 	}
 
 	/**
@@ -371,6 +380,18 @@ public class BaseService {
 	 */
 	protected boolean isListEmpty(List<?> listToBeValidated) {
 		return listToBeValidated == null || listToBeValidated.isEmpty();
+	}
+	
+	/**
+	 * Validates the input {@link Set} is either <code>null</code> or empty
+	 * 
+	 * @param setToBeValidated
+	 *            the {@link Set} object to be validated
+	 * @return <code>true</code> if {@link Set} is either <code>null</code> or
+	 *         empty, else <code>false</code>
+	 */
+	protected boolean isSetEmpty(Set<?> setToBeValidated) {
+		return setToBeValidated == null || setToBeValidated.isEmpty();
 	}
 
 	/**

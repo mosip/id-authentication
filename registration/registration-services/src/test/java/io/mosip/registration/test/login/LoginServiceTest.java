@@ -3,6 +3,7 @@ package io.mosip.registration.test.login;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -158,7 +159,13 @@ public class LoginServiceTest {
 		Mockito.when(appAuthenticationDAO.getModesOfLogin("LOGIN", roleSet)).thenReturn(modes);
 		assertEquals(modes, loginServiceImpl.getModesOfLogin("LOGIN", roleSet));
 	}
-
+	
+	@Test
+	public void getModesOfLoginNegativeTest() {
+		Set<String> roleSet = new HashSet<>();		
+		loginServiceImpl.getModesOfLogin("LOGIN", roleSet);		
+	}
+	
 	@Test
 	public void getUserDetailTest() {
 
@@ -178,6 +185,11 @@ public class LoginServiceTest {
 	}
 
 	@Test
+	public void getUserDetailFailureTest() {
+		loginServiceImpl.getUserDetail("");
+	}
+
+	@Test
 	public void getRegistrationCenterDetailsTest() {
 
 		RegistrationCenter registrationCenter = new RegistrationCenter();
@@ -194,19 +206,33 @@ public class LoginServiceTest {
 
 		assertEquals(centerDetailDTO, loginServiceImpl.getRegistrationCenterDetails("mosip", "eng"));
 	}
+	
+	@Test
+	public void getRegistrationCenterDetailsFailureTest() {
+		loginServiceImpl.getRegistrationCenterDetails("", "eng");
+	}
 
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
 
 		Set<ScreenAuthorizationDetails> authorizationList = new HashSet<>();
 		List<String> roleList = new ArrayList<>();
-		Mockito.when(screenAuthorizationRepository
+		roleList.add("REGISTRATION_OFFICER");
+		
+		AuthorizationDTO authorizationDTO = new AuthorizationDTO();
+		authorizationDTO.setAuthorizationRoleCode(roleList);
+		when(screenAuthorizationRepository
 				.findByScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))
 				.thenReturn(authorizationList);
-		AuthorizationDTO authorizationDTO = new AuthorizationDTO();
-		Mockito.when(screenAuthorizationDAO.getScreenAuthorizationDetails(roleList)).thenReturn(authorizationDTO);
-		assertNotNull(loginServiceImpl.getScreenAuthorizationDetails(roleList));
+		when(screenAuthorizationDAO.getScreenAuthorizationDetails(roleList)).thenReturn(authorizationDTO);
+		Assert.assertNotNull(loginServiceImpl.getScreenAuthorizationDetails(roleList).getAuthorizationRoleCode());
 
+	}
+	
+	@Test
+	public void getScreenAuthorizationDetailsFailureTest() {
+		List<String> roleList = new ArrayList<>();
+		loginServiceImpl.getScreenAuthorizationDetails(roleList);
 	}
 
 	@Test
@@ -233,10 +259,15 @@ public class LoginServiceTest {
 
 		loginServiceImpl.updateLoginParams(userDTO);
 	}
+	
+	@Test
+	public void updateLoginParamsFailureTest() {
+		loginServiceImpl.updateLoginParams(null);
+	}
 
 	@Test
 	public void initialSyncTest() throws RegBaseCheckedException {
-		Map<String, Object> applicationMap = new HashMap();
+		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.INITIAL_SETUP, "Y");
 		applicationMap.put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
 
@@ -267,7 +298,7 @@ public class LoginServiceTest {
 	
 	@Test
 	public void initialSyncFailureTest() throws RegBaseCheckedException {
-		Map<String, Object> applicationMap = new HashMap();
+		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.ENABLE);
 		applicationMap.put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
 		
@@ -301,9 +332,10 @@ public class LoginServiceTest {
 		Assert.assertTrue(loginServiceImpl.initialSync().contains(RegistrationConstants.FAILURE));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void initialSyncFailureExceptionTest() throws RegBaseCheckedException {
-		Map<String, Object> applicationMap = new HashMap();
+		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.INITIAL_SETUP, "Y");
 		applicationMap.put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
 		ApplicationContext.setApplicationMap(applicationMap);
@@ -324,7 +356,7 @@ public class LoginServiceTest {
 	
 	@Test
 	public void initialSyncFalseTest() throws RegBaseCheckedException {
-		Map<String, Object> applicationMap = new HashMap();
+		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
 		applicationMap.put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
 		
@@ -358,24 +390,6 @@ public class LoginServiceTest {
 		Assert.assertTrue(loginServiceImpl.initialSync().contains(RegistrationConstants.FAILURE));
 	}
 	
-	
-	@Test
-	public void validateUserFailureTest() throws Exception {
-		ResponseDTO responseDTO = new ResponseDTO();
-		UserDetail userDetail = new UserDetail();
-		UserDTO userDTO = null;
-		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
-		Mockito.when(loginServiceImpl.getUserDetail("")).thenReturn(userDTO);
-		
-		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
-		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-		errorResponseDTO.setMessage(RegistrationConstants.USER_MACHINE_VALIDATION_MSG);
-		errorResponseDTOs.add(errorResponseDTO);
-		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-		
-		assertNotNull(loginServiceImpl.validateUser("").getErrorResponseDTOs());
-		
-	}
 	@Test
 	public void validateUserTest() throws Exception {
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -425,6 +439,27 @@ public class LoginServiceTest {
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 		assertNotNull(loginServiceImpl.validateUser("mosip").getSuccessResponseDTO());
 	}
+	
+	@Test
+	public void validateUserFailureTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(null);
+		
+		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(RegistrationConstants.USER_NAME_VALIDATION);
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		
+		assertNotNull(loginServiceImpl.validateUser("mosip").getErrorResponseDTOs());
+	}
+
+	@Test
+	public void validateUserFailure1Test() throws Exception {
+		loginServiceImpl.validateUser("");
+	}
+
+
 	
 	@Test
 	public void validateUserStatusTest() throws Exception {
@@ -639,5 +674,25 @@ public class LoginServiceTest {
 		Mockito.doNothing().when(userDetailDAO).updateLoginParams(userDetail);
 		
 		assertEquals("sample", loginServiceImpl.validateInvalidLogin(userDTO, "sample", 3, 3));
+	}
+	
+	@Test
+	public void validateInvalidLoginTest4() {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId("mosip");
+		userDTO.setUnsuccessfulLoginCount(null);
+		
+		UserDetail userDetail = new UserDetail();
+		
+		Mockito.when(userDetailDAO.getUserDetail("mosip")).thenReturn(userDetail);
+		
+		Mockito.doNothing().when(userDetailDAO).updateLoginParams(userDetail);
+		
+		assertEquals("sample", loginServiceImpl.validateInvalidLogin(userDTO, "sample", 3, 3));
+	}
+	
+	@Test
+	public void validateInvalidLoginFailureTest() {
+		loginServiceImpl.validateInvalidLogin(null, "sample", 3, 3);
 	}
 }
