@@ -208,7 +208,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 						"Individual Biometric parameter is not present in ID Json");
 			} else {
 				String biometricFileName = JsonUtil.getJSONValue(individualBiometricsObject, VALUE);
-				if (biometricFileName == null || biometricFileName.isEmpty()) {
+				if (isBiometricFileNameEmpty(biometricFileName)) {
 					description = "File Name of individual biometric is not present";
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), regId,
@@ -333,6 +333,10 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private boolean isBiometricFileNameEmpty(String biometricFileName) {
+		return biometricFileName == null || biometricFileName.isEmpty();
 	}
 
 	/**

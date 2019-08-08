@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import io.mosip.kernel.dataaccess.hibernate.config.EncryptionInterceptor;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
@@ -20,10 +19,8 @@ import io.mosip.registration.processor.status.validator.RegistrationSyncRequestV
 @ComponentScan(basePackages= {"io.mosip.registration.processor.status.service","io.mosip.registration.processor.rest.client.*",
 		"io.mosip.registration.processor.core.token.*", "io.mosip.registration.processor.core.config","io.mosip.registration.processor.transaction.*"},
 excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {RegistrationStatusBeanConfig.class,
-		RestConfigBean.class,RegistrationStatusRequestValidator.class, CoreConfigBean.class, KernelConfig.class})) 
+		RestConfigBean.class,RegistrationStatusRequestValidator.class, CoreConfigBean.class, KernelConfig.class}))
 public class RegistrationTransactionBeanConfigTest {
-	@MockBean
-	public EncryptionInterceptor encryptionInterceptor;
 	
 	@MockBean
 	public PacketManager filesystemAdapter;

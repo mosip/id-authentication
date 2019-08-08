@@ -36,6 +36,8 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -119,7 +121,9 @@ public class BioServiceTest {
 	private static CaptureResponseDto getFingerPritnCaptureResponse() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		StringBuffer sBuffer = new StringBuffer();
-		BufferedReader  bR = new BufferedReader(new FileReader(new File("D:\\mosip_jconsole\\mosip\\registration\\registration-services\\src\\test\\resources\\fingersData.txt")));
+		Resource resource = new ClassPathResource("fingersData.txt");
+		File file = resource.getFile();
+		BufferedReader  bR = new BufferedReader(new FileReader(file));
 		String s;
 		while((s=bR.readLine())!=null) {
 			sBuffer.append(s);
@@ -135,7 +139,9 @@ public class BioServiceTest {
 	private static CaptureResponseDto getIrisCaptureResponse() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		StringBuffer sBuffer = new StringBuffer();
-		BufferedReader  bR = new BufferedReader(new FileReader(new File("D:\\mosip_jconsole\\mosip\\registration\\registration-services\\src\\test\\resources\\irisData.txt")));
+		Resource resource = new ClassPathResource("irisData.txt");
+		File file = resource.getFile();
+		BufferedReader  bR = new BufferedReader(new FileReader(file));
 		String s;
 		while((s=bR.readLine())!=null) {
 			sBuffer.append(s);

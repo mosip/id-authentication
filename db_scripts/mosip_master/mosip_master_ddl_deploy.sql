@@ -74,5 +74,7 @@
 \ir ddl/master-zone_user.sql
 \ir ddl/master-zone_user_h.sql
 
+\ir ddl/master-registered_device_master.sql
+\ir ddl/master-registered_device_master_h.sql
+
 \ir ddl/master-fk.sql
-\ir ddl/master-drop_fk.sql

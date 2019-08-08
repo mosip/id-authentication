@@ -629,6 +629,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 					|| Double.compare(irisDetailsDTO.getQualityScore(), qualityScore) < 0) {
 				// Set the values in IrisDetailsDTO object
 				irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
+				irisDetailsDTO.setIrisIso((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				irisDetailsDTO.setForceCaptured(false);
 				irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
 						.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));

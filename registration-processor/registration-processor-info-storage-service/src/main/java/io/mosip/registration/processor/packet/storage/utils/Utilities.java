@@ -283,7 +283,7 @@ public class Utilities {
 					"Utilities::retrieveIdrepoJson()::entry");
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+			IdResponseDTO1 idResponseDto;
 
 			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
 					IdResponseDTO1.class);
@@ -304,41 +304,6 @@ public class Utilities {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
 					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended Successfully");
 			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
-
-		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-				"Utilities::retrieveIdrepoJson()::exit UIN is null");
-		return null;
-	}
-	public String retrieveIdrepoJsonStatus(Long uin) throws ApisResourceAccessException, IdRepoAppException, IOException {
-		
-
-		if (uin != null) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Utilities::retrieveIdrepoJson()::entry");
-			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
-
-			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
-					IdResponseDTO1.class);
-			if (idResponseDto == null) {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-						"Utilities::retrieveIdrepoJson()::exit idResponseDto is null");
-				return null;
-			}
-			if (!idResponseDto.getErrors().isEmpty()) {
-				List<ErrorDTO> error = idResponseDto.getErrors();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-						"Utilities::retrieveIdrepoJson():: error with error message " + error.get(0).getMessage());
-				throw new IdRepoAppException(error.get(0).getMessage());
-			}
-
-			String response=idResponseDto.getResponse().getStatus();
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended Successfully");
-			return response;
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
@@ -483,16 +448,18 @@ public class Utilities {
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Utilities::getUIn()::entry");
-
+		Number number;
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		if (demographicIdentity == null) {
+		if (demographicIdentity != null) {
+			 number = JsonUtil.getJSONValue(demographicIdentity, UIN);
+		}else {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Utilities::getUIn():: error with error message "
 							+ PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		
 		}
-		Number number = JsonUtil.getJSONValue(demographicIdentity, UIN);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Utilities::getUIn()::exit");
 
 		return number != null ? number.longValue() : null;
@@ -572,7 +539,7 @@ public class Utilities {
 		if (regId != null) {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(regId);
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+			IdResponseDTO1 idResponseDto;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, "Utilities::retrieveUIN():: RETRIEVEIDENTITYFROMRID GET service call Started");
 
@@ -868,6 +835,49 @@ public class Utilities {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Retrieve idrepo json status.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the string
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	public String retrieveIdrepoJsonStatus(Long uin) throws ApisResourceAccessException, IdRepoAppException {
+		String response = null;
+		if (uin != null) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+					"Utilities::retrieveIdrepoJson()::entry");
+			List<String> pathSegments = new ArrayList<>();
+			pathSegments.add(String.valueOf(uin));
+			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+
+			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
+					IdResponseDTO1.class);
+			if (idResponseDto == null) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+						"Utilities::retrieveIdrepoJson()::exit idResponseDto is null");
+				return null;
+			}
+			if (!idResponseDto.getErrors().isEmpty()) {
+				List<ErrorDTO> error = idResponseDto.getErrors();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+						"Utilities::retrieveIdrepoJson():: error with error message " + error.get(0).getMessage());
+				throw new IdRepoAppException(error.get(0).getMessage());
+			}
+
+			response = idResponseDto.getResponse().getStatus();
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended Successfully");
+		}
+
+		return response;
 	}
 
 }

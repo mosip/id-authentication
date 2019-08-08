@@ -1,39 +1,66 @@
--- create table section --------------------------------------------------------
--- schema 		: master  	- Master Reference schema
--- table 		: location  - Master location list
--- table alias  : loc	
- 
--- schemas section ---------------------------------------------------------------
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_master
+-- Table Name 	: master.location
+-- Purpose    	: Location :  List of all location and  hierarchies defined for various location requirements.  An example is provided for understanding the data to be populated.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- create schema if master reference schema not exists
-create schema if not exists master
-;
+-- object: master.location | type: TABLE --
+-- DROP TABLE IF EXISTS master.location CASCADE;
+CREATE TABLE master.location(
+	code character varying(36) NOT NULL,
+	name character varying(128) NOT NULL,
+	hierarchy_level smallint NOT NULL,
+	hierarchy_level_name character varying(64) NOT NULL,
+	parent_loc_code character varying(36),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_loc_code PRIMARY KEY (code,lang_code)
 
--- table section -------------------------------------------------------------------------------
+);
+-- ddl-end --
+COMMENT ON TABLE master.location IS 'Location :  List of all location and  hierarchies defined for various location requirements.  An example is provided for understanding the data to be populated.';
+-- ddl-end --
+COMMENT ON COLUMN master.location.code IS 'Code : Unique location code. ';
+-- ddl-end --
+COMMENT ON COLUMN master.location.name IS 'Name : Location';
+-- ddl-end --
+COMMENT ON COLUMN master.location.hierarchy_level IS 'Hierarchy Level: Number of hierarchy levels defined by each country. Typically it starts with 0 for the topmost hierarchy level.';
+-- ddl-end --
+COMMENT ON COLUMN master.location.hierarchy_level_name IS 'Hierarchy Level Name: Hierarchy level name defined by each country. for ex., COUNTRY->STATE->CITY->PINCODE.';
+-- ddl-end --
+COMMENT ON COLUMN master.location.parent_loc_code IS 'Parent Location Code: Location code to refers to location code as per hierarchy defined by each country';
+-- ddl-end --
+COMMENT ON COLUMN master.location.lang_code IS 'Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ';
+-- ddl-end --
+COMMENT ON COLUMN master.location.is_active IS 'IS_Active : Flag to mark whether the record is Active or In-active';
+-- ddl-end --
+COMMENT ON COLUMN master.location.cr_by IS 'Created By : ID or name of the user who create / insert record';
+-- ddl-end --
+COMMENT ON COLUMN master.location.cr_dtimes IS 'Created DateTimestamp : Date and Timestamp when the record is created/inserted';
+-- ddl-end --
+COMMENT ON COLUMN master.location.upd_by IS 'Updated By : ID or name of the user who update the record with new values';
+-- ddl-end --
+COMMENT ON COLUMN master.location.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
+-- ddl-end --
+COMMENT ON COLUMN master.location.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
+-- ddl-end --
+COMMENT ON COLUMN master.location.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
 
-	create table master.location (
-	
-		code character varying (36) not null , 
-		name character varying (128) not null ,
-		
-		hierarchy_level smallint not null ,
-		hierarchy_level_name character varying (64) not null ,
-		
-		parent_loc_code character varying (36) ,        -- self joining,  master.location.code
-		
-		lang_code  character varying(3) not null ,		-- master.language.code
-
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes timestamp ,
-		is_deleted 	boolean,
-		del_dtimes	timestamp 
-
-		)
-	;
-		
+--------------------------------------------------------------------------------------------	
 	--  Below is sample data for understanding the hierarchy_level and data to be populated.
 	--  code(unique,pkey)	name  			level	levelname	parent code 	
 
@@ -56,17 +83,5 @@ create schema if not exists master
 	-- 								(  for pin/zip, both code and name can be same)
 			
 	--  600001			600001			3		ZIPCODE		CHN		
-
-
--- keys section -------------------------------------------------------------------------------
-alter table master.location add constraint pk_loc_code primary key (code, lang_code)
- ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_loc_name on master.location (name)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table master.location is 'Master location table'
-;
+--------------------------------------------------------------------------------------------
 
