@@ -309,7 +309,7 @@ public class DemodedupeProcessor {
 			isMatchFound = true;
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 			description.setCode(PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode());
