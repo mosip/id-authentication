@@ -19,6 +19,7 @@ import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
@@ -30,6 +31,7 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
@@ -54,14 +56,16 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class,
 		IdInfoHelper.class, CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
-		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,IdObjectPatternValidator.class,
-		BioMatcherUtil.class, BioApiImpl.class,DemoNormalizerImpl.class })
+		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,
+		IdObjectPatternValidator.class, BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class,
+		OTPServiceImpl.class, OTPRequestValidator.class })
 public class OtpApplication {
 
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(OtpApplication.class, args);

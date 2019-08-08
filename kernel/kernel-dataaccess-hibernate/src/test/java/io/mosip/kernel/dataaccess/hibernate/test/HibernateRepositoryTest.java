@@ -22,9 +22,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
@@ -46,6 +48,9 @@ public class HibernateRepositoryTest {
 
 	@Mock
 	EntityManager em;
+	
+	@MockBean
+	RestTemplate restTemplate;
 
 	@Mock
 	CriteriaBuilder builder;
@@ -64,7 +69,7 @@ public class HibernateRepositoryTest {
 
 	@Before
 	public void setUp() {
-
+       // when(restTemplate.exchange(Mockito.anyString(), String.class)).
 		when(em.getDelegate()).thenReturn(em);
 		when(information.getJavaType()).thenReturn(Person.class);
 		when(em.getCriteriaBuilder()).thenReturn(builder);

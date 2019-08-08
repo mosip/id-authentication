@@ -43,6 +43,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
+import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -60,6 +61,7 @@ import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
@@ -249,31 +251,31 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label addressLine3LocalLanguageMessage;
-	
+
 	@FXML
 	private Label postalCodeMessage;
-	
+
 	@FXML
 	private Label postalCodeLocalLanguageMessage;
-	
+
 	@FXML
 	private Label mobileNoMessage;
-	
+
 	@FXML
 	private Label mobileNoLocalLanguageMessage;
-	
+
 	@FXML
 	private Label emailIdMessage;
-	
+
 	@FXML
 	private Label emailIdLocalLanguageMessage;
-	
+
 	@FXML
 	private Label cniOrPinNumberMessage;
-	
+
 	@FXML
 	private Label cniOrPinNumberLocalLanguageMessage;
-	
+
 	@FXML
 	private TextField emailId;
 
@@ -683,6 +685,8 @@ public class DemographicDetailController extends BaseController {
 	private Label ageOrDOBLocalLanguageLabel;
 	@FXML
 	private Label ageOrDOBLabel;
+	@Autowired
+	private FaceCaptureController faceCaptureController;
 
 	/*
 	 * (non-Javadoc)
@@ -746,7 +750,7 @@ public class DemographicDetailController extends BaseController {
 				national.getStyleClass().addAll("selectedResidence", "button");
 				nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
 			}
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException | RegBaseCheckedException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_DEMOGRAPHIC_PAGE);
@@ -755,23 +759,31 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	private void genderSettings() {
-		textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
-				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
-		textMaleCode = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
-				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getCode();
-		textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
-				.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
-				.getGenderName();
-		textMaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream()
-				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
-		textFemaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream()
-				.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
-				.getGenderName();
-		male.setText(textMale);
-		female.setText(textFemale);
-		maleLocalLanguage.setText(textMaleLocalLanguage);
-		femaleLocalLanguage.setText(textFemaleLocalLanguage);
-		male(null);
+		try {
+			textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
+					.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get()
+					.getGenderName();
+			textMaleCode = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
+					.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getCode();
+			textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
+					.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
+					.getGenderName();
+			textMaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream()
+					.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get()
+					.getGenderName();
+			textFemaleLocalLanguage = masterSyncService.getGenderDtls(ApplicationContext.localLanguage()).stream()
+					.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
+					.getGenderName();
+			male.setText(textMale);
+			female.setText(textFemale);
+			maleLocalLanguage.setText(textMaleLocalLanguage);
+			femaleLocalLanguage.setText(textFemaleLocalLanguage);
+			male(null);
+		} catch (RuntimeException | RegBaseCheckedException runtimeException) {
+			LOGGER.error("REGISTRATION - LOADING FAILED FOR REGION SELECTION LIST ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
 	}
 
 	/**
@@ -877,8 +889,7 @@ public class DemographicDetailController extends BaseController {
 	private void toggleFunctionForParentUinOrRid() {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					"Entering into toggle function for parent uin or rid");
+					RegistrationConstants.APPLICATION_ID, "Entering into toggle function for parent uin or rid");
 
 			switchedOnParentUinOrRid.addListener((observableValue, oldValue, newValue) -> {
 				if (newValue) {
@@ -937,8 +948,7 @@ public class DemographicDetailController extends BaseController {
 					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					"Exiting the toggle function for parent uin or rid");
+					RegistrationConstants.APPLICATION_ID, "Exiting the toggle function for parent uin or rid");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -949,33 +959,39 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when national button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void national(ActionEvent event) {
-		List<IndividualTypeDto> applicantType = masterSyncService
-				.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.applicationLanguage());
-		residence.setText(applicantType.get(0).getName());
-		residence.setId(applicantType.get(0).getCode());
-		List<IndividualTypeDto> applicantTypeLocal = masterSyncService
-				.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
-		residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
-		national.getStyleClass().clear();
-		foreigner.getStyleClass().clear();
-		nationalLocalLanguage.getStyleClass().clear();
-		foreignerLocalLanguage.getStyleClass().clear();
-		nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
-		foreignerLocalLanguage.getStyleClass().addAll("residence", "button");
-		national.getStyleClass().addAll("selectedResidence", "button");
-		foreigner.getStyleClass().addAll("residence", "button");
+		List<IndividualTypeDto> applicantType;
+		try {
+			applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER,
+					ApplicationContext.applicationLanguage());
+
+			residence.setText(applicantType.get(0).getName());
+			residence.setId(applicantType.get(0).getCode());
+			List<IndividualTypeDto> applicantTypeLocal = masterSyncService
+					.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
+			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
+			national.getStyleClass().clear();
+			foreigner.getStyleClass().clear();
+			nationalLocalLanguage.getStyleClass().clear();
+			foreignerLocalLanguage.getStyleClass().clear();
+			nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+			foreignerLocalLanguage.getStyleClass().addAll("residence", "button");
+			national.getStyleClass().addAll("selectedResidence", "button");
+			foreigner.getStyleClass().addAll("residence", "button");
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - NATIONAL", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+		}
 	}
 
 	/**
 	 * method action when mail button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void male(ActionEvent event) {
@@ -1004,33 +1020,37 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when foriegner button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
-		List<IndividualTypeDto> applicantType = masterSyncService.getIndividualType(RegistrationConstants.ATTR_FORINGER,
-				ApplicationContext.applicationLanguage());
-		residence.setText(applicantType.get(0).getName());
-		residence.setId(applicantType.get(0).getCode());
-		List<IndividualTypeDto> applicantTypeLocal = masterSyncService
-				.getIndividualType(RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
-		residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
-		national.getStyleClass().clear();
-		foreigner.getStyleClass().clear();
-		nationalLocalLanguage.getStyleClass().clear();
-		foreignerLocalLanguage.getStyleClass().clear();
-		nationalLocalLanguage.getStyleClass().addAll("residence", "button");
-		foreignerLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
-		foreigner.getStyleClass().addAll("selectedResidence", "button");
-		national.getStyleClass().addAll("residence", "button");
+		try {
+			List<IndividualTypeDto> applicantType = masterSyncService
+					.getIndividualType(RegistrationConstants.ATTR_FORINGER, ApplicationContext.applicationLanguage());
+			residence.setText(applicantType.get(0).getName());
+			residence.setId(applicantType.get(0).getCode());
+			List<IndividualTypeDto> applicantTypeLocal = masterSyncService
+					.getIndividualType(RegistrationConstants.ATTR_FORINGER, ApplicationContext.localLanguage());
+			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
+			national.getStyleClass().clear();
+			foreigner.getStyleClass().clear();
+			nationalLocalLanguage.getStyleClass().clear();
+			foreignerLocalLanguage.getStyleClass().clear();
+			nationalLocalLanguage.getStyleClass().addAll("residence", "button");
+			foreignerLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+			foreigner.getStyleClass().addAll("selectedResidence", "button");
+			national.getStyleClass().addAll("residence", "button");
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - FOREIGNER", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+		}
 	}
 
 	/**
 	 * method action when female button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void female(ActionEvent event) {
@@ -1078,12 +1098,12 @@ public class DemographicDetailController extends BaseController {
 					// Not to recalulate DOB and populate DD, MM and YYYY UI fields based on Age,
 					// since Age was calculated based on DOB entered by the user. Calculate DOB and
 					// populate DD, MM and YYYY UI fields based on user entered Age.
-					if(!getRegistrationDTOFromSession().isAgeCalculatedByDOB()) {
+					if (!getRegistrationDTOFromSession().isAgeCalculatedByDOB()) {
 						Calendar defaultDate = Calendar.getInstance();
 						defaultDate.set(Calendar.DATE, 1);
 						defaultDate.set(Calendar.MONTH, 0);
 						defaultDate.add(Calendar.YEAR, -age);
-						
+
 						dateOfBirth = Date.from(defaultDate.toInstant());
 						dd.setText(String.valueOf(defaultDate.get(Calendar.DATE)));
 						mm.setText(String.valueOf(defaultDate.get(Calendar.MONTH + 1)));
@@ -1158,13 +1178,12 @@ public class DemographicDetailController extends BaseController {
 				} else {
 					ageField.getStyleClass().remove("demoGraphicTextFieldOnType");
 					ageField.getStyleClass().add("demoGraphicTextFieldFocused");
-					Label ageFieldLabel = (Label)dobParentPane.lookup("#"+ageField.getId()+"Label");
+					Label ageFieldLabel = (Label) dobParentPane.lookup("#" + ageField.getId() + "Label");
 					ageFieldLabel.getStyleClass().add("demoGraphicFieldLabel");
 					ageField.getStyleClass().remove("demoGraphicFieldLabelOnType");
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
-					System.out.println(ageField.getStyleClass());
-					
+
 					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
 					parentFieldValidation();
 				}
@@ -1199,8 +1218,7 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
 			boolean hasToBeTransliterated = true;
-			
-			
+
 			fxUtils.validateOnFocusOut(parentFlowPane, fullName, validation, fullNameLocalLanguage,
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage,
@@ -1226,9 +1244,9 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage,
 					!hasToBeTransliterated);
 
-			fxUtils.focusedAction(parentFlowPane,dd );
-			fxUtils.focusedAction(parentFlowPane,mm );
-			fxUtils.focusedAction(parentFlowPane,yyyy );
+			fxUtils.focusedAction(parentFlowPane, dd);
+			fxUtils.focusedAction(parentFlowPane, mm);
+			fxUtils.focusedAction(parentFlowPane, yyyy);
 			fxUtils.populateLocalComboBox(parentFlowPane, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, province, provinceLocalLanguage);
@@ -1362,7 +1380,7 @@ public class DemographicDetailController extends BaseController {
 					.addAll(masterSync.findLocationByHierarchyCode(
 							ApplicationContext.localLanguageBundle().getString(region.getId()),
 							ApplicationContext.localLanguage()));
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException | RegBaseCheckedException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR REGION SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -1440,7 +1458,7 @@ public class DemographicDetailController extends BaseController {
 				postalCodeLocalLanguage.setText(locationDtos.get(0).getName());
 			}
 
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException | RegBaseCheckedException runtimeException) {
 			LOGGER.error("REGISTRATION - Populating of Pin Code Failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -1546,17 +1564,16 @@ public class DemographicDetailController extends BaseController {
 												province, provinceLocalLanguage, isComboBoxValueNotRequired(province))))
 								.with(identity -> identity.setCity(buildDemoComboValues(platformLanguageCode,
 										localLanguageCode, city, cityLocalLanguage, isComboBoxValueNotRequired(city))))
-								.with(identity -> identity.setLocalAdministrativeAuthority(
-										buildDemoComboValues(platformLanguageCode, localLanguageCode,
-												localAdminAuthority, localAdminAuthorityLocalLanguage,
-												isComboBoxValueNotRequired(localAdminAuthority))))
+								.with(identity -> identity.setZone(buildDemoComboValues(platformLanguageCode,
+										localLanguageCode, localAdminAuthority, localAdminAuthorityLocalLanguage,
+										isComboBoxValueNotRequired(localAdminAuthority))))
 								.with(identity -> identity.setPostalCode(
 										buildDemoTextValue(postalCode, postalCodeFieldValidation(postalCode))))
 								.with(identity -> identity
 										.setPhone(buildDemoTextValue(mobileNo, isTextFieldNotRequired(mobileNo))))
 								.with(identity -> identity
 										.setEmail(buildDemoTextValue(emailId, isTextFieldNotRequired(emailId))))
-								.with(identity -> identity.setCnieNumber(
+								.with(identity -> identity.setReferenceIdentityNumber(
 										buildDemoTextValue(cniOrPinNumber, isTextFieldNotRequired(cniOrPinNumber))))
 								.with(identity -> identity.setParentOrGuardianRID(
 										buildDemoObjectValue(parentRegId, isTextFieldNotRequired(parentRegId))))
@@ -1804,12 +1821,12 @@ public class DemographicDetailController extends BaseController {
 			emailId.setText(individualIdentity.getEmail());
 			ageField.setText(individualIdentity.getAge() == null ? RegistrationConstants.EMPTY
 					: String.valueOf(individualIdentity.getAge()));
-			cniOrPinNumber.setText(individualIdentity.getCnieNumber());
+			cniOrPinNumber.setText(individualIdentity.getReferenceIdentityNumber());
 			postalCodeLocalLanguage.setText(individualIdentity.getPostalCode());
 			postalCodeLocalLanguage.setAccessibleHelp(individualIdentity.getPostalCode());
 			mobileNoLocalLanguage.setText(individualIdentity.getPhone());
 			emailIdLocalLanguage.setText(individualIdentity.getEmail());
-			cniOrPinNumberLocalLanguage.setText(individualIdentity.getCnieNumber());
+			cniOrPinNumberLocalLanguage.setText(individualIdentity.getReferenceIdentityNumber());
 			parentRegId.setText(individualIdentity.getParentOrGuardianRID() == null ? ""
 					: String.valueOf(individualIdentity.getParentOrGuardianRID()));
 			parentUinId.setText(individualIdentity.getParentOrGuardianUIN() == null ? ""
@@ -1835,8 +1852,7 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 
-			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
-					individualIdentity.getLocalAdministrativeAuthority());
+			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage, individualIdentity.getZone());
 
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 
@@ -2025,9 +2041,6 @@ public class DemographicDetailController extends BaseController {
 				if (old) {
 					keyboardPane.maxHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
-				} else {
-					keyboardPane.maxHeight(200);
-					keyboardNode.setManaged(false);
 				}
 			});
 
@@ -2117,6 +2130,13 @@ public class DemographicDetailController extends BaseController {
 				auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
+				// Set Exception Photo Type Description
+				boolean isParentOrGuardianBiometricsCaptured = getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+						|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+								&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
+				documentScanController.setExceptionDescriptionText(isParentOrGuardianBiometricsCaptured);
+				faceCaptureController.setExceptionFaceDescriptionText(isParentOrGuardianBiometricsCaptured);
+
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
 					if (RegistrationConstants.ENABLE
@@ -2137,6 +2157,7 @@ public class DemographicDetailController extends BaseController {
 			}
 		}
 	}
+
 	/**
 	 * Disables the messages once the pane is validated
 	 */
@@ -2296,9 +2317,10 @@ public class DemographicDetailController extends BaseController {
 				destLocationHierarchyInLocal.getItems().addAll(masterSync.findProvianceByHierarchyCode(
 						selectedLocationHierarchy.getCode(), ApplicationContext.localLanguage()));
 			}
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.REGISTRATION_CONTROLLER,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException), runtimeException);
+		} catch (RuntimeException | RegBaseCheckedException runtimeException) {
+			LOGGER.error("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
+					APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RETRIEVE_AND_POPULATE_LOCATION_BY_HIERARCHY",
 				RegistrationConstants.APPLICATION_ID, RegistrationConstants.APPLICATION_NAME,

@@ -25,5 +25,5 @@ public class RegistrationStatusConfigTest {
 
 	@MockBean
 	public ConnectionUtils connectionUtil;
-
+	
 }

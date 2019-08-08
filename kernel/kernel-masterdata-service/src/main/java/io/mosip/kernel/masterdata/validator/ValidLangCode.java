@@ -16,7 +16,7 @@ import javax.validation.Payload;
  */
 @Documented
 @Constraint(validatedBy = LanguageCodeValidator.class)
-@Target({ ElementType.FIELD, ElementType.TYPE_USE })
+@Target({ ElementType.FIELD, ElementType.TYPE_USE, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidLangCode {
 

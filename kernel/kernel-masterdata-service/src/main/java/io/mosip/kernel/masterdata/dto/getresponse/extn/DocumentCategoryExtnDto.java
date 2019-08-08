@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
+import io.mosip.kernel.masterdata.validator.FilterType;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,6 +12,7 @@ import lombok.EqualsAndHashCode;
  * 
  * @author Neha Sinha
  * @author Ritesh Sinha
+ * @author Uday Kumar
  * 
  * @since 1.0.0
  *
@@ -19,6 +22,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "DocumentCategory", description = "DocumentCategory resource representation")
 public class DocumentCategoryExtnDto extends BaseDto {
 
+	@FilterType(types = { FilterTypeEnum.EQUALS})
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
@@ -28,6 +32,7 @@ public class DocumentCategoryExtnDto extends BaseDto {
 	@ApiModelProperty(value = "Application description", required = false, dataType = "java.lang.String")
 	private String description;
 
+	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String langCode;
 

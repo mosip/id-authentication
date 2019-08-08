@@ -25,6 +25,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -39,7 +40,7 @@ import io.mosip.registration.service.packet.PacketHandlerService;
  *
  */
 @Service
-public class PacketHandlerServiceImpl implements PacketHandlerService {
+public class PacketHandlerServiceImpl extends BaseService implements PacketHandlerService {
 
 	/**
 	 * Class to create the packet data
@@ -76,18 +77,14 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 		LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		String rid = registrationDTO == null ? "RID" : registrationDTO.getRegistrationId();
+		String rid = (registrationDTO == null || registrationDTO.getRegistrationId() == null
+				|| registrationDTO.getRegistrationId().isEmpty()) ? "RID" : registrationDTO.getRegistrationId();
 		try {
 			// 1. create packet
 			byte[] inMemoryZipFile = packetCreationService.create(registrationDTO);
 
 			// 2.encrypt packet
-			if (inMemoryZipFile != null && inMemoryZipFile.length > 0) {
-				LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
-						"Registration Packet had been created successfully");
-
-				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
-			} else {
+			if (isByteArrayEmpty(inMemoryZipFile)) {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(REG_PACKET_CREATION_ERROR_CODE.getErrorCode());
 				errorResponseDTO.setMessage(REG_PACKET_CREATION_ERROR_CODE.getErrorMessage());
@@ -99,6 +96,11 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 						"Error in creating Registration Packet");
 				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, rid,
 						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+			} else {
+				LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+						"Registration Packet had been created successfully");
+
+				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
 			}
 		} catch (RegBaseCheckedException exception) {
 			LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,

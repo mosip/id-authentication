@@ -21,5 +21,6 @@
 		<module>registration-processor-external-stage</module>
 		<module>registration-processor-external-integration-service</module>
 		<module>registration-processor-quality-checker-stage</module>
+		<module>registration-processor-request-handler-service</module>
 	</modules>
 </project>

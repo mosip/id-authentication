@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -237,6 +238,7 @@ public class JobConfigurationServiceTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void getCurrentRunningJobDetailsTest() throws SchedulerException {
 		startJobs();

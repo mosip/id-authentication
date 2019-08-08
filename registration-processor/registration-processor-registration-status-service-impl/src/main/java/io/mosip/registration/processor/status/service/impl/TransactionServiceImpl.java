@@ -1,18 +1,30 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import io.mosip.kernel.core.logger.spi.Logger;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
+import io.mosip.registration.processor.status.exception.RegTransactionAppException;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
+import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
@@ -29,6 +41,12 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	/** The transaction repositary. */
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
+	
+	
+	
+	@Autowired
+	Environment environment;
+
 
 	/*
 	 * (non-Javadoc)
@@ -62,7 +80,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	 */
 	private TransactionEntity convertDtoToEntity(TransactionDto dto) {
 		TransactionEntity transcationEntity = new TransactionEntity(dto.getTransactionId(), dto.getRegistrationId(),
-				dto.getParentid(), dto.getTrntypecode(), dto.getStatusCode(), dto.getStatusComment());
+				dto.getParentid(), dto.getTrntypecode(),dto.getSubStatusCode(),dto.getStatusCode(), dto.getStatusComment());
 		transcationEntity.setRemarks(dto.getRemarks());
 		transcationEntity.setStatusComment(dto.getStatusComment());
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
@@ -93,6 +111,49 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 				regId, "TransactionServiceImpl::addRegistrationTransaction()::exit");
 		return dto;
 	}
+	
+
+	@Override
+	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode) throws TransactionsUnavailableException, RegTransactionAppException {
+		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
+		try {
+		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
+		if(transactionEntityList.isEmpty()) {
+			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
+					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
+		}
+		ClassLoader classLoader = getClass().getClassLoader();
+		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
+		File messagesPropertiesFile = new File(classLoader.getResource(messagesPropertiesFileName).getFile());
+		InputStream inputStream = new FileInputStream(messagesPropertiesFile);
+		Properties prop = new Properties();
+		prop.load(new InputStreamReader(inputStream,"UTF-8"));
+		for (TransactionEntity transactionEntity : transactionEntityList) {
+			if(transactionEntity.getSubStatusCode()!=null && !transactionEntity.getSubStatusCode().isEmpty()) {
+			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
+			}
+			if(transactionEntity.getStatusCode()!=null && !transactionEntity.getStatusCode().isEmpty()) {
+			transactionEntity.setStatusCode(prop.getProperty(transactionEntity.getStatusCode()));
+			}
+			if(transactionEntity.getTrntypecode()!=null && !transactionEntity.getTrntypecode().isEmpty()) {
+			transactionEntity.setTrntypecode(prop.getProperty(transactionEntity.getTrntypecode()));
+			}
+			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
+		}
+		} catch (DataAccessLayerException e) {
+			throw new TransactionTableNotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+		} catch (IOException e) {
+			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(), 
+					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage()+" -->"+e.getMessage());
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "TransactionServiceImpl::getTransactionByRegId()::exit");
+		return dtoList;
+	}
+
 
 	/**
 	 * Convert entity to dto.
@@ -103,7 +164,14 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	 */
 	private TransactionDto convertEntityToDto(TransactionEntity entity) {
 		return new TransactionDto(entity.getId(), entity.getRegistrationId(), entity.getParentid(),
-				entity.getTrntypecode(), entity.getRemarks(), entity.getStatusCode(), entity.getStatusComment());
+				entity.getTrntypecode(), entity.getRemarks(), entity.getStatusCode(),
+				entity.getStatusComment(),entity.getSubStatusCode());
+
+	}
+	
+	private RegistrationTransactionDto convertEntityToRegistrationTransactionDto(TransactionEntity entity) {
+		return new RegistrationTransactionDto(entity.getId(),entity.getRegistrationId(),entity.getTrntypecode(),
+				entity.getParentid(),entity.getStatusCode(),entity.getStatusComment(),entity.getCreateDateTime());
 
 	}
 }

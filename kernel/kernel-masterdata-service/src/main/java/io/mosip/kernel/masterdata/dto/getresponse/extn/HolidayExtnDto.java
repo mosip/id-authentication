@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 public class HolidayExtnDto extends BaseDto {
 
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.Integer")
-	private int id;
+	private int holidayId;
 
 	@ApiModelProperty(value = "locationCode", required = true, dataType = "java.lang.String")
 	private String locationCode;

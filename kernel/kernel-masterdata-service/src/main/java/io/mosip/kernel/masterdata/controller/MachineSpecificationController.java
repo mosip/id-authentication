@@ -21,6 +21,10 @@ import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
 import io.swagger.annotations.Api;
@@ -34,6 +38,7 @@ import io.swagger.annotations.ApiResponses;
  * This class provide services to do CRUD operations on MachineSpecification.
  * 
  * @author Megha Tanga
+ * @author Ayush Saxena
  * @since 1.0.0
  *
  */
@@ -143,4 +148,38 @@ public class MachineSpecificationController {
 				machineSpecificationService.getAllMachineSpecfication(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
+	
+	/**
+	 * Api to search machine specification based on filters provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the pages of {@link MachineSpecificationExtnDto}.
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/machinespecifications/search")
+	@ApiOperation(value = "Retrieve all machine specifications for the given Filter parameters", notes = "Retrieve all machine specifications for the given Filter parameters")
+	public ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> searchMachineSpecification(
+			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineSpecificationService.searchMachineSpecification(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Api to filter machine specification based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/machinespecifications/filtervalues")
+	public ResponseWrapper<FilterResponseDto> machineSpecificationFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineSpecificationService.machineSpecificationFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+	
 }

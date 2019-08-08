@@ -173,7 +173,7 @@ public class MasterdataSearchHelperTest {
 		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, optionalFilterArray);
 	}
 
-	@Test
+	@Test(expected = RequestException.class)
 	public void searchNoValueFilterMasterdata() {
 		SearchDto searchDto = new SearchDto(Arrays.asList(noValuefilter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, optionalFilterArray);

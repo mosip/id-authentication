@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,14 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -30,7 +39,12 @@ import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This class contains service methods to fetch gender type data from DB
@@ -42,6 +56,19 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  */
 @Service
 public class GenderTypeServiceImpl implements GenderTypeService {
+
+	@Autowired
+	FilterTypeValidator filterTypeValidator;
+	
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	MasterdataSearchHelper masterDataSearchHelper;
+
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
+
 
 	@Autowired
 	GenderTypeRepository genderTypeRepository;
@@ -239,6 +266,44 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		return genderTypesPages;
+	}
+
+	@Override
+	public PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request) {
+		PageResponseDto<GenderExtnDto> pageDto = new PageResponseDto<>();
+		List<GenderExtnDto> genderTypeExtns = null;
+		if (filterTypeValidator.validate(GenderExtnDto.class, request.getFilters())) {
+			Page<Gender> page = masterDataSearchHelper.searchMasterdata(Gender.class, request, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				genderTypeExtns = MapperUtils.mapAll(page.getContent(), GenderExtnDto.class);
+				pageDto.setData(genderTypeExtns);
+			}
+		}
+		return pageDto;
+	}
+
+	@Override
+	public FilterResponseDto genderFilterValues(FilterValueDto request) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		ColumnValue columnValue;
+		if (filterColumnValidator.validate(FilterDto.class, request.getFilters(),Gender.class)) {
+			for (FilterDto filterDto : request.getFilters()) {
+				List<String> filterValues = masterDataFilterHelper.filterValues(Gender.class, filterDto,
+						request);
+				for (String filterValue : filterValues) {
+					if (filterValue != null) {
+						columnValue = new ColumnValue();
+						columnValue.setFieldID(filterDto.getColumnName());
+						columnValue.setFieldValue(filterValue);
+						columnValueList.add(columnValue);
+					}
+				}
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
 	}
 
 }

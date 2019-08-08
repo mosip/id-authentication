@@ -5,10 +5,10 @@ import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * This interface has abstract methods to fetch and save a Device Details
  * 
  * @author Megha Tanga
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -69,9 +70,8 @@ public interface DeviceService {
 	 *             if any error occurred while saving Device
 	 */
 	public IdAndLanguageCodeID createDevice(DeviceDto deviceRequestDto);
-	
-	
-	//public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
+
+	// public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
 
 	/**
 	 * This method is used to update an existing Device to master data
@@ -108,7 +108,7 @@ public interface DeviceService {
 	 */
 	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,
 			String orderBy, String direction);
-	
+
 	/**
 	 * Method to search Devices based on filters provided.
 	 * 
@@ -116,8 +116,8 @@ public interface DeviceService {
 	 *            the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<DeviceExtnDto> searchDevice(SearchDto searchRequestDto);
-	
+	public PageResponseDto<DeviceSearchDto> searchDevice(SearchDto searchRequestDto);
+
 	/**
 	 * Method to filter Device based on column and type provided.
 	 * 
@@ -126,4 +126,13 @@ public interface DeviceService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto deviceFilterValues(FilterValueDto filterValueDto);
+
+	/**
+	 * Method to decommission device
+	 * 
+	 * @param deviceId
+	 *            input from user
+	 * @return device ID of decommissioned device
+	 */
+	public IdResponseDto decommissionDevice(String deviceId);
 }

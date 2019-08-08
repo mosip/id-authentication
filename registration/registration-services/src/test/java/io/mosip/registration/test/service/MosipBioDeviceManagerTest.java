@@ -1,5 +1,6 @@
 package io.mosip.registration.test.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -251,7 +252,7 @@ public class MosipBioDeviceManagerTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void scan() throws RegBaseCheckedException {
+	public void scan() throws RegBaseCheckedException, IOException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
@@ -259,7 +260,7 @@ public class MosipBioDeviceManagerTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void scan1() throws RegBaseCheckedException {
+	public void scan1() throws RegBaseCheckedException, IOException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);

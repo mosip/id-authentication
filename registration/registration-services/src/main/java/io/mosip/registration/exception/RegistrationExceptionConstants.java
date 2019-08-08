@@ -7,7 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.PACKET_UPLOA
 import static io.mosip.registration.constants.RegistrationConstants.REG_ACK_EXP_CODE;
 
 /**
- * Exception enum for Registration Processor Module
+ * Exception enum for Registration Services Sub-Module
  * 
  * @author Balaji.Sridharan
  * @since 1.0.0
@@ -35,23 +35,35 @@ public enum RegistrationExceptionConstants {
 	REG_ADD_ENTRY_TO_ZIP_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCS-001", "Exception while adding the file to the zip output stream"),
 	REG_IO_ZIP_CREATION_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCS-002", "Exception while closing the zip output stream"),
 	REG_ZIP_CREATION_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCS-003", "Exception while creating packet zip file form RegistrationDTO and provided input files"),
+	REG_ZIP_CREATION_INVALID_FILES_MAP(PACKET_CREATION_EXP_CODE + "ZCS-004", "Map containing the generated files cannot be null or empty"),
 
 	// PacketEncryptionService
 	REG_PACKET_ENCRYPTION_EXCEPTION(PACKET_CREATION_EXP_CODE + "PES-001", "Exception while encrypting the packet zip"),
 	REG_PACKET_SIZE_EXCEEDED_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PES-002", "Registration packet size exceeded the configured file size"),
+	REG_PACKET_SIZE_INVALID(PACKET_CREATION_EXP_CODE + "PES-003", "Configuration parameter to validate the size of the packet is required or value of the parameter is invalid"),
+	REG_PACKET_AUDIT_DATES_MISSING(PACKET_CREATION_EXP_CODE + "PES-004", "Timestamp of the first audit log or timestamp of the last audit log available in packet is missing or RID is missing"),
+	REG_PACKET_TO_BE_ENCRYPTED_INVALID(PACKET_CREATION_EXP_CODE + "PES-005", "Registration packet to be encrypted is null or empty"),
 
 	// AESEncryptionService
 	REG_INVALID_DATA_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AES-001", "Invalid Data for Packet Encryption using Symmetric Algorithm"),
 	REG_INVALID_KEY_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AES-002", "Invalid Key for Packet Encryption using Symmetric Algorithm"),
 	REG_PACKET_AES_ENCRYPTION_EXCEPTION(PACKET_CREATION_EXP_CODE + "AES-003", "Exception while Encrypting the packet zip"),
+	REG_PACKET_KEY_SPLITTER_INVALID(PACKET_CREATION_EXP_CODE + "AES-004", "Key splitter configuration property is either missing or invalid"),
+	REG_PACKET_FOR_ENCRYPTION_INVALID(PACKET_CREATION_EXP_CODE + "AES-005", "Registration packet to be encrypted is eithet null or empty"),
 
 	// RSAEncryptionService
 	REG_INVALID_DATA_RSA_ENCRYPTION(PACKET_CREATION_EXP_CODE + "RSA-001", "Invalid Key or Algorithm for encrypting the data using Assymmetric algorithm"),
 	REG_RUNTIME_RSA_ENCRYPTION(PACKET_CREATION_EXP_CODE + "RSA-002", "Exception while Encrypting the packet zip using Assymmetric algorithm"),
+	REG_RSA_PUBLIC_KEY_NOT_FOUND(PACKET_CREATION_EXP_CODE + "RSA-003", "RSA public key is not available"),
+	REG_INVALID_DATA_FOR_RSA_ENCRYPTION(PACKET_CREATION_EXP_CODE + "RSA-004", "Data to be encrypted is either null or empty"),
 
 	// StorageService
 	REG_PACKET_STORAGE_EXCEPTION(PACKET_CREATION_EXP_CODE + "SSI-001", "Exception while storing the packet in configured location"),
 	REG_PACKET_STORAGE_RUNTIME_EXCEPTION(PACKET_CREATION_EXP_CODE + "SSI-002", "Runtime Exception while storing the packet in configured location"),
+	REG_PACKET_STORAGE_INVALID_RID(PACKET_CREATION_EXP_CODE + "SSI-003", "RID is required for storing the packet in configured location"),
+	REG_PACKET_STORAGE_INVALID_DATA(PACKET_CREATION_EXP_CODE + "SSI-004", "Data to be stored in configured location is either null or empty"),
+	REG_PACKET_STORAGE_LOCATION_INVALID(PACKET_CREATION_EXP_CODE + "SSI-005", "Configured packet storage location parameter is either null or empty"),
+	REG_PACKET_STORAGE_DATE_FORMAT_INVALID(PACKET_CREATION_EXP_CODE + "SSI-006", "Configured date format parameter is either null or empty"),
 
 	// RegistrationDAO
 	REG_PACKET_SAVE_TO_DB_EXCEPTION(PACKET_CREATION_EXP_CODE + "RDA-001", "Exception while saving the registration details to DB"),
@@ -84,6 +96,9 @@ public enum RegistrationExceptionConstants {
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
 	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
+	
+	//Template Service
+	TEMPLATE_CHECK_EXCEPTION(PACKET_CREATION_EXP_CODE + "TSI-001", "Template Type Code / Language Code cannot be null"),
 	
 	// TPM
 	TPM_UTIL_SIGN_ERROR("TPM-UTL-001", "Exception while signing the data using TPM"),
@@ -126,8 +141,33 @@ public enum RegistrationExceptionConstants {
 	REG_PKT_OSIDATA_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-017", "OSI Data can not be null"),
 	REG_PKT_OFFICER_ID_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-018", "Officer ID in OSI Data can not be null or empty"),
 	REG_PKT_OFFICER_AUTH_INVALID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-019", "Officer authentication can not be empty"),
-	REG_PKT_SUPERVISOR_ID_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-018", "Supervisor ID in OSI Data can not be null or empty"),
-	REG_PKT_SUPERVISOR_AUTH_INVALID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-019", "Supervisor authentication can not be empty");
+	REG_PKT_SUPERVISOR_ID_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-020", "Supervisor ID in OSI Data can not be null or empty"),
+	REG_PKT_SUPERVISOR_AUTH_INVALID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-021", "Supervisor authentication can not be empty"),
+	REG_PKT_CREATE_NO_SESSION_CONTEXT_MAP(PACKET_CREATION_EXP_CODE + "PCS-022", "Session Context map cannot be null"),
+	REG_PKT_CREATE_NO_APP_CONTEXT_MAP(PACKET_CREATION_EXP_CODE + "PCS-023", "Application Context map cannot be null"),
+	REG_PKT_CREATE_NO_APP_LANG(PACKET_CREATION_EXP_CODE + "PCS-024", "Application Language cannot be null or empty"),
+	REG_PKT_CREATE_NO_CBEFF_TAG_FLAG(PACKET_CREATION_EXP_CODE + "PCS-025", "Flag to indicate whether only unique tag in BIR elements have to be present in CBEFF is not available. So both unique and duplicate tags can be available in BIR elements"),
+	
+	//Notification Service
+	NOTIFICATION_MANDATORY_CHECK_SMS_EXCEPTION(PACKET_CREATION_EXP_CODE + "NSI-001", "Message and Number can not be null"),
+	NOTIFICATION_MANDATORY_CHECK_EMAIL_EXCEPTION(PACKET_CREATION_EXP_CODE + "NSI-002", "Message and Email can not be null"),
+	REG_PKT_FILE_NAME_EXCEPTION(PACKET_CREATION_EXP_CODE + "PUS-002", "File name is missing"),
+	REG_PKT_CLIENT_STATUS(PACKET_CREATION_EXP_CODE + "PUS-003", "Packet client status code is missing"),
+	REG_PKT_CLIENT_STATUS_COMMENTS(PACKET_CREATION_EXP_CODE + "PUS-004", "Packet client status comments is missing"),
+	REG_PKT_SERVER_STATUS(PACKET_CREATION_EXP_CODE + "PUS-005", "Packet server status is missing"),
+	REG_PKT_STATUS(PACKET_CREATION_EXP_CODE + "PUS-006", "Packet status value is missing"),
+	REG_PKT_HASH(PACKET_CREATION_EXP_CODE + "PUS-007", "Packet hash is missing"),
+	REG_PKT_SUPERVISOR_STATUS(PACKET_CREATION_EXP_CODE + "PUS-008", "Supervisor status is missing"),
+	REG_PKT_SUPERVISOR_COMMENTS(PACKET_CREATION_EXP_CODE + "PUS-009", "Supervisor comments is missing"),
+	REG_PKT_ENCODED_STRING(PACKET_CREATION_EXP_CODE + "PUS-010", "Encoded string can not be empty or null"),
+	REG_PKT_TRIGGER_PT(PACKET_CREATION_EXP_CODE + "PUS-010", "Trigger point can not be empty or null"),
+	REG_PKT_ID(PACKET_CREATION_EXP_CODE + "PUS-011", "Packet id can not be empty or null"),
+	REG_PKT_UPLD_EXCEPTION(PACKET_CREATION_EXP_CODE + "PUS-001", "Upload Packet missing"),
+	
+	REG_MASTER_SYNC_SERVICE_IMPL("REG-MSS-001","master sync service mandatory fields are missing."),
+	REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE("REG-MSS-002","master sync service language code mandatory fields is missing."),
+	REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE("REG-MSS-003","master sync service code and language code mandatory fields is missing."),
+	REG_TRIGGER_POINT_MISSING("REG-TGP-001","trigger point is mandatory fields and it is missing.");
 
 	/**
 	 * The constructor
