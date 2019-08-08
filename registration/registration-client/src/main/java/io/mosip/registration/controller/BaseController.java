@@ -957,8 +957,14 @@ public class BaseController {
 
 			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Validating User Onboard data");
 
-			ResponseDTO response = userOnboardService
-					.validate((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA));
+			ResponseDTO response = null;
+			try {
+				response = userOnboardService
+						.validate((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA));
+			} catch (RegBaseCheckedException checkedException) {
+				LOGGER.error(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+						ExceptionUtils.getStackTrace(checkedException));
+			}
 			if (response != null && response.getErrorResponseDTOs() != null
 					&& response.getErrorResponseDTOs().get(0) != null) {
 
