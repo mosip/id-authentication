@@ -310,41 +310,6 @@ public class Utilities {
 				"Utilities::retrieveIdrepoJson()::exit UIN is null");
 		return null;
 	}
-	public String retrieveIdrepoJsonStatus(Long uin) throws ApisResourceAccessException, IdRepoAppException, IOException {
-		
-
-		if (uin != null) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Utilities::retrieveIdrepoJson()::entry");
-			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
-
-			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
-					IdResponseDTO1.class);
-			if (idResponseDto == null) {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-						"Utilities::retrieveIdrepoJson()::exit idResponseDto is null");
-				return null;
-			}
-			if (!idResponseDto.getErrors().isEmpty()) {
-				List<ErrorDTO> error = idResponseDto.getErrors();
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-						"Utilities::retrieveIdrepoJson():: error with error message " + error.get(0).getMessage());
-				throw new IdRepoAppException(error.get(0).getMessage());
-			}
-
-			String response=idResponseDto.getResponse().getStatus();
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended Successfully");
-			return response;
-
-		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-				"Utilities::retrieveIdrepoJson()::exit UIN is null");
-		return null;
-	}
 
 	/**
 	 * Returns all the list of queue details(inbound/outbound address,name,url,pwd)
@@ -873,10 +838,13 @@ public class Utilities {
 	/**
 	 * Retrieve idrepo json status.
 	 *
-	 * @param uin the uin
+	 * @param uin
+	 *            the uin
 	 * @return the string
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	public String retrieveIdrepoJsonStatus(Long uin) throws ApisResourceAccessException, IdRepoAppException {
 		String response = null;
