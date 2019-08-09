@@ -152,13 +152,11 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 	 */
 	public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
 		HttpServerResponse response = ctx.response();
-		if (isEnabled) {
-			Gson gson = new GsonBuilder().create();
-			response.putHeader("Response-Signature", digitalSignatureUtility.getDigitalSignature(gson.toJson(object)));
-		}
+		if (isEnabled)
+			response.putHeader("Response-Signature",
+					digitalSignatureUtility.getDigitalSignature(Json.encodePrettily(object)));
 		response.putHeader("content-type", contentType).putHeader("Access-Control-Allow-Origin", "*")
 				.putHeader("Access-Control-Allow-Methods", "GET, POST").setStatusCode(200)
 				.end(Json.encodePrettily(object));
-
 	};
 }
