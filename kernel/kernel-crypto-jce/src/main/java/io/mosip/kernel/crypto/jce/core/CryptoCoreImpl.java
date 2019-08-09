@@ -1,4 +1,4 @@
-package io.mosip.kernel.crypto.jce.processor;
+package io.mosip.kernel.crypto.jce.core;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.PrivateKey;
