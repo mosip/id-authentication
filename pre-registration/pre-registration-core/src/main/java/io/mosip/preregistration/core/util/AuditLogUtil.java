@@ -158,9 +158,9 @@ public class AuditLogUtil {
 			RequestWrapper<AuditRequestDto> requestKernel=new RequestWrapper<>();
 			requestKernel.setRequest(auditRequestDto);
 			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			headers.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			HttpEntity<RequestWrapper<AuditRequestDto>> requestEntity = new HttpEntity<>(requestKernel,headers);
-			String uriBuilder = builder.build().encode(StandardCharsets.UTF_8).toUriString();
+			String uriBuilder = builder.build().encode().toUriString();
 
 			log.info("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);			
