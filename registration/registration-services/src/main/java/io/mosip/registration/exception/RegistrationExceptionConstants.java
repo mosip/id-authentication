@@ -171,7 +171,7 @@ public enum RegistrationExceptionConstants {
 	REG_BIOMETRIC_DTO_NULL("REG-UOS-001","Biometric Dto is mandatory field and it is missing."),
 	
 	//Login
-	REG_LOGIN_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
+	REG_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
 	REG_LOGIN_AUTH_TYPE_EXCEPTION("REG-LSI-002","Authentication Type cannot be null or empty."),
 	REG_LOGIN_ROLES_EXCEPTION("REG-LSI-003","Roles cannot be null or empty."),
 	REG_LOGIN_CENTER_ID_EXCEPTION("REG-LSI-004","Registration Center Id cannot be null or empty."),

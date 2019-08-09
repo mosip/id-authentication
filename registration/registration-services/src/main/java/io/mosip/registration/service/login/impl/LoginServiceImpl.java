@@ -537,7 +537,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	private void getUserDetailValidation(String userId) throws RegBaseCheckedException {
 		
 		if(isStringEmpty(userId)) {					
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_LOGIN_USER_ID_EXCEPTION);
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_USER_ID_EXCEPTION);
 		}
 	}
 	
