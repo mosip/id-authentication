@@ -1,7 +1,7 @@
 package io.mosip.kernel.core.crypto.spi;
 
 /**
- * This interface is for <b> Core Cryptographic </b> operations for MOSIP.
+ * This interface is specification for <b> Core Cryptographic Operations</b>.
  * 
  * The user of this interface will have all cryptographic basic operations like
  * {@link #asymmetricEncrypt(Object, Object)} ,
@@ -20,10 +20,10 @@ package io.mosip.kernel.core.crypto.spi;
  * @param <K> the type of private key
  * @param <T> the type of signature
  * @param <U> the type of random
- * @param <W> the input type of hash
+ * @param <W> the input type of hash function
  * 
  */
-public interface CryptoCore<R, D, S, P, K, T, U, W> {
+public interface CryptoCoreSpec<R, D, S, P, K, T, U, W> {
 
 	/**
 	 * This method is used for core <b> Symmetric Encryption </b>. Symmetric

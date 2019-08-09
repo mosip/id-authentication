@@ -30,7 +30,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.InvalidParamSpecException;
 import io.mosip.kernel.core.crypto.exception.SignatureException;
-import io.mosip.kernel.core.crypto.spi.CryptoCore;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
@@ -42,8 +42,8 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
  *
  */
 @Component
-public class CryptoCoreImpl
-		implements CryptoCore<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
+public class CryptoCore
+		implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
 
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
