@@ -317,13 +317,6 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 		} else if (StringUtils.isEmpty(packetStatusDTO.getPacketClientStatus())) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS.getErrorCode(),
 					RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS.getErrorMessage());
-		} else if (StringUtils.isEmpty(packetStatusDTO.getClientStatusComments())) {
-			throw new RegBaseCheckedException(
-					RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS_COMMENTS.getErrorCode(),
-					RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS_COMMENTS.getErrorMessage());
-		} else if (StringUtils.isEmpty(packetStatusDTO.getPacketServerStatus())) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_SERVER_STATUS.getErrorCode(),
-					RegistrationExceptionConstants.REG_PKT_SERVER_STATUS.getErrorMessage());
 		}
 		return true;
 

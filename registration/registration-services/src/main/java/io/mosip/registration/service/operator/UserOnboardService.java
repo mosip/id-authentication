@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * The {@code UserOnboardService} represents to validate the user bio-metirc details against the IDA.
@@ -45,8 +46,9 @@ public interface UserOnboardService {
 	 * 
 	 * @return {@code ResponseDTO} based on the result the response DTO will be
 	 *         formed and return to the caller.
+	 * @throws RegBaseCheckedException 
 	 */
-	ResponseDTO validate(BiometricDTO biometricDTO);
+	ResponseDTO validate(BiometricDTO biometricDTO) throws RegBaseCheckedException;
 	
 	/**
 	 * This method performs to get center-id and machine-id from db.
