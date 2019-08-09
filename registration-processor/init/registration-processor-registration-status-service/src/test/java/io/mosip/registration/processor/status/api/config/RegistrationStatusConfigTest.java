@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import io.mosip.kernel.dataaccess.hibernate.config.EncryptionInterceptor;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
@@ -27,7 +26,4 @@ public class RegistrationStatusConfigTest {
 	@MockBean
 	public ConnectionUtils connectionUtil;
 	
-	@MockBean
-	public EncryptionInterceptor encryptionInterceptor;
-
 }

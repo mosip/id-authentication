@@ -1,42 +1,49 @@
--- create table section -------------------------------------------------
--- schema 		: reg			- Registration Module
--- table 		: user_detail	- Registration application users
--- table alias  : usrdtl	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.user_detail
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------
-create table reg.user_detail (
-	
-	id 			character varying (256) not null,
-	
-	reg_id 		character varying (39),					-- Registration ID of indivisuals and referenced from idrepo database 
-	
-	name 		character varying (64) not null,
-	email 		character varying (256),
-	mobile 		character varying (16),
-	salt		character varying (64),
-	
-	status_code character varying(64) not null,			-- master.status_list.code
-	
-	lang_code 	character varying (3) not null,			-- master.language.code
-		
+-- NOTE: the code below contains the SQL for the selected object
+-- as well for its dependencies and children (if applicable).
+-- 
+-- This feature is only a convinience in order to permit you to test
+-- the whole object's SQL definition at once.
+-- 
+-- When exporting or generating the SQL for the whole database model
+-- all objects will be placed at their original positions.
+
+
+-- object: reg.user_detail | type: TABLE --
+-- DROP TABLE IF EXISTS reg.user_detail CASCADE;
+CREATE TABLE reg.user_detail(
+	id character varying(256) NOT NULL,
+	reg_id character varying(39),
+	name character varying(64) NOT NULL,
+	email character varying(256),
+	mobile character varying(16),
+	salt character varying(64),
+	status_code character varying(64) NOT NULL,
+	lang_code character varying(3) NOT NULL,
 	last_login_dtimes timestamp,
-	last_login_method character varying (36),			-- master.login_method.code
-	
+	last_login_method character varying(36),
 	unsuccessful_login_count smallint,
 	userlock_till_dtimes timestamp,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_usrdtl_id PRIMARY KEY (id)
 
-	is_active 	boolean not null,
-	cr_by 		character varying (256) not null,
-	cr_dtimes	timestamp not null,
-	upd_by  	character varying (256),
-	upd_dtimes  timestamp,
-	is_deleted 	boolean,
-	del_dtimes  timestamp
-	
-)
-;
-
--- keys section -------------------------------------------------
- alter table reg.user_detail add constraint pk_usrdtl_id primary key (id)
- ;
-
+);
+-- ddl-end --

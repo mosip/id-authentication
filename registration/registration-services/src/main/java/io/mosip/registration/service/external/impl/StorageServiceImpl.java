@@ -22,6 +22,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.StorageService;
 
 /**
@@ -33,7 +34,7 @@ import io.mosip.registration.service.external.StorageService;
  *
  */
 @Service
-public class StorageServiceImpl implements StorageService {
+public class StorageServiceImpl extends BaseService implements StorageService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
 
@@ -45,8 +46,12 @@ public class StorageServiceImpl implements StorageService {
 	 * String, byte[])
 	 */
 	@Override
-	public String storeToDisk(String registrationId, byte[] packet) throws RegBaseCheckedException {
+	public String storeToDisk(final String registrationId, final byte[] packet) throws RegBaseCheckedException {
 		try {
+
+			// Validate the input parameters and required configuration parameters
+			validateInputData(registrationId, packet);
+
 			// Generate the file path for storing the Encrypted Packet
 			String seperator = "/";
 			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION))
@@ -73,4 +78,25 @@ public class StorageServiceImpl implements StorageService {
 					RegistrationExceptionConstants.REG_PACKET_STORAGE_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 	}
+
+	private void validateInputData(final String registrationId, final byte[] packet) throws RegBaseCheckedException {
+		if (isStringEmpty(registrationId)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_STORAGE_INVALID_RID);
+		}
+
+		if (isByteArrayEmpty(packet)) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_STORAGE_INVALID_DATA);
+		}
+
+		if (ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION) == null
+				|| ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION).toString().isEmpty()) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_STORAGE_LOCATION_INVALID);
+		}
+
+		if (ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT) == null
+				|| ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT).toString().isEmpty()) {
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_STORAGE_DATE_FORMAT_INVALID);
+		}
+	}
+
 }

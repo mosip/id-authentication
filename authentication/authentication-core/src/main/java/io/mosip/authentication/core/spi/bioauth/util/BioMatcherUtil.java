@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.bioauth.util;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -24,6 +25,7 @@ import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -72,7 +74,6 @@ public class BioMatcherUtil {
 	 */
 	public double matchValue(Map<String, String> reqInfo, Map<String, String> entityInfo)
 			throws IdAuthenticationBusinessException {
-
 		Object[][] objArrays = matchValues(reqInfo, entityInfo);
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];
@@ -213,12 +214,19 @@ public class BioMatcherUtil {
 
 			for (Map.Entry<String, String> e : reqInfo.entrySet()) {
 				String key = e.getKey();
-				reqInfoObj[index] = e.getValue();
-				entityInfoObj[index] = entityInfo.get(key);
-				index++;
+				//TODO IdaIdMapping base filter should be applied
+				if(!key.equals(CbeffConstant.class.getName()) && !key.equals(SingleType.class.getName()) ) {
+					reqInfoObj[index] = e.getValue();
+					entityInfoObj[index] = entityInfo.get(key);
+					index++;
+				}
 			}
 		} else {
-			reqInfoObj = reqInfo.values().toArray();
+			//TODO IdaIdMapping base filter should be applied
+			reqInfoObj = reqInfo.entrySet().stream().filter(entry -> 
+								!entry.getKey().equals(CbeffConstant.class.getName()) &&
+								!entry.getKey().equals(SingleType.class.getName()))
+						.map(Entry::getValue).toArray();
 			entityInfoObj = entityInfo.values().toArray();
 		}
 

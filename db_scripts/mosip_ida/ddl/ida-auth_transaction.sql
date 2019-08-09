@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_ida
+-- Table Name 	: ida.auth_transaction
+-- Purpose    	: Authentication Transaction : To track all authentication transactions steps / stages in the process flow.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: ida.auth_transaction | type: TABLE --
 -- DROP TABLE IF EXISTS ida.auth_transaction CASCADE;
 CREATE TABLE ida.auth_transaction(
@@ -11,6 +24,11 @@ CREATE TABLE ida.auth_transaction(
 	lang_code character varying(3) NOT NULL,
 	ref_id_type character varying(36),
 	ref_id character varying(64),
+	uin character varying(500),
+	uin_hash character varying(128),
+	requested_entity_type character varying(64),
+	requested_entity_id character varying(36),
+	requested_entity_name character varying(128),
 	static_tkn_id character varying(64),
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
@@ -44,6 +62,16 @@ COMMENT ON COLUMN ida.auth_transaction.ref_id_type IS 'Reference Id Type: Type o
 -- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.ref_id IS 'Reference Id: Reference ID for any cross reference purpose relevant for tracking, for ex., user id, uin, vid, prereg id, rid etc.';
 -- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.uin IS 'UIN: UIN of an individual which is validated by system after the authentication is successful. The authentication can be done using UIN or VID or any other ids that are associated to an UIN. The UIN stored here is encrypted. This field is mainly used to get the list of authentication requests of an individual.';
+-- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.uin_hash IS 'UIN Hash: Hash value of the UIN which was authenticated, this will have value if the UIN is a valid UIN. The authentication can be done using UIN or VID or any other ids that are associated to an UIN. The UIN stored here is hashed. This field is mainly used to get the list of authentication requests of an individual.';
+-- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.requested_entity_type IS 'Requested Entity Type: Type of entity through which the authentication request was initiated. It can from a partner, internal authenticaition, etc.';
+-- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.requested_entity_id IS 'Requested Entity Id: ID of the entity through which the authentication request was initiated.';
+-- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.requested_entity_name IS 'Requested Entity Name: Name of the entity through which the authentication request was initiated.';
+-- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.static_tkn_id IS 'Static Token Id : This is a static token id assigned for each authentication request. Static token id is combination of TSPID + UIN generated for any TSP or Individuls and sent back in response. End user can use this id while authenticating themselves. ';
 -- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.cr_by IS 'Created By : ID or name of the user who create / insert record';
@@ -58,6 +86,3 @@ COMMENT ON COLUMN ida.auth_transaction.is_deleted IS 'IS_Deleted : Flag to mark 
 -- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE ida.auth_transaction OWNER TO sysadmin;
--- ddl-end --
-

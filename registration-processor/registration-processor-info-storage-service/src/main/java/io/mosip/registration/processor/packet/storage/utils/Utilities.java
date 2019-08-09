@@ -283,7 +283,7 @@ public class Utilities {
 					"Utilities::retrieveIdrepoJson()::entry");
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+			IdResponseDTO1 idResponseDto;
 
 			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
 					IdResponseDTO1.class);
@@ -448,16 +448,18 @@ public class Utilities {
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Utilities::getUIn()::entry");
-
+		Number number;
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		if (demographicIdentity == null) {
+		if (demographicIdentity != null) {
+			 number = JsonUtil.getJSONValue(demographicIdentity, UIN);
+		}else {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Utilities::getUIn():: error with error message "
 							+ PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		
 		}
-		Number number = JsonUtil.getJSONValue(demographicIdentity, UIN);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Utilities::getUIn()::exit");
 
 		return number != null ? number.longValue() : null;
@@ -537,7 +539,7 @@ public class Utilities {
 		if (regId != null) {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(regId);
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+			IdResponseDTO1 idResponseDto;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, "Utilities::retrieveUIN():: RETRIEVEIDENTITYFROMRID GET service call Started");
 

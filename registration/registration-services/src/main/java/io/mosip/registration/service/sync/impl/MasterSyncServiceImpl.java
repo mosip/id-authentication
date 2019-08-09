@@ -730,7 +730,9 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"triggerPoint is missing it is a mandatory field.");
 			return false;
-		} else if (StringUtils.isEmpty(keyIndex)) {
+		} else if (RegistrationConstants.ENABLE
+				.equals(String.valueOf(ApplicationContext.map().get(RegistrationConstants.TPM_AVAILABILITY)))
+				&& StringUtils.isEmpty(keyIndex)) {
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"keyIndex is missing it is a mandatory field.");
 			return false;

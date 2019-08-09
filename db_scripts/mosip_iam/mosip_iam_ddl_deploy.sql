@@ -7,4 +7,4 @@
 \ir ddl/iam-user_role.sql
 \ir ddl/iam-oauth_access_token.sql
 
-\ir ddl/AlterFK_iam_schema.sql
+\ir ddl/iam-fk.sql

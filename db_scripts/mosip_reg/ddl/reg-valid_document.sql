@@ -1,28 +1,40 @@
--- create table section --------------------------------------------------------
--- schema 		: reg  - registration schema
--- table 		: valid_document  - reg valid_document list, mapping table for document type and category. 
--- table alias  : valdoc	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.valid_document
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------------------------------------
+-- NOTE: the code below contains the SQL for the selected object
+-- as well for its dependencies and children (if applicable).
+-- 
+-- This feature is only a convinience in order to permit you to test
+-- the whole object's SQL definition at once.
+-- 
+-- When exporting or generating the SQL for the whole database model
+-- all objects will be placed at their original positions.
 
-	create table reg.valid_document
-	(  
-		doctyp_code character varying(36) not null,   	-- reg.doc_type.code 
-		doccat_code character varying(36) not null,		-- reg.doc_cateogory.code
-			
-		lang_code  	character varying(3) not null ,		-- reg.language.code
-						
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes 	timestamp ,
-		is_deleted 	boolean,
-		del_dtimes	timestamp 
 
-	)
-;
+-- object: reg.valid_document | type: TABLE --
+-- DROP TABLE IF EXISTS reg.valid_document CASCADE;
+CREATE TABLE reg.valid_document(
+	doccat_code character varying(36) NOT NULL,
+	doctyp_code character varying(36) NOT NULL,
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_valdoc_code PRIMARY KEY (doccat_code,doctyp_code)
 
--- keys section -------------------------------------------------------------------------------
-alter table reg.valid_document add constraint pk_valdoc_code primary key (doctyp_code, doccat_code)
- ;
+);
+-- ddl-end --

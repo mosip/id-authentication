@@ -17,7 +17,7 @@ public class UINConstants {
 	public static final String FILE_SEPARATOR = "\\";
 
 	/** The id repo api version. */
-	public static String idRepoApiVersion = "v1";
+	public static final String idRepoApiVersion = "v1";
 
 	/** The Constant UIN_FAILURE. */
 	public static final String UIN_FAILURE = "UIN updation failure for registrationId ";

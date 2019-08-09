@@ -1,7 +1,10 @@
--- object: masteruser | type: ROLE --
--- DROP ROLE IF EXISTS masteruser;
+DROP ROLE IF EXISTS iamuser;
 CREATE ROLE iamuser WITH 
+
 	INHERIT
+
 	LOGIN
-	PASSWORD 'Mosip@dev123';
+
+	PASSWORD :dbuserpwd;
+
 -- ddl-end --

@@ -28,7 +28,7 @@ public class AbisResponseDto implements Serializable{
 
 	private byte[] respText;
 	public byte[] getRespText() {
-		return respText;
+		return respText.clone();
 	}
 
 	public void setRespText(byte[] respText) {

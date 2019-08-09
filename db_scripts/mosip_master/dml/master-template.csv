@@ -11,118 +11,118 @@ Your Authentication of UIN $uin using $authType on $date at $time Hrs $status at
 Votre authentification UIN $uin utilisant $authType le $date à $time Hrs $status sur un périphérique déployé par ""MOSIP Services""",10004,Authentification ID,auth-email-content,fra,TRUE,superadmin,now()
 1102,Modèle pour sujet dautorisation,Modèle pour sujet dautorisation,txt,,UIN $uin: $status dauthentification,10004,Authentification ID,auth-email-subject,fra,TRUE,superadmin,now()
 1103,Modèle de SMS dautorisation,Modèle de SMS dautorisation,txt,,"Votre authentification UIN $uin utilisant $authType le $date à $time Hrs $status sur un périphérique déployé par ""MOSIP Services"".",10004,Authentification ID,auth-sms,fra,TRUE,superadmin,now()
-1107,Template for duplicate UIN Email,Template for duplicate UIN Email,txt,,"Hi $name_eng,
+1107,Template for duplicate UIN Email,Template for duplicate UIN Email,txt,,"Hi $!name_eng,
 
-Your Request for Registration $RID has failed because an UIN has been found against your details. Please visit your nearest Registration Office.
+Your Request for Registration $!RID has failed because an UIN has been found against your details. Please visit your nearest Registration Office.
 And Visit https://mosip.io/grievances
 
 Thanks and Regards,
 MOSIP Team",10003,Registration Processor,RPR_DUP_UIN_EMAIL,eng,TRUE,superadmin,now()
-1108,Template for duplicate UIN SMS,Template for duplicate UIN SMS,txt,,"Hi $name_eng,
+1108,Template for duplicate UIN SMS,Template for duplicate UIN SMS,txt,,"Hi $!name_eng,
 
-Your Request for Registration $RID has failed because an UIN has been found against your details. Please visit your nearest Registration Office.
+Your Request for Registration $!RID has failed because an UIN has been found against your details. Please visit your nearest Registration Office.
 And Visit https://mosip.io/grievances",10003,Registration Processor,RPR_DUP_UIN_SMS,eng,TRUE,superadmin,now()
-1109,Template for Technical Issue Email,Template for Technical Issue Email,txt,,"Hi $name_eng,
+1109,Template for Technical Issue Email,Template for Technical Issue Email,txt,,"Hi $!name_eng,
 
-Your Request for Registration $RID has failed because of an Technical issue please visit your nearest Registration Office.
+Your Request for Registration $!RID has failed because of an Technical issue please visit your nearest Registration Office.
 And Visit https://mosip.io/grievances
 
 Thanks and Regards,
 MOSIP Team",10003,Registration Processor,RPR_TEC_ISSUE_EMAIL,eng,TRUE,superadmin,now()
-1110,Template for Technical Issue SMS,Template for Technical Issue SMS,txt,,"Hi $name_eng,
+1110,Template for Technical Issue SMS,Template for Technical Issue SMS,txt,,"Hi $!name_eng,
 
-Your Request for Registration $RID has failed because of an Technical issue please visit your nearest Registration Office.
+Your Request for Registration $!RID has failed because of an Technical issue please visit your nearest Registration Office.
 And Visit https://mosip.io/grievances",10003,Registration Processor,RPR_TEC_ISSUE_SMS,eng,TRUE,superadmin,now()
-1111,Template for UIN generation Email,Template for UIN generation Email,txt,,"Hi $name_eng,
+1111,Template for UIN generation Email,Template for UIN generation Email,txt,,"Hi $!name_eng,
 
-Your UIN for the Registration $RID has been successfully generated and will reach soon at your Postal Address.
+Your UIN for the Registration $!RID has been successfully generated and will reach soon at your Postal Address.
 
 Thanks and Regards,
 MOSIP Team",10003,Registration Processor,RPR_UIN_GEN_EMAIL,eng,TRUE,superadmin,now()
-1112,Template for UIN generation SMS,Template for UIN generation SMS,txt,,"Hi $name_eng,
+1112,Template for UIN generation SMS,Template for UIN generation SMS,txt,,"Hi $!name_eng,
 
-Your UIN for the Registration $RID has been successfully generated and will reach soon at your Postal Address.",10003,Registration Processor,RPR_UIN_GEN_SMS,eng,TRUE,superadmin,now()
-1113,Template for update details Email,Template for update details Email,txt,,"Hi $name_eng,
+Your UIN for the Registration $!RID has been successfully generated and will reach soon at your Postal Address.",10003,Registration Processor,RPR_UIN_GEN_SMS,eng,TRUE,superadmin,now()
+1113,Template for update details Email,Template for update details Email,txt,,"Hi $!name_eng,
 
-Your UIN details have been updated corresponding to the Registration Number $RID and a Physical Copy of your UIN will reach you soon at your Postal Address.
+Your UIN details have been updated corresponding to the Registration Number $!RID and a Physical Copy of your UIN will reach you soon at your Postal Address.
 
 Thanks and Regards,
 MOSIP Team",10003,Registration Processor,RPR_UIN_UPD_EMAIL,eng,TRUE,superadmin,now()
-1114,Template for update Details SMS,Template for update Details SMS,txt,,"Hi $name_eng,
+1114,Template for update Details SMS,Template for update Details SMS,txt,,"Hi $!name_eng,
 
-Your UIN details have been updated corresponding to the Registration Number $RID and a Physical Copy of your UIN will reach you soon at your Postal Address.",10003,Registration Processor,RPR_UIN_UPD_SMS,eng,TRUE,superadmin,now()
-1107,قالب لبريد إلكتروني مكرر الهوية,قالب لبريد إلكتروني مكرر الهوية,txt,,"$name_ara ،
+Your UIN details have been updated corresponding to the Registration Number $!RID and a Physical Copy of your UIN will reach you soon at your Postal Address.",10003,Registration Processor,RPR_UIN_UPD_SMS,eng,TRUE,superadmin,now()
+1107,قالب لبريد إلكتروني مكرر الهوية,قالب لبريد إلكتروني مكرر الهوية,txt,,"$!name_ara ،
 
-الخاص بك لأنه تم العثور على UIN مقابل بياناتك. يرجى زيارة أقرب مكتب تسجيل $RID فشل طلب التسجيل
+الخاص بك لأنه تم العثور على UIN مقابل بياناتك. يرجى زيارة أقرب مكتب تسجيل $!RID فشل طلب التسجيل
 وزيارة https://mosip.io/grievances
 
 شكرا مع تحياتي،
 فريق MOSIP",10003,معالج التسجيل,RPR_DUP_UIN_EMAIL,ara,TRUE,superadmin,now()
-1108,قالب لرسالة الهوية المكررة,قالب لرسالة الهوية المكررة,txt,,"$name_ara ،
+1108,قالب لرسالة الهوية المكررة,قالب لرسالة الهوية المكررة,txt,,"$!name_ara ،
 
-فشل طلب التسجيل $RID الخاص بك لأنه تم العثور على UIN مقابل بياناتك. يرجى زيارة أقرب مكتب تسجيل.
+فشل طلب التسجيل $!RID الخاص بك لأنه تم العثور على UIN مقابل بياناتك. يرجى زيارة أقرب مكتب تسجيل.
 وزيارة https://mosip.io/grievances",10003,معالج التسجيل,RPR_DUP_UIN_SMS,ara,TRUE,superadmin,now()
-1109,نموذج للبريد الإلكتروني لمشكلة فنية,نموذج للبريد الإلكتروني لمشكلة فنية,txt,,"$name_ara ،
+1109,نموذج للبريد الإلكتروني لمشكلة فنية,نموذج للبريد الإلكتروني لمشكلة فنية,txt,,"$!name_ara ،
 
-شل طلب التسجيل $RID بسبب مشكلة فنية ، يرجى زيارة أقرب مكتب تسجيل.
+شل طلب التسجيل $!RID بسبب مشكلة فنية ، يرجى زيارة أقرب مكتب تسجيل.
 وزيارة https://mosip.io/grievances
 
 شكرا مع تحياتي،
 فريق MOSIP",10003,معالج التسجيل,RPR_TEC_ISSUE_EMAIL,ara,TRUE,superadmin,now()
-1110,قالب لرسالة المشكلة الفنية,قالب لرسالة المشكلة الفنية,txt,,"$name_ara ،
+1110,قالب لرسالة المشكلة الفنية,قالب لرسالة المشكلة الفنية,txt,,"$!name_ara ،
 
-فشل طلب التسجيل $RID بسبب مشكلة فنية ، يرجى زيارة أقرب مكتب تسجيل.
+فشل طلب التسجيل $!RID بسبب مشكلة فنية ، يرجى زيارة أقرب مكتب تسجيل.
 وزيارة https://mosip.io/grievances",10003,معالج التسجيل,RPR_TEC_ISSUE_SMS,ara,TRUE,superadmin,now()
-1111,قالب لتوليد الهوية البريد الإلكتروني,قالب لتوليد الهوية البريد الإلكتروني,txt,,"$name_ara ،
+1111,قالب لتوليد الهوية البريد الإلكتروني,قالب لتوليد الهوية البريد الإلكتروني,txt,,"$!name_ara ،
 
-تم إنشاء UIN الخاص بك للتسجيل $RID بنجاح وستصل قريبًا إلى العنوان البريدي الخاص بك.
+تم إنشاء UIN الخاص بك للتسجيل $!RID بنجاح وستصل قريبًا إلى العنوان البريدي الخاص بك.
 
 شكرا مع تحياتي،
 فريق MOSIP",10003,معالج التسجيل,RPR_UIN_GEN_EMAIL,ara,TRUE,superadmin,now()
-1112,قالب لرسالة توليد الهوية,قالب لرسالة توليد الهوية,txt,,"$name_ara ،
+1112,قالب لرسالة توليد الهوية,قالب لرسالة توليد الهوية,txt,,"$!name_ara ،
 
-تم إنشاء UIN الخاص بك للتسجيل $RID بنجاح وستصل قريبًا إلى العنوان البريدي الخاص بك.",10003,معالج التسجيل,RPR_UIN_GEN_SMS,ara,TRUE,superadmin,now()
-1113,قالب للحصول على تفاصيل التحديث,قالب للحصول على تفاصيل التحديث,txt,,"$name_ara ،
+تم إنشاء UIN الخاص بك للتسجيل $!RID بنجاح وستصل قريبًا إلى العنوان البريدي الخاص بك.",10003,معالج التسجيل,RPR_UIN_GEN_SMS,ara,TRUE,superadmin,now()
+1113,قالب للحصول على تفاصيل التحديث,قالب للحصول على تفاصيل التحديث,txt,,"$!name_ara ،
 
-تم تحديث تفاصيل UIN الخاصة بك المقابلة لرقم التسجيل $RID وستصل إليك نسخة فعلية من UIN الخاصة بك على العنوان البريدي الخاص بك.
+تم تحديث تفاصيل UIN الخاصة بك المقابلة لرقم التسجيل $!RID وستصل إليك نسخة فعلية من UIN الخاصة بك على العنوان البريدي الخاص بك.
 
 شكرا مع تحياتي،
 فريق MOSIP",10003,معالج التسجيل,RPR_UIN_UPD_EMAIL,ara,TRUE,superadmin,now()
-1114,قالب لتحديث تفاصيل الرسالة,قالب لتحديث تفاصيل الرسالة,txt,,"$name_ara ،
+1114,قالب لتحديث تفاصيل الرسالة,قالب لتحديث تفاصيل الرسالة,txt,,"$!name_ara ،
 
-تم تحديث تفاصيل UIN الخاصة بك المقابلة لرقم التسجيل $RID وستصل إليك نسخة فعلية من UIN الخاصة بك على العنوان البريدي الخاص بك.",10003,معالج التسجيل,RPR_UIN_UPD_SMS,ara,TRUE,superadmin,now()
-1107,Modèle de courrier didentité en double,Modèle de courrier didentité en double,txt,,"Bonjour $name_fra,
-Votre demande d'enregistrement $RID a échoué car un UIN a été trouvé contre vos coordonnées. Veuillez visiter votre bureau d'inscription le plus proche.
+تم تحديث تفاصيل UIN الخاصة بك المقابلة لرقم التسجيل $!RID وستصل إليك نسخة فعلية من UIN الخاصة بك على العنوان البريدي الخاص بك.",10003,معالج التسجيل,RPR_UIN_UPD_SMS,ara,TRUE,superadmin,now()
+1107,Modèle de courrier didentité en double,Modèle de courrier didentité en double,txt,,"Bonjour $!name_fra,
+Votre demande d'enregistrement $!RID a échoué car un UIN a été trouvé contre vos coordonnées. Veuillez visiter votre bureau d'inscription le plus proche.
 Et visitez https://mosip.io/grievances
 
 Merci et salutations,
 Équipe MOSIP",10003,Processeur dinscription,RPR_DUP_UIN_EMAIL,fra,TRUE,superadmin,now()
-1108,Modèle de message didentité en double,Modèle de message didentité en double,txt,,"Bonjour $name_fra,
-Votre demande d'enregistrement $RID a échoué car un UIN a été trouvé contre vos coordonnées. Veuillez visiter votre bureau d'inscription le plus proche.
+1108,Modèle de message didentité en double,Modèle de message didentité en double,txt,,"Bonjour $!name_fra,
+Votre demande d'enregistrement $!RID a échoué car un UIN a été trouvé contre vos coordonnées. Veuillez visiter votre bureau d'inscription le plus proche.
 Et visitez https://mosip.io/grievances",10003,Processeur dinscription,RPR_DUP_UIN_SMS,fra,TRUE,superadmin,now()
-1109,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $name_fra,
-Votre demande d'enregistrement $RID a échoué à cause d'un problème technique, veuillez vous rendre au bureau d'inscription le plus proche.
+1109,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $!name_fra,
+Votre demande d'enregistrement $!RID a échoué à cause d'un problème technique, veuillez vous rendre au bureau d'inscription le plus proche.
 Et visitez https://mosip.io/grievances
 
 Merci et salutations,
 Équipe MOSIP",10003,Processeur dinscription,RPR_TEC_ISSUE_EMAIL,fra,TRUE,superadmin,now()
-1110,Modèle de message de problème technique,Modèle de message de problème technique,txt,,"Bonjour $name_fra,
-Votre demande d'enregistrement $RID a échoué à cause d'un problème technique, veuillez vous rendre au bureau d'inscription le plus proche.
+1110,Modèle de message de problème technique,Modèle de message de problème technique,txt,,"Bonjour $!name_fra,
+Votre demande d'enregistrement $!RID a échoué à cause d'un problème technique, veuillez vous rendre au bureau d'inscription le plus proche.
 Et visitez https://mosip.io/grievances",10003,Processeur dinscription,RPR_TEC_ISSUE_SMS,fra,TRUE,superadmin,now()
-1111,Modèle de courrier électronique de génération didentité,Modèle de courrier électronique de génération didentité,txt,,"Bonjour $name_fra,
-Votre UIN pour l'enregistrement $RID a été généré avec succès et vous parviendra sous peu à votre adresse postale.
+1111,Modèle de courrier électronique de génération didentité,Modèle de courrier électronique de génération didentité,txt,,"Bonjour $!name_fra,
+Votre UIN pour l'enregistrement $!RID a été généré avec succès et vous parviendra sous peu à votre adresse postale.
 
 Merci et salutations,
 Équipe MOSIP",10003,Processeur dinscription,RPR_UIN_GEN_EMAIL,fra,TRUE,superadmin,now()
-1112,Modèle de message de génération didentité,Modèle de message de génération didentité,txt,,"Bonjour $name_fra,
-Votre UIN pour l'enregistrement $RID a été généré avec succès et vous parviendra sous peu à votre adresse postale.",10003,Processeur dinscription,RPR_UIN_GEN_SMS,fra,TRUE,superadmin,now()
-1113,Modèle pour les détails de la mise à jour Email,Modèle pour les détails de la mise à jour Email,txt,,"Bonjour $name_fra,
-Les détails de votre UIN correspondant au numéro d’enregistrement $RID ont été mis à jour et une copie physique de votre UIN vous parviendra sous peu à votre adresse postale.
+1112,Modèle de message de génération didentité,Modèle de message de génération didentité,txt,,"Bonjour $!name_fra,
+Votre UIN pour l'enregistrement $!RID a été généré avec succès et vous parviendra sous peu à votre adresse postale.",10003,Processeur dinscription,RPR_UIN_GEN_SMS,fra,TRUE,superadmin,now()
+1113,Modèle pour les détails de la mise à jour Email,Modèle pour les détails de la mise à jour Email,txt,,"Bonjour $!name_fra,
+Les détails de votre UIN correspondant au numéro d’enregistrement $!RID ont été mis à jour et une copie physique de votre UIN vous parviendra sous peu à votre adresse postale.
 
 Merci et salutations,
 Équipe MOSIP",10003,Processeur dinscription,RPR_UIN_UPD_EMAIL,fra,TRUE,superadmin,now()
-1114,Modèle pour la mise à jour Détails Message,Modèle pour la mise à jour Détails Message,txt,,"Bonjour $name_fra,
-Les détails de votre UIN correspondant au numéro d’enregistrement $RID ont été mis à jour et une copie physique de votre UIN vous parviendra sous peu à votre adresse postale.",10003,Processeur dinscription,RPR_UIN_UPD_SMS,fra,TRUE,superadmin,now()
+1114,Modèle pour la mise à jour Détails Message,Modèle pour la mise à jour Détails Message,txt,,"Bonjour $!name_fra,
+Les détails de votre UIN correspondant au numéro d’enregistrement $!RID ont été mis à jour et une copie physique de votre UIN vous parviendra sous peu à votre adresse postale.",10003,Processeur dinscription,RPR_UIN_UPD_SMS,fra,TRUE,superadmin,now()
 1115,Template for new registration Email Content,Template for new registration Email Content,txt,,"Dear $name, 
 Thank you for registering with the digital identity platform. Your registration id is $RegistrationID. If there are any corrections to be made in your details, please contact the Registration centre within the next 4 days.",10002,Registration Client,NewReg-email-content-template,eng,TRUE,superadmin,now()
 1116,Template for new registration Email Subject,Template for new registration Email Subject,txt,,Registration confirmation,10002,Registration Client,NewReg-email-subject-template,eng,TRUE,superadmin,now()
@@ -289,7 +289,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 				<div>
 					<div
 						style=""border: solid black 1px; height: 150px; width: 120px; margin-right: -30px;"">
-						<img src = $ApplicantPhoto style=""width: 150px; height: 150px"">
+						<img src = $!ApplicantPhoto style=""width: 150px; height: 150px"">
 					</div>
 				</div>
 			</td>
@@ -298,7 +298,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>UIN&nbsp;:&nbsp;</b></label> <span
-						class=""name-color""> $UIN </span>
+						class=""name-color""> $!UIN </span>
 				</div>
 			</td>
 		</tr>
@@ -306,7 +306,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>Name&nbsp;:&nbsp;</b></label> <span
-						class=""name-color""> $name_eng</span>
+						class=""name-color""> $!name_eng</span>
 				</div>
 			</td>
 		</tr>
@@ -314,7 +314,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span>
-						$name_ara</span>
+						$!name_ara</span>
 				</div>
 			</td>
 		</tr>
@@ -323,16 +323,16 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>Date/تاريخ&nbsp;:&nbsp;</b></label>
-					<span>$dob</span>
+					<span>$!dob</span>
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<td colspan=""2"">
 				<div class=""block top-buffer"">
-					<label class=""name-head-color""><b>Gender&nbsp;:&nbsp;</b></label> <span>$gender_eng</span>
+					<label class=""name-head-color""><b>Gender&nbsp;:&nbsp;</b></label> <span>$!gender_eng</span>
 					&nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
-					<span>$gender_ara</span>
+					<span>$!gender_ara</span>
 				</div>
 			</td>
 		</tr>
@@ -345,16 +345,16 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 								<tr>
 									<td><label class=""name-head-color""><b>Address&nbsp;:&nbsp;</b></label>
 									</td>
-									<td><span>$addressLine1_eng, $addressLine2_eng,
-											$addressLine3_eng, $region_eng, $province_eng, $city_eng,
-											$postalCode </span></td>
+									<td><span>$!addressLine1_eng, $!addressLine2_eng,
+											$!addressLine3_eng, $!region_eng, $!province_eng, $!city_eng,
+											$!postalCode </span></td>
 								</tr>
 								<tr>
 									<td><label class=""name-head-color""><b>عنوان&nbsp;:&nbsp;</b></label>
 									</td>
-									<td><span>$addressLine1_ara, $addressLine2_ara,
-											$addressLine3_ara, $region_ara, $province_ara, $city_ara,
-											$postalCode </span>
+									<td><span>$!addressLine1_ara, $!addressLine2_ara,
+											$!addressLine3_ara, $!region_ara, $!province_ara, $!city_ara,
+											$!postalCode </span>
 									</td>
 								</tr>
 							</table>
@@ -372,7 +372,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 					style=""margin-left: 10px; margin-right: 10px; border: solid black 1px; height: 250px; width: 250px;"">
 					<div class=""col-md-6"">
 						<div class=""bar-code-padding""></div>
-						<img src=$QrCode
+						<img src=$!QrCode
 							style=""width: 250px; height: 250px; margin-top: -20px"">
 					</div>
 				</div>
@@ -444,7 +444,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 				<div>
 					<div
 						style=""border: solid black 1px; height: 150px; width: 120px; margin-right: -30px;"">
-						<img src = $ApplicantPhoto style=""width: 150px; height: 150px"">
+						<img src = $!ApplicantPhoto style=""width: 150px; height: 150px"">
 					</div>
 				</div>
 			</td>
@@ -453,7 +453,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>UIN&nbsp;:&nbsp;</b></label> <span
-						class=""name-color""> $UIN </span>
+						class=""name-color""> $!UIN </span>
 				</div>
 			</td>
 		</tr>
@@ -461,7 +461,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>prénom&nbsp;:&nbsp;</b></label> <span
-						class=""name-color""> $name_fra</span>
+						class=""name-color""> $!name_fra</span>
 				</div>
 			</td>
 		</tr>
@@ -469,7 +469,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span>
-						$name_ara</span>
+						$!name_ara</span>
 				</div>
 			</td>
 		</tr>
@@ -478,16 +478,16 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
-					<span>$dob</span>
+					<span>$!dob</span>
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<td colspan=""2"">
 				<div class=""block top-buffer"">
-					<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$gender_fra</span>
+					<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_fra</span>
 					&nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
-					<span>$gender_ara</span>
+					<span>$!gender_ara</span>
 				</div>
 			</td>
 		</tr>
@@ -500,16 +500,16 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 								<tr>
 									<td><label class=""name-head-color""><b>Adresse&nbsp;:&nbsp;</b></label>
 									</td>
-									<td><span>$addressLine1_fra, $addressLine2_fra,
-											$addressLine3_fra, $region_fra, $province_fra, $city_fra,
-											$postalCode </span></td>
+									<td><span>$!addressLine1_fra, $!addressLine2_fra,
+											$!addressLine3_fra, $!region_fra, $!province_fra, $!city_fra,
+											$!postalCode </span></td>
 								</tr>
 								<tr>
 									<td><label class=""name-head-color""><b>عنوان&nbsp;:&nbsp;</b></label>
 									</td>
-									<td><span>$addressLine1_ara, $addressLine2_ara,
-											$addressLine3_ara, $region_ara, $province_ara, $city_ara,
-											$postalCode </span>
+									<td><span>$!addressLine1_ara, $!addressLine2_ara,
+											$!addressLine3_ara, $!region_ara, $!province_ara, $!city_ara,
+											$!postalCode </span>
 									</td>
 								</tr>
 							</table>
@@ -527,7 +527,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 					style=""margin-left: 10px; margin-right: 10px; border: solid black 1px; height: 250px; width: 250px;"">
 					<div class=""col-md-6"">
 						<div class=""bar-code-padding""></div>
-						<img src=$QrCode
+						<img src=$!QrCode
 							style=""width: 250px; height: 250px; margin-top: -20px"">
 					</div>
 				</div>
@@ -599,7 +599,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 				<div>
 					<div
 						style=""border: solid black 1px; height: 150px; width: 120px; margin-right: -30px;"">
-						<img src = $ApplicantPhoto style=""width: 150px; height: 150px"">
+						<img src = $!ApplicantPhoto style=""width: 150px; height: 150px"">
 					</div>
 				</div>
 			</td>
@@ -608,7 +608,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>UIN&nbsp;:&nbsp;</b></label> <span
-						class=""name-color""> $UIN </span>
+						class=""name-color""> $!UIN </span>
 				</div>
 			</td>
 		</tr>
@@ -616,7 +616,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>prénom&nbsp;:&nbsp;</b></label> <span
-						class=""name-color""> $name_fra</span>
+						class=""name-color""> $!name_fra</span>
 				</div>
 			</td>
 		</tr>
@@ -624,7 +624,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span>
-						$name_ara</span>
+						$!name_ara</span>
 				</div>
 			</td>
 		</tr>
@@ -633,16 +633,16 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 			<td rowspan=""1"">
 				<div class=""block top-buffer"">
 					<label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
-					<span>$dob</span>
+					<span>$!dob</span>
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<td colspan=""2"">
 				<div class=""block top-buffer"">
-					<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$gender_fra</span>
+					<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_fra</span>
 					&nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
-					<span>$gender_ara</span>
+					<span>$!gender_ara</span>
 				</div>
 			</td>
 		</tr>
@@ -655,16 +655,16 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 								<tr>
 									<td><label class=""name-head-color""><b>Adresse&nbsp;:&nbsp;</b></label>
 									</td>
-									<td><span>$addressLine1_fra, $addressLine2_fra,
-											$addressLine3_fra, $region_fra, $province_fra, $city_fra,
-											$postalCode </span></td>
+									<td><span>$!addressLine1_fra, $!addressLine2_fra,
+											$!addressLine3_fra, $!region_fra, $!province_fra, $!city_fra,
+											$!postalCode </span></td>
 								</tr>
 								<tr>
 									<td><label class=""name-head-color""><b>عنوان&nbsp;:&nbsp;</b></label>
 									</td>
-									<td><span>$addressLine1_ara, $addressLine2_ara,
-											$addressLine3_ara, $region_ara, $province_ara, $city_ara,
-											$postalCode </span>
+									<td><span>$!addressLine1_ara, $!addressLine2_ara,
+											$!addressLine3_ara, $!region_ara, $!province_ara, $!city_ara,
+											$!postalCode </span>
 									</td>
 								</tr>
 							</table>
@@ -682,7 +682,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 					style=""margin-left: 10px; margin-right: 10px; border: solid black 1px; height: 250px; width: 250px;"">
 					<div class=""col-md-6"">
 						<div class=""bar-code-padding""></div>
-						<img src=$QrCode
+						<img src=$!QrCode
 							style=""width: 250px; height: 250px; margin-top: -20px"">
 					</div>
 				</div>
@@ -702,65 +702,65 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 	</table>
 </body>
 </html>",10003,Processeur dinscription,RPR_UIN_CARD_TEMPLATE,fra,TRUE,superadmin,now()
-1132,Template for UIN Deactivation SMS,Template for UIN Deactivation SMS,txt,,"Hi $name_eng,
+1132,Template for UIN Deactivation SMS,Template for UIN Deactivation SMS,txt,,"Hi $!name_eng,
 
 Your UIN has been de-activated. 
 If you have any conserns please visit the nearest Registration Center.",10003,Registration Processor,RPR_UIN_DEAC_SMS,eng,TRUE,superadmin,now()
-1132,قالب لتعطيل UIN SMS,قالب لتعطيل UIN SMS,txt,,"$name_ara ،
+1132,قالب لتعطيل UIN SMS,قالب لتعطيل UIN SMS,txt,,"$!name_ara ،
 
 تم إلغاء تنشيط UIN الخاص بك.
 إذا كان لديك أي مواصلات ، يرجى زيارة أقرب مركز للتسجيل.",10003,معالج التسجيل,RPR_UIN_DEAC_SMS,ara,TRUE,superadmin,now()
-1132,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $name_fra,
+1132,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $!name_fra,
 
 Votre UIN a été désactivé.
 Si vous avez des intérêts, veuillez vous rendre au centre d’inscription le plus proche.",10003,Processeur dinscription,RPR_UIN_DEAC_SMS,fra,TRUE,superadmin,now()
-1133,Template for UIN Deactivation Email,Template for UIN Deactivation Email,txt,,"Hi $name_eng,
+1133,Template for UIN Deactivation Email,Template for UIN Deactivation Email,txt,,"Hi $!name_eng,
 
 Your UIN has been de-activated. 
 If you have any conserns please visit the nearest Registration Center.
 
 Thanks",10003,Registration Processor,RPR_UIN_DEAC_EMAIL,eng,TRUE,superadmin,now()
-1133,قالب لإلغاء تنشيط البريد,قالب لإلغاء تنشيط البريد,txt,,"$name_ara ،
+1133,قالب لإلغاء تنشيط البريد,قالب لإلغاء تنشيط البريد,txt,,"$!name_ara ،
 
 تم إلغاء تنشيط UIN الخاص بك.
 إذا كان لديك أي مواصلات ، يرجى زيارة أقرب مركز للتسجيل.
 
 شكرا مع تحياتي ،
 فريق MOSIP",10003,معالج التسجيل,RPR_UIN_DEAC_EMAIL,ara,TRUE,superadmin,now()
-1133,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $name_fra,
+1133,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $!name_fra,
 
 Votre UIN a été désactivé.
 Si vous avez des intérêts, veuillez vous rendre au centre d’inscription le plus proche.
 
 Merci et salutations,
 Équipe MOSIP",10003,Processeur dinscription,RPR_UIN_DEAC_EMAIL,fra,TRUE,superadmin,now()
-1134,Template for UIN Reactivate SMS,Template for UIN Reactivate SMS,txt,,"Hi $name_eng,
+1134,Template for UIN Reactivate SMS,Template for UIN Reactivate SMS,txt,,"Hi $!name_eng,
 
-Your UIN $UIN has been re-activated. 
+Your UIN $!UIN has been re-activated. 
 If you have any conserns please visit the nearest Registration Center.",10003,Registration Processor,RPR_UIN_REAC_SMS,eng,TRUE,superadmin,now()
-1134,قالب لـ UIN تنشيط SMS,قالب لـ UIN تنشيط SMS,txt,," $name_ara ،
+1134,قالب لـ UIN تنشيط SMS,قالب لـ UIN تنشيط SMS,txt,," $!name_ara ،
 
 تمت إعادة تنشيط UIN الخاص بك.
 إذا كان لديك أي مواصلات ، يرجى زيارة أقرب مركز للتسجيل.",10003,معالج التسجيل,RPR_UIN_REAC_SMS,ara,TRUE,superadmin,now()
-1134,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $name_fra,
+1134,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $!name_fra,
 
 Votre UIN a été réactivé.
 Si vous avez des intérêts, veuillez vous rendre au centre d’inscription le plus proche.",10003,Processeur dinscription,RPR_UIN_REAC_SMS,fra,TRUE,superadmin,now()
-1135,Template for UIN Reactivate Email,Template for UIN Reactivate Email,txt,,"Hi $name_eng,
+1135,Template for UIN Reactivate Email,Template for UIN Reactivate Email,txt,,"Hi $!name_eng,
 
-Your UIN $UIN has been re-activated. 
+Your UIN $!UIN has been re-activated. 
 If you have any conserns please visit the nearest Registration Center.
 
 Thanks
 Team MOSIP",10003,Registration Processor,RPR_UIN_REAC_EMAIL,eng,TRUE,superadmin,now()
-1135,قالب لـ UIN تنشيط البريد,قالب لـ UIN تنشيط البريد,txt,,"$name_ara ،
+1135,قالب لـ UIN تنشيط البريد,قالب لـ UIN تنشيط البريد,txt,,"$!name_ara ،
 
 تمت إعادة تنشيط UIN الخاص بك.
 إذا كان لديك أي مواصلات ، يرجى زيارة أقرب مركز للتسجيل.
 
 شكرا مع تحياتي ،
 فريق MOSIP",10003,معالج التسجيل,RPR_UIN_REAC_EMAIL,ara,TRUE,superadmin,now()
-1135,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $name_fra,
+1135,Modèle pour courrier électronique de problème technique,Modèle pour courrier électronique de problème technique,txt,,"Bonjour $!name_fra,
 
 Votre UIN a été réactivé.
 Si vous avez des intérêts, veuillez vous rendre au centre d’inscription le plus proche.
@@ -857,27 +857,54 @@ Merci de vous être inscrit à la plateforme d’’identité numérique. Votre 
 11.code postal:${PostalCode}
 12.Numéro de portable:${Mobile}
 13.Email:${Email}",10005,registration,reg-email-notification,fra,TRUE,superadmin,now()
-1138,Registration Acknowledgement Template - Part 1,Acknowledgement generated after registration - Part 1,txt,velocity,"<html><head><style>body{font-family:""Roboto"";}table, .head{font-size:13px;}.previewPhoto{float:right;position:absolute;top:220px;}.photo{float:right;position:absolute;top:280px;}.applicantPhoto{position:absolute;top:-35px;left:540px;}.applicantPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:560px;}.parentPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:665px;}.applicantPhotoLabel2{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:690px;}.parentPhoto{position:absolute;top:-35px;left:670px;}.form{display:inline-block;}.section{align:center;padding:30px;width:800px;margin:auto;}.headings{color:#808080;font-size:10px;}p{display:inline;}.dataTable{word-wrap:break-word;table-layout:fixed;width:70%;}.headerTable{width:90%;}.uinHeaderTable{width:100%;}h5{display:inline;position:absolute;}.iris{top:-15px;left:152px;}.irisWithoutException{top:-15px;left:114px;}.tableWithoutException{width:50%;text-align:center;table-layout:fixed;margin:0 auto;}.biometricsTable{width:100%;text-align:center;table-layout:fixed;}.biometrics{position:relative;}.leftLittle{top:15px;left:90px;}.leftRing{top:3px;left:103px;}.leftMiddle{top:-7px;left:119px;}.leftIndex{top:3px;left:132px;}.rightIndex{top:3px;left:105px;}.rightMiddle{top:-7px;left:119px;}.rightRing{top:3px;left:132px;}.rightLittle{top:15px;left:146px;}.leftThumb{top:-4px;left:105px;}.rightThumb{top:-4px;left:130px;}.parentStyle{top:-15px;left:152px;}.parentIris1{top:-15px;left:212px;}.parentIris2{top:-15px;left:214px;}li span{color:black;font-size:12px;} li{color:lightgrey}button{float:right;font-size:12px;border:none;background-color:transparent;outline:none;}button:active{background-color:black;color:white;}.modify{float:right;}.bottom{vertical-align:bottom;}.consent-block{font-size:13px;}
+1138,Registration Acknowledgement Template - Part 1,Acknowledgement generated after registration - Part 1,txt,velocity,"<!DOCTYPE html><html><head><style>body{font-family:""Roboto"";}table, .head{font-size:13px;}.previewPhoto{float:right;position:absolute;top:220px;}.photo{float:right;position:absolute;top:280px;}
+.applicantPhoto{position:absolute;top:-35px;left:500px;}
+.applicantPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:520px;}
+.parentPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:625px;}
+.applicantPhotoLabel2{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:650px;}
+.parentPhoto{position:absolute;top:-35px;left:630px;}
+.form{display:inline-block;}.section{align:center;padding:30px;width:800px;margin:auto;}.headings{color:#808080;font-size:10px;}p{display:inline;}.dataTable{word-wrap:break-word;table-layout:fixed;width:70%;}.headerTable{width:90%;}.uinHeaderTable{width:100%;}h5{display:inline;position:absolute;}.iris{top:-15px;left:152px;}.irisWithoutException{top:-15px;left:114px;}.tableWithoutException{width:50%;text-align:center;table-layout:fixed;margin:0 auto;}.biometricsTable{width:100%;text-align:center;table-layout:fixed;}.biometrics{position:relative;}.leftLittle{top:15px;left:90px;}.leftRing{top:3px;left:103px;}.leftMiddle{top:-7px;left:119px;}.leftIndex{top:3px;left:132px;}.rightIndex{top:3px;left:105px;}.rightMiddle{top:-7px;left:119px;}.rightRing{top:3px;left:132px;}.rightLittle{top:15px;left:146px;}.leftThumb{top:-4px;left:105px;}.rightThumb{top:-4px;left:130px;}.parentStyle{top:-15px;left:152px;}.parentIris1{top:-15px;left:212px;}.parentIris2{top:-15px;left:214px;}li span{color:black;font-size:12px;} li{color:lightgrey}button{float:right;font-size:12px;border:none;background-color:transparent;outline:none;}button:active{background-color:black;color:white;}.modify{float:right;}.bottom{vertical-align:bottom;}.consent-block{font-size:13px;border-radius: 8px;margin-top: 10px;margin-bottom: 10px;border: 2px solid #E88E3F;padding-top: -50px;padding:10px;}
+.consent-text{margin-left: 7px;margin-bottom: 4px;}
 input[type=""radio""] {display: none;}
 input[type=""radio""] + label:before { content: """"; display: inline-block; width: 15px; height: 15px; padding: 3px; margin-right: 5px; background-clip: content-box; border: 1px solid grey; background-color: #fff; border-radius: 50%;}
 input[type=""radio""]:checked + label:before { background-color: #FF4081; border-color:#FF4081;}
 *,*:before,*:after { box-sizing: border-box;}
 .consent-block label { display: inline-flex; align-items: center;}
-</style><script>document.onreadystatechange = function () {if(document.readyState === 'complete'){var images = document.getElementsByTagName('img');for (var imageIndex = 0; imageIndex < images.length; imageIndex++) {images[imageIndex].addEventListener(""mousedown"", function(event) {event.preventDefault();});}}}</script></head>",10005,registration,reg-ack-template-part1,eng,TRUE,superadmin,now()
-1138,إقرار تم إنشاؤه بعد التسجيل - الجزء 1,قالب الاعتراف بالتسجيل - الجزء 1,txt,velocity,"<html><head><style>body{font-family:""Roboto"";}table, .head{font-size:13px;}.previewPhoto{float:right;position:absolute;top:220px;}.photo{float:right;position:absolute;top:280px;}.applicantPhoto{position:absolute;top:-35px;left:540px;}.applicantPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:560px;}.parentPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:665px;}.applicantPhotoLabel2{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:690px;}.parentPhoto{position:absolute;top:-35px;left:670px;}.form{display:inline-block;}.section{align:center;padding:30px;width:800px;margin:auto;}.headings{color:#808080;font-size:10px;}p{display:inline;}.dataTable{word-wrap:break-word;table-layout:fixed;width:70%;}.headerTable{width:90%;}.uinHeaderTable{width:100%;}h5{display:inline;position:absolute;}.iris{top:-15px;left:152px;}.irisWithoutException{top:-15px;left:114px;}.tableWithoutException{width:50%;text-align:center;table-layout:fixed;margin:0 auto;}.biometricsTable{width:100%;text-align:center;table-layout:fixed;}.biometrics{position:relative;}.leftLittle{top:15px;left:90px;}.leftRing{top:3px;left:103px;}.leftMiddle{top:-7px;left:119px;}.leftIndex{top:3px;left:132px;}.rightIndex{top:3px;left:105px;}.rightMiddle{top:-7px;left:119px;}.rightRing{top:3px;left:132px;}.rightLittle{top:15px;left:146px;}.leftThumb{top:-4px;left:105px;}.rightThumb{top:-4px;left:130px;}.parentStyle{top:-15px;left:152px;}.parentIris1{top:-15px;left:212px;}.parentIris2{top:-15px;left:214px;}li span{color:black;font-size:12px;} li{color:lightgrey}button{float:right;font-size:12px;border:none;background-color:transparent;outline:none;}button:active{background-color:black;color:white;}.modify{float:right;}.bottom{vertical-align:bottom;}.consent-block{font-size:13px;}
+</style><script>function changeColour(element) { var div = document.getElementById(""radioId""); if(element.value == ""yes""){div.style = ""border: 2px solid #68A933"";}
+if(element.value == ""no""){div.style = ""border: 2px solid #FF0000"";}}
+document.onreadystatechange = function () {if(document.readyState === ""complete""){var body = document.getElementsByTagName(""body"")[0]; body.addEventListener(""dragstart"", function(event) {event.preventDefault();}); body.addEventListener(""selectstart"", function(event) {event.preventDefault();});}}</script></head>",10005,registration,reg-ack-template-part1,eng,TRUE,superadmin,now()
+1138,إقرار تم إنشاؤه بعد التسجيل - الجزء 1,قالب الاعتراف بالتسجيل - الجزء 1,txt,velocity,"<!DOCTYPE html><html><head><style>body{font-family:""Roboto"";}table, .head{font-size:13px;}.previewPhoto{float:right;position:absolute;top:220px;}.photo{float:right;position:absolute;top:280px;}
+.applicantPhoto{position:absolute;top:-35px;left:500px;}
+.applicantPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:520px;}
+.parentPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:625px;}
+.applicantPhotoLabel2{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:650px;}
+.parentPhoto{position:absolute;top:-35px;left:630px;}
+.form{display:inline-block;}.section{align:center;padding:30px;width:800px;margin:auto;}.headings{color:#808080;font-size:10px;}p{display:inline;}.dataTable{word-wrap:break-word;table-layout:fixed;width:70%;}.headerTable{width:90%;}.uinHeaderTable{width:100%;}h5{display:inline;position:absolute;}.iris{top:-15px;left:152px;}.irisWithoutException{top:-15px;left:114px;}.tableWithoutException{width:50%;text-align:center;table-layout:fixed;margin:0 auto;}.biometricsTable{width:100%;text-align:center;table-layout:fixed;}.biometrics{position:relative;}.leftLittle{top:15px;left:90px;}.leftRing{top:3px;left:103px;}.leftMiddle{top:-7px;left:119px;}.leftIndex{top:3px;left:132px;}.rightIndex{top:3px;left:105px;}.rightMiddle{top:-7px;left:119px;}.rightRing{top:3px;left:132px;}.rightLittle{top:15px;left:146px;}.leftThumb{top:-4px;left:105px;}.rightThumb{top:-4px;left:130px;}.parentStyle{top:-15px;left:152px;}.parentIris1{top:-15px;left:212px;}.parentIris2{top:-15px;left:214px;}li span{color:black;font-size:12px;} li{color:lightgrey}button{float:right;font-size:12px;border:none;background-color:transparent;outline:none;}button:active{background-color:black;color:white;}.modify{float:right;}.bottom{vertical-align:bottom;}.consent-block{font-size:13px;border-radius: 8px;margin-top: 10px;margin-bottom: 10px;border: 2px solid #E88E3F;padding-top: -50px;padding:10px;}
+.consent-text{margin-left: 7px;margin-bottom: 4px;}
 input[type=""radio""] {display: none;}
 input[type=""radio""] + label:before { content: """"; display: inline-block; width: 15px; height: 15px; padding: 3px; margin-right: 5px; background-clip: content-box; border: 1px solid grey; background-color: #fff; border-radius: 50%;}
 input[type=""radio""]:checked + label:before { background-color: #FF4081; border-color:#FF4081;}
 *,*:before,*:after { box-sizing: border-box;}
 .consent-block label { display: inline-flex; align-items: center;}
-</style><script>document.onreadystatechange = function () {if(document.readyState === 'complete'){var images = document.getElementsByTagName('img');for (var imageIndex = 0; imageIndex < images.length; imageIndex++) {images[imageIndex].addEventListener(""mousedown"", function(event) {event.preventDefault();});}}}</script></head>",10005,registration,reg-ack-template-part1,ara,TRUE,superadmin,now()
-1138,enregistrement Modèle de remerciement - Partie 1,Accusé de réception généré après lenregistrement - Partie 1,txt,velocity,"<html><head><style>body{font-family:""Roboto"";}table, .head{font-size:13px;}.previewPhoto{float:right;position:absolute;top:220px;}.photo{float:right;position:absolute;top:280px;}.applicantPhoto{position:absolute;top:-35px;left:540px;}.applicantPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:560px;}.parentPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:665px;}.applicantPhotoLabel2{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:690px;}.parentPhoto{position:absolute;top:-35px;left:670px;}.form{display:inline-block;}.section{align:center;padding:30px;width:800px;margin:auto;}.headings{color:#808080;font-size:10px;}p{display:inline;}.dataTable{word-wrap:break-word;table-layout:fixed;width:70%;}.headerTable{width:90%;}.uinHeaderTable{width:100%;}h5{display:inline;position:absolute;}.iris{top:-15px;left:152px;}.irisWithoutException{top:-15px;left:114px;}.tableWithoutException{width:50%;text-align:center;table-layout:fixed;margin:0 auto;}.biometricsTable{width:100%;text-align:center;table-layout:fixed;}.biometrics{position:relative;}.leftLittle{top:15px;left:90px;}.leftRing{top:3px;left:103px;}.leftMiddle{top:-7px;left:119px;}.leftIndex{top:3px;left:132px;}.rightIndex{top:3px;left:105px;}.rightMiddle{top:-7px;left:119px;}.rightRing{top:3px;left:132px;}.rightLittle{top:15px;left:146px;}.leftThumb{top:-4px;left:105px;}.rightThumb{top:-4px;left:130px;}.parentStyle{top:-15px;left:152px;}.parentIris1{top:-15px;left:212px;}.parentIris2{top:-15px;left:214px;}li span{color:black;font-size:12px;} li{color:lightgrey}button{float:right;font-size:12px;border:none;background-color:transparent;outline:none;}button:active{background-color:black;color:white;}.modify{float:right;}.bottom{vertical-align:bottom;}.consent-block{font-size:13px;}
+</style><script>function changeColour(element) { var div = document.getElementById(""radioId""); if(element.value == ""yes""){div.style = ""border: 2px solid #68A933"";}
+if(element.value == ""no""){div.style = ""border: 2px solid #FF0000"";}}
+document.onreadystatechange = function () {if(document.readyState === ""complete""){var body = document.getElementsByTagName(""body"")[0]; body.addEventListener(""dragstart"", function(event) {event.preventDefault();}); body.addEventListener(""selectstart"", function(event) {event.preventDefault();});}}</script></head>",10005,registration,reg-ack-template-part1,ara,TRUE,superadmin,now()
+1138,enregistrement Modèle de remerciement - Partie 1,Accusé de réception généré après lenregistrement - Partie 1,txt,velocity,"<!DOCTYPE html><html><head><style>body{font-family:""Roboto"";}table, .head{font-size:13px;}.previewPhoto{float:right;position:absolute;top:220px;}.photo{float:right;position:absolute;top:280px;}
+.applicantPhoto{position:absolute;top:-35px;left:500px;}
+.applicantPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:520px;}
+.parentPhotoLabel{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:625px;}
+.applicantPhotoLabel2{color:#808080;font-size:10px;position:absolute;white-space:nowrap;top:-70px;left:650px;}
+.parentPhoto{position:absolute;top:-35px;left:630px;}
+.form{display:inline-block;}.section{align:center;padding:30px;width:800px;margin:auto;}.headings{color:#808080;font-size:10px;}p{display:inline;}.dataTable{word-wrap:break-word;table-layout:fixed;width:70%;}.headerTable{width:90%;}.uinHeaderTable{width:100%;}h5{display:inline;position:absolute;}.iris{top:-15px;left:152px;}.irisWithoutException{top:-15px;left:114px;}.tableWithoutException{width:50%;text-align:center;table-layout:fixed;margin:0 auto;}.biometricsTable{width:100%;text-align:center;table-layout:fixed;}.biometrics{position:relative;}.leftLittle{top:15px;left:90px;}.leftRing{top:3px;left:103px;}.leftMiddle{top:-7px;left:119px;}.leftIndex{top:3px;left:132px;}.rightIndex{top:3px;left:105px;}.rightMiddle{top:-7px;left:119px;}.rightRing{top:3px;left:132px;}.rightLittle{top:15px;left:146px;}.leftThumb{top:-4px;left:105px;}.rightThumb{top:-4px;left:130px;}.parentStyle{top:-15px;left:152px;}.parentIris1{top:-15px;left:212px;}.parentIris2{top:-15px;left:214px;}li span{color:black;font-size:12px;} li{color:lightgrey}button{float:right;font-size:12px;border:none;background-color:transparent;outline:none;}button:active{background-color:black;color:white;}.modify{float:right;}.bottom{vertical-align:bottom;}.consent-block{font-size:13px;border-radius: 8px;margin-top: 10px;margin-bottom: 10px;border: 2px solid #E88E3F;padding-top: -50px;padding:10px;}
+.consent-text{margin-left: 7px;margin-bottom: 4px;}
 input[type=""radio""] {display: none;}
 input[type=""radio""] + label:before { content: """"; display: inline-block; width: 15px; height: 15px; padding: 3px; margin-right: 5px; background-clip: content-box; border: 1px solid grey; background-color: #fff; border-radius: 50%;}
 input[type=""radio""]:checked + label:before { background-color: #FF4081; border-color:#FF4081;}
 *,*:before,*:after { box-sizing: border-box;}
 .consent-block label { display: inline-flex; align-items: center;}
-</style><script>document.onreadystatechange = function () {if(document.readyState === 'complete'){var images = document.getElementsByTagName('img');for (var imageIndex = 0; imageIndex < images.length; imageIndex++) {images[imageIndex].addEventListener(""mousedown"", function(event) {event.preventDefault();});}}}</script></head>",10005,registration,reg-ack-template-part1,fra,TRUE,superadmin,now()
+</style><script>function changeColour(element) { var div = document.getElementById(""radioId""); if(element.value == ""yes""){div.style = ""border: 2px solid #68A933"";}
+if(element.value == ""no""){div.style = ""border: 2px solid #FF0000"";}}
+document.onreadystatechange = function () {if(document.readyState === ""complete""){var body = document.getElementsByTagName(""body"")[0]; body.addEventListener(""dragstart"", function(event) {event.preventDefault();}); body.addEventListener(""selectstart"", function(event) {event.preventDefault();});}}</script></head>",10005,registration,reg-ack-template-part1,fra,TRUE,superadmin,now()
 1139,Registration Acknowledgement Template - Part 2,Acknowledgement generated after registration - Part 2,txt,velocity,"<body><div class=""section""><div class=""form"">
 <table ${AckReceipt} class=""${headerTable}""><tr><td class=""bottom""><img src=""${QRCodeSource}"" width=""85"" height=""85""/></td><td class=""bottom""><p class=""headings"">${RIDPrimLabel} / ${RIDSecLabel}</p><br/>${RID}</td><td ${UINUpdate} class=""bottom""><p class=""headings"">${UINPrimLabel} / ${UINSecLabel}</p><br/>${UIN}</td><td class=""bottom""><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
 <table ${Preview} class=""headerTable""><tr><td ${IsUINUpdate}><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
@@ -922,30 +949,30 @@ input[type=""radio""]:checked + label:before { background-color: #FF4081; border
 <table ${FingerprintsCaptured} class=""biometricsTable""><tr ${AckReceipt}><td ${parentLeftSlap}><p class=""headings"">${LeftPalmPrimLabel} / ${LeftPalmSecLabel}</p></td><td ${parentRightSlap}><p class=""headings"">${RightPalmPrimLabel} / ${RightPalmSecLabel}</p></td><td ${parentThumbs}><p class=""headings"">${ThumbsPrimLabel} / ${ThumbsSecLabel}</p></td></tr><tr ${Preview}><td ${leftSlapCaptured}><p class=""headings"">${LeftPalmPrimLabel} / ${LeftPalmSecLabel}</p></td><td ${rightSlapCaptured}><p class=""headings"">${RightPalmPrimLabel} / ${RightPalmSecLabel}</p></td><td ${thumbsCaptured}><p class=""headings"">${ThumbsPrimLabel} / ${ThumbsSecLabel}</p></td></tr><tr ${AckReceipt}><td ${parentLeftSlap}><div class=""biometrics""><h5 ${isChild} class=""leftLittle"">${leftLittle}</h5><h5 ${isChild} class=""leftRing"">${leftRing}</h5><h5 ${isChild} class=""leftMiddle"">${leftMiddle}</h5><h5 class=""${childLeft}"">${leftIndex}</h5><img src=""${LeftPalmImageSource}"" border=""0"" width=""85"" height=""80""/></div></td><td ${parentRightSlap}><div class=""biometrics""><h5 ${isChild} class=""rightIndex"">${rightIndex}</h5><h5 ${isChild} class=""rightMiddle"">${rightMiddle}</h5><h5 ${isChild} class=""rightRing"">${rightRing}</h5><h5 class=""${childRight}"">${rightLittle}</h5><img src=""${RightPalmImageSource}"" border=""0"" width=""85"" height=""80""/></div></td><td ${parentThumbs}><div class=""biometrics""><h5 ${isChild} class=""leftThumb"">${leftThumb}</h5><h5 class=""${childThumbs}"">${rightThumb}</h5><img src=""${ThumbsImageSource}"" border=""0"" width=""85"" height=""80""/></div></td></tr>",10005,registration,reg-ack-template-part3,fra,TRUE,superadmin,now()
 preregistration,otp service,OTP Send Service,txt,string,Please find the OTP $otp,10001,login,otp-sms-template,eng ,TRUE,superadmin,now()
 ida,otp service,OTP Send Service,txt,string,Please find the OTP $otp,10002,login,otp-sms-template,eng ,TRUE,superadmin,now()
-registrationprocessor,otp service,OTP Send Service,txt,string,Please find the OTP $otp,10003,login,otp-sms-template,eng ,TRUE,superadmin,now()
+registrationprocessor,otp service,OTP Send Service,txt,string,Please find the OTP $!otp,10003,login,otp-sms-template,eng ,TRUE,superadmin,now()
 registrationclient,otp service,OTP Send Service,txt,string,Please find the OTP $otp,10004,ID Authentication,otp-sms-template,eng ,TRUE,superadmin,now()
 1141,Registration Acknowledgement Template - Part 4,Acknowledgement generated after registration - Part 4,txt,velocity,"<tr ${Preview}><td ${leftSlapCaptured}><img src=""${CapturedLeftSlap}"" border=""0"" width=""85"" height=""80""/></td><td ${rightSlapCaptured}><img src=""${CapturedRightSlap}"" border=""0"" width=""85"" height=""80""/></td><td ${thumbsCaptured}><img src=""${CapturedThumbs}"" border=""0"" width=""85"" height=""80""/></td></tr><tr ${AckReceipt}><td><p ${MissingLeftFingers} class=""headings"">${LeftSlapExceptionPrim} / ${LeftSlapExceptionSec}</p></td><td><p ${MissingRightFingers} class=""headings"">${RightSlapExceptionPrim} / ${RightSlapExceptionSec}</p></td><td><p ${MissingThumbs} class=""headings"">${ThumbsExceptionPrim} / ${ThumbsExceptionSec}</p></td></tr><tr ${Preview}><td ${leftSlapCaptured}><p ${MissingLeftFingers} class=""headings"">${LeftSlapExceptionPrim} / ${LeftSlapExceptionSec}</p></td><td ${rightSlapCaptured}><p ${MissingRightFingers} class=""headings"">${RightSlapExceptionPrim} / ${RightSlapExceptionSec}</p></td><td ${thumbsCaptured}><p ${MissingThumbs} class=""headings"">${ThumbsExceptionPrim} / ${ThumbsExceptionSec}</p></td></tr></table>
-<br/><div ${Preview}><p class=""head""><b>${Consent}</b></p><hr/><div class=""consent-block"">${ConsentData}<br/>
-<input type=""radio"" name=""consent"" id=""consent-yes"" ${SelectedYes}><label for=""consent-yes"">${Yes}</label> &nbsp;&nbsp;&nbsp;
-<input type=""radio"" name=""consent"" id=""consent-no"" ${SelectedNo}><label for=""consent-no"">${No}</label></div></div><hr/>
+<br/><div ${Preview}><p class=""head""><b>${Consent}</b></p><div class=""consent-block"" id=""radioId""><div class=""consent-text"">${ConsentData}</div>
+<input type=""radio"" name=""consent"" id=""consent-yes"" value=""yes"" ${SelectedYes} onchange=""changeColour(this)""><label for=""consent-yes"">${Yes}</label> &nbsp;&nbsp;&nbsp;
+<input type=""radio"" name=""consent"" id=""consent-no"" value=""no"" ${SelectedNo} onchange=""changeColour(this)""><label for=""consent-no"">${No}</label></div></div>
 <table class=""dataTable""><tr><td ${ROImage}><img src=""${ROImageSource}"" border=""0"" width=""80"" height=""80""/></td><td><p class=""headings"">${RONamePrimLabel} / ${RONameSecLabel}</p><br/>${ROName}<br/>${RONameSec}</td><td><p class=""headings"">${RegCenterPrimLabel} / ${RegCenterSecLabel}</p><br/>${RegCenter}<br/>${RegCenterSec}</td></tr></table>
 <hr/><br/></div>
 <div ${parentPhotoCaptured}><div ${FaceCaptureEnabled} ${AckReceipt} class=""photo""><p class=""applicantPhotoLabel"">${PhotoPrim} / ${PhotoSec}</p><img class=""applicantPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${AckReceipt} class=""photo""><p class=""parentPhotoLabel"">${ParentPhotoPrim} / ${ParentPhotoSec}</p><img class=""parentPhoto"" src=""${ParentImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${FaceCaptureEnabled} ${Preview} class=""previewPhoto""><p class=""applicantPhotoLabel"">${PhotoPrim} / ${PhotoSec}</p><img class=""applicantPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${Preview} class=""previewPhoto""><p class=""parentPhotoLabel"">${ParentPhotoPrim} / ${ParentPhotoSec}</p><img class=""parentPhoto"" src=""${ParentImageSource}"" border=""0"" width=""100"" height=""100""/></div></div>
 <div ${parentPhotoNotCaptured}><div ${FaceCaptureEnabled} ${AckReceipt} class=""photo""><p class=""applicantPhotoLabel2"">${PhotoPrim} / ${PhotoSec}</p><img class=""parentPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${FaceCaptureEnabled} ${Preview} class=""previewPhoto""><p class=""applicantPhotoLabel2"">${PhotoPrim} / ${PhotoSec}</p><img class=""parentPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div></div>
 <div ${AckReceipt}><p>${ImportantGuidelines}</p><ul>${Guidelines}</ul></div></div></body></html>",10005,registration,reg-ack-template-part4,eng ,TRUE,superadmin,now()
 1141,"قالب الاعتراف بالتسجيل - الجزء 4','الإ",ر المتولد بعد التسجيل - الجزء 4,txt,velocity,"<tr ${Preview}><td ${leftSlapCaptured}><img src=""${CapturedLeftSlap}"" border=""0"" width=""85"" height=""80""/></td><td ${rightSlapCaptured}><img src=""${CapturedRightSlap}"" border=""0"" width=""85"" height=""80""/></td><td ${thumbsCaptured}><img src=""${CapturedThumbs}"" border=""0"" width=""85"" height=""80""/></td></tr><tr ${AckReceipt}><td><p ${MissingLeftFingers} class=""headings"">${LeftSlapExceptionPrim} / ${LeftSlapExceptionSec}</p></td><td><p ${MissingRightFingers} class=""headings"">${RightSlapExceptionPrim} / ${RightSlapExceptionSec}</p></td><td><p ${MissingThumbs} class=""headings"">${ThumbsExceptionPrim} / ${ThumbsExceptionSec}</p></td></tr><tr ${Preview}><td ${leftSlapCaptured}><p ${MissingLeftFingers} class=""headings"">${LeftSlapExceptionPrim} / ${LeftSlapExceptionSec}</p></td><td ${rightSlapCaptured}><p ${MissingRightFingers} class=""headings"">${RightSlapExceptionPrim} / ${RightSlapExceptionSec}</p></td><td ${thumbsCaptured}><p ${MissingThumbs} class=""headings"">${ThumbsExceptionPrim} / ${ThumbsExceptionSec}</p></td></tr></table>
-<br/><div ${Preview}><p class=""head""><b>${Consent}</b></p><hr/><div class=""consent-block"">${ConsentData}<br/>
-<input type=""radio"" name=""consent"" id=""consent-yes"" ${SelectedYes}><label for=""consent-yes"">${Yes}</label> &nbsp;&nbsp;&nbsp;
-<input type=""radio"" name=""consent"" id=""consent-no"" ${SelectedNo}><label for=""consent-no"">${No}</label></div></div><hr/>
+<br/><div ${Preview}><p class=""head""><b>${Consent}</b></p><div class=""consent-block"" id=""radioId""><div class=""consent-text"">${ConsentData}</div>
+<input type=""radio"" name=""consent"" id=""consent-yes"" value=""yes"" ${SelectedYes} onchange=""changeColour(this)""><label for=""consent-yes"">${Yes}</label> &nbsp;&nbsp;&nbsp;
+<input type=""radio"" name=""consent"" id=""consent-no"" value=""no"" ${SelectedNo} onchange=""changeColour(this)""><label for=""consent-no"">${No}</label></div></div>
 <table class=""dataTable""><tr><td ${ROImage}><img src=""${ROImageSource}"" border=""0"" width=""80"" height=""80""/></td><td><p class=""headings"">${RONamePrimLabel} / ${RONameSecLabel}</p><br/>${ROName}<br/>${RONameSec}</td><td><p class=""headings"">${RegCenterPrimLabel} / ${RegCenterSecLabel}</p><br/>${RegCenter}<br/>${RegCenterSec}</td></tr></table>
 <hr/><br/></div>
 <div ${parentPhotoCaptured}><div ${FaceCaptureEnabled} ${AckReceipt} class=""photo""><p class=""applicantPhotoLabel"">${PhotoPrim} / ${PhotoSec}</p><img class=""applicantPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${AckReceipt} class=""photo""><p class=""parentPhotoLabel"">${ParentPhotoPrim} / ${ParentPhotoSec}</p><img class=""parentPhoto"" src=""${ParentImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${FaceCaptureEnabled} ${Preview} class=""previewPhoto""><p class=""applicantPhotoLabel"">${PhotoPrim} / ${PhotoSec}</p><img class=""applicantPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${Preview} class=""previewPhoto""><p class=""parentPhotoLabel"">${ParentPhotoPrim} / ${ParentPhotoSec}</p><img class=""parentPhoto"" src=""${ParentImageSource}"" border=""0"" width=""100"" height=""100""/></div></div>
 <div ${parentPhotoNotCaptured}><div ${FaceCaptureEnabled} ${AckReceipt} class=""photo""><p class=""applicantPhotoLabel2"">${PhotoPrim} / ${PhotoSec}</p><img class=""parentPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${FaceCaptureEnabled} ${Preview} class=""previewPhoto""><p class=""applicantPhotoLabel2"">${PhotoPrim} / ${PhotoSec}</p><img class=""parentPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div></div>
 <div ${AckReceipt}><p>${ImportantGuidelines}</p><ul>${Guidelines}</ul></div></div></body></html>",10005,registration,reg-ack-template-part4,ara,TRUE,superadmin,now()
 1141,enregistrement Modèle de remerciement - Partie 4,Accusé de réception généré après lenregistrement - Partie 4,txt,velocity,"<tr ${Preview}><td ${leftSlapCaptured}><img src=""${CapturedLeftSlap}"" border=""0"" width=""85"" height=""80""/></td><td ${rightSlapCaptured}><img src=""${CapturedRightSlap}"" border=""0"" width=""85"" height=""80""/></td><td ${thumbsCaptured}><img src=""${CapturedThumbs}"" border=""0"" width=""85"" height=""80""/></td></tr><tr ${AckReceipt}><td><p ${MissingLeftFingers} class=""headings"">${LeftSlapExceptionPrim} / ${LeftSlapExceptionSec}</p></td><td><p ${MissingRightFingers} class=""headings"">${RightSlapExceptionPrim} / ${RightSlapExceptionSec}</p></td><td><p ${MissingThumbs} class=""headings"">${ThumbsExceptionPrim} / ${ThumbsExceptionSec}</p></td></tr><tr ${Preview}><td ${leftSlapCaptured}><p ${MissingLeftFingers} class=""headings"">${LeftSlapExceptionPrim} / ${LeftSlapExceptionSec}</p></td><td ${rightSlapCaptured}><p ${MissingRightFingers} class=""headings"">${RightSlapExceptionPrim} / ${RightSlapExceptionSec}</p></td><td ${thumbsCaptured}><p ${MissingThumbs} class=""headings"">${ThumbsExceptionPrim} / ${ThumbsExceptionSec}</p></td></tr></table>
-<br/><div ${Preview}><p class=""head""><b>${Consent}</b></p><hr/><div class=""consent-block"">${ConsentData}<br/>
-<input type=""radio"" name=""consent"" id=""consent-yes"" ${SelectedYes}><label for=""consent-yes"">${Yes}</label> &nbsp;&nbsp;&nbsp;
-<input type=""radio"" name=""consent"" id=""consent-no"" ${SelectedNo}><label for=""consent-no"">${No}</label></div></div><hr/>
+<br/><div ${Preview}><p class=""head""><b>${Consent}</b></p><div class=""consent-block"" id=""radioId""><div class=""consent-text"">${ConsentData}</div>
+<input type=""radio"" name=""consent"" id=""consent-yes"" value=""yes"" ${SelectedYes} onchange=""changeColour(this)""><label for=""consent-yes"">${Yes}</label> &nbsp;&nbsp;&nbsp;
+<input type=""radio"" name=""consent"" id=""consent-no"" value=""no"" ${SelectedNo} onchange=""changeColour(this)""><label for=""consent-no"">${No}</label></div></div>
 <table class=""dataTable""><tr><td ${ROImage}><img src=""${ROImageSource}"" border=""0"" width=""80"" height=""80""/></td><td><p class=""headings"">${RONamePrimLabel} / ${RONameSecLabel}</p><br/>${ROName}<br/>${RONameSec}</td><td><p class=""headings"">${RegCenterPrimLabel} / ${RegCenterSecLabel}</p><br/>${RegCenter}<br/>${RegCenterSec}</td></tr></table>
 <hr/><br/></div>
 <div ${parentPhotoCaptured}><div ${FaceCaptureEnabled} ${AckReceipt} class=""photo""><p class=""applicantPhotoLabel"">${PhotoPrim} / ${PhotoSec}</p><img class=""applicantPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${AckReceipt} class=""photo""><p class=""parentPhotoLabel"">${ParentPhotoPrim} / ${ParentPhotoSec}</p><img class=""parentPhoto"" src=""${ParentImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${FaceCaptureEnabled} ${Preview} class=""previewPhoto""><p class=""applicantPhotoLabel"">${PhotoPrim} / ${PhotoSec}</p><img class=""applicantPhoto"" src=""${ApplicantImageSource}"" border=""0"" width=""100"" height=""100""/></div><div ${Preview} class=""previewPhoto""><p class=""parentPhotoLabel"">${ParentPhotoPrim} / ${ParentPhotoSec}</p><img class=""parentPhoto"" src=""${ParentImageSource}"" border=""0"" width=""100"" height=""100""/></div></div>
@@ -969,15 +996,15 @@ registrationclient,otp service,OTP Send Service,txt,string,Please find the OTP $
 1147,auth otp email service subject,auth otp email service subject,txt,velocity,يرجى الاطلاع على otp $otp,10002,Registration Client,auth-otp-email-content-template,ara,TRUE,superadmin,now()
 1147,auth otp email service subject,auth otp email service subject,txt,velocity,Please find the otp $otp,10002,Registration Client,auth-otp-email-content-template,eng,TRUE,superadmin,now()
 1147,auth otp email service subject,auth otp email service subject,txt,velocity,Sil vous plaît trouver le otp $otp,10002,Registration Client,auth-otp-email-content-template,fra,TRUE,superadmin,now()
-1148,auth otp service,auth otp service for sending otp,txt,velocity,يرجى الاطلاع على otp $otp,10003,Registration Processor,auth-otp-sms-template,ara,TRUE,superadmin,now()
-1148,auth otp service,auth otp service for sending otp,txt,velocity,Sil vous plaît trouver le otp $otp,10003,Registration Processor,auth-otp-sms-template,fra,TRUE,superadmin,now()
-1148,auth otp service,auth otp service for sending otp,txt,velocity,Please find the otp $otp,10003,Registration Processor,auth-otp-sms-template,eng,TRUE,superadmin,now()
-1149,auth otp email service subject,auth otp email service subject,txt,velocity,رسالة otp,10003,Registration Processor,auth-otp-email-subject-template,ara,TRUE,superadmin,now()
-1149,auth otp email service subject,auth otp email service subject,txt,velocity,Message Otp,10003,Registration Processor,auth-otp-email-subject-template,fra,TRUE,superadmin,now()
-1149,auth otp email service subject,auth otp email service subject,txt,velocity,Otp message,10003,Registration Processor,auth-otp-email-subject-template,eng,TRUE,superadmin,now()
-1150,auth otp email service subject,auth otp email service subject,txt,velocity,يرجى الاطلاع على otp $otp,10003,Registration Processor,auth-otp-email-content-template,ara,TRUE,superadmin,now()
-1150,auth otp email service subject,auth otp email service subject,txt,velocity,Please find the otp $otp,10003,Registration Processor,auth-otp-email-content-template,eng,TRUE,superadmin,now()
-1150,auth otp email service subject,auth otp email service subject,txt,velocity,Sil vous plaît trouver le otp $otp,10003,Registration Processor,auth-otp-email-content-template,fra,TRUE,superadmin,now()
+1148,auth otp service,auth otp service for sending otp,txt,velocity,يرجى الاطلاع على otp $otp,10004,مصادقة الهوية,auth-otp-sms-template,ara,TRUE,superadmin,now()
+1148,auth otp service,auth otp service for sending otp,txt,velocity,Sil vous plaît trouver le otp $otp,10004,Authentification ID,auth-otp-sms-template,fra,TRUE,superadmin,now()
+1148,auth otp service,auth otp service for sending otp,txt,velocity,Please find the otp $otp,10004,ID Authentication,auth-otp-sms-template,eng,TRUE,superadmin,now()
+1149,auth otp email service subject,auth otp email service subject,txt,velocity,رسالة otp,10004,مصادقة الهوية,auth-otp-email-subject-template,ara,TRUE,superadmin,now()
+1149,auth otp email service subject,auth otp email service subject,txt,velocity,Message Otp,10004,Authentification ID,auth-otp-email-subject-template,fra,TRUE,superadmin,now()
+1149,auth otp email service subject,auth otp email service subject,txt,velocity,Otp message,10004,ID Authentication,auth-otp-email-subject-template,eng,TRUE,superadmin,now()
+1150,auth otp email service subject,auth otp email service subject,txt,velocity,يرجى الاطلاع على otp $otp,10004,مصادقة الهوية,auth-otp-email-content-template,ara,TRUE,superadmin,now()
+1150,auth otp email service subject,auth otp email service subject,txt,velocity,Please find the otp $otp,10004,ID Authentication,auth-otp-email-content-template,eng,TRUE,superadmin,now()
+1150,auth otp email service subject,auth otp email service subject,txt,velocity,Sil vous plaît trouver le otp $otp,10004,Authentification ID,auth-otp-email-content-template,fra,TRUE,superadmin,now()
 1151,Template for Email Content,Template for Email Content,txt,model,Dear $name\nOTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs),10004,ID Authentication,ida-auth-otp-email-content-template,eng,TRUE,superadmin,now()
 1151,قالب لمحتوى البريد الإلكتروني,قالب لمحتوى البريد الإلكتروني,txt,model,"عزيزي $name ،\nOTP لـ UIN $uin هو $otp وهو صالح لمدة $validTime دقيقة. (التي تم إنشاؤها على $date في $time ساعات)",10004,مصادقة الهوية,ida-auth-otp-email-content-template,ara,TRUE,superadmin,now()
 1151,Modèle de contenu de courrier électronique,Modèle de contenu de courrier électronique,txt,,"Cher $name,OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)",10004,Authentification ID,ida-auth-otp-email-content-template,fra,TRUE,superadmin,now()
@@ -1017,33 +1044,484 @@ Thanks",10001,Pre-Registration,cancel-appointment,eng,TRUE,superadmin,now()
 Votre rendez-vous pour l'ID de pré-inscription, $PRID et la date et l'heure du rendez-vous, $Appointmentdate $Appointmenttime a été annulé en raison d'une urgence / d'un jour férié pour les autorités. Veuillez réserver à nouveau un autre créneau pour l'enregistrement.
 
 Merci",10001,Pré-inscription,cancel-appointment,fra,TRUE,superadmin,now()
-1160,Lost UIN Notification SMS,Lost UIN Notification SMS,txt,velocity,"Dear $name,
+1160,Lost UIN Notification SMS,Lost UIN Notification SMS,txt,velocity,"Dear $!name,
 
-Your UIN Number is $UIN. You will receive your UIN Card via. our postal service.
+Your UIN Number is $!UIN. You will receive your UIN Card via. our postal service.
 
-Thanks",,,RPR_LOST_UIN_SMS,eng,TRUE,superadmin,now()
-1160,فقدت رسالة إعلام UIN,فقدت رسالة إعلام UIN,txt,velocity,"عزيزي $name ،
+Thanks",10003,Registration Processor,RPR_LOST_UIN_SMS,eng,TRUE,superadmin,now()
+1160,فقدت رسالة إعلام UIN,فقدت رسالة إعلام UIN,txt,velocity,"عزيزي $!name ،
 
-رقم UIN الخاص بك هو $UIN. سوف تتلقى بطاقة UIN الخاصة بك عبر. خدمتنا البريدية.
+رقم UIN الخاص بك هو $!UIN. سوف تتلقى بطاقة UIN الخاصة بك عبر. خدمتنا البريدية.
 
-شكر",,,RPR_LOST_UIN_SMS,ara,TRUE,superadmin,now()
-1160,SMS de notification UIN perdu,SMS de notification UIN perdu,txt,velocity,"Cher $name,
+شكر",10003,معالج التسجيل,RPR_LOST_UIN_SMS,ara,TRUE,superadmin,now()
+1160,SMS de notification UIN perdu,SMS de notification UIN perdu,txt,velocity,"Cher $!name,
 
-Votre numéro UIN est $UIN. Vous recevrez votre carte UIN via. notre service postal.
+Votre numéro UIN est $!UIN. Vous recevrez votre carte UIN via. notre service postal.
 
-Merci",,,RPR_LOST_UIN_SMS,fra,TRUE,superadmin,now()
-1161,Lost UIN Notification Email,Lost UIN Notification Email,txt,velocity,"Dear $name,
+Merci",10003,Processeur dinscription,RPR_LOST_UIN_SMS,fra,TRUE,superadmin,now()
+1161,Lost UIN Notification Email,Lost UIN Notification Email,txt,velocity,"Dear $!name,
 
-Your UIN Number is $UIN. You will receive your UIN Card via. our postal service.
+Your UIN Number is $!UIN. You will receive your UIN Card via. our postal service.
 
-Thanks",,,RPR_LOST_UIN_EMAIL,eng,TRUE,superadmin,now()
-1161,فقدت البريد الإلكتروني الإخطار UIN,فقدت البريد الإلكتروني الإخطار UIN,txt,velocity,"عزيزي $name ،
+Thanks",10003,Registration Processor,RPR_LOST_UIN_EMAIL,eng,TRUE,superadmin,now()
+1161,فقدت البريد الإلكتروني الإخطار UIN,فقدت البريد الإلكتروني الإخطار UIN,txt,velocity,"عزيزي $!name ،
 
-رقم UIN الخاص بك هو $UIN. سوف تتلقى بطاقة UIN الخاصة بك عبر. خدمتنا البريدية.
+رقم UIN الخاص بك هو $!UIN. سوف تتلقى بطاقة UIN الخاصة بك عبر. خدمتنا البريدية.
 
-شكر",,,RPR_LOST_UIN_EMAIL,ara,TRUE,superadmin,now()
-1161,Email de notification UIN perdu,Email de notification UIN perdu,txt,velocity,"Cher $name,
+شكر",10003,معالج التسجيل,RPR_LOST_UIN_EMAIL,ara,TRUE,superadmin,now()
+1161,Email de notification UIN perdu,Email de notification UIN perdu,txt,velocity,"Cher $!name,
 
-Votre numéro UIN est $UIN. Vous recevrez votre carte UIN via. notre service postal.
+Votre numéro UIN est $!UIN. Vous recevrez votre carte UIN via. notre service postal.
 
-Merci",,,RPR_LOST_UIN_EMAIL,fra,TRUE,superadmin,now()
+Merci",10003,Processeur dinscription,RPR_LOST_UIN_EMAIL,fra,TRUE,superadmin,now()
+1162,Masked UIN card template,Masked UIN card template,txt,velocity,"<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=""utf-8"">
+	<meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+	<title>UIN Card</title>
+<style>
+.main-table {
+	margin-left: 60px;;
+	width: 600px;
+	height: 350px;
+	border: 1px solid black;
+}
+.cir {
+	display: inline-block;
+	border-radius: 60px;
+	box-shadow: 0px 0px 2px #000000;
+	padding: 0.5em 0.6em;
+}
+.name-head-color {
+	color: black;
+}
+.head-title {
+	margin-left: -85px;
+}
+
+.bar-code-padding {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.top-buffer {
+	margin-left:10px;
+}
+</style>
+</head>
+
+<body>
+<table class=""main-table"">
+<tr>
+<td>&nbsp;
+<div class=""cir"">
+<font size=""1"">Logo</font>
+</div>
+</td>
+<td><label class=""name-head-color""> <font size=""5"" class="" head-title""> &nbsp;&nbsp; Kingdom of Morocco&nbsp;&nbsp;&nbsp; </font>
+</label></td>
+<td rowspan=""4"">
+<div>
+<div style=""border: solid black 1px; height: 150px; width: 120px; margin-right: -30px;"">
+<img src = $!ApplicantPhoto style=""width: 120px; height: 150px"">
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>UIN&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!UIN </span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>VID&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!VID </span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Name&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!name_eng</span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span> $!name_ara</span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Date/تاريخ&nbsp;:&nbsp;</b></label>
+<span>$!dob</span>
+</div>
+</td>
+</tr>
+<tr>
+<td colspan=""2"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Gender&nbsp;:&nbsp;</b></label> <span>$!gender_eng</span>
+&nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
+<span>$!gender_ara</span>
+</div>
+</td>
+</tr>
+<tr>
+<td colspan=""3"">
+<div class=""row"" style=""margin-right: 0px; margin-left: -10px;"">
+<div class=""col-md-2 top-buffer"">
+<div class=""block top-buffer"">
+<table>
+<tr>
+<td><label class=""name-head-color""><b>Address&nbsp;:&nbsp;</b></label>
+</td>
+<td><span>$!addressLine1_eng, $!addressLine2_eng,
+$!addressLine3_eng, $!region_eng, $!province_eng, $!city_eng,
+$!postalCode </span></td>
+</tr>
+<tr>
+<td><label class=""name-head-color""><b>عنوان&nbsp;:&nbsp;</b></label>
+</td>
+<td><span>$!addressLine1_ara, $!addressLine2_ara, $!addressLine3_ara, $!region_ara, $!province_ara, $!city_ara, $!postalCode </span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+<div>&nbsp;</div>
+<table class=""main-table"" style=""height: 300px"">
+<tr>
+<td>
+<div style=""margin-left: 10px; margin-right: 10px; border: solid black 1px; height: 250px; width: 250px;"">
+<div class=""col-md-6"">
+<div class=""bar-code-padding""></div>
+<img src=$!QrCode style=""width: 250px; height: 250px; margin-top: -20px"">
+</div>
+</div>
+</td>
+<td>
+<div class=""name-head-color col-md-6"">
+<br> For any issues please contact us at<br>
+<br> Registration Proccessor,Hanging Gardens,Global Village
+Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
+<br> لأية مشاكل يرجى الاتصال بنا على <br>التسجيل المعالج،
+الحدائق المعلقة ، القرية العالمية Tech Park, Mysore Rd,RVCE 560059
+بنغالورو، كارناتاكا <br>
+<br>
+</div>
+</td>
+</tr>
+</table>
+</body>
+</html>",10003,Registration Processor,RPR_MASKED_UIN_CARD_TEMPLATE,eng,TRUE,superadmin,now()
+1162,قالب بطاقة UIN Masked,قالب بطاقة UIN Masked,txt,velocity,"<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=""utf-8"">
+	<meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+	<title>UIN Card</title>
+<style>
+.main-table {
+	margin-left: 60px;;
+	width: 600px;
+	height: 350px;
+	border: 1px solid black;
+}
+.cir {
+	display: inline-block;
+	border-radius: 60px;
+	box-shadow: 0px 0px 2px #000000;
+	padding: 0.5em 0.6em;
+}
+.name-head-color {
+	color: black;
+}
+.head-title {
+	margin-left: -85px;
+}
+
+.bar-code-padding {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.top-buffer {
+	margin-left:10px;
+}
+</style>
+</head>
+
+<body>
+<table class=""main-table"">
+<tr>
+<td>&nbsp;
+<div class=""cir"">
+<font size=""1"">Logo</font>
+</div>
+</td>
+<td><label class=""name-head-color""> <font size=""5"" class="" head-title""> &nbsp;&nbsp; Kingdom of Morocco&nbsp;&nbsp;&nbsp; </font>
+</label></td>
+<td rowspan=""4"">
+<div>
+<div style=""border: solid black 1px; height: 150px; width: 120px; margin-right: -30px;"">
+<img src = $!ApplicantPhoto style=""width: 120px; height: 150px"">
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>UIN&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!UIN </span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>VID&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!VID </span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Prénom&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!name_eng</span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span> $!name_ara</span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
+<span>$!dob</span>
+</div>
+</td>
+</tr>
+<tr>
+<td colspan=""2"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_eng</span>
+&nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
+<span>$!gender_ara</span>
+</div>
+</td>
+</tr>
+<tr>
+<td colspan=""3"">
+<div class=""row"" style=""margin-right: 0px; margin-left: -10px;"">
+<div class=""col-md-2 top-buffer"">
+<div class=""block top-buffer"">
+<table>
+<tr>
+<td><label class=""name-head-color""><b>Adresse&nbsp;:&nbsp;</b></label>
+</td>
+<td><span>$!addressLine1_eng, $!addressLine2_eng,
+$!addressLine3_eng, $!region_eng, $!province_eng, $!city_eng,
+$!postalCode </span></td>
+</tr>
+<tr>
+<td><label class=""name-head-color""><b>عنوان&nbsp;:&nbsp;</b></label>
+</td>
+<td><span>$!addressLine1_ara, $!addressLine2_ara, $!addressLine3_ara, $!region_ara, $!province_ara, $!city_ara, $!postalCode </span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+<div>&nbsp;</div>
+<table class=""main-table"" style=""height: 300px"">
+<tr>
+<td>
+<div style=""margin-left: 10px; margin-right: 10px; border: solid black 1px; height: 250px; width: 250px;"">
+<div class=""col-md-6"">
+<div class=""bar-code-padding""></div>
+<img src=$!QrCode style=""width: 250px; height: 250px; margin-top: -20px"">
+</div>
+</div>
+</td>
+<td>
+<div class=""name-head-color col-md-6"">
+<br> Pour toute question s'il vous plaît contactez-nous au<br>
+<br> Inscription Processor, Hanging Gardens, Global Village Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
+<br> لأية مشاكل يرجى الاتصال بنا على <br>التسجيل المعالج،
+الحدائق المعلقة ، القرية العالمية Tech Park, Mysore Rd,RVCE 560059
+بنغالورو، كارناتاكا <br>
+<br>
+</div>
+</td>
+</tr>
+</table>
+</body>
+</html>",10003,معالج التسجيل,RPR_MASKED_UIN_CARD_TEMPLATE,ara,TRUE,superadmin,now()
+1162,Modèle de carte Masked UIN,Modèle de carte Masked UIN,txt,velocity,"<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=""utf-8"">
+	<meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+	<title>UIN Card</title>
+<style>
+.main-table {
+	margin-left: 60px;;
+	width: 600px;
+	height: 350px;
+	border: 1px solid black;
+}
+.cir {
+	display: inline-block;
+	border-radius: 60px;
+	box-shadow: 0px 0px 2px #000000;
+	padding: 0.5em 0.6em;
+}
+.name-head-color {
+	color: black;
+}
+.head-title {
+	margin-left: -85px;
+}
+
+.bar-code-padding {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.top-buffer {
+	margin-left:10px;
+}
+</style>
+</head>
+
+<body>
+<table class=""main-table"">
+<tr>
+<td>&nbsp;
+<div class=""cir"">
+<font size=""1"">Logo</font>
+</div>
+</td>
+<td><label class=""name-head-color""> <font size=""5"" class="" head-title""> &nbsp;&nbsp; Kingdom of Morocco&nbsp;&nbsp;&nbsp; </font>
+</label></td>
+<td rowspan=""4"">
+<div>
+<div style=""border: solid black 1px; height: 150px; width: 120px; margin-right: -30px;"">
+<img src = $!ApplicantPhoto style=""width: 120px; height: 150px"">
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>UIN&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!UIN </span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>VID&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!VID </span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Prénom&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!name_eng</span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span> $!name_ara</span>
+</div>
+</td>
+</tr>
+<tr>
+<td rowspan=""1"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
+<span>$!dob</span>
+</div>
+</td>
+</tr>
+<tr>
+<td colspan=""2"">
+<div class=""block top-buffer"">
+<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_eng</span>
+&nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
+<span>$!gender_ara</span>
+</div>
+</td>
+</tr>
+<tr>
+<td colspan=""3"">
+<div class=""row"" style=""margin-right: 0px; margin-left: -10px;"">
+<div class=""col-md-2 top-buffer"">
+<div class=""block top-buffer"">
+<table>
+<tr>
+<td><label class=""name-head-color""><b>Adresse&nbsp;:&nbsp;</b></label>
+</td>
+<td><span>$!addressLine1_eng, $!addressLine2_eng,
+$!addressLine3_eng, $!region_eng, $!province_eng, $!city_eng,
+$!postalCode </span></td>
+</tr>
+<tr>
+<td><label class=""name-head-color""><b>عنوان&nbsp;:&nbsp;</b></label>
+</td>
+<td><span>$!addressLine1_ara, $!addressLine2_ara, $!addressLine3_ara, $!region_ara, $!province_ara, $!city_ara, $!postalCode </span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+<div>&nbsp;</div>
+<table class=""main-table"" style=""height: 300px"">
+<tr>
+<td>
+<div style=""margin-left: 10px; margin-right: 10px; border: solid black 1px; height: 250px; width: 250px;"">
+<div class=""col-md-6"">
+<div class=""bar-code-padding""></div>
+<img src=$!QrCode style=""width: 250px; height: 250px; margin-top: -20px"">
+</div>
+</div>
+</td>
+<td>
+<div class=""name-head-color col-md-6"">
+<br> Pour toute question s'il vous plaît contactez-nous au<br>
+<br> Inscription Processor, Hanging Gardens, Global Village Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
+<br> لأية مشاكل يرجى الاتصال بنا على <br>التسجيل المعالج،
+الحدائق المعلقة ، القرية العالمية Tech Park, Mysore Rd,RVCE 560059
+بنغالورو، كارناتاكا <br>
+<br>
+</div>
+</td>
+</tr>
+</table>
+</body>
+</html>",10003,Processeur dinscription,RPR_MASKED_UIN_CARD_TEMPLATE,fra,TRUE,superadmin,now()

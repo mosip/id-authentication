@@ -1,35 +1,44 @@
--- create table section --------------------------------------------------------
--- schema 		: reg	   			 	- Registration Module
--- table 		: sync_control			- Sync Job control table - ONLY for successfull sync jobs / No entry means, job not run successfull.
--- table alias  : synctrl
- 
--- table section -------------------------------------------------------------------------------
-create table reg.sync_control (
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.sync_control
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
-		id 		character varying (36) not null,
-		
-		syncjob_id character varying (36) not null,	 	-- reg.sync_job_def.id
-		
-		machine_id 		character varying (10),			-- reg.reg_center_machine.(machine_id, reg_cntr_id)
-		regcntr_id 		character varying (10),				-- fk to master machine+center mapped table, not directly master tables.
-		
-		synctrn_id 	character varying (36) not null,	-- reg.sync_transaction.id
+-- NOTE: the code below contains the SQL for the selected object
+-- as well for its dependencies and children (if applicable).
+-- 
+-- This feature is only a convinience in order to permit you to test
+-- the whole object's SQL definition at once.
+-- 
+-- When exporting or generating the SQL for the whole database model
+-- all objects will be placed at their original positions.
 
-		last_sync_dtimes timestamp  not null,
-		
-		lang_code 	character varying (3),				-- master.language.code
 
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes  timestamp,
-		is_deleted 	boolean,
-		del_dtimes	timestamp
+-- object: reg.sync_control | type: TABLE --
+-- DROP TABLE IF EXISTS reg.sync_control CASCADE;
+CREATE TABLE reg.sync_control(
+	id character varying(36) NOT NULL,
+	syncjob_id character varying(36) NOT NULL,
+	machine_id character varying(10),
+	regcntr_id character varying(10),
+	synctrn_id character varying(36) NOT NULL,
+	last_sync_dtimes timestamp NOT NULL,
+	lang_code character varying(3),
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_synctrl_id PRIMARY KEY (id)
 
-	)
-;
-
--- keys section -------------------------------------------------------------------------------
-alter table reg.sync_control add constraint pk_synctrl_id primary key (id)
- ;
+);
+-- ddl-end --

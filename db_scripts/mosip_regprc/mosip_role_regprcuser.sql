@@ -3,6 +3,5 @@
 CREATE ROLE regprcuser WITH 
 	INHERIT
 	LOGIN
-	PASSWORD 'Mosip@dev123';
+	PASSWORD :dbuserpwd;
 -- ddl-end --
-

@@ -1,12 +1,15 @@
--- NOTE: the code below contains the SQL for the selected object
--- as well for its dependencies and children (if applicable).
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_regprc
+-- Table Name 	: regprc.reg_demo_dedupe_list
+-- Purpose    	: Registration Demographic Deduplication List: List of matched UIN / RIDs, as part of demographic data.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
 -- 
--- This feature is only a convinience in order to permit you to test
--- the whole object's SQL definition at once.
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
 -- 
--- When exporting or generating the SQL for the whole database model
--- all objects will be placed at their original positions.
-
+-- ------------------------------------------------------------------------------------------
 
 -- object: regprc.reg_demo_dedupe_list | type: TABLE --
 -- DROP TABLE IF EXISTS regprc.reg_demo_dedupe_list CASCADE;
@@ -26,6 +29,8 @@ CREATE TABLE regprc.reg_demo_dedupe_list(
 -- ddl-end --
 COMMENT ON TABLE regprc.reg_demo_dedupe_list IS 'Registration Demographic Deduplication List: List of matched UIN / RIDs, as part of demographic data.';
 -- ddl-end --
+COMMENT ON COLUMN regprc.reg_demo_dedupe_list.regtrn_id IS 'Registration Transaction ID: ID of the demo dedupe transaction, Refers to regprc.registration_transaction.id';
+-- ddl-end --
 COMMENT ON COLUMN regprc.reg_demo_dedupe_list.matched_reg_id IS 'Matched Registration ID: Registration ID of the individual matching with the host registration id. It can be RID or any other id related to an individual.';
 -- ddl-end --
 COMMENT ON COLUMN regprc.reg_demo_dedupe_list.reg_id IS 'Registration ID: Registration ID for which the matches are found as part of the demographic dedupe process.';
@@ -42,6 +47,3 @@ COMMENT ON COLUMN regprc.reg_demo_dedupe_list.is_deleted IS 'IS_Deleted : Flag t
 -- ddl-end --
 COMMENT ON COLUMN regprc.reg_demo_dedupe_list.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE regprc.reg_demo_dedupe_list OWNER TO sysadmin;
--- ddl-end --
-
