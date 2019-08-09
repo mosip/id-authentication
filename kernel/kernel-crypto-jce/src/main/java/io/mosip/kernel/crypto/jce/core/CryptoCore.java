@@ -37,6 +37,21 @@ import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
 /**
+ * This class provided <b> Basic and Core Cryptographic functionalities </b>.
+ * 
+ * This class follows {@link CryptoCoreSpec} and implement all basic
+ * Cryptographic functions.
+ * 
+ * @since 1.0.0
+ * 
+ * @see CryptoCoreSpec 
+ * @see PrivateKey
+ * @see PublicKey
+ * @see Signature
+ * @see SecretKey
+ * @see Cipher
+ * @see GCMParameterSpec
+ * @see SecureRandom
  * 
  * @author Urvil Joshi
  *
@@ -44,6 +59,14 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 @Component
 public class CryptoCore
 		implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
+
+	private static final String SHA_1 = "SHA-1";
+
+	private static final String MGF1 = "MGF1";
+
+	private static final String SHA_256 = "SHA-256";
+
+	private static final String AES = "AES";
 
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
@@ -60,8 +83,7 @@ public class CryptoCore
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
 	private String hashAlgorithm = "PBKDF2WithHmacSHA512";
-	
-	
+
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
 	private String signAlgorithm = "SHA512withRSA";
@@ -79,8 +101,8 @@ public class CryptoCore
 	private SecureRandom secureRandom;
 
 	private SecretKeyFactory secretKeyFactory;
-	
-	private Signature signature; 
+
+	private Signature signature;
 
 	@PostConstruct
 	public void init() {
@@ -89,7 +111,7 @@ public class CryptoCore
 			cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
 			cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
 			secretKeyFactory = SecretKeyFactory.getInstance(hashAlgorithm);
-			signature=Signature.getInstance(signAlgorithm);
+			signature = Signature.getInstance(signAlgorithm);
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
@@ -105,7 +127,7 @@ public class CryptoCore
 		byte[] output = null;
 		byte[] randomIV = generateIV(cipher.getBlockSize());
 		try {
-			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
@@ -130,7 +152,7 @@ public class CryptoCore
 		byte[] output = null;
 		byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
 		try {
-			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, randomIV);
 			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
 			output = doFinal(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
@@ -164,7 +186,7 @@ public class CryptoCore
 	@Override
 	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
-		OAEPParameterSpec oaepParams = new OAEPParameterSpec("SHA-256", "MGF1", new MGF1ParameterSpec("SHA-1"),
+		OAEPParameterSpec oaepParams = new OAEPParameterSpec(SHA_256, MGF1, new MGF1ParameterSpec(SHA_1),
 				PSpecified.DEFAULT);
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, key, oaepParams);
@@ -181,20 +203,19 @@ public class CryptoCore
 
 	@Override
 	public byte[] hash(char[] data, byte[] salt) {
-		PBEKeySpec pbeKeySpec  = new PBEKeySpec(data, salt, iterations, keyLength );
-        SecretKey key;
+		PBEKeySpec pbeKeySpec = new PBEKeySpec(data, salt, iterations, keyLength);
+		SecretKey key;
 		try {
 			key = secretKeyFactory.generateSecret(pbeKeySpec);
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidParamSpecException(
-					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
-					e.getMessage(), e);
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(), e.getMessage(), e);
 		}
-        return key.getEncoded( );
+		return key.getEncoded();
 	}
 
 	@Override
-	public String sign(byte[] data,PrivateKey privateKey) {
+	public String sign(byte[] data, PrivateKey privateKey) {
 		try {
 			signature.initSign(privateKey);
 			signature.update(data);
@@ -202,28 +223,26 @@ public class CryptoCore
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
-		}
-		catch (java.security.SignatureException e) {
+		} catch (java.security.SignatureException e) {
 			throw new SignatureException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
 	}
 
 	@Override
-	public boolean verifySignature(byte[] data, String sign,PublicKey publicKey) {
+	public boolean verifySignature(byte[] data, String sign, PublicKey publicKey) {
 		try {
 			signature.initVerify(publicKey);
 			signature.update(data);
-			return signature.verify(CryptoUtil.decodeBase64(sign)); 
+			return signature.verify(CryptoUtil.decodeBase64(sign));
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
-		}
-		catch (java.security.SignatureException e) {
+		} catch (java.security.SignatureException e) {
 			throw new SignatureException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		
+
 	}
 
 	@Override
