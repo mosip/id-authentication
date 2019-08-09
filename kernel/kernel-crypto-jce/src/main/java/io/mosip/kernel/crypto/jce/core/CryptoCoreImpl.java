@@ -46,6 +46,10 @@ public class CryptoCoreImpl
 		implements CryptoCore<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
 
 	// will be changed later will come from property files
+	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
+	private int tagLength = 128;
+
+	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
 	private String symmetricAlgorithm = "AES/GCM/PKCS5Padding";
 
@@ -102,7 +106,7 @@ public class CryptoCoreImpl
 		byte[] randomIV = generateIV(cipher.getBlockSize());
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
-			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, randomIV);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
 			byte[] processData = doFinal(data, cipher);
