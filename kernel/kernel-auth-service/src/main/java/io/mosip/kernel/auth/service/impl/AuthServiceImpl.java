@@ -179,11 +179,11 @@ public class AuthServiceImpl implements AuthService {
 	public MosipUserTokenDto validateToken(String token) throws Exception {
 		// long currentTime = Instant.now().toEpochMilli();
 		MosipUserTokenDto mosipUserDtoToken = tokenValidator.validateToken(token);
-		AuthToken authToken = customTokenServices.getTokenDetails(token);
-		if (authToken == null) {
-			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
-					AuthErrorCode.INVALID_TOKEN.getErrorMessage());
-		}
+		//AuthToken authToken = customTokenServices.getTokenDetails(token);
+//		if (authToken == null) {
+//			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
+//					AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+//		}
 		/*
 		 * AuthToken authToken = customTokenServices.getTokenDetails(token); if
 		 * (authToken == null) { throw new
