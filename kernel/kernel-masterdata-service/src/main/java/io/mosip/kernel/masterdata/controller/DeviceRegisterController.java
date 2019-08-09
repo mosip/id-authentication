@@ -17,13 +17,29 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+/**
+ * Controller class for Device registration and de registration.
+ * 
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping(value = "/device")
 @Api(tags = { "DeviceRegister" })
 public class DeviceRegisterController {
+	/**
+	 * Reference to {@link DeviceRegisterService}.
+	 */
 	@Autowired
 	private DeviceRegisterService deviceRegisterService;
 
+	/**
+	 * Api to register Device.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link DeviceRegisterResponseDto}.
+	 */
 	@ApiOperation(value = "Register Device")
 	@PostMapping("/register")
 	public ResponseEntity<DeviceRegisterResponseDto> registerDevice(
@@ -31,6 +47,13 @@ public class DeviceRegisterController {
 		return new ResponseEntity<>(deviceRegisterService.registerDevice(request), HttpStatus.OK);
 	}
 
+	/**
+	 * Api to de register Device.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link DeviceRegisterResponseDto}.
+	 */
 	@ApiOperation(value = "DeRegister Device")
 	@DeleteMapping("/deregister")
 	public ResponseEntity<DeviceRegisterResponseDto> deRegisterDevice(@RequestBody DeRegisterDeviceRequestDto request) {

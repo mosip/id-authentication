@@ -27,15 +27,34 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
+/**
+ * Service class to register and de register Device.
+ * 
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ */
 @Service
 @Transactional
 public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 
+	/**
+	 * Reference to {@link DeviceRegisterRepository}.
+	 */
 	@Autowired
 	private DeviceRegisterRepository deviceRegisterRepository;
+	/**
+	 * Reference to {@link DeviceRegisterHistoryRepository}.
+	 */
 	@Autowired
 	private DeviceRegisterHistoryRepository deviceRegisterHistoryRepository;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceRegisterService#registerDevice(io.
+	 * mosip.kernel.masterdata.dto.DeviceRegisterDto)
+	 */
 	@Override
 	public DeviceRegisterResponseDto registerDevice(DeviceRegisterDto request) {
 		DeviceRegister deviceRegisterEntity = new DeviceRegister();
@@ -75,6 +94,13 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 		return responseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceRegisterService#deRegisterDevice(io.
+	 * mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto)
+	 */
 	@Override
 	public DeviceRegisterResponseDto deRegisterDevice(DeRegisterDeviceRequestDto request) {
 		DeviceRegister deviceRegisterEntity = null;
@@ -97,6 +123,11 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 					"Error occur while deregistering device details " + ExceptionUtils.parseException(e));
 		}
 
+		DeviceRegisterResponseDto responseDto = new DeviceRegisterResponseDto();
+		DeviceRegResponseDto regResponseDto = new DeviceRegResponseDto();
+		regResponseDto.setDeviceCode(request.getDevice().getDeviceCode());
+		regResponseDto.setStatus("success");
+		responseDto.setResponse(regResponseDto);
 		return null;
 	}
 
