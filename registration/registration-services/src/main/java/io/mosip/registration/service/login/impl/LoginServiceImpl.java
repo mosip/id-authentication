@@ -326,9 +326,10 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	 * @param isInitialSetUp the isInitialSetUp flag
 	 */
 	private void performingAllSyncOperations(List<String> val, String keyIndex, final boolean isInitialSetUp) {
-		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
-				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		ResponseDTO publicKeySyncResponse = null;
 		try {
+			publicKeySyncResponse = publicKeySyncImpl
+					.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 			ResponseDTO responseDTO = globalParamService.synchConfigData(false);
 			ResponseDTO userResponseDTO = new ResponseDTO();

@@ -284,7 +284,7 @@ public class PacketUploadController extends BaseController implements Initializa
 													RegistrationUIConstants.PACKET_UPLOAD_SUCCESS);
 
 										} else if (response.getErrorResponseDTOs() != null) {
-											String errMessage = response.getErrorResponseDTOs().get(0).getMessage();
+											String errMessage = response.getErrorResponseDTOs().get(0).getMessage().toLowerCase();
 											if (errMessage.contains(RegistrationConstants.PACKET_DUPLICATE)) {
 
 												tableMap.put(synchedPacket.getFileName(),
