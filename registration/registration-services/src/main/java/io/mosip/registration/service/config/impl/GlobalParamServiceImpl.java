@@ -33,6 +33,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -132,11 +133,13 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	}
 
 	private void saveGlobalParams(ResponseDTO responseDTO, String triggerPoinnt) {
+		
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			try {
 				boolean isToBeRestarted = false;
 				Map<String, String> requestParamMap = new HashMap<>();
-
+                if(validate(responseDTO, triggerPoinnt))
+                {
 				/* REST CALL */
 				@SuppressWarnings("unchecked")
 				LinkedHashMap<String, Object> globalParamJsonMap = (LinkedHashMap<String, Object>) serviceDelegateUtil
@@ -206,7 +209,8 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				} else {
 					setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 				}
-			} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
+                }
+                } catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
 					| RegBaseCheckedException | ClassCastException | ResourceAccessException exception) {
 				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 				LOGGER.error("REGISTRATION_SYNC_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
@@ -341,5 +345,26 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		ApplicationContext.setGlobalConfigValueOf(code, val);
 		// getBaseGlobalMap().put(code, val);
 
+	}
+	
+	private boolean validate(ResponseDTO responseDTO,String triggerPoint) throws RegBaseCheckedException
+	{
+		
+		if(responseDTO!=null)
+		{
+			if(triggerPoint!=null)
+			{
+				return true;
+			}
+			else
+			{
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_GLOBALPARAM_SYNC_SERVICE_IMPL_TRIGGER_POINT.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID.getErrorMessage());
+			}
+		}
+		else
+		{
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_GLOBALPARAM_SYNC_SERVICE_IMPL.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL.getErrorMessage());
+		}
+		
 	}
 }

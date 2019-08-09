@@ -178,8 +178,11 @@ public enum RegistrationExceptionConstants {
 	REG_LOGIN_LANG_CODE_EXCEPTION("REG-LSI-005","Language Code cannot be null or empty."),
 	
 	
-	REG_POLICY_SYNC_SERVICE_IMPL("REG-PSS-001","responseDTO is required"),
+	REG_POLICY_SYNC_SERVICE_IMPL("REG-PSS-001","UserDTO cannot be null or empty."),
 	REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID("REG-PSS-002","centerMachineId is mandatory"),
+	
+	REG_GLOBALPARAM_SYNC_SERVICE_IMPL("REG-GPSS-001","responseDTO is required"),
+	REG_GLOBALPARAM_SYNC_SERVICE_IMPL_TRIGGER_POINT("REG-GPSS-002","triggerPoint is mandatory"),
 	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty.");
 	
 
