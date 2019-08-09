@@ -176,7 +176,12 @@ public enum RegistrationExceptionConstants {
 	REG_LOGIN_ROLES_EXCEPTION("REG-LSI-003","Roles cannot be null or empty."),
 	REG_LOGIN_CENTER_ID_EXCEPTION("REG-LSI-004","Registration Center Id cannot be null or empty."),
 	REG_LOGIN_LANG_CODE_EXCEPTION("REG-LSI-005","Language Code cannot be null or empty."),
+	
+	
+	REG_POLICY_SYNC_SERVICE_IMPL("REG-PSS-001","responseDTO is required"),
+	REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID("REG-PSS-002","centerMachineId is mandatory"),
 	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty.");
+	
 
 
 	
