@@ -736,32 +736,80 @@ public class LocationServiceImpl implements LocationService {
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
 		List<Node<Location>> tree = locationTree.createTree(locationList);
-		for (SearchFilter filter : dto.getFilters()) {
-			String type = filter.getType();
-			if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
-				responseDto = getEqualsLocationSearch(filter, dto, tree);
-			} else {
-				if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
-					responseDto = getContainsLocationSearch(filter, dto, tree);
+		if (dto.getFilters().isEmpty()) {
+			responseDto = emptyFilterLocationSearch(tree);
+		} else {
+			for (SearchFilter filter : dto.getFilters()) {
+				String type = filter.getType();
+				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
+					responseDto = getEqualsLocationSearch(filter, dto, tree);
 				} else {
-					if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
-						responseDto = getStartsWithLocationSearch(filter, dto, tree);
+					if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
+						responseDto = getContainsLocationSearch(filter, dto, tree);
 					} else {
+						if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
+							responseDto = getStartsWithLocationSearch(filter, dto, tree);
+						} else {
+							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+											filter.getColumnName(), filter.getType()));
+						}
 
-						throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-								String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-										filter.getColumnName(), filter.getType()));
 					}
 
 				}
 
 			}
-
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
+	}
+
+	/**
+	 * Method to search Location with no filter mentioned.
+	 * 
+	 * @param tree
+	 *            the Location Tree.
+	 * @return list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		Node<Location> root = locationTree.findRootNode(tree.get(0));
+		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
+		leafNodes.forEach(leafNode -> {
+			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+
+			LocationSearchDto locationSearchDto = new LocationSearchDto();
+			leafParents.forEach(p -> {
+				if (p.getHierarchyLevel() == 1) {
+					locationSearchDto.setRegion(p.getName());
+				}
+				if (p.getHierarchyLevel() == 2) {
+					locationSearchDto.setProvince(p.getName());
+				}
+				if (p.getHierarchyLevel() == 3) {
+					locationSearchDto.setCity(p.getName());
+				}
+				if (p.getHierarchyLevel() == 4) {
+					locationSearchDto.setZone(p.getName());
+				}
+				if (p.getHierarchyLevel() == 5) {
+					locationSearchDto.setPostalCode(p.getName());
+				}
+				locationSearchDto.setCreatedBy(p.getCreatedBy());
+				locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+				locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+				locationSearchDto.setIsActive(p.getIsActive());
+				locationSearchDto.setIsDeleted(p.getIsDeleted());
+				locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+				locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+			});
+			responseDto.add(locationSearchDto);
+		});
+
+		return responseDto;
 	}
 
 	/**
@@ -781,7 +829,6 @@ public class LocationServiceImpl implements LocationService {
 		Location location = locationRepository.findLocationByHierarchyName(filter.getColumnName(), filter.getValue(),
 				dto.getLanguageCode());
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
-
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
 			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
