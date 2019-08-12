@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 
 /**
@@ -75,7 +76,7 @@ public interface ValidDocumentService {
 	 *            input from user
 	 * @return dto containing mapped values
 	 */
-	public PageDto<DocumentCategoryTypeMappingExtnDto> searchValidDocument(SearchDto dto);
+	public PageResponseDto<DocumentCategoryTypeMappingExtnDto> searchValidDocument(SearchDto dto);
 
 	/**
 	 * Service Method to filter doc cat-type mapping
@@ -85,8 +86,7 @@ public interface ValidDocumentService {
 	 * @return filter dto containing column names
 	 */
 	public FilterResponseDto categoryTypeFilterValues(FilterValueDto filterValueDto);
-	
-	
+
 	/**
 	 * This method maps a Document Category to a Document Type.
 	 * 
@@ -97,7 +97,7 @@ public interface ValidDocumentService {
 	 * @return {@link DocCategoryAndTypeMappingResponseDto}.
 	 */
 	public DocCategoryAndTypeMappingResponseDto mapDocCategoryAndDocType(String docCatCode, String docTypeCode);
-	
+
 	/**
 	 * This method un-maps a Document Category from a Document Type.
 	 * 

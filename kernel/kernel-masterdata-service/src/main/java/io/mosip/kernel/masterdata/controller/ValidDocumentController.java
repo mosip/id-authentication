@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
 import io.swagger.annotations.Api;
@@ -155,9 +156,9 @@ public class ValidDocumentController {
 	@ResponseFilter
 	@PostMapping("/validdocuments/search")
 	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
-	public ResponseWrapper<PageDto<DocumentCategoryTypeMappingExtnDto>> searchValidDocument(
+	public ResponseWrapper<PageResponseDto<DocumentCategoryTypeMappingExtnDto>> searchValidDocument(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		ResponseWrapper<PageDto<DocumentCategoryTypeMappingExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageResponseDto<DocumentCategoryTypeMappingExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.searchValidDocument(request.getRequest()));
 		return responseWrapper;
 	}
