@@ -131,6 +131,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusUtil.OSI_VALIDATION_SUCCESS.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.OSI_VALIDATION_SUCCESS.getCode());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 					isTransactionSuccessful = true;
 					description.setCode(PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode());
