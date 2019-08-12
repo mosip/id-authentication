@@ -24,7 +24,7 @@
 
 * Pull the DB deployment scripts from Git repository to the deployment server and start deploying  OR
 
-* If are pulling to local system from Git repository and pushing them back to deployment server using WinSCP then make a not to modify the following encoding settings in WinSCP before pushing the files to deployment server --> Open WinSCP --> Options --> Preferences --> Transfer --> Edit --> In "Transfer mode" section --> select "Text" --> Click Ok --> Click Ok 
+* If are pulling to local system from Git repository and pushing them back to deployment server using WinSCP then make a note to modify the following encoding settings in WinSCP before pushing the files to deployment server --> Open WinSCP --> Options --> Preferences --> Transfer --> Edit --> In "Transfer mode" section --> select "Text" --> Click Ok --> Click Ok 
 
 ## Each database folder has the following files / folders
 
