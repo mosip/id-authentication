@@ -183,8 +183,16 @@ public enum RegistrationExceptionConstants {
 	
 	REG_GLOBALPARAM_SYNC_SERVICE_IMPL("REG-GPSS-001","responseDTO cannot be null or empty"),
 	REG_GLOBALPARAM_SYNC_SERVICE_IMPL_TRIGGER_POINT("REG-GPSS-002","triggerPoint is mandatory"),
-	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty.");
 	
+	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty."),
+	
+	//BioService
+	REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_AUTTHENTICATION("REG-BIO-001","user id is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_IRIS_AUTHENTICATION("REG-MSS-002","user id is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE("REG-MSS-003","finger type is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_SCANNED_PATH("REG-MSS-004","path string is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE("REG-MSS-005","iris string is null");
+
 
 
 	
