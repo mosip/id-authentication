@@ -75,7 +75,7 @@ public class PublicKeySyncTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(responseMap);
 
-		publicKeySyncImpl.getPublicKey(Mockito.anyString());
+		publicKeySyncImpl.getPublicKey("user");
 
 	}
 
@@ -97,7 +97,7 @@ public class PublicKeySyncTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(responseMap);
 
-		publicKeySyncImpl.getPublicKey(Mockito.anyString());
+		publicKeySyncImpl.getPublicKey("user");
 
 	}
 
@@ -120,7 +120,7 @@ public class PublicKeySyncTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(responseMap);
 
-		publicKeySyncImpl.getPublicKey(Mockito.anyString());
+		publicKeySyncImpl.getPublicKey("user");
 
 	}
 
@@ -148,7 +148,7 @@ public class PublicKeySyncTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(responseMap);
 
-		publicKeySyncImpl.getPublicKey(Mockito.anyString());
+		publicKeySyncImpl.getPublicKey("user");
 
 	}
 
@@ -176,9 +176,10 @@ public class PublicKeySyncTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenThrow(SocketTimeoutException.class);
 
-		publicKeySyncImpl.getPublicKey(Mockito.anyString());
+		publicKeySyncImpl.getPublicKey("user");
 
 	}
+
 	@Test
 	public void getPublicKeyNetworkFailure()
 			throws ParseException, HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
@@ -204,8 +205,13 @@ public class PublicKeySyncTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(responseMap);
 
-		publicKeySyncImpl.getPublicKey(Mockito.anyString());
+		publicKeySyncImpl.getPublicKey("user");
 
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void publicSync() throws RegBaseCheckedException {
+		publicKeySyncImpl.getPublicKey(null);
 	}
 
 }

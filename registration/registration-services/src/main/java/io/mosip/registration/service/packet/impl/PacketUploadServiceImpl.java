@@ -94,7 +94,7 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 				LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.post(RegistrationConstants.PACKET_UPLOAD, map, RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if ((response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null
-						&& response.get(RegistrationConstants.ERRORS) == null) || response.isEmpty()) {
+						&& response.get(RegistrationConstants.ERRORS) == null)) {
 					SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 					successResponseDTO.setCode(RegistrationConstants.SUCCESS);
 					successResponseDTO.setMessage((String) response.get(RegistrationConstants.UPLOAD_STATUS));
@@ -317,13 +317,6 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 		} else if (StringUtils.isEmpty(packetStatusDTO.getPacketClientStatus())) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS.getErrorCode(),
 					RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS.getErrorMessage());
-		} else if (StringUtils.isEmpty(packetStatusDTO.getClientStatusComments())) {
-			throw new RegBaseCheckedException(
-					RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS_COMMENTS.getErrorCode(),
-					RegistrationExceptionConstants.REG_PKT_CLIENT_STATUS_COMMENTS.getErrorMessage());
-		} else if (StringUtils.isEmpty(packetStatusDTO.getPacketServerStatus())) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_SERVER_STATUS.getErrorCode(),
-					RegistrationExceptionConstants.REG_PKT_SERVER_STATUS.getErrorMessage());
 		}
 		return true;
 

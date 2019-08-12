@@ -1,26 +1,30 @@
--- create table section --------------------------------------------------------
--- schema 		: reg	- reg schema
--- table 		: transaction_type	- reg Transaction Type
--- table alias  : trntyp	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.transaction_type
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section ---------------------------------------------------------------
-create table reg.transaction_type (
+-- object: reg.transaction_type | type: TABLE --
+-- DROP TABLE IF EXISTS reg.transaction_type CASCADE;
+CREATE TABLE reg.transaction_type(
+	code character varying(36) NOT NULL,
+	descr character varying(256) NOT NULL,
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_trntyp_code PRIMARY KEY (code,lang_code)
 
-	code character varying(36) not null,   
-	descr character varying(256) not null,
-
-	lang_code character varying(3) not null, 	-- master.language.code
-	
-	is_active 	boolean not null,
-	cr_by 		character varying (256) not null,
-	cr_dtimes 	timestamp not null,
-	upd_by  	character varying (256),
-	upd_dtimes 	timestamp,
-	is_deleted 	boolean,
-	del_dtimes 	timestamp
-)
-;
-
--- keys section ------------------------------------------------------------------
-alter table reg.transaction_type add constraint pk_trntyp_code primary key (code, lang_code)
- ;
+);
+-- ddl-end --

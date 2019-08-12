@@ -382,9 +382,6 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		} else if (StringUtils.isEmpty(packetStatusDTO.getSupervisorStatus())) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_SUPERVISOR_STATUS.getErrorCode(),
 					RegistrationExceptionConstants.REG_PKT_SUPERVISOR_STATUS.getErrorMessage());
-		} else if (StringUtils.isEmpty(packetStatusDTO.getSupervisorComments())) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_SUPERVISOR_COMMENTS.getErrorCode(),
-					RegistrationExceptionConstants.REG_PKT_SUPERVISOR_COMMENTS.getErrorMessage());
 		}
 		return true;
 

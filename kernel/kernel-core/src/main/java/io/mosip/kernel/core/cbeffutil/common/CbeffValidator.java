@@ -158,7 +158,6 @@ public class CbeffValidator {
 		OutputStreamWriter writer = new OutputStreamWriter(baos);
 		jaxbMarshaller.marshal(bir, writer);
 		byte[] savedData = baos.toByteArray();
-		System.out.println(new String(savedData));
 		writer.close();
 		try {
 			CbeffXSDValidator.validateXML(xsd, savedData);

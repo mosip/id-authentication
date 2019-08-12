@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import io.mosip.registration.processor.core.constant.HealthConstant;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
@@ -150,11 +152,12 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 	 */
 	public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
 		HttpServerResponse response = ctx.response();
+	Gson gson=new GsonBuilder().create();
 		if (isEnabled)
-			response.putHeader("Response-Signature", digitalSignatureUtility.getDigitalSignature(object.toString()));
+			response.putHeader("Response-Signature",
+					digitalSignatureUtility.getDigitalSignature(gson.toJson(object)));
 		response.putHeader("content-type", contentType).putHeader("Access-Control-Allow-Origin", "*")
 				.putHeader("Access-Control-Allow-Methods", "GET, POST").setStatusCode(200)
-				.end(Json.encodePrettily(object));
-
-	};
+				.end(gson.toJson(object));
+	}
 }

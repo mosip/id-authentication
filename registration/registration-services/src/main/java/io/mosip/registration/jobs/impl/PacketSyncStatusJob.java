@@ -1,5 +1,8 @@
 package io.mosip.registration.jobs.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +14,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.packet.RegPacketStatusService;
@@ -85,6 +89,9 @@ public class PacketSyncStatusJob extends BaseJob {
 					RegistrationConstants.APPLICATION_ID,
 					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -103,15 +110,17 @@ public class PacketSyncStatusJob extends BaseJob {
 
 		LOGGER.info(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
+		try {
+			this.responseDTO = packetStatusService.packetSyncStatus(triggerPoint);
+			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		this.responseDTO = packetStatusService.packetSyncStatus(triggerPoint);
-		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
-
-		LOGGER.info(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "execute job ended");
-
+			LOGGER.info(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "execute job ended");			
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(LoggerConstants.PACKET_SYNC_STATUS_JOB_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+		}
 		return responseDTO;
-
 	}
 
 }

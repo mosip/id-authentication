@@ -167,7 +167,8 @@ public enum RegistrationExceptionConstants {
 	REG_MASTER_SYNC_SERVICE_IMPL("REG-MSS-001","master sync service mandatory fields are missing."),
 	REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE("REG-MSS-002","master sync service language code mandatory fields is missing."),
 	REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE("REG-MSS-003","master sync service code and language code mandatory fields is missing."),
-	REG_TRIGGER_POINT_MISSING("REG-TGP-001","trigger point is mandatory fields and it is missing."),
+	REG_TRIGGER_POINT_MISSING("REG-TGP-001","trigger point is mandatory field and it is missing."),
+	REG_BIOMETRIC_DTO_NULL("REG-UOS-001","Biometric Dto is mandatory field and it is missing."),
 	
 	//Login
 	REG_LOGIN_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
