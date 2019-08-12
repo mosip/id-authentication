@@ -80,6 +80,11 @@ public enum StatusUtil {
    PDF_ADDED_TO_QUEUE_FAILED(StatusConstants.PRINT_STAGE_MODULE_FAILED + "001" , "PDF was not added to Queue due to Queue Failure"),
    PRINT_POST_COMPLETED(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "002" , "Printing and Post Completed"),
    RESEND_UIN_CARD(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "003" , "Re-Sent UIN Card for Printing"),
+   PDF_GENERATION_FAILED(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "004" ,"Pdf Generation failed for "),
+   TEMPLATE_PROCESSING_FAILED(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "005" ,"Pdf Generation failed for "),
+   QUEUE_CONNECTION_NOT_FOUND(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "006" ,"Queue Connection not found "),
+   QUEUE_CONNECTION_UNAVAILABLE(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "007" ,"Queue Connection unavailable for "),
+   
   
    //Abis middleware stage
    INSERT_IDENTIFY_REQUEST_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "001", "Insert or Identify Request sent to ABIS Queue is succesful"),
