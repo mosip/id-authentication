@@ -127,7 +127,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Value("${registration.processor.reregister.subject}")
 	private String reregisterSubject;
 
-	@Value("${mosip.registration.processor.notification.types}")
+	@Value("${mosip.notificationtype}")
 	private String notificationTypes;
 
 	@Value("${registration.processor.updated.subject}")
