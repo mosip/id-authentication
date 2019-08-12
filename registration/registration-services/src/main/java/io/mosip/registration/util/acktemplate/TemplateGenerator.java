@@ -295,7 +295,7 @@ public class TemplateGenerator extends BaseService {
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		}
 
-		boolean isParentOrGuardianBiometricsCaptured = registration.isUpdateUINNonBiometric()
+		boolean isParentOrGuardianBiometricsCaptured = registration.isUpdateUINChild()
 				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
 						&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
 
