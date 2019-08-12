@@ -309,7 +309,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
