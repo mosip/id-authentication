@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -42,7 +43,12 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
 	
+	private static final String PRIMARY_LANG="transaction.primary.language";
 	
+	private static final String SECONDARY_LANG="transaction.secondary.language";
+	
+	private static final String TERTIARY_LANG="transaction.tertiary.language";
+
 	
 	@Autowired
 	Environment environment;
@@ -115,25 +121,29 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	@Override
 	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode) throws TransactionsUnavailableException, RegTransactionAppException {
+		
+		String primaryLanguage=environment.getProperty(PRIMARY_LANG);
+		String secondaryLanguage=environment.getProperty(SECONDARY_LANG);
+		String tertiaryLanguage=environment.getProperty(TERTIARY_LANG);
+		if(!(langCode.matches(primaryLanguage) ||langCode.matches(secondaryLanguage) 
+				||langCode.matches(tertiaryLanguage))) {
+			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
+					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage());
+		}
 		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
 		try {
-		ClassLoader classLoader = getClass().getClassLoader();
-		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
-		if(messagesPropertiesFileName==null ||messagesPropertiesFileName.isEmpty()) {
-			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
-					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage());
-		}
-		InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
-		Properties prop = new Properties();
-		prop.load(new InputStreamReader(inputStream,"UTF-8"));
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
 		if(transactionEntityList ==null || transactionEntityList.isEmpty()) {
 			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
 					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
 		}
-		
+		ClassLoader classLoader = getClass().getClassLoader();
+		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
+		InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
+		Properties prop = new Properties();
+		prop.load(new InputStreamReader(inputStream,"UTF-8"));
 		for (TransactionEntity transactionEntity : transactionEntityList) {
 			if(transactionEntity.getSubStatusCode()!=null && !transactionEntity.getSubStatusCode().isEmpty()) {
 			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
