@@ -14,8 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.springframework.data.annotation.Transient;
+import javax.persistence.Transient;
 
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
