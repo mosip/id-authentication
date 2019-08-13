@@ -126,8 +126,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 		}
 		ClassLoader classLoader = getClass().getClassLoader();
 		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
-		File messagesPropertiesFile = new File(classLoader.getResource(messagesPropertiesFileName).getFile());
-		InputStream inputStream = new FileInputStream(messagesPropertiesFile);
+		InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
 		Properties prop = new Properties();
 		prop.load(new InputStreamReader(inputStream,"UTF-8"));
 		for (TransactionEntity transactionEntity : transactionEntityList) {
@@ -142,6 +141,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			}
 			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
 		}
+		inputStream.close();
 		} catch (DataAccessLayerException e) {
 			throw new TransactionTableNotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
