@@ -124,7 +124,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
 		try {
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
-		if(transactionEntityList.isEmpty()) {
+		if(transactionEntityList ==null || transactionEntityList.isEmpty()) {
 			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
 					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
 		}
