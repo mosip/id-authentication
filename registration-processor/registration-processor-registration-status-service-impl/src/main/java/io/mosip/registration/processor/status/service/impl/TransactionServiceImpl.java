@@ -115,6 +115,10 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	@Override
 	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode) throws TransactionsUnavailableException, RegTransactionAppException {
+		if(!(langCode.matches("ar") ||langCode.matches("fr") ||langCode.matches("en"))) {
+			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
+					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage());
+		}
 		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
