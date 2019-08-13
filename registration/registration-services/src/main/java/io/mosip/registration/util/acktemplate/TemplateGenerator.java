@@ -208,7 +208,7 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			/* Set-up demographic information related content */
-			setUpDemographicInfo(registration, templateValues, applicationLanguageProperties, individualIdentity);
+			setUpDemographicInfo(registration, templateValues, isChild, applicationLanguageProperties, individualIdentity);
 
 			/* Set-up the list of documents submitted by the applicant */
 			setUpDocuments(templateValues, applicationLanguageProperties, individualIdentity, documentDisableFlag);
@@ -710,7 +710,7 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void setUpDemographicInfo(RegistrationDTO registration, Map<String, Object> templateValues,
-			ResourceBundle applicationLanguageProperties, IndividualIdentity individualIdentity) {
+			boolean isChild, ResourceBundle applicationLanguageProperties, IndividualIdentity individualIdentity) {
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
 		String dob = getValue(individualIdentity.getDateOfBirth());
@@ -844,8 +844,7 @@ public class TemplateGenerator extends BaseService {
 				getSecondaryLanguageLabel("cniOrPinNumber"));
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
 				getValue(individualIdentity.getReferenceIdentityNumber()));
-		boolean isChild = individualIdentity.getParentOrGuardianName() != null;
-
+		
 		if (isChild || registration.isUpdateUINNonBiometric()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("parentName"));
