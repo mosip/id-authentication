@@ -521,7 +521,7 @@ public class DeviceServiceImpl implements DeviceService {
 						&& centerDevice.getLangCode().equals(deviceSearchDto.getLangCode())) {
 					String regId = centerDevice.getRegistrationCenter().getId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)) {
+						if (registrationCenter.getId().equals(regId) && centerDevice.getLangCode().equals(registrationCenter.getLangCode())) {
 							deviceSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});
