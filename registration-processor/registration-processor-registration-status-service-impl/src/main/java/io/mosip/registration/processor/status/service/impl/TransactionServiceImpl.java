@@ -115,24 +115,25 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	@Override
 	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode) throws TransactionsUnavailableException, RegTransactionAppException {
-		if(!(langCode.matches("ar") ||langCode.matches("fr") ||langCode.matches("en"))) {
-			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
-					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage());
-		}
 		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
 		try {
+		ClassLoader classLoader = getClass().getClassLoader();
+		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
+		if(messagesPropertiesFileName==null ||messagesPropertiesFileName.isEmpty()) {
+			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
+					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage());
+		}
+		InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
+		Properties prop = new Properties();
+		prop.load(new InputStreamReader(inputStream,"UTF-8"));
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
 		if(transactionEntityList ==null || transactionEntityList.isEmpty()) {
 			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
 					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
 		}
-		ClassLoader classLoader = getClass().getClassLoader();
-		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
-		InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
-		Properties prop = new Properties();
-		prop.load(new InputStreamReader(inputStream,"UTF-8"));
+		
 		for (TransactionEntity transactionEntity : transactionEntityList) {
 			if(transactionEntity.getSubStatusCode()!=null && !transactionEntity.getSubStatusCode().isEmpty()) {
 			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
