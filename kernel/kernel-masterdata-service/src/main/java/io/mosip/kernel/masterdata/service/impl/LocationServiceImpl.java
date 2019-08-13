@@ -5,8 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,11 +20,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
@@ -46,9 +54,11 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -90,6 +100,12 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private PageUtils pageUtils;
+
+	@Autowired
+	private LanguageUtils languageUtils;
+
+	@Autowired
+	private LocalValidatorFactoryBean validator;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> hierarchyChildList = null;
@@ -186,35 +202,136 @@ public class LocationServiceImpl implements LocationService {
 		return locationHierarchyResponseDto;
 	}
 
-	/**
-	 * Method creates location hierarchy data into the table based on the request
-	 * parameter sent {@inheritDoc}
-	 */
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#createLocationHierarchy(io
-	 * .mosip.kernel.masterdata.dto.RequestDto)
+	 * io.mosip.kernel.masterdata.service.LocationService#createLocation(java.util.
+	 * List)
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto) {
+	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(List<LocationDto> request) {
+		List<ServiceError> errors = new ArrayList<>();
+		List<LocationDto> locations = new ArrayList<>();
+		List<Location> savedEntities = null;
 
-		Location location = null;
-		Location locationResultantEntity = null;
-		PostLocationCodeResponseDto locationCodeDto = null;
+		// request validation
+		requestValidation(request, errors, locations);
 
-		location = MetaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
+		dataValidation(request);
+
+		Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
+		// if data present in all the configured languages then setting isActive as
+		// true, otherwise false
+		if (optional.isPresent()) {
+			List<String> languages = new ArrayList<>();
+			locations.forEach(dto -> languages.add(dto.getLangCode()));
+			if (languages.size() == languageUtils.getConfiguredLanguages().size()
+					&& languageUtils.getConfiguredLanguages().containsAll(languages)) {
+				locations.forEach(i -> i.setIsActive(true));
+			} else {
+				throw new RequestException(LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorCode(),
+						LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorMessage());
+			}
+		}
+
+		// Validation name already exists
+		for (LocationDto dto : locations) {
+			List<Location> list = locationRepository.findByNameAndLevel(dto.getName(), dto.getHierarchyLevel());
+			if (list != null && !list.isEmpty()) {
+				throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
+						String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
+								dto.getName()));
+			}
+		}
+
+		// setting metadata
+		List<Location> entities = new ArrayList<>();
+		for (LocationDto dto : locations) {
+			entities.add(MetaDataUtils.setCreateMetaData(dto, Location.class));
+		}
+
 		try {
-			locationResultantEntity = locationRepository.create(location);
+			savedEntities = locationRepository.saveAll(entities);
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
 
-		locationCodeDto = MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
-		return locationCodeDto;
+		List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities, PostLocationCodeResponseDto.class);
+
+		ResponseWrapper<List<PostLocationCodeResponseDto>> response = new ResponseWrapper<>();
+		response.setErrors(errors);
+		response.setResponse(dtos);
+		return response;
+	}
+
+	/**
+	 * Method to perform the basic request validation
+	 * 
+	 * @param request
+	 *            request to be validated
+	 * @param errors
+	 *            list of service errors
+	 * @param locations
+	 *            adding validation location to this list
+	 */
+	private void requestValidation(List<LocationDto> request, List<ServiceError> errors, List<LocationDto> locations) {
+		for (LocationDto dto : request) {
+			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
+				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
+				if (!validations.isEmpty()) {
+					validations.forEach(
+							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
+					throw new ValidationException(errors);
+				} else {
+					locations.add(dto);
+				}
+			} else if (dto.getLangCode() != null && languageUtils.getSecondaryLanguages().contains(dto.getLangCode())) {
+				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
+				if (!validations.isEmpty()) {
+					validations.forEach(
+							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
+				} else {
+					locations.add(dto);
+				}
+
+			} else {
+				errors.add(new ServiceError(LocationErrorCode.INVALID_LANG_CODE.getErrorCode(),
+						String.format(LocationErrorCode.INVALID_LANG_CODE.getErrorMessage(), dto.getLangCode())));
+			}
+		}
+	}
+
+	/**
+	 * Method to perform the business validation for the location
+	 * 
+	 * @param request
+	 *            list of location to be validated
+	 */
+	private void dataValidation(List<LocationDto> request) {
+		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
+		if (ids.size() > 1) {
+			throw new RequestException(LocationErrorCode.DIFFERENT_LOC_CODE.getErrorCode(),
+					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
+		}
+
+		Optional<LocationDto> defaultLanguage = request.stream()
+				.filter(i -> i.getLangCode().equals(languageUtils.getPrimaryLanguage())).findAny();
+		if (!defaultLanguage.isPresent()) {
+			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
+					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
+							languageUtils.getPrimaryLanguage()));
+		}
+
+		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
+		if (levels.size() > 1) {
+			throw new RequestException(LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorCode(),
+					LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorMessage());
+		}
 	}
 
 	/**
@@ -619,32 +736,80 @@ public class LocationServiceImpl implements LocationService {
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
 		List<Node<Location>> tree = locationTree.createTree(locationList);
-		for (SearchFilter filter : dto.getFilters()) {
-			String type = filter.getType();
-			if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
-				responseDto = getEqualsLocationSearch(filter, dto, tree);
-			} else {
-				if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
-					responseDto = getContainsLocationSearch(filter, dto, tree);
+		if (dto.getFilters().isEmpty()) {
+			responseDto = emptyFilterLocationSearch(tree);
+		} else {
+			for (SearchFilter filter : dto.getFilters()) {
+				String type = filter.getType();
+				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
+					responseDto = getEqualsLocationSearch(filter, dto, tree);
 				} else {
-					if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
-						responseDto = getStartsWithLocationSearch(filter, dto, tree);
+					if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
+						responseDto = getContainsLocationSearch(filter, dto, tree);
 					} else {
+						if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
+							responseDto = getStartsWithLocationSearch(filter, dto, tree);
+						} else {
+							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+											filter.getColumnName(), filter.getType()));
+						}
 
-						throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-								String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-										filter.getColumnName(), filter.getType()));
 					}
 
 				}
 
 			}
-
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
+	}
+
+	/**
+	 * Method to search Location with no filter mentioned.
+	 * 
+	 * @param tree
+	 *            the Location Tree.
+	 * @return list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		Node<Location> root = locationTree.findRootNode(tree.get(0));
+		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
+		leafNodes.forEach(leafNode -> {
+			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+
+			LocationSearchDto locationSearchDto = new LocationSearchDto();
+			leafParents.forEach(p -> {
+				if (p.getHierarchyLevel() == 1) {
+					locationSearchDto.setRegion(p.getName());
+				}
+				if (p.getHierarchyLevel() == 2) {
+					locationSearchDto.setProvince(p.getName());
+				}
+				if (p.getHierarchyLevel() == 3) {
+					locationSearchDto.setCity(p.getName());
+				}
+				if (p.getHierarchyLevel() == 4) {
+					locationSearchDto.setZone(p.getName());
+				}
+				if (p.getHierarchyLevel() == 5) {
+					locationSearchDto.setPostalCode(p.getName());
+				}
+				locationSearchDto.setCreatedBy(p.getCreatedBy());
+				locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+				locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+				locationSearchDto.setIsActive(p.getIsActive());
+				locationSearchDto.setIsDeleted(p.getIsDeleted());
+				locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+				locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+			});
+			responseDto.add(locationSearchDto);
+		});
+
+		return responseDto;
 	}
 
 	/**
@@ -664,7 +829,6 @@ public class LocationServiceImpl implements LocationService {
 		Location location = locationRepository.findLocationByHierarchyName(filter.getColumnName(), filter.getValue(),
 				dto.getLanguageCode());
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
-
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
 			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);

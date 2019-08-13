@@ -1,12 +1,15 @@
--- NOTE: the code below contains the SQL for the selected object
--- as well for its dependencies and children (if applicable).
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_regprc
+-- Table Name 	: regprc.abis_response
+-- Purpose    	: ABIS Response: Stores all the responses that were received from ABIS systems for the request sent.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
 -- 
--- This feature is only a convinience in order to permit you to test
--- the whole object's SQL definition at once.
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
 -- 
--- When exporting or generating the SQL for the whole database model
--- all objects will be placed at their original positions.
-
+-- ------------------------------------------------------------------------------------------
 
 -- object: regprc.abis_response | type: TABLE --
 -- DROP TABLE IF EXISTS regprc.abis_response CASCADE;
@@ -24,13 +27,16 @@ CREATE TABLE regprc.abis_response(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT pk_abisresp PRIMARY KEY (id)
+	CONSTRAINT pk_abisresp PRIMARY KEY (id),
+	CONSTRAINT uk_abisresp UNIQUE (abis_req_id,resp_dtimes)
 
 );
 -- ddl-end --
 COMMENT ON TABLE regprc.abis_response IS 'ABIS Response: Stores all the responses that were received from ABIS systems for the request sent.';
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_response.id IS 'Response Id: Id of the response received from ABIS application. This is a system generated unique number, can be UUID. This will be used in reference tables';
+-- ddl-end --
+COMMENT ON COLUMN regprc.abis_response.abis_req_id IS 'ABIS Request ID: Request id of the ABIS transaction for which ABIS response is received. This request id refers to regprc.abis_request.id';
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_response.resp_dtimes IS 'Response Date Time: Data and Time when the response was received.';
 -- ddl-end --
@@ -40,7 +46,7 @@ COMMENT ON COLUMN regprc.abis_response.status_code IS 'Status Code:  Current Sta
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_response.status_comment IS 'Status Comment: Comments captured as part of packet processing (if any). This can be used in case someone wants to abort the transaction, comments can be provided as additional information.';
 -- ddl-end --
-COMMENT ON COLUMN regprc.abis_response.lang_code IS 'Language Code: Code of the language used while this ABIS response transaction was created.';
+COMMENT ON COLUMN regprc.abis_response.lang_code IS 'Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.';
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_response.cr_by IS 'Created By : ID or name of the user who create / insert record.';
 -- ddl-end --
@@ -54,12 +60,4 @@ COMMENT ON COLUMN regprc.abis_response.is_deleted IS 'IS_Deleted : Flag to mark 
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_response.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE regprc.abis_response OWNER TO sysadmin;
--- ddl-end --
-
--- object: uk_abisresp | type: CONSTRAINT --
--- ALTER TABLE regprc.abis_response DROP CONSTRAINT IF EXISTS uk_abisresp CASCADE;
-ALTER TABLE regprc.abis_response ADD CONSTRAINT uk_abisresp UNIQUE (abis_req_id,resp_dtimes);
--- ddl-end --
-
 

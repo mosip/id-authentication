@@ -226,16 +226,16 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 					}
 
 					if (jsonObjectNode.hasNonNull(ROOT_PATH.getValue())
-							&& fieldNames.parallelStream().anyMatch(fieldName -> {
-								return jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName)
-										&& jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).isArray()
+							&& fieldNames.parallelStream().anyMatch(fieldName -> 
+								jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName)
+										&& (jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).isArray()
 												? StreamSupport
 														.stream(jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName)
 																.elements().next().spliterator(), false)
 														.anyMatch(element -> element.asText().isEmpty())
 												: jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).asText()
-														.isEmpty();
-							})) {
+														.isEmpty())
+							)) {
 						errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(INVALID_INPUT_PARAMETER.getMessage(),
 										fieldNames

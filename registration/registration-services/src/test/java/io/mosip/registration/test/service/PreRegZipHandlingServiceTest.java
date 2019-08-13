@@ -1,7 +1,6 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doThrow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,7 +19,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,11 +94,11 @@ public class PreRegZipHandlingServiceTest {
 
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put("mosip.registration.registration_pre_reg_packet_location", "..//PreRegPacketStore");
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+		ApplicationContext.getInstance();
+		ApplicationContext.setApplicationMap(applicationMap);
 
 	}
 
-	@Ignore
 	@Test
 	public void extractPreRegZipFileTest() throws Exception {
 		Mockito.doAnswer((idObject) -> {

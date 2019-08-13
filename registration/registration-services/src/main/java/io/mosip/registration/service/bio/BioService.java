@@ -9,6 +9,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 
 /**
  * This class {@code BioService} handles all the biometric captures and
@@ -92,7 +93,7 @@ public interface BioService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType) throws RegBaseCheckedException;
+	void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * checks if the MDM service is enabled
@@ -146,7 +147,7 @@ public interface BioService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException;
+	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validate the Input Finger with the finger that is fetched from the Database.
@@ -185,5 +186,11 @@ public interface BioService {
 	 *         else <code>false</code>
 	 */
 	boolean validateFaceAgainstDb(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails);
+
+	CaptureResponseDto captureFace();
+
+	byte[] getSingleBioValue(CaptureResponseDto captureResponseDto);
+
+	byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto);
 
 }

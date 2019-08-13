@@ -1,6 +1,7 @@
 package io.mosip.registration.service.operator;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * The {@code UserSaltDetailsService} represents to save/update the user salt related
@@ -43,7 +44,8 @@ public interface UserSaltDetailsService {
 	 *                     
 	 * @return {@code ResponseDTO} based on the result the response DTO will be
 	 *         formed and return to the caller.
+	 * @throws RegBaseCheckedException 
 	 */
-	public ResponseDTO getUserSaltDetails(String tigger);
+	public ResponseDTO getUserSaltDetails(String tigger) throws RegBaseCheckedException;
 
 }

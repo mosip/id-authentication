@@ -1,32 +1,31 @@
--- create table section --------------------------------------------------------
--- schema 		: reg  - reg  schema
--- table 		: device_type  - reg device_type list
--- table alias  : dtyp	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.device_type
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------------------------------------
+-- object: reg.device_type | type: TABLE --
+-- DROP TABLE IF EXISTS reg.device_type CASCADE;
+CREATE TABLE reg.device_type(
+	code character varying(36) NOT NULL,
+	name character varying(64) NOT NULL,
+	descr character varying(128),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_dtyp_code PRIMARY KEY (code,lang_code)
 
-	create table reg.device_type (
-	
-		code  character varying(36) not null ,   --  iris, biometric, scanner, etc.
-	
-		name   character varying (64) not null ,
-		descr  character varying (128) ,
-		
-		lang_code  character varying(3) not null ,	-- master.language.code
-	
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes  timestamp ,
-		is_deleted 	boolean,
-		del_dtimes	timestamp 
-	)
-;
-		
-
--- keys section -------------------------------------------------------------------------------
-alter table reg.device_type add constraint pk_dtyp_code primary key (code, lang_code)
- ;
-
-
+);
+-- ddl-end --

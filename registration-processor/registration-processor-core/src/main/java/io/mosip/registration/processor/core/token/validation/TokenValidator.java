@@ -110,6 +110,11 @@ public class TokenValidator {
 				if (role.contains(assignedRole))
 					return true;
 			}
+		}else if (url.contains("transaction")) {
+			for (String assignedRole : APIAuthorityList.REGISTRATIONTRANSACTION.getList()) {
+				if (role.contains(assignedRole))
+					return true;
+			}
 		} else if (url.contains("manual")) {
 			for (String assignedRole : APIAuthorityList.MANUALVERIFICTION.getList()) {
 				if (role.contains(assignedRole))

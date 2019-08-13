@@ -38,7 +38,7 @@ public class CandidateListDto {
 	 * @return the candidates
 	 */
 	public CandidatesDto[] getCandidates() {
-		return candidates;
+		return candidates.clone();
 		
 	}
 	

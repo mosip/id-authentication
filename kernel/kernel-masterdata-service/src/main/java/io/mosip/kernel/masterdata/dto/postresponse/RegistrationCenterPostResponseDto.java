@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistrationCenterPostResponseDto {
 	private List<RegistrationCenterExtnDto> registrationCenters ;
-	private List<RegCenterPostReqPrimAdmDto> constraintViolatedSecLangList;
-	//private List<RegistrationCenterReqAdmSecDto> constraintViolatedSecLangs;
+	private List<RegCenterPostReqPrimAdmDto> constraintViolatedDataList;
 	private List<ServiceError> constraintViolationError;
 }

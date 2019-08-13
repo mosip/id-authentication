@@ -53,8 +53,11 @@ public class StorageServiceTest {
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
-	public void testRuntimeException() throws RegBaseCheckedException {
-		storageService.storeToDisk(null, "packet.zip".getBytes());
+	public void testRuntimeException() throws Exception {
+		PowerMockito.doThrow(new RuntimeException("Unable to save")).when(FileUtils.class, "copyToFile",
+				Mockito.any(InputStream.class), Mockito.any(File.class));
+
+		storageService.storeToDisk("1213242422", "packet.zip".getBytes());
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
@@ -64,4 +67,57 @@ public class StorageServiceTest {
 
 		storageService.storeToDisk("12343455657676787", "packet.zip".getBytes());
 	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidRID() throws Exception {
+		storageService.storeToDisk("", "packet.zip".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidDataToStore() throws Exception {
+		storageService.storeToDisk("11313131", "".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testPacketStoreParamNotFound() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(new HashMap<>()).when(ApplicationContext.class, "map");
+
+		storageService.storeToDisk("121221", "packet.zip".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testEmptyPacketStoreParam() throws Exception {
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.PACKET_STORE_LOCATION, RegistrationConstants.EMPTY);
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+		storageService.storeToDisk("121221", "packet.zip".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testDateFormatParamNotFound() throws Exception {
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.PACKET_STORE_LOCATION, "./PacketStore");
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+		storageService.storeToDisk("121221", "packet.zip".getBytes());
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testEmptyDateFormatParam() throws Exception {
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.PACKET_STORE_LOCATION, "./PacketStore");
+		appMap.put(RegistrationConstants.PACKET_STORE_DATE_FORMAT, RegistrationConstants.EMPTY);
+
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+		storageService.storeToDisk("121221", "packet.zip".getBytes());
+	}
+
 }

@@ -15,7 +15,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import io.mosip.kernel.core.cbeffutil.common.DateAdapter;
 
 
 /**
@@ -65,12 +68,15 @@ public class BIRInfoType {
     protected boolean integrity;
     @XmlElement(name = "CreationDate")
     @XmlSchemaType(name = "dateTime")
+    @XmlJavaTypeAdapter(DateAdapter.class)
     protected LocalDateTime creationDate;
     @XmlElement(name = "NotValidBefore")
     @XmlSchemaType(name = "dateTime")
+    @XmlJavaTypeAdapter(DateAdapter.class)
     protected LocalDateTime notValidBefore;
     @XmlElement(name = "NotValidAfter")
     @XmlSchemaType(name = "dateTime")
+    @XmlJavaTypeAdapter(DateAdapter.class)
     protected LocalDateTime notValidAfter;
 
     /**

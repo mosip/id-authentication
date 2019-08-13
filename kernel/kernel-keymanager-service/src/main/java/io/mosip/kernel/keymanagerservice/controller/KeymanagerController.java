@@ -21,7 +21,6 @@ import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
-import io.mosip.kernel.keymanagerservice.repository.SimpleAES;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -52,11 +51,11 @@ public class KeymanagerController {
 	@Autowired
 	KeymanagerService keymanagerService;
 	
-	/**
+/*	*//**
 	 * Instance of simpleAES
-	 */
+	 *//*
 	@Autowired
-	SimpleAES simpleAES;
+	SimpleAES simpleAES*/;
 
 	/**
 	 * Request mapping to get Public Key
@@ -112,7 +111,7 @@ public class KeymanagerController {
 		return response;
 	}
 
-	
+/*	
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/encrypt/{data}")
@@ -129,5 +128,5 @@ public class KeymanagerController {
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setResponse(simpleAES.decrypt(data));
 		return response;
-	}
+	}*/
 }

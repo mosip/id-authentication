@@ -152,6 +152,7 @@ public class IdObjectValidatorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testMasterDataError() throws IdObjectValidationFailedException, IdObjectIOException, JsonParseException,
 			JsonMappingException, IOException {
 		try {

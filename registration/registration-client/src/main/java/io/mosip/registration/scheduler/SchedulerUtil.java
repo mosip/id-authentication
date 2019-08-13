@@ -24,6 +24,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
+import io.mosip.registration.controller.reg.PacketUploadController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -84,10 +85,14 @@ public class SchedulerUtil extends BaseController {
 	@Autowired
 	private ScanPopUpViewController scanPopUpViewController;
 
+	@Autowired
+	private PacketUploadController packetUploadController;
+
 	/**
 	 * Constructor to invoke scheduler method once login success.
 	 *
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void startSchedulerUtil() throws RegBaseCheckedException {
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
@@ -134,8 +139,10 @@ public class SchedulerUtil extends BaseController {
 	/**
 	 * To find the scheduler duration to run the scheduler interval.
 	 *
-	 * @param refreshTime    the refresh time
-	 * @param sessionTimeOut the session time out
+	 * @param refreshTime
+	 *            the refresh time
+	 * @param sessionTimeOut
+	 *            the session time out
 	 * @return the int
 	 */
 	private static int findTimeInterval(long refreshTime, long sessionTimeOut) {
@@ -274,6 +281,9 @@ public class SchedulerUtil extends BaseController {
 		}
 		if (scanPopUpViewController.getPopupStage() != null && scanPopUpViewController.getPopupStage().isShowing()) {
 			scanPopUpViewController.getPopupStage().close();
+		}
+		if (packetUploadController.getStage() != null && packetUploadController.getStage().isShowing()) {
+			packetUploadController.getStage().close();
 		}
 		// load login screen
 		loadLoginScreen();

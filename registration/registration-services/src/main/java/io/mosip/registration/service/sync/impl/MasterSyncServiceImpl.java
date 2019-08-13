@@ -27,6 +27,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -57,6 +58,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -66,10 +68,13 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
- * It makes call to the external 'MASTER Sync' services to download the master data which are relevant to center specific by passing the 
- * center id or mac address or machine id. Once download the data, it stores the information into the DB for further processing.  
- * If center remapping found from the sync response object, it invokes this 'CenterMachineReMapService' object to initiate the center remapping related activities.   
- * During the process, the required informations are updated into the audit table for further tracking.  
+ * It makes call to the external 'MASTER Sync' services to download the master
+ * data which are relevant to center specific by passing the center id or mac
+ * address or machine id. Once download the data, it stores the information into
+ * the DB for further processing. If center remapping found from the sync
+ * response object, it invokes this 'CenterMachineReMapService' object to
+ * initiate the center remapping related activities. During the process, the
+ * required informations are updated into the audit table for further tracking.
  * 
  * @author Sreekar Chukka
  * @since 1.0.0
@@ -88,7 +93,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	/** Object for masterSyncDao class. */
 	@Autowired
 	private MasterSyncDao masterSyncDao;
-	
+
 	/** The machine mapping DAO. */
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
@@ -109,40 +114,61 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
 
 	/**
-	 * It invokes the Master Sync service to download the required information from external services if the system is online.  
-	 * Once download, the data would be updated into the DB for further process.  
+	 * It invokes the Master Sync service to download the required information from
+	 * external services if the system is online. Once download, the data would be
+	 * updated into the DB for further process.
 	 *
 	 * @param masterSyncDtls the master sync details
-	 * @param triggerPoint from where the call has been initiated [Either : user or system]
+	 * @param triggerPoint   from where the call has been initiated [Either : user
+	 *                       or system]
 	 * @return success or failure status as Response DTO.
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) throws RegBaseCheckedException {
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Initiating the Master Sync");
+		if (masterSyncFieldsValidate(masterSyncDtls, triggerPoint)) {
+			return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"masterSyncDtls/triggerPoint is mandatory...");
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL.getErrorMessage());
+		}
 
-		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
 	}
 
 	/**
-	 * It invokes the external 'Master Sync' service to download the required center specific information from MOSIP server if the system is online.  
-	 * Once download, the data would be updated into the DB for further process.  
+	 * It invokes the external 'Master Sync' service to download the required center
+	 * specific information from MOSIP server if the system is online. Once
+	 * download, the data would be updated into the DB for further process.
 	 *
-	 * @param masterSyncDtls
-	 *            the master sync details
-	 * @param triggerPoint
-	 *            from where the call has been initiated [Either : user or system] 
-	 * @param keyIndex
-	 *            This is the key index provided by the MOSIP server post submission of local TPM public key. Based on this key the MOSIP server would identify the 
-	 *            client and send the sync response accordingly. 
-	 * @return the master sync
-	 * 			  Success or failure status is wrapped in ResponseDTO. 
+	 * @param masterSyncDtls the master sync details
+	 * @param triggerPoint   from where the call has been initiated [Either : user
+	 *                       or system]
+	 * @param keyIndex       This is the key index provided by the MOSIP server post
+	 *                       submission of local TPM public key. Based on this key
+	 *                       the MOSIP server would identify the client and send the
+	 *                       sync response accordingly.
+	 * @return the master sync Success or failure status is wrapped in ResponseDTO.
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint, String keyIndex) {
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint, String keyIndex)
+			throws RegBaseCheckedException {
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 				"Initiating the Master Sync for initial setup");
+		if (masterSyncFieldsValidateWithIndex(masterSyncDtls, triggerPoint, keyIndex)) {
+			return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"masterSyncDtls/triggerPoint/keyIndex is mandatory...");
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL.getErrorMessage());
+		}
 
-		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
 	}
 
 	private synchronized ResponseDTO syncMasterData(String masterSyncDtls, String triggerPoint,
@@ -244,16 +270,19 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	}
 
 	/**
-	 * It makes the call to external Master sync service [master_sync/ center_remap_sync] with respect to the current center 
+	 * It makes the call to external Master sync service [master_sync/
+	 * center_remap_sync] with respect to the current center
 	 * 
-	 * @param triggerPoint	from where the call has been initiated. Applicable values are {user or system}.  
-	 * @param requestParamMap	it holds the center id, last sync datetime, mac address and machine id. 
-	 * @return Map	Response object, which contains the master sync data.  
+	 * @param triggerPoint    from where the call has been initiated. Applicable
+	 *                        values are {user or system}.
+	 * @param requestParamMap it holds the center id, last sync datetime, mac
+	 *                        address and machine id.
+	 * @return Map Response object, which contains the master sync data.
 	 * @throws RegBaseCheckedException
 	 */
 	@SuppressWarnings("unchecked")
-	private LinkedHashMap<String, Object> getMasterSyncJson(String triggerPoint,
-			Map<String, String> requestParamMap) throws RegBaseCheckedException {
+	private LinkedHashMap<String, Object> getMasterSyncJson(String triggerPoint, Map<String, String> requestParamMap)
+			throws RegBaseCheckedException {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		LinkedHashMap<String, Object> masterSyncResponse = null;
@@ -264,18 +293,19 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		try {
 
 			// Setting uri Variables
-			// If initial setup, then invoke the 'Master Sync' without center id. That will be returned based on the mac id/ machine name. 
+			// If initial setup, then invoke the 'Master Sync' without center id. That will
+			// be returned based on the mac id/ machine name.
 			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 					(String) globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP))) {
 
 				serviceName = RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME;
 
 			} else {
-				// If Center id available in db, then invoke the 'Master Sync' with center id.  
+				// If Center id available in db, then invoke the 'Master Sync' with center id.
 				requestParamMap.put(RegistrationConstants.MASTER_CENTER_PARAM, getCenterId());
 				serviceName = RegistrationConstants.MASTER_CENTER_REMAP_SERVICE_NAME;
 			}
-	
+
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					RegistrationConstants.MAC_ADDRESS + "===> " + requestParamMap.get(RegistrationConstants.MAC_ADDRESS)
 							+ " " + RegistrationConstants.MASTER_DATA_LASTUPDTAE + "==> "
@@ -347,114 +377,145 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	}
 
 	/**
-	 * Find location or region by hierarchy code.   
+	 * Find location or region by hierarchy code.
 	 *
 	 * @param hierarchyCode the hierarchy code
 	 * @param langCode      the lang code
-	 * @return the list holds the Location data to be displayed in the UI.  
+	 * @return the list holds the Location data to be displayed in the UI.
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<LocationDto> findLocationByHierarchyCode(String hierarchyCode, String langCode) {
+	public List<LocationDto> findLocationByHierarchyCode(String hierarchyCode, String langCode)
+			throws RegBaseCheckedException {
 
 		List<LocationDto> locationDto = new ArrayList<>();
+		if (codeAndlangCodeNullCheck(hierarchyCode, langCode)) {
+			List<Location> masterLocation = masterSyncDao.findLocationByLangCode(hierarchyCode, langCode);
 
-		List<Location> masterLocation = masterSyncDao.findLocationByLangCode(hierarchyCode, langCode);
-
-		for (Location masLocation : masterLocation) {
-			LocationDto location = new LocationDto();
-			location.setCode(masLocation.getCode());
-			location.setHierarchyName(masLocation.getHierarchyName());
-			location.setName(masLocation.getName());
-			location.setLangCode(masLocation.getLangCode());
-			locationDto.add(location);
+			for (Location masLocation : masterLocation) {
+				LocationDto location = new LocationDto();
+				location.setCode(masLocation.getCode());
+				location.setHierarchyName(masLocation.getHierarchyName());
+				location.setName(masLocation.getName());
+				location.setLangCode(masLocation.getLangCode());
+				locationDto.add(location);
+			}
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.CODE_AND_LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorMessage());
 		}
-
 		return locationDto;
 	}
 
 	/**
 	 * Find proviance by hierarchy code.
 	 *
-	 * @param code the code
+	 * @param code     the code
 	 * @param langCode the lang code
-	 * @return the list holds the Province data to be displayed in the UI.  
+	 * @return the list holds the Province data to be displayed in the UI.
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<LocationDto> findProvianceByHierarchyCode(String code, String langCode) {
+	public List<LocationDto> findProvianceByHierarchyCode(String code, String langCode) throws RegBaseCheckedException {
 
 		List<LocationDto> locationDto = new ArrayList<>();
+		if (codeAndlangCodeNullCheck(code, langCode)) {
+			List<Location> masterLocation = masterSyncDao.findLocationByParentLocCode(code, langCode);
 
-		List<Location> masterLocation = masterSyncDao.findLocationByParentLocCode(code, langCode);
-
-		for (Location masLocation : masterLocation) {
-			LocationDto location = new LocationDto();
-			location.setCode(masLocation.getCode());
-			location.setHierarchyName(masLocation.getHierarchyName());
-			location.setName(masLocation.getName());
-			location.setLangCode(masLocation.getLangCode());
-			locationDto.add(location);
+			for (Location masLocation : masterLocation) {
+				LocationDto location = new LocationDto();
+				location.setCode(masLocation.getCode());
+				location.setHierarchyName(masLocation.getHierarchyName());
+				location.setName(masLocation.getName());
+				location.setLangCode(masLocation.getLangCode());
+				locationDto.add(location);
+			}
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.CODE_AND_LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorMessage());
 		}
-
 		return locationDto;
 	}
 
 	/**
-	 * Gets all the reasons for rejection that to be selected during EOD approval process.
+	 * Gets all the reasons for rejection that to be selected during EOD approval
+	 * process.
 	 *
 	 * @param langCode the lang code
 	 * @return the all reasons
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<ReasonListDto> getAllReasonsList(String langCode) {
+	public List<ReasonListDto> getAllReasonsList(String langCode) throws RegBaseCheckedException {
 
 		List<ReasonListDto> reasonListResponse = new ArrayList<>();
-		List<String> resonCantCode = new ArrayList<>();
-		// Fetting Reason Category
-		List<ReasonCategory> masterReasonCatogery = masterSyncDao.getAllReasonCatogery(langCode);
-		if (masterReasonCatogery != null && !masterReasonCatogery.isEmpty()) {
-
-			masterReasonCatogery.forEach(reason -> {
-				resonCantCode.add(reason.getCode());
+		if (langCodeNullCheck(langCode)) {
+			List<String> resonCantCode = new ArrayList<>();
+			// Fetting Reason Category
+			List<ReasonCategory> masterReasonCatogery = masterSyncDao.getAllReasonCatogery(langCode);
+			if (masterReasonCatogery != null && !masterReasonCatogery.isEmpty()) {
+				masterReasonCatogery.forEach(reason -> {
+					resonCantCode.add(reason.getCode());
+				});
+			}
+			// Fetching reason list based on lang_Code and rsncat_code
+			List<ReasonList> masterReasonList = masterSyncDao.getReasonList(langCode, resonCantCode);
+			masterReasonList.forEach(reasonList -> {
+				ReasonListDto reasonListDto = new ReasonListDto();
+				reasonListDto.setCode(reasonList.getCode());
+				reasonListDto.setName(reasonList.getName());
+				reasonListDto.setRsnCatCode(reasonList.getRsnCatCode());
+				reasonListDto.setLangCode(reasonList.getLangCode());
+				reasonListResponse.add(reasonListDto);
 			});
-
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorMessage());
 		}
-		// Fetching reason list based on lang_Code and rsncat_code
-		List<ReasonList> masterReasonList = masterSyncDao.getReasonList(langCode, resonCantCode);
-		masterReasonList.forEach(reasonList -> {
-			ReasonListDto reasonListDto = new ReasonListDto();
-			reasonListDto.setCode(reasonList.getCode());
-			reasonListDto.setName(reasonList.getName());
-			reasonListDto.setRsnCatCode(reasonList.getRsnCatCode());
-			reasonListDto.setLangCode(reasonList.getLangCode());
-			reasonListResponse.add(reasonListDto);
-		});
-
 		return reasonListResponse;
 
 	}
 
 	/**
-	 * Gets all the black listed words that shouldn't be allowed while capturing demographic information from user. 
+	 * Gets all the black listed words that shouldn't be allowed while capturing
+	 * demographic information from user.
 	 *
 	 * @param langCode the lang code
 	 * @return the all black listed words
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<BlacklistedWordsDto> getAllBlackListedWords(String langCode) {
+	public List<BlacklistedWordsDto> getAllBlackListedWords(String langCode) throws RegBaseCheckedException {
 
 		List<BlacklistedWordsDto> blackWords = new ArrayList<>();
-		List<BlacklistedWords> blackListedWords = masterSyncDao.getBlackListedWords(langCode);
+		if (langCodeNullCheck(langCode)) {
+			List<BlacklistedWords> blackListedWords = masterSyncDao.getBlackListedWords(langCode);
 
-		blackListedWords.forEach(blackList -> {
+			blackListedWords.forEach(blackList -> {
 
-			BlacklistedWordsDto words = new BlacklistedWordsDto();
-			words.setDescription(blackList.getDescription());
-			words.setLangCode(blackList.getLangCode());
-			words.setWord(blackList.getWord());
-			blackWords.add(words);
+				BlacklistedWordsDto words = new BlacklistedWordsDto();
+				words.setDescription(blackList.getDescription());
+				words.setLangCode(blackList.getLangCode());
+				words.setWord(blackList.getWord());
+				blackWords.add(words);
 
-		});
-
+			});
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorMessage());
+		}
 		return blackWords;
 	}
 
@@ -463,76 +524,102 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 *
 	 * @param langCode the lang code
 	 * @return the gender dtls
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<GenderDto> getGenderDtls(String langCode) {
-
+	public List<GenderDto> getGenderDtls(String langCode) throws RegBaseCheckedException {
 		List<GenderDto> gendetDtoList = new ArrayList<>();
-		List<Gender> masterDocuments = masterSyncDao.getGenderDtls(langCode);
-
-		masterDocuments.forEach(gender -> {
-			GenderDto genders = new GenderDto();
-			genders.setCode(gender.getCode());
-			genders.setGenderName(gender.getGenderName());
-			genders.setIsActive(gender.getIsActive());
-			genders.setLangCode(gender.getLangCode());
-			gendetDtoList.add(genders);
-		});
-
+		if (langCodeNullCheck(langCode)) {
+			List<Gender> masterDocuments = masterSyncDao.getGenderDtls(langCode);
+			masterDocuments.forEach(gender -> {
+				GenderDto genders = new GenderDto();
+				genders.setCode(gender.getCode());
+				genders.setGenderName(gender.getGenderName());
+				genders.setIsActive(gender.getIsActive());
+				genders.setLangCode(gender.getLangCode());
+				gendetDtoList.add(genders);
+			});
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorMessage());
+		}
 		return gendetDtoList;
 	}
 
 	/**
-	 * Gets all the document categories from db that to be displayed in the UI dropdown.
+	 * Gets all the document categories from db that to be displayed in the UI
+	 * dropdown.
 	 *
-	 * @param docCode the doc code
+	 * @param docCode  the doc code
 	 * @param langCode the lang code
 	 * @return all the document categories
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
-
-		List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode);
-
+	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode)
+			throws RegBaseCheckedException {
 		List<String> validDocuments = new ArrayList<>();
-		masterValidDocuments.forEach(docs -> {
-			validDocuments.add(docs.getDocTypeCode());
-		});
-
 		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
-		List<DocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
+		if (codeAndlangCodeNullCheck(docCode, langCode)) {
+			List<ValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode);
+			masterValidDocuments.forEach(docs -> {
+				validDocuments.add(docs.getDocTypeCode());
+			});
 
-		masterDocuments.forEach(document -> {
+			List<DocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
 
-			DocumentCategoryDto documents = new DocumentCategoryDto();
-			documents.setDescription(document.getDescription());
-			documents.setLangCode(document.getLangCode());
-			documents.setName(document.getName());
-			documentsDTO.add(documents);
+			masterDocuments.forEach(document -> {
 
-		});
+				DocumentCategoryDto documents = new DocumentCategoryDto();
+				documents.setDescription(document.getDescription());
+				documents.setLangCode(document.getLangCode());
+				documents.setName(document.getName());
+				documentsDTO.add(documents);
 
+			});
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.CODE_AND_LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorMessage());
+		}
 		return documentsDTO;
 	}
 
 	/**
 	 * Gets the individual type.
 	 *
-	 * @param code the code
+	 * @param code     the code
 	 * @param langCode the lang code
 	 * @return the individual type
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public List<IndividualTypeDto> getIndividualType(String code, String langCode) {
-		List<IndividualType> masterDocuments = masterSyncDao.getIndividulType(code, langCode);
+	public List<IndividualTypeDto> getIndividualType(String code, String langCode) throws RegBaseCheckedException {
 		List<IndividualTypeDto> listOfIndividualDTO = new ArrayList<>();
-		masterDocuments.forEach(individual -> {
-			IndividualTypeDto individualDto = new IndividualTypeDto();
-			individualDto.setName(individual.getName());
-			individualDto.setCode(individual.getIndividualTypeId().getCode());
-			individualDto.setLangCode(individual.getIndividualTypeId().getLangCode());
-			listOfIndividualDTO.add(individualDto);
-		});
+
+		if (codeAndlangCodeNullCheck(code, langCode)) {
+			List<IndividualType> masterDocuments = masterSyncDao.getIndividulType(code, langCode);
+
+			masterDocuments.forEach(individual -> {
+				IndividualTypeDto individualDto = new IndividualTypeDto();
+				individualDto.setName(individual.getName());
+				individualDto.setCode(individual.getIndividualTypeId().getCode());
+				individualDto.setLangCode(individual.getIndividualTypeId().getLangCode());
+				listOfIndividualDTO.add(individualDto);
+			});
+		} else {
+
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.CODE_AND_LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_CODE_AND_LANGCODE.getErrorMessage());
+		}
 		return listOfIndividualDTO;
 	}
 
@@ -541,30 +628,39 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 *
 	 * @param langCode the lang code
 	 * @return the biometric type
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	public List<BiometricAttributeDto> getBiometricType(String langCode) {
-
-		List<String> biometricType = new LinkedList<>(
-				Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
-
-		if (RegistrationConstants.DISABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
-			biometricType.remove(RegistrationConstants.FNR);
-		} else if (RegistrationConstants.DISABLE.equalsIgnoreCase(
-				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
-			biometricType.remove(RegistrationConstants.IRS);
-		}
-
-		List<BiometricAttribute> masterBiometrics = masterSyncDao.getBiometricType(langCode, biometricType);
+	public List<BiometricAttributeDto> getBiometricType(String langCode) throws RegBaseCheckedException {
 		List<BiometricAttributeDto> listOfbiometricAttributeDTO = new ArrayList<>();
-		masterBiometrics.forEach(biometrics -> {
-			BiometricAttributeDto biometricsDto = new BiometricAttributeDto();
-			biometricsDto.setName(biometrics.getName());
-			biometricsDto.setCode(biometrics.getCode());
-			biometricsDto.setBiometricTypeCode(biometrics.getBiometricTypeCode());
-			biometricsDto.setLangCode(biometrics.getLangCode());
-			listOfbiometricAttributeDTO.add(biometricsDto);
-		});
+		if (langCodeNullCheck(langCode)) {
+			List<String> biometricType = new LinkedList<>(
+					Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+
+			if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
+				biometricType.remove(RegistrationConstants.FNR);
+			} else if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+				biometricType.remove(RegistrationConstants.IRS);
+			}
+
+			List<BiometricAttribute> masterBiometrics = masterSyncDao.getBiometricType(langCode, biometricType);
+
+			masterBiometrics.forEach(biometrics -> {
+				BiometricAttributeDto biometricsDto = new BiometricAttributeDto();
+				biometricsDto.setName(biometrics.getName());
+				biometricsDto.setCode(biometrics.getCode());
+				biometricsDto.setBiometricTypeCode(biometrics.getBiometricTypeCode());
+				biometricsDto.setLangCode(biometrics.getLangCode());
+				listOfbiometricAttributeDTO.add(biometricsDto);
+			});
+		} else {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.LANG_CODE_MANDATORY);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_MASTER_SYNC_SERVICE_IMPL_LANGCODE.getErrorMessage());
+		}
 		return listOfbiometricAttributeDTO;
 
 	}
@@ -613,6 +709,92 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		}
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, errorMsg);
 		return errorMsg;
+
+	}
+
+	/**
+	 * Master sync fields validate with index.
+	 *
+	 * @param masterSyncDtls the master sync dtls
+	 * @param triggerPoint   the trigger point
+	 * @param keyIndex       the key index
+	 * @return true, if successful
+	 */
+	private boolean masterSyncFieldsValidateWithIndex(String masterSyncDtls, String triggerPoint, String keyIndex) {
+
+		if (StringUtils.isEmpty(masterSyncDtls)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"masterSyncDtls is missing it is a mandatory field.");
+			return false;
+		} else if (StringUtils.isEmpty(triggerPoint)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"triggerPoint is missing it is a mandatory field.");
+			return false;
+		} else if (RegistrationConstants.ENABLE
+				.equals(String.valueOf(ApplicationContext.map().get(RegistrationConstants.TPM_AVAILABILITY)))
+				&& StringUtils.isEmpty(keyIndex)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"keyIndex is missing it is a mandatory field.");
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * Master sync fields validate.
+	 *
+	 * @param masterSyncDtls the master sync dtls
+	 * @param triggerPoint   the trigger point
+	 * @return true, if successful
+	 */
+	private boolean masterSyncFieldsValidate(String masterSyncDtls, String triggerPoint) {
+
+		if (StringUtils.isEmpty(masterSyncDtls)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"masterSyncDtls is missing it is a mandatory field.");
+			return false;
+		} else if (StringUtils.isEmpty(triggerPoint)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"triggerPoint is missing it is a mandatory field.");
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * Lang code null check.
+	 *
+	 * @param langCode the language code
+	 * @return true, if successful
+	 */
+	private boolean langCodeNullCheck(String langCode) {
+		if (StringUtils.isEmpty(langCode)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"language code is missing it is a mandatory field.");
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	private boolean codeAndlangCodeNullCheck(String code, String langCode) {
+
+		if (StringUtils.isEmpty(code)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"code is missing it is a mandatory field.");
+			return false;
+		} else if (StringUtils.isEmpty(langCode)) {
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"language code is missing it is a mandatory field.");
+			return false;
+		} else {
+			return true;
+		}
 
 	}
 }

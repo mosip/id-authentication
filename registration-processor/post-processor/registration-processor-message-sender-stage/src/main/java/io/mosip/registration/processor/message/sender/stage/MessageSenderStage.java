@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +51,8 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.constants.MessageSenderConstant;
@@ -125,7 +127,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Value("${registration.processor.reregister.subject}")
 	private String reregisterSubject;
 
-	@Value("${mosip.registration.processor.notification.types}")
+	@Value("${mosip.notificationtype}")
 	private String notificationTypes;
 
 	@Value("${registration.processor.updated.subject}")
@@ -184,6 +186,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
@@ -232,9 +235,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			Map<String, Object> attributes = new HashMap<>();
 			String[] ccEMailList = null;
 
-			if (notificationTypes == null || notificationTypes.isEmpty()) {
-				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_FAILED + id + "::"
-						+ PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
+			if (isNotificationTypesEmpty()) {
+				description.setMessage(StatusUtil.TEMPLATE_CONFIGURATION_NOT_FOUND.getMessage());
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), object.getRid(),
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getMessage());
@@ -243,7 +245,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			}
 			String[] allNotificationTypes = notificationTypes.split("\\|");
 
-			if (notificationEmails != null && notificationEmails.length() > 0) {
+			if (isNotificationEmailsEmpty()) {
 				ccEMailList = notificationEmails.split("\\|");
 			}
 
@@ -265,29 +267,30 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, e.getMessage() + ExceptionUtils.getStackTrace(e));
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_EPTN_MISSING + id + "::" + e.getMessage());
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + e.getMessage()));
 		} catch (TemplateNotFoundException tnf) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_TEMP_MISSING + id + "::" + tnf.getMessage());
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + tnf.getMessage()));
 		} catch (FSAdapterException e) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
-					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_PACKET_STORE + id);
+					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + ExceptionUtils.getStackTrace(e));
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 		} catch (Exception ex) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			description.setMessage(MessageSenderConstant.MESAGE_SENDER_INTERNAL_ERROR + id + "::" + ex.getMessage());
+			description.setMessage(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 		} finally {
 			registrationStatusDto.setStatusComment(description.getMessage());
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
 					registrationStatusDto.getRegistrationId(),
 					registrationStatusDto.getLatestRegistrationTransactionId(),
 					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
-					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
+					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment(),
+                    registrationStatusDto.getSubStatusCode());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType(MessageSenderConstant.REFERENCE_TYPE_ID);
 			transactionStatusService.addRegistrationTransaction(transactionDto);
@@ -303,6 +306,30 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private boolean isNotificationEmailsEmpty() {
+		return notificationEmails != null && notificationEmails.length() > 0;
+	}
+
+	private boolean isNotificationTypesEmpty() {
+		return notificationTypes == null || notificationTypes.isEmpty();
+	}
+
+	private NotificationTemplateType setNotificationTemplateType(InternalRegistrationStatusDto registrationStatusDto) {
+		NotificationTemplateType type = null;
+		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.LOST.getValue()))
+			type = NotificationTemplateType.LOST_UIN;
+		else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
+			type = NotificationTemplateType.UIN_CREATED;
+		else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
+			type = NotificationTemplateType.UIN_UPDATE;
+		else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.ACTIVATED.getValue()))
+			type = NotificationTemplateType.UIN_UPDATE;
+		else if (registrationStatusDto.getRegistrationType()
+				.equalsIgnoreCase(SyncTypeDto.DEACTIVATED.getValue()))
+			type = NotificationTemplateType.UIN_UPDATE;
+		return type;
 	}
 
 	/**

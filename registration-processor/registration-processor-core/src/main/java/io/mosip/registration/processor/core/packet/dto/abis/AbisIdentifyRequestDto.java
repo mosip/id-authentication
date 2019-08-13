@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.packet.dto.abis;
 
 import java.io.Serializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AbisIdentifyRequestDto.
  *
@@ -14,8 +15,30 @@ public class AbisIdentifyRequestDto extends AbisCommonRequestDto implements Seri
 
 	/** The target FPIR. */
 	private Integer targetFPIR;
+	
+	/** The reference url. */
+	private String referenceUrl;
 
-    private AbisIdentifyRequestGalleryDto gallery;
+    /**
+     * Gets the reference url.
+     *
+     * @return the reference url
+     */
+    public String getReferenceUrl() {
+		return referenceUrl;
+	}
+
+	/**
+	 * Sets the reference url.
+	 *
+	 * @param referenceUrl the new reference url
+	 */
+	public void setReferenceUrl(String referenceUrl) {
+		this.referenceUrl = referenceUrl;
+	}
+
+	/** The gallery. */
+	private AbisIdentifyRequestGalleryDto gallery;
 
 	/**
 	 * Gets the max results.
@@ -55,10 +78,20 @@ public class AbisIdentifyRequestDto extends AbisCommonRequestDto implements Seri
 		this.targetFPIR = targetFPIR;
 	}
 
+    /**
+     * Gets the gallery.
+     *
+     * @return the gallery
+     */
     public AbisIdentifyRequestGalleryDto getGallery() {
         return gallery;
     }
 
+    /**
+     * Sets the gallery.
+     *
+     * @param gallery the new gallery
+     */
     public void setGallery(AbisIdentifyRequestGalleryDto gallery) {
         this.gallery = gallery;
     }

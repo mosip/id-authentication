@@ -27,6 +27,8 @@ public class LogDescription {
 	
 	private String transactionStatusCode;
 	
+	private String subStatusCode;
+	
 	@Override
 	public String toString() {
 		return this.getMessage();

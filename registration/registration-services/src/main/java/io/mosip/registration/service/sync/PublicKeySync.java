@@ -1,6 +1,7 @@
 package io.mosip.registration.service.sync;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * It downloads the Mosip public key from server and store the same into local database for further usage. 
@@ -24,7 +25,8 @@ public interface PublicKeySync {
 	 * 		User or System. 
 	 * @return 
 	 * 		Success or failure response along with error code. 
+	 * @throws RegBaseCheckedException 
 	 */
-	public ResponseDTO getPublicKey(String triggerPoint);
+	public ResponseDTO getPublicKey(String triggerPoint) throws RegBaseCheckedException;
 	
 }

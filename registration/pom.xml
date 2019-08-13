@@ -109,7 +109,6 @@
 	<modules>
 		<module>registration-services</module>
 		<module>registration-client</module>
-		<module>registration-mdm-service</module>
 		<module>registration-libs</module>
 	</modules>
 

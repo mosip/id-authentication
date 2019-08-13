@@ -211,7 +211,7 @@ public class RegistrationCenterServiceHelper {
 	 */
 	public String getHierarchyLevel(String columnName) {
 		if (columnName != null) {
-			switch (columnName.toLowerCase()) {
+			switch (columnName) {
 			case MasterDataConstant.POSTAL_CODE:
 				return "5";
 			case MasterDataConstant.ADMINISTRATIVE_ZONE:
@@ -312,7 +312,7 @@ public class RegistrationCenterServiceHelper {
 	 * @return true if column is location type false otherwise
 	 */
 	public boolean isLocationSearch(String filter) {
-		switch (filter.toLowerCase()) {
+		switch (filter) {
 		case MasterDataConstant.CITY:
 			return true;
 		case MasterDataConstant.PROVINCE:

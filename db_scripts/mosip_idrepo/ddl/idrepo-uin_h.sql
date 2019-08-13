@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_repo
+-- Table Name 	: idrepo.uin_h
+-- Purpose    	: UIN History : This to track changes to base table record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer base table description for details.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: idrepo.uin_h | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin_h CASCADE;
 CREATE TABLE idrepo.uin_h(
@@ -56,6 +69,3 @@ COMMENT ON COLUMN idrepo.uin_h.is_deleted IS 'IS_Deleted : Flag to mark whether 
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin_h.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE idrepo.uin_h OWNER TO sysadmin;
--- ddl-end --
-

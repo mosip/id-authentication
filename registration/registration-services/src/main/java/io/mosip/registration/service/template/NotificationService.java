@@ -1,6 +1,7 @@
 package io.mosip.registration.service.template;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * This class is used to send notification service
@@ -21,8 +22,9 @@ public interface NotificationService {
 	 * 
 	 * @return {@code ResponseDTO} based on the result the response DTO will be
 	 *         formed and return to the caller.
+	 * @throws RegBaseCheckedException 
 	 */	
-	ResponseDTO sendSMS(String message,String number,String regId);
+	ResponseDTO sendSMS(String message,String number,String regId) throws RegBaseCheckedException;
 	
 	/**
 	 * This method accept the message and email id, registration id to invoke email service.
@@ -36,6 +38,7 @@ public interface NotificationService {
 	 * 
 	 * @return 	{@code ResponseDTO} based on the result the response DTO will be
 	 *         formed and return to the caller.
+	 * @throws RegBaseCheckedException 
 	 */
-	ResponseDTO sendEmail(String message,String emailId,String regId);
+	ResponseDTO sendEmail(String message,String emailId,String regId) throws RegBaseCheckedException;
 }

@@ -1,5 +1,7 @@
 package io.mosip.registration.service.template;
 
+import io.mosip.registration.exception.RegBaseCheckedException;
+
 /**
  * The {@code TemplateService} represents the Template that needs to be
  * displayed. This class will be invoked during New Registration, UIN Update and
@@ -25,7 +27,8 @@ public interface TemplateService {
 	 *            {@code String} the language code in which the template is required
 	 * 
 	 * @return {@code String} which contains the template data
+	 * @throws RegBaseCheckedException the custom exception to handle all checked exceptions
 	 */
-	public String getHtmlTemplate(String templateName, String langCode);
+	public String getHtmlTemplate(String templateName, String langCode) throws RegBaseCheckedException;
 	
 }
