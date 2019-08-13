@@ -107,7 +107,7 @@ public class RegistrationStatusController {
 				headers.add(RESPONSE_SIGNATURE,
 						digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
 				return ResponseEntity.status(HttpStatus.OK).headers(headers)
-						.body(response);
+						.body(gson.toJson(response));
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
