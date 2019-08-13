@@ -42,9 +42,10 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
  * This class follows {@link CryptoCoreSpec} and implement all basic
  * Cryptographic functions.
  * 
+ * @author Urvil Joshi
  * @since 1.0.0
  * 
- * @see CryptoCoreSpec 
+ * @see CryptoCoreSpec
  * @see PrivateKey
  * @see PublicKey
  * @see Signature
@@ -52,9 +53,6 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
  * @see Cipher
  * @see GCMParameterSpec
  * @see SecureRandom
- * 
- * @author Urvil Joshi
- *
  */
 @Component
 public class CryptoCore
@@ -153,7 +151,7 @@ public class CryptoCore
 		byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
-			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, randomIV);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
 			output = doFinal(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
 		} catch (java.security.InvalidKeyException e) {
