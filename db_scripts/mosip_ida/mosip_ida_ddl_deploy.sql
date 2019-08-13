@@ -7,5 +7,5 @@
 \ir ddl/ida-uin_hash_salt.sql
 \ir ddl/ida-uin_encrypt_salt.sql
 
-\ir ddl/AlterFK_ida_schema.sql
+\ir ddl/ida-fk.sql
 

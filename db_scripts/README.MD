@@ -22,6 +22,10 @@
 
 * If we wish to place the log files under different directory other than the above mentioned then we need to create directory and specify the path of the directory in the properties file.
 
+* Pull the DB deployment scripts from Git repository to the deployment server and start deploying  OR
+
+* If are pulling to local system from Git repository and pushing them back to deployment server using WinSCP then make a note to modify the following encoding settings in WinSCP before pushing the files to deployment server --> Open WinSCP --> Options --> Preferences --> Transfer --> Edit --> In "Transfer mode" section --> select "Text" --> Click Ok --> Click Ok 
+
 ## Each database folder has the following files / folders
 
 * **ddl folder:** This folder contains all the database data definition language (DDL) scripts to create or alter a database object of this module.
