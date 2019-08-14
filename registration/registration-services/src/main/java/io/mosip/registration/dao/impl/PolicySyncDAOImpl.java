@@ -68,4 +68,9 @@ public class PolicySyncDAOImpl implements PolicySyncDAO {
 		return null;
 	}
 
+	@Override
+	public List<KeyStore> getAllKeyStore(String centerMachineId) {
+		return policySyncRepository.findByRefIdOrderByValidTillDtimesDesc(centerMachineId); 
+	}
+
 }

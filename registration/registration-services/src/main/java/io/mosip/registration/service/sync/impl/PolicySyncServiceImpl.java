@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,44 +67,54 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"sync the public key is started");
 		KeyStore keyStore = null;
-		String centerMachineId = getCenterId(getStationId(getMacAddress())) + "_" + getStationId(getMacAddress());
 		ResponseDTO responseDTO = new ResponseDTO();
-		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
-		} else {
-			keyStore = policySyncDAO.getPublicKey(centerMachineId);
+		try {
+			//if(null!getCenterId(getStationId(getMacAddress()));
+			String centerMachineId = getCenterId(getStationId(getMacAddress())) + "_" + getStationId(getMacAddress());
 
-			if (keyStore != null) {
-				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
-				long difference = ChronoUnit.DAYS.between(new Date().toInstant(), validDate.toInstant());
-				if (Integer
-						.parseInt((String) ApplicationContext.map().get(RegistrationConstants.KEY_NAME)) < difference) {
-					setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
-				} else {
+			if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "user is not in online");
+				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE, null);
+			} else {
+				
+				keyStore = policySyncDAO.getPublicKey(centerMachineId);
 
-					try {
-						getPublicKey(responseDTO, centerMachineId);
-					} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
-						LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-								exception.getMessage());
+				if (keyStore != null) {
 
-						setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+					Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
+
+					if (validDate
+							.compareTo(new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0
+							|| validDate.compareTo(
+									new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= Integer.valueOf((String.valueOf(ApplicationContext.map().get(RegistrationConstants.KEY_NAME))))) {
+
+						if (validDate.compareTo(
+								new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= Integer.valueOf((String.valueOf(ApplicationContext.map().get(RegistrationConstants.KEY_NAME))))
+								&& isVaildKey(centerMachineId)) {
+							
+							
+							getPublicKey(responseDTO, centerMachineId, LocalDateTime.from(validDate.toInstant().atZone(ZoneId.of("UTC"))).plusDays(1).toString()+"Z");
+						} else if (validDate.compareTo(
+								new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0) {
+							getPublicKey(responseDTO, centerMachineId, DateUtils.getUTCCurrentDateTimeString());
+						}
 
 					}
-				}
-			} else {
-				try {
-					getPublicKey(responseDTO, centerMachineId);
-				} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
-					LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-							exception.getMessage());
-					setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+
+					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+							null);
+				} else {
+
+					getPublicKey(responseDTO, centerMachineId, DateUtils.getUTCCurrentDateTimeString());
 
 				}
-
 			}
+		} catch (KeyManagementException | IOException | java.security.NoSuchAlgorithmException exception) {
+			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+
 		}
+
 		return responseDTO;
 	}
 
@@ -118,16 +130,16 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	 * @throws RegBaseCheckedException 
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void getPublicKey(ResponseDTO responseDTO, String centerMachineId)
+	public synchronized void getPublicKey(ResponseDTO responseDTO, String centerMachineId,String validDate)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException, RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				getCenterId(getStationId(getMacAddress())));
-		if(validate(responseDTO,centerMachineId))
+		if(validate(responseDTO,centerMachineId,getCenterId(getStationId(getMacAddress()))))
 {
 		KeyStore keyStore = new KeyStore();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<>();
-		requestParams.put(RegistrationConstants.TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
+		requestParams.put(RegistrationConstants.TIME_STAMP, validDate);
 		requestParams.put(RegistrationConstants.REF_ID, centerMachineId);
 		try {
 			LinkedHashMap<String, Object> publicKeySyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
@@ -228,12 +240,12 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 	}
 	
-	private boolean validate(ResponseDTO responseDTO,String centerMachineId) throws RegBaseCheckedException
+	private boolean validate(ResponseDTO responseDTO,String centerMachineId,String centerId) throws RegBaseCheckedException
 	{
 		
 		if(responseDTO!=null)
 		{
-			if(centerMachineId!=null)
+			if(centerMachineId!=null&&centerId!=null)
 			{
 				return true;
 			}
@@ -247,6 +259,27 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL.getErrorMessage());
 		}
 		
+	}
+	
+	/**
+	 * Checks if is vaild key.
+	 *
+	 * @return true, if is vaild key
+	 */
+	private boolean isVaildKey(String centerMachineId) {
+		Date currentDate = new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime());
+		List<KeyStore> keyStoreList = policySyncDAO.getAllKeyStore(centerMachineId);
+
+		if (!keyStoreList.isEmpty()) {
+			List<KeyStore> vaildKey = keyStoreList.stream()
+					.filter(keyStore -> (keyStore.getValidFromDtimes().compareTo(currentDate) >= 0
+							&& keyStore.getValidTillDtimes().compareTo(currentDate) >= 0))
+					.collect(Collectors.toList());
+
+			return vaildKey.isEmpty();
+		}
+		return false;
+
 	}
 
 }
