@@ -247,7 +247,7 @@ public class BioServiceTest {
 		((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 				.getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
-		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
+		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, "leftSlap");
 
 		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
 		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
@@ -285,7 +285,7 @@ public class BioServiceTest {
 		((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 				.getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
-		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
+		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, "leftSlap");
 
 		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
 		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
@@ -325,7 +325,7 @@ public class BioServiceTest {
 
 		ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
 
-		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
+		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, "leftSlap");
 
 		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
 		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
