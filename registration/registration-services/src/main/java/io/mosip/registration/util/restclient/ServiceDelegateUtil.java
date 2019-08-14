@@ -142,6 +142,10 @@ public class ServiceDelegateUtil {
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
 		} catch (RegBaseCheckedException baseCheckedException) {
+			if (baseCheckedException.getErrorCode()
+					.equals(RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode())) {
+				throw baseCheckedException;
+			}
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage(),
@@ -543,6 +547,14 @@ public class ServiceDelegateUtil {
 					throw new RegBaseCheckedException(RegistrationExceptionConstants.INVALID_OTP.getErrorCode(),
 							RegistrationExceptionConstants.INVALID_OTP.getErrorMessage());
 				}
+			}
+			
+			String cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);
+			if (cookie == null
+					|| cookie.trim().isEmpty()) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
+						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorMessage());
 			}
 
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();

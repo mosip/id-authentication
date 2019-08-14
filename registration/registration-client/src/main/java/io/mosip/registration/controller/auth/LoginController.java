@@ -930,6 +930,12 @@ public class LoginController extends BaseController implements Initializable {
 						loadInitialScreen(Initialization.getPrimaryStage());
 						return;
 					}
+				} else if (taskService.getValue().contains(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ALERT_AUTH_TOKEN_NOT_FOUND);
+					if (isInitialSetUp) {
+						loadInitialScreen(Initialization.getPrimaryStage());
+						return;
+					}
 				} else if (taskService.getValue().contains(RegistrationConstants.SUCCESS) && isInitialSetUp) {
 
 					// update initial set up flag

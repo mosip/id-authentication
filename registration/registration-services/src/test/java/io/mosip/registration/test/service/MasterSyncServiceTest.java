@@ -496,7 +496,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
 		.thenReturn("keyIndex");
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
-				Mockito.anyString())).thenThrow(RegBaseCheckedException.class);
+				Mockito.anyString())).thenThrow(new RegBaseCheckedException("", ""));
 
 		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}

@@ -363,4 +363,8 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	//Alert
 	public static final String ALERT_NOTE_LABEL = bundle.getString("ALERT_NOTE_LABEL");
 	public static final String ALERT_FAILED_LABEL = bundle.getString("ALERT_FAILED_LABEL");
+
+	// Unable to get Auth Token
+	public static final String ALERT_AUTH_TOKEN_NOT_FOUND = bundle.getString("AUTH_TOKEN_NOT_FOUND");
+
 }

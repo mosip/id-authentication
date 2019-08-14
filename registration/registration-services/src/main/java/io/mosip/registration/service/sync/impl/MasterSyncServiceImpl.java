@@ -257,7 +257,13 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage()
 					+ resoponse + ExceptionUtils.getStackTrace(regBaseUncheckedException));
-			setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
+
+			if (isAuthTokenEmptyException(regBaseUncheckedException)) {
+				setErrorResponse(responseDTO, RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
+						null);
+			} else {
+				setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
+			}
 
 		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,

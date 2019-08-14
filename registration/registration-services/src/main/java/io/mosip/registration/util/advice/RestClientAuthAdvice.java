@@ -114,6 +114,8 @@ public class RestClientAuthAdvice {
 					RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 					getNewAuthZToken(requestHTTPDTO);
 					return joinPoint.proceed(joinPoint.getArgs());
+				} catch (RegBaseCheckedException regBaseCheckedException) {
+					throw regBaseCheckedException;
 				} catch (Throwable throwableError) {
 					throw new RegBaseCheckedException(
 							RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
@@ -124,8 +126,9 @@ public class RestClientAuthAdvice {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(),
 					httpClientErrorException);
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			throw regBaseCheckedException;
 		} catch (Throwable throwable) {
-
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(), throwable);
 		}
