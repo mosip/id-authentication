@@ -187,10 +187,27 @@ public interface BioService {
 	 */
 	boolean validateFaceAgainstDb(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails);
 
+	/**
+	 * Captures the face
+	 * 
+	 * @return CaptureResponseDto
+	 */
 	CaptureResponseDto captureFace();
 
+	/**
+	 * Returns single biometric bio value
+	 * @param CaptureResponseDto
+	 *            capture respsone dto
+	 * @return byte[]
+	 */
 	byte[] getSingleBioValue(CaptureResponseDto captureResponseDto);
 
+	/**
+	 * Returns single biometric iso template
+	 * @param CaptureResponseDto
+	 * 					catpure response dto
+	 * @return byte[]
+	 */
 	byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto);
 
 }
