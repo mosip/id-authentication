@@ -4,6 +4,7 @@
 package io.mosip.authentication.common.service.facade;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,15 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
+import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
@@ -34,8 +40,10 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
@@ -104,6 +112,23 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The id repo manager. */
 	@Autowired
 	private IdRepoManager idRepoManager;
+	
+	@Autowired
+	private UinEncryptSaltRepo uinEncryptSaltRepo;
+
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
+	
+	@Autowired
+	private AuthtypeStatusService authTypeStatusService;
+	
+	@Autowired
+	private IdAuthTransactionManager transactionManager;
+	
+	private static final List<String> authTypes = Arrays.asList(MatchType.Category.DEMO.getType(),MatchType.Category.OTP.getType(),
+			MatchType.Category.BIO.getType(),
+			MatchType.Category.SPIN.getType());
+
 
 	/*
 	 * (non-Javadoc)
@@ -122,6 +147,32 @@ public class AuthFacadeImpl implements AuthFacade {
 				authRequestDTO.getRequestedAuth().isBio());
 		  if(idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			  idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
+		  }
+		  List<AuthtypeStatus> authtypeStatusList=authTypeStatusService.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType());
+		  if(null!=authtypeStatusList&&authtypeStatusList.size()>0) {
+			  for(AuthtypeStatus authTypeStatus : authtypeStatusList) {
+				   if(authTypeStatus.isLocked()) {
+					   if(authRequestDTO.getRequestedAuth().isDemo() && authTypeStatus.getAuthType()
+							   .equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
+						   throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+					   }
+					   
+					   else if(authRequestDTO.getRequestedAuth().isBio() && authTypeStatus.getAuthType()
+							   .equalsIgnoreCase(MatchType.Category.BIO.getType())) {
+						   throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+					   }
+					   
+					   else if(authRequestDTO.getRequestedAuth().isOtp() && authTypeStatus.getAuthType()
+							   .equalsIgnoreCase(MatchType.Category.OTP.getType())) {
+						   throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+					   }
+					   
+					   else if(authRequestDTO.getRequestedAuth().isPin() && authTypeStatus.getAuthType()
+							   .equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
+						   throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+					   }
+	               }
+			  }
 		  }
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
@@ -410,7 +461,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				.withRequestType(requestType)
 				.withStaticToken(staticTokenId)
 				.withStatus(isStatus)
-				.build(env);
+				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
 	}
 
 }

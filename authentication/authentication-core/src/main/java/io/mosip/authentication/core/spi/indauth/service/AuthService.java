@@ -26,4 +26,5 @@ public interface AuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String uin,Map<String,List<IdentityInfoDTO>> idInfo,String partnerId)throws IdAuthenticationBusinessException;
+	
 }

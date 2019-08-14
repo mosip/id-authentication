@@ -80,4 +80,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_NORMALISER_SEP = "ida.norm.sep";
 	public static final String AUTH_TRANSACTION = "auth.transactions";
 	public static final String AUTH_TYPE = "authtype.status";
+	public static final String UIN_SALT_MODULO = "ida.uin.salt.modulo";
+	public static final String MOSIP_UTC_TIME= "mosip.utc-datetime-pattern";
+	
+	public static final String MOSIP_IDA_AUTH_CLIENTID="mosip.ida.auth.clientId";
 }

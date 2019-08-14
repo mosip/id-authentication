@@ -160,6 +160,7 @@ public class KeyManager {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+		System.out.println(decryptedRequest);
 		return decryptedRequest;
 	}
 
@@ -216,6 +217,8 @@ public class KeyManager {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
 				response = restHelper.requestSync(restRequestDTO);
+				System.out.println((String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA));
+				
 				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
 			} catch (IDDataValidationException | RestServiceException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());

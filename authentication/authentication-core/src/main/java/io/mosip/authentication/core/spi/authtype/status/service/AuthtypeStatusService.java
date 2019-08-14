@@ -18,5 +18,7 @@ public interface AuthtypeStatusService {
 
 	public List<AuthtypeStatus> fetchAuthtypeStatus(AuthtypeRequestDto authtypeRequestDto)
 			throws IdAuthenticationBusinessException;
+	
+	public List<AuthtypeStatus> fetchAuthtypeStatus(String individualId, String individualIdType) throws IdAuthenticationBusinessException;
 
 }

@@ -194,6 +194,7 @@ public class Encrypt {
 			public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
 					throws IOException {
 				String authToken = generateAuthToken();
+				//String authToken = "Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpZGFfYXBwX3VzZXIiLCJtb2JpbGUiOiI5NjYzMTc1OTI4IiwibWFpbCI6ImlkYWFwcHVzZXJAbW9zaXAuaW8iLCJyb2xlIjoiSURfQVVUSEVOVElDQVRJT04iLCJuYW1lIjoiaWRhX2FwcF91c2VyIiwicklkIjoiMTAwMDExMDAwMTAwMDAyMjAxOTA1MTAxMjE0MzA5IiwiaWF0IjoxNTY1NDk0NjAxLCJleHAiOjE1NjU1MDA2MDF9.Ws0O09qk2TIlwScY5XV3z1JmImES-iy4-9eV6TSYGMqnHPJ8q8LGFZ5mQFTGK_a_eObtoPh1kipBryU1prkB9A";
 				if(authToken != null && !authToken.isEmpty()) {
 					request.getHeaders().set("Cookie", "Authorization=" + authToken);
 				}

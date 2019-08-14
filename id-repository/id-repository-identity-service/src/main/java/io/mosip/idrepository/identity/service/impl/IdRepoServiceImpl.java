@@ -194,7 +194,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		String uinHash = modResult + IdRepoConstants.SPLITTER.getValue() + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String uinToEncrypt = modResult + IdRepoConstants.SPLITTER.getValue() + uin + IdRepoConstants.SPLITTER.getValue() + encryptSalt;
-
+        
 		List<UinDocument> docList = new ArrayList<>();
 		List<UinBiometric> bioList = new ArrayList<>();
 		Uin uinEntity;

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,9 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -64,7 +67,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The IdaMappingconfig. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
+	
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
 
+	@Autowired
+	private Environment environment;
 	/**
 	 * Validates generated OTP via OTP Manager.
 	 *
@@ -82,7 +90,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnAndIdvid(txnId, authRequestDTO.getIndividualId());
+			boolean isValidRequest = validateTxnAndIdvid(txnId,uin);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -158,9 +166,11 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *                                           exception
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId, String idvid) throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvid(String txnId,String uin) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
-		String hashedIdvid = HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvid.getBytes()));
+		int uinModulo=(int)(Long.valueOf(uin)%environment.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO,Integer.class));
+		String uinSalt=uinHashSaltRepo.retrieveSaltById(uinModulo);
+		String hashedUin= HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), uinSalt.getBytes());
 		Optional<AutnTxn> authTxn = autntxnrepository
 				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
 		if (!authTxn.isPresent()) {
@@ -168,7 +178,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 					"Invalid TransactionID");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 		} else {
-			if (!authTxn.get().getRefId().equalsIgnoreCase(hashedIdvid)) {
+			if (!authTxn.get().getUinHash().equalsIgnoreCase(hashedUin)) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
 						"OTP id mismatch");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);

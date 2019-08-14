@@ -22,6 +22,9 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -84,6 +87,15 @@ public class OTPServiceImpl implements OTPService {
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
+	
+	@Autowired
+	private UinEncryptSaltRepo uinEncryptSaltRepo;
+
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
+	
+	@Autowired
+	private IdAuthTransactionManager transactionManager;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
@@ -174,7 +186,7 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance().withOtpRequest(otpRequestDto)
 				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId).withStatus(status).withUin(uin)
-				.build(env);
+				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
 		idAuthService.saveAutnTxn(authTxn);
 	}
 
