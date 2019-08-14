@@ -24,6 +24,7 @@ ENV spring_config_url_env=${spring_config_url}
 
 
 ADD target/authentication-service-*.jar authentication-service.jar
+ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/ABISTech5FaceSDKAdapter_v2.jar ABISTech5FaceSDKAdapter_v2.jar
 
 EXPOSE 8090
 
