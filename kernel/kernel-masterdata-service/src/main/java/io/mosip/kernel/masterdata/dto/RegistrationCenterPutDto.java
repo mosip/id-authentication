@@ -10,6 +10,6 @@ import lombok.Data;
 public class RegistrationCenterPutDto {
 
 	@NotBlank
-	private List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDtos;
+	private List<RegCenterPutReqDto> registrationCenterPutReqAdmDtos;
 
 }
