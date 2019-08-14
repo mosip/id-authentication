@@ -24,7 +24,11 @@ ENV spring_config_url_env=${spring_config_url}
 
 
 ADD target/authentication-service-*.jar authentication-service.jar
+
+#Downloading external dependencies 
 ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/ABISTech5FaceSDKAdapter_v2.jar ABISTech5FaceSDKAdapter_v2.jar
+ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/t5-finger-iris-mosip-auth-v1.2.jar t5-finger-iris-mosip-auth-v1.2.jar 
+ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/tech5-sdk-v1.5.1.jar tech5-sdk-v1.5.1.jar 
 
 EXPOSE 8090
 RUN ls
