@@ -99,7 +99,7 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
-	public void netWorkAvailable() {
+	public void netWorkAvailable() throws RegBaseCheckedException {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 		assertNotNull(policySyncServiceImpl.fetchPolicy());
