@@ -1281,6 +1281,7 @@ public class RegistrationConstants {
 	public static final String ENGLISH_LANG_CODE = "eng";
 	public static final String USER_ID_CODE = "USERID";
 	public static final String OTP_CHANNELS = "mosip.registration.otp_channels";
+	public static final String AUTH_TOKEN_NOT_RECEIVED_ERROR = "No Auth Token Received";
 
 	// Packet Sync
 	public static final String PACKET_SYNC = "packet_sync";
