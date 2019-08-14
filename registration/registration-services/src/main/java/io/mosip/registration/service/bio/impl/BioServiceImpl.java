@@ -100,6 +100,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
+		
+		if(isNull(userId))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_AUTTHENTICATION); 
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = null;
 		CaptureResponseDto captureResponseDto = null;
@@ -188,7 +191,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
-
+		if(isNull(userId))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_AUTHENTICATION);
+		
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
 		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
@@ -230,6 +235,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException, IOException {
+		
+		if(isNull(fingerType))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
 		if (captureResponseDto == null)
 			throw new RegBaseCheckedException("202", "Decice is not available");
@@ -265,6 +273,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	private void getFingerPrintImageAsDTONonMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
+
+		if(isNull(fingerType))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
+
 		Map<String, Object> fingerMap = null;
 
 		try {
@@ -309,6 +321,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private Map<String, Object> getFingerPrintScannedImageWithStub(String path) throws RegBaseCheckedException {
+		if(isNull(path))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_SCANNED_PATH);
+
 		try {
 			LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingerprints details for user registration");
@@ -391,6 +406,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	@Override
 	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath,
 			String fingerType) throws RegBaseCheckedException {
+		
+		if(isNull(fingerType))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
 
 		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath, fingerType);
 
@@ -565,6 +583,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType)
 			throws RegBaseCheckedException, IOException {
 
+		if(isNull(irisType))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
+		
 		if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
 			getIrisImageAsDTOWithMdm(irisDetailsDTO, "IRIS_DOUBLE");
@@ -582,6 +603,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, String eyeType)
 			throws RegBaseCheckedException, IOException {
+
+		if(isNull(eyeType))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(eyeType);
 		if (captureResponseDto == null)
@@ -617,6 +641,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration");
+			
+			if(isNull(irisType))
+				throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 
 			Map<String, Object> scannedIrisMap = getIrisScannedImage(irisType);
 			double qualityScore = 0;
@@ -656,6 +683,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
+			
+			if(isNull(irisType))
+				throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 
 			double qualityScore;
 			BufferedImage bufferedImage;

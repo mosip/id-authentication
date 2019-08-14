@@ -33,6 +33,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.PolicySyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -60,7 +61,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	 * @see io.mosip.registration.service.PolicySyncService#fetchPolicy(centerId)
 	 */
 	@Override
-	synchronized public ResponseDTO fetchPolicy() {
+	synchronized public ResponseDTO fetchPolicy() throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"sync the public key is started");
 		KeyStore keyStore = null;
@@ -114,12 +115,15 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	 * @throws KeyManagementException the key management exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws java.security.NoSuchAlgorithmException the no such algorithm exception
+	 * @throws RegBaseCheckedException 
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized void getPublicKey(ResponseDTO responseDTO, String centerMachineId)
-			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
+			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException, RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				getCenterId(getStationId(getMacAddress())));
+		if(validate(responseDTO,centerMachineId))
+{
 		KeyStore keyStore = new KeyStore();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 		Map<String, String> requestParams = new HashMap<>();
@@ -172,7 +176,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 		}
 
-	}
+	}}
 
 	/**
 	 * (non-Javadoc)
@@ -222,6 +226,27 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 		return responseDTO;
 
+	}
+	
+	private boolean validate(ResponseDTO responseDTO,String centerMachineId) throws RegBaseCheckedException
+	{
+		
+		if(responseDTO!=null)
+		{
+			if(centerMachineId!=null)
+			{
+				return true;
+			}
+			else
+			{
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID.getErrorMessage());
+			}
+		}
+		else
+		{
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL.getErrorMessage());
+		}
+		
 	}
 
 }

@@ -63,6 +63,12 @@ public class IrisValidatorTest {
 	}
 	
 	@Test
+	public void validateUserTest() {
+		authenticationValidatorDTO.setUserId("");
+		irsiValidatorImpl.validate(authenticationValidatorDTO);
+	}
+	
+	@Test
 	public void validateAuthTest() {
 		assertNull(irsiValidatorImpl.validate("mosip","123", true));
 	}
