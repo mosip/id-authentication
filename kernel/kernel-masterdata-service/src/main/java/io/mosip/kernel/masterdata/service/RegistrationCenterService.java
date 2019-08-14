@@ -3,9 +3,9 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmSecDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
@@ -213,12 +213,12 @@ public interface RegistrationCenterService {
 	 *         centers complete DTO
 	 */
 	public RegistrationCenterPostResponseDto createRegistrationCenter(
-			RegistrationCenterReqAdmSecDto reqRegistrationCenterDto);
+			List<RegCenterPostReqDto> reqRegistrationCenterDto);
 
     /**
     * This method updates the registration center by admin.
     * 
-     * @param RegistrationCenterPutReqAdmDto
+     * @param RegCenterPutReqDto
     *            - pass the List of registration center DTO to update.
     * 
      * @return RegistrationCenterPutResponseDto - return updated registration
@@ -226,7 +226,7 @@ public interface RegistrationCenterService {
     */
 
 	public RegistrationCenterPutResponseDto updateRegistrationCenter(
-			List<RegistrationCenterPutReqAdmDto> registrationCenterPutReqAdmDto);
+			List<RegCenterPutReqDto> registrationCenterPutReqAdmDto);
 
 	/**
 	 * Service method to decommission registration center.

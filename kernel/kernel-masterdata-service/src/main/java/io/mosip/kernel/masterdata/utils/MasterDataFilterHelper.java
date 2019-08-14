@@ -56,6 +56,7 @@ public class MasterDataFilterHelper {
 	}
 
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
+	private static final String MAP_STATUS_COLUMN_NAME = "mapStatus";
 	private static final String FILTER_VALUE_UNIQUE = "unique";
 	private static final String FILTER_VALUE_ALL = "all";
 	private static final String WILD_CARD_CHARACTER = "%";
@@ -72,12 +73,16 @@ public class MasterDataFilterHelper {
 
 	@SuppressWarnings("unchecked")
 	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto) {
+		String columnName = filterDto.getColumnName();
+		String columnType = filterDto.getType();
+		if (columnName.equals(MAP_STATUS_COLUMN_NAME)
+				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+			return (List<T>) valuesForMapStatusColumn();
+		}
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
 		Path<Object> path = root.get(filterDto.getColumnName());
-		String columnName = filterDto.getColumnName();
-		String columnType = filterDto.getType();
 		List<T> results;
 
 		CriteriaQuery<T> criteriaQueryByType = criteriaBuilder.createQuery((Class<T>) path.getJavaType());
@@ -176,6 +181,13 @@ public class MasterDataFilterHelper {
 		List<String> filterDataList = new ArrayList<>();
 		filterDataList.add("true");
 		filterDataList.add("false");
+		return filterDataList;
+	}
+
+	private List<String> valuesForMapStatusColumn() {
+		List<String> filterDataList = new ArrayList<>();
+		filterDataList.add("Assigned");
+		filterDataList.add("Unassigned");
 		return filterDataList;
 	}
 }
