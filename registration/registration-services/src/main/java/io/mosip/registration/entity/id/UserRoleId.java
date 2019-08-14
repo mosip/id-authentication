@@ -10,7 +10,7 @@ import lombok.Data;
 
 /**
  * composite key for {@link UserRole}
- * 
+ *
  * @author Sravya Surampalli
  * @since 1.0.0
  */
@@ -24,5 +24,5 @@ public class UserRoleId implements Serializable {
 	private String usrId;
 	@Column(name = "role_code")
 	private String roleCode;
-	
+
 }

@@ -56,6 +56,6 @@ run 'ddl/reg-user_pwd.sql';
 run 'ddl/reg-user_role.sql';
 run 'ddl/reg-valid_document.sql';
 
-run 'ddl/AlterFK_reg_schema.sql';
+run 'ddl/reg-fk.sql';
 
 run 'mosip_reg_dml_deploy.sql';

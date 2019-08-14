@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jms.Message;
 
@@ -34,22 +32,18 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.IdType;
-import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.FieldValue;
-import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
-import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
@@ -178,7 +172,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	private MosipQueue queue;
 
-	private static final Map<String, MessageDTO> regIdMap = new ConcurrentHashMap<String, MessageDTO>();
+	InternalRegistrationStatusDto registrationStatusDto;
 
 	/**
 	 * Deploy verticle.
@@ -222,48 +216,21 @@ public class PrintStage extends MosipVerticleAPIManager {
 		String regId = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "PrintStage::process()::entry");
+
 		try {
-			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
-					.getRegistrationStatus(regId);
+			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
-
-			regIdMap.put(regId, object);
-
-			IdType idType = IdType.RID;
-
-			String idValue = regId;
-			if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString()
-					.equalsIgnoreCase(object.getReg_type().toString())) {
-
-				PacketMetaInfo packetMetaInfo = utilities.getPacketMetaInfo(regId);
-				Identity identity = packetMetaInfo.getIdentity();
-				List<FieldValue> metadataList = identity.getMetaData();
-				IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-				String cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
-
-				if (cardType.equalsIgnoreCase(IdType.VID.toString())) {
-					idType = IdType.VID;
-					idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
-
-				} else {
-					idType = IdType.UIN;
-					JSONObject jsonObject = utilities.retrieveUIN(regId);
-					Long value = JsonUtil.getJSONValue(jsonObject, IdType.UIN.toString());
-					idValue = Long.toString(value);
-
-				}
-			}
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue);
-
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 
 			if (isAddedToQueue) {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
-				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getCode());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				registrationStatusDto
@@ -273,7 +240,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
-				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getCode());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto
@@ -283,19 +251,24 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, description);
 			registrationStatusDto.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
 
 		} catch (PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setStatusComment(
+					StatusUtil.PDF_GENERATION_FAILED.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.PDF_GENERATION_FAILED.getCode());
 			description = CLASSNAME + SEPERATOR + "Pdf Generation failed for " + regId + SEPERATOR + e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} catch (TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setStatusComment(
+					StatusUtil.TEMPLATE_PROCESSING_FAILED.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.TEMPLATE_PROCESSING_FAILED.getCode());
 			description = CLASSNAME + SEPERATOR + "Template processing is failed for " + regId + SEPERATOR
 					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
@@ -303,6 +276,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setStatusComment(
+					StatusUtil.QUEUE_CONNECTION_NOT_FOUND.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.QUEUE_CONNECTION_NOT_FOUND.getCode());
 			description = CLASSNAME + SEPERATOR + "Queue Connection not found for " + regId + SEPERATOR
 					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
@@ -310,6 +286,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setStatusComment(
+					StatusUtil.QUEUE_CONNECTION_UNAVAILABLE.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.QUEUE_CONNECTION_UNAVAILABLE.getCode());
 			description = CLASSNAME + SEPERATOR + "Queue Connection unavailable for " + regId + SEPERATOR
 					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
@@ -317,6 +296,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setStatusComment(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			description = CLASSNAME + SEPERATOR + "Internal error occurred while processing registration id " + regId
 					+ SEPERATOR + e.getMessage();
 			object.setInternalError(Boolean.TRUE);
@@ -329,7 +310,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
@@ -360,7 +341,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			queueDto.setPdfBytes(documentBytesMap.get(UIN_CARD_PDF));
 			queueDto.setTextBytes(documentBytesMap.get(UIN_TEXT_FILE));
 			queueDto.setRegId(regId);
-
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 			oos.writeObject(queueDto);
@@ -434,7 +414,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			String uin = object.getString("uin");
 			String status = object.getString("status");
 			isValidUin = uinValidatorImpl.validateId(uin);
-			regIdMap.put(messageDTO.getRid(), messageDTO);
 			if (isValidUin && status.equalsIgnoreCase(RESEND)) {
 				MessageDTO responseMessageDto = resendQueueResponse(messageDTO, status);
 				if (!responseMessageDto.getIsValid()) {
@@ -460,26 +439,23 @@ public class PrintStage extends MosipVerticleAPIManager {
 		String description = null;
 		String registrationId = null;
 		boolean isTransactionSuccessful = false;
-		String regId = null;
 		try {
 
 			String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 			JSONObject jsonObject = JsonUtil.objectMapperReadValue(response, JSONObject.class);
 			String status = JsonUtil.getJSONValue(jsonObject, "Status");
-			regId = JsonUtil.getJSONValue(jsonObject, "RegId");
-			if (regId != null) {
-				MessageDTO messageDTO = regIdMap.get(regId);
-				registrationId = messageDTO.getRid();
+			registrationId = JsonUtil.getJSONValue(jsonObject, "RegId");
+			if (registrationId != null) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PrintStage::consumerListener()::entry");
 				InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 						.getRegistrationStatus(registrationId);
-				messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
 				if (status.equalsIgnoreCase(SUCCESS)) {
 					isTransactionSuccessful = true;
 					description = "Print and Post Completed for the regId : " + registrationId;
-					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusComment(StatusUtil.PRINT_POST_COMPLETED.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.PRINT_POST_COMPLETED.getCode());
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 					registrationStatusDto.setLatestTransactionTypeCode(
@@ -487,8 +463,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationStatusDto.setUpdatedBy(USER);
 					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				} else if (status.equalsIgnoreCase(RESEND)) {
+					MessageDTO messageDTO = new MessageDTO();
+					messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
+					messageDTO.setRid(registrationId);
 					description = "Re-Send uin card with regId " + registrationId + " for printing";
-					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusComment(StatusUtil.RESEND_UIN_CARD.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.RESEND_UIN_CARD.getCode());
 					registrationStatusDto.setLatestTransactionStatusCode(RESEND);
 					registrationStatusDto.setLatestTransactionTypeCode(
 							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
@@ -524,7 +504,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			regIdMap.remove(regId);
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
 		}

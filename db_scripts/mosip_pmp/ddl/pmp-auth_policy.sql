@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : pmp.auth_policy
+-- Purpose    : Authentication Policy: The authentication policy is defined in this table. An authentication policy can be of single or a group of authentication types supported by the auth services of MOSIP application.
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- NOTE: the code below contains the SQL for the selected object
 -- as well for its dependencies and children (if applicable).
 -- 
@@ -54,6 +67,3 @@ COMMENT ON COLUMN pmp.auth_policy.is_deleted IS 'IS_Deleted : Flag to mark wheth
 -- ddl-end --
 COMMENT ON COLUMN pmp.auth_policy.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE pmp.auth_policy OWNER TO sysadmin;
--- ddl-end --
-

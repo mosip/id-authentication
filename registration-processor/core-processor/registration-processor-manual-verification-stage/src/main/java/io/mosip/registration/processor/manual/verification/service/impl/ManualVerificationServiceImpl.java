@@ -43,6 +43,8 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.manual.verification.constants.ManualVerificationConstants;
@@ -140,8 +142,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				ManualVerificationStatus.ASSIGNED.name());
 
 		if (!(matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString())
-				|| matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
-				|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString()))) {
+				|| isMatchTypeDemoOrBio(matchType))) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 					dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()"
 							+ PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
@@ -161,8 +162,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		} else {
 			if (matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString())) {
 				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
-			} else if (matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
-					|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString())) {
+			} else if (isMatchTypeDemoOrBio(matchType)) {
 				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),
 						matchType);
 			}
@@ -194,6 +194,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::exit");
 		return manualVerificationDTO;
 
+	}
+
+	private boolean isMatchTypeDemoOrBio(String matchType) {
+		return matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
+				|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString());
 	}
 
 	/*
@@ -287,13 +292,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 */
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO, String stageName) {
+		TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 		String registrationId = manualVerificationDTO.getRegId();
 		String matchedRefId = manualVerificationDTO.getMatchedRefId();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
 		messageDTO.setIsValid(false);
 		messageDTO.setRid(manualVerificationDTO.getRegId());
-		if (registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty()) {
+		if ( isRegAndMactedRefIdEmpty(registrationId,matchedRefId)) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "ManualVerificationServiceImpl::updatePacketStatus()::InvalidFileNameException"
 							+ PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
@@ -342,7 +348,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					packetInfoManager.saveRegLostUinDet(registrationId, manualVerificationDTO.getMatchedRefId());
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);
-				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
+				registrationStatusDto.setStatusComment(StatusUtil.MANUAL_VERIFIER_APPROVED_PACKET.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.MANUAL_VERIFIER_APPROVED_PACKET.getCode());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -351,7 +358,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				description = ManualVerificationConstants.VERIFICATION_APPROVED + registrationId;
 			} else {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
-				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
+				registrationStatusDto.setStatusComment(StatusUtil.MANUAL_VERIFIER_REJECTED_PACKET.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.MANUAL_VERIFIER_REJECTED_PACKET.getCode());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
@@ -369,7 +377,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
-
+			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			description = ManualVerificationConstants.TABLE_NOT_ACCESSIBLE + registrationId + "::" + e.getMessage();
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -395,6 +404,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::exit");
 		return manualVerificationDTO;
 
+	}
+
+	private boolean isRegAndMactedRefIdEmpty(String registrationId, String matchedRefId) {
+		
+		return registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty();
 	}
 
 	/*
@@ -437,7 +451,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	@SuppressWarnings("unchecked")
 	private void checkUserIDExistsInMasterList(UserDto dto) {
-		ResponseWrapper<UserResponseDTOWrapper> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<UserResponseDTOWrapper> responseWrapper;
 		UserResponseDTOWrapper userResponseDTOWrapper;
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(ManualVerificationConstants.USERS);

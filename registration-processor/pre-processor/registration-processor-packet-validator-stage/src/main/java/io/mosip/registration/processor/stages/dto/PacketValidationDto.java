@@ -17,4 +17,5 @@ public class PacketValidationDto {
 	private boolean isRIdAndTypeSynched = false;
 	private boolean isTransactionSuccessful;
 	private String packetValidaionFailure="";
+	private String packetValidatonStatusCode="";
 }

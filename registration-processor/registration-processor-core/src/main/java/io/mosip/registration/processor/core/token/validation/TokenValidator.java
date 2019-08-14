@@ -69,7 +69,7 @@ public class TokenValidator {
 					TokenResponseDTO.class);
 
 			if (tokenResponseDTO.getErrors() != null) {
-				throw new InvalidTokenException(tokenResponseDTO.getErrors()[0].getMessage());
+				throw new InvalidTokenException(tokenResponseDTO.getErrors()[0].getErrorCode(),tokenResponseDTO.getErrors()[0].getMessage());
 			} else {
 				if (!validateAccess(url, tokenResponseDTO.getResponse().getRole())) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -107,6 +107,11 @@ public class TokenValidator {
 			}
 		} else if (url.contains("status")) {
 			for (String assignedRole : APIAuthorityList.REGISTRATIONSTATUS.getList()) {
+				if (role.contains(assignedRole))
+					return true;
+			}
+		}else if (url.contains("transaction")) {
+			for (String assignedRole : APIAuthorityList.REGISTRATIONTRANSACTION.getList()) {
 				if (role.contains(assignedRole))
 					return true;
 			}

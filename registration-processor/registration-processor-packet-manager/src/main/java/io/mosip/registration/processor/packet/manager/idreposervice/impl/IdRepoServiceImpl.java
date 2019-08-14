@@ -79,7 +79,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 	private Number getUin(List<String> pathSegments, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException {
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response = new ResponseWrapper<>();
+		ResponseWrapper<IdResponseDTO> response;
 
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
@@ -136,7 +136,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 		JSONObject demographicJsonObj = null;
 
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response = new ResponseWrapper<>();
+		ResponseWrapper<IdResponseDTO> response;
 
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);

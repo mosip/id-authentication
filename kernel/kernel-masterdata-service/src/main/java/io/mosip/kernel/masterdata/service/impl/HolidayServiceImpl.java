@@ -352,7 +352,8 @@ public class HolidayServiceImpl implements HolidayService {
 				if (column.equalsIgnoreCase("name")) {
 					if (filterValidator.validate(LocationDto.class, Arrays.asList(filter))) {
 						Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
-								new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+								new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(),
+										dto.getLanguageCode()),
 								null);
 						List<SearchFilter> locationCodeFilter = buildLocationSearchFilter(locations.getContent());
 						if (locationCodeFilter.isEmpty()) {
@@ -421,9 +422,9 @@ public class HolidayServiceImpl implements HolidayService {
 	 *            the list of Machine Type.
 	 * @return the list of {@link SearchFilter}.
 	 */
-	private List<SearchFilter> buildLocationSearchFilter(List<Location> Locations) {
-		if (Locations != null && !Locations.isEmpty())
-			return Locations.stream().filter(Objects::nonNull).map(this::buildLocations).collect(Collectors.toList());
+	private List<SearchFilter> buildLocationSearchFilter(List<Location> locations) {
+		if (locations != null && !locations.isEmpty())
+			return locations.stream().filter(Objects::nonNull).map(this::buildLocations).collect(Collectors.toList());
 		return Collections.emptyList();
 	}
 

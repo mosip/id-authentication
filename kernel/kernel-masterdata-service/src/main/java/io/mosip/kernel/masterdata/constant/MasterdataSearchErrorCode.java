@@ -8,7 +8,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum MasterdataSearchErrorCode {
 	INVALID_COLUMN("KER-MSD-310","Invalid column received : %s"),
-	INVALID_PAGINATION_VALUE("KER-MSD-313","Invalid pagination  value received pagestart:%d and pagefetch:%d"),
+	INVALID_PAGINATION_VALUE("KER-MSD-313","Invalid pagination value received pagestart:%d and pagefetch:%d"),
 	FILTER_TYPE_NOT_AVAILABLE("KER-MSD-312","Filter type is missing"),
 	MISSING_FILTER_COLUMN("KER-MSD-311","Column is missing in request"),
 	INVALID_SORT_INPUT("KER-MSD-314","Missing sort field or sort type values"),

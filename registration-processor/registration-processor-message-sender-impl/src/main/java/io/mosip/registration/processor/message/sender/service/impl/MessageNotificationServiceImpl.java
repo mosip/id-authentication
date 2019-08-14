@@ -71,7 +71,13 @@ import io.mosip.registration.processor.status.code.RegistrationType;
 public class MessageNotificationServiceImpl
 		implements MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> {
 
-	/** The Constant VALUE. */
+    /** The Constant BOTH. */
+    public static final String BOTH = "BOTH";
+
+    /** The Constant LINE_SEPARATOR. */
+    public static final String LINE_SEPARATOR = "" + '\n' + '\n' + '\n';
+
+    /** The Constant VALUE. */
 	private static final String VALUE = "value";
 
 	/** The Constant UIN. */
@@ -88,7 +94,13 @@ public class MessageNotificationServiceImpl
 
 	/** The primary language. */
 	@Value("${mosip.primary-language}")
-	private String langCode;
+	private String primaryLang;
+
+	@Value("${mosip.secondary-language}")
+	private String secondaryLang;
+
+	@Value("${mosip.notification.language-type}")
+	private String languageType;
 
 	/** The env. */
 	@Autowired
@@ -133,7 +145,7 @@ public class MessageNotificationServiceImpl
 	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, IdType idType,
 			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException,
 			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
-		SmsResponseDto response = new SmsResponseDto();
+		SmsResponseDto response;
 		SmsRequestDto smsDto = new SmsRequestDto();
 		RequestWrapper<SmsRequestDto> requestWrapper = new RequestWrapper<>();
 		ResponseWrapper<?> responseWrapper;
@@ -145,8 +157,13 @@ public class MessageNotificationServiceImpl
 				"MessageNotificationServiceImpl::sendSmsNotification()::entry");
 		try {
 			setAttributes(id, idType, attributes, regType, phoneNumber, emailId);
-			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, primaryLang);
 			String artifact = IOUtils.toString(in, ENCODING);
+			if(languageType.equalsIgnoreCase(BOTH)){
+				InputStream secondaryStream = templateGenerator.getTemplate(templateTypeCode, attributes, secondaryLang);
+				String secondaryArtifact = IOUtils.toString(secondaryStream, ENCODING);
+				artifact = artifact + LINE_SEPARATOR + secondaryArtifact;
+			}
 
 			if (phoneNumber == null || phoneNumber.length() == 0) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
@@ -208,8 +225,13 @@ public class MessageNotificationServiceImpl
 		try {
 			setAttributes(id, idType, attributes, regType, phoneNumber, emailId);
 
-			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, primaryLang);
 			String artifact = IOUtils.toString(in, ENCODING);
+			if(languageType.equalsIgnoreCase(BOTH)){
+				InputStream secondaryStream = templateGenerator.getTemplate(templateTypeCode, attributes, secondaryLang);
+				String secondaryArtifact = IOUtils.toString(secondaryStream, ENCODING);
+				artifact = artifact + LINE_SEPARATOR + secondaryArtifact;
+			}
 
 			if (emailId == null || emailId.length() == 0) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
@@ -355,7 +377,7 @@ public class MessageNotificationServiceImpl
 			StringBuilder phoneNumber, StringBuilder emailId) throws IOException {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(uin.toString());
-		IdResponseDTO response = new IdResponseDTO();
+		IdResponseDTO response;
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"MessageNotificationServiceImpl::setAttributesFromIdRepo():: IDREPOGETIDBYUIN GET service Started ");

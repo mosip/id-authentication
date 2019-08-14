@@ -25,6 +25,7 @@
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
+		<module>authentication-demo-app</module>
 		<!-- <module>authentication-vid-service</module>
 		<module>authentication-staticpin-service</module> -->
 	</modules>

@@ -11,7 +11,7 @@ public class RegistrationCenterReqAdmSecDto {
 	
 
 	@NotBlank
-	List<RegCenterPostReqPrimAdmDto> registrationCenterDtos;
+	List<RegCenterPostReqDto> registrationCenterDtos;
 	
 	
 

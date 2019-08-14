@@ -34,6 +34,9 @@ public class TransactionDto implements Serializable {
 
 	/** The status comment. */
 	private String statusComment;
+	
+	/** The sub status code. */
+	private String subStatusCode;
 
 	/** The is active. */
 	private Boolean isActive;
@@ -70,7 +73,7 @@ public class TransactionDto implements Serializable {
 	 *            the status comment
 	 */
 	public TransactionDto(String transactionId, String registrationId, String parentid, String trntypecode,
-			String remarks, String statusCode, String statusComment) {
+			String remarks, String statusCode, String statusComment,String subStatusCode) {
 		super();
 		this.transactionId = transactionId;
 		this.registrationId = registrationId;
@@ -79,6 +82,7 @@ public class TransactionDto implements Serializable {
 		this.remarks = remarks;
 		this.statusCode = statusCode;
 		this.statusComment = statusComment;
+		this.subStatusCode= subStatusCode;
 	}
 
 	/**
@@ -288,6 +292,23 @@ public class TransactionDto implements Serializable {
 	 */
 	public void setReferenceIdType(String referenceIdType) {
 		this.referenceIdType = referenceIdType;
+	}
+	/**
+	 * Gets the subStatusCode.
+	 *
+	 * @return the subStatusCode
+	 */
+	public String getSubStatusCode() {
+		return subStatusCode;
+	}
+	/**
+	 * Sets the subStatusCode.
+	 *
+	 * @param subStatusCode
+	 *            the new subStatusCode
+	 */
+	public void setSubStatusCode(String subStatusCode) {
+		this.subStatusCode = subStatusCode;
 	}
 
 }

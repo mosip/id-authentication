@@ -41,6 +41,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -51,9 +53,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 @Component
 public class IdInfoHelper {
-
-	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
 
 	/** The id mapping config. */
 	@Autowired
@@ -342,6 +341,10 @@ public class IdInfoHelper {
 							entityValueFetcher, matchType, strategy, reqInfo, partnerId);
 
 					Map<String, Object> matchProperties = input.getMatchProperties();
+					if(matchType.getCategory() == Category.BIO) {
+						reqInfo.put(CbeffConstant.class.getName(), String.valueOf(matchProperties.get(CbeffConstant.class.getName())));
+						reqInfo.put(SingleType.class.getName(), ((SingleType) matchProperties.get(SingleType.class.getName())).value());
+					}
 					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType,
@@ -349,7 +352,7 @@ public class IdInfoHelper {
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
-				logger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
 						" is not allowed for - ", matchType + " MatchType");
 			}
 

@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : pmp.partner_policy
+-- Purpose    : Partner Policy: Authentication policies assigned to a partner once the policy creation request is approved. An Policy API Key is generated and provided to the partner that will be used as part of auth requests.
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- NOTE: the code below contains the SQL for the selected object
 -- as well for its dependencies and children (if applicable).
 -- 
@@ -54,6 +67,3 @@ COMMENT ON COLUMN pmp.partner_policy.is_deleted IS 'IS_Deleted : Flag to mark wh
 -- ddl-end --
 COMMENT ON COLUMN pmp.partner_policy.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE pmp.partner_policy OWNER TO sysadmin;
--- ddl-end --
-
