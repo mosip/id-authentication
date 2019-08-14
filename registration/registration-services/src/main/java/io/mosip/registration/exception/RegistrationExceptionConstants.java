@@ -96,6 +96,7 @@ public enum RegistrationExceptionConstants {
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
 	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
+	AUTH_TOKEN_COOKIE_NOT_FOUND("REG-SDU-005", "Auth token received from the authentication web-service is either null or empty"),
 	
 	//Template Service
 	TEMPLATE_CHECK_EXCEPTION(PACKET_CREATION_EXP_CODE + "TSI-001", "Template Type Code / Language Code cannot be null"),
