@@ -175,6 +175,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	/** The Constant RANDOMIZE_FALSE. */
 	private static final String RANDOMIZE_FALSE = ")?randomize=false";
+	
+	private static final String CONFIGURE_MONITOR_IN_ACTIVITY = "?wireFormat.maxInactivityDuration=0";
 
 	private MosipQueue queue;
 
@@ -520,6 +522,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	}
 
 	private MosipQueue getQueueConnection() {
+		url = url + CONFIGURE_MONITOR_IN_ACTIVITY;
 		String failOverBrokerUrl = FAIL_OVER + url + "," + url + RANDOMIZE_FALSE;
 		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, failOverBrokerUrl);
 	}
