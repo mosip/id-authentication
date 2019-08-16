@@ -192,6 +192,8 @@ public class Utilities {
 
 	/** The Constant RANDOMIZE_FALSE. */
 	private static final String RANDOMIZE_FALSE = ")?randomize=false";
+	
+	private static final String CONFIGURE_MONITOR_IN_ACTIVITY = "?wireFormat.maxInactivityDuration=0";
 
 	/**
 	 * Gets the json.
@@ -337,6 +339,7 @@ public class Utilities {
 				String userName = validateAbisQueueJsonAndReturnValue(json, USERNAME);
 				String password = validateAbisQueueJsonAndReturnValue(json, PASSWORD);
 				String brokerUrl = validateAbisQueueJsonAndReturnValue(json, BROKERURL);
+				brokerUrl = brokerUrl + CONFIGURE_MONITOR_IN_ACTIVITY;
 				String failOverBrokerUrl = FAIL_OVER + brokerUrl + "," + brokerUrl + RANDOMIZE_FALSE;
 				String typeOfQueue = validateAbisQueueJsonAndReturnValue(json, TYPEOFQUEUE);
 				String inboundQueueName = validateAbisQueueJsonAndReturnValue(json, INBOUNDQUEUENAME);
