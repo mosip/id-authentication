@@ -169,6 +169,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private static final String CLASSNAME = "PrintStage";
 
 	private static final String SEPERATOR = "::";
+	
+	/** The Constant FAIL_OVER. */
+	private static final String FAIL_OVER = "failover:(";
+
+	/** The Constant RANDOMIZE_FALSE. */
+	private static final String RANDOMIZE_FALSE = ")?randomize=false";
 
 	private MosipQueue queue;
 
@@ -514,7 +520,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 	}
 
 	private MosipQueue getQueueConnection() {
-		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
+		String failOverBrokerUrl = FAIL_OVER + url + "," + url + RANDOMIZE_FALSE;
+		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, failOverBrokerUrl);
 	}
 
 	@SuppressWarnings("unchecked")
