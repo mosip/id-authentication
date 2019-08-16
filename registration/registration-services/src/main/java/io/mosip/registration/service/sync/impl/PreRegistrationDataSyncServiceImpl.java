@@ -528,8 +528,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
-		preRegistrationDataSyncDTO.setReqTime(dateFormat.format(reqTime));
-		preRegistrationDataSyncDTO.setVer(RegistrationConstants.VER);
+		preRegistrationDataSyncDTO.setRequesttime(dateFormat.format(reqTime));
+		preRegistrationDataSyncDTO.setVersion(RegistrationConstants.VER);
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
