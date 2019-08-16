@@ -534,13 +534,13 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
 		if (SessionContext.isSessionContextAvailable()) {
-			preRegistrationDataSyncRequestDTO.setRegClientId(
+			preRegistrationDataSyncRequestDTO.setRegistrationCenterId(
 					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 		} else {
-			preRegistrationDataSyncRequestDTO.setRegClientId(getCenterId());
+			preRegistrationDataSyncRequestDTO.setRegistrationCenterId(getCenterId());
 		}
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
-		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
+		//preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
 		preRegistrationDataSyncDTO.setDataSyncRequestDto(preRegistrationDataSyncRequestDTO);
 
