@@ -33,6 +33,7 @@ ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioS
 
 RUN apt-get update && apt-get install -y unzip
 RUN unzip so-files.zip
+RUN rm -rf so-files.zip
 
 EXPOSE 8090
 RUN ls -la
