@@ -979,18 +979,19 @@ public class MasterdataSearchIntegrationTest {
 		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
-		Page<DeviceType> pageContentData = new PageImpl<>(Arrays.asList());
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList());
 		DeviceSpecification specification = new DeviceSpecification();
 		specification.setId("1001");
 		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class), Mockito.any(), Mockito.any()))
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
-				Mockito.any())).thenReturn(pageContentSpecificationData);
+		/*when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
+				Mockito.any())).thenReturn(pageContentSpecificationData);*/
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
+	
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDeviceByDeviceTypeNameWithCorrespondingSpecificationIdNotFoundExceptionTest() throws Exception {
@@ -999,14 +1000,16 @@ public class MasterdataSearchIntegrationTest {
 		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
-		DeviceType type = new DeviceType();
-		type.setCode("deviceCode");
-		Page<DeviceType> pageContentData = new PageImpl<>(Arrays.asList(type));
+		Device device = new Device();
+		device.setId("1100022");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList());
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class), Mockito.any(), Mockito.any()))
+		/*when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
-				Mockito.any())).thenReturn(pageContentSpecificationData);
+				Mockito.any())).thenReturn(pageContentSpecificationData);*/
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+		.thenReturn(pageContentData);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
