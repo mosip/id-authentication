@@ -29,7 +29,7 @@ public class DefaultSort {
 				SearchDto dto = (SearchDto) arg;
 				if (dto.getSort().isEmpty()) {
 					SearchSort sort1 = new SearchSort("createdDateTime", "desc");
-					SearchSort sort2 = new SearchSort("updateDateTime", "desc");
+					SearchSort sort2 = new SearchSort("updatedDateTime", "desc");
 					dto.setSort(Arrays.asList(sort1, sort2));
 				}
 				if (dto.getPagination() == null) {
