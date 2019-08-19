@@ -286,6 +286,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				"Loading of FingerprintCapture screen started");
 
 		setImagesOnHover();
+		initializeCaptureCount();
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {

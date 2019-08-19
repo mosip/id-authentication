@@ -7,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -137,6 +137,10 @@ public class IrisCaptureController extends BaseController {
 	private ImageView startOverImageView;
 	@FXML
 	private Button startOverBtn;
+	
+	private int leftIrisCount;
+	
+	private int rightIrisCount;
 
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
@@ -147,7 +151,8 @@ public class IrisCaptureController extends BaseController {
 	 */
 	@FXML
 	public void initialize() {
-
+		leftIrisCount=0;
+		rightIrisCount=0;
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration");
@@ -286,12 +291,12 @@ public class IrisCaptureController extends BaseController {
 				&& bio.getMissingBiometric().equalsIgnoreCase(
 						RegistrationConstants.LEFT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase()))) {
 			leftIrisException
-					.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric()));
+					.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric().toLowerCase()));
 		} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
 				&& bio.getMissingBiometric().equalsIgnoreCase(
 						RegistrationConstants.RIGHT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase()))) {
 			rightIrisException
-					.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric()));
+					.setText(ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric().toLowerCase()));
 		}
 	}
 
@@ -359,8 +364,12 @@ public class IrisCaptureController extends BaseController {
 			// retries is less than configured
 			// 3. If iris is not forced captured
 			// 4. If iris is an exception iris
+			int retries=0;
+			if(irisDetailsDTO!=null) {
+				 retries = irisDetailsDTO.getIrisType().contains(RegistrationConstants.LEFT)? leftIrisCount : rightIrisCount;
+			}
 			if (!isExceptionIris && (irisDetailsDTO == null
-					|| (irisDetailsDTO.getNumOfIrisRetry() < Integer
+					|| (retries < Integer
 							.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
 					|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
@@ -388,7 +397,11 @@ public class IrisCaptureController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
-
+	public void initializeCaptureCount() {
+		leftIrisCount=0;
+		rightIrisCount=0;
+	}
+	
 	private void updateRetriesBox(double quality, double threshold, int retries) {
 		if (quality >= threshold) {
 			clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, retries);
@@ -499,16 +512,19 @@ public class IrisCaptureController extends BaseController {
 				}
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 				irisDetailsDTO.getIrises().forEach((iris) -> {
-					iris.setNumOfIrisRetry(1);
 					if (!bioservice.isMdmEnabled())
 						scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
 					String typeIris = iris.getIrisType();
 					if (typeIris.contains(RegistrationConstants.LEFT)) {
+						leftIrisCount++;
+						iris.setNumOfIrisRetry(leftIrisCount);
 						leftIrisImage.setImage(convertBytesToImage(iris.getIris()));
 						leftIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
 						leftIrisQualityScore.setText(getQualityScore(iris.getQualityScore()));
 						leftIrisAttempts.setText(String.valueOf(iris.getNumOfIrisRetry()));
 					} else {
+						rightIrisCount++;
+						iris.setNumOfIrisRetry(rightIrisCount);
 						rightIrisImage.setImage(convertBytesToImage(iris.getIris()));
 						rightIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
 						rightIrisQualityScore.setText(getQualityScore(iris.getQualityScore()));
@@ -745,10 +761,15 @@ public class IrisCaptureController extends BaseController {
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the quality score of the captured iris completed");
-
+			int retries=0;
+			if(irisDetailsDTO!=null) {
+				 retries = irisDetailsDTO.getIrisType().contains(RegistrationConstants.LEFT)? leftIrisCount : rightIrisCount;
+			}
+			if(retries==0)
+				retries=3;
 			return irisDetailsDTO.getQualityScore() >= irisThreshold
 					|| (Double.compare(irisDetailsDTO.getQualityScore(), irisThreshold) < 0
-							&& irisDetailsDTO.getNumOfIrisRetry() == numOfRetries)
+							&& retries == numOfRetries)
 					|| irisDetailsDTO.isForceCaptured();
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCORE_VALIDATION_EXP,
@@ -799,7 +820,17 @@ public class IrisCaptureController extends BaseController {
 			}
 		}
 		faceCaptureController.clearExceptionImage();
+		removeException();
 		singleBiometricCaptureCheck();
+	}
+	
+	private void removeException() {
+		List<BiometricExceptionDTO> ls = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.getBiometricExceptionDTO();
+		for(BiometricExceptionDTO bR : ls) {
+			if(bR.getBiometricType().contains("iris"))
+				ls.remove(bR);
+		}
 	}
 
 	private void clearProgressBar() {
