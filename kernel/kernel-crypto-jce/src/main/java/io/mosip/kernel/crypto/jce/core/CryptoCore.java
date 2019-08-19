@@ -58,12 +58,14 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 public class CryptoCore
 		implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
 
-	private static final String SHA_1 = "SHA-1";
-
+	// will be changed later will come from property files
+	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
 	private static final String MGF1 = "MGF1";
-
+	// will be changed later will come from property files
+	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
 	private static final String SHA_256 = "SHA-256";
-
+	// will be changed later will come from property files
+	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
 	private static final String AES = "AES";
 
 	// will be changed later will come from property files
@@ -80,7 +82,7 @@ public class CryptoCore
 
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
-	private String hashAlgorithm = "PBKDF2WithHmacSHA512";
+	private String passwordAlgorithm = "PBKDF2WithHmacSHA512";
 
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
@@ -88,11 +90,11 @@ public class CryptoCore
 
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
-	private int keyLength = 256;
+	private int symmetricKeyLength = 256;
 
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.hash-iteration}")
-	private int iterations = 10000;
+	private int iterations = 100000;
 
 	private Map<String, Cipher> cipherRegistry;
 
@@ -108,7 +110,7 @@ public class CryptoCore
 		try {
 			cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
 			cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
-			secretKeyFactory = SecretKeyFactory.getInstance(hashAlgorithm);
+			secretKeyFactory = SecretKeyFactory.getInstance(passwordAlgorithm);
 			signature = Signature.getInstance(signAlgorithm);
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new NoSuchAlgorithmException(
@@ -119,7 +121,7 @@ public class CryptoCore
 	}
 
 	@Override
-	public byte[] symmetricEncrypt(SecretKey key, byte[] data) {
+	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] aad) {
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
 		CryptoUtils.verifyData(data);
 		byte[] output = null;
@@ -129,6 +131,9 @@ public class CryptoCore
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
+			if (aad != null && aad.length != 0) {
+				cipher.updateAAD(aad);
+			}
 			byte[] processData = doFinal(data, cipher);
 			System.arraycopy(processData, 0, output, 0, processData.length);
 			System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
@@ -144,7 +149,29 @@ public class CryptoCore
 	}
 
 	@Override
-	public byte[] symmetricDecrypt(SecretKey key, byte[] data) {
+	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
+		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		CryptoUtils.verifyData(data);
+		try {
+			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, iv);
+			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
+			if (aad != null && aad.length != 0) {
+				cipher.updateAAD(aad);
+			}
+			return doFinal(data, cipher);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
+			throw new InvalidParamSpecException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
+		}
+	}
+
+	@Override
+	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] aad) {
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
 		CryptoUtils.verifyData(data);
 		byte[] output = null;
@@ -153,6 +180,9 @@ public class CryptoCore
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+			if (aad != null && aad.length != 0) {
+				cipher.updateAAD(aad);
+			}
 			output = doFinal(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
@@ -169,22 +199,76 @@ public class CryptoCore
 		return output;
 	}
 
+	/**
+	 * This method is overloaded from specification provided as it has GCM specific
+	 * (AEAD) functionalities.
+	 * 
+	 * GCM is described in <a href=
+	 * "https://en.wikipedia.org/wiki/Galois/Counter_Mode">Galois_Counter_Mode</a>.
+	 * 
+	 * AEAD is Authenticated Encryption with Associated Data which provides both
+	 * confidentiality and data origin authentication.AEAD is described in <a href=
+	 * "https://tools.ietf.org/html/rfc5116#section-3.3">rfc5116#section-3.3</a>.
+	 * 
+	 * AAD(Advance Authentication Data is additional data included with GCM ) The
+	 * aim of AAD is to attach information to the ciphertext that is not encrypted,
+	 * but is bound to the ciphertext in the sense that it cannot be changed or
+	 * separated.Conceptually, the MAC is computed over the AAD and the ciphertext
+	 * together.
+	 * 
+	 * @param key  symmetric key as key
+	 * @param data data to encrypt
+	 * @param iv   Initialization Vector
+	 * @param aad  Advance Authentication Data is additional data included with GCM
+	 *             to verify integrity of it
+	 * @return
+	 */
+	@Override
+	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
+		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		CryptoUtils.verifyData(data);
+		try {
+			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, iv);
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+			if (aad != null) {
+				cipher.updateAAD(aad);
+			}
+			return doFinal(data, cipher);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
+			throw new InvalidParamSpecException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
+		}
+	}
+
 	@Override
 	public byte[] asymmetricEncrypt(PublicKey key, byte[] data) {
+		CryptoUtils.verifyData(data);
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
+		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(SHA_256, MGF1, new MGF1ParameterSpec(SHA_256),
+				PSpecified.DEFAULT);
 		try {
-			cipher.init(Cipher.ENCRYPT_MODE, key);
+			cipher.init(Cipher.ENCRYPT_MODE, key, oaepParams);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
+		}catch (InvalidAlgorithmParameterException e) {
+			throw new InvalidParamSpecException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
 		}
 		return doFinal(data, cipher);
 	}
 
 	@Override
 	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
+		CryptoUtils.verifyData(data);
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
-		OAEPParameterSpec oaepParams = new OAEPParameterSpec(SHA_256, MGF1, new MGF1ParameterSpec(SHA_1),
+		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(SHA_256, MGF1, new MGF1ParameterSpec(SHA_256),
 				PSpecified.DEFAULT);
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, key, oaepParams);
@@ -201,7 +285,7 @@ public class CryptoCore
 
 	@Override
 	public byte[] hash(char[] data, byte[] salt) {
-		PBEKeySpec pbeKeySpec = new PBEKeySpec(data, salt, iterations, keyLength);
+		PBEKeySpec pbeKeySpec = new PBEKeySpec(data, salt, iterations, symmetricKeyLength);
 		SecretKey key;
 		try {
 			key = secretKeyFactory.generateSecret(pbeKeySpec);
@@ -272,4 +356,9 @@ public class CryptoCore
 					e.getMessage(), e);
 		}
 	}
+
+	public static void main(String[] args) throws java.security.NoSuchAlgorithmException {
+		
+	}
+
 }
