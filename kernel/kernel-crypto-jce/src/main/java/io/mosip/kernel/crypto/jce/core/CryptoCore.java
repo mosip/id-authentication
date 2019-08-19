@@ -356,9 +356,4 @@ public class CryptoCore
 					e.getMessage(), e);
 		}
 	}
-
-	public static void main(String[] args) throws java.security.NoSuchAlgorithmException {
-		
-	}
-
 }
