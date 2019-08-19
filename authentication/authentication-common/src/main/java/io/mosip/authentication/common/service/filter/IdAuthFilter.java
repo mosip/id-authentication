@@ -137,7 +137,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			return Objects.nonNull(data) ? mapper.readValue(CryptoUtil.decodeBase64(data.toString()), Map.class) : null;
 		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

@@ -18,7 +18,7 @@ public class PreRegistrationDataSyncRequestDTO implements Serializable{
 
 	/** The Registration-client-Id. */
 	@JsonProperty("registrationCenterId")
-	private String regClientId;
+	private String registrationCenterId;
 	
 	/** The from-date. */
 	@JsonProperty("fromDate")
@@ -28,16 +28,16 @@ public class PreRegistrationDataSyncRequestDTO implements Serializable{
 	@JsonProperty("toDate")
 	private String toDate;
 	
-	/** The UserId. */
+	/** The UserId. *//*
 	@JsonProperty("user-id")
-	private String userId;
+	private String userId;*/
 
-	public String getRegClientId() {
-		return regClientId;
+	public String getRegistrationCenterId() {
+		return registrationCenterId;
 	}
 
-	public void setRegClientId(String regClientId) {
-		this.regClientId = regClientId;
+	public void setRegistrationCenterId(String registrationCenterId) {
+		this.registrationCenterId = registrationCenterId;
 	}
 
 	public String getFromDate() {
@@ -56,13 +56,13 @@ public class PreRegistrationDataSyncRequestDTO implements Serializable{
 		this.toDate = toDate;
 	}
 
-	public String getUserId() {
+	/*public String getUserId() {
 		return userId;
 	}
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
+	}*/
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

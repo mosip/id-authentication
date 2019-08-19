@@ -169,6 +169,14 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private static final String CLASSNAME = "PrintStage";
 
 	private static final String SEPERATOR = "::";
+	
+	/** The Constant FAIL_OVER. */
+	private static final String FAIL_OVER = "failover:(";
+
+	/** The Constant RANDOMIZE_FALSE. */
+	private static final String RANDOMIZE_FALSE = ")?randomize=false";
+	
+	private static final String CONFIGURE_MONITOR_IN_ACTIVITY = "?wireFormat.maxInactivityDuration=0";
 
 	private MosipQueue queue;
 
@@ -219,6 +227,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 		try {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
+			if (RegistrationType.RES_REPRINT.toString().equals(object.getReg_type().toString())) {
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSED.toString());
+			} 
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
@@ -511,7 +522,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	}
 
 	private MosipQueue getQueueConnection() {
-		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, url);
+		url = url + CONFIGURE_MONITOR_IN_ACTIVITY;
+		String failOverBrokerUrl = FAIL_OVER + url + "," + url + RANDOMIZE_FALSE;
+		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, failOverBrokerUrl);
 	}
 
 	@SuppressWarnings("unchecked")

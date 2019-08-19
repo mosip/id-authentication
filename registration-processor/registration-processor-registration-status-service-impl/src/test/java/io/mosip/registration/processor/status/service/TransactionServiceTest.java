@@ -110,6 +110,8 @@ public class TransactionServiceTest {
 		DataAccessLayerException exception = new DataAccessLayerException(
 				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 				"errorMessage", new Exception());
+		Mockito.when(environment.getProperty( any())).thenReturn("en").thenReturn("fr")
+		.thenReturn("ar");
 		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
 		.thenThrow(exception);
 		
@@ -122,6 +124,8 @@ public class TransactionServiceTest {
 	@Test(expected = TransactionsUnavailableException.class)
 	public void testgetTransactionByRegIdException() throws TransactionsUnavailableException, RegTransactionAppException {
 		List<TransactionEntity> entities = new ArrayList<TransactionEntity>();
+		Mockito.when(environment.getProperty( any())).thenReturn("en").thenReturn("fr")
+		.thenReturn("ar");
 		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
 		.thenReturn(entities);
 		
@@ -148,8 +152,8 @@ public class TransactionServiceTest {
 		entities.add(transcationEntity);
 		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
 		.thenReturn(entities);
-		Mockito.when(environment.getProperty( any()))
-				.thenReturn("globalMessages_en.properties");
+		Mockito.when(environment.getProperty( any())).thenReturn("en").thenReturn("fr")
+		.thenReturn("ar").thenReturn("globalMessages_en.properties");
 		
 		List<RegistrationTransactionDto> dtolist = transactionService.getTransactionByRegId("1221", "en");
 

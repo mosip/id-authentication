@@ -186,7 +186,7 @@ public class RestClientAuthAdvice {
 		// and existing AuthZ Token had expired
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
 			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO()
-					&& null != SessionContext.authTokenDTO().getCookie()) {
+					&& cookieAvailable()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 						"Session Context Auth token " + authZToken);
@@ -300,5 +300,10 @@ public class RestClientAuthAdvice {
 				"Checking for the Session Context with OTP is available :: " + (SessionContext.isSessionContextAvailable() && 
 						loginUserDTO != null && loginUserDTO.getOtp() != null));
 		return SessionContext.isSessionContextAvailable() && loginUserDTO != null && loginUserDTO.getOtp() != null;
+	}
+	
+	private boolean cookieAvailable() {
+		return null != SessionContext.authTokenDTO().getCookie() && 
+				SessionContext.authTokenDTO().getCookie().trim().length() > 10;
 	}
 }
