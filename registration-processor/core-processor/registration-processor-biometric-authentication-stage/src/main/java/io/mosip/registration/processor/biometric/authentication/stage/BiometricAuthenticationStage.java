@@ -277,17 +277,17 @@ public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 		boolean idaAuth = false;
 		AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(UIN,
 				BiometricAuthenticationConstants.INDIVIDUAL_TYPE_USERID, officerbiometric);
-		if (authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty()) {
-			if (authResponseDTO.getResponse().isAuthStatus()) {
-				idaAuth = true;
-			} else {
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				registrationStatusDto.setSubStatusCode(StatusUtil.INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED.getCode());
-				registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED.getMessage() + authResponseDTO.getErrors().get(0)));
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), "", registrationStatusDto.getRegistrationId(),
-						"IDA Authentiacation failed - " + authResponseDTO.getErrors());
-				idaAuth = false;
-			}
+		if ((authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty())&&authResponseDTO.getResponse().isAuthStatus()) {
+			idaAuth = true;
+		}else {
+
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setSubStatusCode(StatusUtil.INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED.getCode());
+			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED.getMessage() + authResponseDTO.getErrors().get(0)));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), "", registrationStatusDto.getRegistrationId(),
+					"IDA Authentiacation failed - " + authResponseDTO.getErrors());
+			idaAuth = false;
+		
 		}
 		return idaAuth;
 	}
