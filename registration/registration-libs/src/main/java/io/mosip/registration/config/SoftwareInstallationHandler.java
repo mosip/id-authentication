@@ -44,7 +44,7 @@ public class SoftwareInstallationHandler {
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.reg.client.url");
-		
+
 		latestVersion = properties.getProperty("mosip.reg.version");
 
 		getLocalManifest();
