@@ -29,6 +29,10 @@ ADD target/authentication-service-*.jar authentication-service.jar
 ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/ABISTech5FaceSDKAdapter_v2.jar ABISTech5FaceSDKAdapter_v2.jar
 ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/t5-finger-iris-mosip-auth-v1.2.jar t5-finger-iris-mosip-auth-v1.2.jar 
 ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/tech5-sdk-v1.5.1.jar tech5-sdk-v1.5.1.jar 
+ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/external-files.zip external-files.zip
+
+RUN apt-get update && apt-get install -y unzip
+RUN unzip external-files.zip
 
 EXPOSE 8090
 RUN ls -la
