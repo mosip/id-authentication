@@ -22,7 +22,7 @@ ENV spring_config_label_env=${spring_config_label}
 ENV spring_config_url_env=${spring_config_url}
 
 # environment variable for external jar dependencies
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/:/usr/lib64/:/usr/lib/:/usr/local/lib64/:/so-files/:
+ENV LD_LIBRARY_PATH=/so-files
 
 ADD target/authentication-service-*.jar authentication-service.jar
 
