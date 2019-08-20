@@ -38,13 +38,25 @@
    **BIR Creation using Builder**
    
     ```
-   BIR finger = new BIR.BIRBuilder().withBdb(fingerImg)
+   		RegistryIDType format = new RegistryIDType();
+		format.setOrganization("257");
+		format.setType("7");
+		QualityType Qtype = new QualityType();
+		Qtype.setScore(new Long(100));
+		RegistryIDType algorithm = new RegistryIDType();
+		algorithm.setOrganization("HMAC");
+		algorithm.setType("SHA-256");
+		Qtype.setAlgorithm(algorithm);
+		createList = new ArrayList<>();
+		BIR rIndexFinger = new BIR.BIRBuilder().withBdb(rindexFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
-						.build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right IndexFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 	 ```	
 	 
@@ -58,122 +70,440 @@
 	 **Sample XML Generated :**
 	 
 	 ```
-	 <?xml version="1.0" encoding="UTF-8"?>
-	<BIR xmlns="http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/">
-    <Version>
-        <Major>2</Major>
-        <Minor>1</Minor>
-    </Version>
-    <CBEFFVersion>
-        <Major>2</Major>
-        <Minor>1</Minor>
-    </CBEFFVersion>
-    <BIRInfo>
-        <Integrity>false</Integrity>
-    </BIRInfo>
-    <BIR>
-	   <!-- face -->
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>8</FormatType>
-            <CreationDate>2018-12-18T12:18:35.662+05:30</CreationDate>
-            <Type>Face</Type>
-            <Subtype></Subtype>
-            <Level>Intermediate</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>90</Quality>
-        </BDBInfo>
-        <BDB>RmFjZQ...==</BDB>
-    </BIR>
-    <BIR>
-	   <!-- left slap -->
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>7</FormatType>
-            <CreationDate>2018-12-18T12:18:35.667+05:30</CreationDate>
-            <Type>Finger</Type>
-            <Subtype>Left IndexFinger MiddleFinger RingFinger LittleFinger</Subtype>
-            <Level>Raw</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>80</Quality>
-        </BDBInfo>
-        <BDB>UmlnH5...=</BDB>
-    </BIR>
-    <BIR>
-	  <!-- right slap -->
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>7</FormatType>
-            <CreationDate>2018-12-18T12:18:35.667+05:30</CreationDate>
-            <Type>Finger</Type>
-            <Subtype>Right IndexFinger MiddleFinger RingFinger LittleFinger</Subtype>
-            <Level>Raw</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>80</Quality>
-        </BDBInfo>
-        <BDB>TGVdCB...=</BDB>
-    </BIR>
-    <BIR>
-	   <!-- two thumbs -->
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>7</FormatType>
-            <CreationDate>2018-12-18T12:18:35.667+05:30</CreationDate>
-            <Type>Finger</Type>
-            <Subtype>Left Right Thumb</Subtype>
-            <Level>Raw</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>80</Quality>
-        </BDBInfo>
-        <BDB>GVmdAC...=</BDB>
-    </BIR>
-    <BIR>
-	  <!-- right iris -->
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>9</FormatType>
-            <CreationDate>2018-12-18T12:18:35.667+05:30</CreationDate>
-            <Type>Iris</Type>
-            <Subtype>Right</Subtype>
-            <Level>Raw</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>80</Quality>
-        </BDBInfo>
-        <BDB>UmlnaH...=</BDB>
-    </BIR>
-    <BIR>
-	   <!-- left iris -->
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>9</FormatType>
-            <CreationDate>2018-12-18T12:18:35.668+05:30</CreationDate>
-            <Type>Iris</Type>
-            <Subtype>Left</Subtype>
-            <Level>Raw</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>80</Quality>
-        </BDBInfo>
-        <BDB>TGVmdS...=</BDB>
-    </BIR>
-</BIR> 
+<?xml version="1.0" encoding="UTF-8"?>
+<BIR xmlns="http://standards.iso.org/iso-iec/19785/-3/ed-2/">
+   <BIRInfo>
+      <Integrity>false</Integrity>
+   </BIRInfo>
+   <!-- right index finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.209Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Right IndexFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- right middle finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Right MiddleFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- right ring finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Right RingFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- right little finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Right LittleFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- left index finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Left IndexFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- left middle finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Left MiddleFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- left ring finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Left RingFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- left little finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Left LittleFinger</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- right thumb finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Right Thumb</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- left thumb finger -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Finger</Type>
+         <Subtype>Left Thumb</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- face -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Face</Type>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- right iris -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Iris</Type>
+         <Subtype>Right</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+   <!-- left iris -->
+   <BIR>
+      <Version>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </Version>
+      <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+      </CBEFFVersion>
+      <BIRInfo>
+         <Integrity>false</Integrity>
+      </BIRInfo>
+      <BDBInfo>
+         <Format>
+            <Organization>Mosip</Organization>
+            <Type>257</Type>
+         </Format>
+         <CreationDate>2019-06-27T13:40:06.211Z</CreationDate>
+         <Type>Iris</Type>
+         <Subtype>Left</Subtype>
+         <Level>Raw</Level>
+         <Purpose>Enroll</Purpose>
+         <Quality>
+            <Algorithm>
+               <Organization>HMAC</Organization>
+               <Type>SHA-256</Type>
+            </Algorithm>
+            <Score>100</Score>
+         </Quality>
+      </BDBInfo>
+      <BDB>RklSAD...</BDB>
+   </BIR>
+</BIR>
  ```
 	 
 	 
@@ -249,4 +579,3 @@
 	{RIGHT FINGER=UklHSFQgRklOR0VS}
 	```
    
-
