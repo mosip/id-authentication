@@ -42,6 +42,10 @@ public class StorageServiceImpl extends BaseService implements StorageService {
 	@Value("${mosip.reg.packetstorepath}")
 	private String packetStoreLocation;
 
+	public void setPacketStoreLocation(String packetStoreLocation) {
+		this.packetStoreLocation = packetStoreLocation;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
