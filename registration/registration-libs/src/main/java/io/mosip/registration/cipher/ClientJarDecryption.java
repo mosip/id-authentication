@@ -325,13 +325,8 @@ public class ClientJarDecryption extends Application {
 												LoggerConstants.APPLICATION_NAME, LoggerConstants.APPLICATION_ID,
 												"Preparing command to launch the reg-client");
 
-										String cmd = "java -Dspring.profiles.active="
-												+ properties.getProperty("mosip.reg.env")
-												+ " -Dmosip.reg.healthcheck.url="
-												+ properties.getProperty(MOSIP_REGISTRATION_HC_URL)
-												+ " -Dfile.encoding=UTF-8 -Dmosip.reg.dbpath="
-												+ properties.getProperty("mosip.reg.dbpath") + " -D"
-												+ MOSIP_REGISTRATION_DB_KEY + "=" + "\"" + propsFilePath + "\""
+										String cmd = "java"
+												+ " -Dfile.encoding=UTF-8"
 												+ " -cp " + tempPath + "/*;" + libPath
 												+ "/* io.mosip.registration.controller.Initialization";
 
