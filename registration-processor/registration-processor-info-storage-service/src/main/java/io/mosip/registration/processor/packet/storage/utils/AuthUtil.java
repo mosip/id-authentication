@@ -238,7 +238,10 @@ public class AuthUtil {
 				dataInfoDTO.setDeviceProviderID("cogent");
 				dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 				dataInfoDTO.setTransactionID("1234567890");
-				bioInfo.setData(dataInfoDTO);
+
+				String encodedData = CryptoUtil
+						.encodeBase64String(JsonUtil.objectMapperObjectToJson(dataInfoDTO).getBytes());
+				bioInfo.setData(encodedData);
 				biometrics.add(bioInfo);
 			}
 
