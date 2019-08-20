@@ -522,7 +522,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	}
 
 	private MosipQueue getQueueConnection() {
-		url = url + CONFIGURE_MONITOR_IN_ACTIVITY;
+		//url = url + CONFIGURE_MONITOR_IN_ACTIVITY;
 		String failOverBrokerUrl = FAIL_OVER + url + "," + url + RANDOMIZE_FALSE;
 		return mosipConnectionFactory.createConnection(typeOfQueue, username, password, failOverBrokerUrl);
 	}
