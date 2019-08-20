@@ -1007,6 +1007,7 @@ public class RegistrationConstants {
 	public static final String DUPLICATE_FINGER = "DuplicateFinger";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
+	public static final String FACE_ISO = "/images/face.iso";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/fingerprints/thumbs.jpg";
 	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "mosip.registration.leftslap_fingerprint_threshold";
