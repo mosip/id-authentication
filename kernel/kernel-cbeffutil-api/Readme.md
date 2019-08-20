@@ -65,30 +65,30 @@
 	 CbeffImpl cbeffImpl = new CbeffImpl();
 	 byte[] createXml = cbeffImpl.createXML(createList);
 	 
-	 ```
+	  ```
 	 
 	 **Sample XML Generated :**
+	  ```
 	 
-	 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<BIR xmlns="http://standards.iso.org/iso-iec/19785/-3/ed-2/">
-   <BIRInfo>
-      <Integrity>false</Integrity>
-   </BIRInfo>
-   <!-- right index finger -->
-   <BIR>
-      <Version>
-         <Major>1</Major>
-         <Minor>1</Minor>
-      </Version>
-      <CBEFFVersion>
-         <Major>1</Major>
-         <Minor>1</Minor>
-      </CBEFFVersion>
-      <BIRInfo>
+        <?xml version="1.0" encoding="UTF-8"?>
+        <BIR xmlns="http://standards.iso.org/iso-iec/19785/-3/ed-2/">
+        <BIRInfo>
          <Integrity>false</Integrity>
-      </BIRInfo>
-      <BDBInfo>
+        </BIRInfo>
+        <!-- right index finger -->
+        <BIR>
+        <Version>
+        <Major>1</Major>
+        <Minor>1</Minor>
+        </Version>
+        <CBEFFVersion>
+         <Major>1</Major>
+         <Minor>1</Minor>
+        </CBEFFVersion>
+        <BIRInfo>
+         <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
          <Format>
             <Organization>Mosip</Organization>
             <Type>257</Type>
@@ -107,9 +107,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- right middle finger -->
-   <BIR>
+     </BIR>
+    <!-- right middle finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -140,9 +140,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- right ring finger -->
-   <BIR>
+    </BIR>
+    <!-- right ring finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -173,9 +173,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- right little finger -->
-   <BIR>
+     </BIR>
+    <!-- right little finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -206,9 +206,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- left index finger -->
-   <BIR>
+    </BIR>
+    <!-- left index finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -239,9 +239,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- left middle finger -->
-   <BIR>
+    </BIR>
+    <!-- left middle finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -272,9 +272,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- left ring finger -->
-   <BIR>
+    </BIR>
+     <!-- left ring finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -305,9 +305,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- left little finger -->
-   <BIR>
+    </BIR>
+    <!-- left little finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -338,9 +338,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- right thumb finger -->
-   <BIR>
+    </BIR>
+    <!-- right thumb finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -371,9 +371,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- left thumb finger -->
-   <BIR>
+     </BIR>
+    <!-- left thumb finger -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -404,9 +404,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- face -->
-   <BIR>
+    </BIR>
+    <!-- face -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -436,9 +436,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- right iris -->
-   <BIR>
+    </BIR>
+    <!-- right iris -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -469,9 +469,9 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-   <!-- left iris -->
-   <BIR>
+    </BIR>
+    <!-- left iris -->
+    <BIR>
       <Version>
          <Major>1</Major>
          <Minor>1</Minor>
@@ -502,12 +502,13 @@
          </Quality>
       </BDBInfo>
       <BDB>RklSAD...</BDB>
-   </BIR>
-</BIR>
+    </BIR>
+    </BIR>
+
  ```
 	 
 	 
-2) **Update Cbeff:**
+   2) **Update Cbeff:**
 
    Updating the existing CBEFF XML with BIR blocks by passing XML as bytes and List of BIR blocks.
    
@@ -522,6 +523,7 @@
    Return Type : XML file as Byte Array
    
     **Usage Sample**
+
 	 ```
 	 CbeffImpl cbeffImpl = new CbeffImpl();
 	 byte[] updateXml = cbeffImpl.updateXML(updateList, xmlbytes);
@@ -543,9 +545,11 @@
 	Return Type : Boolean
 	
 	**Usage Sample**
-	``` 
+	```
+
 	CbeffImpl cbeffImpl = new CbeffImpl();
 	cbeffImpl.validateXML(xmlbytes, xsdbytes));
+
 	```
 	
 	**Sample Response**
@@ -569,13 +573,18 @@
    Incase of only Searching based on Type only , leave the subtype empty or null and vice versa.
    
    **Usage Sample**
-	``` 
+	```
+
 	CbeffImpl cbeffImpl = new CbeffImpl();
 	Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(xmlbytes, "FMR", "Right");
+
 	```
 	
 	**Sample Response**
+
 	``` 
 	{RIGHT FINGER=UklHSFQgRklOR0VS}
+
 	```
    
+
