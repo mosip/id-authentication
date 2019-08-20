@@ -197,16 +197,7 @@
 			**/registration/processor/abis/handler/*.java,
 			**/registration/processor/abis/handler/config/*.java,
 
-
-
-
-
-
-
-
-
-
-			**/registration/processor/packet/service/**/*.java,
+            **/registration/processor/packet/service/**/*.java,
 			**/registration/processor/packet/upload/**/*.java,
 
 			**/registration/processor/status/code/*.java,
@@ -251,7 +242,7 @@
 			**/registration/processor/core/abstractverticle/MosipRouter.java,
 			**/registration/processor/packet/uploader/decryptor/*.java,
 
-			**/registration/processor/print/service/impl/PrintPostServiceImpl.java
+			**/registration/processor/print/service/impl/PrintPostServiceImpl.java,
 
 			**/registration/processor/message/sender/constants/*.java,
 			**/registration/processor/core/abstractverticle/BaseHealthCheckModel.java

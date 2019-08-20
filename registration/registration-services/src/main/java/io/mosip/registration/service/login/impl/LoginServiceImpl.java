@@ -361,12 +361,20 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 					|| userResponseDTO.getErrorResponseDTOs() != null
 					|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
 					|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
-				val.add(RegistrationConstants.FAILURE);
+				if (isAuthTokeEmptyError(masterResponseDTO, userResponseDTO, userSaltResponse, publicKeySyncResponse)) {
+					val.add(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR);
+				} else {
+					val.add(RegistrationConstants.FAILURE);
+				}
 			} else {
 				val.add(RegistrationConstants.SUCCESS);
 			}
 		} catch (RegBaseCheckedException exRegBaseCheckedException) {
-			val.add(RegistrationConstants.FAILURE);
+			if (isAuthTokenEmptyException(exRegBaseCheckedException)) {
+				val.add(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR);
+			} else {
+				val.add(RegistrationConstants.FAILURE);
+			}
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(exRegBaseCheckedException));
 		}
@@ -537,7 +545,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	private void getUserDetailValidation(String userId) throws RegBaseCheckedException {
 		
 		if(isStringEmpty(userId)) {					
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_LOGIN_USER_ID_EXCEPTION);
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_USER_ID_EXCEPTION);
 		}
 	}
 	
@@ -561,6 +569,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		if(null == userDTO) {
 			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_LOGIN_USER_DTO_EXCEPTION);
 		} 
+	}
+
+	private boolean isAuthTokeEmptyError(ResponseDTO masterSync, ResponseDTO userSync, ResponseDTO saltSync,
+			ResponseDTO publicKeySync) {
+		return (isAuthTokenEmptyError(masterSync) || isAuthTokenEmptyError(userSync) || isAuthTokenEmptyError(saltSync)
+				|| isAuthTokenEmptyError(publicKeySync));
 	}
 
 }

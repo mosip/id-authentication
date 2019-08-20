@@ -335,7 +335,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		} finally {
 			if (description.getStatusComment() != null)
 				registrationStatusDto.setStatusComment(description.getStatusComment());
-			registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
 			if (description.getCode() != null)
 				registrationStatusDto.setStatusCode(description.getCode());
 

@@ -34,19 +34,19 @@ public class PreRegistrationDataSyncDTO implements Serializable {
 		this.id = id;
 	}
 
-	public String getVer() {
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVer(String version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
-	public String getReqTime() {
+	public String getRequesttime() {
 		return requesttime;
 	}
 
-	public void setReqTime(String requesttime) {
+	public void setRequesttime(String requesttime) {
 		this.requesttime = requesttime;
 	}
 

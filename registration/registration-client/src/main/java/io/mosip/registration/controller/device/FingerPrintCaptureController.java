@@ -248,12 +248,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The left slap count. */
 	private int leftSlapCount;
+	
+	private int leftSlapExceptionCount;
 
 	/** The right slap count. */
 	private int rightSlapCount;
 
+	private int rightSlapExceptionCount;
+
 	/** The thumb count. */
 	private int thumbCount;
+	
+	private int thumbExceptionCount;
 	
 	/** Left Hand Exceptions */
 	private List<String> leftHandExceptions=new ArrayList<String>();
@@ -280,6 +286,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				"Loading of FingerprintCapture screen started");
 
 		setImagesOnHover();
+		initializeCaptureCount();
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -374,13 +381,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					// selected Fingerprint Pane
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
-					if ((leftHandPalmPane.getId().equals(selectedPane.getId()) && leftSlapCount < 4)
+					if ((leftHandPalmPane.getId().equals(selectedPane.getId()) && leftSlapExceptionCount < 4 && leftSlapCount<Integer.parseInt(
+							getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 							&& enableCapture(fpDetailsDTO, RegistrationConstants.LEFTPALM,
 									RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)
-							|| (rightHandPalmPane.getId().equals(selectedPane.getId()) && rightSlapCount < 4)
+							|| (rightHandPalmPane.getId().equals(selectedPane.getId()) && rightSlapExceptionCount < 4 && rightSlapCount<Integer.parseInt(
+									getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 									&& (enableCapture(fpDetailsDTO, RegistrationConstants.RIGHTPALM,
 											RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))
-							|| (thumbPane.getId().equals(selectedPane.getId()) && thumbCount < 2)
+							|| (thumbPane.getId().equals(selectedPane.getId()) && thumbExceptionCount < 2 && thumbCount<Integer.parseInt(
+									getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 									&& (enableCapture(fpDetailsDTO, RegistrationConstants.THUMBS,
 											RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))) {
 						scanBtn.setDisable(false);
@@ -545,17 +555,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	public void clearImage() {
 
 		exceptionFingersCount();
-		if (leftSlapCount == 4) {
+		if (leftSlapExceptionCount == 4) {
 			removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_LEFT, leftHandPalmImageview, leftSlapQualityScore,
 					RegistrationConstants.LEFTPALM_IMG_PATH, leftSlapAttempt);
 
 		}
-		if (rightSlapCount == 4) {
+		if (rightSlapExceptionCount == 4) {
 			removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_RIGHT, rightHandPalmImageview, rightSlapQualityScore,
 					RegistrationConstants.RIGHTPALM_IMG_PATH, rightSlapAttempt);
 
 		}
-		if (thumbCount == 2) {
+		if (thumbExceptionCount == 2) {
 			removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_THUMBS, thumbImageview, thumbsQualityScore,
 					RegistrationConstants.THUMB_IMG_PATH, thumbSlapAttempt);
 
@@ -592,13 +602,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 		SessionContext.map().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION, tempExceptionList);
 
-		if (leftSlapCount == 4 && rightSlapCount == 4 && thumbCount == 2) {
+		if (leftSlapExceptionCount == 4 && rightSlapExceptionCount == 4 && thumbExceptionCount == 2) {
 			continueBtn.setDisable(false);
 		}
 
 		populateException();
 	}
 
+	public void initializeCaptureCount() {
+		leftSlapCount=0;
+		rightSlapCount=0;
+		thumbCount=0;
+	}
+	
 	private void findingExceptionDifference(List<BiometricExceptionDTO> tempExceptionList,
 			List<BiometricExceptionDTO> bioExceptionList) {
 		List<String> bioList1 = null;
@@ -710,6 +726,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * Clear finger print DTO.
 	 */
 	public void clearFingerPrintDTO() {
+		initializeCaptureCount();
 		removeFingerPrint(RegistrationConstants.LEFTPALM, leftHandPalmImageview, leftSlapQualityScore,
 				RegistrationConstants.LEFTPALM_IMG_PATH, leftSlapAttempt);
 		removeFingerPrint(RegistrationConstants.RIGHTPALM, rightHandPalmImageview, rightSlapQualityScore,
@@ -745,9 +762,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * Exception fingers count.
 	 */
 	private void exceptionFingersCount() {
-		leftSlapCount = 0;
-		rightSlapCount = 0;
-		thumbCount = 0;
+		leftSlapExceptionCount = 0;
+		rightSlapExceptionCount = 0;
+		thumbExceptionCount = 0;
 		leftHandExceptions.clear();
 		rightHandExceptions.clear();
 		thumbsExceptions.clear();
@@ -769,19 +786,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				getExceptionIdentifier(leftHandExceptions,biometricExceptionDTO.getMissingBiometric());
-				leftSlapCount++;
+				leftSlapExceptionCount++;
 			}
 			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
 					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				getExceptionIdentifier(rightHandExceptions,biometricExceptionDTO.getMissingBiometric());
-				rightSlapCount++;
+				rightSlapExceptionCount++;
 			}
 			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& biometricExceptionDTO.isMarkedAsException())) {
 				getExceptionIdentifier(thumbsExceptions,biometricExceptionDTO.getMissingBiometric());
-				thumbCount++;
+				thumbExceptionCount++;
 			}
 		}
 	}
@@ -1118,9 +1135,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							}
 						}
 					}
-					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-						detailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry() + 1);
-					}
 					break;
 				}
 			}
@@ -1146,11 +1160,26 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		if (detailsDTO.isCaptured()) {
+			int retries=0;
 			if(!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			}else {
 				detailsDTO.setFingerPrint(streamer.imageBytes);
+			}
+			if(detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
+				leftSlapCount++;
+				retries=leftSlapCount;
+			}else if(detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
+				rightSlapCount++;
+				retries=rightSlapCount;
+			}else {
+				thumbCount++;
+				retries=thumbCount;
+			}
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+
+				detailsDTO.setNumRetry(retries);
 			}
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 			popupStage.close();
@@ -1360,16 +1389,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if (validateQualityScore(fingerprintDetailsDTO)
 						|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
-							|| leftSlapCount >= 4) {
+							|| leftSlapExceptionCount >= 4) {
 						isleftHandSlapCaptured = true;
 					}
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)
-							|| rightSlapCount >= 4) {
+							|| rightSlapExceptionCount >= 4) {
 						isrightHandSlapCaptured = true;
 
 					}
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)
-							|| thumbCount >= 2) {
+							|| thumbExceptionCount >= 2) {
 						isthumbsCaptured = true;
 					}
 				} else {
@@ -1377,7 +1406,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				}
 			}
 
-			if (fingerprintDetailsDTOs.isEmpty() && leftSlapCount >= 4 && rightSlapCount >= 4 && thumbCount >= 2) {
+			if (fingerprintDetailsDTOs.isEmpty() && leftSlapExceptionCount >= 4 && rightSlapExceptionCount >= 4 && thumbExceptionCount >= 2) {
 				isleftHandSlapCaptured = true;
 				isrightHandSlapCaptured = true;
 				isthumbsCaptured = true;

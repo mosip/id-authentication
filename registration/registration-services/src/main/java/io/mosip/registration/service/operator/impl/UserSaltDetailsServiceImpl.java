@@ -105,7 +105,11 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 				LOGGER.error(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						ExceptionUtils.getStackTrace(regBaseCheckedException));
 
-				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
+				setErrorResponse(responseDTO,
+						isAuthTokenEmptyException(regBaseCheckedException)
+								? RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode()
+								: RegistrationConstants.ERROR,
+						null);
 			}
 		} else {
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.TRIGGER_POINT_MSG);
@@ -165,7 +169,7 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 						"Unable to sync user salt data as there is no internet connection");
 				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
-		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException socketTimeoutException) {
+		} catch (HttpClientErrorException | SocketTimeoutException socketTimeoutException) {
 			LOGGER.error(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					socketTimeoutException.getMessage() + "Http error while pulling json from server"
 							+ ExceptionUtils.getStackTrace(socketTimeoutException));

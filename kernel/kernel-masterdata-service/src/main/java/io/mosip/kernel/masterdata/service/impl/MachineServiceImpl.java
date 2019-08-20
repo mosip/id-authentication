@@ -559,7 +559,7 @@ public class MachineServiceImpl implements MachineService {
 						&& centerMachine.getLangCode().equals(machineSearchDto.getLangCode())) {
 					String regId = centerMachine.getRegistrationCenter().getId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)) {
+						if (registrationCenter.getId().equals(regId) && centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
 							machineSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});

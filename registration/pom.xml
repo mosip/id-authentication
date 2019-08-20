@@ -102,7 +102,6 @@
 			src/main/java/io/mosip/registration/mdm/dto/**/*,
 			src/main/java/io/mosip/registration/mdm/constants/**/*,
 			src/main/java/io/mosip/registration/mdm/util/**/*,
-			src/main/java/io/mosip/registration/mdmservice/**/*
 		</sonar.exclusions>
 	</properties>
 

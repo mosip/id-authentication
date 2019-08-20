@@ -55,6 +55,12 @@ public class FaceValidatorTest {
 	}
 	
 	@Test
+	public void validateUserTest() {
+		authenticationValidatorDTO.setUserId("");
+		faceValidatorImpl.validate(authenticationValidatorDTO);
+	}
+	
+	@Test
 	public void validateAuthTest() {
 		assertNull(faceValidatorImpl.validate("mosip","123", true));
 	}

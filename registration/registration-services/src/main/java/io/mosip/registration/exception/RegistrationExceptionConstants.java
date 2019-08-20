@@ -96,6 +96,7 @@ public enum RegistrationExceptionConstants {
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
 	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
+	AUTH_TOKEN_COOKIE_NOT_FOUND("REG-SDU-005", "Auth token received from the authentication web-service is either null or empty"),
 	
 	//Template Service
 	TEMPLATE_CHECK_EXCEPTION(PACKET_CREATION_EXP_CODE + "TSI-001", "Template Type Code / Language Code cannot be null"),
@@ -171,12 +172,28 @@ public enum RegistrationExceptionConstants {
 	REG_BIOMETRIC_DTO_NULL("REG-UOS-001","Biometric Dto is mandatory field and it is missing."),
 	
 	//Login
-	REG_LOGIN_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
+	REG_USER_ID_EXCEPTION("REG-LSI-001","User Id cannot be null or empty."),
 	REG_LOGIN_AUTH_TYPE_EXCEPTION("REG-LSI-002","Authentication Type cannot be null or empty."),
 	REG_LOGIN_ROLES_EXCEPTION("REG-LSI-003","Roles cannot be null or empty."),
 	REG_LOGIN_CENTER_ID_EXCEPTION("REG-LSI-004","Registration Center Id cannot be null or empty."),
 	REG_LOGIN_LANG_CODE_EXCEPTION("REG-LSI-005","Language Code cannot be null or empty."),
-	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty.");
+	
+	
+	REG_POLICY_SYNC_SERVICE_IMPL("REG-PSS-001","responseDTO cannot be null or empty"),
+	REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID("REG-PSS-002","centerMachineId is mandatory"),
+	
+	REG_GLOBALPARAM_SYNC_SERVICE_IMPL("REG-GPSS-001","responseDTO cannot be null or empty"),
+	REG_GLOBALPARAM_SYNC_SERVICE_IMPL_TRIGGER_POINT("REG-GPSS-002","triggerPoint is mandatory"),
+	
+	REG_LOGIN_USER_DTO_EXCEPTION("REG-LSI-006","UserDTO cannot be null or empty."),
+	
+	//BioService
+	REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_AUTTHENTICATION("REG-BIO-001","user id is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_IRIS_AUTHENTICATION("REG-MSS-002","user id is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE("REG-MSS-003","finger type is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_SCANNED_PATH("REG-MSS-004","path string is null"),
+	REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE("REG-MSS-005","iris string is null");
+
 
 
 	
