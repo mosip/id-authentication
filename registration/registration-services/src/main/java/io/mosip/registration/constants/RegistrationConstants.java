@@ -987,6 +987,7 @@ public class RegistrationConstants {
 	public static final String IRIS_THRESHOLD = "mosip.registration.iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
+	public static final String IMAGE_BYTE_ISO = "byteIso";
 	public static final String IMAGE_SCORE_KEY = "imageScore";
 	public static final String LEFT = "Left";
 	public static final String RIGHT = "Right";
@@ -1008,6 +1009,8 @@ public class RegistrationConstants {
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
 	public static final String FACE_ISO = "/images/face.iso";
+	public static final String LEFT_EYE_ISO = "/images/leftEye.iso";
+	public static final String RIGHT_EYE_ISO = "/images/rightEye.iso";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/fingerprints/thumbs.jpg";
 	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "mosip.registration.leftslap_fingerprint_threshold";
