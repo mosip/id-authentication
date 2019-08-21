@@ -687,6 +687,11 @@ public class DemographicDetailController extends BaseController {
 	private Label ageOrDOBLabel;
 	@Autowired
 	private FaceCaptureController faceCaptureController;
+	private double fullNameNodePos;
+	private double addressLine1NodePos;
+	private double addressLine2NodePos;
+	private double addressLine3NodePos;
+	private double parentNameNodePos;
 
 	/*
 	 * (non-Javadoc)
@@ -724,6 +729,14 @@ public class DemographicDetailController extends BaseController {
 			ageBasedOperation();
 			listenerOnFields();
 			loadLocalLanguageFields();
+			fullNameNodePos=200.00;
+			addressLine1NodePos=470.00;
+			addressLine2NodePos=555.00;
+			addressLine3NodePos=630.00;
+			parentNameNodePos=1110.00;
+			if(validation.isLostUIN()){
+				positionKeyboardForLostUIN();
+			}
 			loadKeyboard();
 			ageFieldLocalLanguage.setDisable(true);
 			renderComboBoxes();
@@ -1335,6 +1348,7 @@ public class DemographicDetailController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
+	
 
 	/**
 	 * Loading the virtual keyboard
@@ -1351,15 +1365,23 @@ public class DemographicDetailController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 			vk.changeControlOfKeyboard(parentNameLocalLanguage);
-			vk.focusListener(fullNameLocalLanguage, 200.00, keyboardNode);
-			vk.focusListener(addressLine1LocalLanguage, 470.00, keyboardNode);
-			vk.focusListener(addressLine2LocalLanguage, 555.00, keyboardNode);
-			vk.focusListener(addressLine3LocalLanguage, 630.00, keyboardNode);
-			vk.focusListener(parentNameLocalLanguage, 1110.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, fullNameNodePos, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, addressLine1NodePos, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, addressLine2NodePos, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, addressLine3NodePos, keyboardNode);
+			vk.focusListener(parentNameLocalLanguage, parentNameNodePos, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
+	}
+	
+	public void positionKeyboardForLostUIN() {
+		fullNameNodePos=fullNameNodePos-80;
+		addressLine1NodePos=addressLine1NodePos-80;
+		addressLine2NodePos=addressLine2NodePos-80;
+		addressLine3NodePos=addressLine3NodePos-80;
+		parentNameNodePos=parentNameNodePos-80;
 	}
 
 	/**
@@ -2005,34 +2027,34 @@ public class DemographicDetailController extends BaseController {
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(470.00);
+				keyboardNode.setLayoutY(addressLine1NodePos);
 				keyboardNode.setManaged(true);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(555.00);
+				keyboardNode.setLayoutY(addressLine2NodePos);
 				keyboardNode.setManaged(true);
 
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(630.00);
+				keyboardNode.setLayoutY(addressLine3NodePos);
 				keyboardNode.setManaged(true);
 
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(200.00);
+				keyboardNode.setLayoutY(fullNameNodePos);
 				keyboardNode.setManaged(true);
 
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(1110.00);
+				keyboardNode.setLayoutY(parentNameNodePos);
 				keyboardNode.setManaged(true);
 
 			}
