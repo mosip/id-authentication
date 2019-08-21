@@ -203,7 +203,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 			}
 
 			//Convert the Document Name to Codes
-			//setDocumentCodes(registrationDTO);
+			setDocumentCodes(registrationDTO);
 			
 			// Generating Demographic JSON as byte array
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
