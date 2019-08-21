@@ -729,12 +729,12 @@ public class DemographicDetailController extends BaseController {
 			ageBasedOperation();
 			listenerOnFields();
 			loadLocalLanguageFields();
-			fullNameNodePos=200.00;
-			addressLine1NodePos=470.00;
-			addressLine2NodePos=555.00;
-			addressLine3NodePos=630.00;
-			parentNameNodePos=1110.00;
-			if(validation.isLostUIN()){
+			fullNameNodePos = 200.00;
+			addressLine1NodePos = 470.00;
+			addressLine2NodePos = 555.00;
+			addressLine3NodePos = 630.00;
+			parentNameNodePos = 1110.00;
+			if (validation.isLostUIN()) {
 				positionKeyboardForLostUIN();
 			}
 			loadKeyboard();
@@ -995,8 +995,7 @@ public class DemographicDetailController extends BaseController {
 			national.getStyleClass().addAll("selectedResidence", "button");
 			foreigner.getStyleClass().addAll("residence", "button");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - NATIONAL", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - NATIONAL", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
@@ -1054,8 +1053,7 @@ public class DemographicDetailController extends BaseController {
 			foreigner.getStyleClass().addAll("selectedResidence", "button");
 			national.getStyleClass().addAll("residence", "button");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - FOREIGNER", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - FOREIGNER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
@@ -1200,6 +1198,20 @@ public class DemographicDetailController extends BaseController {
 					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
 					parentFieldValidation();
 				}
+			} else {
+				dd.clear();
+				mm.clear();
+				yyyy.clear();
+				parentRegIdLocalLanguage.clear();
+				parentRegId.clear();
+				parentUinIdLocalLanguage.clear();
+				parentUinId.clear();
+				parentDetailPane.setManaged(false);
+				parentDetailPane.setVisible(false);
+				parentDetailPane.setDisable(true);
+				parentName.clear();
+				parentNameLocalLanguage.clear();
+				parentRegId.clear();
 			}
 		} else {
 			ageField.setText(RegistrationConstants.EMPTY);
@@ -1348,7 +1360,6 @@ public class DemographicDetailController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
-	
 
 	/**
 	 * Loading the virtual keyboard
@@ -1375,13 +1386,13 @@ public class DemographicDetailController extends BaseController {
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 	}
-	
+
 	public void positionKeyboardForLostUIN() {
-		fullNameNodePos=fullNameNodePos-80;
-		addressLine1NodePos=addressLine1NodePos-80;
-		addressLine2NodePos=addressLine2NodePos-80;
-		addressLine3NodePos=addressLine3NodePos-80;
-		parentNameNodePos=parentNameNodePos-80;
+		fullNameNodePos = fullNameNodePos - 80;
+		addressLine1NodePos = addressLine1NodePos - 80;
+		addressLine2NodePos = addressLine2NodePos - 80;
+		addressLine3NodePos = addressLine3NodePos - 80;
+		parentNameNodePos = parentNameNodePos - 80;
 	}
 
 	/**
