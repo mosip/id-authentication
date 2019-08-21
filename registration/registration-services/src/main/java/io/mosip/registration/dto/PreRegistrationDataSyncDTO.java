@@ -61,5 +61,11 @@ public class PreRegistrationDataSyncDTO implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	@Override
+	public String toString() {
+		return "PreRegistrationDataSyncDTO [id=" + id + ", version=" + version + ", requesttime=" + requesttime
+				+ ", dataSyncRequestDto=" + dataSyncRequestDto + "]";
+	}
 	
 }

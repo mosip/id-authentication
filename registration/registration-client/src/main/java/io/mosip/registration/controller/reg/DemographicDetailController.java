@@ -2269,11 +2269,11 @@ public class DemographicDetailController extends BaseController {
 				dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
 			}
 			if (dd.getText().isEmpty()) {
-				dobMessage.setText(dd.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+				dobMessage.setText(dd.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001.split("#")[0]);
 			} else if (mm.getText().isEmpty()) {
-				dobMessage.setText(mm.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+				dobMessage.setText(mm.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001.split("#")[0]);
 			} else if (yyyy.getText().isEmpty()) {
-				dobMessage.setText(yyyy.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+				dobMessage.setText(yyyy.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001.split("#")[0]);
 			}
 			dobMessage.setVisible(true);
 			return false;

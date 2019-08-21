@@ -55,7 +55,9 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -65,12 +67,17 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -110,6 +117,8 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 	private AuditDAO auditDAO;
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
+	@Autowired
+	private DocumentTypeDAO documentTypeDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -193,6 +202,9 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 				}
 			}
 
+			//Convert the Document Name to Codes
+			//setDocumentCodes(registrationDTO);
+			
 			// Generating Demographic JSON as byte array
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
@@ -757,5 +769,23 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 							RegistrationExceptionConstants.REG_PKT_CREATE_NO_CBEFF_TAG_FLAG.getErrorMessage()));
 		}
 	}
+	
+	private void setDocumentCodes(RegistrationDTO registrationDTO) {
+		IndividualIdentity individualIdentity = (IndividualIdentity)registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+		
+		setDocumentTypeCode(individualIdentity.getProofOfAddress());
+		setDocumentTypeCode(individualIdentity.getProofOfDateOfBirth());
+		setDocumentTypeCode(individualIdentity.getProofOfException());
+		setDocumentTypeCode(individualIdentity.getProofOfIdentity());
+		setDocumentTypeCode(individualIdentity.getProofOfRelationship());
+	}
 
+	private void setDocumentTypeCode(DocumentDetailsDTO documentDetailsDTO) {
+		if(documentDetailsDTO != null) {
+			List<DocumentType> documentTypes = documentTypeDAO.getDocTypeByName(documentDetailsDTO.getType());
+			
+			if(!documentTypes.isEmpty()) documentDetailsDTO.setType(documentTypes.get(0).getCode());
+		}
+	}
+	
 }
