@@ -586,8 +586,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		if(isNull(irisType))
 			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 		
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+		if (isMdmEnabled())
 			getIrisImageAsDTOWithMdm(irisDetailsDTO, "IRIS_DOUBLE");
 		else
 			getIrisImageAsDTONonMdm(irisDetailsDTO, irisType);

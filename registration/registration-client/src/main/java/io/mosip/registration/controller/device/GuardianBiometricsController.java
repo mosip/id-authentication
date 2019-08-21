@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_B
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -527,23 +528,25 @@ public class GuardianBiometricsController extends BaseController implements Init
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
 			return;
 		}
-
-		if (detailsDTO.getIris() != null) {
-			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
+		if (detailsDTO.isCaptured()) {
+			IrisDetailsDTO irisDetailDto = detailsDTO.getIrises().get(0);
+			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailDto.getIris()));
+			biometricImage.setImage(convertBytesToImage(irisDetailDto.getIris()));
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-
-			setCapturedValues( detailsDTO.getQualityScore(), detailsDTO.getNumOfIrisRetry(),
+			setCapturedValues( irisDetailDto.getQualityScore(), 1,
 					thresholdValue);
 
 			popupStage.close();
 
-			if (validateIrisQulaity(detailsDTO, thresholdValue)) {
+			if (validateIrisQulaity(irisDetailDto, thresholdValue)) {
 				scanBtn.setDisable(true);
 				continueBtn.setDisable(false);
 			} else {
 				scanBtn.setDisable(false);
 				continueBtn.setDisable(true);
 			}
+			irisDetailsDTOs.remove(detailsDTO);
+			irisDetailsDTOs.add(irisDetailDto);
 		} else {
 			irisDetailsDTOs.remove(detailsDTO);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
@@ -620,10 +623,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		if (detailsDTO.isCaptured()) {
 
-			if(!bioService.isMdmEnabled())
+			if(!bioService.isMdmEnabled()) 
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			else
 				detailsDTO.setFingerPrint(streamer.imageBytes);
+			biometricImage.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
 			setCapturedValues(detailsDTO.getQualityScore(), detailsDTO.getNumRetry(),
