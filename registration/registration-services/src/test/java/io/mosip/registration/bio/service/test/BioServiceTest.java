@@ -377,7 +377,7 @@ public class BioServiceTest {
 
 	}
 
-	@Test
+	@Test(expected=RegBaseCheckedException.class)
 	public void testGetIrisImageAsDTONoMdm() throws RegBaseCheckedException, IOException {
 		PowerMockito.mockStatic(ImageIO.class);
 		when(ImageIO.read(Mockito.any(InputStream.class))).thenReturn(Mockito.mock(BufferedImage.class));
