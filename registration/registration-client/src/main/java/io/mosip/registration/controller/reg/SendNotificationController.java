@@ -137,6 +137,8 @@ public class SendNotificationController extends BaseController implements Initia
 				if (email.getText() != null && !email.getText().isEmpty()) {
 					String emails = email.getText();
 					List<String> emailList = getRecipients(emails, RegistrationConstants.CONTENT_TYPE_EMAIL);
+					if(emailList==null)
+						return;
 					if (!emailList.isEmpty()) {
 						StringBuilder unsentMails = new StringBuilder();
 						String prefix = "";
@@ -240,6 +242,7 @@ public class SendNotificationController extends BaseController implements Initia
 		}
 		if (contents.size() > 5) {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NOTIFICATION_LIMIT_EXCEEDED);
+			return null;
 		} else {
 			for (String content : contents) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType) ? validateMail(content)
