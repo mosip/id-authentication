@@ -1513,6 +1513,26 @@ public class RegistrationConstants {
 
 	};
 	
+	public static final Map<String, String> userOnBoardBioFlag = new HashMap<String, String>() {
+
+		{
+			put("leftIndex", "LEFT_INDEX");
+			put("leftLittle", "LEFT_LITTLE");
+			put("leftMiddle", "LEFT_MIDDLE");
+			put("leftRing", "LEFT_RING");
+			put("leftThumb", "LEFT_THUMB");
+			put("rightIndex", "RIGHT_INDEX");
+			put("rightLittle", "RIGHT_LITTLE");
+			put("rightMiddle", "RIGHT_MIDDLE");
+			put("rightRing", "RIGHT_RING");
+			put("rightThumb", "RIGHT_THUMB");
+			put("LeftEye.png", "LEFT");
+			put("RightEye.png", "RIGHT");
+
+		}
+
+	};
+	
 	public static final String RESPONSE_SIGNATURE="response-signature";
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
