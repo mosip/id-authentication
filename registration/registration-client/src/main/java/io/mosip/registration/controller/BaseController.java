@@ -392,6 +392,7 @@ public class BaseController {
 	 *            alert context
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
+		String type="#TYPE#";
 		if (id.contains(RegistrationConstants.ONTYPE)) {
 			id = id.replaceAll(RegistrationConstants.UNDER_SCORE + RegistrationConstants.ONTYPE,
 					RegistrationConstants.EMPTY);
@@ -402,11 +403,11 @@ public class BaseController {
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
 		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB))) {
-			String[] split = context.split("#TYPE#");
+			String[] split = context.split(type);
 			label.setText(split[0]);
 		}
 
-		Tooltip tool = new Tooltip(context);
+		Tooltip tool = new Tooltip(context.contains(type)? context.split(type)[0] : context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);
 		label.setVisible(true);
