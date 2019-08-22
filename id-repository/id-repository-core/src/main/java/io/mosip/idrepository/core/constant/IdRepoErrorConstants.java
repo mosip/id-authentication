@@ -60,7 +60,7 @@ public enum IdRepoErrorConstants {
 	DOCUMENT_HASH_MISMATCH("IDR-IDS-002", "Biometric/Document hash does not match"),
 
 	/** The internal server error. */
-	ENCRYPTION_DECRYPTION_FAILED("IDR-IDS-003", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
+	ENCRYPTION_DECRYPTION_FAILED("IDR-IDS-003", "Failed to either encrypt/decrypt message using Kernel Crypto Manager"),
 
 	/** The file storage access error. */
 	FILE_STORAGE_ACCESS_ERROR("IDR-IDS-004", "Failed to store/retrieve files in DFS"),
