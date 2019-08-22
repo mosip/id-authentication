@@ -998,7 +998,7 @@ public class LocationServiceImpl implements LocationService {
 							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
-					if (filter.getText().isEmpty() || filter.getText() == null) {
+					if (filter.getText() == null || filter.getText().isEmpty() ) {
 						List<String> locationNames = locationRepository
 								.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(),
 										langCode);
