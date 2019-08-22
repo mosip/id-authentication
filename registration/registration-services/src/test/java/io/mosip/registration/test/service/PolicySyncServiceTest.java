@@ -185,7 +185,7 @@ public class PolicySyncServiceTest {
 
 	}
 	
-	//@Test
+	@Test(expected=RegBaseCheckedException.class)
 	public void failureTestException() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException, ParseException {
 		KeyStore keys = new KeyStore();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
