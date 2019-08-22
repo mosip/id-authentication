@@ -19,7 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -51,6 +53,7 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.entity.PreRegistrationList;
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -131,16 +134,37 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@SuppressWarnings("unchecked")
 	public void setLastUpdateTime() {
 		try {
-			String latestUpdateTime = ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs()
-					.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO))
-							.stream()
-							.sorted((sync1, sync2) -> Timestamp.valueOf(sync2.getLastUpdatedTimes())
-									.compareTo(Timestamp.valueOf(sync1.getLastUpdatedTimes())))
-							.findFirst().get().getLastUpdatedTimes();
-			lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime()
-					.format(DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+
+			ResponseDTO responseDTO = jobConfigurationService.getLastCompletedSyncJobs();
+			if (responseDTO.getSuccessResponseDTO() != null) {
+
+				List<SyncDataProcessDTO> dataProcessDTOs = ((List<SyncDataProcessDTO>) responseDTO
+						.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO));
+
+				LinkedList<String> timestamps =new LinkedList<>();
+				dataProcessDTOs.forEach(syncDataProcessDTO -> {
+					
+					if (!(jobConfigurationService.getUnTaggedJobs().contains(syncDataProcessDTO.getJobId())
+							|| jobConfigurationService.getOfflineJobs().contains(syncDataProcessDTO.getJobId()))) {
+						timestamps.add(syncDataProcessDTO.getLastUpdatedTimes());
+					}
+				});
+
+				String latestUpdateTime = timestamps.stream()
+						.sorted((timestamp1, timestamp2) -> Timestamp.valueOf(timestamp2)
+								.compareTo(Timestamp.valueOf(timestamp1)))
+						.findFirst().get();
+
+				lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime().format(
+						DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+
+				setLastPreRegPacketDownloadedTime();
+			}
 		} catch (RuntimeException expception) {
+
 			lastSyncTime.setText("---");
+
+			expception.printStackTrace();
 		}
 	}
 
@@ -307,7 +331,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 				lastBiometricTime
 						.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
 			}
-			preRegistrationSyncTime();
 
 			if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
 					.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
@@ -316,16 +339,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - UI- Home Page Loading", APPLICATION_NAME, APPLICATION_ID,
 					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
-		}
-	}
-
-	private void preRegistrationSyncTime() {
-		Timestamp lastPreRegPacketDownloaded = preRegistrationDataSyncService.getLastPreRegPacketDownloadedTime();
-		if (lastPreRegPacketDownloaded != null) {
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
-			lastPreRegPacketDownloadedTime.setText(RegistrationUIConstants.LAST_UPDATED + " "
-					+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
 		}
 	}
 
@@ -765,7 +778,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void downloadPreRegData() {
 
 		headerController.downloadPreRegData(null);
-		preRegistrationSyncTime();
 	}
 
 	/**
@@ -983,7 +995,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -1104,5 +1117,25 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	public ProgressIndicator getProgressIndicator() {
 		return progressIndicator;
+	}
+
+	public void setLastPreRegPacketDownloadedTime() {
+
+		SyncControl syncControl = jobConfigurationService
+				.getSyncControlOfJob(RegistrationConstants.OPT_TO_REG_PDS_J00003);
+
+		if (syncControl != null) {
+			Timestamp lastPreRegPacketDownloaded = syncControl.getUpdDtimes();
+
+			if (lastPreRegPacketDownloaded != null) {
+
+				DateTimeFormatter format = DateTimeFormatter
+						.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+
+				lastPreRegPacketDownloadedTime.setText(RegistrationUIConstants.LAST_DOWNLOADED + " "
+						+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
+
+			}
+		}
 	}
 }
