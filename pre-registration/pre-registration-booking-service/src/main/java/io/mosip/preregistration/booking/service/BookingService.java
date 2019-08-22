@@ -306,6 +306,7 @@ public class BookingService {
 					dateList = bookingDAO.findDate(regID, fromDate, endDate);
 					if (dateList == null || dateList.isEmpty()) {
 						log.info("sessionId", "idType", "id", "There no slots available in case of holidays present in the given date range and no of Holidays is  "+noOfHoliday);
+					noOfHoliday = 0;
 					}
 					else {
 					noOfHoliday = 0;
