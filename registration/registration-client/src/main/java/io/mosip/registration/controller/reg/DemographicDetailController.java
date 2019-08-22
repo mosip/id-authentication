@@ -1512,7 +1512,9 @@ public class DemographicDetailController extends BaseController {
 
 			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 			DemographicInfoDTO demographicInfoDTO;
-
+			if(preRegistrationId.getText().isEmpty()) {
+				registrationDTO.setPreRegistrationId("");
+			}
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
@@ -2135,6 +2137,10 @@ public class DemographicDetailController extends BaseController {
 	 */
 	@FXML
 	private void next() throws InvalidApplicantArgumentException, ParseException {
+		
+		if(preRegistrationId.getText().isEmpty()) {
+			preRegistrationId.clear();
+		}
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& parentUinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
