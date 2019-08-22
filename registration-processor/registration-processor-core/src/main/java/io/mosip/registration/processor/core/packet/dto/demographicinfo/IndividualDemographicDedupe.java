@@ -14,7 +14,7 @@ public class IndividualDemographicDedupe {
 	/** The name. */
 	private JsonValue[] name;
 	public JsonValue[] getName() {
-		return name.clone();
+		return name != null ? name.clone() : null;
 	}
 
 	public void setName(JsonValue[] name) {
