@@ -687,6 +687,11 @@ public class DemographicDetailController extends BaseController {
 	private Label ageOrDOBLabel;
 	@Autowired
 	private FaceCaptureController faceCaptureController;
+	private double fullNameNodePos;
+	private double addressLine1NodePos;
+	private double addressLine2NodePos;
+	private double addressLine3NodePos;
+	private double parentNameNodePos;
 
 	/*
 	 * (non-Javadoc)
@@ -724,6 +729,14 @@ public class DemographicDetailController extends BaseController {
 			ageBasedOperation();
 			listenerOnFields();
 			loadLocalLanguageFields();
+			fullNameNodePos = 200.00;
+			addressLine1NodePos = 470.00;
+			addressLine2NodePos = 555.00;
+			addressLine3NodePos = 630.00;
+			parentNameNodePos = 1110.00;
+			if (validation.isLostUIN()) {
+				positionKeyboardForLostUIN();
+			}
 			loadKeyboard();
 			ageFieldLocalLanguage.setDisable(true);
 			renderComboBoxes();
@@ -982,8 +995,7 @@ public class DemographicDetailController extends BaseController {
 			national.getStyleClass().addAll("selectedResidence", "button");
 			foreigner.getStyleClass().addAll("residence", "button");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - NATIONAL", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - NATIONAL", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
@@ -1041,8 +1053,7 @@ public class DemographicDetailController extends BaseController {
 			foreigner.getStyleClass().addAll("selectedResidence", "button");
 			national.getStyleClass().addAll("residence", "button");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - FOREIGNER", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.error("REGISTRATION - FOREIGNER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
@@ -1187,6 +1198,20 @@ public class DemographicDetailController extends BaseController {
 					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
 					parentFieldValidation();
 				}
+			} else {
+				dd.clear();
+				mm.clear();
+				yyyy.clear();
+				parentRegIdLocalLanguage.clear();
+				parentRegId.clear();
+				parentUinIdLocalLanguage.clear();
+				parentUinId.clear();
+				parentDetailPane.setManaged(false);
+				parentDetailPane.setVisible(false);
+				parentDetailPane.setDisable(true);
+				parentName.clear();
+				parentNameLocalLanguage.clear();
+				parentRegId.clear();
 			}
 		} else {
 			ageField.setText(RegistrationConstants.EMPTY);
@@ -1351,15 +1376,23 @@ public class DemographicDetailController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
 			vk.changeControlOfKeyboard(parentNameLocalLanguage);
-			vk.focusListener(fullNameLocalLanguage, 200.00, keyboardNode);
-			vk.focusListener(addressLine1LocalLanguage, 470.00, keyboardNode);
-			vk.focusListener(addressLine2LocalLanguage, 555.00, keyboardNode);
-			vk.focusListener(addressLine3LocalLanguage, 630.00, keyboardNode);
-			vk.focusListener(parentNameLocalLanguage, 1110.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, fullNameNodePos, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, addressLine1NodePos, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, addressLine2NodePos, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, addressLine3NodePos, keyboardNode);
+			vk.focusListener(parentNameLocalLanguage, parentNameNodePos, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
+	}
+
+	public void positionKeyboardForLostUIN() {
+		fullNameNodePos = fullNameNodePos - 80;
+		addressLine1NodePos = addressLine1NodePos - 80;
+		addressLine2NodePos = addressLine2NodePos - 80;
+		addressLine3NodePos = addressLine3NodePos - 80;
+		parentNameNodePos = parentNameNodePos - 80;
 	}
 
 	/**
@@ -1479,7 +1512,9 @@ public class DemographicDetailController extends BaseController {
 
 			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 			DemographicInfoDTO demographicInfoDTO;
-
+			if(preRegistrationId.getText().isEmpty()) {
+				registrationDTO.setPreRegistrationId("");
+			}
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
@@ -2005,34 +2040,34 @@ public class DemographicDetailController extends BaseController {
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(470.00);
+				keyboardNode.setLayoutY(addressLine1NodePos);
 				keyboardNode.setManaged(true);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(555.00);
+				keyboardNode.setLayoutY(addressLine2NodePos);
 				keyboardNode.setManaged(true);
 
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(630.00);
+				keyboardNode.setLayoutY(addressLine3NodePos);
 				keyboardNode.setManaged(true);
 
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(200.00);
+				keyboardNode.setLayoutY(fullNameNodePos);
 				keyboardNode.setManaged(true);
 
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(1110.00);
+				keyboardNode.setLayoutY(parentNameNodePos);
 				keyboardNode.setManaged(true);
 
 			}
@@ -2102,6 +2137,10 @@ public class DemographicDetailController extends BaseController {
 	 */
 	@FXML
 	private void next() throws InvalidApplicantArgumentException, ParseException {
+		
+		if(preRegistrationId.getText().isEmpty()) {
+			preRegistrationId.clear();
+		}
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& parentUinId.getText().equals(getRegistrationDTOFromSession().getSelectionListDTO().getUinId())) {
@@ -2131,7 +2170,7 @@ public class DemographicDetailController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				// Set Exception Photo Type Description
-				boolean isParentOrGuardianBiometricsCaptured = getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+				boolean isParentOrGuardianBiometricsCaptured = getRegistrationDTOFromSession().isUpdateUINChild()
 						|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
 								&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
 				documentScanController.setExceptionDescriptionText(isParentOrGuardianBiometricsCaptured);
@@ -2236,11 +2275,11 @@ public class DemographicDetailController extends BaseController {
 				dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
 			}
 			if (dd.getText().isEmpty()) {
-				dobMessage.setText(dd.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+				dobMessage.setText(dd.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001.split("#")[0]);
 			} else if (mm.getText().isEmpty()) {
-				dobMessage.setText(mm.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+				dobMessage.setText(mm.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001.split("#")[0]);
 			} else if (yyyy.getText().isEmpty()) {
-				dobMessage.setText(yyyy.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+				dobMessage.setText(yyyy.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001.split("#")[0]);
 			}
 			dobMessage.setVisible(true);
 			return false;

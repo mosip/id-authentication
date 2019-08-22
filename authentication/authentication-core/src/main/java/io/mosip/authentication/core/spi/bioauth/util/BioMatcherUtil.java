@@ -248,9 +248,9 @@ public class BioMatcherUtil {
 		if (String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER).equals(type)
 				|| String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER_MINUTIAE).equals(type)) {
 			return fingerApi;
-		} else if (String.valueOf(CbeffConstant.FACE_FORMAT_IDENTIFIER).equals(type)) {
+		} else if (String.valueOf(CbeffConstant.FORMAT_TYPE_FACE).equals(type)) {
 			return faceApi;
-		} else if (String.valueOf(CbeffConstant.IRIS_FORMAT_IDENTIFIER).equals(type)) {
+		} else if (String.valueOf(CbeffConstant.FORMAT_TYPE_IRIS).equals(type)) {
 			return irisApi;
 		} else {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "getBioSdkInstance",

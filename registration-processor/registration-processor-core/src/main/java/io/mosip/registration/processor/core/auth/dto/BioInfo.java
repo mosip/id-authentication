@@ -4,14 +4,13 @@ import lombok.Data;
 
 @Data
 public class BioInfo {
-	
 
-	private DataInfoDTO data;
-	
+	private String data;
+
 	private String hash;
-	
+
 	private String sessionKey;
-	
+
 	private String signature;
-	
+
 }

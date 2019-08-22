@@ -165,7 +165,7 @@ public class UpdateUINController extends BaseController implements Initializable
 		configvalues.addAll(configuredFieldsfromDB);
 
 		for (String configureField : UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST) {
-			if (!configvalues.contains(configureField)) {
+			if (!configvalues.contains(configureField.toLowerCase())) {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);
@@ -183,7 +183,7 @@ public class UpdateUINController extends BaseController implements Initializable
 		}
 
 		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
-			if (!configvalues.contains(configureField)) {
+			if (!configvalues.contains(configureField.toLowerCase())) {
 				demographicHBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);

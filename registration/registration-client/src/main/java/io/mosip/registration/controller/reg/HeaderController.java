@@ -675,8 +675,7 @@ public class HeaderController extends BaseController {
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
-						return preRegistrationDataSyncService
-								.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+						return jobConfigurationService.executeJob(RegistrationConstants.OPT_TO_REG_PDS_J00003,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 					}
 				};
@@ -700,6 +699,8 @@ public class HeaderController extends BaseController {
 				if (responseDTO.getSuccessResponseDTO() != null) {
 					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 					generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
+					
+					packetHandlerController.setLastPreRegPacketDownloadedTime();
 
 				} else if (responseDTO.getErrorResponseDTOs() != null) {
 

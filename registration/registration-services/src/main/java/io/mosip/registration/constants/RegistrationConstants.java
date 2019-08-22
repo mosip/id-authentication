@@ -987,6 +987,7 @@ public class RegistrationConstants {
 	public static final String IRIS_THRESHOLD = "mosip.registration.iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
+	public static final String IMAGE_BYTE_ISO = "byteIso";
 	public static final String IMAGE_SCORE_KEY = "imageScore";
 	public static final String LEFT = "Left";
 	public static final String RIGHT = "Right";
@@ -1007,6 +1008,9 @@ public class RegistrationConstants {
 	public static final String DUPLICATE_FINGER = "DuplicateFinger";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
+	public static final String FACE_ISO = "/images/face.iso";
+	public static final String LEFT_EYE_ISO = "/images/leftEye.iso";
+	public static final String RIGHT_EYE_ISO = "/images/rightEye.iso";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/fingerprints/thumbs.jpg";
 	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "mosip.registration.leftslap_fingerprint_threshold";
@@ -1281,6 +1285,7 @@ public class RegistrationConstants {
 	public static final String ENGLISH_LANG_CODE = "eng";
 	public static final String USER_ID_CODE = "USERID";
 	public static final String OTP_CHANNELS = "mosip.registration.otp_channels";
+	public static final String AUTH_TOKEN_NOT_RECEIVED_ERROR = "No Auth Token Received";
 
 	// Packet Sync
 	public static final String PACKET_SYNC = "packet_sync";
@@ -1504,6 +1509,26 @@ public class RegistrationConstants {
 			put("RightEye", "R_IRIS");
 			put("LeftEye.png", "LEFT");
 			put("RightEye.png", "RIGHT");
+		}
+
+	};
+	
+	public static final Map<String, String> userOnBoardBioFlag = new HashMap<String, String>() {
+
+		{
+			put("leftIndex", "LEFT_INDEX");
+			put("leftLittle", "LEFT_LITTLE");
+			put("leftMiddle", "LEFT_MIDDLE");
+			put("leftRing", "LEFT_RING");
+			put("leftThumb", "LEFT_THUMB");
+			put("rightIndex", "RIGHT_INDEX");
+			put("rightLittle", "RIGHT_LITTLE");
+			put("rightMiddle", "RIGHT_MIDDLE");
+			put("rightRing", "RIGHT_RING");
+			put("rightThumb", "RIGHT_THUMB");
+			put("LeftEye.png", "LEFT");
+			put("RightEye.png", "RIGHT");
+
 		}
 
 	};

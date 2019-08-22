@@ -31,6 +31,8 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.TemplateService;
@@ -70,6 +72,12 @@ public class RegistrationPreviewController extends BaseController implements Ini
 	@Autowired
 	private RegistrationController registrationController;
 
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	private IrisCaptureController irisCaptureController;
+	
 	@FXML
 	private Text registrationNavlabel;
 
@@ -314,12 +322,13 @@ public class RegistrationPreviewController extends BaseController implements Ini
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+		fingerPrintCaptureController.initializeCaptureCount();
+		irisCaptureController.initializeCaptureCount();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
 
 			long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO().stream().count();
-
 			long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getIrisDetailsDTO().stream().count();
 			if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {

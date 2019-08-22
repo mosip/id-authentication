@@ -182,7 +182,7 @@ public class UserSaltSyncServiceTest {
 
 		Mockito.when(
 				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
-				.thenReturn(mainMap);
+				.thenThrow(new RegBaseCheckedException("errorCode", "errorMessage"));
 
 		Mockito.when(userDetailRepository.findByIsActiveTrue()).thenThrow(RegBaseCheckedException.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);

@@ -3,21 +3,28 @@ package io.mosip.registration.util.healthcheck;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.config.DaoConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.util.restclient.RestClientUtil;
 import oshi.SystemInfo;
@@ -39,9 +46,10 @@ public class RegistrationAppHealthCheckUtil {
 
 	/** The system info. */
 	private static SystemInfo systemInfo;
-	
+
 	/** The operating system. */
 	private static OperatingSystem operatingSystem;
+
 
 	static {
 		systemInfo = new SystemInfo();
@@ -71,7 +79,19 @@ public class RegistrationAppHealthCheckUtil {
 	public static boolean isNetworkAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECK UTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 				APPLICATION_ID, "Registration Network Checker had been called.");
-		return checkServiceAvailability(System.getProperty(RegistrationConstants.REG_HEALTH_CHECK_URL_PROPERTY));
+		
+		try (InputStream keyStream = DaoConfig.class.getClassLoader().getResourceAsStream("spring.properties")) {
+			
+			Properties keys = new Properties();
+			keys.load(keyStream);
+			
+		return checkServiceAvailability(keys.getProperty("mosip.reg.healthcheck.url"));
+		} catch (IOException exception) {
+			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE" + false,
+					APPLICATION_NAME, APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(exception));
+			return false;
+
+		}
 	}
 
 	/**
@@ -158,7 +178,7 @@ public class RegistrationAppHealthCheckUtil {
 				APPLICATION_ID, "Registration Disk Space Checker had been ended.");
 		return isSpaceAvailable;
 	}
-	
+
 	/**
 	 * This method is used to accept any SSL certificate.
 	 * 
@@ -179,22 +199,28 @@ public class RegistrationAppHealthCheckUtil {
 		sc.init(null, UNQUESTIONING_TRUST_MANAGER, null);
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 	}
-	
+
 	/** The Constant UNQUESTIONING_TRUST_MANAGER. */
 	public static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
 		public X509Certificate[] getAcceptedIssuers() {
 			return null;
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.
+		 * X509Certificate[], java.lang.String)
 		 */
 		@Override
 		public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.
+		 * X509Certificate[], java.lang.String)
 		 */
 		@Override
 		public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {

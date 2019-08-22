@@ -9,6 +9,7 @@ import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXT
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.IOException;
@@ -38,6 +39,13 @@ public class StorageServiceImpl extends BaseService implements StorageService {
 
 	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
 
+	@Value("${mosip.reg.packetstorepath}")
+	private String packetStoreLocation;
+
+	public void setPacketStoreLocation(String packetStoreLocation) {
+		this.packetStoreLocation = packetStoreLocation;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -54,8 +62,7 @@ public class StorageServiceImpl extends BaseService implements StorageService {
 
 			// Generate the file path for storing the Encrypted Packet
 			String seperator = "/";
-			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION))
-					.concat(seperator)
+			String filePath = packetStoreLocation.concat(seperator)
 					.concat(formatDate(new Date(),
 							String.valueOf(
 									ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT))))

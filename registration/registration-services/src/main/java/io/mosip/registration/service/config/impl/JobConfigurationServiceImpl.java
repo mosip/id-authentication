@@ -898,5 +898,21 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	public List<String> getUnTaggedJobs() {
 		return unTaggedJobs;
 	}
+	
+	@Override
+	public SyncControl getSyncControlOfJob(String syncJobId) {
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Getting Job info in sync control Started");
+
+		SyncControl syncControl = null;
+		if (syncJobId != null) {
+			syncControl =  syncJobDAO.findBySyncJobId(syncJobId);
+		}
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Getting Job info in sync control Completed");
+
+		return syncControl;
+	}
 
 }

@@ -20,10 +20,10 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmSecDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
@@ -288,7 +288,7 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> reqRegistrationCenterDto) {
+			@RequestBody @Valid RegistarionCenterReqDto<RegCenterPutReqDto> reqRegistrationCenterDto) {
 
 		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
@@ -342,7 +342,7 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenter(
-			@RequestBody RequestWrapper<RegistrationCenterReqAdmSecDto> reqRegistrationCenterDto) {
+			@RequestBody RegistarionCenterReqDto<RegCenterPostReqDto> reqRegistrationCenterDto) {
 		ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));

@@ -408,7 +408,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 			if (column.equalsIgnoreCase("deviceTypeName")) {
 				filter.setColumnName(MasterDataConstant.NAME);
-				if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
+				/*if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
 					Page<DeviceType> deviceTypes = masterdataSearchHelper.searchMasterdata(DeviceType.class,
 							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
 							null);
@@ -422,16 +422,14 @@ public class DeviceServiceImpl implements DeviceService {
 					Page<DeviceSpecification> devspecs = masterdataSearchHelper.searchMasterdata(
 							DeviceSpecification.class,
 							new SearchDto(deviceCodeFilter, Collections.emptyList(), new Pagination(), null), null);
-					removeList.add(filter);
-					addList.addAll(buildDeviceSpecificationSearchFilter(devspecs.getContent()));
-					if (addList.isEmpty()) {
+*/					//removeList.add(filter);
+					//addList.addAll(buildDeviceSpecificationSearchFilter(devspecs.getContent()));
+					/*if (addList.isEmpty()) {
 						throw new DataNotFoundException(
 								DeviceErrorCode.DEVICE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
 								String.format(DeviceErrorCode.DEVICE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
 										.getErrorMessage(), filter.getValue()));
-					}
-
-				}
+					}*/
 			}
 
 		}
@@ -521,7 +519,7 @@ public class DeviceServiceImpl implements DeviceService {
 						&& centerDevice.getLangCode().equals(deviceSearchDto.getLangCode())) {
 					String regId = centerDevice.getRegistrationCenter().getId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)) {
+						if (registrationCenter.getId().equals(regId) && centerDevice.getLangCode().equals(registrationCenter.getLangCode())) {
 							deviceSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});

@@ -846,6 +846,8 @@ public enum PlatformErrorMessages {
     TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"001","RID Not Found"),
 
     RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"002","Unknown Exception Occured"),
+    
+    RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"003","Invalid request"),
 
     RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
 			"reg Based checked exception");

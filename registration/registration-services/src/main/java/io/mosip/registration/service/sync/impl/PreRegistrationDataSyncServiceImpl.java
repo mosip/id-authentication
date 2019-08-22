@@ -111,11 +111,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			/* Check Network Connectivity */
 			boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 
-			/* check if the machine is offline */
-			if (!isOnline) {
-				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
-				return responseDTO;
-			}
 
 			/* prepare request DTO to pass on through REST call */
 			PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareDataSyncRequestDTO();
@@ -123,6 +118,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			try {
 
 				/* REST call to get Pre Registartion Id's */
+				if(isOnline) {
 				LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO, syncJobId);
 				TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>> ref = new TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>>() {
@@ -154,6 +150,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 							RegistrationConstants.APPLICATION_ID, errMsg);
 					if (!isNoRecordMsg)
 						setErrorResponse(responseDTO, errMsg, null);
+				}
+				}else {
+					setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
 				}
 
 			} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException
@@ -528,19 +527,19 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 		preRegistrationDataSyncDTO.setId(RegistrationConstants.PRE_REGISTRATION_DUMMY_ID);
-		preRegistrationDataSyncDTO.setReqTime(dateFormat.format(reqTime));
-		preRegistrationDataSyncDTO.setVer(RegistrationConstants.VER);
+		preRegistrationDataSyncDTO.setRequesttime(dateFormat.format(reqTime));
+		preRegistrationDataSyncDTO.setVersion(RegistrationConstants.VER);
 
 		PreRegistrationDataSyncRequestDTO preRegistrationDataSyncRequestDTO = new PreRegistrationDataSyncRequestDTO();
 		preRegistrationDataSyncRequestDTO.setFromDate(getFromDate(reqTime));
 		if (SessionContext.isSessionContextAvailable()) {
-			preRegistrationDataSyncRequestDTO.setRegClientId(
+			preRegistrationDataSyncRequestDTO.setRegistrationCenterId(
 					SessionContext.userContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 		} else {
-			preRegistrationDataSyncRequestDTO.setRegClientId(getCenterId());
+			preRegistrationDataSyncRequestDTO.setRegistrationCenterId(getCenterId());
 		}
 		preRegistrationDataSyncRequestDTO.setToDate(getToDate(reqTime));
-		preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
+		//preRegistrationDataSyncRequestDTO.setUserId(getUserIdFromSession());
 
 		preRegistrationDataSyncDTO.setDataSyncRequestDto(preRegistrationDataSyncRequestDTO);
 

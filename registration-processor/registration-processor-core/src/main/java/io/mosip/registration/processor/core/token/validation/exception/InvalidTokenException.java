@@ -15,7 +15,17 @@ public class InvalidTokenException extends BaseUncheckedException {
 		super();
 
 	}
-
+	
+	/**
+	 * Instantiates a new timeout exception.
+	 *
+	 * @param code the exceptionCode
+	 * @param message the message
+	 */
+	public InvalidTokenException(String code, String message) {
+		super(code, message);
+	}
+	
 	/**
 	 * Instantiates a new timeout exception.
 	 *

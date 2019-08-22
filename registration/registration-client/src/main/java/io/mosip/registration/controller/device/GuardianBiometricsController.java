@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_B
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -137,7 +138,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	@FXML
 	private Label registrationNavlabel;
-	
+
 	/** The scan popup controller. */
 	@Autowired
 	private ScanPopUpViewController scanPopUpViewController;
@@ -170,10 +171,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private String bioValue;
 
 	private FXUtils fxUtils;
-	
-	private List<String> leftSlapexceptionList=new ArrayList<String>();
-	private List<String> rightSlapexceptionList=new ArrayList<String>();
-	private List<String> thumbsexceptionList=new ArrayList<String>();
+
+	private List<String> leftSlapexceptionList = new ArrayList<String>();
+	private List<String> rightSlapexceptionList = new ArrayList<String>();
+	private List<String> thumbsexceptionList = new ArrayList<String>();
 
 	public ImageView getBiometricImage() {
 		return biometricImage;
@@ -205,7 +206,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of Guardian Biometric screen started");
-		
+
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
 					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
@@ -497,28 +498,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 		List<IrisDetailsDTO> irisDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO().getIrisDetailsDTO();
 
-		if (irisDetailsDTOs == null || irisDetailsDTOs.isEmpty()) {
-			irisDetailsDTOs = new ArrayList<>(1);
-			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-					.setIrisDetailsDTO(irisDetailsDTOs);
-		}
-		if (irisDetailsDTOs != null) {
-			for (IrisDetailsDTO irisDetailsDTO2 : irisDetailsDTOs) {
-				if (irisDetailsDTO2.getIrisType().equals(irisType)) {
-					detailsDTO = irisDetailsDTO2;
-					detailsDTO.setNumOfIrisRetry(irisDetailsDTO2.getNumOfIrisRetry() + 1);
-					break;
-				}
-			}
-			if (detailsDTO == null) {
-				detailsDTO = new IrisDetailsDTO();
-				detailsDTO.setNumOfIrisRetry(detailsDTO.getNumOfIrisRetry() + 1);
-				irisDetailsDTOs.add(detailsDTO);
-			}
-		}
 		try {
+			detailsDTO = new IrisDetailsDTO();
 			bioService.getIrisImageAsDTO(detailsDTO, irisType);
-		} catch (RegBaseCheckedException|IOException runtimeException) {
+		} catch (RegBaseCheckedException | IOException runtimeException) {
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
@@ -527,25 +510,24 @@ public class GuardianBiometricsController extends BaseController implements Init
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
 			return;
 		}
+		if (detailsDTO.isCaptured()) {
+			detailsDTO.getIrises().forEach((iris) -> {
+				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
+				biometricImage.setImage(convertBytesToImage(iris.getIris()));
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
+				setCapturedValues(iris.getQualityScore(), 1, thresholdValue);
 
-		if (detailsDTO.getIris() != null) {
-			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-
-			setCapturedValues( detailsDTO.getQualityScore(), detailsDTO.getNumOfIrisRetry(),
-					thresholdValue);
-
+				if (validateIrisQulaity(iris, thresholdValue)) {
+					scanBtn.setDisable(true);
+					continueBtn.setDisable(false);
+				} else {
+					scanBtn.setDisable(false);
+					continueBtn.setDisable(true);
+				}
+				irisDetailsDTOs.add(iris);
+			});
 			popupStage.close();
-
-			if (validateIrisQulaity(detailsDTO, thresholdValue)) {
-				scanBtn.setDisable(true);
-				continueBtn.setDisable(false);
-			} else {
-				scanBtn.setDisable(false);
-				continueBtn.setDisable(true);
-			}
 		} else {
-			irisDetailsDTOs.remove(detailsDTO);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		}
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -620,14 +602,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		if (detailsDTO.isCaptured()) {
 
-			if(!bioService.isMdmEnabled())
+			if (!bioService.isMdmEnabled())
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			else
 				detailsDTO.setFingerPrint(streamer.imageBytes);
+			biometricImage.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
-			setCapturedValues(detailsDTO.getQualityScore(), detailsDTO.getNumRetry(),
-					thresholdValue);
+			setCapturedValues(detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
 
 			popupStage.close();
 
@@ -655,7 +637,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	 * @param retry          retrycount
 	 * @param thresholdValue threshold value
 	 */
-	private void setCapturedValues( double qltyScore, int retry, double thresholdValue) {
+	private void setCapturedValues(double qltyScore, int retry, double thresholdValue) {
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Updating captured values of biometrics");
@@ -851,7 +833,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Clearing the captured biometric data");
 
 		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
-				|| (SessionContext.map().get(RegistrationConstants.IS_Child)!=null && (Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)))) {
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+						&& (Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)))) {
 			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.setFingerprintDetailsDTO(new ArrayList<>());
 
@@ -868,7 +851,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Cleared the captured biometric data");
 
 	}
-	
+
 	/**
 	 * Exception fingers count.
 	 */
@@ -895,19 +878,19 @@ public class GuardianBiometricsController extends BaseController implements Init
 					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
-				getExceptionIdentifier(leftSlapexceptionList,biometricExceptionDTO.getMissingBiometric());
+				getExceptionIdentifier(leftSlapexceptionList, biometricExceptionDTO.getMissingBiometric());
 				leftSlapCount++;
 			}
 			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
 					&& biometricExceptionDTO.isMarkedAsException())
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
-				getExceptionIdentifier(rightSlapexceptionList,biometricExceptionDTO.getMissingBiometric());
+				getExceptionIdentifier(rightSlapexceptionList, biometricExceptionDTO.getMissingBiometric());
 				rightSlapCount++;
 			}
 			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
 					&& biometricExceptionDTO.isMarkedAsException())) {
-				getExceptionIdentifier(thumbsexceptionList,biometricExceptionDTO.getMissingBiometric());
+				getExceptionIdentifier(thumbsexceptionList, biometricExceptionDTO.getMissingBiometric());
 				thumbCount++;
 			}
 			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
@@ -923,7 +906,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		return exceptionCountMap;
 	}
-
 
 	/**
 	 * Manage biometrics list based on exceptions.

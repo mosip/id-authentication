@@ -430,4 +430,37 @@ public class BaseService {
 		return byteArrayToBeValidated == null || byteArrayToBeValidated.length == 0;
 	}
 
+	/**
+	 * Validates if the error code of the input {@link Exception} is same of the
+	 * error code of Auth Token Empty
+	 * 
+	 * @param exception
+	 *            the {@link Exception} to be validated
+	 * @return <code>true</code> if error code is same as Auth Token empty
+	 */
+	protected boolean isAuthTokenEmptyException(Exception exception) {
+		return exception instanceof RegBaseCheckedException
+				&& RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode()
+						.equals(((RegBaseCheckedException) exception).getErrorCode());
+	}
+
+	/**
+	 * Validates if the error code of the input {@link ResponseDTO} is same of the
+	 * error code of Auth Token Empty
+	 * 
+	 * @param responseDTO
+	 *            the {@link ResponseDTO} to be validated
+	 * @return <code>true</code> if error code is same as Auth Token empty
+	 */
+	protected boolean isAuthTokenEmptyError(ResponseDTO responseDTO) {
+		boolean isAuthTokenEmptyError = false;
+		if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+				&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
+			isAuthTokenEmptyError = RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode()
+					.equals(responseDTO.getErrorResponseDTOs().get(0).getMessage());
+		}
+
+		return isAuthTokenEmptyError;
+	}
+
 }

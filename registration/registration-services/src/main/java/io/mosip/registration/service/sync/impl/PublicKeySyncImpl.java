@@ -85,8 +85,10 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 								responseDTO.getSuccessResponseDTO().getMessage());
 					} else {
-						responseDTO = setErrorResponse(new ResponseDTO(),
-								RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+						if (!isAuthTokenEmptyError(responseDTO)) {
+							responseDTO = setErrorResponse(new ResponseDTO(),
+									RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+						}
 						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 								"Public Key Sync Failure");
 					}
@@ -106,8 +108,10 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 							LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 									responseDTO.getSuccessResponseDTO().getMessage());
 						} else {
-							responseDTO = setErrorResponse(new ResponseDTO(),
-									RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+							if (!isAuthTokenEmptyError(responseDTO)) {
+								responseDTO = setErrorResponse(new ResponseDTO(),
+										RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+							}
 							LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 									"Public Key Sync Failure");
 						}
@@ -120,7 +124,11 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			} catch (RegBaseCheckedException regBaseCheckedException) {
 				LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						ExceptionUtils.getStackTrace(regBaseCheckedException));
-				responseDTO = setErrorResponse(new ResponseDTO(), regBaseCheckedException.getMessage(), null);
+
+				responseDTO = setErrorResponse(new ResponseDTO(),
+						isAuthTokenEmptyException(regBaseCheckedException) ? regBaseCheckedException.getErrorCode()
+								: regBaseCheckedException.getMessage(),
+						null);
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						ExceptionUtils.getStackTrace(runtimeException));
@@ -204,10 +212,10 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 
-		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException reException) {
-
+		} catch (HttpClientErrorException | SocketTimeoutException reException) {
 			LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(reException));
+			
 			throw new RegBaseCheckedException("Exception in public key Rest Call", reException.getMessage());
 		}
 

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -86,6 +87,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new CorsFilter(), AuthFilter.class);
 		http.headers().cacheControl();
 	}
+	
+	@Bean
+    public FilterRegistrationBean<AuthFilter> registration(AuthFilter filter) {
+        FilterRegistrationBean<AuthFilter> registration = new FilterRegistrationBean<AuthFilter>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
 
 }
 
@@ -96,5 +104,6 @@ class AuthEntryPoint implements AuthenticationEntryPoint {
 			AuthenticationException e) throws IOException {
 		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED");
 	}
+	
 
 }
