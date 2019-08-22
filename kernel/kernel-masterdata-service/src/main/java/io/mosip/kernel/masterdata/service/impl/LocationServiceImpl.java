@@ -828,6 +828,7 @@ public class LocationServiceImpl implements LocationService {
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		Location location = locationRepository.findLocationByHierarchyName(filter.getColumnName(), filter.getValue(),
 				dto.getLanguageCode());
+		if(location!=null) {
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
@@ -860,7 +861,7 @@ public class LocationServiceImpl implements LocationService {
 			});
 			responseDto.add(locationSearchDto);
 		});
-
+		}
 		return responseDto;
 	}
 
