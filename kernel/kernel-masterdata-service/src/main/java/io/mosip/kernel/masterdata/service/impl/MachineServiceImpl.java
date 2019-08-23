@@ -416,21 +416,11 @@ public class MachineServiceImpl implements MachineService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId();
 					addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-					if (addList.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(), String.format(
-										MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage()));
-					}
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
 						mappedMachineIdList = machineRepository.findNotMappedMachineId();
 						addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-						if (addList.isEmpty()) {
-							throw new DataNotFoundException(
-									MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorCode(), String.format(
-											MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorMessage()));
-						}
 					} else {
 						throw new RequestException(
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
@@ -449,26 +439,12 @@ public class MachineServiceImpl implements MachineService {
 							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
 							null);
 					List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
-					if (machineCodeFilter.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(
-										MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
-										filter.getValue()));
-					}
 					Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
 							MachineSpecification.class,
 							new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null), null);
 
 					removeList.add(filter);
 					addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
-					if (addList.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
-										.getErrorMessage(), filter.getValue()));
-					}
-
 				}
 			}
 

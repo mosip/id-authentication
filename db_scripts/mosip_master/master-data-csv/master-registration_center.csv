@@ -44,3 +44,6 @@
 10015,Center Youssoufia,REG,Avenue Ouzguita,Rabat,Morocco,33.995612,-6.815281,10190,803062069,Mick Donalds,2,8:00:00,0:15:00,9:00:00,17:00:00,13:00:00,14:00:00,(GTM+01:00) CENTRAL EUROPEAN TIME,RBT,TZT,eng,TRUE,superadmin,now()
 10015,مركز اليوسفية,REG,نسخ العنوان,الرباط,المغرب,33.995612,-6.815281,10190,802491003,مِك دنَلدس,2,8:00:00,0:15:00,9:00:00,17:00:00,13:00:00,14:00:00,(GTM+01:00) توقيت وسط أوروبا,RBT,TZT,ara,TRUE,superadmin,now()
 10015,centre Youssoufia,REG,avenue de Ouzguita,Rabat,Maroc,33.995612,-6.815281,10190,731435978,Mick Donalds,2,8:00:00,0:15:00,9:00:00,17:00:00,13:00:00,14:00:00,GTM + 01h00) HEURE EUROPEENNE CENTRALE,RBT,TZT,fra,TRUE,superadmin,now()
+33333,Center Rabat,REG,P4238,Ben Mansour,Morocco,33.52117,-5.453275,14022,779517433,John Doe,12,8:00:00,0:15:00,9:00:00,17:00:00,13:00:00,14:00:00,(GTM+01:00) CENTRAL EUROPEAN TIME,RBT,RBT,eng,TRUE,superadmin,now()
+33333,مركز الرباط,REG,P4238,بن منصور,المغرب,33.52117,-5.453275,14022,944945765,جهن د,12,8:00:00,0:15:00,9:00:00,17:00:00,13:00:00,14:00:00,(GTM+01:00) توقيت وسط أوروبا,RBT,RBT,ara,TRUE,superadmin,now()
+33333,Center Rabat,REG,P4238,Ben Mansour,Maroc,33.52117,-5.453275,14022,993556086,John Doe,12,8:00:00,0:15:00,9:00:00,17:00:00,13:00:00,14:00:00,GTM + 01h00) HEURE EUROPEENNE CENTRALE,RBT,RBT,fra,TRUE,superadmin,now()
