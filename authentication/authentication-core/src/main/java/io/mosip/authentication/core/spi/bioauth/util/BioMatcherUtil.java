@@ -1,16 +1,16 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
-import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import com.identy.IdentyBioSDK;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -20,8 +20,12 @@ import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -36,16 +40,23 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Component
 public class BioMatcherUtil {
 
-	@Autowired
-	IBioApi bioApi;
+	@Autowired(required = false)
+	@Qualifier("finger")
+	IBioApi fingerApi;
+	
+	@Autowired(required = false)
+	@Qualifier("face")
+	IBioApi faceApi;
+	
+	@Autowired(required = false)
+	@Qualifier("iris")
+	IBioApi irisApi;
 
 	@Autowired
 	CbeffUtil cbeffUtil;
 
 	@Autowired
 	Environment environment;
-
-	private static IdentyBioSDK identyBioSDK;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BioMatcherUtil.class);
@@ -63,27 +74,30 @@ public class BioMatcherUtil {
 	 */
 	public double matchValue(Map<String, String> reqInfo, Map<String, String> entityInfo)
 			throws IdAuthenticationBusinessException {
-
 		Object[][] objArrays = matchValues(reqInfo, entityInfo);
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];
-		Optional<BIR> reqBIR = Stream.of(reqInfoObj).map(this::getBir).filter(Objects::nonNull).findFirst();
-		BIR[] entityBIR = Stream.of(entityInfoObj).map(this::getBir).toArray(size -> new BIR[size]);
-		long internalScore = 0;
+		Optional<BIR> reqBIR = Stream.of(reqInfoObj)
+				.map(req -> this.getBir(req, reqInfo.get(CbeffConstant.class.getName()))).filter(Objects::nonNull)
+				.findFirst();
+		BIR[] entityBIR = Stream.of(entityInfoObj)
+				.map(req -> this.getBir(req, reqInfo.get(CbeffConstant.class.getName())))
+				.toArray(size -> new BIR[size]);
 		if (reqBIR.isPresent()) {
 			Score[] match;
 			try {
-				match = getBioSdkInstance().match(reqBIR.get(), entityBIR, null);
-				internalScore = match.length == 1 ? match[0].getInternalScore()
-						: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
-				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
-						"Threshold Value >>>" + internalScore);
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+						"entityBIR size >>>" + entityBIR.length);
+				match = getBioSdkInstance(reqInfo.get(CbeffConstant.class.getName())).match(reqBIR.get(), entityBIR, null);
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+						"match size >>>" + match.length);
+				Arrays.asList(match).stream().forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA",
+						"matchValue", "internal score Value >>>" + score.getInternalScore()));
+				return Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
 			} catch (BiometricException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Biovalue not Matched");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
-
-			return internalScore;
 		}
 		return 0;
 	}
@@ -95,12 +109,17 @@ public class BioMatcherUtil {
 	 *            the info
 	 * @return the bir
 	 */
-	private BIR getBir(Object info) {
+	private BIR getBir(Object info, String type) {
 		BIRBuilder birBuilder = new BIRBuilder();
 		if (info instanceof String) {
+			RegistryIDType format = new RegistryIDType();
+			format.setOrganization(String.valueOf(CbeffConstant.FORMAT_OWNER));
+			format.setType(type);
+			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder().withFormat(format).build();
 			String reqInfoStr = (String) info;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
 			birBuilder.withBdb(decodedrefInfo);
+			birBuilder.withBdbInfo(bdbInfo);
 		}
 		return birBuilder.build();
 	}
@@ -112,18 +131,25 @@ public class BioMatcherUtil {
 	 *            the req info
 	 * @param entityInfo
 	 *            the entity info
+	 * @param type 
 	 * @return the double
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	private double matchCompositeValue(Object[] reqInfo, Object[] entityInfo) throws IdAuthenticationBusinessException {
-		BIR[] reqBIR = Stream.of(reqInfo).map(this::getBir).toArray(size -> new BIR[size]);
-		BIR[] entityBIR = Stream.of(entityInfo).map(this::getBir).toArray(size -> new BIR[size]);
+	private double matchCompositeValue(Object[] reqInfo, Object[] entityInfo, String type)
+			throws IdAuthenticationBusinessException {
+		BIR[] reqBIR = Stream.of(reqInfo).map(req -> this.getBir(req, type)).toArray(size -> new BIR[size]);
+		BIR[] entityBIR = Stream.of(entityInfo).map(req -> this.getBir(req, type)).toArray(size -> new BIR[size]);
 		CompositeScore compositeScore;
 		try {
-			compositeScore = bioApi.compositeMatch(reqBIR, entityBIR, null);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
-					"Threshold Value >>>" + compositeScore.getInternalScore());
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue",
+					"entityBIR size >>>" + entityBIR.length);
+			compositeScore = getBioSdkInstance(type).compositeMatch(reqBIR, entityBIR, null);
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue ",
+					"composite Score >>>" + compositeScore.getInternalScore());
+			Arrays.asList(compositeScore.getIndividualScores()).stream()
+					.forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue",
+							"individual score Value >>>" + score.getInternalScore()));
 		} catch (BiometricException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator", "Biovalue not Matched");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -145,7 +171,7 @@ public class BioMatcherUtil {
 	 */
 	public double matchMultiValue(Map<String, String> reqInfo, Map<String, String> entityInfo)
 			throws IdAuthenticationBusinessException {
-		return matchMultiValues(reqInfo, entityInfo);
+		return matchMultiValues(reqInfo, entityInfo, reqInfo.get(CbeffConstant.class.getName()));
 	}
 
 	/**
@@ -155,16 +181,17 @@ public class BioMatcherUtil {
 	 *            the req info
 	 * @param entityInfo
 	 *            the entity info
+	 * @param type 
 	 * @return the double
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	private double matchMultiValues(Map<String, String> reqInfo, Map<String, String> entityInfo)
+	private double matchMultiValues(Map<String, String> reqInfo, Map<String, String> entityInfo, String type)
 			throws IdAuthenticationBusinessException {
 		Object[][] objArrays = matchValues(reqInfo, entityInfo);
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];
-		return matchCompositeValue(reqInfoObj, entityInfoObj);
+		return matchCompositeValue(reqInfoObj, entityInfoObj, type);
 	}
 
 	/**
@@ -187,12 +214,19 @@ public class BioMatcherUtil {
 
 			for (Map.Entry<String, String> e : reqInfo.entrySet()) {
 				String key = e.getKey();
-				reqInfoObj[index] = e.getValue();
-				entityInfoObj[index] = entityInfo.get(key);
-				index++;
+				//TODO IdaIdMapping base filter should be applied
+				if(!key.equals(CbeffConstant.class.getName()) && !key.equals(SingleType.class.getName()) ) {
+					reqInfoObj[index] = e.getValue();
+					entityInfoObj[index] = entityInfo.get(key);
+					index++;
+				}
 			}
 		} else {
-			reqInfoObj = reqInfo.values().toArray();
+			//TODO IdaIdMapping base filter should be applied
+			reqInfoObj = reqInfo.entrySet().stream().filter(entry -> 
+								!entry.getKey().equals(CbeffConstant.class.getName()) &&
+								!entry.getKey().equals(SingleType.class.getName()))
+						.map(Entry::getValue).toArray();
 			entityInfoObj = entityInfo.values().toArray();
 		}
 
@@ -210,16 +244,20 @@ public class BioMatcherUtil {
 		return CryptoUtil.decodeBase64(value);
 	}
 
-	private IdentyBioSDK getBioSdkInstance() throws IdAuthenticationBusinessException {
-		if (identyBioSDK == null) {
-			try {
-				return IdentyBioSDK.getInstance(
-						"QUVTAgAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACjflQMgyiRj1MzSrgDqPu91hzG8e3xcorFOWnzP6ooyATOJOJ/YVTApZLUUzSdQb5yuCccxK+VKbmQY/I/wauQK4GDDWA4yqSohhP8xM46jaK4Lkyv6/U88wSGBhkcaE9uo1mYc5J+AxhlWSPyEg2ZA8CggwvlYoupTU1DUOTrRwdYtEPuZmum+5XPoIqKVZBB");
-			} catch (NoSuchAlgorithmException e) {
-				throw new IdAuthenticationBusinessException();
-			}
+	private IBioApi getBioSdkInstance(String type) throws IdAuthenticationBusinessException {
+		if (String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER).equals(type)
+				|| String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER_MINUTIAE).equals(type)) {
+			return fingerApi;
+		} else if (String.valueOf(CbeffConstant.FORMAT_TYPE_FACE).equals(type)) {
+			return faceApi;
+		} else if (String.valueOf(CbeffConstant.FORMAT_TYPE_IRIS).equals(type)) {
+			return irisApi;
+		} else {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "getBioSdkInstance",
+					"requested single type not found : " + type);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
-		return identyBioSDK;
 	}
-
+	
 }
+;

@@ -31,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
@@ -39,6 +40,7 @@ import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
@@ -56,6 +58,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserReposi
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -117,6 +120,12 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private ZoneUtils zoneUtils;
+
+	@Autowired
+	private MachineUtil machineUtil;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -473,17 +482,26 @@ public class MachineServiceImpl implements MachineService {
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
 		dto.getFilters().removeAll(removeList);
-
+		Pagination pagination = dto.getPagination();
+		List<SearchSort> sort = dto.getSort();
+		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+		dto.setSort(Collections.emptyList());
 		if (filterValidator.validate(MachineSearchDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
 					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				pageDto = PageUtils.pageResponse(page);
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
-				pageDto.setData(machines);
+				setMachineTypeNames(machines);
+				setMapStatus(machines);
+				machines.forEach(machine->{
+					if(machine.getMapStatus()==null) {
+						machine.setMapStatus("unassigned");
+					}
+				});
+				pageDto = pageUtils.sortPage(machines, sort, pagination);
 			}
 
 		}
@@ -498,8 +516,56 @@ public class MachineServiceImpl implements MachineService {
 	 * @param zones
 	 *            the list of zones.
 	 */
-	public void setMachineMetadata(List<MachineSearchDto> list, List<Zone> zones) {
+	private void setMachineMetadata(List<MachineSearchDto> list, List<Zone> zones) {
 		list.forEach(i -> setZoneMetadata(i, zones));
+	}
+
+	/**
+	 * Method to set MachineType Name for each Machine.
+	 * 
+	 * @param list
+	 *            the {@link MachineSearchDto}.
+	 */
+	private void setMachineTypeNames(List<MachineSearchDto> list) {
+		List<MachineSpecification> machineSpecifications = machineUtil.getMachineSpec();
+		List<MachineType> machineTypes = machineUtil.getMachineTypes();
+		list.forEach(machineSearchDto -> {
+			machineSpecifications.forEach(s -> {
+				if (s.getId().equals(machineSearchDto.getMachineSpecId())
+						&& s.getLangCode().equals(machineSearchDto.getLangCode())) {
+					String typeCode = s.getMachineTypeCode();
+					machineTypes.forEach(mt -> {
+						if (mt.getCode().equals(typeCode) && mt.getLangCode().equals(s.getLangCode())) {
+							machineSearchDto.setMachineTypeName(mt.getName());
+						}
+					});
+				}
+			});
+		});
+	}
+
+	/**
+	 * Method to set Map status of each Machine.
+	 * 
+	 * @param list
+	 *            the {@link MachineSearchDto}.
+	 */
+	private void setMapStatus(List<MachineSearchDto> list) {
+		List<RegistrationCenterMachine> centerMachineList = machineUtil.getAllMachineCentersList();
+		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
+		list.forEach(machineSearchDto -> {
+			centerMachineList.forEach(centerMachine -> {
+				if (centerMachine.getMachine().getId().equals(machineSearchDto.getId())
+						&& centerMachine.getLangCode().equals(machineSearchDto.getLangCode())) {
+					String regId = centerMachine.getRegistrationCenter().getId();
+					registrationCenterList.forEach(registrationCenter -> {
+						if (registrationCenter.getId().equals(regId) && centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
+							machineSearchDto.setMapStatus(registrationCenter.getName());
+						}
+					});
+				}
+			});
+		});
 	}
 
 	/**

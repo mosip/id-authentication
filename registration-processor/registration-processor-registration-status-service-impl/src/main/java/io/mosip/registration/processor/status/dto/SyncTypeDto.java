@@ -25,7 +25,10 @@ public enum SyncTypeDto {
 	DEACTIVATED("DEACTIVATED"),
 	
 	/** The res update. */
-	RES_UPDATE("RES_UPDATE");
+	RES_UPDATE("RES_UPDATE"),
+	
+	/** The res re-print. */
+	RES_REPRINT("RES_REPRINT");
 
 	/** The value. */
 	private String value;

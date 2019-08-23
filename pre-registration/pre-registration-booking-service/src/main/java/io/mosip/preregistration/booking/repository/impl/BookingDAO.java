@@ -95,10 +95,6 @@ public class BookingDAO {
 		List<LocalDate> localDatList = null;
 		try {
 			localDatList = bookingAvailabilityRepository.findDate(regcntrId, fromDate, toDate);
-			if (localDatList == null || localDatList.isEmpty()) {
-				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
-						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
-			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());

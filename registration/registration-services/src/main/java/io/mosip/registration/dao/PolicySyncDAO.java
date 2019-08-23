@@ -1,5 +1,7 @@
 package io.mosip.registration.dao;
 
+import java.util.List;
+
 import io.mosip.registration.entity.KeyStore;
 
 /**
@@ -33,6 +35,8 @@ public interface PolicySyncDAO {
 	 * @return the key store
 	 */
 	KeyStore getPublicKey(String refId);
+
+	List<KeyStore> getAllKeyStore(String centerMachineId);
 	
 	
 

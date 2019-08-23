@@ -208,7 +208,7 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			/* Set-up demographic information related content */
-			setUpDemographicInfo(registration, templateValues, applicationLanguageProperties, individualIdentity);
+			setUpDemographicInfo(registration, templateValues, isChild, applicationLanguageProperties, individualIdentity);
 
 			/* Set-up the list of documents submitted by the applicant */
 			setUpDocuments(templateValues, applicationLanguageProperties, individualIdentity, documentDisableFlag);
@@ -294,13 +294,18 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.PARENT_PHOTO_CAPTURED,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		}
+
+		boolean isParentOrGuardianBiometricsCaptured = registration.isUpdateUINChild()
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+						&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child));
+
 		if (isChild || registration.isUpdateUINNonBiometric()) {
 			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace() != null && registration
 					.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace() != null) {
 				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO()
 						.getExceptionFace().getFace();
 				setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties,
-						localProperties);
+						localProperties, isParentOrGuardianBiometricsCaptured);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
@@ -309,7 +314,8 @@ public class TemplateGenerator extends BaseService {
 		} else if (registration.getBiometricDTO().getApplicantBiometricDTO().isHasExceptionPhoto()) {
 			byte[] exceptionImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
 					.getFace();
-			setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties, localProperties);
+			setUpExceptionPhoto(exceptionImageBytes, templateValues, applicationLanguageProperties, localProperties,
+					isParentOrGuardianBiometricsCaptured);
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION, null);
 			templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION,
@@ -339,16 +345,30 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void setUpExceptionPhoto(byte[] exceptionImageBytes, Map<String, Object> templateValues,
-			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties) {
+			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties,
+			boolean isParentOrGuardianExceptionPhotoCapture) {
 		templateValues.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION,
 				RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL,
-				applicationLanguageProperties.getString("exceptionphoto"));
-		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_LOCAL_LANG_LABEL,
-				getSecondaryLanguageLabel("exceptionphoto"));
+				getExceptionPhotoLabel(isParentOrGuardianExceptionPhotoCapture,
+						applicationLanguageProperties.getString("exceptionphoto"), applicationLanguageProperties));
+		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_LOCAL_LANG_LABEL, getExceptionPhotoLabel(
+				isParentOrGuardianExceptionPhotoCapture, getSecondaryLanguageLabel("exceptionphoto"), localProperties));
 		String exceptionImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
 		templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE,
 				RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + exceptionImageEncodedBytes);
+	}
+
+	private String getExceptionPhotoLabel(boolean isParentOrGuardianExceptionPhotoCapture, String exceptionPhotoLabel,
+			ResourceBundle resourceBundle) {
+		String exceptionFaceDescription = exceptionPhotoLabel;
+
+		if (isParentOrGuardianExceptionPhotoCapture) {
+			exceptionFaceDescription = resourceBundle.getString("parentOrGuardian").concat(" ")
+					.concat(exceptionFaceDescription.toLowerCase());
+		}
+
+		return exceptionFaceDescription;
 	}
 
 	private void setUpBiometricContent(Map<String, Object> templateValues, RegistrationDTO registration,
@@ -461,7 +481,7 @@ public class TemplateGenerator extends BaseService {
 							.isEmpty()) {
 						for (FingerprintDetailsDTO fingerprint : registration.getBiometricDTO()
 								.getIntroducerBiometricDTO().getFingerprintDetailsDTO()) {
-							if (fingerprint.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+							if (fingerprint.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 								templateValues.put(RegistrationConstants.TEMPLATE_CHILD_LEFT,
 										RegistrationConstants.PARENT_STYLE);
 								templateValues.put(RegistrationConstants.PARENT_RIGHT_SLAP,
@@ -470,7 +490,7 @@ public class TemplateGenerator extends BaseService {
 										RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 								templateValues.put(RegistrationConstants.TEMPLATE_LEFT_INDEX_FINGER,
 										RegistrationConstants.TEMPLATE_RIGHT_MARK);
-							} else if (fingerprint.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+							} else if (fingerprint.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 								templateValues.put(RegistrationConstants.TEMPLATE_CHILD_RIGHT,
 										RegistrationConstants.PARENT_STYLE);
 								templateValues.put(RegistrationConstants.PARENT_LEFT_SLAP,
@@ -479,7 +499,7 @@ public class TemplateGenerator extends BaseService {
 										RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 								templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_LITTLE_FINGER,
 										RegistrationConstants.TEMPLATE_RIGHT_MARK);
-							} else if (fingerprint.getFingerType().contains(RegistrationConstants.THUMBS)) {
+							} else if (fingerprint.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)) {
 								templateValues.put(RegistrationConstants.TEMPLATE_CHILD_THUMBS,
 										RegistrationConstants.PARENT_STYLE);
 								templateValues.put(RegistrationConstants.PARENT_LEFT_SLAP,
@@ -690,7 +710,7 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void setUpDemographicInfo(RegistrationDTO registration, Map<String, Object> templateValues,
-			ResourceBundle applicationLanguageProperties, IndividualIdentity individualIdentity) {
+			boolean isChild, ResourceBundle applicationLanguageProperties, IndividualIdentity individualIdentity) {
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
 		String dob = getValue(individualIdentity.getDateOfBirth());
@@ -794,9 +814,9 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
 				getSecondaryLanguageLabel("localAdminAuthority"));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
-				getValue(individualIdentity.getLocalAdministrativeAuthority(), platformLanguageCode));
+				getValue(individualIdentity.getZone(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
-				getSecondaryLanguageValue(individualIdentity.getLocalAdministrativeAuthority(), localLanguageCode));
+				getSecondaryLanguageValue(individualIdentity.getZone(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("mobileNo"));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
@@ -822,9 +842,9 @@ public class TemplateGenerator extends BaseService {
 				applicationLanguageProperties.getString("cniOrPinNumber"));
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
 				getSecondaryLanguageLabel("cniOrPinNumber"));
-		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(individualIdentity.getCnieNumber()));
-		boolean isChild = individualIdentity.getParentOrGuardianName() != null;
-
+		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
+				getValue(individualIdentity.getReferenceIdentityNumber()));
+		
 		if (isChild || registration.isUpdateUINNonBiometric()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("parentName"));
@@ -928,20 +948,20 @@ public class TemplateGenerator extends BaseService {
 						.getFingerprintDetailsDTO();
 			}
 			for (FingerprintDetailsDTO fpDetailsDTO : fingerprintDetailsDTO) {
-				if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.LEFTPALM)) {
+				if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 					leftPalmCaptured = true;
 					byte[] leftPalmBytes = fpDetailsDTO.getFingerPrint();
 					String leftPalmEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(leftPalmBytes, false));
 					templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_LEFT_SLAP,
 							RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + leftPalmEncodedBytes);
-				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.RIGHTPALM)) {
+				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 					rightPalmCaptured = true;
 					byte[] rightPalmBytes = fpDetailsDTO.getFingerPrint();
 					String rightPalmEncodedBytes = StringUtils
 							.newStringUtf8(Base64.encodeBase64(rightPalmBytes, false));
 					templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_RIGHT_SLAP,
 							RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + rightPalmEncodedBytes);
-				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.THUMBS)) {
+				} else if (fpDetailsDTO.getFingerType().contains(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)) {
 					thumbsCaptured = true;
 					byte[] thumbsBytes = fpDetailsDTO.getFingerPrint();
 					String thumbsEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(thumbsBytes, false));
@@ -1448,7 +1468,7 @@ public class TemplateGenerator extends BaseService {
 		for (FingerprintDetailsDTO availableFinger : availableFingers) {
 			List<FingerprintDetailsDTO> segmentedFingers = availableFinger.getSegmentedFingerprints();
 			for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
-				fingersQuality.put(segmentedFinger.getFingerType(), segmentedFinger.getQualityScore());
+				fingersQuality.put(segmentedFinger.getFingerType().substring(0,1).toLowerCase()+segmentedFinger.getFingerType().substring(1).replaceAll(RegistrationConstants.SPACE, ""), segmentedFinger.getQualityScore());
 			}
 		}
 

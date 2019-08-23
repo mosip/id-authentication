@@ -1,25 +1,38 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_master
+-- Table Name 	: master.machine_master_h
+-- Purpose    	: Machine Master History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer master.machine_master table description for details.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: master.machine_master_h | type: TABLE --
 -- DROP TABLE IF EXISTS master.machine_master_h CASCADE;
 CREATE TABLE master.machine_master_h(
-	id 			character varying(10) NOT NULL,
-	name 		character varying(64) NOT NULL,
+	id character varying(10) NOT NULL,
+	name character varying(64) NOT NULL,
 	mac_address character varying(64) NOT NULL,
-	serial_num 	character varying(64) NOT NULL,
-	ip_address 	character varying(17),
+	serial_num character varying(64) NOT NULL,
+	ip_address character varying(17),
 	validity_end_dtimes timestamp,
-	mspec_id 			character varying(36) NOT NULL,
-	public_key 			bytea,
-	key_index 	character varying(128),
-	zone_code 	character varying(36) NOT NULL,
-	lang_code 	character varying(3) NOT NULL,
-	is_active 	boolean NOT NULL,
-	cr_by 		character varying(256) NOT NULL,
-	cr_dtimes 	timestamp NOT NULL,
-	upd_by 		character varying(256),
-	upd_dtimes 	timestamp,
-	is_deleted 	boolean,
-	del_dtimes 	timestamp,
-	eff_dtimes 	timestamp NOT NULL,
+	mspec_id character varying(36) NOT NULL,
+	public_key bytea,
+	key_index character varying(128),
+	zone_code character varying(36) NOT NULL,
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	eff_dtimes timestamp NOT NULL,
 	CONSTRAINT pk_machm_h_id PRIMARY KEY (id,lang_code,eff_dtimes)
 
 );

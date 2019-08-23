@@ -84,4 +84,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_UTC_TIME= "mosip.utc-datetime-pattern";
 	
 	public static final String MOSIP_IDA_AUTH_CLIENTID="mosip.ida.auth.clientId";
+	public static final String FINGERPRINT_PROVIDER = "ida.fingerprint.provider";
+	public static final String FACE_PROVIDER = "ida.face.provider";
+	public static final String IRIS_PROVIDER = "ida.iris.provider";
 }

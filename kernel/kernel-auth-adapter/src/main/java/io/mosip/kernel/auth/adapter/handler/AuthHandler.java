@@ -87,7 +87,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/v1/authmanager/authorize/admin/validateToken}")
+	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/r2/v1/authmanager/authorize/admin/validateToken}")
 	private String adminValidateUrl;
 	
 	@Value("${auth.jwt.base:Mosip-Token}")
@@ -286,6 +286,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		boolean isAuthorized = false;
 		HttpServerRequest httpRequest = routingContext.request();
 		String token = null;
+		MosipUserDto mosipUserDto = null;
 		String cookies = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
 		if (cookies != null && !cookies.isEmpty() && cookies.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)) {
 			token = cookies.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim();
@@ -299,7 +300,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			return "";
 		}
 		token = token.split(";")[0];
-		ResponseEntity<String> response = getValidatedUserResponse(token);
+		/*ResponseEntity<String> response = getValidatedUserResponse(token);
 		if (response == null) {
 			List<ServiceError> errors = new ArrayList<>();
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorCode(),
@@ -314,12 +315,18 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			return "";
 		}
 		ResponseWrapper<?> responseObject = null;
-		MosipUserDto mosipUserDto = null;
+		
 
 		responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
 		mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
-				MosipUserDto.class);
-
+				MosipUserDto.class);*/
+		Claims claims;
+		try {
+			claims = getClaims(token);
+		} catch (Exception e1) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e1.getMessage(), e1);
+		}
+		mosipUserDto = buildDto(claims);
 		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
 		Authentication authentication = new UsernamePasswordAuthenticationToken(authUserDetails,
 				authUserDetails.getPassword(), null);
@@ -341,8 +348,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			sendErrors(routingContext, errors, AuthAdapterConstant.UNAUTHORIZED);
 			return "";
 		}
-		return response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
-				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
+		return token;
 	}
 
 	private void sendErrors(RoutingContext routingContext, List<ServiceError> errors, int statusCode) {

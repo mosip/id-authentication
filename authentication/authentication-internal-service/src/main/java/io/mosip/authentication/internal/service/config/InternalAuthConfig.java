@@ -1,15 +1,15 @@
 package io.mosip.authentication.internal.service.config;
 
-
-import java.util.Map;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.INTERNAL_ALLOWED_AUTH_TYPE;
 
 import javax.annotation.PostConstruct;
 
-import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
-import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.authentication.common.service.config.IdAuthConfig;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
 
 /**
  * Class for defining configurations for the service.
@@ -18,7 +18,7 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  *
  */
 @Configuration
-public class InternalAuthConfig extends HibernateDaoConfig {
+public class InternalAuthConfig extends IdAuthConfig {
 	
 	/**
 	 * Ida transaction interceptor.
@@ -28,18 +28,21 @@ public class InternalAuthConfig extends HibernateDaoConfig {
 		System.err.println("IDA*******Tranaction config");
 	}
 	
-	/** The interceptor. */
 	@Autowired
-	private Interceptor interceptor;
+	protected Environment environment;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig#jpaProperties()
-	 */
-	@Override
-	public Map<String, Object> jpaProperties() {
-		Map<String, Object> jpaProperties = super.jpaProperties();
-		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
-		return jpaProperties;
+
+	protected boolean isFingerAuthEnabled() {
+		return (environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigKey())
+				|| environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigKey()));
+	}
+	
+	protected boolean isFaceAuthEnabled() {
+		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigKey());
+	}
+	
+	protected boolean isIrisAuthEnabled() {
+		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigKey());
 	}
 
 	
@@ -75,4 +78,5 @@ public class InternalAuthConfig extends HibernateDaoConfig {
 //		return jpaProperties;
 //	}
 	
+
 }

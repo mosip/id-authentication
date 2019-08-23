@@ -73,8 +73,7 @@ public class MosipBioDeviceIntegratorTest {
 		CaptureResponsBioDataDto captureResponsBioDataDto = new CaptureResponsBioDataDto();
 		captureResponsBioDataDto.setBioExtract(
 				"ExtractbioExtractbioExtractctbioExtractctbExtractioExtractbioExtractbioExtractctbioExtractctbioExtract"
-						.getBytes());
-		captureResponsBioDataDto.setBioSegmentedType("bioSegmentedType");
+						);
 		captureResponsBioDataDto.setBioSubType("bioSubType");
 		captureResponsBioDataDto.setBioType("bioType");
 		captureResponsBioDataDto.setBioValue("bio".getBytes());
@@ -87,9 +86,7 @@ public class MosipBioDeviceIntegratorTest {
 		captureResponsBioDataDto.setQualityScore("qualityScore");
 		captureResponsBioDataDto.setRequestedScore("requestedScore");
 		captureResponsBioDataDto.setTimestamp("timestamp");
-		captureResponsBioDataDto.setTransactionID("transactionID");
-
-		captureResponseDto.setSlapImage("slapImageslapImageslapImage".getBytes());
+		captureResponsBioDataDto.setRegistrationID("transactionID");
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -138,8 +135,7 @@ public class MosipBioDeviceIntegratorTest {
 		captureResponseBioDto.setSignature("signature");
 
 		CaptureResponsBioDataDto captureResponsBioDataDto = new CaptureResponsBioDataDto();
-		captureResponsBioDataDto.setBioExtract("Extract".getBytes());
-		captureResponsBioDataDto.setBioSegmentedType("bioSegmentedType");
+		captureResponsBioDataDto.setBioExtract("Extract");
 		captureResponsBioDataDto.setBioSubType("bioSubType");
 		captureResponsBioDataDto.setBioType("bioType");
 		captureResponsBioDataDto.setBioValue("bio".getBytes());
@@ -152,9 +148,7 @@ public class MosipBioDeviceIntegratorTest {
 		captureResponsBioDataDto.setQualityScore("qualityScore");
 		captureResponsBioDataDto.setRequestedScore("requestedScore");
 		captureResponsBioDataDto.setTimestamp("timestamp");
-		captureResponsBioDataDto.setTransactionID("transactionID");
-
-		captureResponseDto.setSlapImage("slapImageslapImageslapImage".getBytes());
+		captureResponsBioDataDto.setRegistrationID("transactionID");
 
 		ObjectMapper objectMapper = new ObjectMapper();
 

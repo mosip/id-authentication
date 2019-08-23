@@ -257,7 +257,6 @@ public class AuthController {
 						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
-			System.out.println("Token check after validate :::"+mosipUserDtoToken.getToken());
 			if (mosipUserDtoToken != null) {
 				mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
 			}

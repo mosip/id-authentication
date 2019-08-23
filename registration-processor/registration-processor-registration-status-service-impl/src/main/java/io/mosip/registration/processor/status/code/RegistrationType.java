@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.code;
 
+
 /**
  * The Enum RegistrationType.
  */
@@ -24,6 +25,9 @@ public enum RegistrationType {
 	RES_UPDATE,
 	
 	/** The lost. */
-	LOST;
+	LOST,
 	
+	
+	/** The res reprint. */
+	RES_REPRINT;
 }

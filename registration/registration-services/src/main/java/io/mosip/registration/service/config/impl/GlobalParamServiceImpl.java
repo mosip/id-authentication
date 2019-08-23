@@ -33,6 +33,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.id.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -132,11 +133,13 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	}
 
 	private void saveGlobalParams(ResponseDTO responseDTO, String triggerPoinnt) {
+		
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			try {
 				boolean isToBeRestarted = false;
 				Map<String, String> requestParamMap = new HashMap<>();
-
+                if(validate(responseDTO, triggerPoinnt))
+                {
 				/* REST CALL */
 				@SuppressWarnings("unchecked")
 				LinkedHashMap<String, Object> globalParamJsonMap = (LinkedHashMap<String, Object>) serviceDelegateUtil
@@ -206,9 +209,15 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				} else {
 					setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 				}
-			} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
+                }
+                } catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
 					| RegBaseCheckedException | ClassCastException | ResourceAccessException exception) {
-				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+                	if (isAuthTokenEmptyException(exception)) {
+					setErrorResponse(responseDTO,
+							RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(), null);
+                	} else {
+                		setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+                	}
 				LOGGER.error("REGISTRATION_SYNC_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			}
@@ -298,35 +307,42 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Update global param started");
 
-		// Primary Key
-		GlobalParamId globalParamId = new GlobalParamId();
-		globalParamId.setCode(code);
-		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+		if(code!=null && val!=null) {
+			// Primary Key
+			GlobalParamId globalParamId = new GlobalParamId();
+			globalParamId.setCode(code);
+			globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 
-		// Get Current global param
-		GlobalParam globalParam = globalParamDAO.get(globalParamId);
+			// Get Current global param
+			GlobalParam globalParam = globalParamDAO.get(globalParamId);
 
-		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
-		if (globalParam == null) {
-			globalParam = new GlobalParam();
-			globalParam.setGlobalParamId(globalParamId);
-			globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-			globalParam.setCrDtime(time);
+			Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+			if (globalParam == null) {
+				globalParam = new GlobalParam();
+				globalParam.setGlobalParamId(globalParamId);
+				globalParam.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				globalParam.setCrDtime(time);
 
+			}
+			globalParam.setVal(val);
+			globalParam.setName(code);
+			globalParam.setIsActive(true);
+			globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			globalParam.setUpdDtimes(time);
+
+			// Update Global Param
+			globalParamDAO.update(globalParam);
+
+			updateApplicationMap(code, val);
+
+			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"Update global param ended");
 		}
-		globalParam.setVal(val);
-		globalParam.setName(code);
-		globalParam.setIsActive(true);
-		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-		globalParam.setUpdDtimes(time);
-
-		// Update Global Param
-		globalParamDAO.update(globalParam);
-
-		updateApplicationMap(code, val);
-
+		else {
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Update global param ended");
+				"Not Update global param because of code or val is null value");
+		}
+		
 
 	}
 
@@ -334,5 +350,26 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		ApplicationContext.setGlobalConfigValueOf(code, val);
 		// getBaseGlobalMap().put(code, val);
 
+	}
+	
+	private boolean validate(ResponseDTO responseDTO,String triggerPoint) throws RegBaseCheckedException
+	{
+		
+		if(responseDTO!=null)
+		{
+			if(triggerPoint!=null)
+			{
+				return true;
+			}
+			else
+			{
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_GLOBALPARAM_SYNC_SERVICE_IMPL_TRIGGER_POINT.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL_CENTERMACHINEID.getErrorMessage());
+			}
+		}
+		else
+		{
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_GLOBALPARAM_SYNC_SERVICE_IMPL.getErrorCode(),RegistrationExceptionConstants.REG_POLICY_SYNC_SERVICE_IMPL.getErrorMessage());
+		}
+		
 	}
 }

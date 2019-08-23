@@ -3,9 +3,9 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
@@ -184,29 +184,6 @@ public interface RegistrationCenterService {
 			String orderBy);
 
 	/**
-	 * This service method can be used to create registration center by admin.
-	 * 
-	 * @param RegistrationCenterReqAdmDto
-	 *            -pass the List of registration center DTO to create.
-	 * @return RegistrationCenterPostResponseDto - return created registration
-	 *         centers complete DTO
-	 */
-	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			List<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
-
-	/**
-	 * This method updates the registration center by admin.
-	 * 
-	 * @param RegistrationCenterPutReqAdmDto
-	 *            - pass the List of registration center DTO to update.
-	 * 
-	 * @return RegistrationCenterPutResponseDto - return updated registration
-	 *         centers complete DTO
-	 */
-	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
-			List<RegistrationCenterPutReqAdmDto> registrationCenterDto);
-
-	/**
 	 * Method to perform search based on the input
 	 * 
 	 * @param searchDto
@@ -223,6 +200,33 @@ public interface RegistrationCenterService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto registrationCenterFilterValues(FilterValueDto filterValueDto);
+
+	/**
+	 * This service method can be used to create registration center by admin,
+	 * without id in request DTO will create Registration center for primary
+	 * language with ID in request DTO will create Registration center for secondary
+	 * language if for the given ID registration center is there in DB
+	 * 
+	 * @param RegistrationCenterReqAdmSecDto
+	 *            -pass the List of registration center DTO to create.
+	 * @return RegistrationCenterPostResponseDto - return created registration
+	 *         centers complete DTO
+	 */
+	public RegistrationCenterPostResponseDto createRegistrationCenter(
+			List<RegCenterPostReqDto> reqRegistrationCenterDto);
+
+    /**
+    * This method updates the registration center by admin.
+    * 
+     * @param RegCenterPutReqDto
+    *            - pass the List of registration center DTO to update.
+    * 
+     * @return RegistrationCenterPutResponseDto - return updated registration
+    *         centers complete DTO
+    */
+
+	public RegistrationCenterPutResponseDto updateRegistrationCenter(
+			List<RegCenterPutReqDto> registrationCenterPutReqAdmDto);
 
 	/**
 	 * Service method to decommission registration center.

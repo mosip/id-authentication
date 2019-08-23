@@ -22,5 +22,5 @@
 \ir ddl/prereg-prid_seq.sql
 
 
-\ir ddl/AlterFK_prereg_schema.sql
-\ir ddl/AlterFK_batch_prereg_schema.sql
+\ir ddl/prereg-fk.sql
+\ir ddl/prereg-batch-fk.sql

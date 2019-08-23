@@ -56,7 +56,9 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.operator.UserOnboardService;
@@ -324,7 +326,9 @@ public class BaseController {
 	}
 
 	private void alertTypeCheck(String title, String context, Stage alertStage) {
-		if (context.contains(RegistrationConstants.INFO)) {
+		if (context.contains(RegistrationConstants.INFO) || (!context.contains(RegistrationConstants.INFO)
+				&& !context.contains(RegistrationConstants.SUCCESS.toUpperCase())
+				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
 			alertController.generateAlertResponse(title, context);
 		} else {
@@ -494,6 +498,7 @@ public class BaseController {
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
+					clearRegistrationData();
 				} else {
 					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
 							RegistrationConstants.ENABLE);
@@ -531,9 +536,7 @@ public class BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-		webCameraController.closeWebcam();
-		clearRegistrationData();
-		clearOnboardData();
+		webCameraController.closeWebcam();		
 		goToHomePage();
 
 	}
@@ -647,7 +650,7 @@ public class BaseController {
 	 * @param imageType
 	 *            Type of image that is to be saved
 	 */
-	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
+	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType,CaptureResponseDto captureResponseDto) {
 		// will be implemented in the derived class.
 	}
 
@@ -825,6 +828,9 @@ public class BaseController {
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 		return writeNotificationTemplate;
 	}
@@ -952,8 +958,14 @@ public class BaseController {
 
 			LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID, "Validating User Onboard data");
 
-			ResponseDTO response = userOnboardService
-					.validate((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA));
+			ResponseDTO response = null;
+			try {
+				response = userOnboardService
+						.validate((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA));
+			} catch (RegBaseCheckedException checkedException) {
+				LOGGER.error(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
+						ExceptionUtils.getStackTrace(checkedException));
+			}
 			if (response != null && response.getErrorResponseDTOs() != null
 					&& response.getErrorResponseDTOs().get(0) != null) {
 
@@ -1290,56 +1302,7 @@ public class BaseController {
 
 	}
 
-	/**
-	 * Exception fingers count.
-	 */
-	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount,
-			int irisCount) {
-
-		Map<String, Integer> exceptionCountMap = new HashMap<>();
-		List<BiometricExceptionDTO> biometricExceptionDTOs;
-		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			biometricExceptionDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
-				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
-			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-					.getBiometricExceptionDTO();
-		} else {
-			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-					.getBiometricExceptionDTO();
-		}
-		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
-
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
-					&& biometricExceptionDTO.isMarkedAsException())
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
-				leftSlapCount++;
-			}
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
-					&& biometricExceptionDTO.isMarkedAsException())
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
-				rightSlapCount++;
-			}
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
-					&& biometricExceptionDTO.isMarkedAsException())) {
-				thumbCount++;
-			}
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
-					&& biometricExceptionDTO.isMarkedAsException())) {
-				irisCount++;
-			}
-		}
-		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
-		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
-		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
-		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT,
-				leftSlapCount + rightSlapCount + thumbCount + irisCount);
-
-		return exceptionCountMap;
-	}
-
+	
 	protected List<BiometricExceptionDTO> getIrisExceptions() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
@@ -1364,6 +1327,11 @@ public class BaseController {
 	protected boolean anyIrisException(String iris) {
 		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
 				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
+	}
+	
+
+	public void getExceptionIdentifier(List<String> exception, String exceptionType) {
+			exception.add(RegistrationConstants.userOnBoardMap.get(exceptionType));
 	}
 
 	/**

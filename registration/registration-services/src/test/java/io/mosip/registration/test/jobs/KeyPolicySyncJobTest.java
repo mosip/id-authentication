@@ -30,6 +30,7 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
@@ -108,7 +109,7 @@ public class KeyPolicySyncJobTest {
 	}
 
 	@Test
-	public void executeinternalTest() throws JobExecutionException {
+	public void executeinternalTest() throws JobExecutionException, RegBaseCheckedException {
 
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1");

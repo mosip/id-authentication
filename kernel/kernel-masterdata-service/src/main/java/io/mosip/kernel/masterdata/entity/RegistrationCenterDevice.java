@@ -7,6 +7,10 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
@@ -41,5 +45,15 @@ public class RegistrationCenterDevice extends BaseEntity implements Serializable
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "device_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private Device device;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+	private RegistrationCenter registrationCenter;
 
 }

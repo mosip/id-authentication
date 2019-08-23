@@ -3,6 +3,7 @@ package io.mosip.kernel.auditmanager.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class AuditManagerController {
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION','PRE_REGISTRATION_ADMIN')")
 	@ResponseFilter
-	@PostMapping(value = "/audits")
+	@PostMapping(value = "/audits",produces= MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<AuditResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditRequestDto> requestDto) {
 		ResponseWrapper<AuditResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(service.addAudit(requestDto.getRequest()));

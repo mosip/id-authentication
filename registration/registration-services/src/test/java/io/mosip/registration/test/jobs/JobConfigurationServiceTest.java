@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -237,6 +238,7 @@ public class JobConfigurationServiceTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void getCurrentRunningJobDetailsTest() throws SchedulerException {
 		startJobs();
@@ -278,6 +280,15 @@ public class JobConfigurationServiceTest {
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
 		Assert.assertNotNull(
 				jobConfigurationService.executeJob("1234", RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM));
+	}
+	
+	@Test
+	public void executeJobNullTest() throws SchedulerException {
+		initiateJobTest();
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
+		Assert.assertNotNull(
+				jobConfigurationService.executeJob(null,null).getErrorResponseDTOs());
 	}
 
 	@Test

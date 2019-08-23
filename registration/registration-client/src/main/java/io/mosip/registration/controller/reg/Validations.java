@@ -28,6 +28,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.entity.BlacklistedWords;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -162,11 +163,17 @@ public class Validations extends BaseController {
 	 * @return true, if successful
 	 */
 	public boolean validate(Pane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
-		this.applicationLanguageblackListedWords = masterSync
-				.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
-				.map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
-		this.localLanguageblackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.localLanguage())
-				.stream().map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
+		try {
+			this.applicationLanguageblackListedWords = masterSync
+					.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
+					.map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
+			this.localLanguageblackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.localLanguage())
+					.stream().map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+		}
 		return validateTheFields(pane, notTovalidate, isValid);
 	}
 
@@ -537,7 +544,7 @@ public class Validations extends BaseController {
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
-				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.REFERENCE_ID_NO_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:

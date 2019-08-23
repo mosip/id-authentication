@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.registration.processor.core.abstractverticle.*;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +16,14 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -31,6 +35,8 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -74,6 +80,8 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
+	
+	private TrimExceptionMessage trimExceptionMsg = new TrimExceptionMessage();
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
@@ -194,11 +202,13 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+				registrationStatusDto.setStatusComment(StatusUtil.INDIVIDUAL_BIOMETRIC_NOT_FOUND.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.INDIVIDUAL_BIOMETRIC_NOT_FOUND.getCode());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 						"Individual Biometric parameter is not present in ID Json");
 			} else {
 				String biometricFileName = JsonUtil.getJSONValue(individualBiometricsObject, VALUE);
-				if (biometricFileName == null || biometricFileName.isEmpty()) {
+				if (isBiometricFileNameEmpty(biometricFileName)) {
 					description = "File Name of individual biometric is not present";
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), regId,
@@ -231,8 +241,9 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 						registrationStatusDto
 								.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
-						description = "The " + bir.getBdbInfo().getType().get(0)
-								+ " information captured is below the configured threshold";
+						registrationStatusDto.setStatusComment(StatusUtil.BIOMETRIC_QUALITY_CHECK_FAILED.getMessage());
+						registrationStatusDto.setSubStatusCode(StatusUtil.BIOMETRIC_QUALITY_CHECK_FAILED.getCode());
+						description = "The Quality score of biometrics is below threshold";
 						break;
 					} else {
 						scoreCounter++;
@@ -240,11 +251,13 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 				}
 				if (scoreCounter == birTypeList.size()) {
 					object.setIsValid(Boolean.TRUE);
-					description = "All Quality Scores are more than threshold";
+					description = "Biometric Quality Check Successful";
 					isTransactionSuccessful = Boolean.TRUE;
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+					registrationStatusDto.setStatusComment(StatusUtil.BIOMETRIC_QUALITY_CHECK_SUCCESS.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.BIOMETRIC_QUALITY_CHECK_SUCCESS.getCode());
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), regId, "QualityCheckerImpl::success");
 				}
@@ -256,29 +269,46 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
-					.setStatusComment(PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
+					.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+					regId, PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			isTransactionSuccessful = false;
 			description = "FileSytem is not accessible for packet " + regId + "::" + e.getMessage();
 			object.setRid(regId);
-		} catch (BiometricException e) {
+		}catch(FileMissingException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_QCR_BIOMETRIC_EXCEPTION.getMessage());
+			registrationStatusDto.setStatusComment(StatusUtil.BIO_METRIC_FILE_MISSING.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_METRIC_FILE_MISSING.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_QCR_BIOMETRIC_EXCEPTION.getMessage() + e.getMessage());
+					regId, PlatformErrorMessages.RPR_QCR_BIOMETRIC_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+			isTransactionSuccessful = false;
+			description = "Applicant biometric fileName/file is missing " + regId + "::" + e.getMessage();
+			object.setRid(regId);
+			
+		}
+		catch (BiometricException e) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
+			registrationStatusDto.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.BIO_METRIC_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_METRIC_EXCEPTION.getCode());
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, PlatformErrorMessages.RPR_QCR_BIOMETRIC_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			isTransactionSuccessful = false;
 			description = "Biometric exception from IDA for " + regId + "::" + e.getMessage();
 			object.setRid(regId);
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
+			registrationStatusDto.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -289,7 +319,6 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 			description = "Internal error occurred in QualityChecker stage while processing registrationId " + regId
 					+ ex.getMessage();
 		} finally {
-			registrationStatusDto.setStatusComment(description);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
@@ -304,6 +333,10 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 		}
 
 		return object;
+	}
+
+	private boolean isBiometricFileNameEmpty(String biometricFileName) {
+		return biometricFileName == null || biometricFileName.isEmpty();
 	}
 
 	/**

@@ -30,5 +30,9 @@ public class MasterDataConstant {
 	public static final String ZONE = "zone";
 	public static final String ZONE_CODE = "zoneCode";
 	public static final String HIERARCHY_LEVEL = "hierarchyLevel";
+	public static final String MAPPED_SUCCESSFULLY = "mapped";
+	public static final String DOC_CATEGORY_AND_DOC_TYPE_MAPPING_SUCCESS_MESSAGE = "Document Category %s - Document Type Mapping %s is added successfully";
+	public static final String UNMAPPED_SUCCESSFULLY = "un-mapped";
+	public static final String DOC_CATEGORY_AND_DOC_TYPE_UNMAPPING_SUCCESS_MESSAGE = "Document Category %s - Document Type Mapping %s is updated successfully";
 
 }

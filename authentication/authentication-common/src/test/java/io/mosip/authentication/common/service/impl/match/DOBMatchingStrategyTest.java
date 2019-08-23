@@ -81,6 +81,7 @@ public class DOBMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
+	@Ignore
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
@@ -98,6 +99,7 @@ public class DOBMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
+	 @Ignore
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();

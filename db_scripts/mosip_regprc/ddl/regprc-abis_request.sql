@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_regprc
+-- Table Name 	: regprc.abis_request
+-- Purpose    	: ABIS Request: Stores all the requests that were sent to ABIS systems.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: regprc.abis_request | type: TABLE --
 -- DROP TABLE IF EXISTS regprc.abis_request CASCADE;
 CREATE TABLE regprc.abis_request(
@@ -60,6 +73,3 @@ COMMENT ON COLUMN regprc.abis_request.is_deleted IS 'IS_Deleted : Flag to mark w
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_request.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE regprc.abis_request OWNER TO sysadmin;
--- ddl-end --
-
