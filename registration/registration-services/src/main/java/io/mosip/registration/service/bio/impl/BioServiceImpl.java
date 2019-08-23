@@ -499,7 +499,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 				byte[] isoImageBytes = IOUtils
 						.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
-				segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
+				segmentedDetailsDTO.setFingerPrintISOImage(isoTemplateBytes);
 
 				segmentedDetailsDTO.setFingerType(imageFileName[3]);
 				segmentedDetailsDTO.setFingerprintImageName(imageFileName[3]);
@@ -586,8 +586,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		if(isNull(irisType))
 			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 		
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+		if (isMdmEnabled())
 			getIrisImageAsDTOWithMdm(irisDetailsDTO, "IRIS_DOUBLE");
 		else
 			getIrisImageAsDTONonMdm(irisDetailsDTO, irisType);
@@ -656,7 +655,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 					|| Double.compare(irisDetailsDTO.getQualityScore(), qualityScore) < 0) {
 				// Set the values in IrisDetailsDTO object
 				irisDetailsDTO.setIris((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
-				irisDetailsDTO.setIrisIso((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
+				irisDetailsDTO.setIrisIso((byte[]) scannedIrisMap.get(RegistrationConstants.IMAGE_BYTE_ISO));
 				irisDetailsDTO.setForceCaptured(false);
 				irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
 						.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
@@ -688,14 +687,19 @@ public class BioServiceImpl extends BaseService implements BioService {
 				throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 
 			double qualityScore;
+			byte iso[];
 			BufferedImage bufferedImage;
 			if (irisType.equalsIgnoreCase(RegistrationConstants.TEMPLATE_LEFT_EYE)) {
 				bufferedImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 				qualityScore = 90.5;
+				iso = IOUtils
+						.resourceToByteArray(RegistrationConstants.LEFT_EYE_ISO);
 			} else {
 				bufferedImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL_RIGHT));
+				iso = IOUtils
+						.resourceToByteArray(RegistrationConstants.RIGHT_EYE_ISO);
 				qualityScore = 50.0;
 			}
 
@@ -708,6 +712,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			Map<String, Object> scannedIris = new WeakHashMap<>();
 			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, RegistrationConstants.IMAGE_FORMAT_PNG);
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
+			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ISO, iso);
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);
 			}

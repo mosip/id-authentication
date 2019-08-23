@@ -132,6 +132,10 @@ public class Validations extends BaseController {
 	protected void updateAsLostUIN(boolean isLostUIN) {
 		this.isLostUIN = isLostUIN;
 	}
+	
+	public boolean isLostUIN() {
+		return this.isLostUIN;
+	}
 
 	/**
 	 * To decide whether this node should be validated or not.

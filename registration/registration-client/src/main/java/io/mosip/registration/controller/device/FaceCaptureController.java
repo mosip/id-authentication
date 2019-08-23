@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -399,13 +400,17 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		byte[] isoBytes = bioService.getSingleBiometricIsoTemplate(captureResponseDto);
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && capturedImage != null) {
-
+			
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			try {
+				if(!bioService.isMdmEnabled())
+					isoBytes = IOUtils
+						.resourceToByteArray(RegistrationConstants.FACE_ISO);
+
 				applicantImage.setImage(capture);
 				applicantBufferedImage = capturedImage;
 
-				if (null != captureResponseDto && null != isoBytes)
+				if ( null != isoBytes)
 					applicantImageIso = isoBytes;
 
 				applicantImageCaptured = true;

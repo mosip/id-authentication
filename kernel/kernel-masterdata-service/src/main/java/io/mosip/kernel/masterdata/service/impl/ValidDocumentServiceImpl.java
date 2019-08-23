@@ -241,7 +241,8 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 
 				Page<ValidDocument> documents = masterdataSearchHelper.searchMasterdata(ValidDocument.class,
 						new SearchDto(Arrays.asList(filter), Collections.emptyList(),
-								new Pagination(0, Integer.MAX_VALUE), null), null);
+								new Pagination(0, Integer.MAX_VALUE), null),
+						null);
 				if (!documents.hasContent()) {
 					throw new RequestException(ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorCode(),
 							ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorMessage());
@@ -256,10 +257,11 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		List<SearchSort> sort = dto.getSort();
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
-		Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
-				new OptionalFilter[] { new OptionalFilter(addList) });
 		Page<DocumentCategory> pageCategory = masterdataSearchHelper.searchMasterdata(DocumentCategory.class, dto,
 				new OptionalFilter[] { new OptionalFilter(addList1) });
+		dto.setSort(sort);
+		Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
+				new OptionalFilter[] { new OptionalFilter(addList) });
 		if ((page.getContent() != null && !page.getContent().isEmpty())
 				&& (pageCategory.getContent() != null && !pageCategory.getContent().isEmpty())) {
 
@@ -295,7 +297,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				validDocs.add(documentTypeExtnDto);
 			});
 
-			pageDto = pageUtils.sortPage(validDocs, sort, pagination);
+			pageDto = pageUtils.applyPagination(validDocs, pagination);
 		}
 		return pageDto;
 

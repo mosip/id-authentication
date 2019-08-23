@@ -90,7 +90,7 @@ public class BioServiceTest {
 	
 	CaptureResponseDto irisCaptureResponse;
 
-
+	
 	@Before
 	public void beforeClass() throws RegBaseCheckedException {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
@@ -377,7 +377,7 @@ public class BioServiceTest {
 
 	}
 
-	@Test
+	@Test(expected=RegBaseCheckedException.class)
 	public void testGetIrisImageAsDTONoMdm() throws RegBaseCheckedException, IOException {
 		PowerMockito.mockStatic(ImageIO.class);
 		when(ImageIO.read(Mockito.any(InputStream.class))).thenReturn(Mockito.mock(BufferedImage.class));
@@ -553,6 +553,8 @@ public class BioServiceTest {
 	@Test
 	public void nonMdmTest() throws RegBaseCheckedException, IOException {
 		ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
+		PowerMockito.mockStatic(IOUtils.class);
+		Mockito.when(IOUtils.resourceToByteArray(Mockito.any())).thenReturn("image".getBytes());
 		bioService.getIrisImageAsDTO(new IrisDetailsDTO(), "LeftEye");
 	}
 

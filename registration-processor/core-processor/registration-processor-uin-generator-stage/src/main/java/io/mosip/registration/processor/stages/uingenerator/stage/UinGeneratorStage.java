@@ -337,6 +337,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(description.getStatusComment());
 			if (description.getCode() != null)
 				registrationStatusDto.setStatusCode(description.getCode());
+			if (description.getSubStatusCode() != null)
+				registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
 
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();

@@ -149,7 +149,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		PageResponseDto<MachineTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<MachineTypeExtnDto> machineTypes = null;
 		List<SearchFilter> addList = new ArrayList<>();
-		if (filterValidator.validate(MachineExtnDto.class, dto.getFilters())) {
+		if (filterValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<MachineType> page = masterdataSearchHelper.searchMasterdata(MachineType.class, dto,
 					new OptionalFilter[] { optionalFilter });

@@ -39,6 +39,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -86,6 +87,9 @@ public class PacketCreationServiceTest {
 	private AuditLogControlDAO auditLogControlDAO;
 	@Mock
 	private MachineMappingDAO machineMappingDAO;
+	@Mock
+	private DocumentTypeDAO documentTypeDAO;
+	
 	private static RegistrationDTO registrationDTO;
 	private static RegistrationAuditDates registrationAuditDates;
 
