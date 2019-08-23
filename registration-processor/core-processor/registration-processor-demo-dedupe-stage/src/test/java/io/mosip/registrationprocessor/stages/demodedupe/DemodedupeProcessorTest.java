@@ -7,6 +7,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -153,6 +155,14 @@ public class DemodedupeProcessorTest {
 
 	@Mock
 	LogDescription description;
+
+	@Mock
+	private Environment env;
+
+	private static final String DEMODEDUPEENABLE = "mosip.registration.processor.demographic.deduplication.enable";
+
+	private static final String TRUE = "true";
+
 	/**
 	 * Sets the up.
 	 *
@@ -284,13 +294,14 @@ public class DemodedupeProcessorTest {
 	 */
 	@Test
 	public void testDemoDedupeNewPacketSuccess() throws Exception {
+		when(env.getProperty(DEMODEDUPEENABLE)).thenReturn("true");
 		byte[] b = "sds".getBytes();
 		List<DemographicInfoDto> emptyDuplicateDtoSet = new ArrayList<>();
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-		.thenReturn(packetMetaInfo);
+				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
@@ -330,7 +341,7 @@ public class DemodedupeProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-		.thenReturn(packetMetaInfo);
+				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatus);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
@@ -348,7 +359,7 @@ public class DemodedupeProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-		.thenReturn(packetMetaInfo);
+				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
@@ -380,7 +391,7 @@ public class DemodedupeProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-		.thenReturn(packetMetaInfo);
+				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
@@ -416,7 +427,7 @@ public class DemodedupeProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-		.thenReturn(packetMetaInfo);
+				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
@@ -448,7 +459,7 @@ public class DemodedupeProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-		.thenReturn(packetMetaInfo);
+				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
@@ -478,7 +489,7 @@ public class DemodedupeProcessorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupeFailure() throws ApisResourceAccessException, IOException, IllegalAccessException,
-	IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
+			IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
@@ -506,7 +517,7 @@ public class DemodedupeProcessorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testResourceException() throws ApisResourceAccessException, IOException, IllegalAccessException,
-	IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
+			IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		ApisResourceAccessException exp = new ApisResourceAccessException("errorMessage");
@@ -530,7 +541,7 @@ public class DemodedupeProcessorTest {
 
 	@Test
 	public void testIllegalArgumentException() throws ApisResourceAccessException, IOException, IllegalAccessException,
-	IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
+			IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		IllegalArgumentException exp = new IllegalArgumentException("errorMessage");
 		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any());
@@ -538,6 +549,30 @@ public class DemodedupeProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
+	}
+
+	/**
+	 * Test demo dedupe success.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testDemoDedupeNewPacketSkipped() throws Exception {
+		when(env.getProperty(DEMODEDUPEENABLE)).thenReturn("false");
+		byte[] b = "sds".getBytes();
+
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
+
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertTrue(messageDto.getIsValid());
+
 	}
 
 }
