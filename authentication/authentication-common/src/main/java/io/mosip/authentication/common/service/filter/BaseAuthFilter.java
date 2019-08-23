@@ -90,6 +90,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	}
 
+	/**
+	 * Decipher and validate request - Method used to decipher the input stream request
+	 * and validate it using {@link validateDecipheredRequest} method.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @param requestBody the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		try {
@@ -108,7 +116,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * validateDecipheredRequest - Method used to validate the input stream request
 	 * by validating the policy, partner and MISP id of the authenticating partner
-	 * once the request is decoded and deciphered
+	 * once the request is decoded and deciphered.
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @param decipherRequest the request got after decode and decipher the input stream
@@ -144,10 +152,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * validateSignature method is used to authenticate the request
 	 * received from the authenticating partner from the pay load received
-	 * which consists of the JSON signature and certificate 
+	 * which consists of the JSON signature and certificate .
 	 *
 	 * @param signature     the JWS serialization received through the request
-	 * @param requestAsByte the byte array of the request got after decipher 
+	 * @param requestAsByte the byte array of the request got after decipher
 	 * @return true, if successful once the signature is validated
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -183,7 +191,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * checkValidSign method used to check if all the parameters in 
 	 * the signature are valid and returns true or false once
-	 * validation is performed
+	 * validation is performed.
 	 *
 	 * @param requestAsByte the byte array of the request got after decipher
 	 * @param isSigned      the final result which determines is the validation successful or not
@@ -203,7 +211,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/**
 	 * validateOrg method used to validate the organization
-	 * present in the certificate
+	 * present in the certificate.
 	 *
 	 * @param certNew the X509 certificate fetched from the signature
 	 * @return true, if successful
@@ -216,7 +224,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Decode method is used to decode the encoded string
+	 * Decode method is used to decode the encoded string.
 	 *
 	 * @param stringToDecode the encoded string
 	 * @return the object the decoded string
@@ -237,7 +245,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/**
 	 * Encode method is used to encode the string which
-	 * is passed through it
+	 * is passed through it.
 	 *
 	 * @param stringToEncode the string to be encoded
 	 * @return the string the encoded string
@@ -259,7 +267,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * decipherRequest method is used to get the deciphered request
 	 * from the encoded and enciphered request passed by the 
-	 * authenticating partner
+	 * authenticating partner.
 	 *
 	 * @param requestBody the encoded and enciphered request body
 	 * @return the map the decoded and deciphered request body
@@ -271,7 +279,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/**
 	 * encipherResponse method is used to encoded and encrypt 
-	 * the response received while returning the KYC response
+	 * the response received while returning the KYC response.
 	 *
 	 * @param responseBody the response received after authentication
 	 * @return the map the final encoded and enciphered response
@@ -298,7 +306,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/**
 	 * validateRequestHMAC method is used to validate the HMAC 
 	 * of the request with the deciphered request block and 
-	 * requestHMAC received in the request body
+	 * requestHMAC received in the request body.
 	 *
 	 * @param requestHMAC the requestHMAC received in the request body
 	 * @param generatedHMAC the generated HMAC computed once the request is decoded and deciphered

@@ -1,11 +1,9 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
-import java.util.Date;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,9 +18,6 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.idrepository.core.exception.IdRepoAppException;
-import io.mosip.idrepository.core.security.IdRepoSecurityManager;
-import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -30,6 +25,10 @@ import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdAuthTransactionManager.
+ */
+/**
+ * @author Arun Bose
+ *
  */
 @Component
 public class IdAuthTransactionManager {
@@ -47,17 +46,17 @@ public class IdAuthTransactionManager {
 	@Autowired
 	private ObjectMapper mapper;	
 	
-/** The environment. */
-@Autowired
-private Environment environment;
-
-/** The rest builder. */
-@Autowired
-private RestRequestFactory restBuilder;
-
-/** The rest helper. */
-@Autowired
-private RestHelper restHelper;
+	/** The environment. */
+	@Autowired
+	private Environment environment;
+	
+	/** The rest builder. */
+	@Autowired
+	private RestRequestFactory restBuilder;
+	
+	/** The rest helper. */
+	@Autowired
+	private RestHelper restHelper;
 
 	/**
 	 * provides the user id.
@@ -66,12 +65,8 @@ private RestHelper restHelper;
 	 */
 	public String getUser() {
 		return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_CLIENTID);
-		
 	}
-	
-	
-
-	
+		
 	/**
 	 * Encryption of data by making rest call to kernel-cryptomanager with salt.
 	 *
@@ -80,7 +75,8 @@ private RestHelper restHelper;
 	 * @return the byte[]
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public byte[] encryptWithSalt(final byte[] dataToEncrypt,final byte[] saltToEncrypt) throws IdAuthenticationBusinessException{
+	public byte[] encryptWithSalt(final byte[] dataToEncrypt, final byte[] saltToEncrypt)
+			throws IdAuthenticationBusinessException {
 		try {
 			RequestWrapper<ObjectNode> baseRequest = new RequestWrapper<>();
 			baseRequest.setId("string");
@@ -88,17 +84,16 @@ private RestHelper restHelper;
 			baseRequest.setVersion(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
 			request.put("applicationId", environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			request.put("timeStamp",
-					DateUtils.getUTCCurrentDateTimeString());
+			request.put("timeStamp", DateUtils.getUTCCurrentDateTimeString());
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
 			request.put("salt", CryptoUtil.encodeBase64(saltToEncrypt));
 			baseRequest.setRequest(request);
-			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
-					baseRequest, ObjectNode.class));
+			return encryptDecryptData(
+					restBuilder.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE, baseRequest, ObjectNode.class));
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER,ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION,e);
-		} 
+			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+		}
 	}
 	
 	/**
@@ -117,12 +112,13 @@ private RestHelper restHelper;
 					&& response.get("response").has("data") && Objects.nonNull(response.get("response").get("data"))) {
 				return response.get("response").get("data").asText().getBytes();
 			} else {
-				mosipLogger.error(getUser(),  ID_AUTH_TRANSACTION_MANAGER,ENCRYPT_DECRYPT_DATA,
+				mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
 						"No data block found in response");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION);
 			}
 		} catch (RestServiceException e) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(),  ID_AUTH_TRANSACTION_MANAGER,ENCRYPT_DECRYPT_DATA, e.getErrorText());
+			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION);
 		}
 	}

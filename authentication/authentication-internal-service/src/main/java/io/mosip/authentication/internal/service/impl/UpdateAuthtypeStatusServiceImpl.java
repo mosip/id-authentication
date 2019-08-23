@@ -23,21 +23,33 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
+/**
+ * The Class UpdateAuthtypeStatusServiceImpl.
+ *
+ * @author Dinesh Karuppaiah T
+ */
 @Component
 @Transactional
 public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusService {
 
+	/** The Constant UIN_KEY. */
 	private static final Object UIN_KEY = "uin";
 
+	/** The id service. */
 	@Autowired
 	private IdService<AutnTxn> idService;
 
+	/** The auth lock repository. */
 	@Autowired
 	private AuthLockRepository authLockRepository;
 
+	/** The environment. */
 	@Autowired
 	private Environment environment;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
+	 */
 	public void updateAuthtypeStatus(AuthTypeStatusDto authTypeStatusDto) throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = idService.processIdType(authTypeStatusDto.getIndividualIdType(),
 				authTypeStatusDto.getIndividualId(), false);
@@ -50,6 +62,14 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		}
 	}
 
+	/**
+	 * Put auth type status.
+	 *
+	 * @param authtypeStatus the authtype status
+	 * @param uin the uin
+	 * @param reqTime the req time
+	 * @return the authtype lock
+	 */
 	private AuthtypeLock putAuthTypeStatus(AuthtypeStatus authtypeStatus, String uin, String reqTime) {
 		AuthtypeLock authtypeLock = new AuthtypeLock();
 		authtypeLock.setUin(uin);

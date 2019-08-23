@@ -1,11 +1,16 @@
 package io.mosip.authentication.core.constant;
 
 /**
- * The Enum TransactionType is used to  set the transaction type in auth transaction type 
+ * The Enum TransactionType is used to  set the transaction type in auth transaction type.
+ * 
+ *  @author Arun Bose
  */
 public enum TransactionType {
 	
+	/** The internal. */
 	INTERNAL("INTERNAL"),
+   
+   /** The partner. */
    PARTNER("PARTNER");
 	
 	/** The type. */

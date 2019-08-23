@@ -67,22 +67,27 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The IdaMappingconfig. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
-	
+
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
 
 	@Autowired
 	private Environment environment;
+
 	/**
 	 * Validates generated OTP via OTP Manager.
 	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param uin        the ref id
-	 * @param idInfo the id info
-	 * @param partnerId the partner id
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param uin
+	 *            the ref id
+	 * @param idInfo
+	 *            the id info
+	 * @param partnerId
+	 *            the partner id
 	 * @return true - when the OTP is Valid.
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	@Override
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
@@ -90,7 +95,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnAndIdvid(txnId,uin);
+			boolean isValidRequest = validateTxnAndIdvid(txnId, uin);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -110,11 +115,15 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Gets the s pin.
 	 *
-	 * @param uin the uin
-	 * @param authReq the auth req
-	 * @param partnerId the partner id
+	 * @param uin
+	 *            the uin
+	 * @param authReq
+	 *            the auth req
+	 * @param partnerId
+	 *            the partner id
 	 * @return the s pin
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq, String partnerId)
 			throws IdAuthenticationBusinessException {
@@ -128,24 +137,28 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Construct match input.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
 		return matchInputBuilder.buildMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
 	}
 
-//	
+	//
 
 	/**
 	 * Construct match output.
 	 *
-	 * @param authRequestDTO  the auth request DTO
-	 * @param listMatchInputs the list match inputs
-	 * @param uin             the uin
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param listMatchInputs
+	 *            the list match inputs
+	 * @param uin
+	 *            the uin
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
 			String uin, String partnerId) throws IdAuthenticationBusinessException {
@@ -159,18 +172,21 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Validates Transaction ID and Unique ID.
 	 *
-	 * @param txnId   the txn id
-	 * @param idvid the idvid
+	 * @param txnId
+	 *            the txn id
+	 * @param idvid
+	 *            the idvid
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId,String uin) throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvid(String txnId, String uin) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
-		int uinModulo=(int)(Long.valueOf(uin)%environment.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO,Integer.class));
-		String uinSalt=uinHashSaltRepo.retrieveSaltById(uinModulo);
-		String hashedUin= HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), uinSalt.getBytes());
+		long uinModulo = Long.valueOf(uin)
+				% environment.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+		String uinSalt = uinHashSaltRepo.retrieveSaltById(uinModulo);
+		String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), uinSalt.getBytes());
 		Optional<AutnTxn> authTxn = autntxnrepository
 				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
 		if (!authTxn.isPresent()) {
@@ -191,7 +207,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Checks for Null or Empty.
 	 *
-	 * @param otpVal - OTP value
+	 * @param otpVal
+	 *            - OTP value
 	 * @return true - When the otpVal is Not null or empty
 	 */
 

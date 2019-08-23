@@ -30,11 +30,18 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
+/**
+ * The Class UpdateAuthtypeStatusValidator.
+ *
+ * @author Dinesh T
+ */
 @Component
 public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 
+	/** The Constant MISSING_AUTH_TYPES. */
 	private static final String MISSING_AUTH_TYPES = "authType(s)";
 
+	/** The Constant CONSENT_OBTAINED. */
 	private static final String CONSENT_OBTAINED = "consentObtained";
 
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
@@ -43,6 +50,9 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
+	/* (non-Javadoc)
+	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
+	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return AuthTypeStatusDto.class.equals(clazz);
@@ -51,6 +61,9 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(UpdateAuthtypeStatusValidator.class);
 
+	/* (non-Javadoc)
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	 */
 	@Override
 	public void validate(Object target, Errors errors) {
 		AuthTypeStatusDto authTypeStatusDto = (AuthTypeStatusDto) target;
@@ -119,6 +132,12 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 
 	}
 
+	/**
+	 * Validate consent request.
+	 *
+	 * @param consentValue the consent value
+	 * @param errors the errors
+	 */
 	private void validateConsentRequest(boolean consentValue, Errors errors) {
 		if (!consentValue) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
@@ -130,6 +149,12 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 
 	}
 
+	/**
+	 * Validate auth type request.
+	 *
+	 * @param list the list
+	 * @param errors the errors
+	 */
 	private void validateAuthTypeRequest(List<AuthtypeStatus> list, Errors errors) {
 		if (list == null || list.isEmpty()) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
@@ -144,6 +169,12 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 
 	}
 
+	/**
+	 * Validate auth type.
+	 *
+	 * @param list the list
+	 * @param errors the errors
+	 */
 	private void validateAuthType(List<AuthtypeStatus> list, Errors errors) {
 
 		Set<String> allowedAuthTypes = getAllowedAuthtype();
@@ -176,15 +207,20 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 		}
 	}
 
+	/**
+	 * Gets the allowed sub types.
+	 *
+	 * @return the allowed sub types
+	 */
 	private Set<String> getAllowedSubTypes() {
-		Set<String> availableAuthTypeInfos = new HashSet<>();
-		BioAuthType[] authTypes = BioAuthType.values();
-		for (BioAuthType authType : authTypes) {
-			availableAuthTypeInfos.add(authType.getType());
-		}
-		return availableAuthTypeInfos;
+		return Stream.of(BioAuthType.values()).map(BioAuthType::getType).collect(Collectors.toSet());
 	}
 
+	/**
+	 * Gets the allowed authtype.
+	 *
+	 * @return the allowed authtype
+	 */
 	private Set<String> getAllowedAuthtype() {
 		return Stream.of(Category.values()).map(Category::getType).collect(Collectors.toSet());
 	}

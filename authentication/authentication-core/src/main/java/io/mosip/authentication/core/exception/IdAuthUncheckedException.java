@@ -4,11 +4,16 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
+ * @author Arun Bose
+ * 
  * The Class IdAuthUncheckedException to handle unchecked exceptions
  */
 public class IdAuthUncheckedException extends BaseUncheckedException {
 
 	
+	private static final long serialVersionUID = 8889706680648642483L;
+
+
 	/**
 	 * Instantiates a new id auth unchecked exception.
 	 */

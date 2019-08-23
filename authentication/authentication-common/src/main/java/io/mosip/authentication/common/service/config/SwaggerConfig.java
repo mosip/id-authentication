@@ -35,12 +35,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
-	private Boolean localEnv = true;
+	@Value("${" + IdAuthConfigKeyConstants.APP_ENVIRONMENT_LOCAL+ ":false}")
+	private Boolean localEnv;
 
-	@Value("${swagger.base-url:#{null}}")
+	@Value("${" + IdAuthConfigKeyConstants.SWAGGER_BASE_URL + ":#{null}}")
 	private String swaggerUrl;
 
-	@Value("${server.port:8080}")
+	@Value("${" + IdAuthConfigKeyConstants.SERVER_PORT + ":8080}")
 	private int serverPort;
 
 	private String host;

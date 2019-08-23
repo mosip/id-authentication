@@ -22,5 +22,5 @@ public interface UinHashSaltRepo extends JpaRepository<UinHashSalt, Integer> {
 	 * @return String salt
 	 */
 	@Query("select salt from UinHashSalt where id = :id")
-	public String retrieveSaltById(@Param("id") int id);
+	public String retrieveSaltById(@Param("id") long id);
 }

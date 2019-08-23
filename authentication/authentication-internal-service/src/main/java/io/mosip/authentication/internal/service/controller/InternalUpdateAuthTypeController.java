@@ -37,31 +37,49 @@ import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The {@code InternalAuthTxnController} use to fetch Auth Transaction
- * 
+ * The InternalUpdateAuthTypeController use to fetch Auth Transaction.
+ *
  * @author Dinesh Karuppiah.T
  */
 @RestController
 public class InternalUpdateAuthTypeController {
 
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(InternalUpdateAuthTypeController.class);
 
+	/** The Constant AUTH_TYPE_STATUS. */
 	private static final String AUTH_TYPE_STATUS = "getAuthTypeStatus";
 
+	/** The update authtype status validator. */
 	@Autowired
 	private UpdateAuthtypeStatusValidator updateAuthtypeStatusValidator;
 
+	/** The update authtype status service. */
 	@Autowired
 	private UpdateAuthtypeStatusService updateAuthtypeStatusService;
 
+	/** The environment. */
 	@Autowired
 	Environment environment;
 
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(updateAuthtypeStatusValidator);
 	}
 
+	/**
+	 * Update authtype status.
+	 *
+	 * @param authTypeStatusDto the auth type status dto
+	 * @param e the e
+	 * @return the response entity
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
 	@PostMapping(path = "authtypes/status", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
@@ -89,9 +107,9 @@ public class InternalUpdateAuthTypeController {
 	}
 
 	/**
-	 * To get Response Time
-	 * 
-	 * @return
+	 * To get Response Time.
+	 *
+	 * @return the response time
 	 */
 	private String getResponseTime() {
 		return DateUtils.formatDate(

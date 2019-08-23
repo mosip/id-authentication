@@ -14,9 +14,9 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * 
- * @author Dinesh Karuppiah.T
+ * The Class AuthtypeLock - Entity class for table uin_auth_lock.
  *
+ * @author Dinesh Karuppiah.T
  */
 @Data
 @Table(name = "uin_auth_lock", schema = "ida")
@@ -78,11 +78,18 @@ public class AuthtypeLock {
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
 
+	/**
+	 * Instantiates a new compositeclass.
+	 */
 	@Data
 	static class Compositeclass implements Serializable {
+		
 		private static final long serialVersionUID = 1L;
+		
 		private String uin;
+		
 		private String authtypecode;
+		
 		private LocalDateTime lockrequestDTtimes;
 	}
 
