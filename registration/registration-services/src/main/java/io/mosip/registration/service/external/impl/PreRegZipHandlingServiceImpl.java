@@ -210,7 +210,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				jsonString.append(value);
 			}
 
-			if (!StringUtils.isEmpty(jsonString)) {
+			if (!StringUtils.isEmpty(jsonString) 
+					&& validateDemographicInfoObject()) {
 				/* validate id json schema */
 				IndividualIdentity individualIdentity = (IndividualIdentity) JsonUtils.jsonStringToJavaObject(
 						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
@@ -232,6 +233,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		}
 
+	}
+
+	private boolean validateDemographicInfoObject() {
+		return null != getRegistrationDtoContent() && getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO() != null;
 	}
 
 	/*

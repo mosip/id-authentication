@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -286,32 +288,35 @@ public class BookingService {
 		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 
-		LocalDate endDate = LocalDate.now().plusDays(displayDays + availabilityOffset);
+		LocalDate endDate = LocalDate.now().plusDays(displayDays + availabilityOffset).minusDays(1);
 		LocalDate fromDate = LocalDate.now().plusDays(availabilityOffset);
 		AvailabilityDto availability = new AvailabilityDto();
-
 		try {
 			if (serviceUtil.isValidRegCenter(regID)) {
 				int noOfHoliday = 0;
-				List<LocalDate> dateList = bookingDAO.findDate(regID, fromDate, endDate);
+				List<AvailibityEntity> availableEntity = bookingDAO.findAvailability(regID, fromDate, endDate);
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
-				if (dateList == null || dateList.isEmpty()) {
+				if (availableEntity == null) {
 					throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
 							ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
 				}
-				noOfHoliday = getSlot(dateList, dateTimeList, noOfHoliday, regID);
+
+				noOfHoliday = getSlot(dateTimeList, noOfHoliday, availableEntity);
 				while (noOfHoliday > 0) {
 					fromDate = endDate.plusDays(1);
 					endDate = endDate.plusDays(noOfHoliday);
-					dateList = bookingDAO.findDate(regID, fromDate, endDate);
-					if (dateList == null || dateList.isEmpty()) {
-						log.info("sessionId", "idType", "id", "There no slots available in case of holidays present in the given date range and no of Holidays is  "+noOfHoliday);
-					}
-					else {
-					noOfHoliday = 0;
-					noOfHoliday = getSlot(dateList, dateTimeList, noOfHoliday, regID);
+					availableEntity = bookingDAO.findAvailability(regID, fromDate, endDate);
+					if (availableEntity == null) {
+						log.info("sessionId", "idType", "id",
+								"There no slots available in case of holidays present in the given date range and no of Holidays is  "
+										+ noOfHoliday);
+						noOfHoliday = 0;
+					} else {
+						noOfHoliday = 0;
+						noOfHoliday = getSlot(dateTimeList, noOfHoliday, availableEntity);
 					}
 				}
+
 				availability.setCenterDetails(dateTimeList);
 				availability.setRegCenterId(regID);
 				isSaveSuccess = true;
@@ -331,19 +336,20 @@ public class BookingService {
 						authUserDetails().getUsername(), regID);
 			}
 		}
+
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setResponse(availability);
 		return response;
 	}
 
-	public int getSlot(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int noOfHoliday, String regID) {
-		for (int i = 0; i < dateList.size(); i++) {
+	public int getSlot(List<DateTimeDto> dateTimeList, int noOfHoliday, List<AvailibityEntity> availableEntity) {
+		Map<LocalDate, List<AvailibityEntity>> result = null;
+		result = availableEntity.stream().collect(
+				Collectors.groupingBy(AvailibityEntity::getRegDate, () -> new TreeMap<>(), Collectors.toList()));
+		for (Entry<LocalDate, List<AvailibityEntity>> entity : result.entrySet()) {
 			DateTimeDto dateTime = new DateTimeDto();
-			List<AvailibityEntity> entity = bookingDAO.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID,
-					dateList.get(i));
-			if (!entity.isEmpty()) {
-				noOfHoliday = noOfHoliday + serviceUtil.slotSetter(dateList, dateTimeList, i, dateTime, entity);
-			}
+			noOfHoliday = noOfHoliday
+					+ serviceUtil.slotSetter(entity.getKey(), dateTimeList, dateTime, entity.getValue());
 		}
 		return noOfHoliday;
 	}

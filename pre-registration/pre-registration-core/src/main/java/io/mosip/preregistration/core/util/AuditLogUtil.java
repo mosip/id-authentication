@@ -243,9 +243,7 @@ public class AuditLogUtil {
 					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);			
 			ResponseEntity<String> responseEntity2 = restTemplate.exchange(uriBuilder,
 					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<String>() {} );
-			System.out.println("Output "+responseEntity2.getBody() );
 			ResponseWrapper<AuditResponseDto> response=requestBodyExchange(responseEntity2.getBody());
-			System.out.println("Response "+response.getResponse().toString());
 			AuditResponseDto responseDTO=(AuditResponseDto) requestBodyExchangeObject(responseToString(response.getResponse()), AuditResponseDto.class);
 			auditFlag =responseDTO.isStatus();
 		} catch (HttpClientErrorException ex) {

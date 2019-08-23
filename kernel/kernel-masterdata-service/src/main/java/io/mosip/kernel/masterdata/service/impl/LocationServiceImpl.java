@@ -828,6 +828,7 @@ public class LocationServiceImpl implements LocationService {
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		Location location = locationRepository.findLocationByHierarchyName(filter.getColumnName(), filter.getValue(),
 				dto.getLanguageCode());
+		if(location!=null) {
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
@@ -860,7 +861,7 @@ public class LocationServiceImpl implements LocationService {
 			});
 			responseDto.add(locationSearchDto);
 		});
-
+		}
 		return responseDto;
 	}
 
@@ -997,7 +998,7 @@ public class LocationServiceImpl implements LocationService {
 							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
-					if (filter.getText().isEmpty() || filter.getText() == null) {
+					if (filter.getText() == null || filter.getText().isEmpty() ) {
 						List<String> locationNames = locationRepository
 								.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(),
 										langCode);

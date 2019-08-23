@@ -628,7 +628,7 @@ public class RegistrationCenterValidator {
 		if (registrationCenterPutReqAdmDto.get(0).getIsActive() != null
 				&& registrationCenterPutReqAdmDto.get(0).getIsActive()) {
 			// call method to check isActive is true already for the given object
-			isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
+			//isActiveTrueAlreadyValidator(registrationCenterPutReqAdmDto);
 
 			//for the given ID , records are in all supported language or not
 			List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
