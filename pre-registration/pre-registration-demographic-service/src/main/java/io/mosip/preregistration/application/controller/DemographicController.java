@@ -174,8 +174,7 @@ public class DemographicController {
 			@RequestParam(value = "pageIndex", required = false) String pageIdx) {
 		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
-				"In pre-registration controller for fetching all applications with userId " + "test@gmail.com"
-						+ " Header " + res.getHeader("Authorization"));
+				"In pre-registration controller for fetching all applications with userId ");
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getAllApplicationDetails(userId, pageIdx));
 	}
