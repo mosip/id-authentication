@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.batchjob.audit.AuditUtil;
 import io.mosip.preregistration.batchjob.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.ProcessedPreRegEntity;
@@ -24,7 +26,6 @@ import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.util.AuditLogUtil;
 
 /**
  * @author Kishan Rathore
@@ -57,9 +58,12 @@ public class ConsumedStatusUtil {
 	 */
 	@Autowired
 	private BatchJpaRepositoryImpl batchJpaRepositoryImpl;
+	
+	@Autowired
+	private AuthTokenUtil tokenUtil;
 
 	@Autowired
-	AuditLogUtil auditLogUtil;
+	AuditUtil auditLogUtil;
 
 	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
@@ -77,6 +81,9 @@ public class ConsumedStatusUtil {
 
 	public boolean demographicConsumedStatus() {
 
+		/* Get token for audit */
+		HttpHeaders headers=tokenUtil.getTokenHeader();
+		
 		List<ProcessedPreRegEntity> preRegList = null;
 		boolean isSaveSuccess = false;
 		try {
@@ -174,11 +181,11 @@ public class ConsumedStatusUtil {
 						EventType.BUSINESS.toString(),
 						"Upadted the consumed status & the consumed PreRegistration ids successfully saved in the database",
 						AuditLogVariables.PRE_REGISTRATION_ID.toString(), auditUserId,
-						auditUsername, null);
+						auditUsername, null,headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(),
-						auditUserId, auditUsername, null);
+						auditUserId, auditUsername, null,headers);
 			}
 		}
 		return true;
@@ -194,7 +201,7 @@ public class ConsumedStatusUtil {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName, String refId) {
+			String userId, String userName, String refId,HttpHeaders headers) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -206,7 +213,7 @@ public class ConsumedStatusUtil {
 		auditRequestDto.setId(refId);
 		auditRequestDto.setModuleId(AuditLogVariables.BAT.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.CONSUMED_BATCH_SERVICE.toString());
-		auditLogUtil.saveAuditDetails(auditRequestDto);
+		auditLogUtil.saveAuditDetails(auditRequestDto,headers);
 	}
 
 }
