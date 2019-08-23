@@ -116,7 +116,8 @@ public class KeyManager {
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey, String refId)
 			throws IdAuthenticationAppException, IOException {
-		return mapper.readValue(kernelDecrypt(encryptedRequest, encryptedSessionKey, refId) ,Map.class);
+		return mapper.readValue(kernelDecrypt(CryptoUtil.encodeBase64(
+				CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)), refId) ,Map.class);
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class KeyManager {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey, String refId)
+	public String kernelDecrypt(String data, String refId)
 			throws IdAuthenticationAppException {
 		String decryptedRequest=null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
@@ -138,8 +139,7 @@ public class KeyManager {
 			cryptoManagerRequestDto.setReferenceId(refId);
 			cryptoManagerRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
-			cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
-					CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)));
+			cryptoManagerRequestDto.setData(data);
 			RestRequestDTO restRequestDTO= restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
 					RestRequestFactory.createRequest(cryptoManagerRequestDto), Map.class);
 			Map<String,Object> cryptoResponseMap = restHelper.requestSync(restRequestDTO);

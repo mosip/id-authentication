@@ -91,16 +91,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			
 			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
-			Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
+				requestBody.replace(IdAuthCommonConstants.REQUEST,
+						decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
 				if (null != requestBody.get(REQUEST_HMAC)) {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
-					Object encryptedSessionkey = decode((String)requestBody.get(SESSION_KEY));
-					String reqHMAC = keyManager.kernelDecrypt((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey, fetchReferenceId());
-					validateRequestHMAC(reqHMAC,
-							mapper.writeValueAsString(request));
+					Object encryptedSessionkey = decode((String) requestBody.get(SESSION_KEY));
+					String reqHMAC = keyManager
+							.kernelDecrypt(
+									CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
+											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
+											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
+									fetchReferenceId());
+					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
 
 				}
 				decipherBioData(request);
@@ -137,7 +141,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			return Objects.nonNull(data) ? mapper.readValue(CryptoUtil.decodeBase64(data.toString()), Map.class) : null;
 		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
 
