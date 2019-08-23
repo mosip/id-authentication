@@ -1,9 +1,5 @@
 package io.mosip.authentication.common.service.validator;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -15,9 +11,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * 
@@ -37,9 +31,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";
-
-	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
-	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
@@ -69,7 +60,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 		if (authRequestDto != null) {
 			if (!errors.hasErrors()) {
-				validateConsentReq(authRequestDto, errors);
+				validateConsentReq(authRequestDto.isConsentObtained(), errors);
 				validateAllowedAuthTypes(authRequestDto, errors, getAllowedAuthTypeProperty());
 			}
 			if (!errors.hasErrors()) {
@@ -108,49 +99,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (!errors.hasErrors()) {
 			validateRequestTimedOut(reqTime, errors);
 		}
-	}
-
-	/**
-	 * Validate request timed out.
-	 *
-	 * @param reqTime the req time
-	 * @param errors  the errors
-	 */
-	private void validateRequestTimedOut(String reqTime, Errors errors) {
-		try {
-			Instant reqTimeInstance = DateUtils
-					.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
-			Instant now = Instant.now();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					VALIDATE_REQUEST_TIMED_OUT,
-					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
-			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.MINUTES);
-			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						VALIDATE_REQUEST_TIMED_OUT,
-						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						VALIDATE_REQUEST_TIMED_OUT,
-						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
-								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
-										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
-				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						new Object[] { reqDateMaxTimeLong },
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
-			}
-		} catch (DateTimeParseException | ParseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					VALIDATE_REQUEST_TIMED_OUT,
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQ_TIME);
-			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IdAuthCommonConstants.REQ_TIME },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-		}
-
 	}
 
 	/**

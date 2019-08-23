@@ -1,5 +1,4 @@
 package io.mosip.authentication.common.service.validator;
-
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDV_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDV_ID_TYPE;
@@ -8,6 +7,10 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TI
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -23,7 +26,6 @@ import org.springframework.validation.Validator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -42,6 +44,9 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
  */
 @Component
 public abstract class IdAuthValidator implements Validator {
+	
+	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
+	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
@@ -177,6 +182,49 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 		}
 	}
+	
+	/**
+	 * Validate request timed out.
+	 *
+	 * @param reqTime the req time
+	 * @param errors  the errors
+	 */
+	protected void validateRequestTimedOut(String reqTime, Errors errors) {
+		try {
+			Instant reqTimeInstance = DateUtils
+					.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
+			Instant now = Instant.now();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					VALIDATE_REQUEST_TIMED_OUT,
+					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
+			Long reqDateMaxTimeLong = env
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
+			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.MINUTES);
+			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						VALIDATE_REQUEST_TIMED_OUT,
+						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						VALIDATE_REQUEST_TIMED_OUT,
+						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
+								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
+										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
+				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
+						new Object[] { reqDateMaxTimeLong },
+						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+			}
+		} catch (DateTimeParseException | ParseException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					VALIDATE_REQUEST_TIMED_OUT,
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQ_TIME);
+			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { IdAuthCommonConstants.REQ_TIME },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		}
+
+	}
 
 	/**
 	 * Validate UIN, VID.
@@ -248,10 +296,10 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param authRequestDTO the auth request DTO
 	 * @param errors         the errors
 	 */
-	protected void validateConsentReq(AuthRequestDTO authRequestDTO, Errors errors) {
-		if (!authRequestDTO.isConsentObtained()) {
+	protected void validateConsentReq(boolean consentValue, Errors errors) {
+		if (!consentValue) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"consentObtained - " + authRequestDTO.isConsentObtained());
+					"consentObtained - " + consentValue);
 			errors.rejectValue(CONSENT_OBTAINED, IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.CONSENT_NOT_AVAILABLE.getErrorMessage(),
 							CONSENT_OBTAINED));
