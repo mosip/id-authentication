@@ -26,8 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
+import io.jsonwebtoken.lang.Collections;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
@@ -39,10 +39,9 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmSecDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
@@ -71,6 +70,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
@@ -88,6 +88,7 @@ import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
+import io.mosip.kernel.masterdata.utils.UBtree;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -171,6 +172,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
 
+	@Autowired
+	private LocationRepository locationRepository;
+
 	/**
 	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
@@ -199,6 +203,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int regCenterIDLength;
+
+	@Autowired
+	private UBtree<Location> locationTree;
 
 	private String negRegex;
 	private String posRegex;
@@ -796,31 +803,35 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				serviceHelper.centerTypeSearch(addList, removeList, filter);
 			}
 			// if location based search
-			if (serviceHelper.isLocationSearch(filter.getColumnName())) {
+			if (serviceHelper.isLocationSearch(filter.getColumnName())|| MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
 				Location location = serviceHelper.locationSearch(filter);
 				if (location != null) {
 					// fetching sub-locations
-					List<Location> childs = locationUtils.getDescedants(locations, location);
-					locationFilter.addAll(serviceHelper.buildLocationSearchFilter(childs));
+					List<Location> descendants = locationUtils.getDescedants(locations, location);
+					List<Location> leaves=descendants.parallelStream().filter(child -> child.getHierarchyLevel()==5).collect(Collectors.toList());
+					locationFilter.addAll(serviceHelper.buildLocationSearchFilter(leaves));
 				}
 				removeList.add(filter);
 			}
-			// if zone based search
+			/*// if zone based search
 			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
-				Zone zone = serviceHelper.getZone(filter);
+				Location zone = serviceHelper.getZone(filter);
 				if (zone != null) {
-					zones = zoneUtils.getZones(zone);
-					zoneFilter.addAll(serviceHelper.buildZoneFilter(zones));
+					List<Location> descendants = locationUtils.getDescedants(locations, zone);
 				}
 				removeList.add(filter);
 				flag = false;
-			}
+			}*/
 		}
+		/*if (flag) {
+			// fetching logged in user zones
+			zones = serviceHelper.fetchUserZone(zoneFilter, dto.getLanguageCode());
+		}*/
+		// removing already processed filters and adding new filters
 		if (flag) {
 			// fetching logged in user zones
 			zones = serviceHelper.fetchUserZone(zoneFilter, dto.getLanguageCode());
 		}
-		// removing already processed filters and adding new filters
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
@@ -917,7 +928,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<String> inputLangCodeList = new ArrayList<>();
 		String uniqueId = "";
 
-	
 		List<RegCenterPostReqDto> validateRegistrationCenterDtos = new ArrayList<>();
 		List<RegCenterPostReqDto> constraintViolationedSecList = new ArrayList<>();
 		List<ServiceError> errors = new ArrayList<>();
@@ -998,8 +1008,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Transactional
 	@Override
-	public RegistrationCenterPutResponseDto updateRegistrationCenter(
-			List<RegCenterPutReqDto> regCenterPutReqDto) {
+	public RegistrationCenterPutResponseDto updateRegistrationCenter(List<RegCenterPutReqDto> regCenterPutReqDto) {
 		RegistrationCenter updRegistrationCenter = null;
 		RegistrationCenter updRegistrationCenterEntity = null;
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
@@ -1016,8 +1025,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<ServiceError> errors = new ArrayList<>();
 
 		// call a method to validate Put request DTOs
-		registrationCenterValidator.validatePutRequest(regCenterPutReqDto, notUpdRegistrationCenterList,
-				inputIdList, idLangList, langList, errors);
+		registrationCenterValidator.validatePutRequest(regCenterPutReqDto, notUpdRegistrationCenterList, inputIdList,
+				idLangList, langList, errors);
 		if (!errors.isEmpty()) {
 			throw new ValidationException(errors);
 		}
@@ -1081,8 +1090,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity, registrationCenterDto);
 						// call a method to created new recored for the ID and Language which is not
 						// there in DB
-						newrRegistrationCenterDtoList = registrationCenterValidator.createRegCenterPut(newregistrationCenterList,
-								registrationCenterEntity, registrationCenterDto);
+						newrRegistrationCenterDtoList = registrationCenterValidator.createRegCenterPut(
+								newregistrationCenterList, registrationCenterEntity, registrationCenterDto);
 					}
 				}
 
@@ -1103,8 +1112,5 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterPutResponseDto;
 
 	}
-
-	
-	
 
 }
