@@ -34,6 +34,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.batchjob.audit.AuditUtil;
 import io.mosip.preregistration.batchjob.code.ErrorCodes;
 import io.mosip.preregistration.batchjob.code.ErrorMessages;
 import io.mosip.preregistration.batchjob.entity.AvailibityEntity;
@@ -62,7 +63,6 @@ import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.util.AuditLogUtil;
 /**
  * @author Kishan Rathore
  * @since 1.0.0
@@ -120,7 +120,7 @@ public class AvailabilityUtil {
 	private BatchJpaRepositoryImpl batchServiceDAO;
 
 	@Autowired
-	private AuditLogUtil auditLogUtil;
+	private AuditUtil auditLogUtil;
 
 	/**
 	 * Autowired reference for {@link #restTemplateBuilder}
@@ -208,10 +208,10 @@ public class AvailabilityUtil {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
 						"Availability for booking successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString(), auditUserId, auditUsername, null);
+						AuditLogVariables.MULTIPLE_ID.toString(), auditUserId, auditUsername, null,headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"addAvailability failed", AuditLogVariables.NO_ID.toString(), auditUserId, auditUsername, null);
+						"addAvailability failed", AuditLogVariables.NO_ID.toString(), auditUserId, auditUsername, null,headers);
 			}
 		}
 		response.setResponsetime(getCurrentResponseTime());
@@ -226,7 +226,6 @@ public class AvailabilityUtil {
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preRegistrationId);
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(cancelResourceUrl + "/batch/appointment/");
-			//headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			uriBuilder += "{preRegistrationId}";
@@ -281,8 +280,6 @@ public class AvailabilityUtil {
 		List<RegistrationCenterDto> regCenter = null;
 		try {
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
-			/*HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);*/
 			HttpEntity<RequestWrapper<RegistrationCenterResponseDto>> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
@@ -493,7 +490,6 @@ public class AvailabilityUtil {
 	public void emailNotification(NotificationDTO notificationDTO, String langCode,HttpHeaders headers) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
-		//HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setTimeZone(TimeZone.getDefault());
@@ -502,7 +498,6 @@ public class AvailabilityUtil {
 			request.setId("mosip.pre-registration.notification.notify");
 			request.setVersion("1.0");
 			request.setRequesttime(new Date());
-			//headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
 			emailMap.add("NotificationRequestDTO", mapper.writeValueAsString(request));
 			emailMap.add("langCode", langCode);
@@ -539,7 +534,7 @@ public class AvailabilityUtil {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName, String ref_id) {
+			String userId, String userName, String ref_id,HttpHeaders headers) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -551,7 +546,7 @@ public class AvailabilityUtil {
 		auditRequestDto.setModuleId(AuditLogVariables.BOOK.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.BOOKING_SERVICE.toString());
 		auditRequestDto.setId(ref_id);
-		auditLogUtil.saveAuditDetails(auditRequestDto);
+		auditLogUtil.saveAuditDetails(auditRequestDto,headers);
 	}
 
 }
