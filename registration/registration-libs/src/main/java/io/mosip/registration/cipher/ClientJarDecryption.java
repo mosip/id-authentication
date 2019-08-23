@@ -156,15 +156,14 @@ public class ClientJarDecryption extends Application {
 	private void executeVerificationTask() {
 		ClientJarDecryption aesDecrypt = new ClientJarDecryption();
 
-		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-
+		
 		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 				LoggerConstants.APPLICATION_ID, "Started loading properties of mosip-application.properties");
 
-		try (FileInputStream fileInputStream = new FileInputStream(propsFilePath)) {
+		try (InputStream keyStream = ClientJarDecryption.class.getClassLoader()
+				.getResourceAsStream("props/mosip-application.properties")) {
 			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
+			properties.load(keyStream);
 			try {
 
 				// TODO Check Internet Connectivity
@@ -190,14 +189,14 @@ public class ClientJarDecryption extends Application {
 
 							updateMessage(IS_TPM_AVAILABLE);
 
-							// Encrypt the Keys
-							boolean isTPMAvailable = isTPMAvailable(properties);
-
-							if (isTPMAvailable) {
-								updateMessage(ENCRYPT_PROPERTIES);
-
-								encryptRequiredProperties(properties, propsFilePath);
-							}
+//							// Encrypt the Keys
+//							boolean isTPMAvailable = isTPMAvailable(properties);
+//
+//							if (isTPMAvailable) {
+//								updateMessage(ENCRYPT_PROPERTIES);
+//
+//								encryptRequiredProperties(properties, propsFilePath);
+//							}
 
 							try {
 								LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
@@ -517,18 +516,18 @@ public class ClientJarDecryption extends Application {
 		return value;
 	}
 
-	private void encryptRequiredProperties(Properties properties, String propertiesFilePath) throws IOException {
-		if (!(properties.containsKey(ENCRYPTED_KEY)
-				&& properties.getProperty(ENCRYPTED_KEY).equals(IS_KEY_ENCRYPTED))) {
-			try (OutputStream propertiesFile = new FileOutputStream(propertiesFilePath)) {
-				properties.put(ENCRYPTED_KEY, IS_KEY_ENCRYPTED);
-				properties.put(MOSIP_REGISTRATION_APP_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_APP_KEY));
-				properties.put(MOSIP_REGISTRATION_DB_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_DB_KEY));
-				properties.store(propertiesFile, "Updated");
-				propertiesFile.flush();
-			}
-		}
-	}
+//	private void encryptRequiredProperties(Properties properties, String propertiesFilePath) throws IOException {
+//		if (!(properties.containsKey(ENCRYPTED_KEY)
+//				&& properties.getProperty(ENCRYPTED_KEY).equals(IS_KEY_ENCRYPTED))) {
+//			try (OutputStream propertiesFile = new FileOutputStream(propertiesFilePath)) {
+//				properties.put(ENCRYPTED_KEY, IS_KEY_ENCRYPTED);
+//				properties.put(MOSIP_REGISTRATION_APP_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_APP_KEY));
+//				properties.put(MOSIP_REGISTRATION_DB_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_DB_KEY));
+//				properties.store(propertiesFile, "Updated");
+//				propertiesFile.flush();
+//			}
+//		}
+//	}
 
 	private String getEncryptedValue(Properties properties, String key) {
 		return CryptoUtil.encodeBase64String(asymmetricEncryptionService.encryptUsingTPM(
