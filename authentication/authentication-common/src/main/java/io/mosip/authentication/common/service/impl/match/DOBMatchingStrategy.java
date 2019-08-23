@@ -29,9 +29,9 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			try {
 				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo,
-						IdObjectValidatorConstant.DOB_FORMAT.getValue());
+						getDateFormat());
 				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo,
-						IdObjectValidatorConstant.DOB_FORMAT.getValue());
+						getDateFormat());
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
@@ -56,6 +56,11 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	DOBMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
+	}
+
+	private static String getDateFormat() {
+		//TODO take from id object validator constant
+		return "yyyy/MM/dd";
 	}
 
 	/*
