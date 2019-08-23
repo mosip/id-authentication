@@ -4,31 +4,16 @@
  */
 package io.mosip.preregistration.batchjob.tasklets;
 
-import java.time.LocalDateTime;
-
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.preregistration.batchjob.model.LoginUser;
-import io.mosip.preregistration.batchjob.model.ResponseWrapper;
 import io.mosip.preregistration.batchjob.utils.ExpiredStatusUtil;
-import io.mosip.preregistration.core.common.dto.AuthNResponse;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -42,10 +27,8 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 public class ExpiredStatusTasklet implements Tasklet {
 
 	@Autowired
-	private RestTemplate restTemplate;
+	private ExpiredStatusUtil expiredUtil;
 
-	@Value("${expiredStatus.url}")
-	String expiredStatusUrl;
 
 	@Value("${mosip.batch.token.authmanager.url}")
 	String tokenUrl;
@@ -71,39 +54,6 @@ public class ExpiredStatusTasklet implements Tasklet {
 
 		try {
 
-			/* Get the token from auth-manager service 
-			LoginUser loginUser=new LoginUser();
-			loginUser.setAppId(appId);
-			loginUser.setPassword(password);
-			loginUser.setUserName(userName);
-			RequestWrapper<LoginUser> requestWrapper=new RequestWrapper<>();
-			requestWrapper.setId(id);
-			requestWrapper.setRequest(loginUser);
-			requestWrapper.setRequesttime(LocalDateTime.now());
-			
-
-			UriComponentsBuilder authBuilder = UriComponentsBuilder.fromHttpUrl(tokenUrl);
-			HttpHeaders tokenHeader = new HttpHeaders();
-			tokenHeader.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<RequestWrapper<LoginUser>> tokenEntity = new HttpEntity<>(requestWrapper,tokenHeader);
-
-			String tokenUriBuilder = authBuilder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id", "In ExpiredStatusTasklet to get token with URL- " + tokenUriBuilder);
-			ResponseEntity<ResponseWrapper<AuthNResponse>> tokenResponse = restTemplate.exchange(tokenUriBuilder, HttpMethod.POST,
-					tokenEntity,new ParameterizedTypeReference<ResponseWrapper<AuthNResponse>>() {
-					});
-
-			 Rest call to Batch service API of expired appointments 
-			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(expiredStatusUrl);
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
-			HttpEntity<MainResponseDTO<String>> entity = new HttpEntity<>(headers);
-
-			String uriBuilder = regbuilder.build().encode().toUriString();
-
-			log.info("sessionId", "idType", "id", "In ExpiredStatusTasklet method of Batch Service URL- " + uriBuilder);
-			restTemplate.exchange(uriBuilder, HttpMethod.PUT, entity, MainResponseDTO.class);*/
-			ExpiredStatusUtil expiredUtil=new ExpiredStatusUtil();
 			expiredUtil.expireAppointments();
 
 		} catch (Exception e) {
