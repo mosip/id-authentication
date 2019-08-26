@@ -117,10 +117,14 @@ public class ApplicationContext {
 						? Locale.getDefault().getDisplayLanguage().toLowerCase().substring(0, 3)
 						: "eng";
 			}
-			localLanguage = (applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE) != null
-					&& !applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE).equals(""))
-							? (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE)
-							: null;
+			if (null != applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE)
+					&& !applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE).equals("")) {
+				localLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
+			} else {
+				localLanguage = Locale.getDefault().getDisplayLanguage() != null
+						? Locale.getDefault().getDisplayLanguage().toLowerCase().substring(0, 3)
+						: "eng";
+			}
 			String rightToLeft = (String) applicationContext.getApplicationMap().get("mosip.right_to_left_orientation");
 
 			if (null != rightToLeft) {

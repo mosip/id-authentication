@@ -428,8 +428,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
-		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
-				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
 			if (isMachineRemapProcessStarted()) {
 
@@ -479,10 +477,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 			}
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration ended.");
-		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
-		}
-	}
+		} 
 
 	/**
 	 * Validating screen authorization and Creating Packet in case of Lost UIN
