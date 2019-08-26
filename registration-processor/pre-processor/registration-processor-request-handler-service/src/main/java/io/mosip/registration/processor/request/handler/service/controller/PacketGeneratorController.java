@@ -26,8 +26,8 @@ import io.mosip.registration.processor.request.handler.service.PacketGeneratorSe
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResponseDto;
-import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
 import io.mosip.registration.processor.request.handler.upload.validator.RequestHandlerRequestValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,7 +88,7 @@ public class PacketGeneratorController {
 	 * @throws RegBaseCheckedException
 	 * @throws IOException
 	 */
-	@PostMapping(path = "/registrationpacket", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/packetgenerator", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
@@ -106,11 +106,10 @@ public class PacketGeneratorController {
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
 
 			if (isEnabled) {
-				PacketGeneratorResponseDto response =buildPacketGeneratorResponse(packerGeneratorResDto);
+				PacketGeneratorResponseDto response = buildPacketGeneratorResponse(packerGeneratorResDto);
 				Gson gson = new GsonBuilder().create();
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility
-						.getDigitalSignature(gson.toJson(response)));
+				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
 				return ResponseEntity.ok().headers(headers).body(response);
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
@@ -139,6 +138,5 @@ public class PacketGeneratorController {
 		response.setErrors(null);
 		return response;
 	}
-	
-	
+
 }
