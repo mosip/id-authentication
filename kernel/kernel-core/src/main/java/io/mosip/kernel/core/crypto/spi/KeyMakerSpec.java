@@ -10,9 +10,8 @@ package io.mosip.kernel.core.crypto.spi;
  */
 public interface KeyMakerSpec {
 
-	/**
-	 * 
-	 */
-	void createAndStoreKeys();
+	void createMasterKey(String applicationID);
+	
+	void createSymmetricKeys();
 	
 }

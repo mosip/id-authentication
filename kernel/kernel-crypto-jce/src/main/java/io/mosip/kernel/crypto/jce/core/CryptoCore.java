@@ -54,6 +54,7 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
  * @see GCMParameterSpec
  * @see SecureRandom
  */
+//Code optimization remaining (Code Dupe)
 @Component
 public class CryptoCore
 		implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
