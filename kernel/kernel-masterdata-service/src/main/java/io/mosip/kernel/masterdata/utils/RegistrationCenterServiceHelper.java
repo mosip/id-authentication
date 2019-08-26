@@ -214,7 +214,7 @@ public class RegistrationCenterServiceHelper {
 			switch (columnName) {
 			case MasterDataConstant.POSTAL_CODE:
 				return "5";
-			case MasterDataConstant.ADMINISTRATIVE_ZONE:
+			case MasterDataConstant.ZONE:
 				return "4";
 			case MasterDataConstant.CITY:
 				return "3";
@@ -222,6 +222,7 @@ public class RegistrationCenterServiceHelper {
 				return "2";
 			case MasterDataConstant.REGION:
 				return "1";
+				
 			default:
 				return "0";
 			}
@@ -500,9 +501,9 @@ public class RegistrationCenterServiceHelper {
 	 * @return {@link Zone} if successful otherwise throws
 	 *         {@link MasterDataServiceException}
 	 */
-	public Zone getZone(SearchFilter filter) {
+	public Location getZone(SearchFilter filter) {
 		filter.setColumnName(MasterDataConstant.NAME);
-		Page<Zone> zones = masterdataSearchHelper.searchMasterdata(Zone.class,
+		Page<Location> zones = masterdataSearchHelper.searchMasterdata(Location.class,
 				new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
 		if (zones.hasContent()) {
 			return zones.getContent().get(0);
