@@ -4,6 +4,7 @@
  * 
  */package io.mosip.preregistration.batchjob.tasklets;
 
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -49,7 +50,7 @@ public class AvailabilitySyncTasklet implements Tasklet {
 
 		} catch (Exception e) {
 			log.error("Sync master ", " Tasklet ", " encountered exception ", e.getMessage());
-			throw e;
+			contribution.setExitStatus(new ExitStatus(e.getMessage()));
 		}
 
 		return RepeatStatus.FINISHED;

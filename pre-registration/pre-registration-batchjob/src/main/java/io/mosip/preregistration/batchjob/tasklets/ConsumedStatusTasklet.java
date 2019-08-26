@@ -4,6 +4,7 @@
  */
 package io.mosip.preregistration.batchjob.tasklets;
 
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -50,7 +51,7 @@ public class ConsumedStatusTasklet implements Tasklet {
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */
 	@Override
-	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+	public RepeatStatus execute(StepContribution contribution, ChunkContext arg1) throws Exception {
 
 		try {
 			
@@ -58,7 +59,7 @@ public class ConsumedStatusTasklet implements Tasklet {
 
 		} catch (Exception e) {
 			log.error("Update Consumed Status ", " Tasklet ", " encountered exception ", e.getMessage());
-			throw e;
+			contribution.setExitStatus(new ExitStatus(e.getMessage()));
 		}
 
 		return RepeatStatus.FINISHED;
