@@ -64,7 +64,7 @@ public class CryptoCore
 	private static final String MGF1 = "MGF1";
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
-	private static final String SHA_256 = "SHA-256";
+	private static final String HASH_ALGO = "SHA-256";
 	// will be changed later will come from property files
 	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
 	private static final String AES = "AES";
@@ -250,7 +250,7 @@ public class CryptoCore
 	public byte[] asymmetricEncrypt(PublicKey key, byte[] data) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
-		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(SHA_256, MGF1, new MGF1ParameterSpec(SHA_256),
+		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
 				PSpecified.DEFAULT);
 		try {
 			cipher.init(Cipher.ENCRYPT_MODE, key, oaepParams);
@@ -269,7 +269,7 @@ public class CryptoCore
 	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
 		CryptoUtils.verifyData(data);
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
-		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(SHA_256, MGF1, new MGF1ParameterSpec(SHA_256),
+		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
 				PSpecified.DEFAULT);
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, key, oaepParams);
