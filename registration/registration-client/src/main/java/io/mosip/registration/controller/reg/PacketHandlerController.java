@@ -483,8 +483,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Creating Packet in case of Lost UIN
 	 */
 	public void lostUIN() {
-		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
-				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
 			if (isMachineRemapProcessStarted()) {
 
@@ -556,9 +554,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 					"Creating of Registration for lost UIN ended.");
-		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
-		}
 	}
 
 	public void showReciept() {
@@ -695,8 +690,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
-		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
-				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
 			if (isMachineRemapProcessStarted()) {
 
@@ -750,9 +743,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
 							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				}
-			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
-			}
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
