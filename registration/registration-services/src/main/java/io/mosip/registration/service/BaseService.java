@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,16 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
- * This is a base class for service package. The common functionality across the 'services' classes are 
- * implemented in this class to inherit this property at the required extended classes. 
+ * This is a base class for service package. The common functionality across the
+ * 'services' classes are implemented in this class to inherit this property at
+ * the required extended classes.
  * 
  */
 @Service
@@ -198,13 +201,17 @@ public class BaseService {
 	 */
 	public String getStationId(String macAddress) {
 		String stationId = null;
-		try {
-			/* Get Station ID */
-			stationId = userOnboardDAO.getStationID(macAddress);
-		} catch (RegBaseCheckedException baseCheckedException) {
-			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
+		if (macAddress != null) {
+			try {
 
+				/* Get Station ID */
+				stationId = userOnboardDAO.getStationID(macAddress);
+
+			} catch (RegBaseCheckedException baseCheckedException) {
+				LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
+
+			}
 		}
 		return stationId;
 	}
@@ -271,16 +278,20 @@ public class BaseService {
 	 */
 	public String getGlobalConfigValueOf(String key) {
 
-		ApplicationContext.getInstance();
-		// Check application map
-		if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key)==null) {
+		String val = null;
+		if (key != null) {
+			ApplicationContext.getInstance();
+			// Check application map
+			if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key) == null) {
 
-			// Load Global params if application map is empty
-			ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
+				// Load Global params if application map is empty
+				ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
+			}
+
+			// Get Value of global param
+			val = (String) ApplicationContext.map().get(key);
 		}
-
-		// Get Value of global param
-		return (String) ApplicationContext.map().get(key);
+		return val;
 	}
 
 	/**
@@ -337,6 +348,119 @@ public class BaseService {
 		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
 		Date date = new Date(timestamp.getTime());
 		return dateFormat.format(date);
+	}
+
+	protected boolean isNull(String val) {
+		return (val == null || val.equalsIgnoreCase("NULL"));
+	}
+
+	/**
+	 * Common method to throw {@link RegBaseCheckedException} based on the
+	 * {@link RegistrationExceptionConstants} enum passed as parameter. Extracts the
+	 * error code and error message from the enum parameter.
+	 * 
+	 * @param exceptionEnum
+	 *            the enum of {@link RegistrationExceptionConstants} containing the
+	 *            error code and error message to be thrown
+	 * @throws RegBaseCheckedException
+	 *             the checked exception
+	 */
+	protected void throwRegBaseCheckedException(RegistrationExceptionConstants exceptionEnum)
+			throws RegBaseCheckedException {
+		throw new RegBaseCheckedException(exceptionEnum.getErrorCode(), exceptionEnum.getErrorMessage());
+	}
+
+	/**
+	 * Validates the input {@link List} is either <code>null</code> or empty
+	 * 
+	 * @param listToBeValidated
+	 *            the {@link List} object to be validated
+	 * @return <code>true</code> if {@link List} is either <code>null</code> or
+	 *         empty, else <code>false</code>
+	 */
+	protected boolean isListEmpty(List<?> listToBeValidated) {
+		return listToBeValidated == null || listToBeValidated.isEmpty();
+	}
+	
+	/**
+	 * Validates the input {@link Set} is either <code>null</code> or empty
+	 * 
+	 * @param setToBeValidated
+	 *            the {@link Set} object to be validated
+	 * @return <code>true</code> if {@link Set} is either <code>null</code> or
+	 *         empty, else <code>false</code>
+	 */
+	protected boolean isSetEmpty(Set<?> setToBeValidated) {
+		return setToBeValidated == null || setToBeValidated.isEmpty();
+	}
+
+	/**
+	 * Validates the input {@link String} is either <code>null</code> or empty
+	 * 
+	 * @param stringToBeValidated
+	 *            the {@link String} object to be validated
+	 * @return <code>true</code> if input {@link String} is either <code>null</code>
+	 *         or empty, else <code>false</code>
+	 */
+	protected boolean isStringEmpty(String stringToBeValidated) {
+		return stringToBeValidated == null || stringToBeValidated.isEmpty();
+	}
+
+	/**
+	 * Validates the input {@link Map} is either <code>null</code> or empty
+	 * 
+	 * @param mapToBeValidated
+	 *            the {@link Map} object to be validated
+	 * @return <code>true</code> if {@link Map} is either <code>null</code> or
+	 *         empty, else <code>false</code>
+	 */
+	protected boolean isMapEmpty(Map<?, ?> mapToBeValidated) {
+		return mapToBeValidated == null || mapToBeValidated.isEmpty();
+	}
+
+	/**
+	 * Validates the input byte array is either <code>null</code> or empty
+	 * 
+	 * @param byteArrayToBeValidated
+	 *            the byte array to be validated
+	 * @return <code>true</code> if byte array is either <code>null</code> or empty,
+	 *         else <code>false</code>
+	 */
+	protected boolean isByteArrayEmpty(byte[] byteArrayToBeValidated) {
+		return byteArrayToBeValidated == null || byteArrayToBeValidated.length == 0;
+	}
+
+	/**
+	 * Validates if the error code of the input {@link Exception} is same of the
+	 * error code of Auth Token Empty
+	 * 
+	 * @param exception
+	 *            the {@link Exception} to be validated
+	 * @return <code>true</code> if error code is same as Auth Token empty
+	 */
+	protected boolean isAuthTokenEmptyException(Exception exception) {
+		return exception instanceof RegBaseCheckedException
+				&& RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode()
+						.equals(((RegBaseCheckedException) exception).getErrorCode());
+	}
+
+	/**
+	 * Validates if the error code of the input {@link ResponseDTO} is same of the
+	 * error code of Auth Token Empty
+	 * 
+	 * @param responseDTO
+	 *            the {@link ResponseDTO} to be validated
+	 * @return <code>true</code> if error code is same as Auth Token empty
+	 */
+	protected boolean isAuthTokenEmptyError(ResponseDTO responseDTO) {
+		boolean isAuthTokenEmptyError = false;
+		if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+				&& !responseDTO.getErrorResponseDTOs().isEmpty()) {
+			isAuthTokenEmptyError = RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode()
+					.equals(responseDTO.getErrorResponseDTOs().get(0).getMessage());
+		}
+
+		return isAuthTokenEmptyError;
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
@@ -23,6 +24,7 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
  * 
  * @author Sanjay Murali
  */
+@Ignore
 public class BioApiTest {
 	
 	CbeffImpl cbeffUtil = new CbeffImpl();

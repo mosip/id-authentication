@@ -13,9 +13,11 @@ import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -36,8 +38,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -46,6 +50,7 @@ import io.mosip.authentication.partnerdemo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.partnerdemo.service.dto.EncryptionResponseDto;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -241,6 +246,7 @@ public class AuthRequestController {
 			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException {
 		EncryptionRequestDto encryptionRequestDto=new EncryptionRequestDto();
+		encodeBioData(identity);
 		encryptionRequestDto.setIdentityRequest(identity);
 		EncryptionResponseDto encryptionResponse=encrypt.encrypt(encryptionRequestDto, isInternal);
 		reqValues.put("encHmac", encryptionResponse.getRequestHMAC());
@@ -248,6 +254,31 @@ public class AuthRequestController {
 		reqValues.put("encRequest", encryptionResponse.getEncryptedIdentity());
 	}
 
+
+	@SuppressWarnings("unchecked")
+	private void encodeBioData(Map<String, Object> identity) {
+		List<Object> bioIdentity = (List<Object>) identity.get(IdAuthCommonConstants.BIOMETRICS);
+		if(bioIdentity == null) {
+			return;
+		}
+		List<Object> bioIdentityInfo = new ArrayList<>();
+		
+		for(Object obj : bioIdentity) {
+			Map<String, Object> map = (Map<String, Object>) obj;
+			Map<String, Object> dataMap = map.get("data") instanceof Map ? (Map<String, Object>) map.get("data") : null;
+			try {
+				if(Objects.nonNull(dataMap)) {
+					Object value = CryptoUtil.encodeBase64String(mapper.writeValueAsBytes(dataMap));
+					map.replace("data", value);
+				}
+			} catch (JsonProcessingException e) {
+			}
+			bioIdentityInfo.add(map);
+		}
+		
+		identity.replace(IdAuthCommonConstants.BIOMETRICS, bioIdentityInfo);
+		
+	}
 
 	@SuppressWarnings("unchecked")
 	private void applyRecursively(Object obj, String key, String value) {

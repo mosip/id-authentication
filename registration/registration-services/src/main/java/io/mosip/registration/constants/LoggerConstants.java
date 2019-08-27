@@ -42,7 +42,8 @@ public class LoggerConstants {
 	private static final String PKT_UPLOAD= APP_NAME + "PACKET_UPLOAD - ";
 	private static final String PKT_STATUS_SYNC = APP_NAME + "PACKET_STATUS_SYNC - ";
 	private static final String RE_REGISTER_PKT = APP_NAME + "RE_REGISTER_PACKET - ";
-	private static final String REGISTER_PKT = APP_NAME + "REGISTERION_PACKET_APPROVAL - ";
+	private static final String REGISTER_PKT = APP_NAME + "PACKET_APPROVAL - ";
+	private static final String ALERT_GENERATION = APP_NAME + "ALERT_CONTROLLER - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -86,6 +87,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
 	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
+	public static final String LOG_REG_LOGIN_SERVICE = LOGIN + "LOGIN_SERVICE";
 	public static final String AUTHENTICATION_SRVICE = "AUTHENTICATION_SRVICE";
 	public static final String FINGER_PRINT_AUTHENTICATION = "FINGER_PRINT_AUTHENTICATION";
 	public static final String VALIDATE_FP_WITH_BIO_API = " VALIDATE_FP_WITH_BIO_API";
@@ -185,5 +187,7 @@ public class LoggerConstants {
 	public static final String LOG_UPADTE_RE_REGISTER_PKT = RE_REGISTER_PKT + "UPDATE_STATUS";
 	public static final String LOG_GET_REGISTER_PKT = REGISTER_PKT + "GET";
 	public static final String LOG_UPADTE_REGISTER_PKT = REGISTER_PKT + "UPDATE_STATUS";
+	public static final String LOG_ALERT_GENERATION = ALERT_GENERATION + "ALERT_GENERATION";
 
+	
 }

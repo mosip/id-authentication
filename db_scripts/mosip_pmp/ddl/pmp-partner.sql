@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : pmp.partner
+-- Purpose    : Partner: Registered external partners use the authentication services provided by MOSIP. The auth services are channeled through MISPs. This table stores the master list of partners who can self register themselves and use auth services.
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: pmp.partner | type: TABLE --
 -- DROP TABLE IF EXISTS pmp.partner CASCADE;
 CREATE TABLE pmp.partner(
@@ -53,6 +66,3 @@ COMMENT ON COLUMN pmp.partner.is_deleted IS 'IS_Deleted : Flag to mark whether t
 -- ddl-end --
 COMMENT ON COLUMN pmp.partner.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE pmp.partner OWNER TO sysadmin;
--- ddl-end --
-

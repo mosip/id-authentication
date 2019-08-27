@@ -21,6 +21,11 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.swagger.annotations.Api;
@@ -33,6 +38,7 @@ import io.swagger.annotations.ApiResponses;
  * Controller class for RegistrationCenterType operations.
  * 
  * @author Sagar Mahapatra
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -119,6 +125,41 @@ public class RegistrationCenterTypeController {
 		ResponseWrapper<PageDto<RegistrationCenterTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterTypeService.getAllRegistrationCenterTypes(pageNumber, pageSize,
 				sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/registrationcentertypes/filtervalues")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<FilterResponseCodeDto> registrationCenterTypeFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(registrationCenterTypeService.registrationCenterTypeFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Function to fetch all document types.
+	 * 
+	 * @return {@link RegistrationCenterTypeExtnDto} DocumentTypeResponseDto
+	 */
+	@ResponseFilter
+	@PostMapping("/registrationcentertypes/search")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> searchRegistrationCenterType(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterTypeService.searchRegistrationCenterTypes(request.getRequest()));
 		return responseWrapper;
 	}
 }

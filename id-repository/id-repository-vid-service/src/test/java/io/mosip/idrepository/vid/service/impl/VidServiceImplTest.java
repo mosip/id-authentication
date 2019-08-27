@@ -866,4 +866,71 @@ public class VidServiceImplTest {
 			assertEquals(IdRepoErrorConstants.VID_POLICY_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
+	
+	@Test
+	public void testDeactivateVID_valid() throws IdRepoAppException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
+		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
+		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any()))
+		.thenReturn("3920450236".getBytes());
+		when(securityManager.hash(Mockito.any()))
+				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
+		Mockito.when(restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null, IdResponseDTO.class))
+		.thenReturn(restRequestDTO);
+		Vid vid = new Vid();
+		vid.setVid("123");
+		vid.setStatusCode("");
+		vid.setUin("461_3920450236_7C9JlRD32RnFTzAmeTfIzg");
+		when(vidRepo.findByUinHashAndStatusCodeAndExpiryDTimesAfter(Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Collections.singletonList(vid));
+		ResponseWrapper<VidResponseDTO> regenerateVid = service.deactivateVIDsForUIN("12345461");
+		assertEquals("DEACTIVATED", regenerateVid.getResponse().getVidStatus());
+	}
+	
+	@Test
+	public void testDeactivateVID_Invalid() throws Throwable {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
+		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
+		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any()))
+		.thenReturn("3920450236".getBytes());
+		when(securityManager.hash(Mockito.any()))
+				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
+		Mockito.when(restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null, IdResponseDTO.class))
+		.thenReturn(restRequestDTO);
+		Vid vid = new Vid();
+		vid.setVid("123");
+		vid.setStatusCode("");
+		vid.setUin("461_3920450236_7C9JlRD32RnFTzAmeTfIzg");
+		when(vidRepo.findByUinHashAndStatusCodeAndExpiryDTimesAfter(Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Collections.emptyList());
+		try {
+			service.deactivateVIDsForUIN("12345461");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@Test
+	public void testReactivateVID_valid() throws IdRepoAppException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
+		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
+		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any()))
+		.thenReturn("3920450236".getBytes());
+		when(securityManager.hash(Mockito.any()))
+				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
+		Mockito.when(restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null, IdResponseDTO.class))
+		.thenReturn(restRequestDTO);
+		Vid vid = new Vid();
+		vid.setVid("123");
+		vid.setStatusCode("");
+		vid.setUin("461_3920450236_7C9JlRD32RnFTzAmeTfIzg");
+		when(vidRepo.findByUinHashAndStatusCodeAndExpiryDTimesAfter(Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Collections.singletonList(vid));
+		ResponseWrapper<VidResponseDTO> regenerateVid = service.reactivateVIDsForUIN("12345461");
+		assertEquals("ACTIVE", regenerateVid.getResponse().getVidStatus());
+	}
 }

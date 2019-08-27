@@ -215,6 +215,13 @@ public class TemplateController {
 		return responseWrapper;
 	}
 
+	
+	/**
+	 * Search templates.
+	 *
+	 * @param request the request
+	 * @return {@link PageResponseDto}
+	 */
 	@ResponseFilter
 	@PostMapping("/search")
 	@ApiOperation(value = "Search template details")
@@ -227,8 +234,15 @@ public class TemplateController {
 		return responseWrapper;
 	}
 	
+	
+	/**
+	 * Filter templates.
+	 *
+	 * @param request the request
+	 * @return {@link FilterResponseDto}
+	 */
 	@ResponseFilter
-	@PostMapping("/filter")
+	@PostMapping("/filtervalues")
 	@ApiOperation(value = "filter template details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })

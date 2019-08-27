@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
@@ -23,6 +24,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.vo.RegistrationApprovalVO;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,7 +57,7 @@ public class RejectionController extends BaseController implements Initializable
 
 	@Autowired
 	private MasterSyncService masterSyncService;
-	
+
 	@Autowired
 	private RegistrationApprovalController registrationApprovalController;
 	/**
@@ -77,12 +79,12 @@ public class RejectionController extends BaseController implements Initializable
 
 	/** The rejection table. */
 	private TableView<RegistrationApprovalVO> regRejectionTable;
-	
+
 	private ObservableList<RegistrationApprovalVO> observableList;
 	private Map<String, Integer> packetIds = new HashMap<>();
 
 	private String controllerName;
-	
+
 	@FXML
 	private Button closeButton;
 
@@ -97,11 +99,18 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-		List<ReasonListDto> reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
-		closeButton.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 20, 20, true, true)));
-		rejectionComboBox.setItems(FXCollections
-				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
-
+		List<ReasonListDto> reasonList;
+		try {
+			reasonList = masterSyncService.getAllReasonsList(applicationContext.getApplicationLanguage());
+			closeButton.setGraphic(new ImageView(new Image(
+					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 20, 20, true, true)));
+			rejectionComboBox.setItems(FXCollections
+					.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
+			disableColumnsReorder(regRejectionTable);
+		} catch (RegBaseCheckedException exRegBaseCheckedException) {
+			LOGGER.error(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					exRegBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(exRegBaseCheckedException));
+		}
 		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
@@ -110,13 +119,14 @@ public class RejectionController extends BaseController implements Initializable
 	 * other controller page.
 	 *
 	 * @param regData
-	 * @param packetIds 
+	 * @param packetIds
 	 * @param stage
 	 * @param mapList
 	 * @param table
-	 * @param filterField 
+	 * @param filterField
 	 */
-	public void initData(RegistrationApprovalVO regData, Map<String, Integer> packets, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
+	public void initData(RegistrationApprovalVO regData, Map<String, Integer> packets, Stage stage,
+			List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
 			TableView<RegistrationApprovalVO> table, String controller) {
 		rejRegData = regData;
 		packetIds = packets;
@@ -156,8 +166,8 @@ public class RejectionController extends BaseController implements Initializable
 		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
 			int focusedIndex = regRejectionTable.getSelectionModel().getFocusedIndex();
-			
-			int rowNum=packetIds.get(regRejectionTable.getSelectionModel().getSelectedItem().getId());
+
+			int rowNum = packetIds.get(regRejectionTable.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
 					regRejectionTable.getSelectionModel().getSelectedItem().getSlno(),
 					regRejectionTable.getSelectionModel().getSelectedItem().getId(),

@@ -88,16 +88,24 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		Score[] scores = null;
 		int i = 0;
 		BIR[] registeredBir = new BIR[userFingerprintDetails.size()];
-
+		String minutiae=null;
+		if(capturedFingerPrintDto.isForceCaptured())
+			return true;
+		try {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(capturedFingerPrintDto.getFingerPrint());
-		String minutiae = fingerprintTemplate.serialize();
-
+		minutiae = fingerprintTemplate.serialize();
+		}catch (Exception e) {
+			return false;
+		}
 		BIR capturedBir = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
 
 		for (UserBiometric userBiometric : userFingerprintDetails) {
+			try {
 			registeredBir[i] = new BIR(new BIRBuilder().withBdb(userBiometric.getBioMinutia().getBytes()));
-
+			}catch(Exception e) {
+				return false;
+			}
 			i++;
 		}
 

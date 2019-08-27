@@ -1,5 +1,6 @@
 package io.mosip.preregistration.core.util;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
@@ -28,6 +33,10 @@ import io.mosip.preregistration.core.common.dto.AuditResponseDto;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.errorcodes.ErrorMessages;
+import io.mosip.preregistration.core.exception.util.ParseResponseException;
+
 
 /**
  * This class is used to connect to the kernel's audit manager & to provide the
@@ -55,6 +64,10 @@ public class AuditLogUtil {
 	 */
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	private  ObjectMapper objectMapper;
+	
 
 	@Value("${audit.url}")
 	private String auditUrl;
@@ -164,15 +177,45 @@ public class AuditLogUtil {
 
 			log.info("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);			
-			ResponseEntity<ResponseWrapper<AuditResponseDto>> responseEntity2 = restTemplate.exchange(uriBuilder,
-					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ResponseWrapper<AuditResponseDto>>() {} );
-			auditFlag = responseEntity2.getBody().getResponse().isStatus();
+			ResponseEntity<String> responseEntity2 = restTemplate.exchange(uriBuilder,
+					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<String>() {} );
+			ResponseWrapper<AuditResponseDto> response=requestBodyExchange(responseEntity2.getBody());
+			AuditResponseDto responseDTO=(AuditResponseDto) requestBodyExchangeObject(responseToString(response.getResponse()), AuditResponseDto.class);
+			auditFlag =responseDTO.isStatus();
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil Util for HttpClientErrorException- "
 							+ ex.getResponseBodyAsString());
 		}
 		return auditFlag;
+	}
+	
+	private ResponseWrapper<AuditResponseDto> requestBodyExchange(String serviceResponseBody) throws ParseResponseException {
+		try {
+			return objectMapper.readValue(serviceResponseBody, ResponseWrapper.class);
+		} catch (IOException e) {
+			throw new ParseResponseException(ErrorCodes.PRG_CORE_REQ_021.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage(),null);
+			
+		} 
+	}
+	
+	private String responseToString(Object response) {
+		try {
+			return objectMapper.writeValueAsString(response);
+		} catch (JsonProcessingException e) {
+			
+			throw new ParseResponseException("","",null);
+		}
+	}
+	
+	private Object requestBodyExchangeObject(String serviceResponseBody,Class<?> responseClass) throws ParseResponseException{
+		try {
+			objectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+			return objectMapper.readValue(serviceResponseBody,responseClass);
+		} catch (IOException e) {
+			throw new ParseResponseException(ErrorCodes.PRG_CORE_REQ_021.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage(),null);
+			
+		} 
 	}
 	
 	/**
@@ -198,9 +241,11 @@ public class AuditLogUtil {
 
 			log.info("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);			
-			ResponseEntity<ResponseWrapper<AuditResponseDto>> responseEntity2 = restTemplate.exchange(uriBuilder,
-					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ResponseWrapper<AuditResponseDto>>() {} );
-			auditFlag = responseEntity2.getBody().getResponse().isStatus();
+			ResponseEntity<String> responseEntity2 = restTemplate.exchange(uriBuilder,
+					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<String>() {} );
+			ResponseWrapper<AuditResponseDto> response=requestBodyExchange(responseEntity2.getBody());
+			AuditResponseDto responseDTO=(AuditResponseDto) requestBodyExchangeObject(responseToString(response.getResponse()), AuditResponseDto.class);
+			auditFlag =responseDTO.isStatus();
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil Util for HttpClientErrorException- "

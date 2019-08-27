@@ -85,26 +85,7 @@ public class BookingDAO {
 		return registrationBookingRepository.save(entity) != null;
 	}
 
-	/**
-	 * @param regcntrId
-	 * @param fromDate
-	 * @param toDate
-	 * @return List of Local date
-	 */
-	public List<LocalDate> findDate(String regcntrId, LocalDate fromDate, LocalDate toDate) {
-		List<LocalDate> localDatList = null;
-		try {
-			localDatList = bookingAvailabilityRepository.findDate(regcntrId, fromDate, toDate);
-			if (localDatList == null || localDatList.isEmpty()) {
-				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
-						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
-			}
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
-		}
-		return localDatList;
-	}
+
 
 	/**
 	 * @param slotFromTime
@@ -491,6 +472,23 @@ public class BookingDAO {
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return deletedSlots;
+	}
+	
+	/**
+	 * @param regcntrId
+	 * @param regDate
+	 * @return List of AvailibityEntity
+	 */
+	public List<AvailibityEntity> findAvailability(String regcntrId,LocalDate starteDate,LocalDate endDate ) {
+
+		List<AvailibityEntity> entityList = null;
+		try {
+			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateGreaterThanEqualAndRegDateLessThanEqualOrderByRegDateAsc(regcntrId,starteDate,endDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return entityList;
 	}
 
 }

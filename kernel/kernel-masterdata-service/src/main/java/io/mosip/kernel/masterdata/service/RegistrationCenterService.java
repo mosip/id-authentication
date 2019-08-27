@@ -3,16 +3,18 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -182,29 +184,6 @@ public interface RegistrationCenterService {
 			String orderBy);
 
 	/**
-	 * This service method can be used to create registration center by admin.
-	 * 
-	 * @param RegistrationCenterReqAdmDto
-	 *            -pass the List of registration center DTO to create.
-	 * @return RegistrationCenterPostResponseDto - return created registration
-	 *         centers complete DTO
-	 */
-	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			List<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
-
-	/**
-	 * This method updates the registration center by admin.
-	 * 
-	 * @param RegistrationCenterPutReqAdmDto
-	 *            - pass the List of registration center DTO to update.
-	 * 
-	 * @return RegistrationCenterPutResponseDto - return updated registration
-	 *         centers complete DTO
-	 */
-	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
-			List<RegistrationCenterPutReqAdmDto> registrationCenterDto);
-
-	/**
 	 * Method to perform search based on the input
 	 * 
 	 * @param searchDto
@@ -212,5 +191,50 @@ public interface RegistrationCenterService {
 	 * @return list of registration centers
 	 */
 	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto searchDto);
+
+	/**
+	 * Method to filter registration center based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	public FilterResponseDto registrationCenterFilterValues(FilterValueDto filterValueDto);
+
+	/**
+	 * This service method can be used to create registration center by admin,
+	 * without id in request DTO will create Registration center for primary
+	 * language with ID in request DTO will create Registration center for secondary
+	 * language if for the given ID registration center is there in DB
+	 * 
+	 * @param RegistrationCenterReqAdmSecDto
+	 *            -pass the List of registration center DTO to create.
+	 * @return RegistrationCenterPostResponseDto - return created registration
+	 *         centers complete DTO
+	 */
+	public RegistrationCenterPostResponseDto createRegistrationCenter(
+			List<RegCenterPostReqDto> reqRegistrationCenterDto);
+
+    /**
+    * This method updates the registration center by admin.
+    * 
+     * @param RegCenterPutReqDto
+    *            - pass the List of registration center DTO to update.
+    * 
+     * @return RegistrationCenterPutResponseDto - return updated registration
+    *         centers complete DTO
+    */
+
+	public RegistrationCenterPutResponseDto updateRegistrationCenter(
+			List<RegCenterPutReqDto> registrationCenterPutReqAdmDto);
+
+	/**
+	 * Service method to decommission registration center.
+	 * 
+	 * @param regCenterID
+	 *            the center ID of the reg-center which needs to be decommissioned.
+	 * @return {@link IdResponseDto}.
+	 */
+	IdResponseDto decommissionRegCenter(String regCenterID);
 
 }

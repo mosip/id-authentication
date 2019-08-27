@@ -4,7 +4,10 @@ import static io.mosip.registration.constants.LoggerConstants.MDM_REQUEST_RESPON
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,8 @@ import java.util.Random;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
 import io.mosip.registration.mdm.dto.CaptureRequestDto;
@@ -53,25 +58,73 @@ public class MdmRequestResponseBuilder {
 		CaptureRequestDto bioCaptureRequestDto = new CaptureRequestDto();
 
 		bioCaptureRequestDto.setEnv(RegistrationConstants.MDM_ENVIRONMENT);
+		bioCaptureRequestDto.setMosipProcess("Registration");
 		bioCaptureRequestDto.setTimeout(RegistrationConstants.MDM_TIMEOUT);
 		bioCaptureRequestDto.setVersion(RegistrationConstants.MDM_VERSION);
-		bioCaptureRequestDto.setTransactionId(String.valueOf(generateID()));
+		bioCaptureRequestDto.setRegistrationID(String.valueOf(generateID()));
 
 		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
+		mosipBioRequest.setType(getDevicCode(bioDevice.getDeviceType()));
 		mosipBioRequest.setCount(1);
-		mosipBioRequest.setDeviceId(bioDevice.getDeviceType());
-		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubType());
-		mosipBioRequest.setFormat("");
+
+		String[] excptions= {};
+		List<String> ls = (ArrayList<String>)ApplicationContext.map().get("CAPTURE_EXCEPTION");
+		if(ls!=null) {
+			excptions = (ls).toArray(excptions);
+		}else {
+			ls=(ArrayList<String>)SessionContext.map().get("CAPTURE_EXCEPTION");
+		}
+		if(ls!=null) {
+			excptions = (ls).toArray(excptions);
+		}
+		mosipBioRequest.setException(excptions);
+		if (mosipBioRequest.getType().equalsIgnoreCase("FACE")) {
+			mosipBioRequest.setType("FACE");
+			mosipBioRequest.setRequestedScore(60);
+		} else {
+			mosipBioRequest.setRequestedScore(40);
+		}
+		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
+		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());
 		mosipBioRequest.setPreviousHash("");
-		mosipBioRequest.setType("");
+		bioCaptureRequestDto.setCaptureTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toString());
 
 		List<CaptureRequestDeviceDetailDto> bioRequests = new ArrayList<>();
 		bioRequests.add(mosipBioRequest);
 
 		bioCaptureRequestDto.setMosipBioRequest(bioRequests);
+		
+		Map<String, String> customOpts = new HashMap<String,String>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+			put("Name", "name1");
+			put("Value", "value1");
+			}
+		};	
+		
+		bioCaptureRequestDto.setCustomOpts(Arrays.asList(customOpts));
 
 		return bioCaptureRequestDto;
 
+	}
+	
+	private static String getDevicCode(String deviceType) {
+		switch (deviceType.toUpperCase()) {
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
+			deviceType= "FIR";
+			break;
+			
+		case RegistrationConstants.IRIS:
+			deviceType= "IIR";
+			break;
+		}
+		
+		return deviceType;
+		
 	}
 
 	private static long generateID() { 
@@ -93,7 +146,7 @@ public class MdmRequestResponseBuilder {
 	public static Map<String, byte[]> parseBioCaptureResponse(CaptureResponseDto mosipBioCaptureResponseDto) {
 
 		LOGGER.info(MDM_REQUEST_RESPONSE_BUILDER, APPLICATION_NAME, APPLICATION_ID,
-				"Parsing the resonse dto");
+				"Parsing the response dto");
 
 		Map<String, byte[]> responseBioData = new HashMap<>();
 

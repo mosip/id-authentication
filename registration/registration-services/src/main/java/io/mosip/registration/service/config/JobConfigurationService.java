@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 
 /**
@@ -123,6 +124,14 @@ public interface JobConfigurationService {
 	 * 		List contains the list of sync job names .
 	 */
 	public List<String> getUnTaggedJobs();
+	
+	/**
+	 * 
+	 * It returns syncControl of the input parameters job if exists, otherwise returns null
+	 * @param syncJobId sync job id
+	 * @return SyncControl entity
+	 */
+	public SyncControl getSyncControlOfJob(String syncJobId);
 
 	
 

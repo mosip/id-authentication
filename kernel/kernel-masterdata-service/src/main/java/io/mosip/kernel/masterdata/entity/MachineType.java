@@ -38,10 +38,11 @@ public class MachineType extends BaseEntity implements Serializable {
 	 * Field for composite primary key code and Language code
 	 */
 	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 36)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+	@Column(name = "code")
 	private String code;
+
+	@Id
+	@Column(name = "lang_code")
 	private String langCode;
 
 	/**

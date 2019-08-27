@@ -3,5 +3,5 @@
 CREATE ROLE idrepouser WITH 
 	INHERIT
 	LOGIN
-	PASSWORD 'Mosip@dev123';
+	PASSWORD :dbuserpwd;
 -- ddl-end --

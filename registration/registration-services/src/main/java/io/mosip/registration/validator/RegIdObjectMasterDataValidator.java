@@ -321,8 +321,6 @@ public class RegIdObjectMasterDataValidator {
 								JsonPath.compile(genderValuePathList.get(i)).read(identityString, READ_OPTIONS))));
 		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
-			System.out.println(
-					"Entry Val**" + lang + "->>>>" + genderMap.get(lang).contains(entry.getValue().getValue()));
 			return genderMap.containsKey(lang) && !genderMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -466,15 +464,15 @@ public class RegIdObjectMasterDataValidator {
 
 		SetValuedMap<String, String> localAdministrativeAuthorityMap = new HashSetValuedHashMap<>();
 		Set<String> localAdminAuthNameList = locationHierarchyDetails
-				.get(IdObjectValidatorLocationMapping.LOCAL_ADMINISTRATIVE_AUTHORITY.getLevel());
+				.get(IdObjectValidatorLocationMapping.ZONE.getLevel());
 		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> localAdministrativeAuthorityMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath
-				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_LANGUAGE_PATH.getValue());
+				.compile(IdObjectValidatorConstant.IDENTITY_ZONE_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath
-				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_VALUE_PATH.getValue());
+				.compile(IdObjectValidatorConstant.IDENTITY_ZONE_VALUE_PATH.getValue());
 		List<String> valuePathList = valuePath.read(identityString, PATH_LIST_OPTIONS);
 		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size()).parallel()
 				.filter(index -> languageList

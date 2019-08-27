@@ -305,8 +305,7 @@
 																									<children>
 																										<AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="2">
 																											<children>
-																												<Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="0.0" layoutY="2.0" text="" />
-																												<Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="0.0" layoutY="0.0" text="" />
+                                                                                    							<Label fx:id="ageOrDOBLabel" styleClass="demoGraphicFieldLabel" text="%ageOrDOBField" />
 																											</children>
 																										</AnchorPane>
 																									</children>
@@ -398,8 +397,7 @@
                                                                            <children>
                                                                               <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                                  <children>
-                                                                                    <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="0.0" layoutY="2.0" text="" />
-                                                                                    <Label id="toggleLabel1" fx:id="toggleLabel1LocalLanguage" layoutX="0.0" layoutY="0.0" text="" />
+                                                                                    <Label fx:id="ageOrDOBLocalLanguageLabel" styleClass="demoGraphicFieldLabel" text="%ageOrDOBField" />
                                                                                  </children>
                                                                               </AnchorPane>
                                                                            </children>

@@ -1,28 +1,30 @@
--- create table section -------------------------------------------------
--- schema 		: reg	    - registration schema
--- table 		: role_list	 - List of roles used across MOSIP Modules
--- table alias  : rolelst		
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name : reg.role_list
+-- Purpose    : 
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------
-create table reg.role_list (
-	
-	code 		character varying (36) not null,
-	
-	descr 		character varying (256),
-	
-	lang_code 	character varying (3) not null,		-- reg.language.code
-	
-	is_active 	boolean not null,
-	cr_by 		character varying (256) not null,
-	cr_dtimes	timestamp not null,
-	upd_by  	character varying (256),
-	upd_dtimes  timestamp,
-	is_deleted 	boolean,
-	del_dtimes  timestamp
-	
-)
-;
+-- object: reg.role_list | type: TABLE --
+-- DROP TABLE IF EXISTS reg.role_list CASCADE;
+CREATE TABLE reg.role_list(
+	code character varying(36) NOT NULL,
+	descr character varying(256),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_rolelst_code PRIMARY KEY (code,lang_code)
 
--- keys section -------------------------------------------------
- alter table reg.role_list add constraint pk_rolelst_code primary key (code, lang_code)
- ;
+);
+-- ddl-end --

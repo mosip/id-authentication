@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -36,7 +39,7 @@ public class ScanPopUpViewController extends BaseController {
 
 	@Autowired
 	private BaseController baseController;
-	
+
 	@Autowired
 	private DocumentScanController documentScanController;
 
@@ -60,6 +63,14 @@ public class ScanPopUpViewController extends BaseController {
 
 	private boolean isDocumentScan;
 
+	@Autowired
+	private Streamer streamer;
+
+	@FXML
+	private Hyperlink closeButton;
+
+	public TextField streamerValue;
+
 	/**
 	 * @return the scanImage
 	 */
@@ -68,6 +79,20 @@ public class ScanPopUpViewController extends BaseController {
 	}
 
 	private Stage popupStage;
+
+	/**
+	 * @return the popupStage
+	 */
+	public Stage getPopupStage() {
+		return popupStage;
+	}
+
+	/**
+	 * @param popupStage the popupStage to set
+	 */
+	public void setPopupStage(Stage popupStage) {
+		this.popupStage = popupStage;
+	}
 
 	/**
 	 * This method will open popup to scan
@@ -81,7 +106,7 @@ public class ScanPopUpViewController extends BaseController {
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
-
+			streamerValue = new TextField();
 			baseController = parentControllerObj;
 			popupStage = new Stage();
 			popupStage.initStyle(StageStyle.UNDECORATED);
@@ -89,17 +114,16 @@ public class ScanPopUpViewController extends BaseController {
 			popupStage.setResizable(false);
 			popupTitle.setText(title);
 			Scene scene = new Scene(scanPopup);
-			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
 			popupStage.initOwner(fXComponents.getStage());
 			popupStage.show();
-
 			if (!isDocumentScan) {
 				totalScannedPages.setVisible(false);
 				saveBtn.setVisible(false);
 				scannedPagesLabel.setVisible(false);
-				scanningMsg.setVisible(false);
 			} else {
 				isDocumentScan = false;
 			}
@@ -120,13 +144,15 @@ public class ScanPopUpViewController extends BaseController {
 
 	/**
 	 * This method will allow to scan
+	 * 
+	 * @throws IOException
+	 * @throws MalformedURLException
 	 */
 	@FXML
-	public void scan() {
+	public void scan() throws MalformedURLException, IOException {
 		scanningMsg.setVisible(true);
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Invoke scan method for the passed controller");
-
 		baseController.scan(popupStage);
 	}
 
@@ -140,15 +166,26 @@ public class ScanPopUpViewController extends BaseController {
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Calling exit window to close the popup");
 
+		streamer.stop();
 		popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		popupStage.close();
-		
+
 		if (documentScanController.getScannedPages() != null) {
 			documentScanController.getScannedPages().clear();
 		}
 
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
 
+	}
+
+	public void enableCloseButton() {
+		if (null != closeButton)
+			closeButton.setDisable(false);
+	}
+
+	public void disableCloseButton() {
+		if (null != closeButton)
+			closeButton.setDisable(true);
 	}
 
 	@FXML
@@ -158,7 +195,8 @@ public class ScanPopUpViewController extends BaseController {
 			try {
 				documentScanController.attachScannedDocument(popupStage);
 			} catch (IOException ioException) {
-				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
+				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+						ExceptionUtils.getStackTrace(ioException));
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 			}
 		}
@@ -185,8 +223,11 @@ public class ScanPopUpViewController extends BaseController {
 		return scanningMsg;
 	}
 
-	public void setScanningMsg(Text scanningMsg) {
-		this.scanningMsg = scanningMsg;
+	public void setScanningMsg(String msg) {
+		if (scanningMsg != null) {
+			scanningMsg.setText(msg);
+			scanningMsg.getStyleClass().add("scanButton");
+		}
 	}
 
 }

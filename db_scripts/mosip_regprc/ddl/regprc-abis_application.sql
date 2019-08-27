@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_regprc
+-- Table Name 	: regprc.abis_application
+-- Purpose    	: ABIS Application: List of ABIS (Automatic Biometric Identification System) applications with whom MOSIP application interfaces with.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: regprc.abis_application | type: TABLE --
 -- DROP TABLE IF EXISTS regprc.abis_application CASCADE;
 CREATE TABLE regprc.abis_application(
@@ -17,11 +30,13 @@ CREATE TABLE regprc.abis_application(
 
 );
 -- ddl-end --
-COMMENT ON TABLE regprc.abis_application IS 'ABIS Application: List of ABIS applications with whom MOSIP application interfaces with.';
+COMMENT ON TABLE regprc.abis_application IS 'ABIS Application: List of ABIS (Automatic Biometric Identification System) applications with whom MOSIP application interfaces with.';
 -- ddl-end --
-COMMENT ON COLUMN regprc.abis_application.code IS 'Primary key of transaction code, with lang_cd for multi language ';
+COMMENT ON COLUMN regprc.abis_application.code IS 'Code: Unique code to identify an ABIS application ';
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_application.name IS 'Name: Name of the ABIS application';
+-- ddl-end --
+COMMENT ON COLUMN regprc.abis_application.descr IS 'Description : Description of the ABIS application';
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_application.status_code IS 'Status Code : Status code whether the ABIS application is Active or In-active';
 -- ddl-end --
@@ -40,7 +55,5 @@ COMMENT ON COLUMN regprc.abis_application.upd_dtimes IS 'Updated DateTimestamp :
 COMMENT ON COLUMN regprc.abis_application.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
 -- ddl-end --
 COMMENT ON COLUMN regprc.abis_application.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
--- ddl-end --
-ALTER TABLE regprc.abis_application OWNER TO sysadmin;
 -- ddl-end --
 

@@ -9,6 +9,7 @@
 \ir ddl/kernel-sync_job_def.sql
 \ir ddl/kernel-sync_transaction.sql
 \ir ddl/kernel-uin.sql
+\ir ddl/kernel-dao_key_store.sql
 
-\ir ddl/AlterFK_kernel_schema.sql
+\ir ddl/kernel-fk.sql
 

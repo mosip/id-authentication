@@ -28,6 +28,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.entity.BlacklistedWords;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -131,6 +132,10 @@ public class Validations extends BaseController {
 	protected void updateAsLostUIN(boolean isLostUIN) {
 		this.isLostUIN = isLostUIN;
 	}
+	
+	public boolean isLostUIN() {
+		return this.isLostUIN;
+	}
 
 	/**
 	 * To decide whether this node should be validated or not.
@@ -162,11 +167,17 @@ public class Validations extends BaseController {
 	 * @return true, if successful
 	 */
 	public boolean validate(Pane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
-		this.applicationLanguageblackListedWords = masterSync
-				.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
-				.map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
-		this.localLanguageblackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.localLanguage())
-				.stream().map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
+		try {
+			this.applicationLanguageblackListedWords = masterSync
+					.getAllBlackListedWords(ApplicationContext.applicationLanguage()).stream()
+					.map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
+			this.localLanguageblackListedWords = masterSync.getAllBlackListedWords(ApplicationContext.localLanguage())
+					.stream().map(BlacklistedWordsDto::getWord).collect(Collectors.toList());
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+		}
 		return validateTheFields(pane, notTovalidate, isValid);
 	}
 
@@ -264,10 +275,17 @@ public class Validations extends BaseController {
 						labelBundle.getString(label) + " " + messageBundle.getString(RegistrationConstants.REG_DDC_004),
 						showAlert);
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
+					Label nodeLabel= (Label)parentPane.lookup("#"+node.getId()+"Label");
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
 						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicTextFieldOnType");
+					});	
+					nodeLabel.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicFieldLabelOnType");
+					});	
 					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			}
@@ -414,7 +432,7 @@ public class Validations extends BaseController {
 										+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
 								false);
 
-						LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						LOGGER.error("UIN VALIDATION FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 						uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 						uinId.requestFocus();
@@ -439,7 +457,7 @@ public class Validations extends BaseController {
 									applicationLabelBundle.getString(regId.getId()) + " "
 											+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
 									false);
-							LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
+							LOGGER.error("RID VALIDATION FAILED", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage()
 											+ ExceptionUtils.getStackTrace(invalidRidException));
 							regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
@@ -530,7 +548,7 @@ public class Validations extends BaseController {
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
-				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.REFERENCE_ID_NO_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:

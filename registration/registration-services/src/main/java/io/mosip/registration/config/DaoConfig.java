@@ -3,6 +3,7 @@ package io.mosip.registration.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -23,6 +24,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.tpm.spi.TPMUtil;
+import io.mosip.registration.update.SoftwareUpdateHandler;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -57,14 +59,14 @@ public class DaoConfig extends HibernateDaoConfig {
 	 * connection of datasource
 	 */
 	static {
-		try (FileInputStream keyStream = new FileInputStream(new File(System.getProperty(DB_AUTH_FILE_PATH)))) {
+		try (InputStream keyStream = DaoConfig.class.getClassLoader().getResourceAsStream("spring.properties")) {
 			DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 			driverManagerDataSource.setDriverClassName(DRIVER_CLASS_NAME);
 
 			Properties keys = new Properties();
 			keys.load(keyStream);
 
-			String dbConnectionURL = URL + System.getProperty(DB_PATH_VAR) + DB_AUTHENITICATION;
+			String dbConnectionURL = URL + keys.getProperty(DB_PATH_VAR) + DB_AUTHENITICATION;
 			
 			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)
 					&& RegistrationConstants.ENABLE.equalsIgnoreCase(keys.getProperty(MOSIP_CLIENT_TPM_AVAILABILITY))) {
@@ -128,14 +130,9 @@ public class DaoConfig extends HibernateDaoConfig {
 	@Bean
 	@Lazy(false)
 	public static PropertyPlaceholderConfigurer properties() {
-		String profile = System.getProperty("spring.profiles.active");
-
-		LOGGER.info("REGISTRATION - DAO Config", APPLICATION_NAME, APPLICATION_ID, 
-				" spring profile loading with environment spring-" + profile + "loaded");
 		
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		Resource[] resources = new ClassPathResource[] {new ClassPathResource("spring.properties"), 
-				new ClassPathResource("spring-" + profile + ".properties") };
+		Resource[] resources = new ClassPathResource[] {new ClassPathResource("spring.properties")};
 		ppc.setLocations(resources);
 
 		Properties properties = new Properties();

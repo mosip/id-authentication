@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.token.validation.dto;
 
+import java.util.Arrays;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +17,15 @@ public class TokenResponseDTO {
 	String metadata;
 	Response response;
 	Errors[] errors;
+	public Errors[] getErrors() {
+		if(errors != null) {
+		return Arrays.copyOf(errors, errors.length);
+		}else {
+			return null;
+		}
+	}
 
+	public void setErrors(Errors[] errors) {
+		this.errors = errors!=null?errors:null;
+	}
 }

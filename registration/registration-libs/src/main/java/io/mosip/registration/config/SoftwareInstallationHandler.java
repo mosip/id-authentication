@@ -44,7 +44,7 @@ public class SoftwareInstallationHandler {
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.reg.client.url");
-		
+
 		latestVersion = properties.getProperty("mosip.reg.version");
 
 		getLocalManifest();
@@ -397,7 +397,7 @@ public class SoftwareInstallationHandler {
 		InputStream inputStream = null;
 		try {
 			URLConnection connection = new URL(url).openConnection();
-			connection.setConnectTimeout(10000);
+			connection.setConnectTimeout(50000);
 			// Space Check
 			if (hasSpace(connection.getContentLength())) {
 				inputStream = connection.getInputStream();

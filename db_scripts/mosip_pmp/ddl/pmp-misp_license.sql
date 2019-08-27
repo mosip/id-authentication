@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : pmp.misp_license
+-- Purpose    : MISP License: License key issued to MISP, using which an individual''s authentication request that is initiated from partners are authenticated.
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- NOTE: the code below contains the SQL for the selected object
 -- as well for its dependencies and children (if applicable).
 -- 
@@ -51,6 +64,3 @@ COMMENT ON COLUMN pmp.misp_license.is_deleted IS 'IS_Deleted : Flag to mark whet
 -- ddl-end --
 COMMENT ON COLUMN pmp.misp_license.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE pmp.misp_license OWNER TO sysadmin;
--- ddl-end --
-

@@ -69,6 +69,7 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.NotificationException;
+import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -403,7 +404,7 @@ public class BookingServiceUtil {
 			return true;
 		else
 			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+					ErrorMessages.CANCEL_BOOKING_CANNOT_BE_DONE.getMessage() + " " + timeSpanCheckForCancel + "hours");
 	}
 
 	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime, Date requestTime) {
@@ -419,7 +420,7 @@ public class BookingServiceUtil {
 			return true;
 		else
 			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+					ErrorMessages.BOOKING_CANNOT_BE_DONE.getMessage() + " " + timeSpanCheckForRebook + " hours");
 
 	}
 
@@ -564,17 +565,16 @@ public class BookingServiceUtil {
 	}
 
 	/**
-	 * This method will do booking slots.
 	 * 
-	 * @param dateList
+	 * @param date
 	 * @param dateTimeList
-	 * @param i
 	 * @param dateTime
 	 * @param entity
+	 * @return
 	 */
-	public void slotSetter(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
+	public int slotSetter(LocalDate date, List<DateTimeDto> dateTimeList, DateTimeDto dateTime,
 			List<AvailibityEntity> entity) {
-		log.info("sessionId", "idType", "id", "In slotSetter method of Booking Service Util");
+		int noOfHoliday = 0;
 		List<SlotDto> slotList = new ArrayList<>();
 		for (AvailibityEntity en : entity) {
 			if (en.getAvailableKiosks() > 0) {
@@ -587,14 +587,16 @@ public class BookingServiceUtil {
 		}
 		if (entity.size() == 1) {
 			dateTime.setHoliday(true);
+			noOfHoliday++;
 		} else {
 			dateTime.setHoliday(false);
 		}
 		if (!slotList.isEmpty()) {
 			dateTime.setTimeSlots(slotList);
-			dateTime.setDate(dateList.get(i).toString());
+			dateTime.setDate(date.toString());
 			dateTimeList.add(dateTime);
 		}
+		return noOfHoliday;
 
 	}
 
@@ -835,6 +837,18 @@ public class BookingServiceUtil {
 					null);
 		}
 		return true;
+	}
+
+	public boolean isValidRegCenter(String regId) {
+		List<RegistrationCenterDto> regCenter = getRegCenterMasterData();
+		Boolean isValidRegCenter = regCenter.stream().anyMatch(iterate -> iterate.getId().contains(regId));
+
+		if (!isValidRegCenter) {
+			throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_035.getCode(),
+					ErrorMessages.REG_CENTER_ID_NOT_FOUND.getMessage());
+		}
+		return true;
+
 	}
 
 }

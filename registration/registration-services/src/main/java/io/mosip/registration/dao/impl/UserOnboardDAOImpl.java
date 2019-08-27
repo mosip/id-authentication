@@ -14,8 +14,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.machinezoo.sourceafis.FingerprintTemplate;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -109,7 +107,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				biometricId.setBioTypeCode(RegistrationConstants.FIN);
 				biometricId.setUsrId(SessionContext.userContext().getUserId());
 				bioMetrics
-						.setBioMinutia(new FingerprintTemplate().convert(fingerPrintData.getFingerPrint()).serialize());
+						.setBioIsoImage(fingerPrintData.getFingerPrintISOImage());
 				bioMetrics.setNumberOfRetry(fingerPrintData.getNumRetry());
 				bioMetrics.setUserBiometricId(biometricId);
 				Double qualitySocre = fingerPrintData.getQualityScore();
@@ -167,7 +165,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			userBiometricRepository.saveAll(bioMetricsList);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"Biometric information insertion succesful");
+					"Biometric information insertion successful");
 
 			response = RegistrationConstants.SUCCESS;
 
@@ -271,7 +269,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 		try {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"fetching center details from reposiotry....");
+					"fetching center details from repository....");
 
 			CenterMachine regCenterMachineDtls = centerMachineRepository
 					.findByIsActiveTrueAndCenterMachineIdId(stationId);
@@ -295,7 +293,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	public Timestamp getLastUpdatedTime(String usrId) {
 		try {
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"fetching userMachineMapping details from reposiotry....");
+					"fetching userMachineMapping details from repository....");
 			UserMachineMapping userMachineMapping = machineMappingRepository.findByUserMachineMappingIdUserID(usrId);
 			return userMachineMapping != null ? userMachineMapping.getCrDtime() : null;
 		} catch (RuntimeException runtimeException) {

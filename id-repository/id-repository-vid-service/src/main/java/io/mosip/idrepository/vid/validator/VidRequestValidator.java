@@ -36,6 +36,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRequestValidator extends BaseIdRepoValidator implements Validator {
 
+	private static final String REACTIVATE = "reactivate";
+
+	private static final String DEACTIVATE = "deactivate";
+
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
 
@@ -64,7 +68,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	@Autowired
 	private VidPolicyProvider policyProvider;
 
-	/**  The Vid Validator. */
+	/** The Vid Validator. */
 	@Autowired
 	private VidValidator<String> vidValidator;
 
@@ -110,6 +114,10 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 			if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
 				validateStatus(request.getRequest().getVidStatus(), errors);
 			}
+			if (!errors.hasErrors()
+					&& (requestId.equals(id.get(DEACTIVATE)) || requestId.equals(id.get(REACTIVATE)))) {
+				validateUin(request.getRequest().getUin(), errors);
+			}
 		}
 	}
 
@@ -117,11 +125,12 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * Validate vid type.
 	 *
 	 * @param vidType the vid type
-	 * @param errors the errors
+	 * @param errors  the errors
 	 */
 	private void validateVidType(String vidType, Errors errors) {
 		if (Objects.isNull(vidType)) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateVidType", "vidType is null");
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateVidType",
+					"vidType is null");
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		} else if (!policyProvider.getAllVidTypes().contains(vidType)) {
@@ -135,7 +144,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	/**
 	 * Validate uin.
 	 *
-	 * @param uin the uin
+	 * @param uin    the uin
 	 * @param errors the errors
 	 */
 	private void validateUin(Long uin, Errors errors) {
@@ -160,7 +169,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * Validate request.
 	 *
 	 * @param request the request
-	 * @param errors the errors
+	 * @param errors  the errors
 	 */
 	private void validateRequest(VidRequestDTO request, Errors errors) {
 		if (Objects.isNull(request)) {
@@ -175,7 +184,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * This method will validate the Status of Vid.
 	 *
 	 * @param vidStatus the vid status
-	 * @param errors the errors
+	 * @param errors    the errors
 	 */
 	private void validateStatus(String vidStatus, Errors errors) {
 		if (Objects.isNull(vidStatus)) {

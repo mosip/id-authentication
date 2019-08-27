@@ -20,6 +20,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
@@ -196,4 +197,23 @@ public class DocumentTypeController {
 		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
 		return responseWrapper;
 	}
+	
+	/**
+	 * API to fetch all Document type  details based on language code
+	 * 
+	 * @param langCode
+	 *            the language code
+	 * 
+	 * @return {@link DocumentTypeResponseDto}
+	 */
+	@ResponseFilter
+	@GetMapping("/documenttypes/{langcode}")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<DocumentTypeResponseDto> getAllDocumentTypeByLaguageCode(
+			@PathVariable("langcode") String langCode) {
+		ResponseWrapper<DocumentTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.getAllDocumentTypeByLaguageCode(langCode));
+		return responseWrapper;
+	}
+
 }

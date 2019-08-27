@@ -31,6 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -61,36 +62,20 @@ import io.mosip.registration.service.config.GlobalParamService;
 @Component
 public class SoftwareUpdateHandler extends BaseService {
 
-	/**
-	 * This constructor will read the application Property file and load the
-	 * properties to the class level variable.
-	 */
-	public SoftwareUpdateHandler() {
+	
 
-		propsFilePath = new File(System.getProperty("user.dir")) + props;
-
-		try (FileInputStream fileInputStream = new FileInputStream(propsFilePath)) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-			serverRegClientURL = properties.getProperty("mosip.reg.client.url");
-			serverMosipXmlFileUrl = properties.getProperty("mosip.reg.xml.file.url");
-			backUpPath = properties.getProperty("mosip.reg.rollback.path");
-
-		} catch (IOException exception) {
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-		}
-	}
-
-	private String propsFilePath;
-	private static String props = "/props/mosip-application.properties";
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
 
+	@Value("${mosip.reg.rollback.path}")
 	private String backUpPath;
+	
+	@Value("${mosip.reg.client.url}")
 	private String serverRegClientURL;
+	
+
+	@Value("${mosip.reg.xml.file.url}")
 	private String serverMosipXmlFileUrl;
 
 	private static String libFolder = "lib/";
@@ -421,7 +406,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	private Manifest getLocalManifest() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Geting  of local manifest started");
+				"Getting  of local manifest started");
 
 		File localManifestFile = new File(manifestFile);
 
@@ -432,7 +417,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Geting  of local manifest completed");
+				"Getting  of local manifest completed");
 		return localManifest;
 	}
 
@@ -636,7 +621,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					inputStream != null ? path + " found" : path + " Not Found");
-			
+
 			if (inputStream != null) {
 				runSqlFile(inputStream);
 			}
@@ -774,30 +759,30 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	private void addProperties(String version) {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Started updating version property in mosip-application.properties");
-
-		try {
-			Properties properties = new Properties();
-			properties.load(new FileInputStream(propsFilePath));
-
-			properties.setProperty("mosip.reg.version", version);
-
-			// update mosip-Version in mosip-application.properties file
-			try (FileOutputStream outputStream = new FileOutputStream(propsFilePath)) {
-
-				properties.store(outputStream, version);
-			}
-
-		} catch (IOException ioException) {
-
-			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-		}
-
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Completed updating version property in mosip-application.properties");
+//		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+//				"Started updating version property in mosip-application.properties");
+//
+//		try {
+//			Properties properties = new Properties();
+//			properties.load(new FileInputStream(propsFilePath));
+//
+//			properties.setProperty("mosip.reg.version", version);
+//
+//			// update mosip-Version in mosip-application.properties file
+//			try (FileOutputStream outputStream = new FileOutputStream(propsFilePath)) {
+//
+//				properties.store(outputStream, version);
+//			}
+//
+//		} catch (IOException ioException) {
+//
+//			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+//					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+//
+//		}
+//
+//		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+//				"Completed updating version property in mosip-application.properties");
 
 	}
 

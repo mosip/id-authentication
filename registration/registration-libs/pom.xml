@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.12.18</version>
+		<version>0.9.1</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>
@@ -52,20 +53,17 @@
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito</artifactId>
-			<version>1.7.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-core</artifactId>
-			<version>1.7.0</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
-			<version>1.7.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -73,7 +71,6 @@
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
-			<version>2.0.0-RC.3</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -109,6 +106,7 @@
 	</dependencies>
 	<build>
 		<resources>
+
 			<resource>
 				<directory>src/main/resources</directory>
 
@@ -118,6 +116,8 @@
 			</resource>
 		</resources>
 		<plugins>
+
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -152,9 +152,6 @@
 								<argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/batch/run.bat</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/props/mosip-application.properties</argument>
-								<argument>${main.basedir}/registration-mdm-service/target/registration-mdm-service.jar</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_start.bat</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_stop.bat</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -214,6 +211,8 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+
 
 		</plugins>
 	</build>

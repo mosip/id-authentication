@@ -31,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
@@ -39,6 +40,7 @@ import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
@@ -56,6 +58,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserReposi
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -72,6 +75,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  * 
  * @author Megha Tanga
  * @author Ritesh Sinha
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -116,6 +120,12 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private ZoneUtils zoneUtils;
+
+	@Autowired
+	private MachineUtil machineUtil;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -406,21 +416,11 @@ public class MachineServiceImpl implements MachineService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId();
 					addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-					if (addList.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(), String.format(
-										MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage()));
-					}
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
 						mappedMachineIdList = machineRepository.findNotMappedMachineId();
 						addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-						if (addList.isEmpty()) {
-							throw new DataNotFoundException(
-									MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorCode(), String.format(
-											MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorMessage()));
-						}
 					} else {
 						throw new RequestException(
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
@@ -439,26 +439,12 @@ public class MachineServiceImpl implements MachineService {
 							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
 							null);
 					List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
-					if (machineCodeFilter.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(
-										MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
-										filter.getValue()));
-					}
 					Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
 							MachineSpecification.class,
 							new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null), null);
 
 					removeList.add(filter);
 					addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
-					if (addList.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
-										.getErrorMessage(), filter.getValue()));
-					}
-
 				}
 			}
 
@@ -472,17 +458,26 @@ public class MachineServiceImpl implements MachineService {
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
 		dto.getFilters().removeAll(removeList);
-
+		Pagination pagination = dto.getPagination();
+		List<SearchSort> sort = dto.getSort();
+		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+		dto.setSort(Collections.emptyList());
 		if (filterValidator.validate(MachineSearchDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
 					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				pageDto = PageUtils.pageResponse(page);
 				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
 				setMachineMetadata(machines, zones);
-				pageDto.setData(machines);
+				setMachineTypeNames(machines);
+				setMapStatus(machines);
+				machines.forEach(machine->{
+					if(machine.getMapStatus()==null) {
+						machine.setMapStatus("unassigned");
+					}
+				});
+				pageDto = pageUtils.sortPage(machines, sort, pagination);
 			}
 
 		}
@@ -497,8 +492,56 @@ public class MachineServiceImpl implements MachineService {
 	 * @param zones
 	 *            the list of zones.
 	 */
-	public void setMachineMetadata(List<MachineSearchDto> list, List<Zone> zones) {
+	private void setMachineMetadata(List<MachineSearchDto> list, List<Zone> zones) {
 		list.forEach(i -> setZoneMetadata(i, zones));
+	}
+
+	/**
+	 * Method to set MachineType Name for each Machine.
+	 * 
+	 * @param list
+	 *            the {@link MachineSearchDto}.
+	 */
+	private void setMachineTypeNames(List<MachineSearchDto> list) {
+		List<MachineSpecification> machineSpecifications = machineUtil.getMachineSpec();
+		List<MachineType> machineTypes = machineUtil.getMachineTypes();
+		list.forEach(machineSearchDto -> {
+			machineSpecifications.forEach(s -> {
+				if (s.getId().equals(machineSearchDto.getMachineSpecId())
+						&& s.getLangCode().equals(machineSearchDto.getLangCode())) {
+					String typeCode = s.getMachineTypeCode();
+					machineTypes.forEach(mt -> {
+						if (mt.getCode().equals(typeCode) && mt.getLangCode().equals(s.getLangCode())) {
+							machineSearchDto.setMachineTypeName(mt.getName());
+						}
+					});
+				}
+			});
+		});
+	}
+
+	/**
+	 * Method to set Map status of each Machine.
+	 * 
+	 * @param list
+	 *            the {@link MachineSearchDto}.
+	 */
+	private void setMapStatus(List<MachineSearchDto> list) {
+		List<RegistrationCenterMachine> centerMachineList = machineUtil.getAllMachineCentersList();
+		List<RegistrationCenter> registrationCenterList = machineUtil.getAllRegistrationCenters();
+		list.forEach(machineSearchDto -> {
+			centerMachineList.forEach(centerMachine -> {
+				if (centerMachine.getMachine().getId().equals(machineSearchDto.getId())
+						&& centerMachine.getLangCode().equals(machineSearchDto.getLangCode())) {
+					String regId = centerMachine.getRegistrationCenter().getId();
+					registrationCenterList.forEach(registrationCenter -> {
+						if (registrationCenter.getId().equals(regId) && centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
+							machineSearchDto.setMapStatus(registrationCenter.getName());
+						}
+					});
+				}
+			});
+		});
 	}
 
 	/**
@@ -667,10 +710,9 @@ public class MachineServiceImpl implements MachineService {
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<?> filterValues = masterDataFilterHelper.filterValues(Machine.class, filterDto,
-						filterValueDto);
+				List<?> filterValues = masterDataFilterHelper.filterValues(Machine.class, filterDto, filterValueDto);
 				filterValues.forEach(filterValue -> {
 					ColumnValue columnValue = new ColumnValue();
 					columnValue.setFieldID(filterDto.getColumnName());
@@ -681,5 +723,32 @@ public class MachineServiceImpl implements MachineService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#decommissionMachine(java.
+	 * lang.String)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto decommissionMachine(String machineId) {
+		IdResponseDto machineCodeId = new IdResponseDto();
+		MapperUtils.mapFieldValues(machineId, machineCodeId);
+		try {
+			int updatedRows = machineRepository.decommissionMachine(machineId);
+			if (updatedRows < 1) {
+				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		machineCodeId.setId(machineId);
+		return machineCodeId;
 	}
 }

@@ -1,7 +1,6 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doThrow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -95,7 +94,8 @@ public class PreRegZipHandlingServiceTest {
 
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put("mosip.registration.registration_pre_reg_packet_location", "..//PreRegPacketStore");
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+		ApplicationContext.getInstance();
+		ApplicationContext.setApplicationMap(applicationMap);
 
 	}
 

@@ -180,5 +180,4 @@ public class RegistrationCenterDto {
 	private String effectivetimes;
 	
 	private String zoneCode;
-
 }

@@ -84,8 +84,8 @@ public class TemplateGenerator {
 	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
 
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		TemplateResponseDto template = new TemplateResponseDto();
+		ResponseWrapper<?> responseWrapper;
+		TemplateResponseDto template;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"TemplateGenerator::getTemplate()::entry");
 

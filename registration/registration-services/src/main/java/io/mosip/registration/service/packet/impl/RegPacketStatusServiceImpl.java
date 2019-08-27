@@ -29,6 +29,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -50,6 +51,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 import io.mosip.registration.service.security.AESEncryptionService;
@@ -132,7 +134,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	public void deleteAllProcessedRegPackets() {
 
 		LOGGER.info("REGISTRATION - DELETE-PACKETS-WHEN-MACHINE-REMAPPED - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
-				APPLICATION_ID, "packet deletion when the machine ios remapped is started");
+				APPLICATION_ID, "packet deletion when the machine is remapped is started");
 
 		List<Registration> registrations = registrationDAO
 				.findByServerStatusCodeIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
@@ -225,99 +227,116 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 * java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized ResponseDTO packetSyncStatus(String triggerPoint) {
+	public synchronized ResponseDTO packetSyncStatus(String triggerPoint) throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID, "packet status sync called");
 
-		List<String> packetIds = getPacketIds();
-		LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
-				"PacketIds for sync with server have been retrieved");
-
 		/* Create Response to Return to UI layer */
 		ResponseDTO response = new ResponseDTO();
-		SuccessResponseDTO successResponse;
 
-		/* Validator response service API creation */
-		final String SERVICE_NAME = RegistrationConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
+		if (validateTriggerPoint(triggerPoint)) {
+			List<String> packetIds = getPacketIds();
+			LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"PacketIds for sync with server have been retrieved");
 
-		PacketStatusReaderDTO packetStatusReaderDTO = new PacketStatusReaderDTO();
-		packetStatusReaderDTO.setId(RegistrationConstants.PACKET_STATUS_READER_ID);
-		packetStatusReaderDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-		packetStatusReaderDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+			SuccessResponseDTO successResponse;
 
-		List<RegistrationIdDTO> registrationIdDTOs = new ArrayList<>();
-		for (String packetId : packetIds) {
-			RegistrationIdDTO registrationIdDTO = new RegistrationIdDTO();
-			registrationIdDTO.setRegistrationId(packetId);
-			registrationIdDTOs.add(registrationIdDTO);
-		}
+			/* Validator response service API creation */
+			final String SERVICE_NAME = RegistrationConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
 
-		packetStatusReaderDTO.setRequest(registrationIdDTOs);
+			PacketStatusReaderDTO packetStatusReaderDTO = new PacketStatusReaderDTO();
+			packetStatusReaderDTO.setId(RegistrationConstants.PACKET_STATUS_READER_ID);
+			packetStatusReaderDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
+			packetStatusReaderDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 
-		try {
-			if (!packetIds.isEmpty()) {
-				/* Obtain RegistrationStatusDTO from service delegate util */
-				LinkedHashMap<String, Object> packetStatusResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
-						.post(SERVICE_NAME, packetStatusReaderDTO, triggerPoint);
-				List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) packetStatusResponse
-						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
-				if (registrations != null && !registrations.isEmpty()) {
-					/* update the status of packets after sync with server */
-					try {
-						updatePacketIdsByServerStatus(registrations);
-					} catch (RegBaseUncheckedException regBaseUncheckedException) {
-						LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
-								regBaseUncheckedException.getMessage()
-										+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
+			List<RegistrationIdDTO> registrationIdDTOs = new ArrayList<>();
+			for (String packetId : packetIds) {
+				RegistrationIdDTO registrationIdDTO = new RegistrationIdDTO();
+				registrationIdDTO.setRegistrationId(packetId);
+				registrationIdDTOs.add(registrationIdDTO);
+			}
 
+			packetStatusReaderDTO.setRequest(registrationIdDTOs);
+
+			try {
+				if (!packetIds.isEmpty()) {
+					/* Obtain RegistrationStatusDTO from service delegate util */
+					LinkedHashMap<String, Object> packetStatusResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
+							.post(SERVICE_NAME, packetStatusReaderDTO, triggerPoint);
+					List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) packetStatusResponse
+							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+					if (registrations != null && !registrations.isEmpty()) {
+						/* update the status of packets after sync with server */
+						try {
+							updatePacketIdsByServerStatus(registrations);
+						} catch (RegBaseUncheckedException regBaseUncheckedException) {
+							LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+									regBaseUncheckedException.getMessage()
+											+ ExceptionUtils.getStackTrace(regBaseUncheckedException));
+
+							setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+							return response;
+						}
+						/* Create Success response */
+						successResponse = new SuccessResponseDTO();
+						successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
+						successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
+						Map<String, Object> otherAttributes = new WeakHashMap<>();
+						otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
+						successResponse.setOtherAttributes(otherAttributes);
+						response.setSuccessResponseDTO(successResponse);
+						LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+								"Success Response Created");
+					} else {
+						/* Create Error response */
 						setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 						return response;
 					}
-					/* Create Success response */
+				} else {
+					/* If there are no uploaded packets to check the status from the server */
 					successResponse = new SuccessResponseDTO();
 					successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
 					successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
 					Map<String, Object> otherAttributes = new WeakHashMap<>();
-					otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
+					/* sending empty success response as there are no packets to check status */
+					otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY,
+							RegistrationConstants.EMPTY);
 					successResponse.setOtherAttributes(otherAttributes);
 					response.setSuccessResponseDTO(successResponse);
 					LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							"Success Response Created");
-				} else {
-					/* Create Error response */
-					setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
-					return response;
 				}
-			} else {
-				/* If there are no uploaded packets to check the status from the server */
-				successResponse = new SuccessResponseDTO();
-				successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
-				successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
-				Map<String, Object> otherAttributes = new WeakHashMap<>();
-				/* sending empty success response as there are no packets to check status */
-				otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY,
-						RegistrationConstants.EMPTY);
-				successResponse.setOtherAttributes(otherAttributes);
-				response.setSuccessResponseDTO(successResponse);
-				LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID, "Success Response Created");
+			} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException
+					| HttpClientErrorException | HttpServerErrorException | ResourceAccessException exception) {
+				LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+				setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+				return response;
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+				setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+				return response;
 			}
-		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
-				| HttpServerErrorException | ResourceAccessException exception) {
-			LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+			LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID, "Packet Status Sync ended");
 			return response;
-		} catch (RuntimeException runtimeException) {
+		} else {
 			LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-
-			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
-			return response;
+					"Trigger point cannot be empty or null");
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_TRIGGER_POINT_MISSING.getErrorCode(),
+					RegistrationExceptionConstants.REG_TRIGGER_POINT_MISSING.getErrorMessage());
 		}
-		LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID, "Packet Status Sync ended");
+	}
 
-		return response;
+	private boolean validateTriggerPoint(String triggerPoint) {
+		if (StringUtils.isEmpty(triggerPoint)) {
+			LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"Trigger point is empty or null");
+			return false;
+		}
+		return true;
 	}
 
 	private Registration updateRegistration(final Registration registration, final String serverStatus) {
@@ -399,7 +418,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 */
 	public ResponseDTO syncPacket(String triggerPoint) {
 
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - SYNC_PACKETS_TO_SERVER - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
@@ -459,12 +478,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
-			LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+			LOGGER.debug("REGISTRATION - SYNC_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, "Sync the packets to the server ending");
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
 				| URISyntaxException exception) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setMessage(exception.getMessage());

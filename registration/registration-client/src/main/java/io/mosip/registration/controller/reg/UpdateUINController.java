@@ -30,9 +30,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
@@ -92,6 +95,10 @@ public class UpdateUINController extends BaseController implements Initializable
 	private HBox demographicHBox;
 	@FXML
 	private GridPane uinUpdateRoot;
+	@FXML
+	private Button backBtn;
+	@FXML
+	private ImageView backImageView;
 
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
@@ -109,6 +116,16 @@ public class UpdateUINController extends BaseController implements Initializable
 	public void initialize(URL location, ResourceBundle resources) {
 
 		try {
+			Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+			Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+			
+			backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+				if (newValue) {
+					backImageView.setImage(backInWhite);
+				} else {
+					backImageView.setImage(backImage);
+				}
+			});
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
 			listenerOnFieldsParentOrGuardian(fxUtils);
@@ -142,13 +159,13 @@ public class UpdateUINController extends BaseController implements Initializable
 	private void updateUINFieldsConfiguration() {
 
 		List<String> configuredFieldsfromDB = Arrays.asList(
-				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
+				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).toLowerCase().split(","));
 
 		List<String> configvalues = new ArrayList<>();
 		configvalues.addAll(configuredFieldsfromDB);
 
 		for (String configureField : UIN_UPDATE_CONFIGURED_BIO_FIELDS_LIST) {
-			if (!configvalues.contains(configureField)) {
+			if (!configvalues.contains(configureField.toLowerCase())) {
 				biometricBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);
@@ -166,7 +183,7 @@ public class UpdateUINController extends BaseController implements Initializable
 		}
 
 		for (String configureField : UIN_UPDATE_CONFIGURED_DEMOGRAPHIC_FIELDS_LIST) {
-			if (!configvalues.contains(configureField)) {
+			if (!configvalues.contains(configureField.toLowerCase())) {
 				demographicHBox.getChildren().forEach(demographicNode -> {
 					if (demographicNode.getId().equalsIgnoreCase(configureField)) {
 						demographicNode.setVisible(false);

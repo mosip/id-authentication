@@ -10,6 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,9 +69,23 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 	public Object getDeviceInfo(String url, Class<?> responseType) throws RegBaseCheckedException {
 		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID, "Getting the device info");
 
-		return serviceDelegateUtil.invokeRestService(url, MosipBioDeviceConstants.DEVICE_INFO_SERVICENAME, null,
-				responseType);
+		HttpUriRequest request = RequestBuilder.create("MOSIPDINFO").setUri(url).build();
+		CloseableHttpClient client = HttpClients.createDefault();
+		CloseableHttpResponse clientResponse = null;
+		String response = null;
+		try {
+			clientResponse = client.execute(request);
+			response = EntityUtils.toString(clientResponse.getEntity());
+		} catch (IOException exception) {
+			LOGGER.error(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s -> Exception while initializing Fingerprint Capture page for user registration  %s",
+							RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP,
+							exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
 
+		}
+
+		return response;
 	}
 
 	/*
@@ -118,8 +138,8 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 		} catch (IOException exception) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
-					String.format("%s -> Error while reading the response from capture%s",
-							exception.getMessage() , ExceptionUtils.getStackTrace(exception)));
+					String.format("%s -> Error while reading the response from capture%s", exception.getMessage(),
+							ExceptionUtils.getStackTrace(exception)));
 			auditFactory.audit(AuditEvent.MDM_CAPTURE_FAILED, Components.MDM_CAPTURE_FAIELD,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
@@ -130,34 +150,38 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 	}
 
 	/**
-	 * <p>After scanning the biometrics the output of the biometrics will come in the Base64 format</p>
-	 * <p>Inorder to process we need to decode the data and this method will do the decode functionality</p>
+	 * <p>
+	 * After scanning the biometrics the output of the biometrics will come in the
+	 * Base64 format
+	 * </p>
+	 * <p>
+	 * Inorder to process we need to decode the data and this method will do the
+	 * decode functionality
+	 * </p>
 	 * 
-	 * @param mapper - Used to convert the Hashmap response to the respective Dataobject
+	 * @param mapper                     - Used to convert the Hashmap response to
+	 *                                   the respective Dataobject
 	 * @param mosipBioCaptureResponseDto - {@link CaptureResponseDto}
-	 * @throws IOException - Exception to be thrown
-	 * @throws JsonParseException - Exception while parsing the json
+	 * @throws IOException          - Exception to be thrown
+	 * @throws JsonParseException   - Exception while parsing the json
 	 * @throws JsonMappingException - Json exception
 	 */
 	protected void decodeBiometrics(ObjectMapper mapper, CaptureResponseDto mosipBioCaptureResponseDto)
 			throws IOException, JsonParseException, JsonMappingException {
 		if (null != mosipBioCaptureResponseDto) {
-			mosipBioCaptureResponseDto.setSlapImage(mosipBioCaptureResponseDto.getSlapImage() != null
-					? Base64.getDecoder().decode(mosipBioCaptureResponseDto.getSlapImage())
-					: null);
 			if (mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses() != null) {
 
 				for (CaptureResponseBioDto captureResponseBioDto : mosipBioCaptureResponseDto
 						.getMosipBioDeviceDataResponses()) {
 					if (null != captureResponseBioDto) {
-						String bioJson = new String(Base64.getDecoder().decode(captureResponseBioDto.getCaptureBioData()));
+						String bioJson = new String(
+								Base64.getDecoder().decode(captureResponseBioDto.getCaptureBioData()));
 						if (null != bioJson) {
 							CaptureResponsBioDataDto captureResponsBioDataDto = mapper.readValue(bioJson,
 									CaptureResponsBioDataDto.class);
 							if (null != captureResponsBioDataDto) {
 								if (null != captureResponsBioDataDto.getBioExtract())
-									captureResponsBioDataDto.setBioExtract(
-											Base64.getDecoder().decode(captureResponsBioDataDto.getBioExtract()));
+									captureResponsBioDataDto.setBioExtract(captureResponsBioDataDto.getBioExtract());
 								if (null != captureResponsBioDataDto.getBioValue())
 									captureResponsBioDataDto.setBioValue(
 											Base64.getDecoder().decode(captureResponsBioDataDto.getBioValue()));
