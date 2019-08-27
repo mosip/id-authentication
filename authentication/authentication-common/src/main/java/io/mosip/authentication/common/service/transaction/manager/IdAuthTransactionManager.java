@@ -92,7 +92,7 @@ public class IdAuthTransactionManager {
 					restBuilder.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE, baseRequest, ObjectNode.class));
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
 		}
 	}
 	
