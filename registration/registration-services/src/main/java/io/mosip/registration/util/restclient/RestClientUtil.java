@@ -104,10 +104,6 @@ public class RestClientUtil {
 					"Request Class======>" + requestHTTPDTO.getClazz());
 		}
 
-		if(requestHTTPDTO.getHttpEntity() == null)
-			requestHTTPDTO
-			.setHttpEntity(new HttpEntity<>(requestHTTPDTO.getRequestBody(), requestHTTPDTO.getHttpHeaders()));
-		
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 		
@@ -148,7 +144,8 @@ public class RestClientUtil {
 			throws RegBaseCheckedException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE Token", APPLICATION_NAME, APPLICATION_ID,
 				"invoke token method called"); 
-		
+		requestHTTPDTO
+		.setHttpEntity(new HttpEntity<>(requestHTTPDTO.getRequestBody(), requestHTTPDTO.getHttpHeaders()));
 		return invokeURL(requestHTTPDTO);
 	}
 
