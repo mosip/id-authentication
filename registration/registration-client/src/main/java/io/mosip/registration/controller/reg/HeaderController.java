@@ -189,7 +189,7 @@ public class HeaderController extends BaseController {
 			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context" + SessionContext.authTokenDTO());
 
 			if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null
 					&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
