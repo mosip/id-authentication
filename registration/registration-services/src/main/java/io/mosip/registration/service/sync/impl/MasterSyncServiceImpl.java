@@ -190,14 +190,14 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 			LinkedHashMap<String, Object> masterSyncResponse = getMasterSyncJson(triggerPoint, requestParam);
 
 			if (null != masterSyncResponse && !masterSyncResponse.isEmpty()
-					&& null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)
+					&& null != masterSyncResponse.get(RegistrationConstants.RESPONSE)
 					&& null == masterSyncResponse.get(RegistrationConstants.ERRORS)) {
 
 				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"master sync json ======>" + masterSyncResponse.toString());
 
 				String jsonString = new ObjectMapper().writeValueAsString(
-						masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+						masterSyncResponse.get(RegistrationConstants.RESPONSE));
 
 				// Mapping json object to respective dto's
 				MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString, MasterDataResponseDto.class);
@@ -321,7 +321,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 				masterSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil.get(serviceName,
 						requestParamMap, true, triggerPoint);
 
-				if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (null != masterSyncResponse.get(RegistrationConstants.RESPONSE)) {
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.SUCCESS);
 					setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
 				} else {

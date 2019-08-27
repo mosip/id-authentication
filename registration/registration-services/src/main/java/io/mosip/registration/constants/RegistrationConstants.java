@@ -800,7 +800,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
 	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
 	public static final String PACKET_STATUS_READER_URL_PARAMETER = "request";
-	public static final String PACKET_STATUS_READER_RESPONSE = "response";
+	public static final String RESPONSE = "response";
 	public static final String PACKET_STATUS_READER_REGISTRATION_ID = "registrationId";
 	public static final String PACKET_STATUS_READER_STATUS_CODE = "statusCode";
 	public static final String PACKET_STATUS_CODE_PROCESSED = "PROCESSED";
@@ -1485,7 +1485,6 @@ public class RegistrationConstants {
 
 	
 	// TPM Public Key Sync
-	public static final String RESPONSE = "response";
 	public static final String ERROR_CODE = "errorCode";
 	public static final String MESSAGE_CODE = "message";
 	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";

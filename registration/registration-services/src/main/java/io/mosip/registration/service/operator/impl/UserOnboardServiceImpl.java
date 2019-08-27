@@ -291,17 +291,17 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		Boolean userOnbaordFlag = false;
 
 		if (null != onBoardResponseMap
-				&& null != onBoardResponseMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)
+				&& null != onBoardResponseMap.get(RegistrationConstants.RESPONSE)
 				&& null == onBoardResponseMap.get(RegistrationConstants.ERRORS)) {
 			LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) onBoardResponseMap
-					.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+					.get(RegistrationConstants.RESPONSE);
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "authStatus true");
 			userOnbaordFlag = (Boolean) responseMap.get(RegistrationConstants.ON_BOARD_AUTH_STATUS);
 		} else if (null != onBoardResponseMap && null != onBoardResponseMap.get(RegistrationConstants.ERRORS)) {
 			List<LinkedHashMap<String, Object>> listOfFailureResponse = (List<LinkedHashMap<String, Object>>) onBoardResponseMap
 					.get(RegistrationConstants.ERRORS);
 			LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) onBoardResponseMap
-					.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+					.get(RegistrationConstants.RESPONSE);
 			userOnbaordFlag = (Boolean) responseMap.get(RegistrationConstants.ON_BOARD_AUTH_STATUS);
 			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, listOfFailureResponse.toString());
 		}

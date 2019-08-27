@@ -74,10 +74,10 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 					if (null != userDetailSyncResponse && userDetailSyncResponse.size() > 0
 							&& null != userDetailSyncResponse
-									.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+									.get(RegistrationConstants.RESPONSE)) {
 
 						String jsonString = new ObjectMapper().writeValueAsString(
-								userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+								userDetailSyncResponse.get(RegistrationConstants.RESPONSE));
 
 						UserDetailResponseDto userDtlsSyncDto = objectMapper.readValue(jsonString,
 								UserDetailResponseDto.class);
@@ -147,7 +147,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 			userDetailResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.USER_DETAILS_SERVICE_NAME, requestParamMap, true, triggerPoint);
 
-			if (null != userDetailResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+			if (null != userDetailResponse.get(RegistrationConstants.RESPONSE)) {
 
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setCode(RegistrationConstants.SUCCESS);
