@@ -382,11 +382,19 @@ public class DeviceServiceImpl implements DeviceService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedDeviceIdList = deviceRepository.findMappedDeviceId();
 					addList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
+					if(dto.getFilters().size()>0 && mappedDeviceIdList.isEmpty()) {
+						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
+						return pageDto;
+					}
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
 						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId();
 						addList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
+						if(dto.getFilters().size()>0 && mappedDeviceIdList.isEmpty()) {
+							pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
+							return pageDto;
+						}
 					} else {
 						throw new RequestException(DeviceErrorCode.INVALID_DEVICE_FILTER_VALUE_EXCEPTION.getErrorCode(),
 								DeviceErrorCode.INVALID_DEVICE_FILTER_VALUE_EXCEPTION.getErrorMessage());
@@ -419,12 +427,18 @@ public class DeviceServiceImpl implements DeviceService {
 			}
 		}
 		if (flag) {
-			zones = zoneUtils.getUserZones();
-			if (zones != null && !zones.isEmpty())
-				zoneFilter.addAll(buildZoneFilter(zones));
-			else
-				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorCode(),
-						DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorMessage());
+			if (dto.getFilters().stream().anyMatch(filter -> (filter.getColumnName().equals("deviceTypeName")
+					|| filter.getColumnName().equals("mapStatus"))) && addList.isEmpty()) {
+				zones = new ArrayList<>();
+				zoneFilter.addAll(Collections.emptyList());
+			} else {
+				zones = zoneUtils.getUserZones();
+				if (zones != null && !zones.isEmpty())
+					zoneFilter.addAll(buildZoneFilter(zones));
+				else
+					throw new MasterDataServiceException(DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorCode(),
+							DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorMessage());
+			}
 		}
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
