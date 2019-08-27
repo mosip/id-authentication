@@ -258,6 +258,9 @@ public class AuthRequestController {
 	@SuppressWarnings("unchecked")
 	private void encodeBioData(Map<String, Object> identity) {
 		List<Object> bioIdentity = (List<Object>) identity.get(IdAuthCommonConstants.BIOMETRICS);
+		if(bioIdentity == null) {
+			return;
+		}
 		List<Object> bioIdentityInfo = new ArrayList<>();
 		
 		for(Object obj : bioIdentity) {
