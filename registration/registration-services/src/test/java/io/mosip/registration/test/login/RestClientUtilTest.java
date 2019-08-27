@@ -36,6 +36,7 @@ public class RestClientUtilTest {
 	@Mock
 	RequestHTTPDTO requestHTTPDTO;
 
+	@Ignore
 	@Test(expected= ResourceAccessException.class)
 	public void invokeTest() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException,
 			ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
