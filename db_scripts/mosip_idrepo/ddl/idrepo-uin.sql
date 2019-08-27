@@ -1,12 +1,15 @@
--- NOTE: the code below contains the SQL for the selected object
--- as well for its dependencies and children (if applicable).
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_repo
+-- Table Name 	: idrepo.uin
+-- Purpose    	: UIN: Information related to an individual (demographic, biometric, and uploaded documents) are stored. The information is stored in JSON format. A hash value of the JSON file is also maintained as a separate column as an added security to prevent data tampering.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
 -- 
--- This feature is only a convinience in order to permit you to test
--- the whole object's SQL definition at once.
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
 -- 
--- When exporting or generating the SQL for the whole database model
--- all objects will be placed at their original positions.
-
+-- ------------------------------------------------------------------------------------------
 
 -- object: idrepo.uin | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin CASCADE;
@@ -28,8 +31,8 @@ CREATE TABLE idrepo.uin(
 	del_dtimes timestamp,
 	CONSTRAINT pk_uin PRIMARY KEY (uin_ref_id),
 	CONSTRAINT uk_uin UNIQUE (uin),
-	CONSTRAINT uk_uin_hash UNIQUE (uin_hash),
-	CONSTRAINT uk_uin_reg_id UNIQUE (reg_id)
+	CONSTRAINT uk_uin_reg_id UNIQUE (reg_id),
+	CONSTRAINT uk_uin_uin_hash UNIQUE (uin_hash)
 
 );
 -- ddl-end --
@@ -65,8 +68,3 @@ COMMENT ON COLUMN idrepo.uin.is_deleted IS 'IS_Deleted : Flag to mark whether th
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE idrepo.uin OWNER TO sysadmin;
--- ddl-end --
-
-
-

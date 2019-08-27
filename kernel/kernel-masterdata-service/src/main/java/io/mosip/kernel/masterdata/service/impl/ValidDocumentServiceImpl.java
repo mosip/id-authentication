@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +22,9 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
+import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocCategoryDto;
@@ -38,8 +40,10 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -51,11 +55,12 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
-import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -95,6 +100,12 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
 
+	@Value("${mosip.primary-language}")
+	private String primaryLanguage;
+
+	@Autowired
+	private PageUtils pageUtils;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -109,8 +120,8 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		try {
 			validDocument = documentRepository.create(validDocument);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_INSERT_EXCEPTION.getErrorCode(),
+					ValidDocumentErrorCode.VALID_DOCUMENT_INSERT_EXCEPTION.getErrorMessage());
 		}
 
 		ValidDocumentID validDocumentId = new ValidDocumentID();
@@ -218,29 +229,41 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * io.mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageDto<DocumentCategoryTypeMappingExtnDto> searchValidDocument(SearchDto dto) {
-		PageDto<DocumentCategoryTypeMappingExtnDto> pageDto = new PageDto<>();
+	public PageResponseDto<DocumentCategoryTypeMappingExtnDto> searchValidDocument(SearchDto dto) {
+		PageResponseDto<DocumentCategoryTypeMappingExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentCategoryTypeMappingExtnDto> validDocs = new ArrayList<>();
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
+		List<SearchFilter> addList1 = new ArrayList<>();
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (column.equalsIgnoreCase("docCategoryCode")) {
 
 				Page<ValidDocument> documents = masterdataSearchHelper.searchMasterdata(ValidDocument.class,
-						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
-
+						new SearchDto(Arrays.asList(filter), Collections.emptyList(),
+								new Pagination(0, Integer.MAX_VALUE), null),
+						null);
+				if (!documents.hasContent()) {
+					throw new RequestException(ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorCode(),
+							ValidDocumentErrorCode.DOCUMENT_CATEGORY_NOT_FOUND.getErrorMessage());
+				}
 				removeList.add(filter);
 				addList.addAll(buildValidDocumentTypeSearchFilter(documents.getContent()));
-				addList.addAll(buildValidDocumentCategorySearchFilter(documents.getContent()));
+				addList1.addAll(buildValidDocumentCategorySearchFilter(documents.getContent()));
 			}
 		}
 		dto.getFilters().removeAll(removeList);
-
-		Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
+		Pagination pagination = dto.getPagination();
+		List<SearchSort> sort = dto.getSort();
+		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+		dto.setSort(Collections.emptyList());
 		Page<DocumentCategory> pageCategory = masterdataSearchHelper.searchMasterdata(DocumentCategory.class, dto,
-				null);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
+				new OptionalFilter[] { new OptionalFilter(addList1) });
+		dto.setSort(sort);
+		Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
+				new OptionalFilter[] { new OptionalFilter(addList) });
+		if ((page.getContent() != null && !page.getContent().isEmpty())
+				&& (pageCategory.getContent() != null && !pageCategory.getContent().isEmpty())) {
 
 			page.getContent().forEach(documentType -> {
 				DocumentCategoryTypeMappingExtnDto documentTypeExtnDto = new DocumentCategoryTypeMappingExtnDto();
@@ -274,10 +297,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 				validDocs.add(documentTypeExtnDto);
 			});
 
-			pageDto.setData(validDocs);
-			pageDto.setPageNo(page.getNumber());
-			pageDto.setTotalItems(page.getTotalElements());
-			pageDto.setTotalPages(page.getTotalPages());
+			pageDto = pageUtils.applyPagination(validDocs, pagination);
 		}
 		return pageDto;
 
@@ -367,6 +387,108 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.ValidDocumentService#
+	 * mapDocCategoryAndDocType(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public DocCategoryAndTypeMappingResponseDto mapDocCategoryAndDocType(String docCatCode, String docTypeCode) {
+		DocCategoryAndTypeMappingResponseDto responseDto = new DocCategoryAndTypeMappingResponseDto();
+		try {
+			ValidDocument validDocument = documentRepository.findByDocCategoryCodeAndDocTypeCode(docCatCode,
+					docTypeCode);
+			if (validDocument != null) {
+				if (!validDocument.getIsActive()) {
+					int updatedRows = documentRepository.updateDocCategoryAndDocTypeMapping(true,
+							MetaDataUtils.getContextUser(), LocalDateTime.now(ZoneId.of("UTC")), docCatCode,
+							docTypeCode);
+					if (updatedRows < 1) {
+
+						throw new RequestException(
+								ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
+								ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
+					} else {
+						responseDto.setStatus(MasterDataConstant.MAPPED_SUCCESSFULLY);
+						responseDto.setMessage(
+								String.format(MasterDataConstant.DOC_CATEGORY_AND_DOC_TYPE_MAPPING_SUCCESS_MESSAGE,
+										docCatCode, docTypeCode));
+					}
+				}
+				if (validDocument.getIsActive()) {
+					throw new RequestException(
+							ValidDocumentErrorCode.VALID_DOCUMENT_ALREADY_MAPPED_EXCEPTION.getErrorCode(),
+							ValidDocumentErrorCode.VALID_DOCUMENT_ALREADY_MAPPED_EXCEPTION.getErrorMessage());
+				}
+			} else {
+				ValidDocumentDto validDocumentDto = new ValidDocumentDto();
+				validDocumentDto.setDocCategoryCode(docCatCode);
+				validDocumentDto.setDocTypeCode(docTypeCode);
+				validDocumentDto.setIsActive(true);
+				validDocumentDto.setLangCode(primaryLanguage);
+				ValidDocumentID validDocumentID = createValidDocument(validDocumentDto);
+				responseDto.setStatus(MasterDataConstant.MAPPED_SUCCESSFULLY);
+				responseDto
+						.setMessage(String.format(MasterDataConstant.DOC_CATEGORY_AND_DOC_TYPE_MAPPING_SUCCESS_MESSAGE,
+								validDocumentID.getDocCategoryCode(), validDocumentID.getDocTypeCode()));
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
+					ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return responseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.ValidDocumentService#
+	 * unmapDocCategoryAndDocType(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public DocCategoryAndTypeMappingResponseDto unmapDocCategoryAndDocType(String docCatCode, String docTypeCode) {
+		DocCategoryAndTypeMappingResponseDto responseDto = new DocCategoryAndTypeMappingResponseDto();
+		try {
+			ValidDocument validDocument = documentRepository.findByDocCategoryCodeAndDocTypeCode(docCatCode,
+					docTypeCode);
+			if (validDocument != null) {
+				if (validDocument.getIsActive()) {
+					int updatedRows = documentRepository.updateDocCategoryAndDocTypeMapping(false,
+							MetaDataUtils.getContextUser(), LocalDateTime.now(ZoneId.of("UTC")), docCatCode,
+							docTypeCode);
+					if (updatedRows < 1) {
+
+						throw new RequestException(
+								ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
+								ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
+					} else {
+						responseDto.setStatus(MasterDataConstant.UNMAPPED_SUCCESSFULLY);
+						responseDto.setMessage(
+								String.format(MasterDataConstant.DOC_CATEGORY_AND_DOC_TYPE_UNMAPPING_SUCCESS_MESSAGE,
+										docCatCode, docTypeCode));
+					}
+				}
+				if (!validDocument.getIsActive()) {
+					throw new RequestException(
+							ValidDocumentErrorCode.VALID_DOCUMENT_ALREADY_UNMAPPED_EXCEPTION.getErrorCode(),
+							ValidDocumentErrorCode.VALID_DOCUMENT_ALREADY_UNMAPPED_EXCEPTION.getErrorMessage());
+				}
+			} else {
+				throw new RequestException(
+						ValidDocumentErrorCode.DOC_CATEGORY_AND_DOC_TYPE_MAPPING_NOT_FOUND_EXCEPTION.getErrorCode(),
+						String.format(ValidDocumentErrorCode.DOC_CATEGORY_AND_DOC_TYPE_MAPPING_NOT_FOUND_EXCEPTION
+								.getErrorMessage(), docCatCode, docTypeCode));
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorCode(),
+					ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return responseDto;
 	}
 
 }

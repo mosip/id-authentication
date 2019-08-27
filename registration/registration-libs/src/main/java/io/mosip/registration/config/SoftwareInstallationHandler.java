@@ -39,17 +39,23 @@ import io.mosip.registration.util.LoggerFactory;
 public class SoftwareInstallationHandler {
 
 	public SoftwareInstallationHandler() throws IOException {
-		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
-		serverRegClientURL = properties.getProperty("mosip.reg.client.url");
-		
-		latestVersion = properties.getProperty("mosip.reg.version");
+		try (InputStream keyStream = SoftwareInstallationHandler.class.getClassLoader()
+				.getResourceAsStream("props/mosip-application.properties")) {
 
-		getLocalManifest();
+			Properties properties = new Properties();
+			properties.load(keyStream);
 
-		deleteUnNecessaryJars();
+			serverRegClientURL = properties.getProperty("mosip.reg.client.url");
+
+			latestVersion = properties.getProperty("mosip.reg.version");
+
+			LOGGER.info(LoggerConstants.SOFTWARE_INSTALLATION_HANDLER, LoggerConstants.APPLICATION_NAME,
+					LoggerConstants.APPLICATION_ID, "Loading mosip-application.properties completed");
+
+			getLocalManifest();
+
+			deleteUnNecessaryJars();
+		}
 
 	}
 
@@ -397,7 +403,7 @@ public class SoftwareInstallationHandler {
 		InputStream inputStream = null;
 		try {
 			URLConnection connection = new URL(url).openConnection();
-			connection.setConnectTimeout(10000);
+			connection.setConnectTimeout(50000);
 			// Space Check
 			if (hasSpace(connection.getContentLength())) {
 				inputStream = connection.getInputStream();

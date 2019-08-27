@@ -91,24 +91,34 @@ public class FieldComparator<T> implements Comparator<T> {
 		if (type.equals(LocalDateTime.class)) {
 			LocalDateTime value1 = (LocalDateTime) obj1;
 			LocalDateTime value2 = (LocalDateTime) obj2;
+			if (value1 == null ^ value2 == null) {
+				return (value1 == null) ? -1 : 1;
+			}
+
+			if (value1 == null && value2 == null) {
+				return 0;
+			}
+
 			return value1.compareTo(value2);
 		}
 
 		if (type.equals(LocalDate.class)) {
 			LocalDate value1 = (LocalDate) obj1;
 			LocalDate value2 = (LocalDate) obj2;
+			if (value1 == null ^ value2 == null) {
+				return (value1 == null) ? -1 : 1;
+			}
+
+			if (value1 == null && value2 == null) {
+				return 0;
+			}
+
 			return value1.compareTo(value2);
 		}
 
 		if (type.equals(Date.class)) {
 			Date value1 = (Date) obj1;
 			Date value2 = (Date) obj2;
-			return value1.compareTo(value2);
-		}
-
-		if (type.equals(Short.class)) {
-			Short value1 = (Short) obj1;
-			Short value2 = (Short) obj2;
 			return value1.compareTo(value2);
 		}
 

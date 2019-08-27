@@ -220,7 +220,7 @@ public class UserOnBoardServiceImplTest {
 		LinkedHashMap<String, Object> responseApi=new LinkedHashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
 		responseMap.put(RegistrationConstants.ON_BOARD_AUTH_STATUS, true);
-		responseApi.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, responseMap);
+		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, null);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
@@ -355,7 +355,7 @@ public class UserOnBoardServiceImplTest {
 		LinkedHashMap<String, Object> responseApi=new LinkedHashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
 		responseMap.put(RegistrationConstants.ON_BOARD_AUTH_STATUS, true);
-		responseApi.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, responseMap);
+		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, new ArrayList<>());
 		
 		biometricDTO.setOperatorBiometricDTO(info);
@@ -485,7 +485,7 @@ public class UserOnBoardServiceImplTest {
 		LinkedHashMap<String, Object> responseApi=new LinkedHashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
 		responseMap.put(RegistrationConstants.ON_BOARD_AUTH_STATUS, true);
-		responseApi.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, responseMap);
+		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, new ArrayList<>());
 		
 		biometricDTO.setOperatorBiometricDTO(info);
@@ -502,7 +502,7 @@ public class UserOnBoardServiceImplTest {
 	}
 	
 	@Test
-	public void userOnBoardFailure() {
+	public void userOnBoardFailure() throws RegBaseCheckedException {
 		
 		BiometricDTO biometricDTO= new BiometricDTO();
 		
@@ -605,7 +605,7 @@ public class UserOnBoardServiceImplTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void userOnBoardException() {
+	public void userOnBoardException() throws RegBaseCheckedException {
 		
 		BiometricDTO biometricDTO= new BiometricDTO();
 		
@@ -708,7 +708,7 @@ public class UserOnBoardServiceImplTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void userOnBoardRunException() {
+	public void userOnBoardRunException() throws RegBaseCheckedException {
 		
 		BiometricDTO biometricDTO= new BiometricDTO();
 		
@@ -842,6 +842,12 @@ public class UserOnBoardServiceImplTest {
 	public void getLastUpdatedTime() {
 		Mockito.when(userOnBoardDao.getLastUpdatedTime(Mockito.anyString())).thenReturn(new Timestamp(System.currentTimeMillis()));
 		assertNotNull(userOnboardServiceImpl.getLastUpdatedTime("User123"));
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void onBoard() throws RegBaseCheckedException {
+		BiometricDTO biometricDTO=null;
+		userOnboardServiceImpl.validate(biometricDTO);
 	}
 	
 

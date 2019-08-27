@@ -16,6 +16,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -67,10 +68,14 @@ public class RestClientUtil {
 	 * 				the resource access exception
 	 */
 	public Map<String, Object> invoke(RequestHTTPDTO requestHTTPDTO)
-			throws RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
+			throws RegBaseCheckedException, SocketTimeoutException, ResourceAccessException {
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method called");
 
+		return invokeURL(requestHTTPDTO);
+	}
+
+	private Map<String, Object> invokeURL(RequestHTTPDTO requestHTTPDTO) {
 		ResponseEntity<?> responseEntity = null;
 		Map<String, Object> responseMap = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
@@ -86,12 +91,13 @@ public class RestClientUtil {
 					noSuchAlgorithmException.getMessage() + ExceptionUtils.getStackTrace(noSuchAlgorithmException));
 		}
 		
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"Request URL======>" + requestHTTPDTO.getUri());
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"Request Method======>" + requestHTTPDTO.getHttpMethod()); 
+		
 		if (!StringUtils.containsIgnoreCase(requestHTTPDTO.getUri().toString(),
 				RegistrationConstants.AUTH_SERVICE_URL)) {
-			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-					"Request URL======>" + requestHTTPDTO.getUri());
-			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-					"Request Method======>" + requestHTTPDTO.getHttpMethod());
 			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					"Request Entity======>" + requestHTTPDTO.getHttpEntity());
 			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
@@ -103,22 +109,44 @@ public class RestClientUtil {
 		
 		if (responseEntity != null && responseEntity.hasBody()) {
 			responseMap = new LinkedHashMap<>();
-			if (!StringUtils.containsIgnoreCase(requestHTTPDTO.getUri().toString(),
-					RegistrationConstants.AUTH_SERVICE_URL)) {
 				LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 						"Response Body======>" + responseEntity.getBody());
 				LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 						"Response Header======>" + responseEntity.getHeaders());
-			}
-
 			responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseEntity.getBody());
 			responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, responseEntity.getHeaders());
 		}
 
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method ended");
-
 		return responseMap;
+	}
+	
+	/**
+	 * Actual exchange using rest template.
+	 *
+	 * @param requestHTTPDTO 
+	 * 				the request HTTPDTO
+	 * @return ResponseEntity 
+	 * 				response entity obtained from api
+	 * @throws RegBaseCheckedException 
+	 * 				the reg base checked exception
+	 * @throws HttpClientErrorException 
+	 * 				when client error exception from server
+	 * @throws HttpServerErrorException 
+	 * 				when server exception from server
+	 * @throws SocketTimeoutException 
+	 * 				the socket timeout exception
+	 * @throws ResourceAccessException 
+	 * 				the resource access exception
+	 */
+	public Map<String, Object> invokeForToken(RequestHTTPDTO requestHTTPDTO)
+			throws RegBaseCheckedException, SocketTimeoutException, ResourceAccessException {
+		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE Token", APPLICATION_NAME, APPLICATION_ID,
+				"invoke token method called"); 
+		requestHTTPDTO
+		.setHttpEntity(new HttpEntity<>(requestHTTPDTO.getRequestBody(), requestHTTPDTO.getHttpHeaders()));
+		return invokeURL(requestHTTPDTO);
 	}
 
 	/**

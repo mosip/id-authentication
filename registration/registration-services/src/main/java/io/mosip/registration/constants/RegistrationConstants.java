@@ -67,10 +67,13 @@ public class RegistrationConstants {
 	public static final String FINGER_PANE = "fingerPane";
 	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
 	public static final String FIN="FIN";
-	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
-	public static final String MDM_ENVIRONMENT = "DEV";
-	public static final int MDM_TIMEOUT = 1000;
-	public static final String MDM_VERSION="0.1";
+	public static final String FINGER_SLAB = "FINGERPRINT_SLAB";
+	public static final String FINGERPRINT_SLAB_LEFT = "FINGERPRINT_SLAB_LEFT";
+	public static final String FINGERPRINT_SLAB_RIGHT = "FINGERPRINT_SLAB_RIGHT";
+	public static final String FINGERPRINT_SLAB_THUMBS = "FINGERPRINT_SLAB_THUMBS";
+	public static final String MDM_ENVIRONMENT = "Staging";
+	public static final int MDM_TIMEOUT = 10000;
+	public static final String MDM_VERSION="1.0";
 	
 	public static final String IRIS_PANE = "irisPane";
 	public static final String IRIS_IMAGE_LOCAL="/images/leftEye.png";
@@ -154,6 +157,14 @@ public class RegistrationConstants {
 	public static final String VIEW_REPORTS_FOCUSED = "/images/ViewReportsFocused.png";
 	public static final String SUCCESS_IMG_PTH = "/images/success.png";
 	public static final String FAILURE_IMG_PTH = "/images/failure.png";
+	public static final String GET_ONBOARDED_IMG_PATH = "/images/GetOnboarded.png";
+	public static final String GET_ONBOARDED_FOCUSED = "/images/GetOnboardedFocus.png";
+	public static final String ONBOARDING_IMG_PATH = "/images/OnboardYourself.png";
+	public static final String ONBOARDING_FOCUSED = "/images/OnboardYourselfFocus.png";
+	public static final String REGISTERING_IMG_PATH = "/images/RegisterIndividual.png";
+	public static final String REGISTERING_FOCUSED = "/images/RegisterIndividualFocus.png";
+	public static final String UPDATE_BIOMETRICS_IMG_PATH = "/images/activeBiometricDetail.png";
+	public static final String UPDATE_BIOMETRICS_FOCUSED = "/images/UpdateBiometricsFocus.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
@@ -176,6 +187,7 @@ public class RegistrationConstants {
 	public static final String PWORD = "PWD";
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
+	public static final String FACE_FULLFACE = "FACE_FULL FACE";
 	public static final String IRIS = "IRIS";
 	
 	public static final String FNR = "FNR";
@@ -788,7 +800,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
 	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
 	public static final String PACKET_STATUS_READER_URL_PARAMETER = "request";
-	public static final String PACKET_STATUS_READER_RESPONSE = "response";
+	public static final String RESPONSE = "response";
 	public static final String PACKET_STATUS_READER_REGISTRATION_ID = "registrationId";
 	public static final String PACKET_STATUS_READER_STATUS_CODE = "statusCode";
 	public static final String PACKET_STATUS_CODE_PROCESSED = "PROCESSED";
@@ -975,6 +987,7 @@ public class RegistrationConstants {
 	public static final String IRIS_THRESHOLD = "mosip.registration.iris_threshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
+	public static final String IMAGE_BYTE_ISO = "byteIso";
 	public static final String IMAGE_SCORE_KEY = "imageScore";
 	public static final String LEFT = "Left";
 	public static final String RIGHT = "Right";
@@ -995,6 +1008,9 @@ public class RegistrationConstants {
 	public static final String DUPLICATE_FINGER = "DuplicateFinger";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
+	public static final String FACE_ISO = "/images/face.iso";
+	public static final String LEFT_EYE_ISO = "/images/leftEye.iso";
+	public static final String RIGHT_EYE_ISO = "/images/rightEye.iso";
 	public static final String RIGHTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/rightSlap.jpg";
 	public static final String BOTH_THUMBS_FINGERPRINT_PATH = "/fingerprints/thumbs.jpg";
 	public static final String LEFTSLAP_FINGERPRINT_THRESHOLD = "mosip.registration.leftslap_fingerprint_threshold";
@@ -1066,6 +1082,10 @@ public class RegistrationConstants {
 	// Device Onboarding Service
 	private static final String DEVICE_ONBOARDING_SERVICE = REG_SERVICE_CODE + "DVO-";
 	public static final String UPDATE_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-232";
+
+	public static final String PACKET_RETRIVE_STATUS_EXCEPTION = REG_SERVICE_CODE + "PRS - 233";
+	public static final String PACKET_UPDATE_STATUS_EXCEPTION = REG_SERVICE_CODE + "PUS - 234";
+
 
 	// Exceptions
 	private static final String REG_UI_CODE = "REG-UI";
@@ -1265,6 +1285,7 @@ public class RegistrationConstants {
 	public static final String ENGLISH_LANG_CODE = "eng";
 	public static final String USER_ID_CODE = "USERID";
 	public static final String OTP_CHANNELS = "mosip.registration.otp_channels";
+	public static final String AUTH_TOKEN_NOT_RECEIVED_ERROR = "No Auth Token Received";
 
 	// Packet Sync
 	public static final String PACKET_SYNC = "packet_sync";
@@ -1295,8 +1316,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_VALIDATION_LENGTH = EMAIL_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
 	public static final String PHONE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("phone");
 	public static final String PHONE_VALIDATION_LENGTH = PHONE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
-	public static final String CNIE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("CNIENumber");
-	public static final String CNIE_VALIDATION_LENGTH = CNIE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
+	public static final String REFERENCE_ID_NO_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("referenceIdentityNumber");
 	public static final String POSTAL_CODE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
 			.concat("postalCode");
 	public static final String POSTAL_CODE_VALIDATION_LENGTH = POSTAL_CODE_VALIDATION_REGEX.concat(DOT).concat(LENGTH);
@@ -1351,6 +1371,7 @@ public class RegistrationConstants {
 	
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
+	public static final String QOUTE = "\"";
 	public static final String DOB_MESSAGE = "dobMessage";
 	public static final String DD = "dd";
 	public static final String MM = "mm";
@@ -1464,7 +1485,6 @@ public class RegistrationConstants {
 
 	
 	// TPM Public Key Sync
-	public static final String RESPONSE = "response";
 	public static final String ERROR_CODE = "errorCode";
 	public static final String MESSAGE_CODE = "message";
 	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";
@@ -1472,6 +1492,27 @@ public class RegistrationConstants {
 	public static final String SERIAL_NUMBER = "serialnumber";
 	
 	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
+
+		{
+			put("leftIndex", "LF_INDEX");
+			put("leftLittle", "LF_LITTLE");
+			put("leftMiddle", "LF_MIDDLE");
+			put("leftRing", "LF_RING");
+			put("leftThumb", "LF_THUMB");
+			put("rightIndex", "RF_INDEX");
+			put("rightLittle", "RF_LITTLE");
+			put("rightMiddle", "RF_MIDDLE");
+			put("rightRing", "RF_RING");
+			put("rightThumb", "RF_THUMB");
+			put("LeftEye", "L_IRIS");
+			put("RightEye", "R_IRIS");
+			put("LeftEye.png", "LEFT");
+			put("RightEye.png", "RIGHT");
+		}
+
+	};
+	
+	public static final Map<String, String> userOnBoardBioFlag = new HashMap<String, String>() {
 
 		{
 			put("leftIndex", "LEFT_INDEX");
@@ -1486,6 +1527,7 @@ public class RegistrationConstants {
 			put("rightThumb", "RIGHT_THUMB");
 			put("LeftEye.png", "LEFT");
 			put("RightEye.png", "RIGHT");
+
 		}
 
 	};
@@ -1501,6 +1543,10 @@ public class RegistrationConstants {
 	public static final int YEAR = 3;
 	public static final String EYETOOLTIP="View Details";
 	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
+	
+	public static final String LANG_CODE_MANDATORY="language code is mandatory...";
+	public static final String CODE_AND_LANG_CODE_MANDATORY="code and language code is mandatory...";
+	public static final String TRIGGER_POINT_MSG="trigger point is mandatory...";
 	
 
 }

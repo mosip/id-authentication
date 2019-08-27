@@ -16,7 +16,6 @@ import java.util.WeakHashMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +39,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
+import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -87,6 +87,9 @@ public class PacketCreationServiceTest {
 	private AuditLogControlDAO auditLogControlDAO;
 	@Mock
 	private MachineMappingDAO machineMappingDAO;
+	@Mock
+	private DocumentTypeDAO documentTypeDAO;
+	
 	private static RegistrationDTO registrationDTO;
 	private static RegistrationAuditDates registrationAuditDates;
 
@@ -118,6 +121,7 @@ public class PacketCreationServiceTest {
 		PowerMockito.mockStatic(SessionContext.class, ApplicationContext.class);
 		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
 		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+		PowerMockito.doReturn("eng").when(ApplicationContext.class, "applicationLanguage");
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
@@ -176,18 +180,14 @@ public class PacketCreationServiceTest {
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
 
-	@Ignore
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseCheckedException.class)
 	public void testJsonValidationException() throws Exception {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
-		/*
-		 * when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any()))
-		 * .thenThrow(new RegBaseCheckedException("errorCode", "errorMessage"));
-		 */
+		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator)
+				.validateIdObject(Mockito.any(), Mockito.any());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
@@ -201,6 +201,7 @@ public class PacketCreationServiceTest {
 
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+		PowerMockito.doReturn("eng").when(ApplicationContext.class, "applicationLanguage");
 
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
@@ -302,6 +303,7 @@ public class PacketCreationServiceTest {
 
 			PowerMockito.mockStatic(ApplicationContext.class);
 			PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+			PowerMockito.doReturn("eng").when(ApplicationContext.class, "applicationLanguage");
 
 			RegistrationDTO registrationDTO = new RegistrationDTO();
 			registrationDTO.setRegistrationId(RegistrationConstants.EMPTY);
@@ -321,6 +323,7 @@ public class PacketCreationServiceTest {
 
 			PowerMockito.mockStatic(ApplicationContext.class);
 			PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+			PowerMockito.doReturn("eng").when(ApplicationContext.class, "applicationLanguage");
 
 			RegistrationDTO registrationDTO = new RegistrationDTO();
 			registrationDTO.setRegistrationId("781716175165137614615186");
@@ -347,6 +350,7 @@ public class PacketCreationServiceTest {
 
 			PowerMockito.mockStatic(ApplicationContext.class);
 			PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+			PowerMockito.doReturn("eng").when(ApplicationContext.class, "applicationLanguage");
 
 			RegistrationDTO registrationDTO = new RegistrationDTO();
 			registrationDTO.setRegistrationId("781716175165137614615186");
@@ -773,6 +777,53 @@ public class PacketCreationServiceTest {
 		biometrics.setFace(face);
 
 		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "isBiometricCaptured", biometrics);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testNullSessionContextMap() throws Throwable {
+		try {
+			PowerMockito.mockStatic(SessionContext.class);
+			PowerMockito.doReturn(null).when(SessionContext.class, "map");
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateContexts");
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testNullApplicationContextMap() throws Throwable {
+		try {
+			PowerMockito.mockStatic(ApplicationContext.class);
+			PowerMockito.doReturn(null).when(ApplicationContext.class, "map");
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateContexts");
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidApplicationLanguage() throws Throwable {
+		try {
+			PowerMockito.mockStatic(ApplicationContext.class);
+			PowerMockito.doReturn(new HashMap<>()).when(ApplicationContext.class, "map");
+			PowerMockito.doReturn(RegistrationConstants.EMPTY).when(ApplicationContext.class, "applicationLanguage");
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateContexts");
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test
+	public void testNoCBEFFTagProperty() throws Throwable {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(new HashMap<>()).when(ApplicationContext.class, "map");
+		PowerMockito.doReturn(RegistrationConstants.ENGLISH_LANG_CODE).when(ApplicationContext.class,
+				"applicationLanguage");
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateContexts");
 	}
 
 }

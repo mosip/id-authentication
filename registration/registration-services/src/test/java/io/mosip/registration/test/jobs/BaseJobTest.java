@@ -24,6 +24,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
@@ -87,7 +88,7 @@ public class BaseJobTest {
 	}
 
 	@Test
-	public void executeinternalTest() throws JobExecutionException {
+	public void executeinternalTest() throws JobExecutionException, RegBaseCheckedException {
 
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1");
@@ -183,7 +184,7 @@ public class BaseJobTest {
 	}
 	
 	@Test
-	public void executeChildJobs() throws JobExecutionException {
+	public void executeChildJobs() throws JobExecutionException, RegBaseCheckedException {
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1");
 		
@@ -227,7 +228,7 @@ public class BaseJobTest {
 	
 	
 	@Test
-	public void executejobTest() {
+	public void executejobTest() throws RegBaseCheckedException {
 		ResponseDTO responseDTO=new ResponseDTO();
 		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
@@ -241,7 +242,7 @@ public class BaseJobTest {
 	}
 	
 	@Test
-	public void executejobExceptionTest() {
+	public void executejobExceptionTest() throws RegBaseCheckedException {
 		ResponseDTO responseDTO=new ResponseDTO();
 		ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
 		LinkedList<ErrorResponseDTO> list=new LinkedList<>();

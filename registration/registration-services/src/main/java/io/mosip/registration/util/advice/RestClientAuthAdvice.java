@@ -24,6 +24,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -114,6 +115,8 @@ public class RestClientAuthAdvice {
 					RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 					getNewAuthZToken(requestHTTPDTO);
 					return joinPoint.proceed(joinPoint.getArgs());
+				} catch (RegBaseCheckedException regBaseCheckedException) {
+					throw regBaseCheckedException;
 				} catch (Throwable throwableError) {
 					throw new RegBaseCheckedException(
 							RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
@@ -124,8 +127,9 @@ public class RestClientAuthAdvice {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(),
 					httpClientErrorException);
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			throw regBaseCheckedException;
 		} catch (Throwable throwable) {
-
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_AUTHZ_HEADER.getErrorMessage(), throwable);
 		}
@@ -183,7 +187,7 @@ public class RestClientAuthAdvice {
 		// and existing AuthZ Token had expired
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
 			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO()
-					&& null != SessionContext.authTokenDTO().getCookie()) {
+					&& cookieAvailable()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 						"Session Context Auth token " + authZToken);
@@ -191,8 +195,10 @@ public class RestClientAuthAdvice {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 				if (loginUserDTO == null || loginUserDTO.getPassword() == null || !SessionContext.isSessionContextAvailable()) {
 					haveToAuthZByClientId = true;
+					LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+							"Session Context null and user id and password are from applicaiton context ");
 				} else {
-					serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN);
+					SessionContext.setAuthTokenDTO(serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN));
 					authZToken = SessionContext.authTokenDTO().getCookie();
 					LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 							"Session Context with password Auth token " + authZToken);
@@ -204,7 +210,7 @@ public class RestClientAuthAdvice {
 		if ((haveToAuthZByClientId
 				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
 			if (null == ApplicationContext.authTokenDTO() || null == ApplicationContext.authTokenDTO().getCookie()) {
-				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID, HAVE_TO_SAVE_AUTH_TOKEN);
+				ApplicationContext.setAuthTokenDTO(serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID, HAVE_TO_SAVE_AUTH_TOKEN));
 			}
 			authZToken = ApplicationContext.authTokenDTO().getCookie();
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
@@ -297,5 +303,10 @@ public class RestClientAuthAdvice {
 				"Checking for the Session Context with OTP is available :: " + (SessionContext.isSessionContextAvailable() && 
 						loginUserDTO != null && loginUserDTO.getOtp() != null));
 		return SessionContext.isSessionContextAvailable() && loginUserDTO != null && loginUserDTO.getOtp() != null;
+	}
+	
+	private boolean cookieAvailable() {
+		return null != SessionContext.authTokenDTO().getCookie() && 
+				SessionContext.authTokenDTO().getCookie().trim().length() > 10;
 	}
 }

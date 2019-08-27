@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -105,15 +106,19 @@
 	</dependencies>
 	<build>
 		<resources>
+
 			<resource>
 				<directory>src/main/resources</directory>
 
 				<includes>
+					<include>**/*.properties</include>
 					<include>**/*.png</include>
 				</includes>
 			</resource>
 		</resources>
 		<plugins>
+
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -148,9 +153,6 @@
 								<argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/batch/run.bat</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/props/mosip-application.properties</argument>
-								<argument>${main.basedir}/registration-mdm-service/target/registration-mdm-service.jar</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_start.bat</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_stop.bat</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -210,6 +212,8 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+
 
 		</plugins>
 	</build>

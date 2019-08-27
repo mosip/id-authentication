@@ -1,3 +1,15 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_prereg
+-- Table Name 	: prereg.prid_seq
+-- Purpose    	: Pre-Registration ID Sequence: Stores sequence numbers that are used in the algorithm to generate PRID. Stores a incremental sequence number that will be used as salt in the algorithm to generate a PRID. This salt value is encrypted/hashed and used along with a seed number in the algorithm to generate a unique random number.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+--
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 -- object: prereg.prid_seq | type: TABLE --
 -- DROP TABLE IF EXISTS prereg.prid_seq CASCADE;
 CREATE TABLE prereg.prid_seq(
@@ -21,7 +33,5 @@ COMMENT ON COLUMN prereg.prid_seq.cr_dtimes IS 'Created DateTimestamp : Date and
 COMMENT ON COLUMN prereg.prid_seq.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
 -- ddl-end --
 COMMENT ON COLUMN prereg.prid_seq.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
--- ddl-end --
-ALTER TABLE prereg.prid_seq OWNER TO sysadmin;
 -- ddl-end --
 

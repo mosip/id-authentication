@@ -1,32 +1,38 @@
--- create table section --------------------------------------------------------
--- schema 		: reg  	- registration schema
--- table 		: location  - reg location list
--- table alias  : loc	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.location
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------------------------------------
+-- object: reg.location | type: TABLE --
+-- DROP TABLE IF EXISTS reg.location CASCADE;
+CREATE TABLE reg.location(
+	code character varying(36) NOT NULL,
+	name character varying(128) NOT NULL,
+	hierarchy_level smallint NOT NULL,
+	hierarchy_level_name character varying(64) NOT NULL,
+	parent_loc_code character varying(32),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_loc_code PRIMARY KEY (code,lang_code)
 
-	create table reg.location (
-	
-		code character varying (36) not null , 
-		name character varying (128) not null ,
-		
-		hierarchy_level smallint not null ,
-		hierarchy_level_name character varying (64) not null ,
-		
-		parent_loc_code character varying (32) ,        -- self joining,  reg.location.code
-		
-		lang_code  character varying(3) not null ,		-- reg.language.code
+);
+-- ddl-end --
 
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes timestamp ,
-		is_deleted 	boolean,
-		del_dtimes	timestamp 
 
-		)
-	;
 		
 	--  Below is sample data for understanding the hierarchy_level and data to be populated.
 	--  code(unique,pkey)	name  			level	levelname	parent code 	
@@ -51,10 +57,6 @@
 			
 	--  600001			600001			3		ZIPCODE		CHN		
 
-
--- keys section -------------------------------------------------------------------------------
-alter table reg.location add constraint pk_loc_code primary key (code, lang_code)
- ;
 
 
 

@@ -19,7 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -51,6 +53,7 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.entity.PreRegistrationList;
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -128,18 +131,40 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private JobConfigurationService jobConfigurationService;
 
+	@SuppressWarnings("unchecked")
 	public void setLastUpdateTime() {
 		try {
-			String latestUpdateTime = ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs()
-					.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO))
-							.stream()
-							.sorted((sync1, sync2) -> Timestamp.valueOf(sync2.getLastUpdatedTimes())
-									.compareTo(Timestamp.valueOf(sync1.getLastUpdatedTimes())))
-							.findFirst().get().getLastUpdatedTimes();
-			lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime()
-					.format(DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+
+			ResponseDTO responseDTO = jobConfigurationService.getLastCompletedSyncJobs();
+			if (responseDTO.getSuccessResponseDTO() != null) {
+
+				List<SyncDataProcessDTO> dataProcessDTOs = ((List<SyncDataProcessDTO>) responseDTO
+						.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO));
+
+				LinkedList<String> timestamps =new LinkedList<>();
+				dataProcessDTOs.forEach(syncDataProcessDTO -> {
+					
+					if (!(jobConfigurationService.getUnTaggedJobs().contains(syncDataProcessDTO.getJobId())
+							|| jobConfigurationService.getOfflineJobs().contains(syncDataProcessDTO.getJobId()))) {
+						timestamps.add(syncDataProcessDTO.getLastUpdatedTimes());
+					}
+				});
+
+				String latestUpdateTime = timestamps.stream()
+						.sorted((timestamp1, timestamp2) -> Timestamp.valueOf(timestamp2)
+								.compareTo(Timestamp.valueOf(timestamp1)))
+						.findFirst().get();
+
+				lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime().format(
+						DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+
+				setLastPreRegPacketDownloadedTime();
+			}
 		} catch (RuntimeException expception) {
+
 			lastSyncTime.setText("---");
+
+			expception.printStackTrace();
 		}
 	}
 
@@ -261,62 +286,59 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		setImagesOnHover();
+		try {
+			setImagesOnHover();
 
-		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
-				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
-			eodProcessGridPane.setVisible(false);
-			eodLabel.setVisible(false);
-		}
-		setLastUpdateTime();
-		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
-		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
+			if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
+					&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
+				eodProcessGridPane.setVisible(false);
+				eodLabel.setVisible(false);
+			}
+			setLastUpdateTime();
+			pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
+			reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
-		List<RegistrationApprovalDTO> pendingApprovalRegistrations = registrationApprovalService
-				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
-		List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
-		List<String> configuredFieldsfromDB = Arrays.asList(
-				getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
+			List<RegistrationApprovalDTO> pendingApprovalRegistrations = registrationApprovalService
+					.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
-		if (!pendingApprovalRegistrations.isEmpty()) {
-			pendingApprovalCountLbl
-					.setText(pendingApprovalRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
-		}
-		if (!reRegisterRegistrations.isEmpty()) {
-			reRegistrationCountLbl.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
-		}
-		if (!(getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))
-				.equalsIgnoreCase(RegistrationConstants.ENABLE)
-				|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
-			vHolder.getChildren().forEach(btnNode -> {
-				if (btnNode instanceof GridPane && btnNode.getId() != null
-						&& btnNode.getId().equals(uinUpdateGridPane.getId())) {
-					btnNode.setVisible(false);
-					btnNode.setManaged(false);
-				}
-			});
-		}		
-		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());		
-		if (ts != null) {
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
-			lastBiometricTime.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
-		}
-		preRegistrationSyncTime();
+			List<PacketStatusDTO> reRegisterRegistrations = reRegistrationService.getAllReRegistrationPackets();
+			List<String> configuredFieldsfromDB = Arrays.asList(
+					getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FIELDS_FROM_DB).split(","));
 
-		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
-				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-			lostUINPane.setVisible(false);
-		}
-	}
+			if (!pendingApprovalRegistrations.isEmpty()) {
+				pendingApprovalCountLbl
+						.setText(pendingApprovalRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+			}
+			if (!reRegisterRegistrations.isEmpty()) {
+				reRegistrationCountLbl
+						.setText(reRegisterRegistrations.size() + " " + RegistrationUIConstants.APPLICATIONS);
+			}
+			if (!(getValueFromApplicationContext(RegistrationConstants.UIN_UPDATE_CONFIG_FLAG))
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)
+					|| configuredFieldsfromDB.get(RegistrationConstants.PARAM_ZERO).isEmpty()) {
+				vHolder.getChildren().forEach(btnNode -> {
+					if (btnNode instanceof GridPane && btnNode.getId() != null
+							&& btnNode.getId().equals(uinUpdateGridPane.getId())) {
+						btnNode.setVisible(false);
+						btnNode.setManaged(false);
+					}
+				});
+			}
+			Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
+			if (ts != null) {
+				DateTimeFormatter format = DateTimeFormatter
+						.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+				lastBiometricTime
+						.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
+			}
 
-	private void preRegistrationSyncTime() {
-		Timestamp lastPreRegPacketDownloaded = preRegistrationDataSyncService.getLastPreRegPacketDownloadedTime();
-		if (lastPreRegPacketDownloaded != null) {
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
-			lastPreRegPacketDownloadedTime.setText(RegistrationUIConstants.LAST_UPDATED + " "
-					+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
+			if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				lostUINPane.setVisible(false);
+			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- Home Page Loading", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
 
@@ -406,8 +428,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
-		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
-				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
 			if (isMachineRemapProcessStarted()) {
 
@@ -457,17 +477,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 			}
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration ended.");
-		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
-		}
-	}
+		} 
 
 	/**
 	 * Validating screen authorization and Creating Packet in case of Lost UIN
 	 */
 	public void lostUIN() {
-		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
-				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
 			if (isMachineRemapProcessStarted()) {
 
@@ -539,9 +554,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 					"Creating of Registration for lost UIN ended.");
-		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
-		}
 	}
 
 	public void showReciept() {
@@ -599,6 +611,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Showing receipt ended.");
 	}
@@ -675,8 +690,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
-		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
-				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
 			if (isMachineRemapProcessStarted()) {
 
@@ -730,9 +743,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
 							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				}
-			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
-			}
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
@@ -753,7 +763,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void downloadPreRegData() {
 
 		headerController.downloadPreRegData(null);
-		preRegistrationSyncTime();
 	}
 
 	/**
@@ -896,9 +905,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 								.with(location -> location.setRegion(individualIdentity.getRegion() != null
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
-								.with(location -> location.setLocalAdministrativeAuthority(
-										individualIdentity.getLocalAdministrativeAuthority() != null
-												? individualIdentity.getLocalAdministrativeAuthority().get(0).getValue()
+								.with(location -> location
+										.setLocalAdministrativeAuthority(individualIdentity.getZone() != null
+												? individualIdentity.getZone().get(0).getValue()
 												: null))
 								.with(location -> location.setPostalCode(
 										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()
@@ -1074,6 +1083,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.SMS_NOTIFICATION_SUCCESS);
 			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage());
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - GENERATE_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
@@ -1090,5 +1102,25 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	public ProgressIndicator getProgressIndicator() {
 		return progressIndicator;
+	}
+
+	public void setLastPreRegPacketDownloadedTime() {
+
+		SyncControl syncControl = jobConfigurationService
+				.getSyncControlOfJob(RegistrationConstants.OPT_TO_REG_PDS_J00003);
+
+		if (syncControl != null) {
+			Timestamp lastPreRegPacketDownloaded = syncControl.getUpdDtimes();
+
+			if (lastPreRegPacketDownloaded != null) {
+
+				DateTimeFormatter format = DateTimeFormatter
+						.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+
+				lastPreRegPacketDownloadedTime.setText(RegistrationUIConstants.LAST_DOWNLOADED + " "
+						+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
+
+			}
+		}
 	}
 }

@@ -142,6 +142,10 @@ public class ServiceDelegateUtil {
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
 		} catch (RegBaseCheckedException baseCheckedException) {
+			if (baseCheckedException.getErrorCode()
+					.equals(RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode())) {
+				throw baseCheckedException;
+			}
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage(),
@@ -516,7 +520,7 @@ public class ServiceDelegateUtil {
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
 
-			responseMap = restClientUtil.invoke(requestHTTPDTO);
+			responseMap = restClientUtil.invokeForToken(requestHTTPDTO);
 
 			boolean isResponseValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_HEADERS);
 			if (isResponseValid) {
@@ -543,6 +547,14 @@ public class ServiceDelegateUtil {
 					throw new RegBaseCheckedException(RegistrationExceptionConstants.INVALID_OTP.getErrorCode(),
 							RegistrationExceptionConstants.INVALID_OTP.getErrorMessage());
 				}
+			}
+			
+			String cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);
+			if (cookie == null
+					|| cookie.trim().isEmpty()) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
+						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorMessage());
 			}
 
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
@@ -593,7 +605,7 @@ public class ServiceDelegateUtil {
 			if (cookie != null) {
 				Map<String, Object> responseMap = null;
 
-				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
+				responseMap = restClientUtil.invokeForToken(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
 				if (isTokenValid) {
@@ -637,7 +649,7 @@ public class ServiceDelegateUtil {
 			if (cookie != null) {
 				Map<String, Object> responseMap = null;
 
-				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, invalidateUrlPath, HttpMethod.POST));
+				responseMap = restClientUtil.invokeForToken(buildRequestHTTPDTO(cookie, invalidateUrlPath, HttpMethod.POST));
 
 				if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
 					LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,

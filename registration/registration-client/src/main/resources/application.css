@@ -10,10 +10,18 @@
 	-fx-font-size:10.0px;
 }
 
+#imageParent{
+	-fx-border-width:1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+}
 
+.scanPageLabel{
+	-fx-tex-fill: #FF4081;
+	-fx-font-size: 1.2em;
+}
 
 #syncProgressBar > .bar{
-	-fx-background-color : red;
+	 -fx-background-color : red;
 	 -fx-padding: 0;
 	 -fx-background-insets : 0;
 }
@@ -1796,6 +1804,16 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;	
 }
+.onboardUserPaneStyle:hover, .onboardUserPaneStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardUserPaneStyle:pressed, .onboardUserPaneStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .useronBoardLink{
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
@@ -2040,14 +2058,6 @@ Working on new Css by taleev
    -fx-wrap-text: true;
    -fx-cursor:hand;
  } 
- .dialog-pane .button:hover{
-	-fx-background-color:#E63A74;
-	-fx-border-color: #E63A74;
-}
- .dialog-pane .button:pressed {
-	-fx-background-color:#B32D5A;
-	-fx-border-color: #B32D5A;
-}
  .dialog-pane:header .header-panel {
     -fx-background-color: #FFFFFF;
     -fx-background-insets: 1;

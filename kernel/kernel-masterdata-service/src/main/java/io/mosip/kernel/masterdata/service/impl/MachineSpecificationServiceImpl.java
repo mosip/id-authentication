@@ -27,6 +27,7 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
@@ -42,6 +43,7 @@ import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
@@ -74,18 +76,24 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 	@Autowired
 	MachineRepository machineRepository;
-	
+
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
-	
+
 	@Autowired
 	private FilterTypeValidator filterValidator;
-	
+
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
-	
+
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	private MachineUtil machineUtil;
+	
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -226,59 +234,75 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		}
 		return machineSpecificationPages;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#searchMachineSpecification(io.mosip.kernel.masterdata.dto.request.SearchDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
+	 * searchMachineSpecification(io.mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
 	public PageResponseDto<MachineSpecificationExtnDto> searchMachineSpecification(SearchDto searchRequestDto) {
 		PageResponseDto<MachineSpecificationExtnDto> pageDto = new PageResponseDto<>();
-		
+
 		List<MachineSpecificationExtnDto> machineSpecifications = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-		
+
 		for (SearchFilter filter : searchRequestDto.getFilters()) {
 			String column = filter.getColumnName();
-			
+
 			if (column.equalsIgnoreCase("machineTypeName")) {
 				filter.setColumnName(MasterDataConstant.NAME);
-				Page<MachineType> machineTypes = masterdataSearchHelper.searchMasterdata(
-						MachineType.class,
-						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
-						null);
+				Page<MachineType> machineTypes = masterdataSearchHelper.searchMasterdata(MachineType.class,
+						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
 				removeList.add(filter);
 				addList.addAll(buildMachineTypeSearchFilter(machineTypes.getContent()));
 				if (addList.isEmpty()) {
 					throw new DataNotFoundException(
 							MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-							String.format(MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
-									filter.getValue()));
+							String.format(MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION
+									.getErrorMessage(), filter.getValue()));
 				}
 			}
 		}
 		searchRequestDto.getFilters().removeAll(removeList);
-		
+		Pagination pagination = searchRequestDto.getPagination();
+		List<SearchSort> sort = searchRequestDto.getSort();
+		searchRequestDto.setPagination(new Pagination(0, Integer.MAX_VALUE));
+		searchRequestDto.setSort(Collections.emptyList());
 		if (filterValidator.validate(MachineSpecificationExtnDto.class, searchRequestDto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
-		Page<MachineSpecification> page = masterdataSearchHelper.searchMasterdata(MachineSpecification.class, searchRequestDto, new OptionalFilter[] { optionalFilter });
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			pageDto = PageUtils.pageResponse(page);
-			machineSpecifications = MapperUtils.mapAll(page.getContent(), MachineSpecificationExtnDto.class);
-			pageDto.setData(machineSpecifications);
-		}
+			Page<MachineSpecification> page = masterdataSearchHelper.searchMasterdata(MachineSpecification.class,
+					searchRequestDto, new OptionalFilter[] { optionalFilter });
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				machineSpecifications = MapperUtils.mapAll(page.getContent(), MachineSpecificationExtnDto.class);
+				setMachineTypeName(machineSpecifications);
+				pageDto = pageUtils.sortPage(machineSpecifications, sort, pagination);
+			}
 		}
 		return pageDto;
 	}
-	
+
+	private void setMachineTypeName(List<MachineSpecificationExtnDto> machinesSpecifications) {
+		List<MachineType> machineTypes = machineUtil.getMachineTypes();
+		machinesSpecifications.forEach(machineSpec -> {
+			machineTypes.forEach(mt -> {
+				if (machineSpec.getMachineTypeCode().equals(mt.getCode())
+						&& machineSpec.getLangCode().equals(mt.getLangCode())) {
+					machineSpec.setMachineTypeName(mt.getName());   
+				}
+			});
+		});
+	}
+
 	private List<SearchFilter> buildMachineTypeSearchFilter(List<MachineType> machineTypes) {
 		if (machineTypes != null && !machineTypes.isEmpty())
-			return machineTypes.stream().filter(Objects::nonNull)
-					.map(this::buildMachineType)
+			return machineTypes.stream().filter(Objects::nonNull).map(this::buildMachineType)
 					.collect(Collectors.toList());
 		return Collections.emptyList();
 	}
-	
+
 	private SearchFilter buildMachineType(MachineType machineType) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName("machineTypeCode");
@@ -286,9 +310,13 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		filter.setValue(machineType.getCode());
 		return filter;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#machineSpecificationFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineSpecificationService#
+	 * machineSpecificationFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
 	 */
 	@Override
 	public FilterResponseDto machineSpecificationFilterValues(FilterValueDto filterValueDto) {

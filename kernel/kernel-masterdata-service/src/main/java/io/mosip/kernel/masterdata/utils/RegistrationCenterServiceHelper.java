@@ -135,9 +135,9 @@ public class RegistrationCenterServiceHelper {
 	 *            zone search inputs
 	 * @return list of {@link Zone}
 	 */
-	public List<Zone> fetchUserZone(List<SearchFilter> zoneFilter) {
+	public List<Zone> fetchUserZone(List<SearchFilter> zoneFilter, String langCode) {
 		List<Zone> zones = null;
-		zones = zoneUtils.getUserZones();
+		zones = zoneUtils.getUserLeafZones(langCode);
 		if (zones != null && !zones.isEmpty())
 			zoneFilter.addAll(buildZoneFilter(zones));
 		else
@@ -211,10 +211,10 @@ public class RegistrationCenterServiceHelper {
 	 */
 	public String getHierarchyLevel(String columnName) {
 		if (columnName != null) {
-			switch (columnName.toLowerCase()) {
+			switch (columnName) {
 			case MasterDataConstant.POSTAL_CODE:
 				return "5";
-			case MasterDataConstant.ADMINISTRATIVE_ZONE:
+			case MasterDataConstant.ZONE:
 				return "4";
 			case MasterDataConstant.CITY:
 				return "3";
@@ -222,6 +222,7 @@ public class RegistrationCenterServiceHelper {
 				return "2";
 			case MasterDataConstant.REGION:
 				return "1";
+				
 			default:
 				return "0";
 			}
@@ -312,7 +313,7 @@ public class RegistrationCenterServiceHelper {
 	 * @return true if column is location type false otherwise
 	 */
 	public boolean isLocationSearch(String filter) {
-		switch (filter.toLowerCase()) {
+		switch (filter) {
 		case MasterDataConstant.CITY:
 			return true;
 		case MasterDataConstant.PROVINCE:
@@ -500,9 +501,9 @@ public class RegistrationCenterServiceHelper {
 	 * @return {@link Zone} if successful otherwise throws
 	 *         {@link MasterDataServiceException}
 	 */
-	public Zone getZone(SearchFilter filter) {
+	public Location getZone(SearchFilter filter) {
 		filter.setColumnName(MasterDataConstant.NAME);
-		Page<Zone> zones = masterdataSearchHelper.searchMasterdata(Zone.class,
+		Page<Location> zones = masterdataSearchHelper.searchMasterdata(Location.class,
 				new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
 		if (zones.hasContent()) {
 			return zones.getContent().get(0);

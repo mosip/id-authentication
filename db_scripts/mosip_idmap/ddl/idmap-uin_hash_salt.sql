@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_idmap
+-- Table Name 	: idmap.uin_hash_salt
+-- Purpose    	: UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: idmap.uin_hash_salt | type: TABLE --
 -- DROP TABLE IF EXISTS idmap.uin_hash_salt CASCADE;
 CREATE TABLE idmap.uin_hash_salt(
@@ -25,6 +38,3 @@ COMMENT ON COLUMN idmap.uin_hash_salt.upd_by IS 'Updated By : ID or name of the 
 -- ddl-end --
 COMMENT ON COLUMN idmap.uin_hash_salt.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
 -- ddl-end --
-ALTER TABLE idmap.uin_hash_salt OWNER TO sysadmin;
--- ddl-end --
-

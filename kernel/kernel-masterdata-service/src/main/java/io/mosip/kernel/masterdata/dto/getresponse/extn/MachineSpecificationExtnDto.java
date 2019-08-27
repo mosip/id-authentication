@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "Machine Specification", description = "Machine Specification details")
 public class MachineSpecificationExtnDto extends BaseDto {
 
+	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 
@@ -48,5 +49,10 @@ public class MachineSpecificationExtnDto extends BaseDto {
 	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
+	
+	/**
+	 * Machine Type Name.
+	 */
+	private String machineTypeName;
 
 }

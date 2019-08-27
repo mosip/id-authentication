@@ -35,6 +35,16 @@ public class FingerprintDetailsDTO extends BaseDTO {
 
 	/** The segmented fingerprints. */
 	private List<FingerprintDetailsDTO> segmentedFingerprints;
+	
+	private boolean captured;
+
+	public boolean isCaptured() {
+		return captured;
+	}
+
+	public void setCaptured(boolean captured) {
+		this.captured = captured;
+	}
 
 	/**
 	 * Gets the finger print.

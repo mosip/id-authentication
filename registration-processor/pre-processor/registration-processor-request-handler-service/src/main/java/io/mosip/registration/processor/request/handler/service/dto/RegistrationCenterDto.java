@@ -90,5 +90,4 @@ public class RegistrationCenterDto {
 	private Boolean isActive;
 	
 	private String zoneCode;
-
 }

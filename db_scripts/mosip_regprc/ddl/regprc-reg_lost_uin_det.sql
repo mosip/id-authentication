@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_regprc
+-- Table Name 	: regprc.reg_lost_uin_det
+-- Purpose    	: Registration Lost UIN: Table to store lost uin related details. Mostly to store the latest RID of the lost UIN of an individual who lost his / her UIN.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: regprc.reg_lost_uin_det | type: TABLE --
 -- DROP TABLE IF EXISTS regprc.reg_lost_uin_det CASCADE;
 CREATE TABLE regprc.reg_lost_uin_det(
@@ -31,5 +44,4 @@ COMMENT ON COLUMN regprc.reg_lost_uin_det.is_deleted IS 'IS_Deleted : Flag to ma
 -- ddl-end --
 COMMENT ON COLUMN regprc.reg_lost_uin_det.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE regprc.reg_lost_uin_det OWNER TO sysadmin;
--- ddl-end --
+

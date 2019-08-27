@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
+import io.mosip.registration.service.bio.BioService;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -111,6 +114,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@Autowired
 	private GuardianBiometricsController guardianBiometricsController;
 
+	@Autowired
+	private BioService bioService;
+
+	@Autowired
+	private Streamer streamer;
+
 	private Timestamp lastPhotoCaptured;
 
 	private Timestamp lastExceptionPhotoCaptured;
@@ -128,9 +137,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private ImageView startOverImageView;
 	@FXML
 	private Button startOverBtn;
+	@FXML
+	private Label exceptionImageLabel;
 
 	private BufferedImage applicantBufferedImage;
+	private byte[] applicantImageIso;
 	private BufferedImage exceptionBufferedImage;
+	private byte[] exceptionImageIso;
 	private Image defaultImage;
 	private Image defaultExceptionImage;
 	private boolean applicantImageCaptured;
@@ -226,8 +239,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	public void openWebCamWindow(String imageType) {
 		auditFactory.audit(
@@ -237,33 +249,31 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
-
-		if (webCameraController.isWebcamPluggedIn()) {
-			try {
-				Stage primaryStage = new Stage();
-				primaryStage.initStyle(StageStyle.UNDECORATED);
-				FXMLLoader loader = BaseController
-						.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
-				Parent webCamRoot = loader.load();
-
-				WebCameraController cameraController = loader.getController();
-				cameraController.init(this, imageType);
-				Scene scene = new Scene(webCamRoot);
-				ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-				scene.getStylesheets()
-						.add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-				primaryStage.setScene(scene);
-				primaryStage.initModality(Modality.WINDOW_MODAL);
-				primaryStage.initOwner(fXComponents.getStage());
-				cameraController.setWebCameraStage(primaryStage);
-				primaryStage.show();				
-			} catch (IOException ioException) {
-				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-			}
-		} else {
+		if (bioService.isMdmEnabled())
+			streamer.startStream(RegistrationConstants.FACE_FULLFACE, webCameraController.camImageView, null);
+		else if (!webCameraController.isWebcamPluggedIn()) 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
+
+		try {
+			Stage primaryStage = new Stage();
+			primaryStage.initStyle(StageStyle.UNDECORATED);
+			FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+			Parent webCamRoot = loader.load();
+
+			WebCameraController cameraController = loader.getController();
+			cameraController.init(this, imageType);
+			Scene scene = new Scene(webCamRoot);
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+			scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(fXComponents.getStage());
+			cameraController.setWebCameraStage(primaryStage);
+			primaryStage.show();
+		} catch (IOException ioException) {
+			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 	}
 
@@ -279,19 +289,22 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if (validateOperatorPhoto()) {
-				if (registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage)) {
+				if (registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage,
+						applicantImageIso, exceptionImageIso)) {
 					if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFace().getFace() != null) {
 						userOnboardParentController.showCurrentPage(RegistrationConstants.FACE_CAPTURE,
 								getOnboardPageDetails(RegistrationConstants.FACE_CAPTURE, RegistrationConstants.NEXT));
 					}
 				} else {
 					applicantBufferedImage = null;
+					applicantImageIso = null;
 					saveBiometricDetailsBtn.setDisable(true);
 				}
 			}
 		} else {
 			if (validateApplicantImage()) {
-				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
+				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage,
+						applicantImageIso, exceptionImageIso);
 				applicantFaceTrackerImg.setVisible(false);
 				exceptionFaceTrackerImg.setVisible(true);
 			}
@@ -375,22 +388,31 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * 
 	 * To set the captured image to the imageView in the Applicant Biometrics page
 	 * 
-	 * @param capturedImage
-	 *            the image that is captured
-	 * @param photoType
-	 *            the type of image whether exception image or applicant image
+	 * @param capturedImage the image that is captured
+	 * @param photoType     the type of image whether exception image or applicant
+	 *                      image
 	 */
 	@Override
-	public void saveApplicantPhoto(BufferedImage capturedImage, String photoType) {
+	public void saveApplicantPhoto(BufferedImage capturedImage, String photoType,
+			CaptureResponseDto captureResponseDto) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
-		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
-
+		byte[] isoBytes = bioService.getSingleBiometricIsoTemplate(captureResponseDto);
+		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && capturedImage != null) {
+			
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			try {
+				if(!bioService.isMdmEnabled())
+					isoBytes = IOUtils
+						.resourceToByteArray(RegistrationConstants.FACE_ISO);
+
 				applicantImage.setImage(capture);
 				applicantBufferedImage = capturedImage;
+
+				if ( null != isoBytes)
+					applicantImageIso = isoBytes;
+
 				applicantImageCaptured = true;
 				applicantImagePane.getStyleClass().add(RegistrationConstants.PHOTO_CAPTUREPANES_SELECTED);
 				if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -400,21 +422,28 @@ public class FaceCaptureController extends BaseController implements Initializab
 					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
 					((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 							.getOperatorBiometricDTO().getFace().setFace(photoInBytes);
+					((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+							.getOperatorBiometricDTO().getFace().setFaceISO(isoBytes);
 				}
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
-		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
+		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && capturedImage != null) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
 			exceptionImagePane.getStyleClass().add(RegistrationConstants.PHOTO_CAPTUREPANES_SELECTED);
 			exceptionBufferedImage = capturedImage;
+			if (null != captureResponseDto && null != isoBytes) {
+				exceptionImageIso = isoBytes;
+			}
 			exceptionImageCaptured = true;
-		} else if (photoType.equals(RegistrationConstants.GUARDIAN_IMAGE)) {
+		} else if (photoType.equals(RegistrationConstants.GUARDIAN_IMAGE) && capturedImage != null) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			applicantBufferedImage = capturedImage;
+			if (null != captureResponseDto && null != isoBytes)
+				applicantImageIso = isoBytes;
 			try {
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
@@ -422,11 +451,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 				byte[] photoInBytes = byteArrayOutputStream.toByteArray();
 				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
 						.setFace(photoInBytes);
+				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
+						.setFaceISO(isoBytes);
 				guardianBiometricsController.getBiometricImage().setImage(capture);
 				guardianBiometricsController.getBiometricPane().getStyleClass().clear();
 				guardianBiometricsController.getBiometricPane().getStyleClass()
 						.add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
-				guardianBiometricsController.setParentBufferedImage(capturedImage);
+//				guardianBiometricsController.setParentBufferedImage(capturedImage);
 				guardianBiometricsController.getContinueBtn().setDisable(false);
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -435,7 +466,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 		}
 
-		capturedImage.flush();
+		if (capturedImage != null)
+			capturedImage.flush();
+		else
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FACE_SCANNING_ERROR);
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
 			saveBiometricDetailsBtn.setDisable(false);
@@ -478,9 +512,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * To clear the captured image from the imageView in the Applicant Biometrics
 	 * page
 	 *
-	 * @param photoType
-	 *            the type of image that is to be cleared, whether exception image
-	 *            or applicant image
+	 * @param photoType the type of image that is to be cleared, whether exception
+	 *                  image or applicant image
 	 */
 	@Override
 	public void clearPhoto(String photoType) {
@@ -493,10 +526,12 @@ public class FaceCaptureController extends BaseController implements Initializab
 		} else if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && applicantBufferedImage != null) {
 			applicantImage.setImage(defaultImage);
 			applicantBufferedImage = null;
+			applicantImageIso = null;
 			applicantImageCaptured = false;
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && exceptionBufferedImage != null) {
 			exceptionImage.setImage(defaultExceptionImage);
 			exceptionBufferedImage = null;
+			exceptionImageIso = null;
 			exceptionImageCaptured = false;
 		}
 		disableNextButton();
@@ -527,16 +562,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	public void clearExceptionImage() {
-		exceptionBufferedImage = null;
-		exceptionImageCaptured=false;
-		exceptionImage.setImage(defaultExceptionImage);
-		BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
-		if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
-			applicantBiometricDTO.getExceptionFace().setFace(null);
-			applicantBiometricDTO.getExceptionFace().setPhotographName(null);
-			applicantBiometricDTO.setHasExceptionPhoto(false);
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			exceptionBufferedImage = null;
+			exceptionImageCaptured = false;
+			if (exceptionImage != null)
+				exceptionImage.setImage(defaultExceptionImage);
+			BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
+			if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
+				applicantBiometricDTO.getExceptionFace().setFace(null);
+				applicantBiometricDTO.getExceptionFace().setPhotographName(null);
+				applicantBiometricDTO.setHasExceptionPhoto(false);
+			}
+			disableNextButton();
 		}
-		disableNextButton();
 	}
 
 	/**
@@ -544,8 +582,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * To enable the capture of applicant/exception image upon validating the
 	 * request
 	 *
-	 * @param mouseEvent
-	 *            the event which occurs on mouse click of 'Take Photo' button
+	 * @param mouseEvent the event which occurs on mouse click of 'Take Photo'
+	 *                   button
 	 */
 	@FXML
 	private void enableCapture(MouseEvent mouseEvent) {
@@ -601,9 +639,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * To validate biometrics to check if the applicant's biometrics are
 	 * force-captured or not
 	 *
-	 * @param hasBiometricException
-	 *            the boolean variable which has to be returned to know whether
-	 *            exception photo should be enabled or not
+	 * @param hasBiometricException the boolean variable which has to be returned to
+	 *                              know whether exception photo should be enabled
+	 *                              or not
 	 * @return hasBiometricException - the boolean variable which will be returned
 	 *         to know whether exception photo should be enabled or not
 	 */
@@ -791,12 +829,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * To validate the time of last capture to allow re-capture
 	 * 
-	 * @param lastPhoto
-	 *            the timestamp when last photo is captured
-	 * @param configuredSecs
-	 *            the configured number of seconds for re-capture
-	 * @param photoLabel
-	 *            the label to show the timer for re-capture
+	 * @param lastPhoto      the timestamp when last photo is captured
+	 * @param configuredSecs the configured number of seconds for re-capture
+	 * @param photoLabel     the label to show the timer for re-capture
 	 * @return boolean returns true if recapture is allowed
 	 */
 	private boolean validatePhotoTimer(Timestamp lastPhoto, int configuredSecs, Label photoLabel, String photoType) {
@@ -819,12 +854,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 	/**
 	 * To set the label that displays time left to re-capture
 	 * 
-	 * @param photoLabel
-	 *            the label to show the timer for re-capture
-	 * @param configuredSecs
-	 *            the configured number of seconds for re-capture
-	 * @param diffSeconds
-	 *            the difference between last captured time and present time
+	 * @param photoLabel     the label to show the timer for re-capture
+	 * @param configuredSecs the configured number of seconds for re-capture
+	 * @param diffSeconds    the difference between last captured time and present
+	 *                       time
 	 */
 	private void setTimeLabel(Label photoLabel, int configuredSecs, int diffSeconds, String photoType) {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -865,5 +898,29 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (!validateApplicantImage()) {
 			saveBiometricDetailsBtn.setDisable(true);
 		}
+	}
+
+	/**
+	 * Sets the value of the exception photo based on the individual whose exception
+	 * photo has to be captured. If exception photo of Parent or Guardian is
+	 * required, text will be displayed as Parent Or guardian exception photo. While
+	 * for Individual, text will be displayed as Exception photo.
+	 * 
+	 * @param isParentOrGuardianBiometricsCaptured boolean value indicating whose
+	 *                                             exception photo has to be
+	 *                                             captured either individual or
+	 *                                             parent/ guardian
+	 */
+	public void setExceptionFaceDescriptionText(boolean isParentOrGuardianBiometricsCaptured) {
+		ResourceBundle applicationLanguage = ApplicationContext.applicationLanguageBundle();
+
+		String exceptionFaceDescription = applicationLanguage.getString("exceptionimage");
+
+		if (isParentOrGuardianBiometricsCaptured) {
+			exceptionFaceDescription = applicationLanguage.getString("parentOrGuardian").concat(" ")
+					.concat(exceptionFaceDescription.toLowerCase());
+		}
+
+		exceptionImageLabel.setText(exceptionFaceDescription);
 	}
 }

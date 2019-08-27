@@ -66,9 +66,13 @@ public class PageUtils {
 		return pageResponse;
 	}
 
+	public <D> PageResponseDto<D> applyPagination(List<D> list, Pagination page) {
+		return sortPage(list, Collections.emptyList(), page);
+	}
+
 	private boolean validate(Pagination page) {
 		if (page != null) {
-			if (page.getPageStart() < 0 && page.getPageFetch() < 1) {
+			if (page.getPageStart() < 0 || page.getPageFetch() < 1) {
 				throw new RequestException(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorCode(),
 						String.format(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorMessage(),
 								page.getPageStart(), page.getPageFetch()));

@@ -1,5 +1,5 @@
 -- object: sysadmin | type: ROLE --
--- DROP ROLE IF EXISTS sysadmin;
+--DROP ROLE IF EXISTS sysadmin;
 CREATE ROLE sysadmin WITH 
 	SUPERUSER
 	CREATEDB
@@ -7,25 +7,25 @@ CREATE ROLE sysadmin WITH
 	INHERIT
 	LOGIN
 	REPLICATION
-	PASSWORD 'Mosipadm@dev123';
+	PASSWORD :sysadminpwd;
 -- ddl-end --
 
 -- object: dbadmin | type: ROLE --
--- DROP ROLE IF EXISTS dbadmin;
+--DROP ROLE IF EXISTS dbadmin;
 CREATE ROLE dbadmin WITH 
 	CREATEDB
 	CREATEROLE
 	INHERIT
 	LOGIN
 	REPLICATION
-	PASSWORD 'Mosipadm@dev123';
+	PASSWORD :dbadminpwd;
 -- ddl-end --
 
 -- object: appadmin | type: ROLE --
--- DROP ROLE IF EXISTS appadmin;
+--DROP ROLE IF EXISTS appadmin;
 CREATE ROLE appadmin WITH 
 	INHERIT
 	LOGIN
-	PASSWORD 'Mosipadm@dev123';
+	PASSWORD :appadminpwd;
 -- ddl-end --
 

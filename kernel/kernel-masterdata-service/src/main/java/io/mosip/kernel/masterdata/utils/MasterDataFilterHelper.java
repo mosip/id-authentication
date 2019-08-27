@@ -32,6 +32,8 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * 
  * @author Sagar Mahapatra
  * @author Ritesh Sinha
+ * @author Urvil Joshi
+ * 
  * @since 1.0
  *
  */
@@ -54,10 +56,10 @@ public class MasterDataFilterHelper {
 	}
 
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
+	private static final String MAP_STATUS_COLUMN_NAME = "mapStatus";
 	private static final String FILTER_VALUE_UNIQUE = "unique";
 	private static final String FILTER_VALUE_ALL = "all";
 	private static final String WILD_CARD_CHARACTER = "%";
-	private static final String STATUS_TRUE_FLAG = "true";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -69,16 +71,20 @@ public class MasterDataFilterHelper {
 		this.entityManager = entityManager;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto) {
+		String columnName = filterDto.getColumnName();
+		String columnType = filterDto.getType();
+		if (columnName.equals(MAP_STATUS_COLUMN_NAME)
+				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+			return (List<T>) valuesForMapStatusColumn();
+		}
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQueryByString.from(entity);
 		Path<Object> path = root.get(filterDto.getColumnName());
-		String columnName = filterDto.getColumnName();
-		String text = filterDto.getText();
-		String columnType = filterDto.getType();
 		List<T> results;
-		@SuppressWarnings("unchecked")
+
 		CriteriaQuery<T> criteriaQueryByType = criteriaBuilder.createQuery((Class<T>) path.getJavaType());
 		Root<E> rootType = criteriaQueryByType.from(entity);
 
@@ -97,8 +103,9 @@ public class MasterDataFilterHelper {
 		}
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
-		if (rootType.get(columnName).getJavaType().equals(Boolean.class) && columnType.equals(FILTER_VALUE_UNIQUE)) {
-			buildFilterColumnListForBoolean(columnName, text, criteriaBuilder, criteriaQueryByType, rootType);
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
+				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+			return (List<T>) valuesForStatusColumn();
 		}
 
 		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
@@ -114,9 +121,9 @@ public class MasterDataFilterHelper {
 
 	public <E> List<FilterData> filterValuesWithCode(Class<E> entity, FilterDto filterDto,
 			FilterValueDto filterValueDto, String fieldCodeColumnName) {
+
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		String columnName = filterDto.getColumnName();
-		String text = filterDto.getText();
 		String columnType = filterDto.getType();
 		List<FilterData> results;
 		CriteriaQuery<FilterData> criteriaQueryByType = criteriaBuilder.createQuery(FilterData.class);
@@ -137,8 +144,9 @@ public class MasterDataFilterHelper {
 		}
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
-		if (rootType.get(columnName).getJavaType().equals(Boolean.class) && columnType.equals(FILTER_VALUE_UNIQUE)) {
-			buildFilterColumnListForBoolean(columnName, text, criteriaBuilder, criteriaQueryByType, rootType);
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
+				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+			return valuesForStatusColumnCode();
 		}
 
 		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
@@ -160,12 +168,26 @@ public class MasterDataFilterHelper {
 		}
 	}
 
-	private <E, T> void buildFilterColumnListForBoolean(String columnName, String text, CriteriaBuilder criteriaBuilder,
-			CriteriaQuery<T> criteriaQuery, Root<E> root) {
-		boolean statusValue = false;
-		if (text.equals(STATUS_TRUE_FLAG)) {
-			statusValue = true;
-		}
-		criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), statusValue));
+	private List<FilterData> valuesForStatusColumnCode() {
+		FilterData trueFilterData = new FilterData("", "true");
+		FilterData falseFilterData = new FilterData("", "false");
+		List<FilterData> filterDataList = new ArrayList<>();
+		filterDataList.add(trueFilterData);
+		filterDataList.add(falseFilterData);
+		return filterDataList;
+	}
+
+	private List<String> valuesForStatusColumn() {
+		List<String> filterDataList = new ArrayList<>();
+		filterDataList.add("true");
+		filterDataList.add("false");
+		return filterDataList;
+	}
+
+	private List<String> valuesForMapStatusColumn() {
+		List<String> filterDataList = new ArrayList<>();
+		filterDataList.add("Assigned");
+		filterDataList.add("Unassigned");
+		return filterDataList;
 	}
 }

@@ -3,6 +3,6 @@
 CREATE ROLE kerneluser WITH 
 	INHERIT
 	LOGIN
-	PASSWORD 'Mosip@dev123';
+	PASSWORD :dbuserpwd;
 -- ddl-end --
 

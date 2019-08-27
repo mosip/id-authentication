@@ -81,7 +81,11 @@ public enum IdRepoConstants {
 	
 	MODULO_VALUE("mosip.idrepo.modulo-value"),
 	
-	SPLITTER("_");
+	SPLITTER("_"),
+	
+	VID_DEACTIVATED("mosip.idrepo.vid.deactive-status"),
+	
+	VID_REACTIVATED("mosip.idrepo.vid.reactive-status");
 	
 	/** The value. */
 	private final String value;

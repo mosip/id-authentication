@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,7 +113,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@GetMapping("/registrationcentertypes/all")
 	@ResponseFilter
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all the registration center types with additional metadata", notes = "Retrieve all the registration center types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of registration center types"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving registration center types") })
@@ -138,7 +139,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcentertypes/filtervalues")
-	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> registrationCenterTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
@@ -154,7 +155,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcentertypes/search")
-	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> searchRegistrationCenterType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> responseWrapper = new ResponseWrapper<>();

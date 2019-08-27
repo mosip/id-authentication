@@ -36,10 +36,7 @@ public class ClientJarEncryption {
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
-	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
 	private static final String MOSIP_EXE_JAR = "bin/run.jar";
-	private static final String MDM_EXE_JAR = "mdm.jar";
-	private static final String MDM_FOLDER = "mdm";
 	private static final String MOSIP_LIB = "lib";
 	private static final String MOSIP_DB = "db";
 	private static final String MOSIP_ZIP = ".zip";
@@ -56,8 +53,6 @@ public class ClientJarEncryption {
 	private static final String MOSIP_JRE = "jre";
 
 	private static final String MOSIP_RUN_BAT = "run.bat";
-	private static final String MOSIP_MDM_STSRT_BAT = "mdm_start.bat";
-	private static final String MOSIP_MDM_STOP_BAT = "mdm_stop.bat";
 
 	/**
 	 * Encrypt the bytes
@@ -100,14 +95,12 @@ public class ClientJarEncryption {
 				System.out.println("Zip Creation started");
 
 				if (file != null && file.exists()) {
-					String propertiesFile = MOSIP_APPLICATION_PROPERTIES_PATH;
 					String libraries = MOSIP_LIB + SLASH;
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[2] + MOSIP_ZIP;
 
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[3] + MOSIP_REG_LIBS + args[2] + MOSIP_JAR));
-					byte[] mdmExecutbale = FileUtils.readFileToByteArray(new File(args[11]));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
 
 					// Add files to be archived into zip file
@@ -120,12 +113,9 @@ public class ClientJarEncryption {
 					// Executable jar run.jar
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
 
-					fileNameByBytes.put(MDM_FOLDER + SLASH + MDM_EXE_JAR, mdmExecutbale);
 
 					// Bat file run.bat
 					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9])));
-					fileNameByBytes.put(MOSIP_MDM_STSRT_BAT, FileUtils.readFileToByteArray(new File(args[12])));
-					fileNameByBytes.put(MOSIP_MDM_STOP_BAT, FileUtils.readFileToByteArray(new File(args[13])));
 					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
 
 					// Certificate file
@@ -138,8 +128,7 @@ public class ClientJarEncryption {
 
 					// Add mosip-Version to mosip-application.properties file
 					addProperties(new File(args[10]), args[2]);
-					fileNameByBytes.put(propertiesFile, FileUtils.readFileToByteArray(new File(args[10])));
-
+					
 					// DB file
 					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);

@@ -25,13 +25,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 
 /**
  * Rest Controller Advice for Master Data
@@ -95,7 +96,8 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
-		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getCause().getMessage());
+		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+				e.getCause().getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
@@ -103,6 +105,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
+		e.printStackTrace();
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
@@ -140,6 +143,18 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getErrors());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(DeviceRegisterException.class)
+	public ResponseEntity<DeviceRegisterResponseDto> deviceRegisterException(final DeviceRegisterException e) {
+		DeviceRegisterResponseDto response = new DeviceRegisterResponseDto();
+		ServiceError error = new ServiceError();
+		error.setErrorCode(e.getErrorCode());
+		error.setMessage(e.getErrorText());
+		DeviceRegResponseDto regResponse=new DeviceRegResponseDto();
+		regResponse.setError(error);
+		response.setResponse(regResponse);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	private ResponseWrapper<ServiceError> setHttpMessageNotReadableErrors(HttpServletRequest httpServletRequest) {

@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -52,7 +53,8 @@ public interface LocationService {
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto);
+	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(
+			List<LocationDto> locationRequestDto);
 
 	/**
 	 * 

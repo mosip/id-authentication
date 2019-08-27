@@ -6,13 +6,13 @@ package io.mosip.registration.processor.core.auth.dto;
  * @author Ranjitha Siddegowda
  */
 public enum AuthBioType {
-	
-	/** The FMR. */
-	FMR,
-	
+
+	/** The FIR. */
+	FIR,
+
 	/** The IIR. */
 	IIR,
-	
+
 	/** The FID. */
 	FID,
 
