@@ -200,30 +200,6 @@ public class CryptoCore
 		return output;
 	}
 
-	/**
-	 * This method is overloaded from specification provided as it has GCM specific
-	 * (AEAD) functionalities.
-	 * 
-	 * GCM is described in <a href=
-	 * "https://en.wikipedia.org/wiki/Galois/Counter_Mode">Galois_Counter_Mode</a>.
-	 * 
-	 * AEAD is Authenticated Encryption with Associated Data which provides both
-	 * confidentiality and data origin authentication.AEAD is described in <a href=
-	 * "https://tools.ietf.org/html/rfc5116#section-3.3">rfc5116#section-3.3</a>.
-	 * 
-	 * AAD(Advance Authentication Data is additional data included with GCM ) The
-	 * aim of AAD is to attach information to the ciphertext that is not encrypted,
-	 * but is bound to the ciphertext in the sense that it cannot be changed or
-	 * separated.Conceptually, the MAC is computed over the AAD and the ciphertext
-	 * together.
-	 * 
-	 * @param key  symmetric key as key
-	 * @param data data to encrypt
-	 * @param iv   Initialization Vector
-	 * @param aad  Advance Authentication Data is additional data included with GCM
-	 *             to verify integrity of it
-	 * @return
-	 */
 	@Override
 	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
