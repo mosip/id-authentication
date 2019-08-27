@@ -44,9 +44,6 @@ public class RestClientUtil {
 	/**
 	 * Rest Template is a interaction with HTTP servers and enforces RESTful systems
 	 */
-	@Autowired
-	RestTemplate restTemplate;
-
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientUtil.class);
 
 	/**
@@ -76,6 +73,7 @@ public class RestClientUtil {
 	}
 
 	private Map<String, Object> invokeURL(RequestHTTPDTO requestHTTPDTO) {
+		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<?> responseEntity = null;
 		Map<String, Object> responseMap = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
