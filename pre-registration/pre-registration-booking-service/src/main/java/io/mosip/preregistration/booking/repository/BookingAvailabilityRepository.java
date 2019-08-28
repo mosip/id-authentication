@@ -117,7 +117,7 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 	 * @param Registration endDate
 	 * @return List AvailibityEntity based registration id and registration date.
 	 */
-	public List<AvailibityEntity> findByRegcntrIdAndRegDateGreaterThanEqualAndRegDateLessThanEqualOrderByRegDateAsc(String regcntrId, LocalDate starteDate,LocalDate endDate);
+	public List<AvailibityEntity> findByRegcntrIdAndRegDateGreaterThanEqualAndRegDateLessThanEqualOrderByFromTimeAsc(String regcntrId, LocalDate starteDate,LocalDate endDate);
 
 
 }

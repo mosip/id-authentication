@@ -483,7 +483,7 @@ public class BookingDAO {
 
 		List<AvailibityEntity> entityList = null;
 		try {
-			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateGreaterThanEqualAndRegDateLessThanEqualOrderByRegDateAsc(regcntrId,starteDate,endDate);
+			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateGreaterThanEqualAndRegDateLessThanEqualOrderByFromTimeAsc(regcntrId,starteDate,endDate);
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
