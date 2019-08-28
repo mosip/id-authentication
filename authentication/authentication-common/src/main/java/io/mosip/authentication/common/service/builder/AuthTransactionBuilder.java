@@ -203,10 +203,10 @@ public class AuthTransactionBuilder {
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 				int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-				int uinModulo = (int) (Long.parseLong(uin) % saltModuloConstant);
+				Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
 				String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
 				autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
-				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo);
+				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
 				autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
 						+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
 				Optional<String> clientId = Optional.of(transactionManager.getUser());
