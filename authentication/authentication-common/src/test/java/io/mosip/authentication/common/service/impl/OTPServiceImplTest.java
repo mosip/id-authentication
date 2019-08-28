@@ -104,7 +104,6 @@ public class OTPServiceImplTest {
 
 	@Autowired
 	Environment env;
-
 	
 	@Mock
 	private UinEncryptSaltRepo uinEncryptSaltRepo;
@@ -114,6 +113,7 @@ public class OTPServiceImplTest {
 	
 	@Mock
 	private IdAuthTransactionManager idAuthTransactionManager;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
@@ -145,7 +145,7 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
@@ -249,7 +249,7 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
