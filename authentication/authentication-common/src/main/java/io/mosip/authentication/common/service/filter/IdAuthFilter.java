@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 /**
@@ -101,12 +103,41 @@ public class IdAuthFilter extends BaseAuthFilter {
 							mapper.writeValueAsString(request));
 
 				}
+				decipherBioData(request);
 				requestBody.replace(IdAuthCommonConstants.REQUEST, request);
 			}
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void decipherBioData(Map<String, Object> request) throws IdAuthenticationAppException {
+		Object biometrics = request.get(IdAuthCommonConstants.BIOMETRICS);
+		if(Objects.nonNull(biometrics) && biometrics instanceof List) {
+			List<Object> bioIdentity = (List<Object>) biometrics;
+			List<Object> bioIdentityInfo = new ArrayList<>();
+			for(Object obj : bioIdentity) {
+				if(obj instanceof Map) {
+					Map<String, Object> map = (Map<String, Object>) obj;
+					Object data = Objects.nonNull(map.get("data")) ? map.get("data") : null;
+					Map<String, Object> dataDto = decipherBioData(data);
+					map.replace("data",  dataDto);
+					bioIdentityInfo.add(map);
+				}
+			}
+			request.replace(IdAuthCommonConstants.BIOMETRICS, bioIdentityInfo);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> decipherBioData(Object data) throws IdAuthenticationAppException {
+		try {
+			return Objects.nonNull(data) ? mapper.readValue(CryptoUtil.decodeBase64(data.toString()), Map.class) : null;
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

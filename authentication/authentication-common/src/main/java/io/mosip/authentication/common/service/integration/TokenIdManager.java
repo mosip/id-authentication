@@ -51,7 +51,6 @@ public class TokenIdManager {
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("uin", uin);
-
 			params.put("partnercode", partnerId);
 			RestRequestDTO buildRequest = restFactory.buildRequest(RestServicesConstants.TOKEN_ID_GENERATOR, null,
 					Map.class);

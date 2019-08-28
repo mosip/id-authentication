@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_master
+-- Table Name 	: master.zone
+-- Purpose    	: Zone :  List of all zones and hierarchies defined for various zone requirements.  An example is provided for understanding the data to be populated.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: master.zone | type: TABLE --
 -- DROP TABLE IF EXISTS master.zone CASCADE;
 CREATE TABLE master.zone(

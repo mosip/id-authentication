@@ -87,6 +87,7 @@ public class LoggerConstants {
 	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
 	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
+	public static final String LOG_REG_LOGIN_SERVICE = LOGIN + "LOGIN_SERVICE";
 	public static final String AUTHENTICATION_SRVICE = "AUTHENTICATION_SRVICE";
 	public static final String FINGER_PRINT_AUTHENTICATION = "FINGER_PRINT_AUTHENTICATION";
 	public static final String VALIDATE_FP_WITH_BIO_API = " VALIDATE_FP_WITH_BIO_API";

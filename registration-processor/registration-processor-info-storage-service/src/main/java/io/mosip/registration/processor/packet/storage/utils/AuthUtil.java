@@ -127,7 +127,7 @@ public class AuthUtil {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
 				"AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call started with request data "
 						+ JsonUtil.objectMapperObjectToJson(authRequestDTO));
-		AuthResponseDTO response = new AuthResponseDTO();
+		AuthResponseDTO response;
 		response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH, null, null,
 				authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
@@ -145,8 +145,8 @@ public class AuthUtil {
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(IDA_APP_ID);
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		PublicKeyResponseDto publicKeyResponsedto = new PublicKeyResponseDto();
+		ResponseWrapper<?> responseWrapper;
+		PublicKeyResponseDto publicKeyResponsedto;
 
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
@@ -238,7 +238,10 @@ public class AuthUtil {
 				dataInfoDTO.setDeviceProviderID("cogent");
 				dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 				dataInfoDTO.setTransactionID("1234567890");
-				bioInfo.setData(dataInfoDTO);
+
+				String encodedData = CryptoUtil
+						.encodeBase64String(JsonUtil.objectMapperObjectToJson(dataInfoDTO).getBytes());
+				bioInfo.setData(encodedData);
 				biometrics.add(bioInfo);
 			}
 

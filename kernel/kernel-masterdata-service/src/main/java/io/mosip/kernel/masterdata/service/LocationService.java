@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -14,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 
@@ -51,7 +53,8 @@ public interface LocationService {
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto);
+	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(
+			List<LocationDto> locationRequestDto);
 
 	/**
 	 * 
@@ -140,7 +143,7 @@ public interface LocationService {
 	 *            input from user
 	 * @return response dto containing location values
 	 */
-	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto);
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto);
 
 	/**
 	 * Service method to filter location values

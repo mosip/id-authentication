@@ -157,7 +157,9 @@ public class MessageNotificationServiceImplTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
-		ReflectionTestUtils.setField(messageNotificationServiceImpl, "langCode", "eng");
+		ReflectionTestUtils.setField(messageNotificationServiceImpl, "primaryLang", "eng");
+		ReflectionTestUtils.setField(messageNotificationServiceImpl, "secondaryLang", "eng");
+		ReflectionTestUtils.setField(messageNotificationServiceImpl, "languageType", "both");
 		Mockito.when(env.getProperty(ApiName.EMAILNOTIFIER.name())).thenReturn("https://mosip.com");
 
 		ClassLoader classLoader = getClass().getClassLoader();

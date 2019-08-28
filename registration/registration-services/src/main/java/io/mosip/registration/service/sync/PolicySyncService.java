@@ -1,6 +1,7 @@
 package io.mosip.registration.service.sync;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * It provides the method to download the Mosip public key specific to the user's local machines and center specific and store 
@@ -17,8 +18,9 @@ public interface PolicySyncService {
 	 * If not available or about to expire [based on threshold value] then download the key from external service 'policy sync' and update the db.
 	 * 
 	 * @return ResponseDTO
+	 * @throws RegBaseCheckedException 
 	 */
-	ResponseDTO fetchPolicy();
+	ResponseDTO fetchPolicy() throws RegBaseCheckedException;
 
 	/**
 	 * It fetches the public key based on center id and machine id based combination from local database. If key available then validate the 

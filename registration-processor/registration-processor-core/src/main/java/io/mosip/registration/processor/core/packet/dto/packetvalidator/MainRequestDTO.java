@@ -40,6 +40,16 @@ public class MainRequestDTO<T> implements Serializable {
 	@ApiModelProperty(value = "request time", position = 3)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date requesttime;
+	public Date getRequesttime() {
+		if(requesttime!=null)
+			return new Date(requesttime.getTime());
+		return null;
+	}
+
+	public void setRequesttime(Date requesttime) {
+		this.requesttime=requesttime!=null?new Date(requesttime.getTime()):null;
+	}
+	
 	/**
 	 * Request Object
 	 */

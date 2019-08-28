@@ -489,4 +489,21 @@ public class BookingDAO {
 		return deletedSlots;
 	}
 
+	/**
+	 * @param regcntrId
+	 * @param regDate
+	 * @return List of AvailibityEntity
+	 */
+	public List<AvailibityEntity> findAvailability(String regcntrId,LocalDate starteDate,LocalDate endDate ) {
+
+		List<AvailibityEntity> entityList = null;
+		try {
+			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateGreaterThanEqualAndRegDateLessThanEqualOrderByFromTimeAsc(regcntrId,starteDate,endDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return entityList;
+	}
+
 }

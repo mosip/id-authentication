@@ -11,8 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.castor.util.concurrent.Sync;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +53,7 @@ import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({  io.mosip.registration.jobs.BaseJob.class })
+@PrepareForTest({ io.mosip.registration.jobs.BaseJob.class })
 public class JobConfigurationServiceTest {
 
 	@Mock
@@ -100,8 +102,6 @@ public class JobConfigurationServiceTest {
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
-
-
 	@Before
 	public void intiate() {
 		syncJobList = new LinkedList<>();
@@ -133,17 +133,17 @@ public class JobConfigurationServiceTest {
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 		applicationMap.put(RegistrationConstants.SYNC_DATA_FREQ, "0 0 11 * * ?");
 
-//		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
-//		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
-//		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
-//		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
-//		Map<String, Object> map = new HashMap<>();
-//		map.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
+		// PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		// when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+		// PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		// when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
+		// Map<String, Object> map = new HashMap<>();
+		// map.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 
-//		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+		// Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
 
 		io.mosip.registration.context.ApplicationContext.setApplicationMap(applicationMap);
-			}
+	}
 
 	@Test
 	public void startJobs() throws SchedulerException {
@@ -237,6 +237,7 @@ public class JobConfigurationServiceTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void getCurrentRunningJobDetailsTest() throws SchedulerException {
 		startJobs();
@@ -278,6 +279,14 @@ public class JobConfigurationServiceTest {
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
 		Assert.assertNotNull(
 				jobConfigurationService.executeJob("1234", RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM));
+	}
+
+	@Test
+	public void executeJobNullTest() throws SchedulerException {
+		initiateJobTest();
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(new ResponseDTO());
+		Assert.assertNotNull(jobConfigurationService.executeJob(null, null).getErrorResponseDTOs());
 	}
 
 	@Test
@@ -367,10 +376,9 @@ public class JobConfigurationServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		initiateJobTest();
-		
+
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(responseDTO);
-
 
 		Assert.assertNotNull(jobConfigurationService.executeAllJobs());
 	}
@@ -379,26 +387,40 @@ public class JobConfigurationServiceTest {
 	public void getRestartTimeTest() {
 		Assert.assertNotNull(jobConfigurationService.getRestartTime().getSuccessResponseDTO());
 	}
-	
+
 	@Test
 	public void getActiveJobTest() {
 		Assert.assertNotNull(jobConfigurationService.getActiveSyncJobMap());
-	}@Test
+	}
+
+	@Test
 	public void getOfflineJobsTest() {
 		Assert.assertNotNull(jobConfigurationService.getOfflineJobs());
-	}@Test
+	}
+
+	@Test
 	public void getUnTaggedJobsTest() {
 		Assert.assertNotNull(jobConfigurationService.getUnTaggedJobs());
 	}
-	
+
 	@Test
 	public void startSchedulerExcepTest() {
-		
+
 		Mockito.doThrow(RuntimeException.class).when(schedulerFactoryBean).start();
-		
+
 		Assert.assertNotNull(jobConfigurationService.startScheduler().getErrorResponseDTOs());
-		
-		
+
 		Assert.assertNotNull(jobConfigurationService.getUnTaggedJobs());
 	}
+
+	@Test
+	public void getSyncControlOfJobTest() {
+
+		SyncControl syncControl = new SyncControl();
+		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
+
+		Assert.assertSame(syncControl, jobConfigurationService.getSyncControlOfJob(Mockito.anyString()));
+	}
+
+	
 }

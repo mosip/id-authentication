@@ -5,23 +5,17 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.validation.Valid;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.registration.processor.core.constant.IdType;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -55,7 +49,7 @@ public class PrintApiController {
 	@Autowired
 	private PrintService<Map<String, byte[]>> printservice;
 
-	/**  Token validator class. */
+	/** Token validator class. */
 	@Autowired
 	TokenValidator tokenValidator;
 
@@ -69,7 +63,8 @@ public class PrintApiController {
 	/**
 	 * Inits the binder.
 	 *
-	 * @param binder the binder
+	 * @param binder
+	 *            the binder
 	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -87,13 +82,17 @@ public class PrintApiController {
 	/**
 	 * Gets the file.
 	 *
-	 * @param printRequest the print request DTO
-	 * @param token the token
-	 * @param errors the errors
+	 * @param printRequest
+	 *            the print request DTO
+	 * @param token
+	 *            the token
+	 * @param errors
+	 *            the errors
 	 * @param printRequest
 	 *            the print request DTO
 	 * @return the file
-	 * @throws RegPrintAppException the reg print app exception
+	 * @throws RegPrintAppException
+	 *             the reg print app exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN')")
 	@PostMapping(path = "/uincard", produces = "application/json")
@@ -120,12 +119,15 @@ public class PrintApiController {
 	/**
 	 * Validate request.
 	 *
-	 * @param dto the dto
-	 * @param errors the errors
-	 * @throws RegPrintAppException the reg print app exception
+	 * @param dto
+	 *            the dto
+	 * @param errors
+	 *            the errors
+	 * @throws RegPrintAppException
+	 *             the reg print app exception
 	 */
-	private void validateRequest(RequestDTO dto, Errors errors ) throws RegPrintAppException{
-		if(!errors.hasErrors()) {
+	private void validateRequest(RequestDTO dto, Errors errors) throws RegPrintAppException {
+		if (!errors.hasErrors()) {
 			if (Objects.isNull(dto)) {
 				throw new RegPrintAppException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 						String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), "request"));

@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -50,8 +50,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 @Transactional(readOnly = true)
 public class MasterdataSearchHelper {
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
-	private static final String ENTITY_IS_NULL = "enitity is null";
-	private static final String NO_SPECIAL_CHAR_REGEX = "[^\\w\\s]";
+	private static final String ENTITY_IS_NULL = "entity is null";
+	private static final String WILD_CARD_CHARACTER = "%";
 
 	/**
 	 * Field for interface used to interact with the persistence context.
@@ -194,23 +194,28 @@ public class MasterdataSearchHelper {
 		String value = filter.getValue();
 		String filterType = filter.getType();
 		if (FilterTypeEnum.CONTAINS.name().equalsIgnoreCase(filterType)) {
-			String replacedValue = value.replaceAll(NO_SPECIAL_CHAR_REGEX, "").toLowerCase();
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
 			if (value.startsWith("*") && value.endsWith("*")) {
-				return builder.like(lowerCase, "%" + replacedValue + "%");
+				String replacedValue = (value.substring(1)).substring(0, value.length() - 2);
+				return builder.like(lowerCase,
+						builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue + WILD_CARD_CHARACTER)));
 			} else if (value.startsWith("*")) {
-				return builder.like(lowerCase, "%" + replacedValue);
+				String replacedValue = value.substring(1);
+				return builder.like(lowerCase, builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue)));
 			} else {
-				return builder.like(lowerCase, "%" + replacedValue + "%");
+				return builder.like(lowerCase,
+						builder.lower(builder.literal(WILD_CARD_CHARACTER + value + WILD_CARD_CHARACTER)));
 			}
 		}
 		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filterType)) {
 			return buildPredicate(builder, root, columnName, value);
 		}
 		if (FilterTypeEnum.STARTSWITH.name().equalsIgnoreCase(filterType)) {
-			String replacedValue = value.replaceAll(NO_SPECIAL_CHAR_REGEX, "").toLowerCase();
+			if (value.endsWith("*")) {
+				value = value.substring(0, value.length() - 1);
+			}
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
-			return builder.like(lowerCase, replacedValue + "%");
+			return builder.like(lowerCase, builder.lower(builder.literal(value + WILD_CARD_CHARACTER)));
 		}
 		if (FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filterType)) {
 			return setBetweenValue(builder, root, filter);
@@ -234,11 +239,26 @@ public class MasterdataSearchHelper {
 			List<SearchSort> sortFilter) {
 		if (sortFilter != null && !sortFilter.isEmpty()) {
 			List<Order> orders = sortFilter.stream().filter(this::validateSort).map(i -> {
-				if (OrderEnum.asc.name().equalsIgnoreCase(i.getSortType()))
-					return builder.asc(root.get(i.getSortField()));
-				if (OrderEnum.desc.name().equalsIgnoreCase(i.getSortType()))
-					return builder.desc(root.get(i.getSortField()));
+				Path<Object> path = null;
+				try {
+					path = root.get(i.getSortField());
+				} catch (IllegalArgumentException | IllegalStateException e) {
+					throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_FIELD.getErrorCode(), String
+							.format(MasterdataSearchErrorCode.INVALID_SORT_FIELD.getErrorMessage(), i.getSortField()));
+				}
+				if (path != null) {
+					if (OrderEnum.asc.name().equalsIgnoreCase(i.getSortType()))
+						return builder.asc(root.get(i.getSortField()));
+					else if (OrderEnum.desc.name().equalsIgnoreCase(i.getSortType()))
+						return builder.desc(root.get(i.getSortField()));
+					else {
+						throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_TYPE.getErrorCode(),
+								String.format(MasterdataSearchErrorCode.INVALID_SORT_TYPE.getErrorMessage(),
+										i.getSortType()));
+					}
+				}
 				return null;
+
 			}).filter(Objects::nonNull).collect(Collectors.toList());
 			criteriaQuery.orderBy(orders);
 		}
@@ -254,7 +274,7 @@ public class MasterdataSearchHelper {
 	 */
 	private void paginationQuery(Query query, Pagination page) {
 		if (page != null) {
-			if (page.getPageStart() < 0 && page.getPageFetch() < 1) {
+			if (page.getPageStart() < 0 || page.getPageFetch() < 1) {
 				throw new RequestException(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorCode(),
 						String.format(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorMessage(),
 								page.getPageStart(), page.getPageFetch()),
@@ -310,6 +330,9 @@ public class MasterdataSearchHelper {
 				return builder.between(root.get(columnName), DateUtils.parseToLocalDateTime(fromValue),
 						DateUtils.convertUTCToLocalDateTime(toValue));
 			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				return builder.between(root.get(columnName), LocalDate.parse(fromValue), LocalDate.parse(toValue));
+			}
 			if (Long.class.getName().equals(fieldType)) {
 				return builder.between(root.get(columnName), Long.parseLong(fromValue), Long.parseLong(toValue));
 			}
@@ -352,6 +375,9 @@ public class MasterdataSearchHelper {
 			String fieldType = type.getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
 				return DateUtils.parseToLocalDateTime(value);
+			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				return LocalDate.parse(value);
 			}
 			if (Long.class.getName().equals(fieldType)) {
 				return Long.parseLong(value);
@@ -413,8 +439,8 @@ public class MasterdataSearchHelper {
 	 */
 	private boolean validateFilters(SearchFilter filter) {
 		if (filter != null) {
-			if (filter.getColumnName() != null && !filter.getColumnName().isEmpty()) {
-				if (filter.getType() != null && !filter.getType().isEmpty()) {
+			if (filter.getColumnName() != null && !filter.getColumnName().trim().isEmpty()) {
+				if (filter.getType() != null && !filter.getType().trim().isEmpty()) {
 					if (validateFilter(filter)) {
 						return true;
 					}
@@ -428,7 +454,7 @@ public class MasterdataSearchHelper {
 						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -442,13 +468,16 @@ public class MasterdataSearchHelper {
 		boolean flag = false;
 		if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
 			String value = filter.getValue();
-			if (value != null && !value.isEmpty()) {
+			if (value != null && !value.trim().isEmpty()) {
 				flag = true;
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.INVALID_VALUE.getErrorCode(),
+						MasterdataSearchErrorCode.INVALID_VALUE.getErrorMessage());
 			}
 		} else {
 			String fromValue = filter.getFromValue();
 			String toValue = filter.getToValue();
-			if (fromValue != null && !fromValue.isEmpty() && toValue != null && !toValue.isEmpty()) {
+			if (fromValue != null && !fromValue.trim().isEmpty() && toValue != null && !toValue.trim().isEmpty()) {
 				flag = true;
 			} else {
 				throw new RequestException(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorCode(),

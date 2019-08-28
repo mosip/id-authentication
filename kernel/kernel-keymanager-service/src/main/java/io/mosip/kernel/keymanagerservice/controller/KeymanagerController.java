@@ -50,6 +50,12 @@ public class KeymanagerController {
 	 */
 	@Autowired
 	KeymanagerService keymanagerService;
+	
+/*	*//**
+	 * Instance of simpleAES
+	 *//*
+	@Autowired
+	SimpleAES simpleAES*/;
 
 	/**
 	 * Request mapping to get Public Key
@@ -105,4 +111,22 @@ public class KeymanagerController {
 		return response;
 	}
 
+/*	
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN')")
+	@ResponseFilter
+	@GetMapping(value = "/encrypt/{data}")
+	public ResponseWrapper<String> encrypt(@PathVariable(required = true) String data) {
+		ResponseWrapper<String> response = new ResponseWrapper<>();
+		response.setResponse(simpleAES.encrypt(data));
+		return response;
+	}
+
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN')")
+	@ResponseFilter
+	@GetMapping(value = "/decrypt/{data}")
+	public ResponseWrapper<String> decrypt(@PathVariable(required = true) String data) {
+		ResponseWrapper<String> response = new ResponseWrapper<>();
+		response.setResponse(simpleAES.decrypt(data));
+		return response;
+	}*/
 }

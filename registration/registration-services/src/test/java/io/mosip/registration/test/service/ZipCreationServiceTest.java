@@ -80,11 +80,6 @@ public class ZipCreationServiceTest {
 		Assert.assertNotNull(packetZipInBytes);
 	}
 
-	@Test(expected = RegBaseUncheckedException.class)
-	public void testException() throws RegBaseCheckedException {
-		zipCreationService.createPacket(registrationDTO, new HashMap<String, byte[]>());
-	}
-
 	@Test(expected = RegBaseCheckedException.class)
 	public void testIOException() throws RegBaseCheckedException {
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
@@ -93,8 +88,10 @@ public class ZipCreationServiceTest {
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("ProofOfRelationship");
 		documentDetailsResidenceDTO.setOwner("hof");
-		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments()
-				.put("doc", documentDetailsResidenceDTO);
+		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments().put("doc",
+				documentDetailsResidenceDTO);
+		registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments().put("doc2",
+				documentDetailsResidenceDTO);
 
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 	}
@@ -128,6 +125,19 @@ public class ZipCreationServiceTest {
 		registrationDTO.setRegistrationId("2018782130000128122018103836");
 		
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
+		
+		zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidInputMap() throws RegBaseCheckedException {
+		zipCreationService.createPacket(registrationDTO, new HashMap<String, byte[]>());
+	}
+	
+	@Test(expected = RegBaseUncheckedException.class)
+	public void emptyDataFileDataTest() throws RegBaseCheckedException {
+		filesGeneratedForPacket = new HashMap<>();
+		filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, null);
 		
 		zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
 	}

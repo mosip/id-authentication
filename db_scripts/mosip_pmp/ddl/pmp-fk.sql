@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : 
+-- Purpose    : All the FKs are created separately, not part of create table scripts to ease the deployment process
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: fk_mispl_misp | type: CONSTRAINT --
 -- ALTER TABLE pmp.misp_license DROP CONSTRAINT IF EXISTS fk_mispl_misp CASCADE;
 ALTER TABLE pmp.misp_license ADD CONSTRAINT fk_mispl_misp FOREIGN KEY (misp_id)

@@ -3,7 +3,10 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.TimerTask;
 
@@ -30,6 +33,7 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -52,6 +56,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -101,6 +106,9 @@ public class HeaderController extends BaseController {
 
 	@FXML
 	private Menu homeSelectionMenu;
+
+	@FXML
+	private MenuItem userGuide;
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
@@ -174,15 +182,14 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to Home page on Logout and destroying Session context
 	 * 
-	 * @param event
-	 *            logout event
+	 * @param event logout event
 	 */
 	public void logout(ActionEvent event) {
 		if (pageNavigantionAlert()) {
 			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context" + SessionContext.authTokenDTO());
 
 			if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null
 					&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -198,8 +205,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * Logout clean up.
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void logoutCleanUp() {
 
@@ -236,38 +242,43 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData(ActionEvent event) {
 		if (pageNavigantionAlert()) {
+			try {
+				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+					if (isMachineRemapProcessStarted()) {
 
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				if (isMachineRemapProcessStarted()) {
-
-					LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-							RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-					return;
-				}
-				try {
-					auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
-							SessionContext.userContext().getUserId(),
-							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-					executeSyncDataTask();
-					while (restartController.isToBeRestarted()) {
-						/* Clear the completed job map */
-						BaseJob.clearCompletedJobMap();
-
-						/* Restart the application */
-						restartController.restart();
+						LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+								RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+						return;
 					}
+					try {
+						auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+								SessionContext.userContext().getUserId(),
+								AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+						executeSyncDataTask();
+						while (restartController.isToBeRestarted()) {
+							/* Clear the completed job map */
+							BaseJob.clearCompletedJobMap();
 
-				} catch (RuntimeException runtimeException) {
-					LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+							/* Restart the application */
+							restartController.restart();
+						}
+
+					} catch (RuntimeException runtimeException) {
+						LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+								runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+					}
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 				}
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - REDIRECTHOME - HEADER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 			}
 		}
 	}
@@ -275,8 +286,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to PacketStatusSync Page
 	 * 
-	 * @param event
-	 *            event for sync packet status
+	 * @param event event for sync packet status
 	 */
 	public void syncPacketStatus(ActionEvent event) {
 		if (isMachineRemapProcessStarted()) {
@@ -310,8 +320,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * This method is to trigger the Pre registration sync service
 	 * 
-	 * @param event
-	 *            event for downloading pre reg data
+	 * @param event event for downloading pre reg data
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
@@ -348,8 +357,12 @@ public class HeaderController extends BaseController {
 	public void intiateRemapProcess() {
 		if (pageNavigantionAlert()) {
 
-			masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			try {
+				masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+						RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			} catch (RegBaseCheckedException exMasterSync) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_FAILURE);
+			}
 
 			if (!isMachineRemapProcessStarted()) {
 
@@ -433,8 +446,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected ResponseDTO call() {
 
-						LOGGER.info("REGISTRATION - SYNC - HEADER_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the sync activities");
+						LOGGER.info("REGISTRATION - SYNC - HEADER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+								"Handling all the sync activities");
 
 						return jobConfigurationService.executeAllJobs();
 
@@ -448,21 +461,22 @@ public class HeaderController extends BaseController {
 		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent t) {
-				double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()-jobConfigurationService.getOfflineJobs().size()-jobConfigurationService.getUnTaggedJobs().size();
-				packetHandlerController.syncProgressBar
-				.setProgress(BaseJob.successJob.size() / totalJobs);
+				double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()
+						- jobConfigurationService.getOfflineJobs().size()
+						- jobConfigurationService.getUnTaggedJobs().size();
+				packetHandlerController.syncProgressBar.setProgress(BaseJob.successJob.size() / totalJobs);
 				packetHandlerController.setLastUpdateTime();
 
 				ResponseDTO responseDTO = taskService.getValue();
 				if (responseDTO.getErrorResponseDTOs() != null) {
+					gridPane.setDisable(false);
 					generateAlert(RegistrationConstants.SYNC_FAILURE,
 							responseDTO.getErrorResponseDTOs().get(0).getMessage());
 				} else {
-
+					gridPane.setDisable(false);
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 
 				}
-				//gridPane.setDisable(false);
 				progressIndicator.setVisible(false);
 			}
 		});
@@ -470,20 +484,21 @@ public class HeaderController extends BaseController {
 	}
 
 	private void progressTask() {
-		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()-jobConfigurationService.getOfflineJobs().size()-jobConfigurationService.getUnTaggedJobs().size();
+		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()
+				- jobConfigurationService.getOfflineJobs().size() - jobConfigurationService.getUnTaggedJobs().size();
 		Service<String> progressTask = new Service<String>() {
 			@Override
 			protected Task<String> createTask() {
 				BaseJob.successJob.clear();
 				BaseJob.getCompletedJobMap().clear();
 				return new Task<String>() {
-					double success=0;
+					double success = 0;
+
 					@Override
 					protected String call() {
 						while (BaseJob.getCompletedJobMap().size() != totalJobs) {
-							success= BaseJob.successJob.size();
-							packetHandlerController.syncProgressBar
-									.setProgress(success / totalJobs);
+							success = BaseJob.successJob.size();
+							packetHandlerController.syncProgressBar.setProgress(success / totalJobs);
 						}
 						return null;
 
@@ -520,8 +535,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected String call() {
 
-						LOGGER.info("REGISTRATION - SOFTWARE_UPDATE - HEADER_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the Software Update activities");
+						LOGGER.info("REGISTRATION - SOFTWARE_UPDATE - HEADER_CONTROLLER", APPLICATION_NAME,
+								APPLICATION_ID, "Handling all the Software Update activities");
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
@@ -558,7 +573,6 @@ public class HeaderController extends BaseController {
 
 	}
 
-
 	public void softwareUpdate(Pane pane, ProgressIndicator progressIndicator, String context,
 			boolean isPreLaunchTaskToBeStopped) {
 		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
@@ -568,9 +582,9 @@ public class HeaderController extends BaseController {
 		pane.setDisable(true);
 
 		updateAlert.show();
-		Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
-		Double xValue = screenSize.getWidth()/2 - updateAlert.getWidth()+250;
-		Double yValue = screenSize.getHeight()/2 - updateAlert.getHeight();
+		Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+		Double xValue = screenSize.getWidth() / 2 - updateAlert.getWidth() + 250;
+		Double yValue = screenSize.getHeight() / 2 - updateAlert.getHeight();
 		updateAlert.hide();
 		updateAlert.setX(xValue);
 		updateAlert.setY(yValue);
@@ -588,9 +602,9 @@ public class HeaderController extends BaseController {
 					RegistrationConstants.UPDATE_NOW_LABEL, null);
 
 			alert.show();
-			Rectangle2D systemScreenSize = Screen.getPrimary().getVisualBounds();		
-			Double xPosValue = systemScreenSize.getWidth()/2 - alert.getWidth()+250;
-			Double yPosValue = systemScreenSize.getHeight()/2 - alert.getHeight();
+			Rectangle2D systemScreenSize = Screen.getPrimary().getVisualBounds();
+			Double xPosValue = systemScreenSize.getWidth() / 2 - alert.getWidth() + 250;
+			Double yPosValue = systemScreenSize.getHeight() / 2 - alert.getHeight();
 			alert.hide();
 			alert.setX(xPosValue);
 			alert.setY(yPosValue);
@@ -629,8 +643,7 @@ public class HeaderController extends BaseController {
 	public void closeOperations() {
 		webCameraController.closeWebcam();
 	}
-	
-	
+
 	public void executeDownloadPreRegDataTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
@@ -657,13 +670,12 @@ public class HeaderController extends BaseController {
 					@Override
 					protected ResponseDTO call() {
 
-						LOGGER.info("REGISTRATION - HEADER_CONTROLLER - DOWNLOAD_PRE_REG_DATA_TASK",
-								APPLICATION_NAME, APPLICATION_ID, "Started pre reg download task");
-						
+						LOGGER.info("REGISTRATION - HEADER_CONTROLLER - DOWNLOAD_PRE_REG_DATA_TASK", APPLICATION_NAME,
+								APPLICATION_ID, "Started pre reg download task");
+
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
-						return  preRegistrationDataSyncService
-								.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+						return jobConfigurationService.executeJob(RegistrationConstants.OPT_TO_REG_PDS_J00003,RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 					}
 				};
@@ -676,17 +688,19 @@ public class HeaderController extends BaseController {
 			@Override
 			public void handle(WorkerStateEvent workerStateEvent) {
 
-				LOGGER.info("REGISTRATION - HEADER_CONTROLLER - DOWNLOAD_PRE_REG_DATA_TASK",
-						APPLICATION_NAME, APPLICATION_ID, "Completed pre reg download task");
-				
+				LOGGER.info("REGISTRATION - HEADER_CONTROLLER - DOWNLOAD_PRE_REG_DATA_TASK", APPLICATION_NAME,
+						APPLICATION_ID, "Completed pre reg download task");
+
 				pane.setDisable(false);
 				progressIndicator.setVisible(false);
 
 				ResponseDTO responseDTO = taskService.getValue();
-				
+
 				if (responseDTO.getSuccessResponseDTO() != null) {
 					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 					generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
+					
+					packetHandlerController.setLastPreRegPacketDownloadedTime();
 
 				} else if (responseDTO.getErrorResponseDTOs() != null) {
 
@@ -698,5 +712,26 @@ public class HeaderController extends BaseController {
 
 		});
 
+	}
+
+	/**
+	 * Redirecting to PacketStatusSync Page
+	 * 
+	 * @param event event for sync packet status
+	 */
+	public void userGuide(ActionEvent event) {
+		userGuide.setOnAction(e -> {
+			if (Desktop.isDesktopSupported()) {
+				try {
+					Desktop.getDesktop().browse(new URI(RegistrationConstants.MOSIP_URL));
+				} catch (IOException ioException) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+				} catch (URISyntaxException uriSyntaxException) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
+				}
+			}
+		});
 	}
 }

@@ -22,14 +22,17 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	/**
 	 * Obtain all Authentication Transaction for particular TxnId and UIN.
 	 *
-	 * @param txnId                       the txn id
-	 * @param pagaeable the pagaeable
+	 * @param txnId        the txn id
+	 * @param pagaeable    the pagaeable
 	 * @param authtypecode the authtypecode
 	 * @return the list
 	 */
-	@Query(value="Select * from ida.auth_transaction where request_trn_id=:txnId AND auth_type_code=:authtypecode ORDER BY cr_dtimes DESC", nativeQuery = true)
-	public List<AutnTxn> findByUinorVid(@Param("txnId") String txnId,
-			Pageable pagaeable, @Param("authtypecode")String authtypecode);
+	@Query(value = "Select * from ida.auth_transaction where request_trn_id=:txnId AND auth_type_code=:authtypecode ORDER BY cr_dtimes DESC", nativeQuery = true)
+	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
+			@Param("authtypecode") String authtypecode);
+
+	@Query(value = "Select * from ida.auth_transaction where ref_id=:individualId ORDER BY cr_dtimes DESC", nativeQuery = true)
+	public List<AutnTxn> findByUin(@Param("individualId") String individualId, Pageable pagaeable);
 
 	/**
 	 * Obtain the number of count of request_dTtimes for particular UIN(uniqueId)

@@ -402,8 +402,8 @@ public class BookingServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
-		Mockito.when(bookingDAO.findDate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(date);
-		Mockito.when(bookingDAO.findByRegcntrIdAndRegDateOrderByFromTimeAsc(Mockito.anyString(), Mockito.any()))
+	//	Mockito.when(bookingDAO.findDate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(date);
+		Mockito.when(bookingDAO.findAvailability(Mockito.anyString(), Mockito.any(),Mockito.any()))
 				.thenReturn(entityList);
 		MainResponseDTO<AvailabilityDto> responseDto = service.getAvailability("10001");
 		logger.info("Response " + responseDto);
@@ -445,12 +445,11 @@ public class BookingServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
-		Mockito.when(bookingDAO.findDate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+		Mockito.when(bookingDAO.findAvailability(Mockito.anyString(), Mockito.any(),Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "", new Throwable()));
 		service.getAvailability("1");
 
 	}
-
 	@SuppressWarnings("unchecked")
 	@Test
 	public void successBookAppointment() {

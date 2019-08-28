@@ -18,7 +18,7 @@ public enum IdObjectValidatorLocationMapping {
 	
 	CITY("City", "3"),
 	
-	LOCAL_ADMINISTRATIVE_AUTHORITY("Local Administrative Authority", "4"),
+	ZONE("Zone", "4"),
 	
 	POSTAL_CODE("Postal Code", "5");
 	

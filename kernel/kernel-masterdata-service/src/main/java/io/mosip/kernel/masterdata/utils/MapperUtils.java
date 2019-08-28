@@ -29,13 +29,13 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
-import io.mosip.kernel.masterdata.entity.id.HolidayID;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
  * to destination object.
  * 
  * @author Bal Vikash Sharma
+ * @author Urvil Joshi
  * @since 1.0.0
  * @see MapperUtils
  *
@@ -496,18 +496,17 @@ public class MapperUtils {
 		Objects.requireNonNull(holidays);
 		List<HolidayDto> holidayDtos = new ArrayList<>();
 		holidays.forEach(holiday -> {
-			LocalDate date = holiday.getHolidayId().getHolidayDate();
-			HolidayID holidayId = holiday.getHolidayId();
+			LocalDate date = holiday.getHolidayDate();
 			HolidayDto dto = new HolidayDto();
-			dto.setId(holiday.getId());
+			dto.setId(holiday.getHolidayId());
 			dto.setHolidayDate(date);
-			dto.setHolidayName(holidayId.getHolidayName());
-			dto.setLangCode(holidayId.getLangCode());
+			dto.setHolidayName(holiday.getHolidayName());
+			dto.setLangCode(holiday.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
-			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setLocationCode(holiday.getLocationCode());
 			dto.setHolidayDesc(holiday.getHolidayDesc());
 			holidayDtos.add(dto);
 		});
@@ -555,7 +554,7 @@ public class MapperUtils {
 			if (arr[8] != null) {
 				deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());
 			}
-			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
+			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[10]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 
 		});

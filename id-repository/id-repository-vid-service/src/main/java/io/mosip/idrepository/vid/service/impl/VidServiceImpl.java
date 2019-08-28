@@ -65,6 +65,12 @@ import io.mosip.kernel.idgenerator.vid.exception.VidException;
 @Transactional
 public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper<VidResponseDTO>> {
 
+	/** The Constant REACTIVATE. */
+	private static final String REACTIVATE = "reactivate";
+
+	/** The Constant DEACTIVATE. */
+	private static final String DEACTIVATE = "deactivate";
+
 	/** The Constant REGENERATE_VID. */
 	private static final String REGENERATE_VID = "regenerateVid";
 
@@ -143,6 +149,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			VidResponseDTO responseDTO = new VidResponseDTO();
 			responseDTO.setVid(Long.parseLong(vid.getVid()));
 			responseDTO.setVidStatus(vid.getStatusCode());
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.CREATE_VID,
+					securityManager.hash(uin.getBytes()), IdType.VID,
+					"Create VID requested for " + vidRequest.getVidType());
 			return buildResponse(responseDTO, id.get("create"));
 		} catch (VidException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
@@ -153,12 +162,11 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.CREATE_VID,
 					securityManager.hash(uin.getBytes()), IdType.VID,
-					"Create VID requested for " + vidRequest.getVidType());
-		}
+					e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} 
 	}
 
 	/**
@@ -175,7 +183,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinToEncrypt = modResult + IdRepoConstants.SPLITTER.getValue() + uin + IdRepoConstants.SPLITTER.getValue() + encryptSalt;
+		String uinToEncrypt = modResult + IdRepoConstants.SPLITTER.getValue() + uin
+				+ IdRepoConstants.SPLITTER.getValue() + encryptSalt;
 		String uinHash = String.valueOf(modResult) + IdRepoConstants.SPLITTER.getValue()
 				+ securityManager.hashwithSalt(uin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime();
@@ -183,8 +192,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 				env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()), vidType, currentTime);
 		VidPolicy policy = policyProvider.getPolicy(vidType);
 		if (Objects.isNull(vidDetails) || vidDetails.isEmpty() || vidDetails.size() < policy.getAllowedInstances()) {
-			String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + IdRepoConstants.SPLITTER.getValue() + DateUtils.getUTCCurrentDateTime())
-					.toString();
+			String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID,
+					uin + IdRepoConstants.SPLITTER.getValue() + DateUtils.getUTCCurrentDateTime()).toString();
 			return vidRepo
 					.save(new Vid(vidRefId, vidGenerator.generateId(), uinHash, uinToEncrypt, vidType, currentTime,
 							Objects.nonNull(policy.getValidForInMinutes())
@@ -193,13 +202,14 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 							env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()),
 							IdRepoSecurityManager.getUser(), currentTime, null, null, false, null));
 		} else {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, "throwing vid creation failed");
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID,
+					"throwing vid creation failed");
 			throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
 		}
 	}
 
 	/**
-	 * Fetch details of the provided uin from Id Repository identity service and 
+	 * Fetch details of the provided uin from Id Repository identity service and
 	 * check if the uin is active or not. If not, Exception will be thrown.
 	 *
 	 * @param uin the uin
@@ -257,6 +267,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 				checkUinStatus(uinList.get(1));
 				VidResponseDTO resDTO = new VidResponseDTO();
 				resDTO.setUin(Long.parseLong(uinList.get(1)));
+				auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN,
+						securityManager.hash(vid.getBytes()), IdType.VID, "Retrieve Uin By VID requested");
 				return buildResponse(resDTO, id.get("read"));
 			} else {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID,
@@ -268,11 +280,11 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		} finally {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID,
+					e.getMessage());
 			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN,
-					securityManager.hash(vid.getBytes()), IdType.VID, "Retrieve Uin By VID requested");
+					securityManager.hash(vid.getBytes()), IdType.VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
 	}
 
@@ -297,6 +309,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			String decryptedUin = decryptUin(vidObject.getUin(), vidObject.getUinHash());
 			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
 			VidResponseDTO response = updateVidStatus(vidStatus, vidObject, decryptedUin, policy);
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Update VID requested");
 			return buildResponse(response, id.get("update"));
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, UPDATE_VID,
@@ -304,11 +318,10 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, UPDATE_VID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS,
-					securityManager.hash(vid.getBytes()), IdType.VID, "Update VID requested");
-		}
+					securityManager.hash(vid.getBytes()), IdType.VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} 
 	}
 
 	/**
@@ -374,6 +387,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			Vid generateVidObject = generateVid(uinList.get(1), vidObject.getVidTypeCode());
 			response.setVid(Long.parseLong(generateVidObject.getVid()));
 			response.setVidStatus(generateVidObject.getStatusCode());
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Regenerate VID requested");
 			return buildResponse(response, id.get("regenerate"));
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, REGENERATE_VID,
@@ -381,12 +396,69 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, REGENERATE_VID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID,
-					securityManager.hash(vid.getBytes()), IdType.VID, "Regenerate VID requested");
+					securityManager.hash(vid.getBytes()), IdType.VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.idrepository.core.spi.VidService#deactivateVIDsForUIN(java.lang.
+	 * String)
+	 */
+	@Override
+	public ResponseWrapper<VidResponseDTO> deactivateVIDsForUIN(String uin) throws IdRepoAppException {
+		return applyVIDStatus(uin,env.getProperty(IdRepoConstants.VID_DEACTIVATED.getValue()),DEACTIVATE,env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.idrepository.core.spi.VidService#reactivateVIDsForUIN(java.lang.String)
+	 */
+	@Override
+	public ResponseWrapper<VidResponseDTO> reactivateVIDsForUIN(String uin) throws IdRepoAppException {
+		return applyVIDStatus(uin, env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()), REACTIVATE,env.getProperty(IdRepoConstants.VID_DEACTIVATED.getValue()));
+	}
+	
+	/**
+	 * 
+	 * @param uin
+	 * @param status
+	 * @param idType
+	 * @param vidStatusToRetrieveVIDList
+	 * @return VidResponseDTO 
+	 * @throws IdRepoAppException
+	 */
+	private ResponseWrapper<VidResponseDTO> applyVIDStatus(String uin,String status,String idType,String vidStatusToRetrieveVIDList) throws IdRepoAppException {
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
+		String hashSalt = uinHashSaltRepo.retrieveSaltById((int) (Long.parseLong(uin) % moduloValue));
+		String uinHash = String.valueOf((Long.parseLong(uin) % moduloValue)) + IdRepoConstants.SPLITTER.getValue()
+				+ securityManager.hashwithSalt(uin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
+		List<Vid> vidList = vidRepo.findByUinHashAndStatusCodeAndExpiryDTimesAfter(uinHash,
+				vidStatusToRetrieveVIDList, DateUtils.getUTCCurrentDateTime());
+		if (!vidList.isEmpty()) {
+			String decryptedUin = decryptUin(vidList.get(0).getUin(), uinHash);
+			vidList.forEach(vid -> {
+				vid.setStatusCode(status);
+				vid.setUpdatedBy(IdRepoSecurityManager.getUser());
+				vid.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime());
+				vid.setUin(decryptedUin);
+			});
+			vidRepo.saveAll(vidList);
+			VidResponseDTO response = new VidResponseDTO();
+			response.setVidStatus(status);
+			return buildResponse(response, id.get(idType));
+		} else {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, "deactivateVIDsForUIN",
+					"throwing NO_RECORD_FOUND_VID");
+			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 		}
 	}
+	
+	
 
 	/**
 	 * This method will verify the status of vid from the allowed status available.
@@ -424,7 +496,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
 		if (!DateUtils.after(expiryDTimes, DateUtils.getUTCCurrentDateTime())) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, "checkExpiry", "throwing Expired VID");
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, "checkExpiry",
+					"throwing Expired VID");
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), EXPIRED));
 		}
@@ -453,7 +526,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private String decryptUin(String uin, String uinHash) throws IdRepoAppException {
-		List<String> uinDetails = Arrays.stream(uin.split(IdRepoConstants.SPLITTER.getValue())).collect(Collectors.toList());
+		List<String> uinDetails = Arrays.stream(uin.split(IdRepoConstants.SPLITTER.getValue()))
+				.collect(Collectors.toList());
 		String decryptSalt = uinEncryptSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
 		String encryptedUin = uin.substring(uinDetails.get(0).length() + 1, uin.length());
@@ -464,7 +538,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		if (!MessageDigest.isEqual(uinHashWithSalt.getBytes(), uinHash.getBytes())) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UIN_HASH_MISMATCH);
 		}
-		return uinDetails.get(0) + IdRepoConstants.SPLITTER.getValue() + decryptedUin + IdRepoConstants.SPLITTER.getValue() + decryptSalt;
+		return uinDetails.get(0) + IdRepoConstants.SPLITTER.getValue() + decryptedUin
+				+ IdRepoConstants.SPLITTER.getValue() + decryptSalt;
 	}
 
 	/**
@@ -481,5 +556,4 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		responseDto.setResponse(response);
 		return responseDto;
 	}
-
 }

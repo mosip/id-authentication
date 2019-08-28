@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import lombok.AllArgsConstructor;
@@ -85,10 +86,16 @@ public class Device extends BaseEntity implements Serializable {
 
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
+	
+	@Column(name = "zone_code", length = 36)
+	private String zoneCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "dspec_id", referencedColumnName = "id", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private DeviceSpecification deviceSpecification;
+
+	@Transient
+	private String mapStatus;
 
 }

@@ -43,6 +43,14 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class VidController {
 
+	private static final String REACTIVATE = "reactivate";
+
+	private static final String DEACTIVATE = "deactivate";
+
+	private static final String UIN = "uin";
+
+	private static final String DEACTIVATE_VID = "deactivateVid";
+
 	/** The Constant VID. */
 	private static final String VID = "vid";
 
@@ -123,7 +131,7 @@ public class VidController {
 	 * @return uin the uin
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
 	@GetMapping(path = "/vid/{VID}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> retrieveUinByVid(@PathVariable("VID") String vid)
 			throws IdRepoAppException {
@@ -174,8 +182,8 @@ public class VidController {
 	}
 
 	/**
-	 * This method will accepts an vid, if vid is valid to regenerate then regenerated
-	 * vid will be returned as response.
+	 * This method will accepts an vid, if vid is valid to regenerate then
+	 * regenerated vid will be returned as response.
 	 *
 	 * @param vid the vid
 	 * @return the response entity
@@ -197,5 +205,63 @@ public class VidController {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, REGENERATE_VID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, REGENERATE);
 		}
+	}
+
+	/**
+	 * This method will accept an uin, if uin is valid then it will deactivate all
+	 * the respective vid's
+	 * 
+	 * @param request
+	 * @param errors
+	 * @return
+	 * @throws IdRepoAppException
+	 */
+	@PostMapping(path = "/vid/deactivate", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseWrapper<VidResponseDTO>> deactivateVIDsForUIN(
+			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
+			throws IdRepoAppException {
+		try {
+			validator.validateId(request.getId(), DEACTIVATE);
+			DataValidationUtil.validate(errors);
+			return new ResponseEntity<>(vidService.deactivateVIDsForUIN(String.valueOf(request.getRequest().getUin())),
+					HttpStatus.OK);
+		} catch (InvalidIDException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, DEACTIVATE_VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, DEACTIVATE_VID, e.getMessage());
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		}
+
+	}
+
+	/**
+	 * This method will accept an uin, if uin is valid then it will reactivate all
+	 * the respective vid's
+	 * 
+	 * @param request
+	 * @param errors
+	 * @return
+	 * @throws IdRepoAppException
+	 */
+	@PostMapping(path = "/vid/reactivate", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseWrapper<VidResponseDTO>> reactivateVIDsForUIN(
+			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
+			throws IdRepoAppException {
+		try {
+			validator.validateId(request.getId(), REACTIVATE);
+			DataValidationUtil.validate(errors);
+			return new ResponseEntity<>(vidService.reactivateVIDsForUIN(String.valueOf(request.getRequest().getUin())),
+					HttpStatus.OK);
+		} catch (InvalidIDException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, DEACTIVATE_VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, DEACTIVATE_VID, e.getMessage());
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		}
+
 	}
 }

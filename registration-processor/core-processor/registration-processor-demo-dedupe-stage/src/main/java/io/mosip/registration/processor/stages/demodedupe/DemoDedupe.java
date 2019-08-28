@@ -50,7 +50,7 @@ public class DemoDedupe {
 				"DemoDedupe::performDedupe()::entry");
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
-		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
+		List<DemographicInfoDto> demographicInfoDtos;
 		List<DemographicInfoDto> infoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
 			infoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(), demoDto.getGenderCode(),

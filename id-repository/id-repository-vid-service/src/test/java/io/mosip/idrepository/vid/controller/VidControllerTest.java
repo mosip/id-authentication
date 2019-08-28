@@ -41,6 +41,7 @@ import io.mosip.idrepository.vid.validator.VidRequestValidator;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 
 /**
@@ -54,6 +55,8 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 @ConfigurationProperties("mosip.idrepo.vid")
 @ActiveProfiles("test")
 public class VidControllerTest {
+
+	private static final String UIN = "uin";
 
 	private static final String CREATE = "create";
 
@@ -73,6 +76,9 @@ public class VidControllerTest {
 
 	@Mock
 	private VidValidator<String> validator;
+
+	@Mock
+	private UinValidator<String> uinValidator;
 
 	@Before
 	public void before() {
@@ -124,8 +130,7 @@ public class VidControllerTest {
 			controller.retrieveUinByVid("12345");
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(),
-					e.getErrorText());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
 		}
 	}
 
@@ -138,11 +143,12 @@ public class VidControllerTest {
 		request.setVidStatus("ACTIVE");
 		req.setVersion("v1");
 		req.setRequest(request);
-		ResponseWrapper<VidResponseDTO> response =new  ResponseWrapper<VidResponseDTO>();
+		ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<VidResponseDTO>();
 		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<>();
 		Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
-		ResponseEntity<ResponseWrapper<VidResponseDTO>> updateVidStatus = controller.updateVidStatus("123456", req, errors);
+		ResponseEntity<ResponseWrapper<VidResponseDTO>> updateVidStatus = controller.updateVidStatus("123456", req,
+				errors);
 		ResponseWrapper<VidResponseDTO> responseBody = updateVidStatus.getBody();
 		responseBody.setResponsetime(null);
 		response.setResponsetime(null);
@@ -172,19 +178,18 @@ public class VidControllerTest {
 	@Test
 	public void testUpdateVidInvalid_DataException() throws IdRepoAppException {
 		try {
-		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
-		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
-		when(validator.validateId(Mockito.anyString())).thenReturn(true);
-		Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
-		errors.reject(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-		controller.updateVidStatus("123456", req, errors);
-	} catch (IdRepoAppException e) {
-		assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
-		assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorMessage(),
-				e.getErrorText());
-	}
+			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+			ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
+			when(validator.validateId(Mockito.anyString())).thenReturn(true);
+			Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+			errors.reject(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
+			controller.updateVidStatus("123456", req, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
 
 	}
 
@@ -200,8 +205,7 @@ public class VidControllerTest {
 			controller.updateVidStatus("123456", req, errors);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(),
-					e.getErrorText());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
 		}
 	}
 
@@ -227,8 +231,9 @@ public class VidControllerTest {
 			request.setUin(2953190571L);
 			req.setRequest(request);
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
-			Mockito.when(vidService.generateVid(Mockito.any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(),
-					String.format(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), CREATE)));
+			Mockito.when(vidService.generateVid(Mockito.any()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(),
+							String.format(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), CREATE)));
 			when(validator.validateId(Mockito.anyString())).thenReturn(true);
 			controller.createVid(req, errors);
 		} catch (IdRepoAppException e) {
@@ -237,9 +242,9 @@ public class VidControllerTest {
 					e.getErrorText());
 		}
 	}
-	
+
 	@Test
-	public void testRegenerateVid_Valid() throws IdRepoAppException{
+	public void testRegenerateVid_Valid() throws IdRepoAppException {
 		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
 		Mockito.when(vidService.regenerateVid(Mockito.anyString())).thenReturn(value);
 		when(validator.validateId(Mockito.anyString())).thenReturn(true);
@@ -247,7 +252,7 @@ public class VidControllerTest {
 		assertEquals(value, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
-	
+
 	@Test
 	public void testRegenerateVidIdRepoAppException() throws Throwable {
 		try {
@@ -258,11 +263,10 @@ public class VidControllerTest {
 			controller.regenerateVid("123456");
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(),
-					e.getErrorText());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testRegenerateVid_InvalidVidException() {
 		try {
@@ -279,24 +283,136 @@ public class VidControllerTest {
 					e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testData() throws JsonParseException, JsonMappingException, IOException {
-		String s ="{\"ara\":[\"MDDR\",\"أكدال\",\"منَسرَ \",\"QRHS\",\"حي الرياض\",\"HARD\",\"علال التازي\",\"مڭرن\",\"العصام\",\"سيدي الطيبي\",\"مدينة العرفان\",\"ASSM\",\"اولاد اوجيه\",\"ELYF\",\"SDTB\",\"SOUS\",\"OLOJ\",\"بن منصور\",\"مدينة\",\"اليوسفية\",\"مهدية\",\"MOGR\",\"السويسي\",\"BNMR\",\"MEHD\",\"AGDL\",\"SATZ\",\"MNAS\",\"حي حسان\",\"MADI\"],\"fra\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"Médina de Rabat\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\"],\"eng\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\",\"Medina de Rabat\"]}";
-		Map<String, Set<String>> locationDetails = new ObjectMapper().readValue(s, new TypeReference<Map<String, Set<String>>>() {
-		});
+		String s = "{\"ara\":[\"MDDR\",\"أكدال\",\"منَسرَ \",\"QRHS\",\"حي الرياض\",\"HARD\",\"علال التازي\",\"مڭرن\",\"العصام\",\"سيدي الطيبي\",\"مدينة العرفان\",\"ASSM\",\"اولاد اوجيه\",\"ELYF\",\"SDTB\",\"SOUS\",\"OLOJ\",\"بن منصور\",\"مدينة\",\"اليوسفية\",\"مهدية\",\"MOGR\",\"السويسي\",\"BNMR\",\"MEHD\",\"AGDL\",\"SATZ\",\"MNAS\",\"حي حسان\",\"MADI\"],\"fra\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"Médina de Rabat\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\"],\"eng\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\",\"Medina de Rabat\"]}";
+		Map<String, Set<String>> locationDetails = new ObjectMapper().readValue(s,
+				new TypeReference<Map<String, Set<String>>>() {
+				});
 		String req = "منسر ";
-		
-		for(Entry<String, Set<String>> location : locationDetails.entrySet()) {
-			Set<String> set= location.getValue();
-			/*for(String str : set) {
-				if(str.equals(req)) {
-					System.out.println(true);
-				}
-			}*/
+
+		for (Entry<String, Set<String>> location : locationDetails.entrySet()) {
+			Set<String> set = location.getValue();
+			/*
+			 * for(String str : set) { if(str.equals(req)) { System.out.println(true); } }
+			 */
 			System.err.println(set.contains(req));
 		}
-		
-	}
-}
 
+	}
+
+	@Test
+	public void testDeactivateVID_valid() throws IdRepoAppException {
+		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
+		Mockito.when(vidService.deactivateVIDsForUIN(Mockito.anyString())).thenReturn(value);
+		when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+		VidRequestDTO request = new VidRequestDTO();
+		request.setUin(2953190571L);
+		req.setRequest(request);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+		ResponseEntity<ResponseWrapper<VidResponseDTO>> responseEntity = controller.deactivateVIDsForUIN(req, errors);
+		assertEquals(value, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+	}
+
+	@Test
+	public void testDeactivateVID_InvalidUINException() throws Throwable {
+		try {
+			when(uinValidator.validateId(Mockito.anyString()))
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
+			Mockito.when(vidService.deactivateVIDsForUIN(Mockito.anyString()))
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
+			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin(2953190571L);
+			req.setRequest(request);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+			controller.deactivateVIDsForUIN(req, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
+		}
+	}
+
+	@Test
+	public void testDeactivateVID_IdRepoAppException() throws Throwable {
+		try {
+			when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+			Mockito.when(vidService.deactivateVIDsForUIN(Mockito.anyString()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
+							IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage()));
+			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin(2953190571L);
+			req.setRequest(request);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+			controller.deactivateVIDsForUIN(req, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	
+	@Test
+	public void testReactivateVID_valid() throws IdRepoAppException {
+		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
+		Mockito.when(vidService.reactivateVIDsForUIN(Mockito.anyString())).thenReturn(value);
+		when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+		VidRequestDTO request = new VidRequestDTO();
+		request.setUin(2953190571L);
+		req.setRequest(request);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+		ResponseEntity<ResponseWrapper<VidResponseDTO>> responseEntity = controller.reactivateVIDsForUIN(req, errors);
+		assertEquals(value, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+	}
+
+	@Test
+	public void testReactivateVID_InvalidUINException() throws Throwable {
+		try {
+			when(uinValidator.validateId(Mockito.anyString()))
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
+			Mockito.when(vidService.reactivateVIDsForUIN(Mockito.anyString()))
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
+			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin(2953190571L);
+			req.setRequest(request);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+			controller.reactivateVIDsForUIN(req, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
+		}
+	}
+
+	@Test
+	public void testReactivateVID_IdRepoAppException() throws Throwable {
+		try {
+			when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+			Mockito.when(vidService.reactivateVIDsForUIN(Mockito.anyString()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
+							IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage()));
+			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin(2953190571L);
+			req.setRequest(request);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
+			controller.reactivateVIDsForUIN(req, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
+		}
+	}
+
+}

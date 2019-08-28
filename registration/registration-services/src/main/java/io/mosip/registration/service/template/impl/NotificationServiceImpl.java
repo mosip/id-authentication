@@ -25,6 +25,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -37,6 +38,7 @@ import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -74,20 +76,60 @@ public class NotificationServiceImpl implements NotificationService {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResponseDTO sendSMS(String message, String number, String regId) {
+	public ResponseDTO sendSMS(String message, String number, String regId) throws RegBaseCheckedException {
 
 		LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendSMS Method called");
-
 		ResponseDTO responseDTO = new ResponseDTO();
-		NotificationDTO smsdto = new NotificationDTO();
-		Map<String, String> requestMap = new HashMap<>();
-		requestMap.put("message", message);
-		requestMap.put("number", number);
-		smsdto.setRequest(requestMap);
-		smsdto.setRequesttime(DateUtils.formatToISOString(LocalDateTime.now()));
-
-		sendNotification(regId, responseDTO, smsdto, SMS_SERVICE, RegistrationConstants.OTP_VALIDATION_SUCCESS);
+		if (mandatoryCheck(message, number)) {
+			NotificationDTO smsdto = new NotificationDTO();
+			Map<String, String> requestMap = new HashMap<>();
+			requestMap.put("message", message);
+			requestMap.put("number", number);
+			smsdto.setRequest(requestMap);
+			smsdto.setRequesttime(DateUtils.formatToISOString(LocalDateTime.now()));
+			sendNotification(regId, responseDTO, smsdto, SMS_SERVICE, RegistrationConstants.OTP_VALIDATION_SUCCESS);
+		} else {
+			LOGGER.error(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,"Message and Number can not be null");
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.NOTIFICATION_MANDATORY_CHECK_SMS_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.NOTIFICATION_MANDATORY_CHECK_SMS_EXCEPTION.getErrorMessage());
+		}
 		return responseDTO;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.NotificationService#sendEmail(java.lang.String,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResponseDTO sendEmail(String message, String emailId, String regId) throws RegBaseCheckedException {
+
+		LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendEmail Method called");
+		ResponseDTO responseDTO = new ResponseDTO();
+		if (mandatoryCheck(message, emailId)) {
+			auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			LinkedMultiValueMap<String, Object> emailDetails = new LinkedMultiValueMap<>();
+			emailDetails.add("mailTo", emailId);
+			emailDetails.add("mailSubject", EMAIL_SUBJECT);
+			emailDetails.add("mailContent", message);
+
+			sendNotification(regId, responseDTO, emailDetails, EMAIL_SERVICE,
+					RegistrationConstants.OTP_VALIDATION_SUCCESS);
+		} else {
+			LOGGER.error(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,"Message and Email can not be null");
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.NOTIFICATION_MANDATORY_CHECK_EMAIL_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.NOTIFICATION_MANDATORY_CHECK_EMAIL_EXCEPTION.getErrorMessage());
+		}
+		return responseDTO;
+	}
+
+	private boolean mandatoryCheck(String message, String id) {
+		return !StringUtils.isEmpty(message) && !StringUtils.isEmpty(id);
 	}
 
 	/**
@@ -104,11 +146,11 @@ public class NotificationServiceImpl implements NotificationService {
 		try {
 			Map<String, List<Map<String, String>>> response = (Map<String, List<Map<String, String>>>) serviceDelegateUtil
 					.post(service, object, RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			if (response!= null && response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null) {
+			if (response != null && response.get(RegistrationConstants.RESPONSE) != null) {
 				Map<String, Object> resMap = (Map<String, Object>) response
-						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+						.get(RegistrationConstants.RESPONSE);
 				String res = (String) resMap.get(RegistrationConstants.UPLOAD_STATUS);
-				if (res.contains(expectedStatus)) {					
+				if (res.contains(expectedStatus)) {
 					LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, resMap.toString());
 					auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
 							SessionContext.userContext().getUserId(),
@@ -118,7 +160,7 @@ public class NotificationServiceImpl implements NotificationService {
 					successResponseDTO.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS);
 					responseDTO.setSuccessResponseDTO(successResponseDTO);
 				}
-			} else if(response!= null) {
+			} else if (response != null) {
 				String errorMessage = Optional.ofNullable(response.get(RegistrationConstants.ERRORS))
 						.filter(list -> !list.isEmpty()).flatMap(list -> list.stream()
 								.filter(map -> map.containsKey(RegistrationConstants.ERROR_MSG)).findAny())
@@ -152,30 +194,6 @@ public class NotificationServiceImpl implements NotificationService {
 			errorResponse.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponse);
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.NotificationService#sendEmail(java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public ResponseDTO sendEmail(String message, String emailId, String regId) {
-
-		LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendEmail Method called");
-		auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
-				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-		ResponseDTO responseDTO = new ResponseDTO();
-		LinkedMultiValueMap<String, Object> emailDetails = new LinkedMultiValueMap<>();
-		emailDetails.add("mailTo", emailId);
-		emailDetails.add("mailSubject", EMAIL_SUBJECT);
-		emailDetails.add("mailContent", message);
-
-		sendNotification(regId, responseDTO, emailDetails, EMAIL_SERVICE, RegistrationConstants.OTP_VALIDATION_SUCCESS);
-		return responseDTO;
 	}
 
 }

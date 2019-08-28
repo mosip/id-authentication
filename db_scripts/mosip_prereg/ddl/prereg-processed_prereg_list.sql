@@ -1,3 +1,15 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_prereg
+-- Table Name 	: prereg.processed_prereg_list
+-- Purpose    	: Table to store all the pre-registration list received from registration processor within pre-registration module
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+--
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 -- object: prereg.processed_prereg_list | type: TABLE --
 -- DROP TABLE IF EXISTS prereg.processed_prereg_list CASCADE;
 CREATE TABLE prereg.processed_prereg_list(
@@ -26,14 +38,5 @@ COMMENT ON COLUMN prereg.processed_prereg_list.first_received_dtimes IS 'Datetim
 COMMENT ON COLUMN prereg.processed_prereg_list.status_code IS 'status of the pre-registration status update into actual tables';
 -- ddl-end --
 COMMENT ON COLUMN prereg.processed_prereg_list.status_comments IS 'status comments of the pre-registration status update into actual tables';
--- ddl-end --
-ALTER TABLE prereg.processed_prereg_list OWNER TO appadmin;
--- ddl-end --
-
--- object: pprlst_pregtrn_fk | type: CONSTRAINT --
--- ALTER TABLE prereg.processed_prereg_list DROP CONSTRAINT IF EXISTS pprlst_pregtrn_fk CASCADE;
-ALTER TABLE prereg.processed_prereg_list ADD CONSTRAINT pprlst_pregtrn_fk FOREIGN KEY (prereg_trn_id)
-REFERENCES prereg.pre_registration_transaction (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 

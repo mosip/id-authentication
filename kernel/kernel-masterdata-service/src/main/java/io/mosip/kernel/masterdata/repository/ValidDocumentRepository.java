@@ -53,5 +53,30 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	@Modifying
 	@Query("UPDATE ValidDocument v SET v.updatedBy=?4,v.isDeleted =true , v.deletedDateTime = ?1 WHERE v.docCategoryCode =?2 and v.docTypeCode =?3 and (v.isDeleted is null or v.isDeleted =false)")
 	int deleteValidDocument(LocalDateTime deletedDateTime, String docCategoryCode, String docTypeCode,
-			String updatedBy);
+			String updatedBy);	
+	
+	/**
+	 * Method to find valid document based on Document Category code and Document Type code provided.
+	 * 
+	 * @param docCategoryCode the document category code.
+	 * @param docTypeCode the document type code.
+	 * @return ValidDocument
+	 */
+	@Query("FROM ValidDocument WHERE docCategoryCode=?1 AND docTypeCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	ValidDocument findByDocCategoryCodeAndDocTypeCode(String docCategoryCode, String docTypeCode);
+	
+	/**
+	 * Method to map valid document based on Document Category code and Document Type code provided.
+	 * 
+	 * @param updatedBy       the caller of updation
+	 * @param updatedDateTime the Date and time of updation.
+	 * @param docCategoryCode the document category code.
+	 * @param docTypeCode     the document type code.
+	 * 
+	 * @return the number of rows affected.
+	 */
+	@Modifying
+	@Query("UPDATE ValidDocument v SET v.isActive=?1, v.updatedBy=?2, v.updatedDateTime=?3 WHERE v.docCategoryCode=?4 and v.docTypeCode=?5 and (v.isDeleted is null or v.isDeleted =false)")
+	int updateDocCategoryAndDocTypeMapping(boolean isActive, String updatedBy, LocalDateTime updatedDateTime, String docCategoryCode, String docTypeCode);
+
 }
