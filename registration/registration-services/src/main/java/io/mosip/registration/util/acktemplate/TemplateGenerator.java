@@ -846,7 +846,7 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
 				getValue(individualIdentity.getReferenceIdentityNumber()));
 		
-		if (isChild || registration.isUpdateUINNonBiometric()) {
+		if (isChild) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("parentName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,

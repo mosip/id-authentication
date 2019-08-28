@@ -5,9 +5,13 @@
 package io.mosip.preregistration.batchjob.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import lombok.Getter;
 
+/**
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 @Getter
 public class NoPreIdAvailableException extends BaseUncheckedException {
 
@@ -15,7 +19,6 @@ public class NoPreIdAvailableException extends BaseUncheckedException {
 	 * 
 	 */
 	private static final long serialVersionUID = -8146722453630331685L;
-	private MainResponseDTO<?> response;
 	public NoPreIdAvailableException(String message) {
 		super("",message);
 	}
@@ -25,11 +28,6 @@ public class NoPreIdAvailableException extends BaseUncheckedException {
 
 	public NoPreIdAvailableException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
-	}
-	
-	public NoPreIdAvailableException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
-		super(errorCode, errorMessage);
-		this.response=response;
 	}
 
 }

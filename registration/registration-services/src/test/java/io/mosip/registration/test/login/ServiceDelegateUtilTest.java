@@ -197,7 +197,7 @@ public class ServiceDelegateUtilTest {
 
 		// Mocking Method Calls
 		when(environment.getProperty("auth_by_password.service.url")).thenReturn("https://integ.mosip.io/authmanager/v1.0/authenticate/useridPwd");
-		when(restClientUtil.invoke(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
+		when(restClientUtil.invokeForToken(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
 		PowerMockito.mockStatic(SessionContext.class);
 		PowerMockito.doNothing().when(SessionContext.class, "setAuthTokenDTO", Mockito.any());
 
@@ -234,7 +234,7 @@ public class ServiceDelegateUtilTest {
 
 		// Mocking Method Calls
 		when(environment.getProperty("auth_by_clientid_secretkey.service.url")).thenReturn("https://integ.mosip.io/authmanager/v1.0/authenticate/clientidsecretkey");
-		when(restClientUtil.invoke(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
+		when(restClientUtil.invokeForToken(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
@@ -264,7 +264,7 @@ public class ServiceDelegateUtilTest {
 
 		// Mocking Method Calls
 		when(environment.getProperty("auth_by_clientid_secretkey.service.url")).thenReturn("https://integ.mosip.io/authmanager/v1.0/authenticate/clientidsecretkey");
-		when(restClientUtil.invoke(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
+		when(restClientUtil.invokeForToken(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
@@ -276,7 +276,7 @@ public class ServiceDelegateUtilTest {
 
 		// Mocking Method Calls
 		when(environment.getProperty("auth_by_clientid_secretkey.service.url")).thenReturn("https://integ.mosip.io/authmanager/v1.0/authenticate/clientidsecretkey");
-		when(restClientUtil.invoke(Mockito.any(RequestHTTPDTO.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_GATEWAY));
+		when(restClientUtil.invokeForToken(Mockito.any(RequestHTTPDTO.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_GATEWAY));
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
@@ -300,7 +300,7 @@ public class ServiceDelegateUtilTest {
 		responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseBody);
 
 		// Mocking Method Calls
-		when(restClientUtil.invoke(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
+		when(restClientUtil.invokeForToken(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
 		
 		Assert.assertTrue(delegateUtil.isAuthTokenValid("authZToken"));
 	}

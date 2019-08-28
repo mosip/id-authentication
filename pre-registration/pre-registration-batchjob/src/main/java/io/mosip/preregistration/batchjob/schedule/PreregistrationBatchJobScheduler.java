@@ -4,8 +4,6 @@
  */
 package io.mosip.preregistration.batchjob.schedule;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -21,6 +19,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
+
 /**
  * This class is a job scheduler of batch in which jobs are getting executed
  * based on cron expressions.
@@ -34,7 +35,7 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class PreregistrationBatchJobScheduler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PreregistrationBatchJobScheduler.class);
+	private Logger LOGGER = LoggerConfiguration.logConfig(PreregistrationBatchJobScheduler.class);
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
@@ -44,7 +45,7 @@ public class PreregistrationBatchJobScheduler {
 	private JobLauncher jobLauncher;
 
 	@Autowired
-	private Job bookingJob;
+	private Job availabilitySyncJob;
 
 	@Autowired
 	private Job consumedStatusJob;
@@ -53,37 +54,37 @@ public class PreregistrationBatchJobScheduler {
 	private Job expiredStatusJob;
 
 	@Scheduled(cron = "${preregistration.job.schedule.cron.consumedStatusJob}")
-	public void upadteStatusScheduler() {
+	public void consumedStatusScheduler() {
 
 		JobParameters jobParam = new JobParametersBuilder().addLong("updateStatusTime", System.currentTimeMillis())
 				.toJobParameters();
 		try {
 			JobExecution jobExecution = jobLauncher.run(consumedStatusJob, jobParam);
 
-			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId().toString(), jobExecution.getStatus().toString());
 
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 
-			LOGGER.error(LOGDISPLAY, "UpdateTableJob failed to read Processed_pre_registration_list", e);
+			LOGGER.error(LOGDISPLAY, "Consumed status job failed to read Processed_pre_registration_list", e.getMessage(),null);
 		}
 	}
 
 	@Scheduled(cron = "${preregistration.job.schedule.cron.slotavailability}")
-	public void bookingJobScheduler() {
+	public void availabilitySyncScheduler() {
 
 		JobParameters jobParam = new JobParametersBuilder().addLong("bookingJobTime", System.currentTimeMillis())
 				.toJobParameters();
 		try {
 
-			JobExecution jobExecution = jobLauncher.run(bookingJob, jobParam);
+			JobExecution jobExecution = jobLauncher.run(availabilitySyncJob, jobParam);
 
-			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId().toString(), jobExecution.getStatus().toString());
 
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 
-			LOGGER.error(LOGDISPLAY, "Booking Job failed to read data from master data service", e);
+			LOGGER.error(LOGDISPLAY, "Availability Sync Job failed to read data from master data service", e.getMessage(),null);
 		}
 
 	}
@@ -97,12 +98,12 @@ public class PreregistrationBatchJobScheduler {
 
 			JobExecution jobExecution = jobLauncher.run(expiredStatusJob, jobParam);
 
-			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId().toString(), jobExecution.getStatus().toString());
 
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 
-			LOGGER.error(LOGDISPLAY, "Expired Status Job failed to read data from service", e);
+			LOGGER.error(LOGDISPLAY, "Expired Status Job failed to read data from service", e.getMessage(),null);
 		}
 
 	}

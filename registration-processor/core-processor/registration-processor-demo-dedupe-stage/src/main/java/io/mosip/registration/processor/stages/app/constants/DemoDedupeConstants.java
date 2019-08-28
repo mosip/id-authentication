@@ -15,7 +15,7 @@ public class DemoDedupeConstants {
 
 	/** The Constant IDENTIFY. */
 	public static final String IDENTIFY = "IDENTIFY";
-	
+
 	public static final String NO_DATA_IN_DEMO = "Duplicate data not saved in demo list table";
 	public static final String RECORD_INSERTED_FROM_ABIS_HANDLER = "Record is inserted in demo dedupe potential match, destination stage is abis handler";
 	public static final String DEMO_SUCCESS = "Demo dedupe successful. No duplicates found";
@@ -24,4 +24,5 @@ public class DemoDedupeConstants {
 	public static final String SENDING_FOR_MANUAL = "ABIS response Details found. Hence sending to manual adjudication";
 	public static final String REJECTED_OR_REREGISTER = "The packet status is Rejected or Re-Register. Hence ignoring Registration Id";
 	public static final String NO_MATCH_FOUND = "No matched RegistrationId's found. Hence data is not inserting in manual adjudication table";
+	public static final String DEMO_SKIP = "Demographic Deduplication Skipped";
 }
