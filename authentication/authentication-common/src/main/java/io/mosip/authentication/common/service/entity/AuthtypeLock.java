@@ -1,24 +1,27 @@
 package io.mosip.authentication.common.service.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
-
 /**
- * 
- * @author Dinesh Karuppiah.T
+ * The Class AuthtypeLock - Entity class for table uin_auth_lock.
  *
+ * @author Dinesh Karuppiah.T
  */
 @Data
 @Table(name = "uin_auth_lock", schema = "ida")
 @Entity
+@IdClass(AuthtypeLock.Compositeclass.class)
 public class AuthtypeLock {
 
 	@Id
@@ -29,10 +32,12 @@ public class AuthtypeLock {
 	@Column(name = "uin_hash")
 	private String hashedUin;
 
+	@Id
 	@NotNull
 	@Column(name = "auth_type_code")
 	private String authtypecode;
 
+	@Id
 	@NotNull
 	@Column(name = "lock_request_datetime")
 	private LocalDateTime lockrequestDTtimes;
@@ -43,10 +48,15 @@ public class AuthtypeLock {
 
 	@Column(name = "lock_end_datetime")
 	private LocalDateTime lockendDTtimes;
-	
+
 	@NotNull
 	@Column(name = "status_code")
 	private String statuscode;
+
+	@NotNull
+	@Size(max = 3)
+	@Column(name = "lang_code")
+	private String langCode;
 
 	@NotNull
 	@Column(name = "cr_by")
@@ -67,5 +77,20 @@ public class AuthtypeLock {
 
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
+
+	/**
+	 * Instantiates a new compositeclass.
+	 */
+	@Data
+	static class Compositeclass implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
+		private String uin;
+		
+		private String authtypecode;
+		
+		private LocalDateTime lockrequestDTtimes;
+	}
 
 }

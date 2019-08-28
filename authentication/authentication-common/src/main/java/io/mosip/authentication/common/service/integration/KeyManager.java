@@ -216,6 +216,7 @@ public class KeyManager {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
 				response = restHelper.requestSync(restRequestDTO);
+				
 				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
 			} catch (IDDataValidationException | RestServiceException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());

@@ -20,6 +20,9 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
+import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -71,10 +74,20 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private IdService<AutnTxn> idAuthService;
+	
+	
+	@Autowired
+	private UinEncryptSaltRepo uinEncryptSaltRepo;
+
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
 
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
+	
+	@Autowired
+	private IdAuthTransactionManager transactionManager;
 
 	/*
 	 * (non-Javadoc)
@@ -144,7 +157,7 @@ public class KycFacadeImpl implements KycFacade {
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
 					.withRequestType(RequestType.KYC_AUTH_REQUEST).withStaticToken(staticTokenId)
 					.withStatus(kycAuthResponseDTO.getResponse().isKycStatus()).withUin(uin)
-					.build(env);
+					.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		return kycAuthResponseDTO;
