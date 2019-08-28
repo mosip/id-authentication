@@ -316,11 +316,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, true, syncJobId);
 
 				if (null != mainResponseDTO
-						&& null != mainResponseDTO.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+						&& null != mainResponseDTO.get(RegistrationConstants.RESPONSE)) {
 
 					PreRegArchiveDTO preRegArchiveDTO = new ObjectMapper().readValue(
 							new ObjectMapper().writeValueAsString(
-									mainResponseDTO.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)),
+									mainResponseDTO.get(RegistrationConstants.RESPONSE)),
 							PreRegArchiveDTO.class);
 
 					decryptedPacket = preRegArchiveDTO.getZipBytes();

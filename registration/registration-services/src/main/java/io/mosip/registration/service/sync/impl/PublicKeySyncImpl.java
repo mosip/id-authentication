@@ -166,10 +166,10 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 						.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, triggerPoint);
 
 				if (null != publicKeyResponse && publicKeyResponse.size() > 0
-						&& null != publicKeyResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+						&& null != publicKeyResponse.get(RegistrationConstants.RESPONSE)) {
 
 					LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeyResponse
-							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+							.get(RegistrationConstants.RESPONSE);
 
 					KeyStore keyStore = new KeyStore();
 

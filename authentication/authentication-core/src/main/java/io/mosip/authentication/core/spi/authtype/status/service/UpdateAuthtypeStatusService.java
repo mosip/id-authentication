@@ -1,12 +1,13 @@
+
 package io.mosip.authentication.core.spi.authtype.status.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusRequestDto;
-import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
-@Component
+@Service
 public interface UpdateAuthtypeStatusService {
 
-	public UpdateAuthtypeStatusResponseDto UpdateAuthtypeStatus(UpdateAuthtypeStatusRequestDto updateAuthtypeStatusRequestDto);
+	public void updateAuthtypeStatus(AuthTypeStatusDto updateAuthtypeStatusRequestDto)
+			throws IdAuthenticationBusinessException;
 }

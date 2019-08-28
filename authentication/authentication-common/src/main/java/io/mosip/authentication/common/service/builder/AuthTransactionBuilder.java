@@ -1,22 +1,26 @@
 package io.mosip.authentication.common.service.builder;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
+import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.constant.TransactionType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -31,6 +35,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 public class AuthTransactionBuilder {
 	
+
 	/**
 	 * Instantiates a new auth transaction builder.
 	 */
@@ -71,6 +76,8 @@ public class AuthTransactionBuilder {
 
 	/** The otp request DTO. */
 	private OtpRequestDTO otpRequestDTO;
+	
+	
 	
 	/**
 	 * Set the AuthRequestDTO.
@@ -145,7 +152,7 @@ public class AuthTransactionBuilder {
 	 * @return the instance of {@code AutnTxn}
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public AutnTxn build(Environment env) throws IdAuthenticationBusinessException {
+	public AutnTxn build(Environment env,UinEncryptSaltRepo uinEncryptSaltRepo,UinHashSaltRepo uinHashSaltRepo,IdAuthTransactionManager transactionManager) throws IdAuthenticationBusinessException {
 		try {
 			String idvId;
 			String reqTime;
@@ -189,9 +196,22 @@ public class AuthTransactionBuilder {
 				autnTxn.setStatusComment(comment);
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
-					autnTxn.setUin(uin);
-					autnTxn.setUinHash(HMACUtils.digestAsPlainText
-							(HMACUtils.generateHash(uin.getBytes())));
+				int SaltModuloConstant=Integer.valueOf(env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO));
+				int uinModulo= (int)(Long.parseLong(uin)%SaltModuloConstant);
+				String hashSaltValue=uinHashSaltRepo.retrieveSaltById(uinModulo);
+				autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
+				String encryptSaltValue=uinEncryptSaltRepo.retrieveSaltById(uinModulo);
+				autnTxn.setUin(uinModulo+IdAuthCommonConstants.UIN_MODULO_SPLITTER+uin +IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
+				Optional<String> clientId=Optional.of(transactionManager.getUser());
+				if(clientId.isPresent()) {
+					autnTxn.setEntityName(clientId.get());
+					if(clientId.get().equalsIgnoreCase(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_CLIENTID))) {
+					     autnTxn.setEntitytype(TransactionType.PARTNER.getType());
+					}
+					else {
+						autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
+					}
+				}
 				return autnTxn;
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "Missing arguments to build for AutnTxn",

@@ -178,7 +178,7 @@ public class PreRegistrationDataSyncServiceTest {
 		valuesMap.put("to-time-slot", "09:15");
 		valuesMap.put("zip-filename", "70694681371453");
 		valuesMap.put("zip-bytes", RegistrationConstants.FACE_STUB);
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
+		responseMap.put(RegistrationConstants.RESPONSE, valuesMap);
 		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new PreRegistrationList());
 		Mockito.when(
 				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
@@ -244,7 +244,7 @@ public class PreRegistrationDataSyncServiceTest {
 		valuesMap.put("to-time-slot", "09:15");
 		valuesMap.put("zip-filename", "70694681371453");
 		valuesMap.put("zip-bytes", RegistrationConstants.FACE_STUB);
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
+		responseMap.put(RegistrationConstants.RESPONSE, valuesMap);
 		Mockito.when(
 				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenReturn(responseMap);

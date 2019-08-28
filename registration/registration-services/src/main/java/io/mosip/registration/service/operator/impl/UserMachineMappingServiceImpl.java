@@ -90,7 +90,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 				LinkedHashMap<String, Object> masterSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.post("user_machine_mapping", regCenterMachineUserReqDto,
 								RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-				if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (null != masterSyncResponse.get(RegistrationConstants.RESPONSE)) {
 					LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME,
 							APPLICATION_ID, RegistrationConstants.SUCCESS);
 					setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);

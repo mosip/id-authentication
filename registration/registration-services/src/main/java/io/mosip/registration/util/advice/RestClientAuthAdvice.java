@@ -287,10 +287,12 @@ public class RestClientAuthAdvice {
 				"Entering into the invalid token check");
 		if (response != null && (StringUtils.containsIgnoreCase(response.toString(), TOKEN_EXPIRED) || 
 				StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING))) {
+			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+					"Old Token got expired for the token  " +  response);
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
-			getNewAuthZToken(requestHTTPDTO);
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 					"Creating the new token ");
+			getNewAuthZToken(requestHTTPDTO);
 			return true;
 		}
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
