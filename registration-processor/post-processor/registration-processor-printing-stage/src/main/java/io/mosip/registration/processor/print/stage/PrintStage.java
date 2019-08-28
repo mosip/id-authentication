@@ -169,13 +169,13 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private static final String CLASSNAME = "PrintStage";
 
 	private static final String SEPERATOR = "::";
-	
+
 	/** The Constant FAIL_OVER. */
 	private static final String FAIL_OVER = "failover:(";
 
 	/** The Constant RANDOMIZE_FALSE. */
 	private static final String RANDOMIZE_FALSE = ")?randomize=false";
-	
+
 	private static final String CONFIGURE_MONITOR_IN_ACTIVITY = "?wireFormat.maxInactivityDuration=0";
 
 	private MosipQueue queue;
@@ -229,11 +229,39 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			if (RegistrationType.RES_REPRINT.toString().equals(object.getReg_type().toString())) {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSED.toString());
-			} 
+			}
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
+
+			regIdMap.put(regId, object);
+
+			IdType idType = IdType.RID;
+
+			String idValue = regId;
+			if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString()
+					.equalsIgnoreCase(object.getReg_type().toString())) {
+
+				PacketMetaInfo packetMetaInfo = utilities.getPacketMetaInfo(regId);
+				Identity identity = packetMetaInfo.getIdentity();
+				List<FieldValue> metadataList = identity.getMetaData();
+				IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+				String cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
+
+				if (cardType.equalsIgnoreCase(IdType.VID.toString())) {
+					idType = IdType.VID;
+					idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
+
+				} else {
+					idType = IdType.UIN;
+					JSONObject jsonObject = utilities.retrieveUIN(regId);
+					Long value = JsonUtil.getJSONValue(jsonObject, IdType.UIN.toString());
+					idValue = Long.toString(value);
+
+				}
+			}
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue);
+
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 
 			if (isAddedToQueue) {
