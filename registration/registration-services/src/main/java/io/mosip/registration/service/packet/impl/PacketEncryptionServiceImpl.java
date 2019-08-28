@@ -114,7 +114,7 @@ public class PacketEncryptionServiceImpl extends BaseService implements PacketEn
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet size validated successfully");
 
 			// Generate Zip File Name with absolute path
-			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
+			String filePath = storageService.storeToDisk(rid, encryptedPacket);
 
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Encrypted Packet saved successfully");
 
