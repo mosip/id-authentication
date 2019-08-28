@@ -672,10 +672,6 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		BiometricInfoDTO applicantBiometrics = registration.getBiometricDTO().getApplicantBiometricDTO();
 		BiometricInfoDTO authenticationBiometrics = registration.getBiometricDTO().getIntroducerBiometricDTO();
 
-		if (applicantBiometrics == null) {
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_APPLICANT_BIOMETRICS_NULL_EXCEPTION);
-		}
-
 		boolean hasApplicantBiometricException = false;
 		boolean hasAuthenticationBiometricException = false;
 		if (isFingerprintOrIrisCaptureEnabled) {
