@@ -9,6 +9,7 @@ public final class StatusConstants {
 	private static final String RPR_REGISTRATION_PROCESSOR_PREFIX = "RPR-";
 	private static final String SUCCESS = "SUCCESS-";
 	private static final String FAILED = "FAILED-";
+	private static final String SKIPPED = "SKIPPED-";
 	private static final String SYSTEM_EXCEPTION = "SYS-EXCEPTION-001";
 	public static final String SYSTEM_EXCEPTION_MESSAGE = "System Exception Occurred - Unable to Process Packet";
 
@@ -42,6 +43,8 @@ public final class StatusConstants {
 	public static final String OSI_VALIDAOR_MODULE_SUCCESS = OSI_VALIDAOR_MODULE + SUCCESS;
 	public static final String OSI_VALIDAOR_MODULE_FAILED = OSI_VALIDAOR_MODULE + FAILED;
 
+	// Message sender stage
+	public static final String MESSAGE_SENDER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MSS-";
 	public static final String OMESSAGE_SENDER_MODULE_SUCCESS = OSI_VALIDAOR_MODULE + SUCCESS;
 	public static final String OMESSAGE_SENDER_MODULE_FAILED = OSI_VALIDAOR_MODULE + FAILED;
 
@@ -69,6 +72,7 @@ public final class StatusConstants {
 	public static final String DEMO_DEDUPE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "DDP-";
 	public static final String DEMO_DEDUPE_MODULE_SUCCESS = DEMO_DEDUPE_MODULE + SUCCESS;
 	public static final String DEMO_DEDUPE_MODULE_FAILED = DEMO_DEDUPE_MODULE + FAILED;
+	public static final String DEMO_DEDUPE_MODULE_SKIPPED = DEMO_DEDUPE_MODULE + SKIPPED;
 
 	// Manual verification stage
 	public static final String MANUAL_VERIFICATION_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MNV-";
