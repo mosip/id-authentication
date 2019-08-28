@@ -208,7 +208,10 @@ public enum StatusUtil {
 			"Demo Dedupe is Successful"), POTENTIAL_MATCH_FOUND_IN_ABIS(
 					StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "001",
 					"Biometric Duplicate was Found in ABIS"), POTENTIAL_MATCH_FOUND(
-							StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "002", "Potential Demo Match was Found"),
+							StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "002",
+							"Potential Demo Match was Found"), DEMO_DEDUPE_SKIPPED(
+									StatusConstants.DEMO_DEDUPE_MODULE_SKIPPED + "003",
+									"Demographic Deduplication Skipped"),
 	// Manual verification stage
 	MANUAL_VERIFIER_APPROVED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE_SUCCESS + "001",
 			"Match Not Found by Manual Verifier"), MANUAL_VERIFIER_REJECTED_PACKET(
