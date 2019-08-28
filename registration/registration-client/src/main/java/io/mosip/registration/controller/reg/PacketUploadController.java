@@ -613,7 +613,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);
 			stage.setScene(scene);
-			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
+			stage.setTitle(RegistrationUIConstants.ALERT_NOTE_LABEL);
 			stage.show();
 			selectAllCheckBox.setSelected(false);
 			stage.setOnCloseRequest((e) -> {

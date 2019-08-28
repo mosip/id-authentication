@@ -281,15 +281,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		}
 
 		boolean isUpdated = false;
-
-		if (isPacketUpdatedInServer(preRegistration)) {
-
-			isUpdated = (preRegistration.getLastUpdatedPreRegTimeStamp().equals(lastUpdatedTimeStamp));
-		}
-
 		byte[] decryptedPacket = null;
-
 		boolean isFetchFromUi = false;
+
+		isUpdated = isUpdated(lastUpdatedTimeStamp, preRegistration, isUpdated);
+
+
 		if (syncJobId == null) {
 			isFetchFromUi = true;
 			syncJobId = RegistrationConstants.JOB_TRIGGER_POINT_USER;
@@ -316,11 +313,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, true, syncJobId);
 
 				if (null != mainResponseDTO
-						&& null != mainResponseDTO.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+						&& null != mainResponseDTO.get(RegistrationConstants.RESPONSE)) {
 
 					PreRegArchiveDTO preRegArchiveDTO = new ObjectMapper().readValue(
 							new ObjectMapper().writeValueAsString(
-									mainResponseDTO.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)),
+									mainResponseDTO.get(RegistrationConstants.RESPONSE)),
 							PreRegArchiveDTO.class);
 
 					decryptedPacket = preRegArchiveDTO.getZipBytes();
@@ -410,6 +407,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Get Pre-Registration ended");
 
+	}
+
+	private boolean isUpdated(Timestamp lastUpdatedTimeStamp, PreRegistrationList preRegistration, boolean isUpdated) {
+		if (isPacketUpdatedInServer(preRegistration)) {
+
+			isUpdated = (preRegistration.getLastUpdatedPreRegTimeStamp().equals(lastUpdatedTimeStamp));
+		}
+		return isUpdated;
 	}
 
 	/**

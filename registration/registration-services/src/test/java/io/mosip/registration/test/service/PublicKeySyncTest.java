@@ -67,7 +67,7 @@ public class PublicKeySyncTest {
 				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB");
 		valuesMap.put("issuedAt", "2020-04-09T05:51:17.334");
 		valuesMap.put("expiryAt", "2020-04-09T05:51:17.334");
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
+		responseMap.put(RegistrationConstants.RESPONSE, valuesMap);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
@@ -90,7 +90,7 @@ public class PublicKeySyncTest {
 				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB");
 		valuesMap.put("issuedAt", "2020-04-09T05:51:17.334");
 		valuesMap.put("expiryAt", "2020-04-09T05:51:17.334");
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
+		responseMap.put(RegistrationConstants.RESPONSE, valuesMap);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
 		doNothing().when(policySyncDAO).updatePolicy(keys);
@@ -112,7 +112,7 @@ public class PublicKeySyncTest {
 		errorMap.put("errorCode", "KER-KMS-005");
 		errorMap.put("message", "Required String parameter 'timeStamp' is not present");
 		valuesMap.add(errorMap);
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, null);
+		responseMap.put(RegistrationConstants.RESPONSE, null);
 		responseMap.put(RegistrationConstants.ERRORS, valuesMap);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
@@ -140,7 +140,7 @@ public class PublicKeySyncTest {
 		errorMap.put("errorCode", "KER-KMS-005");
 		errorMap.put("message", "Required String parameter 'timeStamp' is not present");
 		valuesMap.add(errorMap);
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, null);
+		responseMap.put(RegistrationConstants.RESPONSE, null);
 		responseMap.put(RegistrationConstants.ERRORS, valuesMap);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
@@ -168,7 +168,7 @@ public class PublicKeySyncTest {
 		errorMap.put("errorCode", "KER-KMS-005");
 		errorMap.put("message", "Required String parameter 'timeStamp' is not present");
 		valuesMap.add(errorMap);
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, null);
+		responseMap.put(RegistrationConstants.RESPONSE, null);
 		responseMap.put(RegistrationConstants.ERRORS, valuesMap);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
@@ -197,7 +197,7 @@ public class PublicKeySyncTest {
 				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB");
 		valuesMap.put("issuedAt", "2020-04-09T05:51:17.334");
 		valuesMap.put("expiryAt", "2020-04-09T05:51:17.334");
-		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
+		responseMap.put(RegistrationConstants.RESPONSE, valuesMap);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);

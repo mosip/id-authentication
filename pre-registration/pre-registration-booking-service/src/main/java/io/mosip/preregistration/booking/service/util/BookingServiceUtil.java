@@ -79,7 +79,6 @@ import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
-import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
@@ -337,7 +336,6 @@ public class BookingServiceUtil {
 	public boolean callGetStatusForCancelRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
-			// RestTemplate restTemplate = restTemplateBuilder.build();
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
 			UriComponentsBuilder builder = UriComponentsBuilder
@@ -734,7 +732,6 @@ public class BookingServiceUtil {
 	public void emailNotification(NotificationDTO notificationDTO, String langCode) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
-		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
 		ObjectMapper mapper = new ObjectMapper();

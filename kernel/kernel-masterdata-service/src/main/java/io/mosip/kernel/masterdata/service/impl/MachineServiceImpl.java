@@ -416,11 +416,19 @@ public class MachineServiceImpl implements MachineService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId();
 					addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
+					if (dto.getFilters().size() > 0 && mappedMachineIdList.isEmpty()) {
+						pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
+						return pageDto;
+					}
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
 						mappedMachineIdList = machineRepository.findNotMappedMachineId();
 						addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
+						if (dto.getFilters().size() > 0 && mappedMachineIdList.isEmpty()) {
+							pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
+							return pageDto;
+						}
 					} else {
 						throw new RequestException(
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
@@ -450,12 +458,18 @@ public class MachineServiceImpl implements MachineService {
 
 		}
 		if (flag) {
+			if (dto.getFilters().stream().anyMatch(filter -> (filter.getColumnName().equals("deviceTypeName")
+					|| filter.getColumnName().equals("mapStatus"))) && addList.isEmpty()) {
+				zones = new ArrayList<>();
+				zoneFilter.addAll(Collections.emptyList());
+			}else {
 			zones = zoneUtils.getUserZones();
 			if (zones != null && !zones.isEmpty())
 				zoneFilter.addAll(buildZoneFilter(zones));
 			else
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
+			}
 		}
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
@@ -472,8 +486,8 @@ public class MachineServiceImpl implements MachineService {
 				setMachineMetadata(machines, zones);
 				setMachineTypeNames(machines);
 				setMapStatus(machines);
-				machines.forEach(machine->{
-					if(machine.getMapStatus()==null) {
+				machines.forEach(machine -> {
+					if (machine.getMapStatus() == null) {
 						machine.setMapStatus("unassigned");
 					}
 				});
@@ -535,7 +549,8 @@ public class MachineServiceImpl implements MachineService {
 						&& centerMachine.getLangCode().equals(machineSearchDto.getLangCode())) {
 					String regId = centerMachine.getRegistrationCenter().getId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId) && centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
+						if (registrationCenter.getId().equals(regId)
+								&& centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
 							machineSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});

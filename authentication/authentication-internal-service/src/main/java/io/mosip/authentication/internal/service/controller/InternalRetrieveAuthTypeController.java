@@ -45,9 +45,9 @@ import io.swagger.annotations.ApiResponses;
  * @author Dinesh Karuppiah.T
  */
 @RestController
-public class InternalAuthTypeController {
+public class InternalRetrieveAuthTypeController {
 
-	private static Logger logger = IdaLogger.getLogger(InternalAuthTypeController.class);
+	private static Logger logger = IdaLogger.getLogger(InternalRetrieveAuthTypeController.class);
 
 	private static final String AUTH_TYPE_STATUS = "getAuthTypeStatus";
 
@@ -57,13 +57,13 @@ public class InternalAuthTypeController {
 	@Autowired
 	private AuthtypeStatusService authtypeStatusService;
 
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.setValidator(authtypeStatusValidator);
-	}
-
 	@Autowired
 	Environment environment;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(authtypeStatusValidator);
+	}
 
 	/**
 	 * To fetch Auth Type status based on Individual's details

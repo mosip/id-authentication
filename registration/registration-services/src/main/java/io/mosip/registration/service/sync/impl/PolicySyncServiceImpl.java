@@ -145,10 +145,10 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 			LinkedHashMap<String, Object> publicKeySyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.SERVICE_NAME, requestParams, false,
 							RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-			if (null != publicKeySyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+			if (null != publicKeySyncResponse.get(RegistrationConstants.RESPONSE)) {
 
 				LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeySyncResponse
-						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+						.get(RegistrationConstants.RESPONSE);
 				keyStore.setId(UUID.randomUUID().toString());
 				keyStore.setPublicKey(responseMap.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
 				LocalDateTime issuedAt = DateUtils

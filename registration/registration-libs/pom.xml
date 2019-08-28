@@ -111,6 +111,7 @@
 				<directory>src/main/resources</directory>
 
 				<includes>
+					<include>**/*.properties</include>
 					<include>**/*.png</include>
 				</includes>
 			</resource>

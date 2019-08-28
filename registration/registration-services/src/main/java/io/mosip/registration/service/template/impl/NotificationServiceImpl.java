@@ -146,9 +146,9 @@ public class NotificationServiceImpl implements NotificationService {
 		try {
 			Map<String, List<Map<String, String>>> response = (Map<String, List<Map<String, String>>>) serviceDelegateUtil
 					.post(service, object, RegistrationConstants.JOB_TRIGGER_POINT_USER);
-			if (response != null && response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null) {
+			if (response != null && response.get(RegistrationConstants.RESPONSE) != null) {
 				Map<String, Object> resMap = (Map<String, Object>) response
-						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+						.get(RegistrationConstants.RESPONSE);
 				String res = (String) resMap.get(RegistrationConstants.UPLOAD_STATUS);
 				if (res.contains(expectedStatus)) {
 					LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, resMap.toString());

@@ -17,12 +17,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedQuery;
 import org.springframework.stereotype.Component;
 
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -36,7 +34,6 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "applicant_demographic_consumed", schema = "prereg")
-@Getter
 @Setter
 @NoArgsConstructor
 public class DemographicEntityConsumed implements Serializable {

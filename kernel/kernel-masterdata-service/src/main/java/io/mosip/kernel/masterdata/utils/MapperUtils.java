@@ -35,6 +35,7 @@ import io.mosip.kernel.masterdata.entity.ReasonCategory;
  * to destination object.
  * 
  * @author Bal Vikash Sharma
+ * @author Urvil Joshi
  * @since 1.0.0
  * @see MapperUtils
  *
@@ -553,7 +554,7 @@ public class MapperUtils {
 			if (arr[8] != null) {
 				deviceLangCodeDtypeDto.setValidityEndDateTime(((Timestamp) arr[8]).toLocalDateTime());
 			}
-			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[9]);
+			deviceLangCodeDtypeDto.setDeviceTypeCode((String) arr[10]);
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 
 		});

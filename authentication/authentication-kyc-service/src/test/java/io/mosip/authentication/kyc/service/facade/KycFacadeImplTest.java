@@ -31,9 +31,14 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
+import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -101,11 +106,26 @@ public class KycFacadeImplTest {
 	@Mock
 	private IdService<AutnTxn> idAuthService;
 
+	@Mock
+	private UinEncryptSaltRepo uinEncryptSaltRepo;
+	
+	@Mock
+	private UinHashSaltRepo uinHashSaltRepo;
+	
+	@Mock
+	private IdAuthTransactionManager idAuthTransactionManager;
+	
+	@Mock
+	private AuthtypeStatusImpl authTypeStatus;
 	@Before
 	public void beforeClass() {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "idAuthService", idAuthService);
+		ReflectionTestUtils.setField(authFacadeImpl, "uinEncryptSaltRepo", uinEncryptSaltRepo);
+		ReflectionTestUtils.setField(authFacadeImpl, "uinHashSaltRepo", uinHashSaltRepo);
+		ReflectionTestUtils.setField(authFacadeImpl, "transactionManager", idAuthTransactionManager);
+		ReflectionTestUtils.setField(authFacadeImpl, "authTypeStatusService", authTypeStatus);
 		ReflectionTestUtils.setField(kycFacade, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
@@ -175,6 +195,9 @@ public class KycFacadeImplTest {
 		Mockito.when(idinfoservice.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
@@ -254,6 +277,10 @@ public class KycFacadeImplTest {
 		authResponseDTO.setVersion("1.0");
 		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycResponseDTO);
+		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString(), Mockito.anyString())).thenReturn(new ArrayList<AuthtypeStatus>());
 		assertNotNull(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456"));
 
 	}
