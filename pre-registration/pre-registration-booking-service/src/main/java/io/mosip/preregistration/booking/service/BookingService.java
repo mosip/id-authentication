@@ -32,7 +32,6 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
-import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.MultiBookingRequest;
 import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
@@ -53,6 +52,7 @@ import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -648,6 +648,26 @@ public class BookingService {
 		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
 		boolean isBatchUser = false;
+		responseDto.setId(idUrlCancel);
+		responseDto.setVersion(versionUrl);
+		responseDto.setResponse(cancelBooking(preRegistrationId, isBatchUser));
+
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+
+		return responseDto;
+	}
+
+	/**
+	 * This method will cancel the appointment.
+	 *
+	 * @param MainRequestDTO
+	 * @return MainResponseDTO
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointmentBatch(String preRegistrationId) {
+		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
+		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
+		boolean isBatchUser = true;
 		responseDto.setId(idUrlCancel);
 		responseDto.setVersion(versionUrl);
 		responseDto.setResponse(cancelBooking(preRegistrationId, isBatchUser));

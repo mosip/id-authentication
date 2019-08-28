@@ -85,7 +85,22 @@ public class BookingDAO {
 		return registrationBookingRepository.save(entity) != null;
 	}
 
-
+	/**
+	 * @param regcntrId
+	 * @param fromDate
+	 * @param toDate
+	 * @return List of Local date
+	 */
+	public List<LocalDate> findDate(String regcntrId, LocalDate fromDate, LocalDate toDate) {
+		List<LocalDate> localDatList = null;
+		try {
+			localDatList = bookingAvailabilityRepository.findDate(regcntrId, fromDate, toDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
 
 	/**
 	 * @param slotFromTime
@@ -473,7 +488,7 @@ public class BookingDAO {
 		}
 		return deletedSlots;
 	}
-	
+
 	/**
 	 * @param regcntrId
 	 * @param regDate

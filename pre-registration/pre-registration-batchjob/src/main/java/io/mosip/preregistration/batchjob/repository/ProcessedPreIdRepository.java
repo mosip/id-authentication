@@ -7,7 +7,6 @@ package io.mosip.preregistration.batchjob.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,7 @@ import io.mosip.preregistration.batchjob.entity.ProcessedPreRegEntity;
 @Repository("processedPreIdRepository")
 public interface ProcessedPreIdRepository extends BaseRepository<ProcessedPreRegEntity, String>{
 	
-	List<ProcessedPreRegEntity> findBystatusComments(@Param("statusComment") String statusComment);
+	List<ProcessedPreRegEntity> findBystatusComments(String statusComment);
 	
 	ProcessedPreRegEntity findBypreRegistrationId(String preRegId);
 	@Modifying
