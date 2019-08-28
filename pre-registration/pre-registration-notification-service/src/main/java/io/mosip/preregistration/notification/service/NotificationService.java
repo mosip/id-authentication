@@ -210,6 +210,7 @@ public class NotificationService {
 			response.setResponse(notificationResponse);
 			isSuccess = true;
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			log.error("sessionId", "idType", "id", "In notification service of sendNotification " + ex.getMessage());
 			new NotificationExceptionCatcher().handle(ex, response);
 		} finally {

@@ -284,7 +284,14 @@ public enum StatusUtil {
 			"Illegal Argument Exception Occurred - "), DEMO_DEDUPE_FAILED_IN_ABIS(StatusConstants.SYSTEM_EXCEPTION_CODE,
 					"Demo Dedupe Failed  in ABIS"), RE_PROCESS_FAILED(StatusConstants.RE_PROCESS_MODULE_FAILED + "001",
 							"Reprocess count has exceeded the configured attempts"), RE_PROCESS_COMPLETED(
-									StatusConstants.RE_PROCESS_MODULE_SUCCESS + "001", "Reprocess Completed");
+									StatusConstants.RE_PROCESS_MODULE_SUCCESS + "001",
+									"Reprocess Completed"), MESSAGE_SENDER_NOTIF_SUCC(
+											StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "001",
+											"Notification sent successfully for registrationId "), MESSAGE_SENDER_EMAIL_FAILED(
+													StatusConstants.MESSAGE_SENDER_EMAIL_FAILED_CODE + "002",
+													"Email failed for registrationId "), MESSAGE_SENDER_SMS_FAILED(
+															StatusConstants.MESSAGE_SENDER_SMS_FAILED_CODE + "003",
+															"SMS failed for registrationId ");
 
 	private final String statusComment;
 	private final String statusCode;

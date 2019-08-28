@@ -146,11 +146,11 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
 
 				// Check for response
-				if (null != globalParamJsonMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (null != globalParamJsonMap.get(RegistrationConstants.RESPONSE)) {
 
 					@SuppressWarnings("unchecked")
 					HashMap<String, Object> responseMap = (HashMap<String, Object>) globalParamJsonMap
-							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+							.get(RegistrationConstants.RESPONSE);
 					@SuppressWarnings("unchecked")
 					HashMap<String, Object> configDetailJsonMap = (HashMap<String, Object>) responseMap
 							.get("configDetail");
