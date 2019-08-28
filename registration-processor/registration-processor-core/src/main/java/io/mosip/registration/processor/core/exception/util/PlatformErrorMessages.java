@@ -270,8 +270,7 @@ public enum PlatformErrorMessages {
 	RPR_PVM_DATA_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "002",
 			"Data Not Available in Master DB"),
 	/** The rpr pvm update packet deactivated. */
-	RPR_PVM_UPDATE_DEACTIVATED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "014",
-			"UIN is Deactivated"),
+	RPR_PVM_UPDATE_DEACTIVATED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "014", "UIN is Deactivated"),
 
 	/** The rpr pvm identity not found. */
 	RPR_PVM_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "003",
@@ -740,6 +739,18 @@ public enum PlatformErrorMessages {
 	/** The print validation failed. */
 	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011", "Error while print data validation"),
 
+	RPR_PRT_CARDTYPE_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "012",
+			"Invalid CardType : Enter UIN or MASKED_UIN"),
+
+	RPR_PRT_IDTYPE_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "013",
+			"Invalid IdType : Enter UIN or VID or RID"),
+
+	RPR_PRT_UIN_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "014", "UIN is not valid"),
+
+	RPR_PRT_VID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "015", "VID is not valid"),
+
+	RPR_PRT_RID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "015", "RID is not valid"),
+
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 
@@ -843,13 +854,13 @@ public enum PlatformErrorMessages {
 	/** The missing mandatory fields. */
 	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing"),
 
-    TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"001","RID Not Found"),
+	TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "001", "RID Not Found"),
 
-    RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"002","Unknown Exception Occured"),
-    
-    RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"003","Invalid request"),
+	RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "002", "Unknown Exception Occured"),
 
-    RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
+	RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "003", "Invalid request"),
+
+	RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
 			"reg Based checked exception");
 	/** The error message. */
 	private final String errorMessage;

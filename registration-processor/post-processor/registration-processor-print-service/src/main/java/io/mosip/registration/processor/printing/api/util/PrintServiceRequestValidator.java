@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.printing.api.util;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -17,10 +19,22 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.CardType;
+import io.mosip.registration.processor.core.constant.IdType;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
+import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
+import io.mosip.registration.processor.printing.api.dto.RequestDTO;
 
 /**
  * The Class PrintServiceRequestValidator.
@@ -64,6 +78,22 @@ public class PrintServiceRequestValidator implements Validator {
 	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
+
+	@Autowired
+	private RidValidator<String> ridValidator;
+
+	/** The uin validator impl. */
+	@Autowired
+	private UinValidator<String> uinValidatorImpl;
+
+	/** The vid validator impl. */
+	@Autowired
+	private VidValidator<String> vidValidatorImpl;
+
+	/** The utilities. */
+	@Autowired
+	private Utilities utilities;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -154,9 +184,9 @@ public class PrintServiceRequestValidator implements Validator {
 							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
 						regProcLogger.error(PRINT_SERVICE, "PrintServiceRequestValidator", "validateReqTime",
-								"\n" +String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
+								"\n" + String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
 										TIMESTAMP));
-						
+
 						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
 										TIMESTAMP));
@@ -172,4 +202,118 @@ public class PrintServiceRequestValidator implements Validator {
 		}
 	}
 
+	public boolean validateRequest(RequestDTO dto, Errors errors) throws RegPrintAppException {
+		if (!errors.hasErrors()) {
+			if (Objects.isNull(dto)) {
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+						String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), "request"));
+			}
+		} else if (validateIdType(dto.getIdtype()) && validateIdValue(dto) && validateCardType(dto.getCardType())) {
+			return true;
+		}
+		return false;
+
+	}
+
+	private boolean validateCardType(String cardType) throws RegPrintAppException {
+		if (cardType != null && !cardType.isEmpty() && (cardType.equalsIgnoreCase(CardType.UIN.toString())
+				|| cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString()))) {
+			return true;
+		} else {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_CARDTYPE_VALIDATION_FAILED.getCode(),
+					PlatformErrorMessages.RPR_PRT_CARDTYPE_VALIDATION_FAILED.getMessage());
+		}
+
+	}
+
+	private boolean validateIdValue(RequestDTO dto) throws RegPrintAppException {
+		boolean isValid = false;
+		if (dto.getIdtype().equals(IdType.RID)) {
+			isValid = validateRID(dto.getIdValue());
+		} else if (dto.getIdtype().equals(IdType.UIN)) {
+			isValid = validateUIN(dto.getIdValue());
+		} else if (dto.getIdtype().equals(IdType.VID)) {
+			isValid = validateVID(dto.getIdValue());
+		}
+		return isValid;
+	}
+
+	private boolean validateVID(String idValue) throws RegPrintAppException {
+		boolean isValidVID = false;
+		try {
+			isValidVID = vidValidatorImpl.validateId(idValue);
+			String result = utilities.getUinByVid(idValue);
+			if (isValidVID && result != null) {
+				isValidVID = true;
+			} else {
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_VID_VALIDATION_FAILED,
+						PlatformErrorMessages.RPR_PRT_VID_VALIDATION_FAILED.getMessage());
+			}
+		} catch (InvalidIDException ex) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, ex.getErrorText());
+
+		} catch (IdRepoAppException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e.getErrorText());
+		} catch (NumberFormatException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e);
+		} catch (ApisResourceAccessException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e.getErrorText());
+		} catch (VidCreationException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e.getErrorText());
+		}
+		return isValidVID;
+	}
+
+	private boolean validateUIN(String idValue) throws RegPrintAppException {
+		boolean isValidUIN = false;
+		try {
+			isValidUIN = uinValidatorImpl.validateId(idValue);
+			JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(idValue));
+			if (isValidUIN && jsonObject != null) {
+				isValidUIN = true;
+			} else {
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_UIN_VALIDATION_FAILED,
+						PlatformErrorMessages.RPR_PRT_UIN_VALIDATION_FAILED.getMessage());
+
+			}
+		} catch (InvalidIDException ex) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, ex.getErrorText());
+
+		} catch (IdRepoAppException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e.getErrorText());
+		} catch (NumberFormatException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e);
+		} catch (ApisResourceAccessException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e.getErrorText());
+		} catch (IOException e) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED, e);
+		}
+		return isValidUIN;
+	}
+
+	private boolean validateRID(String idValue) throws RegPrintAppException {
+		boolean isValid = false;
+		try {
+			isValid = ridValidator.validateId(idValue);
+			if (!isValid) {
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_RID_VALIDATION_FAILED,
+						PlatformErrorMessages.RPR_PRT_RID_VALIDATION_FAILED.getMessage());
+			}
+		} catch (InvalidIDException ex) {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED.getCode(),
+					ex.getErrorText());
+		}
+		return isValid;
+	}
+
+	private boolean validateIdType(IdType idtype) throws RegPrintAppException {
+		if (idtype != null && !idtype.toString().isEmpty()
+				&& (idtype.equals(IdType.UIN) || (idtype.equals(IdType.UIN) || (idtype.equals(IdType.UIN))))) {
+			return true;
+		} else {
+			throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_CARDTYPE_VALIDATION_FAILED.getCode(),
+					PlatformErrorMessages.RPR_PRT_IDTYPE_VALIDATION_FAILED.getMessage());
+		}
+
+	}
 }
