@@ -305,25 +305,26 @@ public class GuardianBiometricsController extends BaseController implements Init
 			faceCaptureController.openWebCamWindow(RegistrationConstants.GUARDIAN_IMAGE);
 		} else {
 			String headerText = "";
-			String fingerType = "";
+			String bioType = "";
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				SessionContext.map().put("CAPTURE_EXCEPTION", rightSlapexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
-				fingerType = RegistrationConstants.FINGERPRINT_SLAB_RIGHT;
+				bioType = RegistrationConstants.FINGERPRINT_SLAB_RIGHT;
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				SessionContext.map().put("CAPTURE_EXCEPTION", leftSlapexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
-				fingerType = RegistrationConstants.FINGERPRINT_SLAB_LEFT;
+				bioType = RegistrationConstants.FINGERPRINT_SLAB_LEFT;
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
 				SessionContext.map().put("CAPTURE_EXCEPTION", thumbsexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
-				fingerType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
+				bioType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
 			} else if (biometricType.getText().contains(RegistrationConstants.IRIS_LOWERCASE)) {
 				headerText = RegistrationUIConstants.IRIS_SCAN;
+				bioType="IRIS_DOUBLE";
 			}
 			scanPopUpViewController.init(this, headerText);
 			if (bioService.isMdmEnabled())
-				streamer.startStream(fingerType, scanPopUpViewController.getScanImage(), biometricImage);
+				streamer.startStream(bioType, scanPopUpViewController.getScanImage(), biometricImage);
 		}
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
