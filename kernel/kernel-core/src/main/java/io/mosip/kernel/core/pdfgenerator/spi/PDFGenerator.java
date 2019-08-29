@@ -19,6 +19,13 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 
+/** This interface is has specifications for PDF generation from different types.
+ * 
+ * The user of this interface will have 
+ * 
+ * @author Urvil Joshi
+ *
+ */
 public interface PDFGenerator {
 	/**
 	 * This method will convert InputStream to OutputStream
