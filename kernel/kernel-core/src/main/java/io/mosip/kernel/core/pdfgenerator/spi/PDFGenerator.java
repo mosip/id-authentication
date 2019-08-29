@@ -22,10 +22,11 @@ import java.util.List;
 /**
  * This interface is has specifications for PDF generation from different types.
  * 
- * The user of this interface will have basic functionalities related to PDF. 
+ * The user of this interface will have basic functionalities related to PDF.
  * 
  * @author Urvil Joshi
- *
+ * @author Uday Kumar
+ * @author Neha
  */
 public interface PDFGenerator {
 	/**
