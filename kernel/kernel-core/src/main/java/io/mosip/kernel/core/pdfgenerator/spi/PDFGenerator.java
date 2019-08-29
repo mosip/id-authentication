@@ -1,17 +1,5 @@
 package io.mosip.kernel.core.pdfgenerator.spi;
 
-/**
- * The PdfGenerator can be used mostly when converting processed
- * Template to PDF. It contains a series of methods that accept processed
- * Template as a {@link String}, {@link File}, or {@link InputStream}, and
- * convert it to PDF in the form of an {@link OutputStream}, {@link File}
- * 
- * @author M1046571
- * @author Neha
- * 
- * @since 1.0.0
- *
- */
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,22 +15,25 @@ import java.util.List;
  * @author Urvil Joshi
  * @author Uday Kumar
  * @author Neha
+ * 
+ * @since 1.0.0
  */
 public interface PDFGenerator {
 	/**
-	 * This method will convert InputStream to OutputStream
+	 * Converts HTML obtained from an {@link InputStream} to a PDF written to an
+	 * {@link OutputStream}.
 	 * 
-	 * @param is the processedTemplate in the form of a {@link InputStream}
+	 * @param htmlStream the processedTemplate in the form of a {@link InputStream}
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @return outpustStream
+	 * @return outpustStream PDF Output Stream (PDF stream)
 	 */
-	public OutputStream generate(InputStream is) throws IOException;
+	public OutputStream generate(InputStream htmlStream) throws IOException;
 
 	/**
 	 * This method will convert process Template as String to outpustStream
 	 * 
 	 * @param template the processedTemplate in the form of a {@link String}
-	 * @return OutputStream
+	 * @return OutputStream PDF Output Stream (PDF stream)
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public OutputStream generate(String template) throws IOException;
@@ -59,29 +50,29 @@ public interface PDFGenerator {
 	public void generate(String templatePath, String outputFilePath, String outputFileName) throws IOException;
 
 	/**
-	 * This method will convert InputStream to OutputStream
+	 * This method will convert InputStream to OutputStream.
 	 * 
-	 * @param is          the processedTemplate in the form of a {@link InputStream}
-	 * @param resourceLoc resourceLoction {@link String}
+	 * @param dataStream          the processedTemplate in the form of a {@link InputStream}.
+	 * @param resourceLoc resourceLoction {@link String}.
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @return outpustStream
+	 * @return outpustStream PDF Output Stream (PDF stream).
 	 */
-	public OutputStream generate(InputStream is, String resourceLoc) throws IOException;
+	public OutputStream generate(InputStream dataStream, String resourceLoc) throws IOException;
 
 	/**
-	 * This method will convert BufferedImage list to Byte Array
+	 * This method will convert BufferedImage list to Byte Array.
 	 * 
-	 * @param bufferedImages the input image to convert as PDF
-	 * @return byte array
+	 * @param bufferedImages the input image to convert as PDF.
+	 * @return  array comprising PDF.
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException;
 
 	/**
-	 * This method will merge all the PDF files
+	 * This method will merge all the PDF files.
 	 * 
-	 * @param pdfLists the URL list of PDF files
-	 * @return the byte array comprising merged file
+	 * @param pdfLists the URL list of PDF files.
+	 * @return the byte array comprising merged file.
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public byte[] mergePDF(List<URL> pdfLists) throws IOException;
