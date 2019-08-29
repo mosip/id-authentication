@@ -1,8 +1,10 @@
 package io.mosip.kernel.pdfgenerator.itext.impl;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,9 +31,11 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 
 /**
@@ -49,8 +53,6 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
 @Component
 public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
-	// private static final String FILE_SEPERATOR =
-	// System.getProperty("file.separator");
 
 	/**
 	 * This method is used to convert Template obtained from an {@link InputStream}
@@ -66,7 +68,16 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		OutputStream os = new ByteArrayOutputStream();
 		Objects.requireNonNull(is, "Stream cannot be null");
 		try {
-			HtmlConverter.convertToPdf(is, os);
+			//HtmlConverter.convertToPdf(is, os);
+			com.itextpdf.text.Document document= new com.itextpdf.text.Document();
+			com.itextpdf.text.pdf.PdfWriter pdfWriter= com.itextpdf.text.pdf.PdfWriter.getInstance(document,os);
+
+			pdfWriter.setEncryption("user".getBytes(),
+	                "user".getBytes(), com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING,
+	                com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
+			document.open();
+	        XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, is);
+	        document.close();
 		} catch (Exception e) {
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -226,5 +237,17 @@ public class PDFGeneratorImpl implements PDFGenerator {
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
+	}
+	
+	public static void main(String[] args) throws IOException, io.mosip.kernel.core.exception.IOException {
+		PDFGeneratorImpl generatorImpl= new PDFGeneratorImpl();
+		StringBuilder htmlString = new StringBuilder();
+        htmlString.append(new String("<html><body> This is HMTL to PDF conversion Example<table border='2' align='center'> "));
+        htmlString.append(new String("<tr><td>JavaCodeGeeks</td><td><a href='examples.javacodegeeks.com'>JavaCodeGeeks</a> </td></tr>"));               
+        htmlString.append(new String("<tr> <td> Google Here </td> <td><a href='www.google.com'>Google</a> </td> </tr></table></body></html>"));
+        InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
+		ByteArrayOutputStream outputStream=(ByteArrayOutputStream) generatorImpl.generate(is);
+		File file = new File("C:\\Users\\m1044287\\Downloads\\hsm\\yobro.pdf");
+		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
 	}
 }
