@@ -1,6 +1,7 @@
 package io.mosip.kernel.pdfgenerator.itext.constant;
 
 /**
+ * Exception code constants for this module
  * 
  * @author Uday Kumar
  * 
