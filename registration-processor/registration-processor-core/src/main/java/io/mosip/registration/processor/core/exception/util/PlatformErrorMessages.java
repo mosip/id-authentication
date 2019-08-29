@@ -749,7 +749,18 @@ public enum PlatformErrorMessages {
 
 	RPR_PRT_VID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "015", "VID is not valid"),
 
-	RPR_PRT_RID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "015", "RID is not valid"),
+	RPR_PRT_RID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "016", "RID is not valid"),
+
+	RPR_PRT_VID_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "017", "Error while creating VID"),
+
+	RPR_PRT_VID_EXCEPTION(PlatformConstants.RPR_PRINTING_MODULE + "018",
+			"Could not generate/regenerate VID as per policy,Please use existing VID"),
+
+	/** The missing input parameter. */
+	RPR_PRT_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_PRINTING_MODULE + "019", "Missing Input Parameter - %s"),
+
+	/** The missing input parameter. */
+	RPR_PRT_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_PRINTING_MODULE + "019", "Invalid Input Parameter - %s"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
@@ -816,7 +827,8 @@ public enum PlatformErrorMessages {
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
 
-	RPR_PGS_VID_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "013", "VID status is not active"),
+	RPR_PGS_VID_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "013",
+			"Could not generate/regenerate VID as per policy,Please use existing VID"),
 
 	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),

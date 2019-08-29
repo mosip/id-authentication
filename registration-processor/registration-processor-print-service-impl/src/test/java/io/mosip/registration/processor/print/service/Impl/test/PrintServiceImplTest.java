@@ -38,6 +38,7 @@ import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
@@ -227,7 +228,7 @@ public class PrintServiceImplTest {
 	public void testPdfGeneratedwithUINSuccess() {
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.UIN, uin).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -240,7 +241,7 @@ public class PrintServiceImplTest {
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.RID, uinList.get(0)).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.RID, uinList.get(0), CardType.UIN.toString()).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -259,7 +260,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", null);
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.RID, "2046958192");
+		printService.getDocuments(IdType.RID, "2046958192", CardType.UIN.toString());
 	}
 
 	/**
@@ -281,7 +282,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0));
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
 	}
 
 	/**
@@ -302,7 +303,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0));
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
 	}
 
 	/**
@@ -324,7 +325,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0));
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
 	}
 
 	@Test(expected = PDFGeneratorException.class)
@@ -339,7 +340,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0));
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
 
 	}
 
@@ -368,7 +369,7 @@ public class PrintServiceImplTest {
 
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.UIN, uin).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -378,7 +379,7 @@ public class PrintServiceImplTest {
 		Mockito.doThrow(e).when(qrCodeGenerator).generateQrCode(any(), any());
 
 		String uin = "2046958192";
-		printService.getDocuments(IdType.UIN, uin).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
 	}
 
 	@Test
@@ -387,7 +388,7 @@ public class PrintServiceImplTest {
 
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.UIN, uin).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -396,7 +397,7 @@ public class PrintServiceImplTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
 
 		String uin = "2046958192";
-		printService.getDocuments(IdType.UIN, uin).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
 	}
 
 	@Test(expected = TemplateProcessingFailureException.class)
@@ -404,11 +405,12 @@ public class PrintServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate(any(), any(), anyString())).thenReturn(null);
 
 		String uin = "2046958192";
-		printService.getDocuments(IdType.UIN, uin).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
 	}
 
 	@Test
-	public void testPdfGeneratedwithVIDSuccess() throws IdRepoAppException, ApisResourceAccessException, IOException, VidCreationException {
+	public void testPdfGeneratedwithVIDSuccess()
+			throws IdRepoAppException, ApisResourceAccessException, IOException, VidCreationException {
 		List<Long> uinList = new ArrayList<>();
 		uinList.add(2046958192L);
 		Map<String, Long> map1 = new HashMap<>();
@@ -417,7 +419,7 @@ public class PrintServiceImplTest {
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
 		Mockito.when(utility.getUinByVid(any())).thenReturn("2046958192");
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.VID, "2046958192").get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.VID, "2046958192", CardType.UIN.toString()).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 

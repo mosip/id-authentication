@@ -55,6 +55,11 @@
 			<artifactId>registration-processor-core</artifactId>
 			<version>${registration.processor.core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-vid</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
   </dependencies>
   <build>
 		<plugins>

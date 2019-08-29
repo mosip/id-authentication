@@ -205,7 +205,7 @@ public class PrintStageTest {
 		Map<String, byte[]> byteMap = new HashMap<>();
 		byteMap.put("uinPdf", pdfbytes);
 		byteMap.put("textFile", textBytes);
-		Mockito.when(printService.getDocuments(any(), anyString())).thenReturn(byteMap);
+		Mockito.when(printService.getDocuments(any(), anyString(), anyString())).thenReturn(byteMap);
 
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(queue);
@@ -333,7 +333,7 @@ public class PrintStageTest {
 	public void testPdfGenerationException() {
 
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
-		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString());
+		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString(), anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -348,7 +348,7 @@ public class PrintStageTest {
 	@Test
 	public void testTemplateProcessingFailureException() {
 		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
-		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString());
+		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString(), anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");

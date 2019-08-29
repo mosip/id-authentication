@@ -1,11 +1,21 @@
 package io.mosip.registration.processor.print.service.impl;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,6 +24,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -35,16 +46,20 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.UinCardType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.packet.dto.vid.VidRequestDto;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
@@ -53,6 +68,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
 import io.mosip.registration.processor.print.service.dto.JsonRequestDTO;
@@ -63,8 +79,6 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * The Class PrintServiceImpl.
@@ -150,9 +164,21 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
+	/** The Constant VID_CREATE_ID. */
+	public static final String VID_CREATE_ID = "registration.processor.id.repo.generate";
+
+	/** The Constant REG_PROC_APPLICATION_VERSION. */
+	public static final String REG_PROC_APPLICATION_VERSION = "registration.processor.id.repo.vidVersion";
+
+	/** The Constant DATETIME_PATTERN. */
+	public static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+
 	/** The cbeffutil. */
 	@Autowired
 	private CbeffUtil cbeffutil;
+
+	@Autowired
+	private Environment env;
 
 	/*
 	 * 
@@ -164,13 +190,14 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Map<String, byte[]> getDocuments(IdType idType, String idValue) {
+	public Map<String, byte[]> getDocuments(IdType idType, String idValue, String cardType) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PrintServiceImpl::getDocuments()::entry");
 
 		Map<String, byte[]> byteMap = new HashMap<>();
 		String uin = null;
 		String description = null;
+		String vid = null;
 		Map<String, Object> attributes = new LinkedHashMap<>();
 		boolean isTransactionSuccessful = false;
 		IdResponseDTO1 response = null;
@@ -180,7 +207,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				uin = idValue;
 				response = getIdRepoResponse(idType.toString(), idValue);
 			} else if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
-
+				vid = idValue;
 				uin = utilities.getUinByVid(idValue);
 				response = getIdRepoResponse(IdType.UIN.toString(), uin);
 			}
@@ -217,12 +244,17 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
 						PlatformErrorMessages.RPR_PRT_QRCODE_NOT_SET.name());
 			}
-			if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+
+			if (cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString())) {
 				template = MASKED_UIN_CARD_TEMPLATE;
-				attributes.put(IdType.VID.toString(), idValue);
+				if (vid == null) {
+					vid = getVid(uin);
+				}
+				attributes.put(IdType.VID.toString(), vid);
 				String maskedUin = maskString(uin, uinLength - unMaskedLength, '*');
 				attributes.put(IdType.UIN.toString(), maskedUin);
 			}
+
 			// getting template and placing original values
 			InputStream uinArtifact = templateGenerator.getTemplate(template, attributes, primaryLang);
 			if (uinArtifact == null) {
@@ -244,45 +276,49 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			isTransactionSuccessful = true;
 
-		} catch (QrcodeGenerationException e) {
-			description = "Error while QR Code Generation";
+		} catch (VidCreationException e) {
+			description = "Error while creating VID";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idType.toString(), PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			throw new PDFGeneratorException(e.getErrorCode(), e.getErrorText());
+
+		}
+
+		catch (QrcodeGenerationException e) {
+			description = "Error while QR Code Generation";
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					idType.toString(), PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getErrorText());
 
 		} catch (UINNotFoundInDatabase e) {
 			description = "UIN not found in database for id" + idType.toString();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					idType.toString(), PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getErrorText());
 
 		} catch (TemplateProcessingFailureException e) {
 			description = "Error while Template Processing";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
+					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getErrorText());
+			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getMessage());
 
 		} catch (PDFGeneratorException e) {
 			description = "Error while pdf generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getErrorText());
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
 			description = "Internal error occurred while processing packet id" + idType;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 
 		} catch (Exception ex) {
 			description = "Process stopped due to some internal error";
@@ -457,7 +493,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				int headerLength = 46;
 				DataInputStream dis = new DataInputStream(new ByteArrayInputStream(photoByte));
 				dis.skipBytes(headerLength);
-                String data = DatatypeConverter.printBase64Binary(IOUtils.toByteArray(dis));
+				String data = DatatypeConverter.printBase64Binary(IOUtils.toByteArray(dis));
 				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + data);
 				isPhotoSet = true;
 			}
@@ -530,5 +566,41 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 
 		return sbMaskString.toString() + uin.substring(0 + maskLength);
+	}
+
+	private String getVid(String uin) throws ApisResourceAccessException, VidCreationException, IOException {
+		String vid = null;
+		VidRequestDto vidRequestDto = new VidRequestDto();
+		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
+		VidResponseDTO vidResponse = new VidResponseDTO();
+		vidRequestDto.setUIN(uin);
+		vidRequestDto.setVidType("Temporary");
+		request.setId(env.getProperty(VID_CREATE_ID));
+		request.setRequest(vidRequestDto);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+		LocalDateTime localdatetime = LocalDateTime
+				.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
+		request.setRequesttime(localdatetime);
+		request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getVid():: post CREATEVID service call started with request data : "
+						+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
+
+		vidResponse = (VidResponseDTO) restClientService.postApi(ApiName.CREATEVID, "", "", request,
+				VidResponseDTO.class);
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getVid():: post CREATEVID service call ended successfully");
+
+		if (!vidResponse.getErrors().isEmpty()) {
+			throw new VidCreationException(PlatformErrorMessages.RPR_PRT_VID_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_PRT_VID_EXCEPTION.getMessage());
+
+		} else {
+			vid = vidResponse.getResponse().getVid();
+		}
+
+		return vid;
 	}
 }

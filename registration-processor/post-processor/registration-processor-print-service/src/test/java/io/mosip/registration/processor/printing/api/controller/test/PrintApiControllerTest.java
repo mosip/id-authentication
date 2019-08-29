@@ -30,8 +30,6 @@ import org.springframework.validation.Errors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
@@ -60,13 +58,6 @@ public class PrintApiControllerTest {
 
 	@Mock
 	private PrintServiceRequestValidator validator;
-
-	/** The rid validator. */
-	@Mock
-	private RidValidator<String> ridValidator;
-
-	@Mock
-	private UinValidator<String> uinValidatorImpl;
 
 	@Mock
 	private Errors errors;
@@ -100,7 +91,7 @@ public class PrintApiControllerTest {
 	@WithUserDetails("reg-admin")
 	@Test
 	public void testpdfSuccess() throws Exception {
-		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any(), any())).thenReturn(map);
 
 		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -148,7 +139,7 @@ public class PrintApiControllerTest {
 	@WithUserDetails("reg-admin")
 	@Test
 	public void testPdfSuccessUIN() throws Exception {
-		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any(), any())).thenReturn(map);
 		PrintRequest request = new PrintRequest();
 		request.setId("mosip.registration.print");
 		RequestDTO dto = new RequestDTO();

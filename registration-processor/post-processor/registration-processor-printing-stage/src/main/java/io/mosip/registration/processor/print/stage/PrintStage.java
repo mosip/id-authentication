@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -188,6 +189,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	InternalRegistrationStatusDto registrationStatusDto;
 
+	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
+
+	private static final String MASKED_UIN_CARD_TEMPLATE = "RPR_MASKED_UIN_CARD_TEMPLATE";
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -243,6 +248,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			IdType idType = IdType.RID;
 
 			String idValue = regId;
+			String cardType = UIN_CARD_TEMPLATE;
 			if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString()
 					.equalsIgnoreCase(object.getReg_type().toString())) {
 
@@ -250,12 +256,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 				Identity identity = packetMetaInfo.getIdentity();
 				List<FieldValue> metadataList = identity.getMetaData();
 				IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-				String cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
+				cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
 
-				if (cardType.equalsIgnoreCase(IdType.VID.toString())) {
+				if (cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString())) {
 					idType = IdType.VID;
 					idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
-
+					cardType = MASKED_UIN_CARD_TEMPLATE;
 				} else {
 					idType = IdType.UIN;
 					JSONObject jsonObject = utilities.retrieveUIN(regId);
@@ -264,7 +270,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 				}
 			}
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue);
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue, cardType);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 
