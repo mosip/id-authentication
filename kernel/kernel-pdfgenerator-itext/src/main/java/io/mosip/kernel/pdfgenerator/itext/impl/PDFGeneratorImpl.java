@@ -1,7 +1,6 @@
 package io.mosip.kernel.pdfgenerator.itext.impl;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -36,7 +34,6 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 
 /**
@@ -45,10 +42,9 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
  * Template as a {@link String}, {@link File}, or {@link InputStream}, and
  * convert it to PDF in the form of an {@link OutputStream}, {@link File}
  * 
- * 
+ * @author Urvil Joshi
  * @author Uday Kumar
  * @author Neha
- * @author Urvil Joshi
  * 
  * @since 1.0.0
  *
@@ -58,7 +54,7 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
 
 	@Value("${mosip.kernel.pdf_owner_password}")
-	private String pdfOwnerPassword="asd";
+	private String pdfOwnerPassword;
 
 	/*
 	 * (non-Javadoc)
@@ -68,8 +64,8 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	 */
 	@Override
 	public OutputStream generate(InputStream is) throws IOException {
+		isValidInputStream(is);
 		OutputStream os = new ByteArrayOutputStream();
-		Objects.requireNonNull(is, "Stream cannot be null");
 		try {
 			HtmlConverter.convertToPdf(is, os);
 		} catch (Exception e) {
@@ -107,10 +103,8 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	@Override
 	public void generate(String templatePath, String outpuFilePath, String outputFileName) throws IOException {
 		File outputFile = new File(outpuFilePath + outputFileName + OUTPUT_FILE_EXTENSION);
-
 		try {
 			HtmlConverter.convertToPdf(new File(templatePath), outputFile);
-
 		} catch (Exception e) {
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
@@ -126,7 +120,7 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	 */
 	@Override
 	public OutputStream generate(InputStream is, String resourceLoc) throws IOException {
-		Objects.requireNonNull(is, "Stream cannot be null");
+		isValidInputStream(is);
 		OutputStream os = new ByteArrayOutputStream();
 		PdfWriter pdfWriter = new PdfWriter(os);
 		PdfDocument pdfDoc = new PdfDocument(pdfWriter);
@@ -259,16 +253,5 @@ public class PDFGeneratorImpl implements PDFGenerator {
 					PDFGeneratorExceptionCodeConstant.INPUTSTREAM_NULL_EMPTY_EXCEPTION.getErrorCode(),
 					PDFGeneratorExceptionCodeConstant.INPUTSTREAM_NULL_EMPTY_EXCEPTION.getErrorMessage());
 		}
-	}
-
-	public static void main(String[] args)
-			throws IOException, io.mosip.kernel.core.exception.IOException, DocumentException {
-		PDFGeneratorImpl com = new PDFGeneratorImpl();
-		StringBuilder htmlString = new StringBuilder();
-		htmlString.append("<html><body> This is HMTL to PDF conversion Example<table border='2' align='center'> ");
-		InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) com.generate(is, "use".getBytes());
-		File file = new File("C:\\Users\\m1044287\\Downloads\\hsm\\yobro.pdf");
-		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
 	}
 }
