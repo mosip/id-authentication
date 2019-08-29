@@ -35,12 +35,12 @@
 		<dependency>
 			<groupId>com.itextpdf.tool</groupId>
 			<artifactId>xmlworker</artifactId>
-			<version>5.5.7</version>
+			<version>${itext.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.52</version>
+			<version>${bouncycastle.version}</version>
 		</dependency>
 	</dependencies>
 </project>
