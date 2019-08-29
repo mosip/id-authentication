@@ -36,7 +36,6 @@ public class ClientJarEncryption {
 	private static final String SLASH = "/";
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
-	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
 	private static final String MOSIP_EXE_JAR = "bin/run.jar";
 	private static final String MOSIP_LIB = "lib";
 	private static final String MOSIP_DB = "db";
@@ -96,7 +95,6 @@ public class ClientJarEncryption {
 				System.out.println("Zip Creation started");
 
 				if (file != null && file.exists()) {
-					String propertiesFile = MOSIP_APPLICATION_PROPERTIES_PATH;
 					String libraries = MOSIP_LIB + SLASH;
 
 					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[2] + MOSIP_ZIP;
@@ -130,8 +128,7 @@ public class ClientJarEncryption {
 
 					// Add mosip-Version to mosip-application.properties file
 					addProperties(new File(args[10]), args[2]);
-					fileNameByBytes.put(propertiesFile, FileUtils.readFileToByteArray(new File(args[10])));
-
+					
 					// DB file
 					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);

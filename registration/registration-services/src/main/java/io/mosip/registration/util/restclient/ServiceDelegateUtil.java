@@ -520,7 +520,7 @@ public class ServiceDelegateUtil {
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
 
-			responseMap = restClientUtil.invoke(requestHTTPDTO);
+			responseMap = restClientUtil.invokeForToken(requestHTTPDTO);
 
 			boolean isResponseValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_HEADERS);
 			if (isResponseValid) {
@@ -605,7 +605,7 @@ public class ServiceDelegateUtil {
 			if (cookie != null) {
 				Map<String, Object> responseMap = null;
 
-				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
+				responseMap = restClientUtil.invokeForToken(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
 				if (isTokenValid) {
@@ -649,7 +649,7 @@ public class ServiceDelegateUtil {
 			if (cookie != null) {
 				Map<String, Object> responseMap = null;
 
-				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, invalidateUrlPath, HttpMethod.POST));
+				responseMap = restClientUtil.invokeForToken(buildRequestHTTPDTO(cookie, invalidateUrlPath, HttpMethod.POST));
 
 				if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
 					LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,

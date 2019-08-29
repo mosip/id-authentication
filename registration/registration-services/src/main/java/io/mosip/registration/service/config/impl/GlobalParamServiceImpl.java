@@ -146,11 +146,11 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
 
 				// Check for response
-				if (null != globalParamJsonMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (null != globalParamJsonMap.get(RegistrationConstants.RESPONSE)) {
 
 					@SuppressWarnings("unchecked")
 					HashMap<String, Object> responseMap = (HashMap<String, Object>) globalParamJsonMap
-							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+							.get(RegistrationConstants.RESPONSE);
 					@SuppressWarnings("unchecked")
 					HashMap<String, Object> configDetailJsonMap = (HashMap<String, Object>) responseMap
 							.get("configDetail");
@@ -161,33 +161,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 					List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();
 
-					for (GlobalParam globalParam : globalParamList) {
-						if (!NON_REMOVABLE_PARAMS.contains(globalParam.getGlobalParamId().getCode())) {
-							/* Check in map, if exists, update it and remove from map */
-							GlobalParamId globalParamId = globalParam.getGlobalParamId();
-
-							if (globalParamMap.get(globalParamId.getCode()) != null) {
-
-								/* update (Local already exists) but val change */
-								if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
-										|| !(globalParam.getIsActive().booleanValue())) {
-									String val = globalParamMap.get(globalParamId.getCode()).trim();
-									updateVal(globalParam, val);
-
-									/* Add in application map */
-									updateApplicationMap(globalParamId.getCode(), val);
-
-									isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
-								}
-							}
-							/* Set is deleted true as removed from server */
-							else {
-								updateIsDeleted(globalParam);
-								ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
-							}
-							globalParamMap.remove(globalParamId.getCode());
-						}
-					}
+					isToBeRestarted = parseGlobalParam(isToBeRestarted, globalParamMap, globalParamList);
 
 					for (Entry<String, String> key : globalParamMap.entrySet()) {
 						createNew(key.getKey(), globalParamMap.get(key.getKey()), globalParamList);
@@ -225,6 +199,38 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to sync config data as no internet connection and no data in DB");
 		}
+	}
+
+	private boolean parseGlobalParam(boolean isToBeRestarted, HashMap<String, String> globalParamMap,
+			List<GlobalParam> globalParamList) {
+		for (GlobalParam globalParam : globalParamList) {
+			if (!NON_REMOVABLE_PARAMS.contains(globalParam.getGlobalParamId().getCode())) {
+				/* Check in map, if exists, update it and remove from map */
+				GlobalParamId globalParamId = globalParam.getGlobalParamId();
+
+				if (globalParamMap.get(globalParamId.getCode()) != null) {
+
+					/* update (Local already exists) but val change */
+					if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
+							|| !(globalParam.getIsActive().booleanValue())) {
+						String val = globalParamMap.get(globalParamId.getCode()).trim();
+						updateVal(globalParam, val);
+
+						/* Add in application map */
+						updateApplicationMap(globalParamId.getCode(), val);
+
+						isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
+					}
+				}
+				/* Set is deleted true as removed from server */
+				else {
+					updateIsDeleted(globalParam);
+					ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
+				}
+				globalParamMap.remove(globalParamId.getCode());
+			}
+		}
+		return isToBeRestarted;
 	}
 
 	private boolean isPropertyRequireRestart(String key) {

@@ -1,15 +1,7 @@
-
-/* 
- * Copyright
- * 
- */package io.mosip.preregistration.batchjob.tasklets;
+package io.mosip.preregistration.batchjob.utils;
 
 import java.time.LocalDateTime;
 
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,28 +15,23 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.batchjob.exception.LoginServiceException;
 import io.mosip.preregistration.batchjob.model.LoginUser;
 import io.mosip.preregistration.batchjob.model.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
- * This class is a tasklet of batch job to call master data sync API in batch service.
- * 
  * @author Kishan Rathore
  * @since 1.0.0
  *
  */
 @Component
-public class BookingTasklet implements Tasklet {
+public class AuthTokenUtil {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
-	@Value("${bookingAvailablity.url}")
-	String bookingAvailablityUrl;
 
 	@Value("${mosip.batch.token.authmanager.url}")
 	String tokenUrl;
@@ -56,58 +43,51 @@ public class BookingTasklet implements Tasklet {
 	String userName;
 	@Value("${mosip.batch.token.authmanager.password}")
 	String password;
-	
+
 	@Value("${version}")
 	String version;
 
-	private Logger log = LoggerConfiguration.logConfig(BookingTasklet.class);
+	private Logger log = LoggerConfiguration.logConfig(AuthTokenUtil.class);
 
-	/* (non-Javadoc)
-	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
-	 */
-	@Override
-	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+	public HttpHeaders getTokenHeader() {
 
+		HttpHeaders headers = new HttpHeaders();
 		try {
 			/* Get the token from auth-manager service */
-			LoginUser loginUser=new LoginUser();
+			LoginUser loginUser = new LoginUser();
 			loginUser.setAppId(appId);
 			loginUser.setPassword(password);
 			loginUser.setUserName(userName);
-			RequestWrapper<LoginUser> requestWrapper=new RequestWrapper<>();
+			RequestWrapper<LoginUser> requestWrapper = new RequestWrapper<>();
 			requestWrapper.setId(id);
 			requestWrapper.setRequest(loginUser);
 			requestWrapper.setRequesttime(LocalDateTime.now());
-			
 
 			UriComponentsBuilder authBuilder = UriComponentsBuilder.fromHttpUrl(tokenUrl);
 			HttpHeaders tokenHeader = new HttpHeaders();
 			tokenHeader.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<RequestWrapper<LoginUser>> tokenEntity = new HttpEntity<>(requestWrapper,tokenHeader);
+			HttpEntity<RequestWrapper<LoginUser>> tokenEntity = new HttpEntity<>(requestWrapper, tokenHeader);
 
 			String tokenUriBuilder = authBuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In BookingTasklet to get token with URL- " + tokenUriBuilder);
-			ResponseEntity<ResponseWrapper<AuthNResponse>> tokenResponse = restTemplate.exchange(tokenUriBuilder, HttpMethod.POST,
-					tokenEntity,new ParameterizedTypeReference<ResponseWrapper<AuthNResponse>>() {
+			ResponseEntity<ResponseWrapper<AuthNResponse>> tokenResponse = restTemplate.exchange(tokenUriBuilder,
+					HttpMethod.POST, tokenEntity, new ParameterizedTypeReference<ResponseWrapper<AuthNResponse>>() {
 					});
-			
-			/* Rest call to availability sync service */
-			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(bookingAvailablityUrl);
-			HttpHeaders headers = new HttpHeaders();
+			if (tokenResponse.getBody().getErrors() != null) {
+
+				log.error("Sync master ", " Authmanager ", " encountered exception ",
+						tokenResponse.getBody().getErrors().get(0).getMessage());
+				throw new LoginServiceException(tokenResponse.getBody().getErrors());
+			}
+			/* Call to availability sync Util */
+
 			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
-			
-			HttpEntity<MainResponseDTO<String>> entity = new HttpEntity<>(headers);
-
-			String uriBuilder = regbuilder.build().encode().toUriString();
-
-			log.info("sessionId", "idType", "id", "In BookingTasklet method of Batch Service URL- " + uriBuilder);
-			restTemplate.exchange(uriBuilder, HttpMethod.GET, entity,MainResponseDTO.class);
 
 		} catch (Exception e) {
 			log.error("Sync master ", " Tasklet ", " encountered exception ", e.getMessage());
+			throw e;
 		}
-
-		return RepeatStatus.FINISHED;
+		return headers;
 	}
 
 }

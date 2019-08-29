@@ -27,10 +27,10 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
-import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.MultiBookingRequest;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -68,7 +68,7 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','INDIVIDUAL')")
+	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR')")
 	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful") })
@@ -175,6 +175,26 @@ public class BookingController {
 				"In cancelBook method of Booking controller to cancel the appointment for object: " + preRegistrationId);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(bookingService.cancelAppointment(preRegistrationId));
+	}
+	
+	/**
+	 * Put API to cancel the appointment for Pre-registration batch job.
+	 * 
+	 * @param MainListRequestDTO
+	 * @return MainResponseDTO
+	 * @throws ParseException
+	 * @throws java.text.ParseException
+	 */
+	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR')")
+	@PutMapping(path = "/batch/appointment/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Cancel an booked appointment")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment canceled successfully") })
+	public ResponseEntity<MainResponseDTO<CancelBookingResponseDTO>> cancelAppointmentBatch(
+			@PathVariable("preRegistrationId") String preRegistrationId) {
+		log.info("sessionId", "idType", "id",
+				"In cancelAppointmentBatch method of Booking controller to cancel the appointment for object: " + preRegistrationId+" triggered by batch job");
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(bookingService.cancelAppointmentBatch(preRegistrationId));
 	}
 
 	/**

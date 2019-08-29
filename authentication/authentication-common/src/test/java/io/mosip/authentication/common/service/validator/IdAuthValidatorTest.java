@@ -247,7 +247,7 @@ public class IdAuthValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setConsentObtained(true);
 		Errors error = new BeanPropertyBindingResult(authReq, "IdAuthValidator");
-		validator.validateConsentReq(authRequestDTO, error);
+		validator.validateConsentReq(authRequestDTO.isConsentObtained(), error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -260,7 +260,7 @@ public class IdAuthValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setConsentObtained(false);
 		Errors error = new BeanPropertyBindingResult(authReq, "IdAuthValidator");
-		validator.validateConsentReq(authRequestDTO, error);
+		validator.validateConsentReq(authRequestDTO.isConsentObtained(), error);
 		assertTrue(error.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-012")));
 	}
 

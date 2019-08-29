@@ -1,20 +1,24 @@
 package io.mosip.preregistration.batchjob.repository.utils;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjob.code.ErrorCodes;
 import io.mosip.preregistration.batchjob.code.ErrorMessages;
+import io.mosip.preregistration.batchjob.entity.AvailibityEntity;
 import io.mosip.preregistration.batchjob.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjob.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjob.exception.NoPreIdAvailableException;
+import io.mosip.preregistration.batchjob.repository.AvailabilityRepository;
 import io.mosip.preregistration.batchjob.repository.DemographicConsumedRepository;
 import io.mosip.preregistration.batchjob.repository.DemographicRepository;
 import io.mosip.preregistration.batchjob.repository.DocumentConsumedRepository;
@@ -28,11 +32,11 @@ import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
-
-public class BatchJpaRepository {
+@Component
+public class BatchJpaRepositoryImpl {
 	
 	/** The Constant LOGGER. */
-	private Logger log = LoggerConfiguration.logConfig(BatchJpaRepository.class);
+	private Logger log = LoggerConfiguration.logConfig(BatchJpaRepositoryImpl.class);
 
 	/**
 	 * Autowired reference for {@link #demographicRepository}
@@ -40,6 +44,11 @@ public class BatchJpaRepository {
 	@Autowired
 	@Qualifier("demographicRepository")
 	private DemographicRepository demographicRepository;
+	
+	/** Autowired reference for {@link #bookingRepository}. */
+	@Autowired
+	@Qualifier("availabilityRepository")
+	private AvailabilityRepository availabilityRepository;
 
 	/**
 	 * Autowired reference for {@link #demographicConsumedRepository}
@@ -173,10 +182,6 @@ public class BatchJpaRepository {
 			entity = regAppointmentRepository.getDemographicEntityPreRegistrationId(preRegId);
 			if (entity == null) {
 				log.info("sessionId", "idType", "id", "Deleted Invalid Pre-Registration ID");
-				/*
-				 * throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-				 * ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
-				 */
 				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
 			}
 		} catch (DataAccessLayerException e) {
@@ -302,5 +307,158 @@ public class BatchJpaRepository {
 					ErrorMessages.DOCUMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of regCenter
+	 */
+	public List<String> findRegCenter(LocalDate regDate) {
+		List<String> regCenterList = new ArrayList<>();
+		try {
+			regCenterList = availabilityRepository.findAvaialableRegCenter(regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return regCenterList;
+	}
+	/**
+	 * 
+	 * @param regDate
+	 * @param regID
+	 * @return list of date
+	 */
+	public List<LocalDate> findDistinctDate(LocalDate regDate, String regID) {
+		List<LocalDate> localDatList = null;
+		try {
+			localDatList = availabilityRepository.findAvaialableDate(regDate, regID);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteSlots(String regId, LocalDate regDate) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = availabilityRepository.deleteByRegcntrIdAndRegDate(regId, regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regID
+	 * @return list of AvailibityEntity
+	 */
+	public List<AvailibityEntity> findSlots(LocalDate regDate, String regID) {
+		List<AvailibityEntity> localDatList = null;
+		try {
+			localDatList = availabilityRepository.findAvaialableSlots(regDate, regID);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return list of RegistrationBookingEntity
+	 */
+	public List<RegistrationBookingEntity> findAllPreIds(String regId, LocalDate regDate) {
+		List<RegistrationBookingEntity> registrationBookingEntityList = null;
+		try {
+			registrationBookingEntityList = regAppointmentRepository.findByRegistrationCenterIdAndRegDate(regId,
+					regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return registrationBookingEntityList;
+	}
+	/**
+	 * 
+	 * This method will update the booking status in applicant table.
+	 * 
+	 * @param preRegId
+	 * @return
+	 */
+	public String getDemographicStatus(String preRegId) {
+		DemographicEntity demographicEntity = null;
+
+		try {
+			demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
+
+			if (demographicEntity == null) {
+				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_014.getCode(),
+						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_015.getCode(),
+					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
+		}
+		return demographicEntity.getStatusCode();
+
+	}
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param date
+	 * @return list of RegistrationBookingEntity
+	 */
+	public List<RegistrationBookingEntity> findAllPreIdsByregID(String regId, LocalDate date) {
+		List<RegistrationBookingEntity> registrationBookingEntityList = null;
+		try {
+			registrationBookingEntityList = regAppointmentRepository.findByRegId(regId, date);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return registrationBookingEntityList;
+	}
+	
+	/**
+	 * 
+	 * Aparam regId
+	 * 
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteAllSlotsByRegId(String regId, LocalDate regDate) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = availabilityRepository.deleteByRegcntrIdAndRegDateGreaterThanEqual(regId, regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
+	
+	/**
+	 * @param entity
+	 * @return boolean
+	 */
+	public boolean saveAvailability(AvailibityEntity entity) {
+		return availabilityRepository.save(entity) != null;
+	}
+
+	
+	
 
 }

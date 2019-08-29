@@ -62,4 +62,11 @@ public class InternalAuthFilterConfig {
 		return authTypeBean;
 	}
 
+	@Bean
+	public FilterRegistrationBean<DefaultAuthTypeFilter> getDefaultAuthtypeStatusFilter() {
+		FilterRegistrationBean<DefaultAuthTypeFilter> authTypeStatusBean = new FilterRegistrationBean<>();
+		authTypeStatusBean.setFilter(new DefaultAuthTypeFilter());
+		authTypeStatusBean.addUrlPatterns("/authtypes/status");
+		return authTypeStatusBean;
+	}
 }
