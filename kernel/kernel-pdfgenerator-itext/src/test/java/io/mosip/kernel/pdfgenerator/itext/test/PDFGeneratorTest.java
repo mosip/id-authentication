@@ -189,7 +189,7 @@ public class PDFGeneratorTest {
 	@Test
 	public void testPdfGeneratorProtectedPassword() throws Exception {
 		StringBuilder htmlString = new StringBuilder();
-        htmlString.append(new String("<html><body> This is HMTL to PDF conversion Example</body></html>"));
+        htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
         InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
 		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) pdfGenerator.generate(is,"userpassword".getBytes());
 		File file = new File("protected.pdf");
@@ -208,7 +208,7 @@ public class PDFGeneratorTest {
 	@Test(expected=PDFGeneratorException.class)
 	public void testPdfGeneratorProtectedPasswordException() throws Exception {
 		StringBuilder htmlString = new StringBuilder();
-        htmlString.append(new String("<html><body> This is HMTL to PDF conversion Example</body></html>"));
+        htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
         InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
 		PDFGenerator generator = new PDFGeneratorImpl();
 		ReflectionTestUtils.setField(generator, "pdfOwnerPassword", null);
