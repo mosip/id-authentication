@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +13,7 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.html2pdf.ConverterProperties;
@@ -35,6 +35,7 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 
@@ -56,14 +57,14 @@ import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeCons
 public class PDFGeneratorImpl implements PDFGenerator {
 	private static final String OUTPUT_FILE_EXTENSION = ".pdf";
 
-	/**
-	 * This method is used to convert Template obtained from an {@link InputStream}
-	 * to a PDF file and written to an {@link OutputStream}.
-	 *
-	 * @param is The {@link InputStream} with the source processed Template
-	 * @return It will return generated PDF file as {@link OutputStream}
-	 * @throws IOException Signals that an I/O exception has occurred
-	 *
+	@Value("${mosip.kernel.pdf_owner_password}")
+	private String pdfOwnerPassword="asd";
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#generate(java.io.
+	 * InputStream)
 	 */
 	@Override
 	public OutputStream generate(InputStream is) throws IOException {
@@ -78,20 +79,12 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		return os;
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * Converts a {@link String} containing processed template to an
-	 * {@link OutputStream} containing PDF
-	 *
-	 * @param template the processedTemplate in the form of a {@link String}
-	 * 
-	 * @return It will return generated PDF file as {@link OutputStream}
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred
-	 * 
-	 * 
+	 * @see
+	 * io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#generate(java.lang.String)
 	 */
-
 	@Override
 	public OutputStream generate(String template) throws IOException {
 		OutputStream os = new ByteArrayOutputStream();
@@ -104,14 +97,12 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		return os;
 	}
 
-	/**
-	 * Converts processed Template stored in a {@link String} to a PDF {@link File}.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param templatePath   The {@link String} containing the source Processed
-	 *                       Template
-	 * @param outpuFilePath  The {@link File} containing the resulting PDF
-	 * @param outputFileName The {@link String} name of output file
-	 * @throws IOException Signals that an I/O exception has occurred
+	 * @see
+	 * io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#generate(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void generate(String templatePath, String outpuFilePath, String outputFileName) throws IOException {
@@ -127,15 +118,11 @@ public class PDFGeneratorImpl implements PDFGenerator {
 
 	}
 
-	/**
-	 * This method is used to convert Template obtained from an {@link InputStream}
-	 * to a PDF file and written to an {@link OutputStream}.
-	 *
-	 * @param is          The {@link InputStream} with the source processed Template
-	 * @param resourceLoc The {@link String} resourceLocation
-	 * @return It will return generated PDF file as {@link OutputStream}
-	 * @throws IOException Signals that an I/O exception has occurred
-	 *
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator#generate(java.io.
+	 * InputStream, java.lang.String)
 	 */
 	@Override
 	public OutputStream generate(InputStream is, String resourceLoc) throws IOException {
@@ -232,28 +219,56 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		}
 	}
 
-	/*public static void main(String[] args) throws IOException, io.mosip.kernel.core.exception.IOException, DocumentException {
-		OutputStream os = new ByteArrayOutputStream();
+	@Override
+	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException {
+		isValidInputStream(dataInputStream);
+		if (password == null || password.length == 0) {
+			return generate(dataInputStream);
+		} else {
+			if (EmptyCheckUtils.isNullEmpty(pdfOwnerPassword)) {
+				throw new PDFGeneratorException(
+						PDFGeneratorExceptionCodeConstant.OWNER_PASSWORD_NULL_EMPTY_EXCEPTION.getErrorCode(),
+						PDFGeneratorExceptionCodeConstant.OWNER_PASSWORD_NULL_EMPTY_EXCEPTION.getErrorMessage());
+			}
+			OutputStream pdfStream = new ByteArrayOutputStream();
+			com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+			try {
+				com.itextpdf.text.pdf.PdfWriter pdfWriter = com.itextpdf.text.pdf.PdfWriter.getInstance(document,
+						pdfStream);
+				pdfWriter.setEncryption(password, pdfOwnerPassword.getBytes(),
+						com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING,
+						com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
+				document.open();
+				XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, dataInputStream);
+			} catch (DocumentException e) {
+				throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+						e.getMessage(), e);
+			} catch (IOException e) {
+				throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+						PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
+			} finally {
+				document.close();
+			}
+			return pdfStream;
+		}
+	}
+
+	private void isValidInputStream(InputStream dataInputStream) {
+		if (EmptyCheckUtils.isNullEmpty(dataInputStream)) {
+			throw new PDFGeneratorException(
+					PDFGeneratorExceptionCodeConstant.INPUTSTREAM_NULL_EMPTY_EXCEPTION.getErrorCode(),
+					PDFGeneratorExceptionCodeConstant.INPUTSTREAM_NULL_EMPTY_EXCEPTION.getErrorMessage());
+		}
+	}
+
+	public static void main(String[] args)
+			throws IOException, io.mosip.kernel.core.exception.IOException, DocumentException {
+		PDFGeneratorImpl com = new PDFGeneratorImpl();
 		StringBuilder htmlString = new StringBuilder();
 		htmlString.append("<html><body> This is HMTL to PDF conversion Example<table border='2' align='center'> ");
 		InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-		com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-		com.itextpdf.text.pdf.PdfWriter pdfWriter = com.itextpdf.text.pdf.PdfWriter.getInstance(document, os);
-
-		pdfWriter.setEncryption("user".getBytes(), "urvil".getBytes(),
-				com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING, com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
-		document.open();
-		XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, is);
-		document.close();
-		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) os;
+		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) com.generate(is, "use".getBytes());
 		File file = new File("C:\\Users\\m1044287\\Downloads\\hsm\\yobro.pdf");
 		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
 	}
-*/
-	@Override
-	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException {
-		OutputStream os = new ByteArrayOutputStream();
-		return null;
-	}
-
 }
