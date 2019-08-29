@@ -49,6 +49,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<name>ID-Repository Salt Generator</name>
-	<description>Batch Job Application to for one-time populating of salt values for ID-Repository Identity and VID service salt tables.</description>
+	<name>ID-Authentication Salt Generator</name>
+	<description>Batch Job Application to for one-time populating of salt values for ID-Authentication salt tables.</description>
 </project>
