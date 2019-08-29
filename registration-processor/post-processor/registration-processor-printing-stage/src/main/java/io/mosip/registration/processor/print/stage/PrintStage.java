@@ -248,7 +248,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			IdType idType = IdType.RID;
 
 			String idValue = regId;
-			String cardType = UIN_CARD_TEMPLATE;
+			String cardType = "UIN";
 			if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString()
 					.equalsIgnoreCase(object.getReg_type().toString())) {
 
@@ -261,7 +261,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				if (cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString())) {
 					idType = IdType.VID;
 					idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
-					cardType = MASKED_UIN_CARD_TEMPLATE;
+
 				} else {
 					idType = IdType.UIN;
 					JSONObject jsonObject = utilities.retrieveUIN(regId);
