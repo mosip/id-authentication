@@ -2,7 +2,7 @@ package io.mosip.kernel.pdfgenerator.itext.constant;
 
 /**
  * 
- * @author M1046571
+ * @author Uday Kumar
  * 
  * @since 1.0.0
  */
