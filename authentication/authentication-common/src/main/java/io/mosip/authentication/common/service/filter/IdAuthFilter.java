@@ -91,20 +91,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
+			
 			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				requestBody.replace(IdAuthCommonConstants.REQUEST,
-						decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
+				requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+			Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
 				if (null != requestBody.get(REQUEST_HMAC)) {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
-					Object encryptedSessionkey = decode((String) requestBody.get(SESSION_KEY));
-					String reqHMAC = keyManager
-							.kernelDecrypt(
-									CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
-											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
-											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
-									fetchReferenceId());
-					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
+					Object encryptedSessionkey = decode((String)requestBody.get(SESSION_KEY));
+					String reqHMAC = keyManager.kernelDecrypt(CryptoUtil.encodeBase64(
+							CryptoUtil.combineByteArray((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey, "#KEY_SPLITTER#")), fetchReferenceId());
+					validateRequestHMAC(reqHMAC,
+							mapper.writeValueAsString(request));
 
 				}
 				decipherBioData(request);
@@ -127,8 +124,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 				if(obj instanceof Map) {
 					Map<String, Object> map = (Map<String, Object>) obj;
 					Object data = Objects.nonNull(map.get("data")) ? map.get("data") : null;
-					Map<String, Object> dataDto = decipherBioData(data);
-					map.replace("data",  dataDto);
+					Object sessionKey = Objects.nonNull(map.get("sessionKey")) ? map.get("sessionKey") : null;
+					map.replace("data", decipherBioData(CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
+							CryptoUtil.decodeBase64((String) data), CryptoUtil.decodeBase64((String) sessionKey), "#KEY_SPLITTER#"))));
 					bioIdentityInfo.add(map);
 				}
 			}
@@ -136,15 +134,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherBioData(Object data) throws IdAuthenticationAppException {
-		try {
-			return Objects.nonNull(data) ? mapper.readValue(CryptoUtil.decodeBase64(data.toString()), Map.class) : null;
-		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
+	private String decipherBioData(String data) throws IdAuthenticationAppException {
+			return keyManager.kernelDecrypt(data, "IDA-FIR");
 	}
-
 	/**
 	 * Method to get the reference id
 	 *

@@ -130,34 +130,34 @@ public class KeyManager {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String kernelDecrypt(String data, String refId)
-			throws IdAuthenticationAppException {
-		String decryptedRequest=null;
+	public String kernelDecrypt(String data, String refId) throws IdAuthenticationAppException {
+		String decryptedRequest = null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 		try {
 			cryptoManagerRequestDto.setApplicationId(appId);
 			cryptoManagerRequestDto.setReferenceId(refId);
-			cryptoManagerRequestDto.setTimeStamp(
-					DateUtils.getUTCCurrentDateTime());
+			cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
 			cryptoManagerRequestDto.setData(data);
-			RestRequestDTO restRequestDTO= restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
+			RestRequestDTO restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
 					RestRequestFactory.createRequest(cryptoManagerRequestDto), Map.class);
-			Map<String,Object> cryptoResponseMap = restHelper.requestSync(restRequestDTO);
-			Object encodedIdentity= ((Map<String,Object>) cryptoResponseMap.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
-			decryptedRequest = new String(Base64.decodeBase64((String)encodedIdentity),
-					StandardCharsets.UTF_8);
-		}
-		catch (RestServiceException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			Map<String, Object> cryptoResponseMap = restHelper.requestSync(restRequestDTO);
+			Object encodedIdentity = ((Map<String, Object>) cryptoResponseMap.get(IdAuthCommonConstants.RESPONSE))
+					.get(IdAuthCommonConstants.DATA);
+			decryptedRequest = new String(CryptoUtil.decodeBase64((String) encodedIdentity), StandardCharsets.UTF_8);
+		} catch (RestServiceException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+					e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				handleRestError(responseBody.get());
 			}
 
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+					e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+					e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		return decryptedRequest;
@@ -216,7 +216,6 @@ public class KeyManager {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
 				response = restHelper.requestSync(restRequestDTO);
-				
 				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
 			} catch (IDDataValidationException | RestServiceException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());

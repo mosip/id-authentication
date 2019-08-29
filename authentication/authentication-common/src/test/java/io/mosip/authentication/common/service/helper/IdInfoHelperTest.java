@@ -287,7 +287,6 @@ public class IdInfoHelperTest {
 		idInfoHelper.getAuthReqestInfo(DemoMatchType.ADDR, authRequestDTO);
 	}
 
-	@SuppressWarnings("null")
 	@Test
 	public void TestmatchIdentityData() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
