@@ -70,15 +70,7 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		OutputStream os = new ByteArrayOutputStream();
 		Objects.requireNonNull(is, "Stream cannot be null");
 		try {
-			// HtmlConverter.convertToPdf(is, os);
-			com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-			com.itextpdf.text.pdf.PdfWriter pdfWriter = com.itextpdf.text.pdf.PdfWriter.getInstance(document, os);
-
-			pdfWriter.setEncryption("user".getBytes(), "user".getBytes(),
-					com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING, com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
-			document.open();
-			XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, is);
-			document.close();
+			HtmlConverter.convertToPdf(is, os);
 		} catch (Exception e) {
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -240,18 +232,28 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		}
 	}
 
-	public static void main(String[] args) throws IOException, io.mosip.kernel.core.exception.IOException {
-		PDFGeneratorImpl generatorImpl = new PDFGeneratorImpl();
+	/*public static void main(String[] args) throws IOException, io.mosip.kernel.core.exception.IOException, DocumentException {
+		OutputStream os = new ByteArrayOutputStream();
 		StringBuilder htmlString = new StringBuilder();
-		htmlString.append(
-				new String("<html><body> This is HMTL to PDF conversion Example<table border='2' align='center'> "));
-		htmlString.append(new String(
-				"<tr><td>JavaCodeGeeks</td><td><a href='examples.javacodegeeks.com'>JavaCodeGeeks</a> </td></tr>"));
-		htmlString.append(new String(
-				"<tr> <td> Google Here </td> <td><a href='www.google.com'>Google</a> </td> </tr></table></body></html>"));
+		htmlString.append("<html><body> This is HMTL to PDF conversion Example<table border='2' align='center'> ");
 		InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) generatorImpl.generate(is);
+		com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+		com.itextpdf.text.pdf.PdfWriter pdfWriter = com.itextpdf.text.pdf.PdfWriter.getInstance(document, os);
+
+		pdfWriter.setEncryption("user".getBytes(), "urvil".getBytes(),
+				com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING, com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
+		document.open();
+		XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, is);
+		document.close();
+		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) os;
 		File file = new File("C:\\Users\\m1044287\\Downloads\\hsm\\yobro.pdf");
 		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
 	}
+*/
+	@Override
+	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException {
+		OutputStream os = new ByteArrayOutputStream();
+		return null;
+	}
+
 }
