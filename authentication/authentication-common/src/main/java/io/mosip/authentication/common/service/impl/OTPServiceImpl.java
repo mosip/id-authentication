@@ -123,9 +123,11 @@ public class OTPServiceImpl implements OTPService {
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
 			String uin = String.valueOf(idResDTO.get("uin") == null ? "" : idResDTO.get("uin"));
 			String userIdForSendOtp = uin;
+			String userIdTypeForSendOtp = IdType.UIN.getType();
 			if(userIdForSendOtp.isEmpty()) {
 				if (individualIdType.equals(IdType.USER_ID.getType())) {
 					userIdForSendOtp = individualId;
+					userIdTypeForSendOtp = IdType.USER_ID.getType();
 				} else {
 					//This condition will not happen mostly, due to prior request validation.
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
@@ -145,7 +147,7 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.SECONDAY_LANG, secLang);
 			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
 			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
-			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, userIdForSendOtp, individualIdType, valueMap);
+			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, userIdForSendOtp, userIdTypeForSendOtp, valueMap);
 			Boolean staticTokenRequired = partnerId != null
 					&& !partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL)
 							? env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class)
