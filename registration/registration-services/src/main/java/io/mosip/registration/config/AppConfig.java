@@ -69,7 +69,6 @@ public class AppConfig {
 		MOSIP_ROLLING_APPENDER.setTotalCap("50MB");
 		MOSIP_ROLLING_APPENDER.setMaxHistory(10);
 		MOSIP_ROLLING_APPENDER.setImmediateFlush(true);
-		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}
 
 	public static Logger getLogger(Class<?> className) {
