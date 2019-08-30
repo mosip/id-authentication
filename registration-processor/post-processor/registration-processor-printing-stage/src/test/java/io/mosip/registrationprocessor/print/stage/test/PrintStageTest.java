@@ -662,7 +662,7 @@ public class PrintStageTest {
 		fieldValue1.setLabel("vid");
 		fieldValue1.setValue("1234");
 		fieldValue.setLabel("cardType");
-		fieldValue.setValue("vid");
+		fieldValue.setValue("MASKED_UIN");
 		List<FieldValue> metadata = new ArrayList<>();
 		metadata.add(fieldValue);
 		metadata.add(fieldValue1);

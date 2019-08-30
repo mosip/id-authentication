@@ -302,7 +302,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (TemplateProcessingFailureException e) {
 			description = "Error while Template Processing";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getErrorText());
+					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage());
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getMessage());
 
 		} catch (PDFGeneratorException e) {
@@ -602,5 +602,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 
 		return vid;
+	}
+
+	@Override
+	public byte[] getPasswordProtectedDoc(byte[] document, String idType, String idValue) {
+
+		return null;
 	}
 }
