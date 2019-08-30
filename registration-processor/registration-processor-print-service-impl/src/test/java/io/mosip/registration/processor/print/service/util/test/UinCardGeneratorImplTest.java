@@ -23,30 +23,31 @@ import io.mosip.registration.processor.print.service.utility.UinCardGeneratorImp
 
 @RunWith(MockitoJUnitRunner.class)
 public class UinCardGeneratorImplTest {
-	
+
 	@Mock
 	private PDFGenerator pdfGenerator;
-	
+
 	@InjectMocks
 	private UinCardGeneratorImpl cardGeneratorImpl;
-		
+
 	@Test
 	public void testCardGenerationSuccess() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputFile = classLoader.getResource("csshtml.html").getFile();
 		InputStream is = new FileInputStream(inputFile);
-		
+
 		byte[] buffer = new byte[8192];
 		int bytesRead;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		while ((bytesRead = is.read(buffer)) != -1) {
 			outputStream.write(buffer, 0, bytesRead);
 		}
-		
+
 		Mockito.when(pdfGenerator.generate(is)).thenReturn(outputStream);
-		
-		ByteArrayOutputStream bos = (ByteArrayOutputStream) cardGeneratorImpl.generateUinCard(is, UinCardType.PDF);
-		
+
+		ByteArrayOutputStream bos = (ByteArrayOutputStream) cardGeneratorImpl.generateUinCard(is, UinCardType.PDF,
+				null);
+
 		String outputPath = System.getProperty("user.dir");
 		String fileSepetator = System.getProperty("file.separator");
 		File OutPutPdfFile = new File(outputPath + fileSepetator + "csshtml.pdf");
@@ -59,7 +60,7 @@ public class UinCardGeneratorImplTest {
 		}
 		OutPutPdfFile.delete();
 	}
-	
+
 	@Test(expected = PDFGeneratorException.class)
 	public void testPdfGeneratorException() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -68,7 +69,7 @@ public class UinCardGeneratorImplTest {
 		InputStream inputStream = new FileInputStream(inputFile);
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
 		Mockito.doThrow(e).when(pdfGenerator).generate(inputStream);
-		cardGeneratorImpl.generateUinCard(inputStream, UinCardType.PDF);
+		cardGeneratorImpl.generateUinCard(inputStream, UinCardType.PDF, null);
 	}
 
 }

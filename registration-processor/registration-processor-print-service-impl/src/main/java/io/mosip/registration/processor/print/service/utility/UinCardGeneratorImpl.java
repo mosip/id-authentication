@@ -39,16 +39,20 @@ public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStr
 	 * @see
 	 * io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator#
 	 * generateUinCard(java.io.InputStream,
-	 * io.mosip.registration.processor.core.constant.UinCardType)
+	 * io.mosip.registration.processor.core.constant.UinCardType, java.lang.String)
 	 */
 	@Override
-	public ByteArrayOutputStream generateUinCard(InputStream in, UinCardType type) {
+	public ByteArrayOutputStream generateUinCard(InputStream in, UinCardType type, String password) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"UinCardGeneratorImpl::generateUinCard()::entry");
 
 		ByteArrayOutputStream out = null;
 		try {
-			out = (ByteArrayOutputStream) pdfGenerator.generate(in);
+			if (password != null) {
+				out = (ByteArrayOutputStream) pdfGenerator.generate(in, password.getBytes());
+			} else {
+				out = (ByteArrayOutputStream) pdfGenerator.generate(in);
+			}
 		} catch (IOException | PDFGeneratorException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()

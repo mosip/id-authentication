@@ -10,7 +10,9 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +60,7 @@ import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.vid.VidRequestDto;
 import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
@@ -66,6 +69,7 @@ import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerato
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
@@ -80,6 +84,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PrintServiceImpl.
  * 
@@ -105,15 +110,18 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
 
+	/** The un masked length. */
 	@Value("${registration.processor.unMaskedUin.length}")
 	private int unMaskedLength;
 
+	/** The uin length. */
 	@Value("${mosip.kernel.uin.length}")
 	private int uinLength;
 
 	/** The Constant UIN_CARD_TEMPLATE. */
 	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
 
+	/** The Constant MASKED_UIN_CARD_TEMPLATE. */
 	private static final String MASKED_UIN_CARD_TEMPLATE = "RPR_MASKED_UIN_CARD_TEMPLATE";
 
 	/** The Constant FACE. */
@@ -121,6 +129,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/** The Constant UIN_CARD_PDF. */
 	private static final String UIN_CARD_PDF = "uinPdf";
+
+	/** The Constant UIN_CARD_PDF. */
+	private static final String UIN_CARD_HTML = "uinhtml";
 
 	/** The Constant UIN_TEXT_FILE. */
 	private static final String UIN_TEXT_FILE = "textFile";
@@ -130,6 +141,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/** The Constant QRCODE. */
 	private static final String QRCODE = "QrCode";
+
+	/** The Constant UINCARDPASSWORD. */
+	private static final String UINCARDPASSWORD = "mosip.reigstration.processor.print.service.uincard.password";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintServiceImpl.class);
@@ -142,6 +156,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Autowired
 	private TemplateGenerator templateGenerator;
 
+	/** The utilities. */
 	@Autowired
 	private Utilities utilities;
 
@@ -177,20 +192,25 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Autowired
 	private CbeffUtil cbeffutil;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The reg processor identity json. */
+	@Autowired
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
+
 	/*
-	 * 
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.processor.core.spi.print.service.PrintService#getPdf(
-	 * java.lang.String)
+	 * @see io.mosip.registration.processor.core.spi.print.service.PrintService#
+	 * getDocuments(io.mosip.registration.processor.core.constant.IdType,
+	 * java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Map<String, byte[]> getDocuments(IdType idType, String idValue, String cardType) {
+	public Map<String, byte[]> getDocuments(IdType idType, String idValue, String cardType,
+			boolean isPasswordProtected) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PrintServiceImpl::getDocuments()::entry");
 
@@ -265,9 +285,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 			}
 
-			// generating pdf
-			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
+			String password = null;
+			if (isPasswordProtected) {
+				password = getPassword(uin);
+			}
 
+			// generating pdf
+			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF, password);
 			byte[] pdfbytes = pdf.toByteArray();
 			byteMap.put(UIN_CARD_PDF, pdfbytes);
 
@@ -355,8 +379,10 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/**
 	 * Gets the id repo response.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param idType
+	 *            the id type
+	 * @param idValue
+	 *            the id value
 	 * @return the id repo response
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
@@ -387,9 +413,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/**
 	 * Creates the text file.
-	 * 
-	 * @param attributes
 	 *
+	 * @param attributes
+	 *            the attributes
 	 * @return the byte[]
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -439,6 +465,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @param textFileByte
 	 *            the text file byte
 	 * @param attributes
+	 *            the attributes
 	 * @return true, if successful
 	 * @throws QrcodeGenerationException
 	 *             the qrcode generation exception
@@ -465,6 +492,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @param response
 	 *            the response
 	 * @param attributes
+	 *            the attributes
 	 * @return true, if successful
 	 * @throws Exception
 	 *             the exception
@@ -552,6 +580,17 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 	}
 
+	/**
+	 * Mask string.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param maskLength
+	 *            the mask length
+	 * @param maskChar
+	 *            the mask char
+	 * @return the string
+	 */
 	private String maskString(String uin, int maskLength, char maskChar) {
 		if (uin == null || uin.equals(""))
 			return "";
@@ -568,6 +607,19 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		return sbMaskString.toString() + uin.substring(0 + maskLength);
 	}
 
+	/**
+	 * Gets the vid.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the vid
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws VidCreationException
+	 *             the vid creation exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private String getVid(String uin) throws ApisResourceAccessException, VidCreationException, IOException {
 		String vid = null;
 		VidRequestDto vidRequestDto = new VidRequestDto();
@@ -604,9 +656,72 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		return vid;
 	}
 
-	@Override
-	public byte[] getPasswordProtectedDoc(byte[] document, String idType, String idValue) {
+	/**
+	 * Gets the password.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the password
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 * @throws NumberFormatException
+	 *             the number format exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private String getPassword(String uin)
+			throws IdRepoAppException, NumberFormatException, ApisResourceAccessException, IOException {
+		JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(uin));
+		String[] attributes = env.getProperty(UINCARDPASSWORD).split("|");
+		List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
-		return null;
+		Iterator<String> it = list.iterator();
+		String uinCardPd = "";
+
+		while (it.hasNext()) {
+			String key = it.next().trim();
+
+			Object object = JsonUtil.getJSONValue(jsonObject, key);
+			if (object instanceof ArrayList) {
+				JSONArray node = JsonUtil.getJSONArray(jsonObject, key);
+				JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+				uinCardPd = uinCardPd.concat(getParameter(jsonValues, primaryLang));
+
+			} else if (object instanceof LinkedHashMap) {
+				JSONObject json = JsonUtil.getJSONObject(jsonObject, key);
+				uinCardPd = uinCardPd.concat((String) json.get(VALUE));
+			} else {
+				uinCardPd = uinCardPd.concat((String) object);
+			}
+
+		}
+
+		return uinCardPd;
+	}
+
+	/**
+	 * Gets the parameter.
+	 *
+	 * @param jsonValues
+	 *            the json values
+	 * @param langCode
+	 *            the lang code
+	 * @return the parameter
+	 */
+	private String getParameter(JsonValue[] jsonValues, String langCode) {
+
+		String parameter = null;
+		if (jsonValues != null) {
+			for (int count = 0; count < jsonValues.length; count++) {
+				String lang = jsonValues[count].getLanguage();
+				if (langCode.contains(lang)) {
+					parameter = jsonValues[count].getValue();
+					break;
+				}
+			}
+		}
+		return parameter;
 	}
 }

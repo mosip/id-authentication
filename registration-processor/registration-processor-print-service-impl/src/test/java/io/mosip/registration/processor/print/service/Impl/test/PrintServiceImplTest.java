@@ -187,7 +187,7 @@ public class PrintServiceImplTest {
 			outputStream.write(buffer, 0, bytesRead);
 		}
 
-		Mockito.when(uinCardGenerator.generateUinCard(any(), any())).thenReturn(outputStream);
+		Mockito.when(uinCardGenerator.generateUinCard(any(), any(), any())).thenReturn(outputStream);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 
@@ -228,7 +228,7 @@ public class PrintServiceImplTest {
 	public void testPdfGeneratedwithUINSuccess() {
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString(), false).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -241,7 +241,8 @@ public class PrintServiceImplTest {
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.RID, uinList.get(0), CardType.UIN.toString()).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.RID, uinList.get(0), CardType.UIN.toString(), false)
+				.get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -260,7 +261,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", null);
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.RID, "2046958192", CardType.UIN.toString());
+		printService.getDocuments(IdType.RID, "2046958192", CardType.UIN.toString(), false);
 	}
 
 	/**
@@ -282,7 +283,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString(), false);
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class PrintServiceImplTest {
 	@Test(expected = PDFGeneratorException.class)
 	public void testPDFGeneratorException() throws IdRepoAppException, ApisResourceAccessException, IOException {
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
-		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any());
+		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any(), any());
 
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
@@ -303,7 +304,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString(), false);
 	}
 
 	/**
@@ -325,7 +326,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString(), false);
 	}
 
 	@Test(expected = PDFGeneratorException.class)
@@ -340,7 +341,7 @@ public class PrintServiceImplTest {
 		map1.put("UIN", "2046958192");
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
-		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString());
+		printService.getDocuments(IdType.UIN, uinList.get(0), CardType.UIN.toString(), false);
 
 	}
 
@@ -369,7 +370,7 @@ public class PrintServiceImplTest {
 
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString(), false).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -379,7 +380,7 @@ public class PrintServiceImplTest {
 		Mockito.doThrow(e).when(qrCodeGenerator).generateQrCode(any(), any());
 
 		String uin = "2046958192";
-		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString(), false).get("uinPdf");
 	}
 
 	@Test
@@ -388,7 +389,7 @@ public class PrintServiceImplTest {
 
 		String uin = "2046958192";
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString(), false).get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
@@ -397,7 +398,7 @@ public class PrintServiceImplTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
 
 		String uin = "2046958192";
-		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString(), false).get("uinPdf");
 	}
 
 	@Test(expected = TemplateProcessingFailureException.class)
@@ -405,7 +406,7 @@ public class PrintServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate(any(), any(), anyString())).thenReturn(null);
 
 		String uin = "2046958192";
-		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString()).get("uinPdf");
+		printService.getDocuments(IdType.UIN, uin, CardType.UIN.toString(), false).get("uinPdf");
 	}
 
 	@Test
@@ -419,7 +420,8 @@ public class PrintServiceImplTest {
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
 		Mockito.when(utility.getUinByVid(any())).thenReturn("2046958192");
 		byte[] expected = outputStream.toByteArray();
-		byte[] result = printService.getDocuments(IdType.VID, "2046958192", CardType.UIN.toString()).get("uinPdf");
+		byte[] result = printService.getDocuments(IdType.VID, "2046958192", CardType.UIN.toString(), false)
+				.get("uinPdf");
 		assertArrayEquals(expected, result);
 	}
 
