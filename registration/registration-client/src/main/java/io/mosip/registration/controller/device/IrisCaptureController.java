@@ -735,16 +735,10 @@ public class IrisCaptureController extends BaseController {
 				}
 			}
 
-			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null
-
-					&& ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isLeftEyeCaptured
-							&& isRightEyeCaptured)
-
-							|| getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-									.getFingerprintDetailsDTO().isEmpty()
-									&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
-									&& (isLeftEyeCaptured || isRightEyeCaptured))) {
-				isValid = true;
+			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null && !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+				if (isLeftEyeCaptured || isRightEyeCaptured) {
+					isValid = true;
+				}
 			} else {
 				if (isLeftEyeCaptured && isRightEyeCaptured) {
 					isValid = true;
