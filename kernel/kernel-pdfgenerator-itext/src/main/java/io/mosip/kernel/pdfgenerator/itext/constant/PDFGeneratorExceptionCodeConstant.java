@@ -1,14 +1,17 @@
 package io.mosip.kernel.pdfgenerator.itext.constant;
 
 /**
+ * Exception code constants for this module
  * 
- * @author M1046571
+ * @author Uday Kumar
  * 
  * @since 1.0.0
  */
 
 public enum PDFGeneratorExceptionCodeConstant {
-	PDF_EXCEPTION("KER-PDG-001", "Pdf generation failed");
+	PDF_EXCEPTION("KER-PDG-001", "Pdf generation failed"),
+	OWNER_PASSWORD_NULL_EMPTY_EXCEPTION("KER-PDG-002", "Owner Password is null or Empty or not in properties"),
+	INPUTSTREAM_NULL_EMPTY_EXCEPTION("KER-PDG-003", "InputStream is null or Empty or not in properties");
 	/**
 	 * This variable holds the error code.
 	 */
