@@ -357,9 +357,8 @@ public class HolidayServiceImpl implements HolidayService {
 								null);
 						List<SearchFilter> locationCodeFilter = buildLocationSearchFilter(locations.getContent());
 						if (locationCodeFilter.isEmpty()) {
-							throw new DataNotFoundException(
-									LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-									LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+
+							return pageDto;
 						}
 						addList.addAll(locationCodeFilter);
 						removeList.add(filter);
