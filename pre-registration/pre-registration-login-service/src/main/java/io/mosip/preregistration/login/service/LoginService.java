@@ -159,14 +159,13 @@ public class LoginService {
 	 * @return MainResponseDTO<AuthNResponse>
 	 */
 	public MainResponseDTO<AuthNResponse> sendOTP(MainRequestDTO<OtpRequestDTO> userOtpRequest) {
-		log.info("sessionId", "idType", "id", "In callsendOtp method of login service ");
 		MainResponseDTO<AuthNResponse> response = null;
-
 		requiredRequestMap.put("id", sendOtpId);
-		response = (MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
+		log.info("sessionId", "idType", "id", "In callsendOtp method of login service with request "+userOtpRequest+" with request map parameter "+requiredRequestMap);
 		String userid = null;
 		boolean isSuccess = false;
 		try {
+			response = (MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 			if (ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),
 					requiredRequestMap)/* authCommonUtil.validateRequest(userOtpRequest) */) {
 
