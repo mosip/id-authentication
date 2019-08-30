@@ -825,10 +825,18 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getEqualsLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-		Location location = locationRepository.findLocationByHierarchyName(filter.getColumnName(), filter.getValue(),
+		List<LocationSearchDto> locationSearch = null;
+		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
+		Location location = locationRepository.findLocationByHierarchyLevel(locLevel, filter.getValue(),
 				dto.getLanguageCode());
-		if(location!=null) {
+		if (location != null) {
+			locationSearch = getListOfLocationNodes(tree, location);
+		}
+		return locationSearch;
+	}
+
+	private List<LocationSearchDto> getListOfLocationNodes(List<Node<Location>> tree, Location location) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
@@ -861,7 +869,7 @@ public class LocationServiceImpl implements LocationService {
 			});
 			responseDto.add(locationSearchDto);
 		});
-		}
+
 		return responseDto;
 	}
 
@@ -878,43 +886,13 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-		List<Location> locationList = locationRepository.findLocationByHierarchyNameContains(filter.getColumnName(),
+		List<LocationSearchDto> responseDto = null;
+		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
+		List<Location> locationList = locationRepository.findLocationByHierarchyLevelContains(locLevel,
 				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
-		locationList.forEach(location -> {
-			Node<Location> node = locationTree.findNode(tree, location.getCode());
-			List<Node<Location>> leafNodes = locationTree.findLeafs(node);
-			leafNodes.forEach(leafNode -> {
-				List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
-				LocationSearchDto locationSearchDto = new LocationSearchDto();
-				leafParents.forEach(p -> {
-					if (p.getHierarchyLevel() == 1) {
-						locationSearchDto.setRegion(p.getName());
-					}
-					if (p.getHierarchyLevel() == 2) {
-						locationSearchDto.setProvince(p.getName());
-					}
-					if (p.getHierarchyLevel() == 3) {
-						locationSearchDto.setCity(p.getName());
-					}
-					if (p.getHierarchyLevel() == 4) {
-						locationSearchDto.setZone(p.getName());
-					}
-					if (p.getHierarchyLevel() == 5) {
-						locationSearchDto.setPostalCode(p.getName());
-					}
-					locationSearchDto.setCreatedBy(p.getCreatedBy());
-					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
-					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
-					locationSearchDto.setIsActive(p.getIsActive());
-					locationSearchDto.setIsDeleted(p.getIsDeleted());
-					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
-					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
-				});
-				responseDto.add(locationSearchDto);
-			});
-
-		});
+		for (Location loc : locationList) {
+			responseDto = getListOfLocationNodes(tree, loc);
+		}
 		return responseDto;
 	}
 
@@ -931,43 +909,15 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-		List<Location> locationList = locationRepository.findLocationByHierarchyNameStartsWith(filter.getColumnName(),
+		List<LocationSearchDto> responseDto = null;
+		short hierarchyLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
+		List<Location> locationList = locationRepository.findLocationByHierarchyLevelStartsWith(hierarchyLevel,
 				filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
-		locationList.forEach(location -> {
-			Node<Location> node = locationTree.findNode(tree, location.getCode());
-			List<Node<Location>> leafNodes = locationTree.findLeafs(node);
-			leafNodes.forEach(leafNode -> {
-				List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
-				LocationSearchDto locationSearchDto = new LocationSearchDto();
-				leafParents.forEach(p -> {
-					if (p.getHierarchyLevel() == 1) {
-						locationSearchDto.setRegion(p.getName());
-					}
-					if (p.getHierarchyLevel() == 2) {
-						locationSearchDto.setProvince(p.getName());
-					}
-					if (p.getHierarchyLevel() == 3) {
-						locationSearchDto.setCity(p.getName());
-					}
-					if (p.getHierarchyLevel() == 4) {
-						locationSearchDto.setZone(p.getName());
-					}
-					if (p.getHierarchyLevel() == 5) {
-						locationSearchDto.setPostalCode(p.getName());
-					}
-					locationSearchDto.setCreatedBy(p.getCreatedBy());
-					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
-					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
-					locationSearchDto.setIsActive(p.getIsActive());
-					locationSearchDto.setIsDeleted(p.getIsDeleted());
-					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
-					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
-				});
-				responseDto.add(locationSearchDto);
-			});
+		for (Location loc : locationList) {
+			responseDto = getListOfLocationNodes(tree, loc);
 
-		});
+		}
+
 		return responseDto;
 	}
 
@@ -998,7 +948,7 @@ public class LocationServiceImpl implements LocationService {
 							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
-					if (filter.getText() == null || filter.getText().isEmpty() ) {
+					if (filter.getText() == null || filter.getText().isEmpty()) {
 						List<String> locationNames = locationRepository
 								.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(),
 										langCode);
@@ -1053,6 +1003,34 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		return filterResponseDto;
+	}
+
+	/**
+	 * Method to find out the hierrachy level from the column name
+	 * 
+	 * @param columnName
+	 *            input column name
+	 * @return hierarchy level
+	 */
+	public String getHierarchyLevel(String columnName) {
+		if (columnName != null) {
+			switch (columnName) {
+			case MasterDataConstant.POSTAL_CODE:
+				return "5";
+			case MasterDataConstant.ZONE:
+				return "4";
+			case MasterDataConstant.CITY:
+				return "3";
+			case MasterDataConstant.PROVINCE:
+				return "2";
+			case MasterDataConstant.REGION:
+				return "1";
+
+			default:
+				return "0";
+			}
+		}
+		return "0";
 	}
 
 }

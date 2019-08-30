@@ -86,7 +86,7 @@ public class SortUtils {
 	}
 
 	private Field findField(List<Field> fields, String name) {
-		Optional<Field> field = fields.stream().filter(f -> f.getName().equals(name)).findFirst();
+		Optional<Field> field = fields.stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
 		if (field.isPresent()) {
 			return field.get();
 		} else {
