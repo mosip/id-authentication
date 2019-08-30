@@ -202,13 +202,17 @@ public class AuthTransactionBuilder {
 				autnTxn.setStatusComment(comment);
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
-				int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-				Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
-				String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
-				autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
-				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
-				autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
-						+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
+				
+				if (uin != null && !uin.isEmpty()) {
+					int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+					Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
+					String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
+					autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
+					String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
+					autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
+							+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
+				}
+				
 				Optional<String> clientId = Optional.of(transactionManager.getUser());
 				if (clientId.isPresent()) {
 					autnTxn.setEntityName(clientId.get());
