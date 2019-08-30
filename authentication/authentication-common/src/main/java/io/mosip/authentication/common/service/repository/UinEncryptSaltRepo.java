@@ -23,5 +23,5 @@ public interface UinEncryptSaltRepo extends JpaRepository<UinEncryptSalt, Intege
 	 * @return String salt
 	 */
 	@Query("select salt from UinEncryptSalt where id = :id")
-	public String retrieveSaltById(@Param("id") int id);
+	public String retrieveSaltById(@Param("id") Integer id);
 }

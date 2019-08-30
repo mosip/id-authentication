@@ -308,11 +308,13 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(e));
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + e.getResponseBodyAsString());
 			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
 			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO);
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -386,11 +388,13 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(e));
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + e.getResponseBodyAsString());
 			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
 			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO);
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of updatePreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -481,6 +485,7 @@ public class DemographicService {
 			}
 			isRetrieveSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAllApplicationDetails method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, response);
@@ -609,6 +614,7 @@ public class DemographicService {
 				}
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getApplicationStatus method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, response);
@@ -662,6 +668,7 @@ public class DemographicService {
 			}
 			isDeleteSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In pre-registration deleteIndividual service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, response);
 		} finally {
@@ -725,6 +732,7 @@ public class DemographicService {
 				}
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getDemographicData of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, response);
@@ -760,6 +768,7 @@ public class DemographicService {
 				statusCheck(demographicEntity, status, userId);
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In updatePreRegistrationStatus method of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, response);
@@ -828,6 +837,7 @@ public class DemographicService {
 				}
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callDocumentServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
 			throw new RestCallException(ErrorCodes.PRG_PAM_APP_014.getCode(),
@@ -884,6 +894,7 @@ public class DemographicService {
 
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callBookingServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
 			throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.getCode(),
@@ -929,6 +940,7 @@ public class DemographicService {
 
 			mainResponseDTO.setResponse(preIdMap);
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getUpdatedDateTimeForPreIds method of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -986,6 +998,7 @@ public class DemographicService {
 		try {
 			return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, DemographicIdentityRequestDTO.class);
 		} catch (IOException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service util of getPreregistrationIdentityJson- " + ex.getMessage());
 		}

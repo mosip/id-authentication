@@ -362,7 +362,7 @@ public class AvailabilityUtil {
 	 */
 	public void timeSlotCalculator(RegistrationCenterDto regDto, List<String> holidaylist, LocalDate sDate,
 			BatchJpaRepositoryImpl batchServiceDAO) {
-		log.info("sessionId", "idType", "id", "In timeSlotCalculator method of Booking Service Util");
+		log.info("sessionId", "idType", "id", "In timeSlotCalculator method of Booking Service Util for "+regDto +" on date "+sDate);
 		if (holidaylist.contains(sDate.toString())) {
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 			String text = "2016-11-09 00:00:00";
@@ -450,7 +450,7 @@ public class AvailabilityUtil {
 	 */
 
 	public boolean isNull(Object key) {
-		log.info("sessionId", "idType", "id", "In isNull method of Booking Service Util");
+//		log.info("sessionId", "idType", "id", "In isNull method of Booking Service Util");
 		if (key instanceof String) {
 			if (key.equals("") || ((String) key).trim().length() == 0)
 				return true;

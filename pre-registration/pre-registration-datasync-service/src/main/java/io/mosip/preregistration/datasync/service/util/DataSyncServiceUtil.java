@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -274,6 +275,7 @@ public class DataSyncServiceUtil {
 						PreRegIdsByRegCenterIdResponseDTO.class);
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetPreIdsRestService method of datasync service util - " + ex.getMessage());
 			throw new RecordNotFoundForDateRange(ErrorCodes.PRG_DATA_SYNC_016.getCode(),
@@ -315,6 +317,7 @@ public class DataSyncServiceUtil {
 				responsestatusDto = mapper.convertValue(obj, DocumentsMetaData.class);
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetDocRestService method of datasync service util - " + ex.getMessage());
 
@@ -359,6 +362,7 @@ public class DataSyncServiceUtil {
 				responsestatusDto = mapper.convertValue(obj, DocumentDTO.class);
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetBytesDocRestService method of datasync service util - " + ex.getMessage());
 
@@ -406,6 +410,7 @@ public class DataSyncServiceUtil {
 						DemographicResponseDTO.class);
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetPreRegInfoRestService method of datasync service util - " + ex.getMessage());
 
@@ -457,6 +462,7 @@ public class DataSyncServiceUtil {
 				}
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetAppointmentDetailsRestService method of datasync service util - " + ex.getMessage());
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_016.getCode(),
@@ -534,6 +540,7 @@ public class DataSyncServiceUtil {
 			preRegArchiveDTO.setFileName(preRegistrationDTO.getPreRegistrationId());
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In archivingFiles method of datasync service util - " + ex.getMessage());
 			throw new ZipFileCreationException(ErrorCodes.PRG_DATA_SYNC_005.getCode(),
@@ -595,6 +602,7 @@ public class DataSyncServiceUtil {
 			return JsonUtils.jsonStringToJavaMap(JsonUtils.javaObjectToJsonString(documentMetaDataDTO));
 		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException
 				| JsonProcessingException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In prepareDocumentMetaData method of datasync service util for JSONException - "
 							+ ex.getMessage());
@@ -645,6 +653,7 @@ public class DataSyncServiceUtil {
 			zipOutputStream.close();
 			byteArray = byteArrayOutputStream.toByteArray();
 		} catch (IOException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getCompressed method of datasync service util for FileNotFoundException - " + ex.getMessage());
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.getCode(),
@@ -669,6 +678,7 @@ public class DataSyncServiceUtil {
 			zipOutputStream.write(fileToZip);
 			zipOutputStream.flush();
 		} catch (IOException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In zipping method of datasync service util for IOException - " + ex.getMessage());
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.getCode(),
@@ -721,6 +731,7 @@ public class DataSyncServiceUtil {
 				response = mapper.convertValue(respEntity.getBody().getResponse(), Map.class);
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetUpdatedTimeRestService method of datasync service util - " + ex.getMessage());
 
@@ -802,6 +813,7 @@ public class DataSyncServiceUtil {
 				}
 			}
 		} catch (DataAccessLayerException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In storeReverseDataSync method of datasync service util - " + ex.getMessage());
 			throw new TableNotAccessibleException(ErrorCodes.PRG_DATA_SYNC_012.getCode(),
