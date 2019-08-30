@@ -1273,12 +1273,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 					} else {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
+						faceCaptureController.checkForException();
 						registrationPreviewController.setUpPreviewContent();
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {
 					SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 					irisCaptureController.clearIrisBasedOnExceptions();
+					faceCaptureController.checkForException();
 
 					registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 							getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.NEXT));

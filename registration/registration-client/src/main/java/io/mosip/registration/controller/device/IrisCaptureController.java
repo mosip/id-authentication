@@ -565,6 +565,8 @@ public class IrisCaptureController extends BaseController {
 					popupStage.close();
 					if (validateIris() && validateIrisLocalDedup()) {
 						continueBtn.setDisable(false);
+					}else {
+						continueBtn.setDisable(true);
 					}
 				});
 
@@ -628,8 +630,10 @@ public class IrisCaptureController extends BaseController {
 								.put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 						registrationPreviewController.setUpPreviewContent();
 					}
+					faceCaptureController.checkForException();
 					registrationController.showUINUpdateCurrentPage();
 				} else {
+					faceCaptureController.checkForException();
 					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
 							getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.NEXT));
 				}
