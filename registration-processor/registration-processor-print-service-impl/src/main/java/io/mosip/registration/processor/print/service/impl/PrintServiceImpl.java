@@ -674,7 +674,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	private String getPassword(String uin)
 			throws IdRepoAppException, NumberFormatException, ApisResourceAccessException, IOException {
 		JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(uin));
-		String[] attributes = env.getProperty(UINCARDPASSWORD).split("|");
+
+		String[] attributes = env.getProperty(UINCARDPASSWORD).split("\\|");
 		List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
 		Iterator<String> it = list.iterator();
