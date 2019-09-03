@@ -35,6 +35,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
+
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
  * the authenticating partner done for request as AUTH and KYC
@@ -44,6 +45,10 @@ import io.mosip.kernel.core.util.StringUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+
+	private static final String DATA = "data";
+
+	private static final String SESSION_KEY = "sessionKey";
 
 	/** The Constant EKYC. */
 	private static final String EKYC = "ekyc";
@@ -79,7 +84,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private static final String KYC = null;
 
 	/** The Constant SESSION_KEY. */
-	private static final String SESSION_KEY = "requestSessionKey";
+	private static final String REQUEST_SESSION_KEY = "requestSessionKey";
 
 	/*
 	 * (non-Javadoc)
@@ -91,17 +96,21 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			
+
 			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
-			Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
+				requestBody.replace(IdAuthCommonConstants.REQUEST,
+						decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
 				if (null != requestBody.get(REQUEST_HMAC)) {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
-					Object encryptedSessionkey = decode((String)requestBody.get(SESSION_KEY));
-					String reqHMAC = keyManager.kernelDecrypt(CryptoUtil.encodeBase64(
-							CryptoUtil.combineByteArray((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey, "#KEY_SPLITTER#")), fetchReferenceId());
-					validateRequestHMAC(reqHMAC,
-							mapper.writeValueAsString(request));
+					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
+					String reqHMAC = keyManager
+							.kernelDecrypt(
+									CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
+											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
+											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
+									fetchReferenceId());
+					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
 
 				}
 				decipherBioData(request);
@@ -109,34 +118,48 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private void decipherBioData(Map<String, Object> request) throws IdAuthenticationAppException {
 		Object biometrics = request.get(IdAuthCommonConstants.BIOMETRICS);
-		if(Objects.nonNull(biometrics) && biometrics instanceof List) {
+		if (Objects.nonNull(biometrics) && biometrics instanceof List) {
 			List<Object> bioIdentity = (List<Object>) biometrics;
 			List<Object> bioIdentityInfo = new ArrayList<>();
-			for(Object obj : bioIdentity) {
-				if(obj instanceof Map) {
-					Map<String, Object> map = (Map<String, Object>) obj;
-					Object data = Objects.nonNull(map.get("data")) ? map.get("data") : null;
-					Object sessionKey = Objects.nonNull(map.get("sessionKey")) ? map.get("sessionKey") : null;
-					map.replace("data", decipherBioData(CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
-							CryptoUtil.decodeBase64((String) data), CryptoUtil.decodeBase64((String) sessionKey), "#KEY_SPLITTER#"))));
-					bioIdentityInfo.add(map);
+			for (Object obj : bioIdentity) {
+				if (obj instanceof Map) {
+					bioIdentityInfo.add(decipherBioData(obj));
 				}
 			}
 			request.replace(IdAuthCommonConstants.BIOMETRICS, bioIdentityInfo);
 		}
 	}
 
-	private String decipherBioData(String data) throws IdAuthenticationAppException {
-			return keyManager.kernelDecrypt(data, "IDA-FIR");
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> decipherBioData(Object obj) throws IdAuthenticationAppException {
+		try {
+			Map<String, Object> map = (Map<String, Object>) obj;
+			Object data = mapper
+					.readValue(Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64((String) map.get(DATA)) : null,
+							Map.class)
+					.get("bioValue");
+			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
+			map.replace(DATA,
+					keyManager
+							.kernelDecrypt(
+									CryptoUtil.encodeBase64(
+											CryptoUtil.combineByteArray(CryptoUtil.decodeBase64((String) data),
+													CryptoUtil.decodeBase64((String) sessionKey),
+													env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
+									"IDA-FIR"));
+			return map;
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
+
 	/**
 	 * Method to get the reference id
 	 *
@@ -184,9 +207,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * License key MISP mapping is associated with this method.It checks for the
 	 * license key expiry and staus.
 	 *
-	 * @param licenseKey the license key
+	 * @param licenseKey
+	 *            the license key
 	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
@@ -217,8 +242,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * this method checks whether partner id is valid.
 	 *
-	 * @param partnerId the partner id
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param partnerId
+	 *            the partner id
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
 	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
@@ -246,17 +273,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Validates MISP partner mapping,if its valid it returns the policyId.
 	 *
-	 * @param partnerId the partner id
-	 * @param mispId    the misp id
+	 * @param partnerId
+	 *            the partner id
+	 * @param mispId
+	 *            the misp id
 	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
 		Map<String, String> partnerIdMap = null;
 		String policyId = null;
-		Boolean mispPartnerMappingJson = env.getProperty(
-				IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class);
+		Boolean mispPartnerMappingJson = env
+				.getProperty(IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class);
 		if (null == mispPartnerMappingJson || !mispPartnerMappingJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
@@ -273,9 +303,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type based on policy.
 	 *
-	 * @param policyId    the policy id
-	 * @param requestBody the request body
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param policyId
+	 *            the policy id
+	 * @param requestBody
+	 *            the request body
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	protected void checkAllowedAuthTypeBasedOnPolicy(String policyId, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
@@ -302,9 +335,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type for bio based on the policies.
 	 *
-	 * @param requestBody  the request body
-	 * @param authPolicies the auth policies
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param requestBody
+	 *            the request body
+	 * @param authPolicies
+	 *            the auth policies
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
@@ -342,27 +378,34 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type for bio.
 	 *
-	 * @param requestBody  the request body
-	 * @param authPolicies the auth policies
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IOException                  Signals that an I/O exception has
-	 *                                      occurred.
-	 * @throws JsonParseException           the json parse exception
-	 * @throws JsonMappingException         the json mapping exception
-	 * @throws JsonProcessingException      the json processing exception
+	 * @param requestBody
+	 *            the request body
+	 * @param authPolicies
+	 *            the auth policies
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws JsonParseException
+	 *             the json parse exception
+	 * @throws JsonMappingException
+	 *             the json mapping exception
+	 * @throws JsonProcessingException
+	 *             the json processing exception
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkAllowedAuthTypeForBio(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException, IOException {
 
-		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST)).filter(obj -> obj instanceof Map)
-				.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
-				.orElse(Collections.emptyList());
+		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
+				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get("biometrics"))
+				.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
 		List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<BioIdentityInfoDTO>>() {
 				});
 
-		boolean noBioType= listBioInfo.stream().anyMatch(s-> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
+		boolean noBioType = listBioInfo.stream()
+				.anyMatch(s -> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
 		if (noBioType) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -370,9 +413,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		List<String> bioTypeList = listBioInfo.stream()
-				.filter(s ->  Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
-				.map(s -> s.getData().getBioType())
-				.collect(Collectors.toList());
+				.filter(s -> Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
+				.map(s -> s.getData().getBioType()).collect(Collectors.toList());
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
@@ -387,15 +429,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type for bio.
 	 *
-	 * @param authPolicies the auth policies
-	 * @param bioTypeList the bio type list
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param authPolicies
+	 *            the auth policies
+	 * @param bioTypeList
+	 *            the bio type list
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList)
 			throws IdAuthenticationAppException {
 		String bioAuthType;
 		for (String bioType : bioTypeList) {
-			bioAuthType=bioType;
+			bioAuthType = bioType;
 			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
 					|| bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
 				bioType = SingleType.FINGER.value();
@@ -422,9 +467,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check mandatory auth type based on policy.
 	 *
-	 * @param requestBody           the request body
-	 * @param mandatoryAuthPolicies the mandatory auth policies
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param requestBody
+	 *            the request body
+	 * @param mandatoryAuthPolicies
+	 *            the mandatory auth policies
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
@@ -432,9 +480,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
 					AuthTypeDTO.class);
-			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST)).filter(obj -> obj instanceof Map)
-					.map(obj -> ((Map<String, Object>) obj).get("biometrics")).filter(obj -> obj instanceof List)
-					.orElse(Collections.emptyList());
+			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
+					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get("biometrics"))
+					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
@@ -454,11 +502,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Validate auth type allowed through auth policies.
 	 *
-	 * @param requestBody         the request body
-	 * @param authType            the auth type
-	 * @param bioTypeList         the bio type list
-	 * @param mandatoryAuthPolicy the mandatory auth policy
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param requestBody
+	 *            the request body
+	 * @param authType
+	 *            the auth type
+	 * @param bioTypeList
+	 *            the bio type list
+	 * @param mandatoryAuthPolicy
+	 *            the mandatory auth policy
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
 	 */
 	private void validateAuthPolicy(Map<String, Object> requestBody, AuthTypeDTO authType, List<String> bioTypeList,
 			AuthPolicy mandatoryAuthPolicy) throws IdAuthenticationAppException {
@@ -491,8 +544,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
-						.filter(id -> id.equals(
-							env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + EKYC)))
+						.filter(id -> id.equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + EKYC)))
 						.isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
@@ -502,8 +554,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Checks if is allowed auth type.
 	 *
-	 * @param authType the auth type
-	 * @param policies the policies
+	 * @param authType
+	 *            the auth type
+	 * @param policies
+	 *            the policies
 	 * @return true, if is allowed auth type
 	 */
 	protected boolean isAllowedAuthType(String authType, List<AuthPolicy> policies) {
@@ -513,9 +567,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Checks if is allowed auth type.
 	 *
-	 * @param authType    the auth type
-	 * @param subAuthType the sub auth type
-	 * @param policies    the policies
+	 * @param authType
+	 *            the auth type
+	 * @param subAuthType
+	 *            the sub auth type
+	 * @param policies
+	 *            the policies
 	 * @return true, if is allowed auth type
 	 */
 	protected boolean isAllowedAuthType(String authType, String subAuthType, List<AuthPolicy> policies) {
@@ -530,7 +587,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Gets the policy.
 	 *
-	 * @param policyId the policy id
+	 * @param policyId
+	 *            the policy id
 	 * @return the policy
 	 */
 	private String getPolicy(String policyId) {
@@ -540,7 +598,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Gets the auth part.
 	 *
-	 * @param requestWrapper the request wrapper
+	 * @param requestWrapper
+	 *            the request wrapper
 	 * @return the auth part
 	 */
 	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
