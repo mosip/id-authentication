@@ -32,6 +32,15 @@
 			<artifactId>itextpdf</artifactId>
 			<version>${itext.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.itextpdf.tool</groupId>
+			<artifactId>xmlworker</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>${bouncycastle.version}</version>
+		</dependency>
 	</dependencies>
 </project>

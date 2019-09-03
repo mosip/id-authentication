@@ -77,48 +77,11 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 
 				if (null == keyStore) {
 
-					responseDTO = insertPublickey(triggerPoint);
-
-					if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
-						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
-								null);
-						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-								responseDTO.getSuccessResponseDTO().getMessage());
-					} else {
-						if (!isAuthTokenEmptyError(responseDTO)) {
-							responseDTO = setErrorResponse(new ResponseDTO(),
-									RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-						}
-						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-								"Public Key Sync Failure");
-					}
+					responseDTO = getResponse(triggerPoint);
 
 				} else {
 
-					Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
-
-					if (validDate
-							.compareTo(new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0) {
-
-						responseDTO = insertPublickey(triggerPoint);
-
-						if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
-							responseDTO = setSuccessResponse(responseDTO,
-									RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
-							LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-									responseDTO.getSuccessResponseDTO().getMessage());
-						} else {
-							if (!isAuthTokenEmptyError(responseDTO)) {
-								responseDTO = setErrorResponse(new ResponseDTO(),
-										RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-							}
-							LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-									"Public Key Sync Failure");
-						}
-					}
-
-					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
-							null);
+					getResponse(triggerPoint, responseDTO, keyStore);
 				}
 
 			} catch (RegBaseCheckedException regBaseCheckedException) {
@@ -142,6 +105,40 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 					RegistrationConstants.TRIGGER_POINT_MSG);
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_TRIGGER_POINT_MISSING.getErrorCode(),
 					RegistrationExceptionConstants.REG_TRIGGER_POINT_MISSING.getErrorMessage());
+		}
+		return responseDTO;
+	}
+
+	private void getResponse(String triggerPoint, ResponseDTO responseDTO, KeyStore keyStore)
+			throws RegBaseCheckedException {
+		Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
+
+		if (validDate
+				.compareTo(new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0) {
+
+			responseDTO = getResponse(triggerPoint);
+		}
+
+		responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+				null);
+	}
+
+	private ResponseDTO getResponse(String triggerPoint) throws RegBaseCheckedException {
+		ResponseDTO responseDTO;
+		responseDTO = insertPublickey(triggerPoint);
+
+		if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
+			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+					null);
+			LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					responseDTO.getSuccessResponseDTO().getMessage());
+		} else {
+			if (!isAuthTokenEmptyError(responseDTO)) {
+				responseDTO = setErrorResponse(new ResponseDTO(),
+						RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			}
+			LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"Public Key Sync Failure");
 		}
 		return responseDTO;
 	}

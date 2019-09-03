@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,15 +26,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { PDFGeneratorImpl.class })
 @SuppressWarnings("resource")
+@PropertySource("application-test.properties")
 public class PDFGeneratorTest {
 	@Autowired
 	private PDFGenerator pdfGenerator;
@@ -53,8 +58,8 @@ public class PDFGeneratorTest {
 
 		bufferedImage2 = ImageIO.read(url2);
 		bufferedImages.add(bufferedImage2);
+	
 	}
-
 	@Test
 	public void testPdfGenerationWithInputStream() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -180,6 +185,38 @@ public class PDFGeneratorTest {
 		InputStream inputStream = new FileInputStream(inputFileName);
 		pdfGenerator.generate(inputStream, resourceLoc);
 	}
+	
+	@Test
+	public void testPdfGeneratorProtectedPassword() throws Exception {
+		StringBuilder htmlString = new StringBuilder();
+        htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
+        InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
+		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) pdfGenerator.generate(is,"userpassword".getBytes());
+		File file = new File("protected.pdf");
+		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
+		assertTrue(file.exists());
+	}
+	
+	@Test(expected=PDFGeneratorException.class)
+	public void testPdfGeneratorProtectedNullInputStreamException() throws Exception {
+		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) pdfGenerator.generate(null,"userpassword".getBytes());
+		File file = new File("protected.pdf");
+		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
+		assertTrue(file.exists());
+	}
+	
+	@Test(expected=PDFGeneratorException.class)
+	public void testPdfGeneratorProtectedPasswordException() throws Exception {
+		StringBuilder htmlString = new StringBuilder();
+        htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
+        InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
+		PDFGenerator generator = new PDFGeneratorImpl();
+		ReflectionTestUtils.setField(generator, "pdfOwnerPassword", null);
+		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) generator.generate(is,"userpassword".getBytes());
+		File file = new File("protected.pdf");
+		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
+		assertTrue(file.exists());
+	}
 
 	@Test
 	public void getSinglePDFInBytesTest() throws IOException {
@@ -251,6 +288,10 @@ public class PDFGeneratorTest {
 		File OutPutPdfFile2 = new File("new_merged.pdf");
 		if (OutPutPdfFile2.exists()) {
 			OutPutPdfFile2.delete();
+		}
+		File OutPutPdfFile3 = new File("protected"+ outputFileExtension);
+		if (OutPutPdfFile3.exists()) {
+			OutPutPdfFile3.delete();
 		}
 	}
 
