@@ -516,6 +516,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		List<IrisDetailsDTO> irisDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO().getIrisDetailsDTO();
+		try {
+			IrisDetailsDTO tempIrisDetail = irisDetailsDTOs.stream()
+					.filter((iris) -> iris.getIrisType().contains(irisType)).findFirst().get();
+			irisDetailsDTOs.remove(tempIrisDetail);
+		} catch (Exception exception) {
+		}
 
 		try {
 			detailsDTO = new IrisDetailsDTO();
