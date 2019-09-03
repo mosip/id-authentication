@@ -37,7 +37,7 @@ public class FilterColumnValidator {
 	 *            list of filters.
 	 * @return true if validation is successful.
 	 */
-	public <T,E> boolean validate(Class<T> target, List<FilterDto> filters, Class<E> entity) {
+	public <T, E> boolean validate(Class<T> target, List<FilterDto> filters, Class<E> entity) {
 		List<ServiceError> errors = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
 			for (FilterDto filter : filters) {
@@ -60,7 +60,8 @@ public class FilterColumnValidator {
 	 * @param filter
 	 *            the filter column type value.
 	 */
-	private <T,E> void validateFilterColumn(Class<T> target, List<ServiceError> errors, FilterDto filter, Class<E> entity) {
+	private <T, E> void validateFilterColumn(Class<T> target, List<ServiceError> errors, FilterDto filter,
+			Class<E> entity) {
 		try {
 			if (validateFilterColumnType(filter.getType())) {
 				Field field = target.getDeclaredField(TYPE_FIELD);
@@ -75,11 +76,12 @@ public class FilterColumnValidator {
 				fieldList.addAll(Arrays.asList(childFields));
 				if (superFields != null)
 					fieldList.addAll(Arrays.asList(superFields));
-				Optional<Field> renField = fieldList.stream().filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName()))
-						.findFirst();
+				Optional<Field> renField = fieldList.stream()
+						.filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName())).findFirst();
 				if (!renField.isPresent()) {
-					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorCode(), String
-							.format(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorMessage(), filter.getColumnName())));
+					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorCode(),
+							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorMessage(),
+									filter.getColumnName())));
 				}
 			} else {
 				errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
@@ -118,6 +120,6 @@ public class FilterColumnValidator {
 	 * @return true if it neither empty nor null.
 	 */
 	private boolean validateFilterColumnType(String filterType) {
-		return filterType != null && !filterType.trim().isEmpty();
+		return filterType != null;
 	}
 }
