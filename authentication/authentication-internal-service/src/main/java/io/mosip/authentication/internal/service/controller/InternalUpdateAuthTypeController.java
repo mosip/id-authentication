@@ -90,10 +90,7 @@ public class InternalUpdateAuthTypeController {
 			throws IdAuthenticationAppException {
 		try {
 			DataValidationUtil.validate(e);
-			updateAuthtypeStatusService.updateAuthtypeStatus(authTypeStatusDto);
-			UpdateAuthtypeStatusResponseDto authtypeStatusResponseDto = new UpdateAuthtypeStatusResponseDto();
-			authtypeStatusResponseDto.setResponseTime(getResponseTime());
-			return new ResponseEntity<>(authtypeStatusResponseDto, HttpStatus.OK);
+			return new ResponseEntity<>(updateAuthtypeStatusService.updateAuthtypeStatus(authTypeStatusDto), HttpStatus.OK);
 		} catch (IDDataValidationException e1) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TYPE_STATUS,
 					e1.getErrorText());
@@ -104,20 +101,6 @@ public class InternalUpdateAuthTypeController {
 			throw new IdAuthenticationAppException(e1.getErrorCode(), e1.getErrorText(), e1);
 		}
 
-	}
-
-	/**
-	 * To get Response Time.
-	 *
-	 * @return the response time
-	 */
-	private String getResponseTime() {
-		return DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
-						environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
-						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
-				TimeZone.getTimeZone(ZoneOffset.UTC));
 	}
 
 }
