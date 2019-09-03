@@ -837,11 +837,8 @@ public class IrisCaptureController extends BaseController {
 
 	private void removeIrisException() {
 		if (getRegistrationDTOFromSession() != null) {
-			List<BiometricExceptionDTO> biometricExceptionDtos = getRegistrationDTOFromSession().getBiometricDTO()
-					.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			List<BiometricExceptionDTO> uponRemoval = biometricExceptionDtos.stream().filter(bio->!bio.getBiometricType().contains("iris")).collect(Collectors.toList());
 			getRegistrationDTOFromSession().getBiometricDTO()
-			.getApplicantBiometricDTO().setBiometricExceptionDTO(uponRemoval);
+					.getApplicantBiometricDTO().getBiometricExceptionDTO().removeIf(bio->bio.getBiometricType().contains("iris") && !bio.isMarkedAsException() );
 		}
 	}
 
