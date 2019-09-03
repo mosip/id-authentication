@@ -645,7 +645,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PrintServiceImpl::getVid():: post CREATEVID service call ended successfully");
 
-		if (!vidResponse.getErrors().isEmpty()) {
+		if (vidResponse.getErrors() != null && !vidResponse.getErrors().isEmpty()) {
 			throw new VidCreationException(PlatformErrorMessages.RPR_PRT_VID_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_PRT_VID_EXCEPTION.getMessage());
 

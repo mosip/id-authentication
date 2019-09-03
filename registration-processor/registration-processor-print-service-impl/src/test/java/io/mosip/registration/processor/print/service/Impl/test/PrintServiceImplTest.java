@@ -3,6 +3,7 @@ package io.mosip.registration.processor.print.service.Impl.test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +27,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
@@ -43,9 +45,12 @@ import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
+import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResDTO;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -105,6 +110,9 @@ public class PrintServiceImplTest {
 	@InjectMocks
 	private PrintService<Map<String, byte[]>> printService = new PrintServiceImpl();
 
+	@Mock
+	private Environment env;
+
 	/**
 	 * Setup.
 	 *
@@ -114,8 +122,14 @@ public class PrintServiceImplTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
+		when(env.getProperty("mosip.reigstration.processor.print.service.uincard.password")).thenReturn("postalCode");
+		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
+				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		ReflectionTestUtils.setField(printService, "primaryLang", "eng");
 		ReflectionTestUtils.setField(printService, "secondaryLang", "ara");
+		ReflectionTestUtils.setField(printService, "unMaskedLength", 4);
+		ReflectionTestUtils.setField(printService, "uinLength", 10);
+
 		Map<String, String> map1 = new HashMap<>();
 		map1.put("UIN", "4238135072");
 		JSONObject jsonObject = new JSONObject(map1);
@@ -425,4 +439,65 @@ public class PrintServiceImplTest {
 		assertArrayEquals(expected, result);
 	}
 
+	@Test
+	public void testPdfGeneratedwithVIDWithPasswordSuccess()
+			throws IdRepoAppException, ApisResourceAccessException, IOException, VidCreationException {
+		List<Long> uinList = new ArrayList<>();
+		uinList.add(2046958192L);
+		Map<String, Long> map1 = new HashMap<>();
+		map1.put("UIN", 2046958192L);
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
+		Mockito.when(utility.getUinByVid(any())).thenReturn("2046958192");
+		JSONArray arr = new JSONArray();
+		arr.add("name");
+
+		JSONObject obj = new JSONObject();
+		obj.put("fullName", arr);
+		obj.put("postalCode", "12345");
+		Mockito.when(utility.retrieveIdrepoJson(Long.parseLong("2046958192"))).thenReturn(obj);
+
+		byte[] expected = outputStream.toByteArray();
+		byte[] result = printService.getDocuments(IdType.VID, "2046958192", CardType.MASKED_UIN.toString(), true)
+				.get("uinPdf");
+		assertArrayEquals(expected, result);
+	}
+
+	@Test
+	public void testPdfGeneratedwithUINWithMasked_Uin_Card_Success() throws ApisResourceAccessException {
+		VidResponseDTO vidResponse = new VidResponseDTO();
+		VidResDTO vidresdto = new VidResDTO();
+		vidresdto.setVid("2046958192");
+		vidResponse.setResponse(vidresdto);
+		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any())).thenReturn(vidResponse);
+		String uin = "2046958192";
+		byte[] expected = outputStream.toByteArray();
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.MASKED_UIN.toString(), false).get("uinPdf");
+		assertArrayEquals(expected, result);
+	}
+
+	/**
+	 * Test template processing failure.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Test(expected = PDFGeneratorException.class)
+	public void testVidCreationException() throws ApisResourceAccessException, IOException {
+		VidResponseDTO vidResponse = new VidResponseDTO();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+
+		ErrorDTO error = new ErrorDTO();
+		errors.add(error);
+		vidResponse.setErrors(errors);
+		VidResDTO vidresdto = new VidResDTO();
+		vidresdto.setVid("2046958192");
+		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any())).thenReturn(vidResponse);
+		String uin = "2046958192";
+		byte[] expected = outputStream.toByteArray();
+		byte[] result = printService.getDocuments(IdType.UIN, uin, CardType.MASKED_UIN.toString(), false).get("uinPdf");
+		assertArrayEquals(expected, result);
+	}
 }
