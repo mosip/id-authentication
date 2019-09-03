@@ -117,33 +117,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 								.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
-			if (responseDTO.getSuccessResponseDTO() != null) {
-
-				for (PacketStatusDTO registration : packetsToBeSynched) {
-					String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
-							.get(registration.getFileName());
-					if (RegistrationConstants.SUCCESS.equalsIgnoreCase(status)) {
-
-						registration.setPacketClientStatus(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
-
-						if (registration.getPacketClientStatus() != null && registration.getPacketClientStatus()
-								.equalsIgnoreCase(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
-
-							String ackFileName = registration.getPacketPath();
-							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
-							String packetPath = ackFileName.substring(0, lastIndex);
-							File packet = FileUtils.getFile(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
-							if (packet.exists() && packet.delete()) {
-								registration.setPacketClientStatus(RegistrationClientStatusCode.DELETED.getCode());
-							}
-						}
-						synchedPackets.add(registration);
-					}
-				}
-				updateSyncStatus(synchedPackets);
-			} else {
-				syncErrorStatus = RegistrationConstants.SYNC_FAILURE;
-			}
+			syncErrorStatus = onSuccessPacketSync(packetsToBeSynched, syncErrorStatus, synchedPackets, responseDTO);
 		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID,
@@ -154,6 +128,38 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
+		}
+		return syncErrorStatus;
+	}
+
+	private String onSuccessPacketSync(List<PacketStatusDTO> packetsToBeSynched, String syncErrorStatus,
+			List<PacketStatusDTO> synchedPackets, ResponseDTO responseDTO) {
+		if (responseDTO.getSuccessResponseDTO() != null) {
+
+			for (PacketStatusDTO registration : packetsToBeSynched) {
+				String status = (String) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+						.get(registration.getFileName());
+				if (RegistrationConstants.SUCCESS.equalsIgnoreCase(status)) {
+
+					registration.setPacketClientStatus(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+
+					if (registration.getPacketClientStatus() != null && registration.getPacketClientStatus()
+							.equalsIgnoreCase(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
+
+						String ackFileName = registration.getPacketPath();
+						int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+						String packetPath = ackFileName.substring(0, lastIndex);
+						File packet = FileUtils.getFile(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+						if (packet.exists() && packet.delete()) {
+							registration.setPacketClientStatus(RegistrationClientStatusCode.DELETED.getCode());
+						}
+					}
+					synchedPackets.add(registration);
+				}
+			}
+			updateSyncStatus(synchedPackets);
+		} else {
+			syncErrorStatus = RegistrationConstants.SYNC_FAILURE;
 		}
 		return syncErrorStatus;
 	}

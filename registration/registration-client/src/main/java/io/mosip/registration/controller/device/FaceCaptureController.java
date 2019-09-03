@@ -249,11 +249,18 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
-		if (bioService.isMdmEnabled())
+		if (bioService.isMdmEnabled()) {
+			openWebCam(imageType);
 			streamer.startStream(RegistrationConstants.FACE_FULLFACE, webCameraController.camImageView, null);
+			return;
+		}
 		else if (!webCameraController.isWebcamPluggedIn()) 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
 
+		openWebCam(imageType);
+	}
+
+	private void openWebCam(String imageType) {
 		try {
 			Stage primaryStage = new Stage();
 			primaryStage.initStyle(StageStyle.UNDECORATED);

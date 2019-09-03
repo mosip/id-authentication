@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -70,6 +71,7 @@ public class CryptoUtil {
 			}
 			encryptedBytes = response.getBody().getResponse().getData().getBytes();
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In encrypt method of CryptoUtil Util for Exception- " + ex.getMessage());
 			throw ex;
@@ -107,6 +109,7 @@ public class CryptoUtil {
 			decodedBytes = Base64.decodeBase64(response.getBody().getResponse().getData().getBytes());
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In decrypt method of CryptoUtil Util for Exception- " + ex.getMessage());
 			throw ex;

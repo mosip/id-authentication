@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,7 @@ public class GenerateQRcodeService {
 			response.setResponsetime(serviceUtil.getCurrentResponseTime());
 			
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In generateQRCode service of generateQRCode "+ex.getMessage());
 			new QRcodeExceptionCatcher().handle(ex,response);

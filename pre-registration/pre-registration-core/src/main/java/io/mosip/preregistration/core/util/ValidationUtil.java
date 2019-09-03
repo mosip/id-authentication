@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.collections4.SetValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -362,6 +363,7 @@ public class ValidationUtil {
 			sdf.parse(reqDate);
 			LocalDate.parse(reqDate);
 		} catch (Exception e) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(e));
 			log.error("sessionId", "idType", "id", "In parseDate method of core validation util - " + e.getMessage());
 			return false;
 		}

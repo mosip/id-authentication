@@ -137,7 +137,7 @@ public class NotificationService {
 	 */
 	@Autowired
 	private AuditLogUtil auditLogUtil;
-	
+
 	@Autowired
 	private ValidationUtil validationUtil;
 
@@ -177,26 +177,31 @@ public class NotificationService {
 			response.setId(notificationReqDTO.getId());
 			response.setVersion(notificationReqDTO.getVersion());
 			NotificationDTO notificationDto = notificationReqDTO.getRequest();
-			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap)&&validationUtil.langvalidation(langCode)) {
+			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap)
+					&& validationUtil.langvalidation(langCode)) {
 				notificationDtoValidation(notificationDto);
 				if (notificationDto.isAdditionalRecipient()) {
 					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {
-						if( ValidationUtil.phoneValidator(notificationDto.getMobNum())) {
+						if (ValidationUtil.phoneValidator(notificationDto.getMobNum())) {
 							notificationUtil.notify(RequestCodes.SMS.getCode(), notificationDto, langCode, file);
-						}else {
-							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_007.getCode(),ErrorMessages.PHONE_VALIDATION_EXCEPTION.getMessage(), response);
+						} else {
+							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_007.getCode(),
+									ErrorMessages.PHONE_VALIDATION_EXCEPTION.getMessage(), response);
 						}
 					}
 					if (notificationDto.getEmailID() != null && !notificationDto.getEmailID().isEmpty()) {
-						if(ValidationUtil.emailValidator(notificationDto.getEmailID())) {
+						if (ValidationUtil.emailValidator(notificationDto.getEmailID())) {
 							notificationUtil.notify(RequestCodes.EMAIL.getCode(), notificationDto, langCode, file);
-						}else {
-							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_006.getCode(),ErrorMessages.EMAIL_VALIDATION_EXCEPTION.getMessage(), response);
-						
+						} else {
+							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_006.getCode(),
+									ErrorMessages.EMAIL_VALIDATION_EXCEPTION.getMessage(), response);
+
 						}
 					}
-					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()||!ValidationUtil.emailValidator(notificationDto.getEmailID()))
-							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()||!ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
+					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()
+							|| !ValidationUtil.emailValidator(notificationDto.getEmailID()))
+							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()
+									|| !ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
 						throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
 								ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getMessage(), response);
 					}
@@ -210,7 +215,7 @@ public class NotificationService {
 			response.setResponse(notificationResponse);
 			isSuccess = true;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In notification service of sendNotification " + ex.getMessage());
 			new NotificationExceptionCatcher().handle(ex, response);
 		} finally {
@@ -307,44 +312,43 @@ public class NotificationService {
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
-	public void notificationDtoValidation(NotificationDTO dto) throws IOException, ParseException  {
+	public void notificationDtoValidation(NotificationDTO dto) throws IOException, ParseException {
 		getDemographicDetails(dto);
-		if(!dto.getIsBatch()) {
+		if (!dto.getIsBatch()) {
 			BookingRegistrationDTO bookingDTO = getAppointmentDetailsRestService(dto.getPreRegistrationId());
-			String time = LocalTime
-					.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
-					.format(DateTimeFormatter.ofPattern("hh:mm a")); 
-			if(dto.getAppointmentDate()!=null && !dto.getAppointmentDate().trim().equals("")) {
-			if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
-				if(dto.getAppointmentTime()!=null&&!dto.getAppointmentTime().trim().equals("")) {
-				
-				if (!time.equals(dto.getAppointmentTime())) {
-					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
-							ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getMessage(), response);
+			String time = LocalTime.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
+					.format(DateTimeFormatter.ofPattern("hh:mm a"));
+			if (dto.getAppointmentDate() != null && !dto.getAppointmentDate().trim().equals("")) {
+				if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
+					if (dto.getAppointmentTime() != null && !dto.getAppointmentTime().trim().equals("")) {
+
+						if (!time.equals(dto.getAppointmentTime())) {
+							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
+									ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getMessage(), response);
+						}
+					} else {
+						throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
+								ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(), response);
+					}
 				}
-			}
+
 				else {
-					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
-							ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(),response);
+					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_009.getCode(),
+							ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getMessage(), response);
 				}
+
 			}
-				
-				else {
-				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_009.getCode(),
-						ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getMessage(), response);
+
+			else {
+				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
+						ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(), response);
 			}
-				
-		}
-		
-		else {
-			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
-					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(),response);
-		}
 		}
 	}
 
 	/**
-	 * This method is calling demographic getApplication service to validate the demographic details
+	 * This method is calling demographic getApplication service to validate the
+	 * demographic details
 	 * 
 	 * @param notificationDto
 	 * @throws IOException
@@ -358,6 +362,7 @@ public class NotificationService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			ObjectMapper mapper = new ObjectMapper();
 			HttpEntity<MainResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
+			log.info("sessionId", "idType", "id", " Demographic call "+url);
 			ResponseEntity<MainResponseDTO<DemographicResponseDTO>> responseEntity = restTemplate.exchange(url,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
@@ -368,18 +373,19 @@ public class NotificationService {
 			JsonNode responseNode = mapper
 					.readTree(responseEntity.getBody().getResponse().getDemographicDetails().toJSONString());
 			responseNode = responseNode.get(identity);
-			if(!notificationDto.isAdditionalRecipient()) {
-				if(notificationDto.getMobNum()!=null|| notificationDto.getEmailID()!=null) {
+			if (!notificationDto.isAdditionalRecipient()) {
+				if (notificationDto.getMobNum() != null || notificationDto.getEmailID() != null) {
 					log.error("sessionId", "idType", "id",
-					"Not considering the requested mobilenumber/email since additional recipient is false ");
+							"Not considering the requested mobilenumber/email since additional recipient is false ");
 				}
 			}
-			if (!notificationDto.getIsBatch()&&!notificationDto.getName().equals(responseNode.get(fullName).get(0).get("value").asText())) {
+			if (!notificationDto.getIsBatch()
+					&& !notificationDto.getName().equals(responseNode.get(fullName).get(0).get("value").asText())) {
 				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_008.getCode(),
 						ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getMessage(), response);
 			}
-		} catch (RestClientException  ex) {
-
+		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getDemographicDetails method of notification service - " + ex.getMessage());
 			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_011.getCode(),
@@ -389,7 +395,7 @@ public class NotificationService {
 	}
 
 	/**
-	 * This  Method is used to retrieve booking data
+	 * This Method is used to retrieve booking data
 	 * 
 	 * @param preId
 	 * @return BookingRegistrationDTO
@@ -417,6 +423,7 @@ public class NotificationService {
 			}
 			bookingRegistrationDTO = respEntity.getBody().getResponse();
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAppointmentDetailsRestService method of notification service - " + ex.getMessage());
 			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_012.getCode(),

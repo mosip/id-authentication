@@ -7,6 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -288,12 +289,12 @@ public class IrisCaptureController extends BaseController {
 	private void setExceptionIris(BiometricExceptionDTO bio) {
 		if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
 				&& bio.getMissingBiometric().equalsIgnoreCase(
-						RegistrationConstants.LEFT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase()))) {
+						RegistrationConstants.LEFT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase())) && bio.isMarkedAsException()) {
 			leftIrisException.setText(
 					ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric().toLowerCase()));
 		} else if (bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS.toLowerCase())
 				&& bio.getMissingBiometric().equalsIgnoreCase(
-						RegistrationConstants.RIGHT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase()))) {
+						RegistrationConstants.RIGHT.toLowerCase().concat(RegistrationConstants.EYE.toLowerCase())) && bio.isMarkedAsException()) {
 			rightIrisException.setText(
 					ApplicationContext.applicationLanguageBundle().getString(bio.getMissingBiometric().toLowerCase()));
 		}
@@ -808,6 +809,8 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	public void clearIrisData() {
+		leftIrisCount=0;
+		rightIrisCount=0;
 		leftIrisImage
 				.setImage(new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
 		leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
@@ -829,18 +832,17 @@ public class IrisCaptureController extends BaseController {
 			}
 		}
 		faceCaptureController.clearExceptionImage();
-		removeException();
+		removeIrisException();
 		singleBiometricCaptureCheck();
 	}
 
-	private void removeException() {
+	private void removeIrisException() {
 		if (getRegistrationDTOFromSession() != null) {
-			List<BiometricExceptionDTO> ls = getRegistrationDTOFromSession().getBiometricDTO()
+			List<BiometricExceptionDTO> biometricExceptionDtos = getRegistrationDTOFromSession().getBiometricDTO()
 					.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			for (BiometricExceptionDTO bR : ls) {
-				if (bR.getBiometricType().contains("iris"))
-					ls.remove(bR);
-			}
+			List<BiometricExceptionDTO> uponRemoval = biometricExceptionDtos.stream().filter(bio->!bio.getBiometricType().contains("iris")).collect(Collectors.toList());
+			getRegistrationDTOFromSession().getBiometricDTO()
+			.getApplicantBiometricDTO().setBiometricExceptionDTO(uponRemoval);
 		}
 	}
 

@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -219,6 +220,7 @@ public class DocumentService {
 			isUploadSuccess = true;
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In uploadDoucment method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex, responseDto);
 		} finally {
@@ -351,6 +353,7 @@ public class DocumentService {
 			isCopySuccess = true;
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In copyDoucment method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex, responseDto);
 		} finally {
@@ -421,6 +424,7 @@ public class DocumentService {
 			isRetrieveSuccess = true;
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAllDocumentForPreId method of document service - " + ex.getMessage());
 			if (ex instanceof DocumentNotFoundException)
@@ -496,6 +500,7 @@ public class DocumentService {
 			isRetrieveSuccess = true;
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAllDocumentForPreId method of document service - " + ex.getMessage());
 			if (ex instanceof DocumentNotFoundException)
@@ -590,6 +595,7 @@ public class DocumentService {
 			isRetrieveSuccess = true;
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
 			if (ex instanceof DocumentNotFoundException)
 				isDocNotFound = true;
@@ -644,6 +650,7 @@ public class DocumentService {
 
 			isDeleteSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In deleteAllByPreId method of document service - " + ex.getMessage());
 			if (ex instanceof DocumentNotFoundException)

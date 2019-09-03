@@ -131,6 +131,7 @@ public class OTPAuthServiceTest {
 		authreqdto.setTransactionID("1234567890");
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		authreqdto.setIndividualId("123456");
+		authreqdto.setIndividualIdType("UIN");
 		RequestDTO request = new RequestDTO();
 		request.setOtp("123456");
 		authreqdto.setRequest(request);
@@ -138,6 +139,7 @@ public class OTPAuthServiceTest {
 		AutnTxn authtxn = new AutnTxn();
 		authtxn.setId("test");
 		authtxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes()));
+		authtxn.setRefIdType("UIN");
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
@@ -193,11 +195,12 @@ public class OTPAuthServiceTest {
 		AutnTxn autTxn = new AutnTxn();
 		autTxn.setRequestTrnId("1234567890");
 		autTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes()));
+		autTxn.setRefIdType("UIN");
 		autntxnList.add(autTxn);
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
 	}
 
 	/**
@@ -210,6 +213,7 @@ public class OTPAuthServiceTest {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("1234567890");
 		autntxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes()));
+		autntxn.setRefIdType("UIN");
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
@@ -217,7 +221,7 @@ public class OTPAuthServiceTest {
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
 	}
 
 	@Test(expected = IDDataValidationException.class)

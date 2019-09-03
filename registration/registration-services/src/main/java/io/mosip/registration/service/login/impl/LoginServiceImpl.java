@@ -348,27 +348,8 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 			}
-			if (null != masterResponseDTO && null != masterResponseDTO.getSuccessResponseDTO()) {
-				userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-				if (null != userResponseDTO.getSuccessResponseDTO()) {
-					userSaltResponse = userSaltDetailsService
-							.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-				}
-			}
-			if ((((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
-					|| userResponseDTO.getErrorResponseDTOs() != null
-					|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
-					|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
-				if (isAuthTokeEmptyError(masterResponseDTO, userResponseDTO, userSaltResponse, publicKeySyncResponse)) {
-					val.add(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR);
-				} else {
-					val.add(RegistrationConstants.FAILURE);
-				}
-			} else {
-				val.add(RegistrationConstants.SUCCESS);
-			}
+			onSyncOperation(val, publicKeySyncResponse, responseDTO, userResponseDTO, userSaltResponse,
+					masterResponseDTO);
 		} catch (RegBaseCheckedException exRegBaseCheckedException) {
 			if (isAuthTokenEmptyException(exRegBaseCheckedException)) {
 				val.add(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR);
@@ -377,6 +358,32 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			}
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(exRegBaseCheckedException));
+		}
+	}
+
+	private void onSyncOperation(List<String> val, ResponseDTO publicKeySyncResponse, ResponseDTO responseDTO,
+			ResponseDTO userResponseDTO, ResponseDTO userSaltResponse, ResponseDTO masterResponseDTO)
+			throws RegBaseCheckedException {
+		if (null != masterResponseDTO && null != masterResponseDTO.getSuccessResponseDTO()) {
+			userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+			if (null != userResponseDTO.getSuccessResponseDTO()) {
+				userSaltResponse = userSaltDetailsService
+						.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+			}
+		}
+		if ((((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
+				|| userResponseDTO.getErrorResponseDTOs() != null
+				|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
+				|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
+			if (isAuthTokeEmptyError(masterResponseDTO, userResponseDTO, userSaltResponse, publicKeySyncResponse)) {
+				val.add(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR);
+			} else {
+				val.add(RegistrationConstants.FAILURE);
+			}
+		} else {
+			val.add(RegistrationConstants.SUCCESS);
 		}
 	}
 
