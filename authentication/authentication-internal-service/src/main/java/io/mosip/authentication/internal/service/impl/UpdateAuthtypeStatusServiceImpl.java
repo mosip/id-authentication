@@ -89,17 +89,20 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 				DateUtils.parseToDate(reqTime, environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 		authtypeLock.setLockrequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 		authtypeLock.setLockstartDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
-		authtypeLock.setStatuscode(Boolean.valueOf(authtypeStatus.isLocked()).toString());
+		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.isLocked()));
 		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 		authtypeLock.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		authtypeLock.setLangCode(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 		return authtypeLock;
 	}
 	
+	/**
+	 * Builds the response.
+	 *
+	 * @return the update authtype status response dto
+	 */
 	private UpdateAuthtypeStatusResponseDto buildResponse() {
 		UpdateAuthtypeStatusResponseDto authtypeStatusResponseDto = new UpdateAuthtypeStatusResponseDto();
-//		authtypeStatusResponseDto.setId(environment.getProperty(key));
-//		authtypeStatusResponseDto.setVersion(environment.getProperty(IdAuthConfigKeyConstants.API_VERSION));
 		authtypeStatusResponseDto.setResponseTime(getResponseTime());
 		return authtypeStatusResponseDto;
 	}
