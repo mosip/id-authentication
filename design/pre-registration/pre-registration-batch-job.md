@@ -11,7 +11,7 @@ The target users are -
    - Pre-Registration system
 
 **Class Diagram**
-![](_images/batchjob/BatchClassDiagram.jpg)
+![](_images/Batchjob/BatchClassDiagram.jpg)
 
 **Solution**
 
@@ -26,7 +26,7 @@ The target users are -
 
 
 **Sequence Diagram**
-![pre-registration-Expired-batch-job](_images/batchjob/ExpiredStatusJob.jpg)
+![pre-registration-Expired-batch-job](_images/Batchjob/ExpiredStatusJob.jpg)
 
 
 **Updating the status to Consumed after Reverse Data sync:**
@@ -40,7 +40,7 @@ The target users are -
 
 
 **Sequence Diagram**
-![pre-registration-Consumed-batch-job](_images/batchjob/ConsumedStatusJob.jpg)
+![pre-registration-Consumed-batch-job](_images/Batchjob/ConsumedStatusJob.jpg)
 
 
 **Syncing appointment availability per Registration center from Master Data:**
@@ -58,5 +58,5 @@ The target users are -
 11. link the **registartion_center_details** and **registartion_center_time_slots** tables with the registration center id.
 
 **Sequence Diagram**
-![pre-registration-Sync-batch-job](_images/batchjob/AvailabilityJob.jpg)
+![pre-registration-Sync-batch-job](_images/Batchjob/AvailabilityJob.jpg)
 
