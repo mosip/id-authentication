@@ -1,8 +1,5 @@
 package io.mosip.authentication.internal.service.controller;
 
-import java.time.ZoneOffset;
-import java.util.TimeZone;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -30,7 +26,6 @@ import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDt
 import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
 import io.mosip.authentication.internal.service.validator.UpdateAuthtypeStatusValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -76,7 +71,7 @@ public class InternalUpdateAuthTypeController {
 	 * Update authtype status.
 	 *
 	 * @param authTypeStatusDto the auth type status dto
-	 * @param e the e
+	 * @param errors the e
 	 * @return the response entity
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -86,19 +81,19 @@ public class InternalUpdateAuthTypeController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
 	public ResponseEntity<UpdateAuthtypeStatusResponseDto> updateAuthtypeStatus(
-			@Validated @RequestBody AuthTypeStatusDto authTypeStatusDto, @ApiIgnore Errors e)
+			@Validated @RequestBody AuthTypeStatusDto authTypeStatusDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException {
 		try {
-			DataValidationUtil.validate(e);
+			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(updateAuthtypeStatusService.updateAuthtypeStatus(authTypeStatusDto), HttpStatus.OK);
-		} catch (IDDataValidationException e1) {
+		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TYPE_STATUS,
-					e1.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
-		} catch (IdAuthenticationBusinessException e1) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, e1.getClass().toString(), e1.getErrorCode(),
-					e1.getErrorText());
-			throw new IdAuthenticationAppException(e1.getErrorCode(), e1.getErrorText(), e1);
+					e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+		} catch (IdAuthenticationBusinessException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(),
+					e.getErrorText());
+			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 
 	}
