@@ -275,7 +275,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
-
 		return jpaProperties;
 	}
 

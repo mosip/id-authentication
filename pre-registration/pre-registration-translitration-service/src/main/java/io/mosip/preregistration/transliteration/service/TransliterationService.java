@@ -121,6 +121,7 @@ public class TransliterationService {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			new TransliterationExceptionCatcher().handle(e,responseDTO);
 		}
 		return responseDTO;

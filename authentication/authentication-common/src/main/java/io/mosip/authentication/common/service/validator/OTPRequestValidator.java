@@ -1,8 +1,5 @@
 package io.mosip.authentication.common.service.validator;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,15 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
@@ -31,10 +25,6 @@ import io.mosip.kernel.core.util.DateUtils;
 public class OTPRequestValidator extends IdAuthValidator {
 
 	private static final String OTP_CHANNEL = "otpChannel";
-
-	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
-
-	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
@@ -81,7 +71,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 			}
 
 		}
-		// validateVer(otpRequestDto.getVer(), errors);
 	}
 
 	private void validateOtpChannel(List<String> otpChannel, Errors errors) {
@@ -93,51 +82,14 @@ public class OTPRequestValidator extends IdAuthValidator {
 					.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
 					.collect(Collectors.joining(","));
 			if (!channels.isEmpty()) {
-				
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE,
+						IdAuthCommonConstants.INVALID_INPUT_PARAMETER + "otpChannel - ".concat(channels));
 				errors.rejectValue(OTP_CHANNEL,
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new String[] {"otpChannel - ".concat(channels)},
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
-		}
-	}
-
-	/**
-	 * Checks if is timestamp valid.
-	 *
-	 * @param timestamp the timestamp
-	 * @return true, if is timestamp valid
-	 */
-	private void validateRequestTimedOut(String timestamp, Errors errors) {
-		try {
-
-			String maxTimeInMinutes = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES);
-			Instant reqTimeInstance = DateUtils
-					.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
-			Instant now = Instant.now();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
-					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			if (maxTimeInMinutes != null
-					&& Duration.between(reqTimeInstance, now).toMinutes() > Integer.parseInt(maxTimeInMinutes)) {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
-						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
-						"INVALID_OTP_REQUEST_TIMESTAMP -- " + String.format(
-								IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
-								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
-				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						new Object[] { maxTimeInMinutes },
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
-			}
-		} catch (DateTimeParseException | ParseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
-					"INVALID_INPUT_PARAMETER -- " + IdAuthCommonConstants.REQ_TIME);
-			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IdAuthCommonConstants.REQ_TIME },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

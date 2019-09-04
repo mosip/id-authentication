@@ -57,7 +57,6 @@ import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
-import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -68,7 +67,6 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
@@ -76,7 +74,6 @@ import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
-import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -416,7 +413,6 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
 			int qualityScore, String imageType) {
 		if (image != null) {
-			// TODO: Replace the stub image with original image once Face SDK is implemented
 			BIR bir = buildBIR(image, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
 					Arrays.asList(SingleType.FACE), Arrays.asList());
 
@@ -675,10 +671,6 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 
 		BiometricInfoDTO applicantBiometrics = registration.getBiometricDTO().getApplicantBiometricDTO();
 		BiometricInfoDTO authenticationBiometrics = registration.getBiometricDTO().getIntroducerBiometricDTO();
-
-		if (applicantBiometrics == null) {
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_APPLICANT_BIOMETRICS_NULL_EXCEPTION);
-		}
 
 		boolean hasApplicantBiometricException = false;
 		boolean hasAuthenticationBiometricException = false;

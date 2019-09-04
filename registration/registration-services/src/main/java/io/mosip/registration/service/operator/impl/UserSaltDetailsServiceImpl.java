@@ -58,10 +58,10 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 				LinkedHashMap<String, Object> userSaltMap = (LinkedHashMap<String, Object>) saltService(trigger);
 
 				if (null != userSaltMap && !userSaltMap.isEmpty()
-						&& null != userSaltMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+						&& null != userSaltMap.get(RegistrationConstants.RESPONSE)) {
 
 					LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) userSaltMap
-							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+							.get(RegistrationConstants.RESPONSE);
 
 					LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							"Getting User Salt Details......");
@@ -148,7 +148,7 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				userSaltDetailsSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.get(RegistrationConstants.USER_DETAIL_SALT_SERVICE_NAME, requestParamMap, true, trigger);
-				if (null != userSaltDetailsSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+				if (null != userSaltDetailsSyncResponse.get(RegistrationConstants.RESPONSE)) {
 					LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							"User Salt Detail Service Sync Successful..");
 					setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);

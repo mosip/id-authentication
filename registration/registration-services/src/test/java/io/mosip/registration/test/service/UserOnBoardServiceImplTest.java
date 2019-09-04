@@ -220,7 +220,7 @@ public class UserOnBoardServiceImplTest {
 		LinkedHashMap<String, Object> responseApi=new LinkedHashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
 		responseMap.put(RegistrationConstants.ON_BOARD_AUTH_STATUS, true);
-		responseApi.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, responseMap);
+		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, null);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
@@ -355,7 +355,7 @@ public class UserOnBoardServiceImplTest {
 		LinkedHashMap<String, Object> responseApi=new LinkedHashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
 		responseMap.put(RegistrationConstants.ON_BOARD_AUTH_STATUS, true);
-		responseApi.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, responseMap);
+		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, new ArrayList<>());
 		
 		biometricDTO.setOperatorBiometricDTO(info);
@@ -485,7 +485,7 @@ public class UserOnBoardServiceImplTest {
 		LinkedHashMap<String, Object> responseApi=new LinkedHashMap<>();
 		LinkedHashMap<String, Object> responseMap=new LinkedHashMap<>();
 		responseMap.put(RegistrationConstants.ON_BOARD_AUTH_STATUS, true);
-		responseApi.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, responseMap);
+		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, new ArrayList<>());
 		
 		biometricDTO.setOperatorBiometricDTO(info);

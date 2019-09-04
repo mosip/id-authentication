@@ -104,7 +104,7 @@ public class RegPacketStatusServiceTest {
 		registrations.add(registration);
 
 		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
-		response.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, registrations);
+		response.put(RegistrationConstants.RESPONSE, registrations);
 
 		LinkedHashMap<String, String> registration12 = new LinkedHashMap<>();
 
@@ -139,7 +139,7 @@ public class RegPacketStatusServiceTest {
 		registrations.add(registration);
 
 		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
-		response.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, registrations);
+		response.put(RegistrationConstants.RESPONSE, registrations);
 
 		LinkedHashMap<String, String> registration12 = new LinkedHashMap<>();
 
@@ -210,7 +210,7 @@ public class RegPacketStatusServiceTest {
 		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
 
 		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
-		response.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, registrations);
+		response.put(RegistrationConstants.RESPONSE, registrations);
 
 		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString())).thenReturn(response);
 		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getErrorResponseDTOs());

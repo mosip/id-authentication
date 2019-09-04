@@ -1,20 +1,20 @@
 ## MOSIP Database scripts inventory and deployment guidelines on postgresql database. 
 
-#### The details disclosed below gives a clear information on complete database script structure with the instructions on database scripts deployments.
+#### The details disclosed below gives a clear information on complete database script structure with the instructions for database scripts deployments.
 
 ## Prerequisities
 
 * DB Server and access details
 
-* Postgres client has to be installed on the deployment servers.
+* Postgres client (psql) has to be installed on the deployment servers.
 
-* Copy latest database scripts(DDL, DML, ... etc) from git/repository on to the DB deployment server.
+* Copy latest database scripts(DDL, DML, .SH ... etc) from git/repository on to the DB deployment server.
 
-* Necessary details to update the peoperties file against to the releavnt variables being used.
+* Necessary details to be updated in peoperties file against to the releavnt variables being used (details listed below).
 
-* Database objects related to MOSIP modules are placed in "**mosip_base_directory**>>scripts>>database>>mosip_<schema_name> folder 	on git/repository
+* Database objects related to MOSIP modules are placed in "**mosip_base_directory**>>db_scripts>>mosip_<schema_name> folder on git/repository
 
-**Example:** the pre-registration module script folder is /**mosip_base_directory**>>scripts>>database>>mosip_prereg where all the 	database scripts related to pre-registration are managed.
+**Example:** the pre-registration module script folder is /**mosip_base_directory**>>db_scripts>>mosip_prereg where all the database scripts related to pre-registration are available.
 
 * Create a log file directory on DB deployment server before updating the properties file. Please follow the steps to create the same:
  
@@ -68,7 +68,7 @@ Once we complete with sourcing the database files, we need to follow the below D
 
 **SU_USER:** Contains the postgres super user name to connect to the postgres database i.e. postgres
 
-**SU_USER_PWD:** Contains the password for super user
+**SU_USER_PWD:** Contains the password for postgres super user
 
 **DEFAULT_DB_NAME:** Default database name to connect with respective postgres server i.e. ex: postgres
 

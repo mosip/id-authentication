@@ -24,7 +24,6 @@ public enum IdAuthenticationErrorConstants {
 	BLOCKED_OTP_VALIDATE("IDA-OTA-007", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-008", "OTP Notification Channel not provided"),
 	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
-	OTP_ID_MISMATCH("IDA-OTA-010", "Input transactionID does not match transactionID of OTP Request"),
 	
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
@@ -48,6 +47,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TXNID_BIO("IDA-MLC-016", "Transaction ID parameters in the request does not match"),
 	INVALID_USERID( "IDA-MLC-017","Invalid UserID"),
 	ID_NOT_AVAILABLE("IDA-MLC-018", "%s not available in database"),
+	AUTH_TYPE_LOCKED("IDA-MLC-019", "%s Auth Type is Locked for the UIN"),
+	FAILED_TO_ENCRYPT("IDA-MLC-020", "Unable to encrypt data"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",

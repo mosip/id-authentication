@@ -601,20 +601,6 @@ public class PacketCreationServiceTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void testInvalidApplicantBiometrics() throws Throwable {
-		try {
-			RegistrationDTO registration = new RegistrationDTO();
-			BiometricDTO biometrics = new BiometricDTO();
-			registration.setBiometricDTO(biometrics);
-
-			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateBiometrics", registration,
-					true, true);
-		} catch (RuntimeException exception) {
-			throw exception.getCause();
-		}
-	}
-
-	@Test(expected = RegBaseCheckedException.class)
 	public void testMissingFace() throws Throwable {
 		try {
 			RegistrationDTO registration = new RegistrationDTO();

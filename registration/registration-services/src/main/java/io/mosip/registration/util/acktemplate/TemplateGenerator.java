@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -845,7 +846,7 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER,
 				getValue(individualIdentity.getReferenceIdentityNumber()));
 		
-		if (isChild || registration.isUpdateUINNonBiometric()) {
+		if (isChild) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("parentName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,
@@ -1148,7 +1149,7 @@ public class TemplateGenerator extends BaseService {
 		try {
 			byte[] qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V4);
 
-			String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
+			String qrCodeImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(qrCodeInBytes, false));
 			templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
 					RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
 		} catch (IOException | QrcodeGenerationException exception) {

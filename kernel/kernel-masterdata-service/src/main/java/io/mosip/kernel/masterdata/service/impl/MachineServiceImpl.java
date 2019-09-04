@@ -416,20 +416,18 @@ public class MachineServiceImpl implements MachineService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId();
 					addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-					if (addList.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(), String.format(
-										MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage()));
+					if (dto.getFilters().size() > 0 && mappedMachineIdList.isEmpty()) {
+						pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
+						return pageDto;
 					}
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
 						mappedMachineIdList = machineRepository.findNotMappedMachineId();
 						addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-						if (addList.isEmpty()) {
-							throw new DataNotFoundException(
-									MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorCode(), String.format(
-											MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorMessage()));
+						if (dto.getFilters().size() > 0 && mappedMachineIdList.isEmpty()) {
+							pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
+							return pageDto;
 						}
 					} else {
 						throw new RequestException(
@@ -449,37 +447,29 @@ public class MachineServiceImpl implements MachineService {
 							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
 							null);
 					List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
-					if (machineCodeFilter.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(
-										MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
-										filter.getValue()));
-					}
 					Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
 							MachineSpecification.class,
 							new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null), null);
 
 					removeList.add(filter);
 					addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
-					if (addList.isEmpty()) {
-						throw new DataNotFoundException(
-								MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
-										.getErrorMessage(), filter.getValue()));
-					}
-
 				}
 			}
 
 		}
 		if (flag) {
+			if (dto.getFilters().stream().anyMatch(filter -> (filter.getColumnName().equals("deviceTypeName")
+					|| filter.getColumnName().equals("mapStatus"))) && addList.isEmpty()) {
+				zones = new ArrayList<>();
+				zoneFilter.addAll(Collections.emptyList());
+			}else {
 			zones = zoneUtils.getUserZones();
 			if (zones != null && !zones.isEmpty())
 				zoneFilter.addAll(buildZoneFilter(zones));
 			else
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
+			}
 		}
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
@@ -496,8 +486,8 @@ public class MachineServiceImpl implements MachineService {
 				setMachineMetadata(machines, zones);
 				setMachineTypeNames(machines);
 				setMapStatus(machines);
-				machines.forEach(machine->{
-					if(machine.getMapStatus()==null) {
+				machines.forEach(machine -> {
+					if (machine.getMapStatus() == null) {
 						machine.setMapStatus("unassigned");
 					}
 				});
@@ -559,7 +549,8 @@ public class MachineServiceImpl implements MachineService {
 						&& centerMachine.getLangCode().equals(machineSearchDto.getLangCode())) {
 					String regId = centerMachine.getRegistrationCenter().getId();
 					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId) && centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
+						if (registrationCenter.getId().equals(regId)
+								&& centerMachine.getLangCode().equals(registrationCenter.getLangCode())) {
 							machineSearchDto.setMapStatus(registrationCenter.getName());
 						}
 					});

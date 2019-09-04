@@ -9,6 +9,7 @@ import java.time.ZoneId;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -183,6 +184,7 @@ public class AuditLogUtil {
 			AuditResponseDto responseDTO=(AuditResponseDto) requestBodyExchangeObject(responseToString(response.getResponse()), AuditResponseDto.class);
 			auditFlag =responseDTO.isStatus();
 		} catch (HttpClientErrorException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil Util for HttpClientErrorException- "
 							+ ex.getResponseBodyAsString());
@@ -213,6 +215,7 @@ public class AuditLogUtil {
 			objectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 			return objectMapper.readValue(serviceResponseBody,responseClass);
 		} catch (IOException e) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(e));
 			throw new ParseResponseException(ErrorCodes.PRG_CORE_REQ_021.getCode(), ErrorMessages.ERROR_WHILE_PARSING.getMessage(),null);
 			
 		} 
@@ -243,12 +246,11 @@ public class AuditLogUtil {
 					"In callAuditManager method of AugitLogUtil service auditUrl: " + uriBuilder);			
 			ResponseEntity<String> responseEntity2 = restTemplate.exchange(uriBuilder,
 					HttpMethod.POST, requestEntity, new ParameterizedTypeReference<String>() {} );
-			System.out.println("Output "+responseEntity2.getBody() );
 			ResponseWrapper<AuditResponseDto> response=requestBodyExchange(responseEntity2.getBody());
-			System.out.println("Response "+response.getResponse().toString());
 			AuditResponseDto responseDTO=(AuditResponseDto) requestBodyExchangeObject(responseToString(response.getResponse()), AuditResponseDto.class);
 			auditFlag =responseDTO.isStatus();
 		} catch (HttpClientErrorException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callAuditManager method of AugitLogUtil Util for HttpClientErrorException- "
 							+ ex.getResponseBodyAsString());

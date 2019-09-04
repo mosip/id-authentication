@@ -93,7 +93,7 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 			try {
 				LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.post(RegistrationConstants.PACKET_UPLOAD, map, RegistrationConstants.JOB_TRIGGER_POINT_USER);
-				if ((response.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE) != null
+				if ((response.get(RegistrationConstants.RESPONSE) != null
 						&& response.get(RegistrationConstants.ERRORS) == null)) {
 					SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 					successResponseDTO.setCode(RegistrationConstants.SUCCESS);
