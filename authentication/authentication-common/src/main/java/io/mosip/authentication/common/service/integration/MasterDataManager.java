@@ -170,7 +170,26 @@ public class MasterDataManager {
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, TEMPLATES, TEMPLATE_TYPE_CODE,
 				FILE_TEXT);
-		for (Iterator<Entry<String, Map<String, String>>> iterator = masterData.entrySet().iterator(); iterator
+		// Sort the list of entries based on primary lang/secondary lang order. 
+		// Here entry of primary lang should occur before secondary lang entry.
+		List<Entry<String, Map<String, String>>> entries =
+				masterData.entrySet()
+					.stream()
+					.sorted((o1,o2) -> {
+						String lang1 = o1.getKey();
+						String lang2 = o2.getKey();
+						boolean lang1IsPrimary = lang1.equals(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG));
+						boolean lang2IsPrimary = lang2.equals(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG));
+						int val;
+						if(lang1IsPrimary == lang2IsPrimary) {
+							val = 0;
+						} else {
+							val = lang1IsPrimary ? -1 : 1;
+						}
+						return val;
+					})
+					.collect(Collectors.toList());
+		for (Iterator<Entry<String, Map<String, String>>> iterator = entries.iterator(); iterator
 				.hasNext();) {
 			Entry<String, Map<String, String>> value = iterator.next();
 			Map<String, String> valueMap = value.getValue();
