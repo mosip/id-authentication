@@ -113,11 +113,10 @@ public class TemplateUtil {
 		Map<String, Object> responseMap = new HashMap<>();
 		log.info("sessionId", "idType", "id", "In mapSetting method of TemplateUtil service ");
 		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("dd MMM yyyy");
-		DateTimeFormatter timeFormate = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter timeFormate = DateTimeFormatter.ofPattern("hh:mm a");
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalTime localTime = LocalTime.now();
-		
 
 		responseMap.put("name", acknowledgementDTO.getName());
 		responseMap.put("PRID", acknowledgementDTO.getPreRegistrationId());
