@@ -1,13 +1,16 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 
 /**
@@ -45,8 +48,41 @@ public interface RegistrationCenterDeviceRepository
 	 */
 	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 and (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
 	public List<RegistrationCenterDevice> registrationCenterDeviceMappings(String regCenterID);
-	
+
 	@Query("FROM RegistrationCenterDevice rd where  (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
 	List<RegistrationCenterDevice> findAllCenterDevices();
+
+	/**
+	 * Method to find valid document based on Document Category code and Document
+	 * Type code provided.
+	 * 
+	 * @param docCategoryCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
+	 * @return ValidDocument
+	 */
+	@Query("FROM RegistrationCenterDevice WHERE deviceId=?1 AND regCenterId =?2 AND (isDeleted is null OR isDeleted = false)")
+	RegistrationCenterDevice findByDeviceIdAndRegCenterId(String deviceId, String regCenterId);
+
+	/**
+	 * Method to map RegistrationCenterDevice based on device id and registration
+	 * center id provided.
+	 * 
+	 * @param updatedBy
+	 *            the caller of updation
+	 * @param updatedDateTime
+	 *            the Date and time of updation.
+	 * @param deviceId
+	 *            the device id.
+	 * @param regCenterId
+	 *            the registration center id.
+	 * 
+	 * @return the number of rows affected.
+	 */
+	@Modifying
+	@Query("UPDATE RegistrationCenterDevice rd SET rd.isActive=?1, rd.updatedBy=?2, rd.updatedDateTime=?3 WHERE rd.deviceId=?4 and rd.regCenterId=?5 and (rd.isDeleted is null or rd.isDeleted =false)")
+	int updateDocCategoryAndDocTypeMapping(boolean isActive, String updatedBy, LocalDateTime updatedDateTime,
+			String deviceId, String regCenterId);
 
 }

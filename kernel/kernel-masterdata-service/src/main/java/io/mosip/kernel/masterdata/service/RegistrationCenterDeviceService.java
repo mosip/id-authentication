@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.DeviceAndRegCenterMappingResponseDto;
+import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
@@ -41,5 +43,17 @@ public interface RegistrationCenterDeviceService {
 	 * @return {@link RegistrationCenterDeviceID}
 	 */
 	public RegistrationCenterDeviceID deleteRegistrationCenterDeviceMapping(String regCenterId, String deviceId);
+	
+
+	/**
+	 * This method un-maps a Device  from a Registration Center .
+	 * 
+	 * @param deviceId
+	 *            the device Id.
+	 * @param regCenterId
+	 *            the registration center Id.
+	 * @return {@link DeviceAndRegCenterMappingResponseDto}.
+	 */
+	public DeviceAndRegCenterMappingResponseDto unmapDeviceRegCenter(String deviceId, String regCenterId );
 
 }

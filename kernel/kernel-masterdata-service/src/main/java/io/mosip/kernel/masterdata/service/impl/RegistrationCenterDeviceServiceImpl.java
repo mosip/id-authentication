@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -9,12 +11,17 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
+import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
+import io.mosip.kernel.masterdata.dto.DeviceAndRegCenterMappingResponseDto;
+import io.mosip.kernel.masterdata.dto.DocCategoryAndTypeMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistoryPk;
+import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -45,10 +52,13 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	 */
 	@Autowired
 	private RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
-	
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#createRegistrationCenterAndDevice(io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#
+	 * createRegistrationCenterAndDevice(io.mosip.kernel.masterdata.dto.
+	 * RegistrationCenterDeviceDto)
 	 */
 	@Override
 	@Transactional
@@ -117,6 +127,61 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 							+ ExceptionUtils.parseException(e));
 		}
 		return registrationCenterDeviceID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService#
+	 * unmapDeviceRegCenter(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public DeviceAndRegCenterMappingResponseDto unmapDeviceRegCenter(String deviceId, String regCenterId) {
+		DeviceAndRegCenterMappingResponseDto responseDto = new DeviceAndRegCenterMappingResponseDto();
+		try {
+			RegistrationCenterDevice registrationCenterDevice = registrationCenterDeviceRepository
+					.findByDeviceIdAndRegCenterId(deviceId, regCenterId);
+			if (registrationCenterDevice != null) {
+				if (registrationCenterDevice.getIsActive()) {
+					int updatedRows = registrationCenterDeviceRepository.updateDocCategoryAndDocTypeMapping(false,
+							MetaDataUtils.getContextUser(), LocalDateTime.now(ZoneId.of("UTC")), deviceId, regCenterId);
+					if (updatedRows < 1) {
+
+						throw new RequestException(
+								RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND
+										.getErrorCode(),
+								RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND
+										.getErrorMessage());
+					} else {
+						responseDto.setStatus(MasterDataConstant.UNMAPPED_SUCCESSFULLY);
+						responseDto.setMessage(
+								String.format(MasterDataConstant.DOC_CATEGORY_AND_DOC_TYPE_UNMAPPING_SUCCESS_MESSAGE,
+										deviceId, regCenterId));
+					}
+				}
+				if (!registrationCenterDevice.getIsActive()) {
+					throw new RequestException(
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
+									.getErrorCode(),
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
+									.getErrorMessage());
+				}
+			} else {
+				throw new RequestException(
+						RegistrationCenterDeviceErrorCode.DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
+								.getErrorCode(),
+						String.format(
+								RegistrationCenterDeviceErrorCode.DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
+										.getErrorMessage(),
+								deviceId, regCenterId));
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return responseDto;
 	}
 
 }

@@ -1,11 +1,15 @@
 package io.mosip.kernel.masterdata.controller;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.DeviceAndRegCenterMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
@@ -69,6 +74,26 @@ public class RegistrationCenterDeviceController {
 		ResponseWrapper<RegistrationCenterDeviceID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterDeviceService.deleteRegistrationCenterDeviceMapping(regCenterId, deviceId));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Api to un-map Device  from a Registration Center .
+	 * 
+	 * @param deviceId
+	 *            the Device ID.
+	 * @param regCenterId
+	 *            the Registration Center ID.
+	 * @return the DeviceAndRegCenterMappingResponseDto.
+	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/unmap/{deviceid}/{regcenterid}")
+	public ResponseWrapper<DeviceAndRegCenterMappingResponseDto> unmapDeviceRegCenter(
+			@PathVariable("deviceid") @NotBlank @Size(min = 1, max = 36) String deviceId, @PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
+
+		ResponseWrapper<DeviceAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterDeviceService.unmapDeviceRegCenter(deviceId, regCenterId));
 		return responseWrapper;
 	}
 }
