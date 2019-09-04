@@ -11,7 +11,7 @@ The target users are -
    - Pre-Registration system
 
 **Class Diagram**
-![](_images/Batchjob/BatchClassDiagram.jpg)
+![Class Diagram](_images/Batchjob/BatchClassDiagram.jpg)
 
 **Solution**
 
