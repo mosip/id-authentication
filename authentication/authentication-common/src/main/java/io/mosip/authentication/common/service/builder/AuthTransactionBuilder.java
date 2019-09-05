@@ -180,7 +180,7 @@ public class AuthTransactionBuilder {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
-			if (uin != null && requestType != null) {
+			if (requestType != null) {
 				String status = isStatus ? SUCCESS_STATUS : FAILED;
 				String comment = isStatus ? requestType.getMessage() + " Success"
 						: requestType.getMessage() + " Failed";
@@ -202,17 +202,15 @@ public class AuthTransactionBuilder {
 				autnTxn.setStatusComment(comment);
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
-				
-				if (uin != null && !uin.isEmpty()) {
-					int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-					Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
-					String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
-					autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
-					String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
-					autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
-							+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
-				}
-				
+
+				int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+				Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
+				String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
+				autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
+				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
+				autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
+						+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
+
 				Optional<String> clientId = Optional.of(transactionManager.getUser());
 				if (clientId.isPresent()) {
 					autnTxn.setEntityName(clientId.get());

@@ -186,7 +186,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String uin = String.valueOf(idResDTO.get("uin"));
+		String uin = idResDTO.get("uin") == null ? null : String.valueOf(idResDTO.get("uin"));
 		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 		try {

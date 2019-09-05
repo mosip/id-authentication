@@ -121,7 +121,7 @@ public class OTPServiceImpl implements OTPService {
 		} else {
 			String individualIdType = otpRequestDto.getIndividualIdType();
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
-			String uin = String.valueOf(idResDTO.get("uin") == null ? "" : idResDTO.get("uin"));
+			String uin = String.valueOf(idResDTO.get("uin"));
 			String userIdForSendOtp = uin;
 			String userIdTypeForSendOtp = IdType.UIN.getType();
 			if(userIdForSendOtp.isEmpty()) {
