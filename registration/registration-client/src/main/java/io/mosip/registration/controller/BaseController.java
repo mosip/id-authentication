@@ -330,8 +330,14 @@ public class BaseController {
 				&& !context.contains(RegistrationConstants.SUCCESS.toUpperCase())
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
+			if (SessionContext.isSessionContextAvailable()) {
+				SessionContext.map().put("alertStage", alertStage);
+			}
 			alertController.generateAlertResponse(title, context);
 		} else {
+			if (SessionContext.isSessionContextAvailable()) {
+				SessionContext.map().put("alertStage", alertStage);
+			}
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
 		}
@@ -1189,6 +1195,9 @@ public class BaseController {
 		alert.initStyle(StageStyle.UNDECORATED);
 		alert.initModality(Modality.WINDOW_MODAL);
 		alert.initOwner(fXComponents.getStage());
+		if(SessionContext.isSessionContextAvailable()) {
+		SessionContext.map().put("alert", alert);
+		}
 		return alert;
 	}
 
