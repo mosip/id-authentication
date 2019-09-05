@@ -295,6 +295,7 @@ public class BaseController {
 	 */
 	protected void generateAlert(String title, String context) {
 		try {
+			closeAlreadyExistedAlert();
 			alertStage = new Stage();
 			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
 			Scene scene = new Scene(authRoot);
@@ -1361,6 +1362,12 @@ public class BaseController {
 						.addListener((observable, oldValue, newValue) -> header.setReordering(false));
 			});
 		}
+	}
+	
+	public void closeAlreadyExistedAlert() {
+		Stage alertStageFromSession = (Stage)SessionContext.map().get("alertStage");
+		if(alertStageFromSession != null) alertStageFromSession.close();
+		
 	}
 
 }
