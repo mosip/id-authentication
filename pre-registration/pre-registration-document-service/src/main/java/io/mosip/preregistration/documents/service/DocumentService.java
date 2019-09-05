@@ -191,7 +191,7 @@ public class DocumentService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
 			String preRegistrationId) {
-		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
+		log.info("sessionId", "idType", "id", "In uploadDocument method of document service with document string "+documentJsonString);
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
 		boolean isUploadSuccess = false;
