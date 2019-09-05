@@ -177,4 +177,8 @@ public final class UinGeneratorConstant {
 	 * The swagger json template file.
 	 */
 	public static final String SWAGGER_JSON_TEMPLATE = "swagger-template.vm";
+	/**
+	 * The enable signing property key
+	 */
+	public static final String SIGNING_ENABLE = "mosip.kernel.uin.response-signing-enable";
 }
