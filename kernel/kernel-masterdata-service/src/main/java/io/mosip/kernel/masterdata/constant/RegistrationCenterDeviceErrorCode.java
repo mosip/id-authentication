@@ -17,7 +17,8 @@ public enum RegistrationCenterDeviceErrorCode {
 			"Error occurred while deleting a mapping of Device and Center"),
 	REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION("KER-MSD-xx","Error occurred while fetching Center Device details"),
 	REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION("KER-MSD-xxx", "Device is already unmapped from the received Registration Center"),
-	DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION("KER-MSD-xxx","Device Id %s - Registration Center Id %s Mapping does not exist");
+	DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION("KER-MSD-xxx","Device Id %s - Registration Center Id %s Mapping does not exist"),
+	INVALIDE_ZONE("KER-MSD-xxx", "Device or Registration center does not belong to user");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -199,5 +199,19 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("UPDATE RegistrationCenter rc SET rc.isDeleted = true, rc.isActive = false, rc.updatedBy = ?2, rc.updatedDateTime = ?3 WHERE rc.id = ?1 and (rc.isDeleted is null or rc.isDeleted =false) and rc.isActive=true")
 	@Modifying
 	int decommissionRegCenter(String regCenterID, String deCommissionedBy, LocalDateTime deCommissionedDateTime);
+	
+	
+	/**
+	 * This method trigger query to fetch registration centers based on id and
+	 * language code with is_Deleted true or false or null and is_Active true or false
+	 * 
+	 * @param id
+	 *            the centerId
+	 * @param langCode
+	 *            the languageCode
+	 * @return the RegistrationCenter
+	 */
+	@Query("FROM RegistrationCenter WHERE id= ?1 and  langCode =?2")
+	RegistrationCenter findByLangCodeAndId(String id, String langCode);
 
 }

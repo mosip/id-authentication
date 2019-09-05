@@ -62,7 +62,7 @@ public interface RegistrationCenterDeviceRepository
 	 *            the document type code.
 	 * @return ValidDocument
 	 */
-	@Query("FROM RegistrationCenterDevice WHERE deviceId=?1 AND regCenterId =?2 AND (isDeleted is null OR isDeleted = false)")
+	@Query("FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.deviceId=?1 AND rd.registrationCenterDevicePk.regCenterId =?2 AND (rd.isDeleted is null OR rd.isDeleted = false)")
 	RegistrationCenterDevice findByDeviceIdAndRegCenterId(String deviceId, String regCenterId);
 
 	/**
@@ -81,8 +81,11 @@ public interface RegistrationCenterDeviceRepository
 	 * @return the number of rows affected.
 	 */
 	@Modifying
-	@Query("UPDATE RegistrationCenterDevice rd SET rd.isActive=?1, rd.updatedBy=?2, rd.updatedDateTime=?3 WHERE rd.deviceId=?4 and rd.regCenterId=?5 and (rd.isDeleted is null or rd.isDeleted =false)")
-	int updateDocCategoryAndDocTypeMapping(boolean isActive, String updatedBy, LocalDateTime updatedDateTime,
+	@Query("UPDATE RegistrationCenterDevice rd SET rd.isActive=?1, rd.updatedBy=?2, rd.updatedDateTime=?3 WHERE rd.registrationCenterDevicePk.deviceId=?4 and rd.registrationCenterDevicePk.regCenterId=?5 and (rd.isDeleted is null or rd.isDeleted =false)")
+	int updateDeviceAndRegistrationCenterMapping1(boolean isActive, String updatedBy, LocalDateTime updatedDateTime,
 			String deviceId, String regCenterId);
-
+	
+    @Modifying
+	@Query(value = " update master.reg_center_device set is_active=?1, upd_by=?2, upd_dtimes=?3  where  device_id=?4 and regcntr_id=?5 and (is_deleted is null or is_deleted =false);", nativeQuery = true )
+	int updateDeviceAndRegistrationCenterMapping(boolean isActive, String updatedBy, LocalDateTime updatedDateTime, String deviceId, String regCenterId);
 }
