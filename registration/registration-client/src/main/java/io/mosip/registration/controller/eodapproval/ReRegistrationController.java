@@ -1,5 +1,6 @@
 package io.mosip.registration.controller.eodapproval;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_PENDING_APPROVAL;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -26,6 +27,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.vo.PacketStatusVO;
@@ -156,8 +158,10 @@ public class ReRegistrationController extends BaseController implements Initiali
 					super.updateItem(item, empty);
 					setText(item);
 					if (item != null && item.equals(RegistrationUIConstants.INFORMED)) {
+						actionCounter++;
 						setTextFill(Color.GREEN);
 					} else if (item != null && item.equals(RegistrationUIConstants.CANTINFORMED)) {
+						actionCounter++;
 						setTextFill(Color.RED);
 					} else {
 						setTextFill(Color.BLACK);
@@ -338,6 +342,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REREGISTRATION_APPROVE_SUCCESS);
+		actionCounter = 0;
 		primaryStage.close();
 		reloadTableView();
 	}
@@ -425,6 +430,47 @@ public class ReRegistrationController extends BaseController implements Initiali
 			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 			informedBtn.setDisable(true);
 			notInformedBtn.setDisable(true);
+		}
+	}
+	
+	private int actionCounter=0;
+
+	/**
+	 * Opens the home page screen.
+	 */
+	public void goToHomePageFromReRegistration() {
+		try {
+			if (actionCounter > 0) {
+				if (pageNavigantionAlert()) {
+					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+						clearOnboardData();
+						clearRegistrationData();
+					} else {
+						SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+								RegistrationConstants.ENABLE);
+					}
+					actionCounter = 0;
+				}
+			} else {
+				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+					clearOnboardData();
+					clearRegistrationData();
+				} else {
+					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+							RegistrationConstants.ENABLE);
+				}
+				actionCounter = 0;
+			}
+		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+		} catch (RuntimeException runtimException) {
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					runtimException.getMessage() + ExceptionUtils.getStackTrace(runtimException));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 }
