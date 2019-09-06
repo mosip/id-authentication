@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceAndRegCenterMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
@@ -62,13 +61,13 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 	@Autowired
 	private ZoneUtils zoneUtils;
-	
+
 	@Autowired
 	private DeviceRepository deviceRepository;
-	
+
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
-	
+
 	@Value("${mosip.primary-language}")
 	private String primaryLang;
 
@@ -159,56 +158,30 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 	public DeviceAndRegCenterMappingResponseDto unmapDeviceRegCenter(String deviceId, String regCenterId) {
 		DeviceAndRegCenterMappingResponseDto responseDto = new DeviceAndRegCenterMappingResponseDto();
 		try {
-			
-			
+
 			// find given Device id and registration center are in DB or not
 			RegistrationCenterDevice registrationCenterDevice = registrationCenterDeviceRepository
 					.findByDeviceIdAndRegCenterId(deviceId, regCenterId);
 			if (registrationCenterDevice != null) {
-				
-				List<String> zoneIds ;
+
+				List<String> zoneIds;
 				// get user zone and child zones list
 				List<Zone> userZones = zoneUtils.getUserZones();
 				zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-				
-				//get given device id zone
+
+				// get given device id zone
 				Device deviceZone = deviceRepository.findByIdAndLangCode(deviceId, primaryLang);
-				//get given registration center zone id 
-				RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterId, primaryLang);
+				// get given registration center zone id
+				RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterId,
+						primaryLang);
 				// check the given device and registration center zones are come under user zone
-				if( !(zoneIds.contains(deviceZone.getZoneCode())  && zoneIds.contains(regCenterZone.getZoneCode())) ){
+				if (!(zoneIds.contains(deviceZone.getZoneCode()) && zoneIds.contains(regCenterZone.getZoneCode()))) {
 					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorMessage());
 				}
-				
-				//todo
-				if (registrationCenterDevice.getIsActive()) {
-					//update mapping
-					int updatedRows = registrationCenterDeviceRepository.updateDeviceAndRegistrationCenterMapping(false,
-							MetaDataUtils.getContextUser(), LocalDateTime.now(ZoneId.of("UTC")), deviceId, regCenterId);
-					//------------------------------------------------
-					RegistrationCenterDevice updregistrationCenterDevice = registrationCenterDeviceRepository.findByDeviceIdAndRegCenterId(deviceId, regCenterId);
-					//update the history table
-					RegistrationCenterDeviceHistory registrationCenterDeviceHistory = MetaDataUtils
-							.setCreateMetaData(updregistrationCenterDevice, RegistrationCenterDeviceHistory.class);
-					registrationCenterDeviceHistory.getRegistrationCenterDeviceHistoryPk()
-							.setEffectivetimes(registrationCenterDeviceHistory.getCreatedDateTime());
-					registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
-					//------------------------------------------------------
-					if (updatedRows < 1) {
 
-						throw new RequestException(
-								RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND
-										.getErrorCode(),
-								RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND
-										.getErrorMessage());
-					} else {
-						responseDto.setStatus(MasterDataConstant.UNMAPPED_SUCCESSFULLY);
-						responseDto.setMessage(
-								String.format(MasterDataConstant.DOC_CATEGORY_AND_DOC_TYPE_UNMAPPING_SUCCESS_MESSAGE,
-										deviceId, regCenterId));
-					}
-				}
+				// todo
+
 				if (!registrationCenterDevice.getIsActive()) {
 					throw new RequestException(
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
@@ -216,6 +189,37 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
 									.getErrorMessage());
 				}
+				if (registrationCenterDevice.getIsActive()) {
+					RegistrationCenterDevice updRegistrationCenterDevice;
+
+					registrationCenterDevice.setIsActive(false);
+					registrationCenterDevice.setUpdatedBy(MetaDataUtils.getContextUser());
+					registrationCenterDevice.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+
+					updRegistrationCenterDevice = registrationCenterDeviceRepository.update(registrationCenterDevice);
+
+					// ----------------update history-------------------------------
+
+					RegistrationCenterDeviceHistory registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
+					MapperUtils.map(updRegistrationCenterDevice, registrationCenterDeviceHistory);
+					MapperUtils.setBaseFieldValue(updRegistrationCenterDevice, registrationCenterDeviceHistory);
+					registrationCenterDeviceHistory.setRegistrationCenterDeviceHistoryPk(
+							MapperUtils.map(new RegistrationCenterDeviceID(regCenterId, deviceId),
+									RegistrationCenterDeviceHistoryPk.class));
+					registrationCenterDeviceHistory.getRegistrationCenterDeviceHistoryPk()
+							.setEffectivetimes(updRegistrationCenterDevice.getUpdatedDateTime());
+					registrationCenterDeviceHistory
+							.setUpdatedDateTime(updRegistrationCenterDevice.getUpdatedDateTime());
+					registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
+                    
+					// set success response
+					responseDto.setStatus(MasterDataConstant.UNMAPPED_SUCCESSFULLY);
+					responseDto.setMessage(
+							String.format(MasterDataConstant.DEVICE_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE,
+									deviceId, regCenterId));
+
+				}
+
 			} else {
 				throw new RequestException(
 						RegistrationCenterDeviceErrorCode.DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
@@ -233,7 +237,5 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		}
 		return responseDto;
 	}
-
-	
 
 }
