@@ -102,7 +102,7 @@ public class RegistrationStatusController {
 					.getByIds(registrationStatusRequestDTO.getRequest());
 			if (isEnabled) {
 				RegStatusResponseDTO response =buildRegistrationStatusResponse(registrations);
-				Gson gson = new GsonBuilder().create();
+				Gson gson = new GsonBuilder().serializeNulls().create();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,
 						digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));

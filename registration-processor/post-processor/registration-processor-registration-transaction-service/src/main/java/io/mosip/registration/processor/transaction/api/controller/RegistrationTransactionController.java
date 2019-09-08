@@ -138,7 +138,7 @@ public class RegistrationTransactionController {
 	 * @return
 	 */
 	private String buildSignatureRegistrationTransactionResponse(RegTransactionResponseDTO dto) {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().serializeNulls().create();
 		return gson.toJson(dto);
 	}
 }
