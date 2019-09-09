@@ -35,5 +35,5 @@ public class MasterDataConstant {
 	public static final String UNMAPPED_SUCCESSFULLY = "un-mapped";
 	public static final String DOC_CATEGORY_AND_DOC_TYPE_UNMAPPING_SUCCESS_MESSAGE = "Document Category %s - Document Type Mapping %s is updated successfully";
 	public static final String DEVICE_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE = "Device %s - Registration Center Mapping %s is updated successfully";
-
+    public static final String USER_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE = "User %s - Registration Center Mapping %s is updated successfully";
 }
