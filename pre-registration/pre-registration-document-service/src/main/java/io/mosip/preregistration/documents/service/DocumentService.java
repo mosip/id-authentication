@@ -91,6 +91,12 @@ public class DocumentService {
 	 */
 	@Value("${mosip.preregistration.document.upload.id}")
 	private String uploadId;
+	
+	/**
+	 * Reference for ${mosip.preregistration.document.scan} from property file
+	 */
+	@Value("${mosip.preregistration.document.scan}")
+	private Boolean scanDocument;
 
 	/**
 	 * Reference for ${mosip.preregistration.document.copy.id} from property file
@@ -203,7 +209,10 @@ public class DocumentService {
 			responseDto.setVersion(docReqDto.getVersion());
 			requiredRequestMap.put("id", uploadId);
 			if (ValidationUtil.requestValidator(prepareRequestParamMap(docReqDto), requiredRequestMap)) {
-				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
+				if(scanDocument) {
+					serviceUtil.isVirusScanSuccess(file);
+				}
+				if (serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
 					validationUtil.langvalidation(docReqDto.getRequest().getLangCode());
@@ -212,9 +221,6 @@ public class DocumentService {
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
-				} else {
-					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
 				}
 			}
 			isUploadSuccess = true;
