@@ -214,8 +214,9 @@ public class AuthController {
 		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
-		if (authResponseDto != null) {
+		if (authResponseDto != null && authResponseDto.getToken()!=null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
+			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			authNResponse = new AuthNResponse();
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
