@@ -118,7 +118,7 @@ public class UinCardRePrintController {
 		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));
 		response.setResponse(packetGeneratorResDto);
 		response.setErrors(null);
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().serializeNulls().create();
 		return gson.toJson(response);
 	}
 }
