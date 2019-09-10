@@ -163,7 +163,7 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 			throw new RequestException(RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE.getErrorCode(),
 					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE.getErrorMessage());	
 		}
-		else if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
+		if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
 			// check the given registration center zones will come under user zone
 			throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorCode(),
 					RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorMessage());
