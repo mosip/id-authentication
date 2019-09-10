@@ -57,7 +57,7 @@ public class NotificationController {
 			@RequestPart(value = "langCode", required = true) String langCode,
 			@RequestPart(value = "attachment", required = false) MultipartFile file) {
 		log.info("sessionId", "idType", "id",
-				"In notification controller for send notification with request notification dto  " + jsonbObject);
+				"In notification controller for send notification with request notification dto   " + jsonbObject);
 		return new ResponseEntity<>(notificationService.sendNotification(jsonbObject, langCode, file), HttpStatus.OK);
 
 	}
