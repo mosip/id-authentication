@@ -20,7 +20,7 @@ public enum SecurityMethod {
 	 * <b>Advanced Encryption Standard</b> symmetric-key block cipher security
 	 * method with PKCS5 Padding
 	 */
-	AES_WITH_CBC_AND_PKCS5PADDING("AES/GCM/PKCS7Padding"),
+	AES_WITH_CBC_AND_PKCS5PADDING("AES/CBC/PKCS5Padding"),
 	/**
 	 * RSA cryptosystem security method with PKCS1 Padding
 	 */
