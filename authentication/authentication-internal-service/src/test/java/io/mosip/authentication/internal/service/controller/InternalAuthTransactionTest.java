@@ -27,6 +27,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -68,6 +69,12 @@ public class InternalAuthTransactionTest {
 
 	@Mock
 	private IdServiceImpl idService;
+	
+	@Autowired
+	Environment env;
+
+	@Mock
+	private UinHashSaltRepo uinHashSaltRepo;
 
 	@Before
 	public void before() {
@@ -76,6 +83,10 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnService", authTxnService);
 		ReflectionTestUtils.setField(internalAuthTxnController, "environment", environment);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
+		ReflectionTestUtils.setField(authTxnService, "env", env);
+		ReflectionTestUtils.setField(authTxnService, "authtxnRepo", authtxnRepo);
+		ReflectionTestUtils.setField(authTxnService, "uinHashSaltRepo", uinHashSaltRepo);
+
 	}
 
 	@Test
@@ -91,6 +102,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", 1, 10);
 	}
@@ -104,8 +116,9 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
-		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", 0, 0);
+		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", 1, null);
 	}
 
 	@Test
@@ -117,6 +130,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", null, null);
 	}
@@ -152,6 +166,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", null, null);
 	}

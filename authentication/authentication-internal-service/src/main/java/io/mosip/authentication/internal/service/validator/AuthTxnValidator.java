@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 
@@ -15,7 +14,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
  * @author Dinesh Karuppiah.T
  */
 @Component
-public class AuthTxnValidator extends IdAuthValidator {
+public class AuthTxnValidator extends InternalAuthRequestValidator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
