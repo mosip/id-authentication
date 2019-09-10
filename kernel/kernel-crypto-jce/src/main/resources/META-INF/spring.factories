@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.mosip.kernel.crypto.jce.impl.DecryptorImpl,\
 io.mosip.kernel.crypto.jce.impl.EncryptorImpl,\
-io.mosip.kernel.crypto.jce.core.CryptoCoreImpl
+io.mosip.kernel.crypto.jce.core.CryptoCore
