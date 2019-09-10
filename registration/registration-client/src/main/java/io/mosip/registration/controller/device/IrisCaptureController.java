@@ -565,6 +565,8 @@ public class IrisCaptureController extends BaseController {
 					popupStage.close();
 					if (validateIris() && validateIrisLocalDedup()) {
 						continueBtn.setDisable(false);
+					}else {
+						continueBtn.setDisable(true);
 					}
 				});
 
@@ -628,8 +630,10 @@ public class IrisCaptureController extends BaseController {
 								.put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
 						registrationPreviewController.setUpPreviewContent();
 					}
+					faceCaptureController.checkForException();
 					registrationController.showUINUpdateCurrentPage();
 				} else {
+					faceCaptureController.checkForException();
 					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
 							getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.NEXT));
 				}
@@ -719,28 +723,23 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
-				if (validateIrisCapture(irisDetailsDTO)
-						|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
+					return true;
+				if (validateIrisCapture(irisDetailsDTO)) {
 					if (irisDetailsDTO.getIrisType().contains(RegistrationConstants.LEFT)) {
 						isLeftEyeCaptured = true;
 					} else if (irisDetailsDTO.getIrisType().contains(RegistrationConstants.RIGHT)) {
 						isRightEyeCaptured = true;
 					}
 				} else {
-					return isValid;
+					isValid=false;
 				}
 			}
 
-			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null
-
-					&& ((getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && isLeftEyeCaptured
-							&& isRightEyeCaptured)
-
-							|| getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-									.getFingerprintDetailsDTO().isEmpty()
-									&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
-									&& (isLeftEyeCaptured || isRightEyeCaptured))) {
-				isValid = true;
+			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null && !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+				if (isLeftEyeCaptured || isRightEyeCaptured) {
+					isValid = true;
+				}
 			} else {
 				if (isLeftEyeCaptured && isRightEyeCaptured) {
 					isValid = true;

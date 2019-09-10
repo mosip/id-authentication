@@ -575,6 +575,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 			if (exceptionImage != null)
 				exceptionImage.setImage(defaultExceptionImage);
 			BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
+			if(getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
+				applicantBiometricDTO = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO();
+			}
+			applicantBiometricDTO.getBiometricExceptionDTO().removeIf((v)->!v.isMarkedAsException());
 			if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
 				applicantBiometricDTO.getExceptionFace().setFace(null);
 				applicantBiometricDTO.getExceptionFace().setPhotographName(null);
@@ -597,21 +601,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Enabling the capture button based on selected pane");
 
-		/*
-		 * check if the applicant has biometric exception
-		 */
-		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			hasBiometricException = false;
-
-			boolean hasMissingBiometrics = (Boolean) SessionContext.userContext().getUserMap()
-					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-
-			hasLowBiometrics = validateBiometrics(hasBiometricException);
-
-			/* if there is no missing biometric, check for low quality of biometrics */
-			hasBiometricException = hasMissingBiometrics || hasLowBiometrics;
-			SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, hasBiometricException);
-		}
+		checkForException();
 
 		/* get the selected pane to capture photo */
 		Pane sourcePane = (Pane) mouseEvent.getSource();
@@ -639,6 +629,25 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionFaceTrackerImg.setVisible(true);
 			takePhoto.setDisable(false);
 			photoAlert.setVisible(false);
+		}
+	}
+
+	public void checkForException() {
+		/*
+		 * check if the applicant has biometric exception
+		 */
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			hasBiometricException = false;
+
+			boolean hasMissingBiometrics = (Boolean) SessionContext.userContext().getUserMap()
+					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+
+			hasLowBiometrics = validateBiometrics(hasBiometricException);
+
+			/* if there is no missing biometric, check for low quality of biometrics */
+			hasBiometricException = hasMissingBiometrics || hasLowBiometrics;
+			SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, hasBiometricException);
+			disableNextButton();
 		}
 	}
 

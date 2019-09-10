@@ -724,11 +724,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 	public void clearFingerPrintDTO() {
 		initializeCaptureCount();
-		removeFingerPrint(RegistrationConstants.LEFTPALM, leftHandPalmImageview, leftSlapQualityScore,
+		removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_LEFT, leftHandPalmImageview, leftSlapQualityScore,
 				RegistrationConstants.LEFTPALM_IMG_PATH, leftSlapAttempt);
-		removeFingerPrint(RegistrationConstants.RIGHTPALM, rightHandPalmImageview, rightSlapQualityScore,
+		removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_RIGHT, rightHandPalmImageview, rightSlapQualityScore,
 				RegistrationConstants.RIGHTPALM_IMG_PATH, rightSlapAttempt);
-		removeFingerPrint(RegistrationConstants.THUMBS, thumbImageview, thumbsQualityScore,
+		removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_THUMBS, thumbImageview, thumbsQualityScore,
 				RegistrationConstants.THUMB_IMG_PATH, thumbSlapAttempt);
 
 		clearingProgressBar();
@@ -1273,12 +1273,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
 					} else {
 						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, true);
+						faceCaptureController.checkForException();
 						registrationPreviewController.setUpPreviewContent();
 					}
 					registrationController.showUINUpdateCurrentPage();
 				} else {
 					SessionContext.map().remove(RegistrationConstants.DUPLICATE_FINGER);
 					irisCaptureController.clearIrisBasedOnExceptions();
+					faceCaptureController.checkForException();
 
 					registrationController.showCurrentPage(RegistrationConstants.FINGERPRINT_CAPTURE,
 							getPageDetails(RegistrationConstants.FINGERPRINT_CAPTURE, RegistrationConstants.NEXT));

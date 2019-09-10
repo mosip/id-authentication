@@ -36,6 +36,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -270,8 +271,7 @@ public class SchedulerUtil extends BaseController {
 		stage.close();
 		// to stop scheduler
 		stopScheduler();
-		// to clear the session object
-		SessionContext.destroySession();
+		
 		// close webcam window, if open.
 		if (webCameraController.getWebCameraStage() != null && webCameraController.getWebCameraStage().isShowing()) {
 			webCameraController.getWebCameraStage().close();
@@ -285,6 +285,16 @@ public class SchedulerUtil extends BaseController {
 		if (packetUploadController.getStage() != null && packetUploadController.getStage().isShowing()) {
 			packetUploadController.getStage().close();
 		}
+		if (SessionContext.map() != null && SessionContext.map().get("alert")!=null) {
+			Alert alret=(Alert)SessionContext.map().get("alert");
+			alret.close();
+		}
+		if (SessionContext.map() != null && SessionContext.map().get("alertStage")!=null) {
+			Stage alertStage=(Stage)SessionContext.map().get("alertStage");
+			alertStage.close();
+		}
+		// to clear the session object
+		SessionContext.destroySession();
 		// load login screen
 		loadLoginScreen();
 		isShowing = false;
