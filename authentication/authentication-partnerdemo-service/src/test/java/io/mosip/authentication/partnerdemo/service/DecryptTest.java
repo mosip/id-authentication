@@ -70,7 +70,7 @@ public class DecryptTest {
 				.thenReturn("sdfsdf".getBytes());
 		Mockito.when(decryptorImpl.symmetricDecrypt(Mockito.any(SecretKey.class), (byte[]) Mockito.any()))
 				.thenReturn("sdfsdf".getBytes());
-		decryptMock.decrypt(testData);
+		decryptMock.decrypt(testData, "IDA");
 	}
 
 	/**

@@ -83,6 +83,14 @@ public final class IdAuthCommonConstants {
 	
 	public static final String BIOMETRICS ="biometrics";
 	
+	public static final String IDENTITY ="identity";
+	
+	public static final String UIN_CAPS ="UIN";
+	
+	public static final String UIN = "uin";
+
+	public static final String VID = "vid";
+	
 	public static final String UIN_MODULO_SPLITTER = "_";
 }
 

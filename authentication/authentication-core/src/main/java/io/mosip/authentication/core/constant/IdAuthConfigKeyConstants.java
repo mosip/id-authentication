@@ -79,7 +79,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_BASIC_NORMALISER = "ida.demo.%s.normalization.regex.%s[%s]";
 	public static final String IDA_NORMALISER_SEP = "ida.norm.sep";
 	public static final String AUTH_TRANSACTION = "auth.transactions";
-	public static final String AUTH_TYPE = "authtype.status";
+	public static final String AUTH_TYPE_READ = "authtype.status.read";
+	public static final String AUTH_TYPE_UPDATE = "authtype.status.update";
 	public static final String UIN_SALT_MODULO = "ida.uin.salt.modulo";
 	public static final String MOSIP_UTC_TIME= "mosip.utc-datetime-pattern";
 	

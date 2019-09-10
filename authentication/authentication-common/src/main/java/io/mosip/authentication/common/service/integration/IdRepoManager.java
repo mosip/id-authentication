@@ -39,15 +39,13 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdRepoManager {
 
-	private static final String UIN = "UIN";
+
 
 	private static final String VERSION = "v1";
 
 	private static final String MOSIP_VID_UPDATE = "mosip.vid.update";
 
 	private static final String VID_USED = "USED";
-
-	private static final String VID = "vid";
 
 	private static final String ERRORMESSAGE = "message";
 
@@ -99,7 +97,7 @@ public class IdRepoManager {
 
 		try {
 			Map<String, String> params = new HashMap<>();
-			params.put("uin", uin);
+			params.put(IdAuthCommonConstants.UIN, uin);
 			if (isBio) {
 				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class);
 				params.put("type", "bio");
@@ -111,7 +109,7 @@ public class IdRepoManager {
 			response = restHelper.requestSync(buildRequest);
 			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()).equalsIgnoreCase(
 					(String) ((Map<String, Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
-				response.put("uin", uin);
+				response.put(IdAuthCommonConstants.UIN, uin);
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			}
@@ -211,7 +209,7 @@ public class IdRepoManager {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdByRID(String regID, boolean isBio) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
-		Map<String, Object> uinMap = null;
+		Map<String, Object> idRepoResponse = null;
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("rid", regID);
@@ -223,7 +221,13 @@ public class IdRepoManager {
 						Map.class);
 			}
 			buildRequest.setPathVariables(params);
-			uinMap = restHelper.requestSync(buildRequest);
+			idRepoResponse = restHelper.requestSync(buildRequest);
+			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()).equalsIgnoreCase(
+					(String) ((Map<String, Object>) idRepoResponse.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
+				idRepoResponse.put(IdAuthCommonConstants.UIN, getUINfromIDentityResponse(idRepoResponse));
+			} else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
@@ -252,7 +256,19 @@ public class IdRepoManager {
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
-		return uinMap;
+		return idRepoResponse;
+	}
+
+	@SuppressWarnings("unchecked")
+	private String getUINfromIDentityResponse(Map<String, Object> idRepoResponse) {
+		return Optional.ofNullable(idRepoResponse.get(IdAuthCommonConstants.RESPONSE))
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> ((Map<String, Object>)obj).get(IdAuthCommonConstants.IDENTITY))
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> ((Map<String, Object>)obj).get(IdAuthCommonConstants.UIN_CAPS))
+				.filter(obj -> obj instanceof Number)
+				.map(obj -> String.valueOf(obj))
+				.orElse(null);
 	}
 
 	/**
@@ -268,13 +284,13 @@ public class IdRepoManager {
 		long uin = 0;
 		try {
 			Map<String, String> params = new HashMap<>();
-			params.put(VID, vid);
+			params.put(IdAuthCommonConstants.VID, vid);
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.VID_SERVICE, null, Map.class);
 			buildRequest.setPathVariables(params);
 			Map<String, Object> vidMap = restHelper.requestSync(buildRequest);
 			List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) vidMap.get(ERRORS);
 			if ((null == vidErrorList || vidErrorList.isEmpty()) && vidMap.get("response") instanceof Map) {
-				uin = Long.valueOf(((Map<String, Object>) vidMap.get("response")).get(UIN).toString());
+				uin = Long.valueOf(((Map<String, Object>) vidMap.get("response")).get(IdAuthCommonConstants.UIN_CAPS).toString());
 			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),

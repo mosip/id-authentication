@@ -4,7 +4,6 @@
 package io.mosip.authentication.common.service.facade;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -126,9 +125,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private IdAuthTransactionManager transactionManager;
 
-	private static final List<String> authTypes = Arrays.asList(MatchType.Category.DEMO.getType(),
-			MatchType.Category.OTP.getType(), MatchType.Category.BIO.getType(), MatchType.Category.SPIN.getType());
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -154,22 +150,34 @@ public class AuthFacadeImpl implements AuthFacade {
 				if (authTypeStatus.isLocked()) {
 					if (authRequestDTO.getRequestedAuth().isDemo()
 							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+										MatchType.Category.DEMO.getType()));
 					}
 
 					else if (authRequestDTO.getRequestedAuth().isBio()
 							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+										MatchType.Category.BIO.getType()));
 					}
 
 					else if (authRequestDTO.getRequestedAuth().isOtp()
 							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+										MatchType.Category.OTP.getType()));
 					}
 
 					else if (authRequestDTO.getRequestedAuth().isPin()
 							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED);
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+										MatchType.Category.SPIN.getType()));
 					}
 				}
 			}
@@ -178,7 +186,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String uin = String.valueOf(idResDTO.get("uin"));
+		String uin = idResDTO.get("uin") == null ? null : String.valueOf(idResDTO.get("uin"));
 		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 		try {
