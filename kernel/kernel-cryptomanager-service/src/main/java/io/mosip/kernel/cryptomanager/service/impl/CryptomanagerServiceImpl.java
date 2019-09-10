@@ -159,4 +159,30 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		return cryptoResponseDto;
 	}
 
+	@Override
+	public CryptomanagerResponseDto authEncrypt(CryptomanagerAuthRequestDto cryptomanagerAuthRequestDto) {
+		SecretKey secretKey = keyGenerator.getSymmetricKey();
+		final byte[] encryptedData;
+		if (cryptomanagerUtil.isValidSalt(CryptomanagerUtils.nullOrTrim(cryptomanagerAuthRequestDto.getSalt()))) {
+			encryptedData = cryptoCore.symmetricEncrypt(secretKey,
+					CryptoUtil.decodeBase64(cryptomanagerAuthRequestDto.getData()),
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptomanagerAuthRequestDto.getSalt())),
+							CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptomanagerAuthRequestDto.getAad())));
+		} else {
+			encryptedData = cryptoCore.symmetricEncrypt(secretKey,
+					CryptoUtil.decodeBase64(cryptomanagerAuthRequestDto.getData()),
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptomanagerAuthRequestDto.getAad())));
+		}
+		CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto(
+				cryptomanagerAuthRequestDto.getApplicationId(), cryptomanagerAuthRequestDto.getReferenceId(),
+				cryptomanagerAuthRequestDto.getTimeStamp(), cryptomanagerAuthRequestDto.getData(),
+				cryptomanagerAuthRequestDto.getSalt());
+		PublicKey publicKey = cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);
+		final byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey, secretKey.getEncoded());
+		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
+		cryptoResponseDto.setData(CryptoUtil
+				.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter)));
+		return cryptoResponseDto;
+	}
+
 }
