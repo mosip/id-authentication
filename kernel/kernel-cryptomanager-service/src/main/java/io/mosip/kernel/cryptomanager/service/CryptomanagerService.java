@@ -47,5 +47,11 @@ public interface CryptomanagerService {
 	 * @return
 	 */
 	public CryptomanagerResponseDto authDecrypt(CryptomanagerAuthRequestDto request);
+	// to be removed after Crypto Core merge with main branch
+		/** Encrypt auth data requested with metadata
+		 * @param request
+		 * @return
+		 */
+	public CryptomanagerResponseDto authEncrypt(CryptomanagerAuthRequestDto request);
 
 }
