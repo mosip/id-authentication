@@ -1374,9 +1374,10 @@ public class BaseController {
 	}
 	
 	public void closeAlreadyExistedAlert() {
+		if (SessionContext.isSessionContextAvailable()) {
 		Stage alertStageFromSession = (Stage)SessionContext.map().get("alertStage");
 		if(alertStageFromSession != null) alertStageFromSession.close();
-		
+		}
 	}
 
 }
