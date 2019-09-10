@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -178,8 +179,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
 		List<Registration> packetsToBeSynched = syncRegistrationDAO.fetchPacketsToUpload(
 				RegistrationConstants.PACKET_STATUS_UPLOAD, RegistrationConstants.SERVER_STATUS_RESEND);
+		removeSynchedAndReregisterPackets(packetsToBeSynched);
 		packetsToBeSynched.forEach(reg -> {
-			if (reg.getServerStatusCode() == null
+			if (reg.getServerStatusCode() == null 
 					|| (reg.getClientStatusTimestamp() != null && reg.getServerStatusTimestamp() != null
 							&& !(RegistrationConstants.SERVER_STATUS_RESEND.equalsIgnoreCase(reg.getServerStatusCode())
 									&& reg.getClientStatusTimestamp().after(reg.getServerStatusTimestamp())))) {
@@ -391,5 +393,22 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		}
 		return true;
 
+	}
+	
+	private void removeSynchedAndReregisterPackets(List<Registration> packetsToBeSynched) {
+		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCED - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Remove the already Synched and Re-register status packets, total packets " + packetsToBeSynched.size());
+		List<Registration> synchedAndReRegisteredPackets = packetsToBeSynched.stream().filter(registration -> 
+				RegistrationConstants.SYNCED_STATUS.equalsIgnoreCase(registration.getClientStatusCode()) 
+				&& registration.getClientStatusComments() != null 
+				&& registration.getClientStatusComments().contains(RegistrationConstants.RE_REGISTER_STATUS_COMEMNTS)).collect(Collectors.toList());
+		
+		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCED - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Remove the already Synched and Re-register status packets" + synchedAndReRegisteredPackets.size());
+		
+		packetsToBeSynched.removeAll(synchedAndReRegisteredPackets);
+		
+		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCED - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Final Packets count " + packetsToBeSynched.size());
 	}
 }
