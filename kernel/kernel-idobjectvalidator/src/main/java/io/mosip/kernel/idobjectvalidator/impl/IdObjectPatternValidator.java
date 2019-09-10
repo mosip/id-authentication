@@ -3,9 +3,7 @@ package io.mosip.kernel.idobjectvalidator.impl;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_PARSING_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.REFERENCE_IDENTITY_NUMBER_REGEX;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.DOB_FORMAT;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_REFERENCE_IDENTITY_NUMBER_PATH;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_DOB_PATH;
 
 import java.time.LocalDate;
@@ -73,7 +71,6 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 			String identityString = mapper.writeValueAsString(identityObject);
 			List<ServiceError> errorList = new ArrayList<>();
 			validateAttributes(identityString, errorList);
-			validateReferenceIdentityNumber(identityString, errorList);
 			validateDateOfBirth(identityString, errorList);
 			if (errorList.isEmpty()) {
 				return true;
@@ -117,28 +114,6 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 						});
 			}
 		});
-	}
-	
-	/**
-	 * Validate Reference Identity Number.
-	 *
-	 * @param identity the identity
-	 * @param errorList the error list
-	 */
-	private void validateReferenceIdentityNumber(String identity, List<ServiceError> errorList) {
-		Pattern pattern = Pattern.compile(REFERENCE_IDENTITY_NUMBER_REGEX.getValue());
-		JsonPath jsonPath = JsonPath.compile(IDENTITY_REFERENCE_IDENTITY_NUMBER_PATH.getValue());
-		JSONArray pathList = jsonPath.read(identity, 
-				Configuration.defaultConfiguration()
-				.addOptions(
-						Option.SUPPRESS_EXCEPTIONS, 
-						Option.AS_PATH_LIST));
-		CharSequence data = jsonPath.read(identity,
-				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-		if (Objects.nonNull(data) && !pattern.matcher(data).matches()) {
-			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), String
-					.format(INVALID_INPUT_PARAMETER.getMessage(), convertToPath(String.valueOf(pathList.get(0))))));
-		}
 	}
 	
 	/**
