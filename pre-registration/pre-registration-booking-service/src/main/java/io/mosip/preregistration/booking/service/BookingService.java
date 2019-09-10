@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +33,6 @@ import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
-import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.MultiBookingRequest;
 import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
@@ -53,6 +53,7 @@ import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -236,6 +237,7 @@ public class BookingService {
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In addAvailability method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
@@ -323,6 +325,7 @@ public class BookingService {
 			}
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In getAvailability method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
@@ -446,6 +449,7 @@ public class BookingService {
 				}
 				isSaveSuccess = true;
 			} catch (Exception ex) {
+				log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 				log.error("sessionId", "idType", "id",
 						"In bookAppointment method of Booking Service- " + ex.getMessage());
 				new BookingExceptionCatcher().handle(ex, responseDTO);
@@ -574,6 +578,7 @@ public class BookingService {
 				}
 				isSaveSuccess = true;
 			} catch (Exception ex) {
+				log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 				log.error("sessionId", "idType", "id",
 						"In bookMultiAppointment method of Booking Service- " + ex.getMessage());
 				new BookingExceptionCatcher().handle(ex, responseDTO);
@@ -629,6 +634,7 @@ public class BookingService {
 			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAppointmentDetails method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, responseDto);
@@ -648,6 +654,26 @@ public class BookingService {
 		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
 		boolean isBatchUser = false;
+		responseDto.setId(idUrlCancel);
+		responseDto.setVersion(versionUrl);
+		responseDto.setResponse(cancelBooking(preRegistrationId, isBatchUser));
+
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+
+		return responseDto;
+	}
+
+	/**
+	 * This method will cancel the appointment.
+	 *
+	 * @param MainRequestDTO
+	 * @return MainResponseDTO
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointmentBatch(String preRegistrationId) {
+		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
+		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
+		boolean isBatchUser = true;
 		responseDto.setId(idUrlCancel);
 		responseDto.setVersion(versionUrl);
 		responseDto.setResponse(cancelBooking(preRegistrationId, isBatchUser));
@@ -702,6 +728,7 @@ public class BookingService {
 			}
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In book method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
 		}
@@ -765,6 +792,7 @@ public class BookingService {
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In cancelBooking method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
@@ -825,6 +853,7 @@ public class BookingService {
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In deleteBooking method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
@@ -874,6 +903,7 @@ public class BookingService {
 						ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.getMessage());
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In checkSlotAvailability method of Booking Service for Exception- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
@@ -892,6 +922,7 @@ public class BookingService {
 				return true;
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In deleteOldBooking method of Booking Service for Exception- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
@@ -914,6 +945,7 @@ public class BookingService {
 			log.info("sessionId", "idType", "id", "In increaseAvailability method of Booking Service");
 
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In increaseAvailability method of Booking Service for Exception- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
@@ -981,6 +1013,7 @@ public class BookingService {
 				response.setResponse(responseDTO);
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getPreRegistrationByDate method of pre-registration service - " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);

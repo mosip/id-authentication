@@ -6,8 +6,10 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IRI
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
+import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -23,20 +25,34 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-
+import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 /**
  * Class for defining configurations for the service.
  * 
  * @author Manoj SP
  *
  */
-public abstract class IdAuthConfig {
+public abstract class IdAuthConfig extends HibernateDaoConfig{
 	
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthConfig.class);
 
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+	
+	/** The interceptor. */
+	@Autowired
+	private Interceptor interceptor;
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig#jpaProperties()
+	 */
+	@Override
+	public Map<String, Object> jpaProperties() {
+		Map<String, Object> jpaProperties = super.jpaProperties();
+		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
+		return jpaProperties;
+	}
 
 	/**
 	 * Finger provider.

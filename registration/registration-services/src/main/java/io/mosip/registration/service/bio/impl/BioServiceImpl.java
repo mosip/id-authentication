@@ -236,8 +236,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException, IOException {
 		
-		if(isNull(fingerType))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
 		if (captureResponseDto == null)
 			throw new RegBaseCheckedException("202", "Decice is not available");
@@ -273,9 +271,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	private void getFingerPrintImageAsDTONonMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
-
-		if(isNull(fingerType))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
 
 		Map<String, Object> fingerMap = null;
 
@@ -376,7 +371,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException, IOException {
-
+		if(isNull(fingerType))
+			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
+		
 		if (isMdmEnabled())
 			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, fingerType);
 		else

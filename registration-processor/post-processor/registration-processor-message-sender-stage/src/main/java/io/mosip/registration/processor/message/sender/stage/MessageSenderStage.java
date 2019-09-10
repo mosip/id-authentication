@@ -382,7 +382,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 		if (isEmailSuccess && isSMSSuccess) {
 			isNotificationSuccess = true;
-			description.setMessage(MessageSenderConstant.MESSAGE_SENDER_NOTIF_SUCC + id);
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage() + id);
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getCode());
 		}
 
 		return isNotificationSuccess;
@@ -398,12 +399,14 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			if (emailResponse.getStatus().equals("success")) {
 				isEmailSuccess = true;
 			} else {
-				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_EMAIL_FAILED + id);
+				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage() + id);
+				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
 		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
 			description.setMessage(e.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
 		}
 		return isEmailSuccess;
 	}
@@ -419,12 +422,14 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			if (smsResponse.getStatus().equals("success")) {
 				isSmsSuccess = true;
 			} else {
-				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_SMS_FAILED + id);
+				description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage() + id);
+				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
 		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
 			description.setMessage(e.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
 		}
 		return isSmsSuccess;
 	}

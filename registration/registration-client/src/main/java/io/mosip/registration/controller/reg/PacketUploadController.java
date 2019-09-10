@@ -77,6 +77,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 @Controller
@@ -609,11 +610,12 @@ public class PacketUploadController extends BaseController implements Initializa
 			Scene scene = new Scene(new StackPane(statusTable), 800, 800);
 			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
 					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			stage.initStyle(StageStyle.UTILITY);
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);
 			stage.setScene(scene);
-			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
+			stage.setTitle(RegistrationUIConstants.ALERT_NOTE_LABEL);
 			stage.show();
 			selectAllCheckBox.setSelected(false);
 			stage.setOnCloseRequest((e) -> {

@@ -1203,12 +1203,12 @@ public class AuthRequestValidatorTest {
 	@Test
 	public void testInvalidTimeStamp() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("validateRequestTimedOut", String.class,
-				Errors.class);
+		Method declaredMethod = AuthRequestValidator.class.getDeclaredMethod("validateReqTime", String.class,
+				Errors.class, String.class);
 		declaredMethod.setAccessible(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		declaredMethod.invoke(authRequestValidator, "2019-01-28", errors);
+		declaredMethod.invoke(authRequestValidator, "2019-01-28", errors, "");
 	}
 
 	@Test

@@ -82,4 +82,7 @@ public final class IdAuthCommonConstants {
 	public static final String AUTH_TYPE = "authtypes";
 	
 	public static final String BIOMETRICS ="biometrics";
+	
+	public static final String UIN_MODULO_SPLITTER = "_";
 }
+

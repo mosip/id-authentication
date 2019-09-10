@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -105,11 +106,13 @@ public class DemographicServiceUtil {
 			createDto.setUpdatedBy(demographicEntity.getUpdatedBy());
 			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getUpdateDateTime()));
 		} catch (ParseException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
 					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		} catch (EncryptionFailedException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw ex;
@@ -137,11 +140,13 @@ public class DemographicServiceUtil {
 			createDto.setLangCode(demographicEntity.getLangCode());
 			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
 		} catch (ParseException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
 					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		} catch (EncryptionFailedException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw ex;
@@ -169,11 +174,13 @@ public class DemographicServiceUtil {
 			createDto.setLangCode(demographicEntity.getLangCode());
 			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
 		} catch (ParseException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
 					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		} catch (EncryptionFailedException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
 			throw ex;
@@ -375,6 +382,7 @@ public class DemographicServiceUtil {
 		try {
 			return new SimpleDateFormat(utcDateTimePattern).parse(date);
 		} catch (java.text.ParseException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getDateFromString method of pre-registration service- " + ex.getCause());
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.getCode(),
@@ -447,6 +455,7 @@ public class DemographicServiceUtil {
 			log.info("sessionId", "idType", "id", " URL in demographic service util of getJson " + uriBuilder);
 			return restTemplate.getForObject(uriBuilder.toString(), String.class);
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service util of getPreregistrationIdentityJson- " + ex.getMessage());
 			throw new SystemFileIOException(ErrorCodes.PRG_PAM_APP_018.getCode(),

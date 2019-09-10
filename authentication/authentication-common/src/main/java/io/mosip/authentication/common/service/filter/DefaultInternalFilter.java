@@ -96,7 +96,7 @@ public class DefaultInternalFilter extends IdAuthFilter {
 				String contextPath = urlPath[1];
 				if (!StringUtils.isEmpty(contextPath)) {
 					if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
-						id = attribute + contextPath;
+						id = attribute + IdAuthConfigKeyConstants.OTP_INTERNAL_ID_SUFFIX;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
 						id = attribute + IdAuthConfigKeyConstants.AUTH_TRANSACTION;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
@@ -108,9 +108,5 @@ public class DefaultInternalFilter extends IdAuthFilter {
 		return id;
 	}
 
-	@Override
-	protected void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
-		// Do nothing
-	}
 
 }

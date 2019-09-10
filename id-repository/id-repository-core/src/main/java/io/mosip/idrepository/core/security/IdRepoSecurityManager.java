@@ -72,6 +72,8 @@ public class IdRepoSecurityManager {
 		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(data));
 	}
 
+	
+	
 	/**
 	 * Hash with salt - provides hash value based on provided salt.
 	 *

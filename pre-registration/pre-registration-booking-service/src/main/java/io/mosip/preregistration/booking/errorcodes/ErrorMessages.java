@@ -62,7 +62,8 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME("Availability not found for the selected time"),
+	AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME(
+			"Appointment booking/re-booking cannot be done as the requested slot is not available. Please select another slot or try again later"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
@@ -165,15 +166,15 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_BOOK_RCI_031
 	 */
 	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time"),
-	
+
 	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id"),
-	
+
 	NOTIFICATION_CALL_FAILED("Notification service call failed"),
-	
+
 	JSON_PROCESSING_EXCEPTION("Json processing exception"),
-	
+
 	REG_CENTER_ID_NOT_FOUND("Registration center id not found"),
-	
+
 	CANCEL_BOOKING_CANNOT_BE_DONE("Appointment cancelling cannot be done within");
 	/**
 	 * @param code

@@ -14,9 +14,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -352,7 +355,8 @@ public class DocumentServiceUtil {
 		try {
 			log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
 			return virusScan.scanDocument(file.getBytes());
-		} catch (java.io.IOException e) {
+		} catch (Exception e) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(e));
 			log.error("sessionId", "idType", "id", e.getMessage());
 			throw new VirusScannerException(ErrorCodes.PRG_PAM_DOC_010.toString(),
 					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());

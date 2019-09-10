@@ -64,7 +64,7 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 			errors.addAllErrors(authErrors);
 
 			if (!errors.hasErrors()) {
-				validateConsentReq(kycAuthRequestDTO, errors);
+				validateConsentReq(kycAuthRequestDTO.isConsentObtained(), errors);
 			}
 
 			if (!errors.hasErrors()) {

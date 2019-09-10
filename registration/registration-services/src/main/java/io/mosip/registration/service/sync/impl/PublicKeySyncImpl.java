@@ -77,48 +77,11 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 
 				if (null == keyStore) {
 
-					responseDTO = insertPublickey(triggerPoint);
-
-					if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
-						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
-								null);
-						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-								responseDTO.getSuccessResponseDTO().getMessage());
-					} else {
-						if (!isAuthTokenEmptyError(responseDTO)) {
-							responseDTO = setErrorResponse(new ResponseDTO(),
-									RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-						}
-						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-								"Public Key Sync Failure");
-					}
+					responseDTO = getResponse(triggerPoint);
 
 				} else {
 
-					Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
-
-					if (validDate
-							.compareTo(new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0) {
-
-						responseDTO = insertPublickey(triggerPoint);
-
-						if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
-							responseDTO = setSuccessResponse(responseDTO,
-									RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
-							LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-									responseDTO.getSuccessResponseDTO().getMessage());
-						} else {
-							if (!isAuthTokenEmptyError(responseDTO)) {
-								responseDTO = setErrorResponse(new ResponseDTO(),
-										RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-							}
-							LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-									"Public Key Sync Failure");
-						}
-					}
-
-					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
-							null);
+					getResponse(triggerPoint, responseDTO, keyStore);
 				}
 
 			} catch (RegBaseCheckedException regBaseCheckedException) {
@@ -146,6 +109,40 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 		return responseDTO;
 	}
 
+	private void getResponse(String triggerPoint, ResponseDTO responseDTO, KeyStore keyStore)
+			throws RegBaseCheckedException {
+		Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
+
+		if (validDate
+				.compareTo(new Date(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime())) <= 0) {
+
+			responseDTO = getResponse(triggerPoint);
+		}
+
+		responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+				null);
+	}
+
+	private ResponseDTO getResponse(String triggerPoint) throws RegBaseCheckedException {
+		ResponseDTO responseDTO;
+		responseDTO = insertPublickey(triggerPoint);
+
+		if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
+			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+					null);
+			LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					responseDTO.getSuccessResponseDTO().getMessage());
+		} else {
+			if (!isAuthTokenEmptyError(responseDTO)) {
+				responseDTO = setErrorResponse(new ResponseDTO(),
+						RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			}
+			LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					"Public Key Sync Failure");
+		}
+		return responseDTO;
+	}
+
 	@SuppressWarnings("unchecked")
 	private ResponseDTO insertPublickey(String triggerPoint) throws RegBaseCheckedException {
 
@@ -166,10 +163,10 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 						.get(RegistrationConstants.PUBLIC_KEY_REST, requestParamMap, false, triggerPoint);
 
 				if (null != publicKeyResponse && publicKeyResponse.size() > 0
-						&& null != publicKeyResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+						&& null != publicKeyResponse.get(RegistrationConstants.RESPONSE)) {
 
 					LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeyResponse
-							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+							.get(RegistrationConstants.RESPONSE);
 
 					KeyStore keyStore = new KeyStore();
 

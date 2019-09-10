@@ -520,7 +520,7 @@ public class ServiceDelegateUtil {
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
 
-			responseMap = restClientUtil.invoke(requestHTTPDTO);
+			responseMap = restClientUtil.invokeForToken(requestHTTPDTO);
 
 			boolean isResponseValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_HEADERS);
 			if (isResponseValid) {
@@ -550,15 +550,23 @@ public class ServiceDelegateUtil {
 			}
 			
 			String cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);
-			if (cookie == null
-					|| cookie.trim().isEmpty()) {
-				throw new RegBaseCheckedException(
-						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
-						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorMessage());
+			if (cookieEmpty(cookie)) {
+				
+				cookie = (responseHeader.get(RegistrationConstants.AUTH_AUTHORIZATION) != null  
+						&& !responseHeader.get(RegistrationConstants.AUTH_AUTHORIZATION).isEmpty())
+						? responseHeader.get(RegistrationConstants.AUTH_AUTHORIZATION).get(0) : null;
+				
+				if (cookieEmpty(cookie)) {
+					throw new RegBaseCheckedException(
+							RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
+							RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorMessage());
+				} else {
+					cookie = RegistrationConstants.AUTH_AUTHORIZATION + "=" + cookie;
+				}
 			}
 
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-			authTokenDTO.setCookie(responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0));
+			authTokenDTO.setCookie(cookie);
 			authTokenDTO.setLoginMode(loginMode.getCode());
 
 			if (haveToSaveAuthToken) {
@@ -591,6 +599,11 @@ public class ServiceDelegateUtil {
 		}
 	}
 
+	private boolean cookieEmpty(String cookie) {
+		return cookie == null
+				|| cookie.trim().isEmpty();
+	}
+
 	private String getEnvironmentProperty(String serviceName, String serviceComponent) {
 		return environment.getProperty(serviceName.concat(RegistrationConstants.DOT).concat(serviceComponent));
 	}
@@ -605,7 +618,7 @@ public class ServiceDelegateUtil {
 			if (cookie != null) {
 				Map<String, Object> responseMap = null;
 
-				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
+				responseMap = restClientUtil.invokeForToken(buildRequestHTTPDTO(cookie, urlPath, HttpMethod.POST));
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
 				if (isTokenValid) {
@@ -649,7 +662,7 @@ public class ServiceDelegateUtil {
 			if (cookie != null) {
 				Map<String, Object> responseMap = null;
 
-				responseMap = restClientUtil.invoke(buildRequestHTTPDTO(cookie, invalidateUrlPath, HttpMethod.POST));
+				responseMap = restClientUtil.invokeForToken(buildRequestHTTPDTO(cookie, invalidateUrlPath, HttpMethod.POST));
 
 				if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
 					LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,

@@ -295,6 +295,7 @@ public class BaseController {
 	 */
 	protected void generateAlert(String title, String context) {
 		try {
+			closeAlreadyExistedAlert();
 			alertStage = new Stage();
 			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
 			Scene scene = new Scene(authRoot);
@@ -330,8 +331,14 @@ public class BaseController {
 				&& !context.contains(RegistrationConstants.SUCCESS.toUpperCase())
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
+			if (SessionContext.isSessionContextAvailable()) {
+				SessionContext.map().put("alertStage", alertStage);
+			}
 			alertController.generateAlertResponse(title, context);
 		} else {
+			if (SessionContext.isSessionContextAvailable()) {
+				SessionContext.map().put("alertStage", alertStage);
+			}
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
 		}
@@ -1189,6 +1196,9 @@ public class BaseController {
 		alert.initStyle(StageStyle.UNDECORATED);
 		alert.initModality(Modality.WINDOW_MODAL);
 		alert.initOwner(fXComponents.getStage());
+		if(SessionContext.isSessionContextAvailable()) {
+		SessionContext.map().put("alert", alert);
+		}
 		return alert;
 	}
 
@@ -1361,6 +1371,12 @@ public class BaseController {
 						.addListener((observable, oldValue, newValue) -> header.setReordering(false));
 			});
 		}
+	}
+	
+	public void closeAlreadyExistedAlert() {
+		Stage alertStageFromSession = (Stage)SessionContext.map().get("alertStage");
+		if(alertStageFromSession != null) alertStageFromSession.close();
+		
 	}
 
 }

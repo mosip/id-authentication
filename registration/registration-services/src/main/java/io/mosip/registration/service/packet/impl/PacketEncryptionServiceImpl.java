@@ -114,7 +114,7 @@ public class PacketEncryptionServiceImpl extends BaseService implements PacketEn
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet size validated successfully");
 
 			// Generate Zip File Name with absolute path
-			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
+			String filePath = storageService.storeToDisk(rid, encryptedPacket);
 
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Encrypted Packet saved successfully");
 
@@ -140,7 +140,7 @@ public class PacketEncryptionServiceImpl extends BaseService implements PacketEn
 					APPLICATION_ID, "Sync audit logs updated");
 			
 			auditFactory.audit(AuditEvent.PACKET_ENCRYPTED, Components.PACKET_ENCRYPTOR,
-					registrationDTO.getRegistrationId(), AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+					rid, AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet encryption had been ended");

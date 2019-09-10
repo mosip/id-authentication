@@ -280,7 +280,6 @@ public class IdRepoManager {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
-			
 			if (responseBody.isPresent()) {
 				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
 				if (idrepoMap.containsKey(ERRORS)) {
