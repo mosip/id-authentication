@@ -74,6 +74,7 @@ public class AppConfig {
 	public static Logger getLogger(Class<?> className) {
 		return Logfactory.getDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
 	}
+	
 
 	@Bean
 	public RestTemplate getRestTemplate() {
