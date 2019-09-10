@@ -216,7 +216,7 @@ public class NotificationService {
 			isSuccess = true;
 		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id", "In notification service of sendNotification " + ex.getMessage());
+			log.error("sessionId", "idType", "id", "In notification service of sendNotification  " + ex.getMessage());
 			new NotificationExceptionCatcher().handle(ex, response);
 		} finally {
 			response.setResponsetime(serviceUtil.getCurrentResponseTime());
