@@ -213,6 +213,37 @@ public class CryptomanagerUtils {
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
 
+	// to be removed 
+	/**
+	 * Calls Key-Manager-Service to decrypt symmetric key
+	 * 
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} instance
+	 * @return Decrypted {@link SecretKey} from Key Manager Service
+	 */
+	public SecretKey getDecryptedAuthSymmetricKey(CryptomanagerRequestDto cryptomanagerRequestDto) {
+		RequestWrapper<KeymanagerSymmetricKeyRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId(cryptomanagerRequestID);
+		requestWrapper.setVersion(cryptomanagerRequestVersion);
+		KeymanagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto = new KeymanagerSymmetricKeyRequestDto();
+		dataMapper.map(cryptomanagerRequestDto, keyManagerSymmetricKeyRequestDto,
+				new KeymanagerSymmetricKeyConverter());
+		requestWrapper.setRequest(keyManagerSymmetricKeyRequestDto);
+		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
+		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		ResponseEntity<String> response = null;
+		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
+				requestWrapper, keyManagerRequestHeaders);
+		try {
+			response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST, keyManagerRequestEntity,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+          authExceptionHandler(ex,KEYMANAGER);
+		}
+		throwExceptionIfExist(response);
+		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = getResponse(response, KeymanagerSymmetricKeyResponseDto.class);
+		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
+		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
+	}
 	
 
 	
