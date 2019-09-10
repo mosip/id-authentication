@@ -151,6 +151,9 @@ public class CryptoCore
 
 	@Override
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
+		if(iv == null) {
+			symmetricEncrypt(key, data, aad);
+		}
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
 		CryptoUtils.verifyData(data);
 		try {
@@ -202,6 +205,9 @@ public class CryptoCore
 
 	@Override
 	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
+		if(iv == null) {
+			symmetricDecrypt(key, data, aad);
+		}
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
 		CryptoUtils.verifyData(data);
 		try {
