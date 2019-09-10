@@ -114,6 +114,11 @@ public class CryptomanagerUtils {
 	private String decryptSymmetricKeyUrl;
 
 	/**
+	 * Keymanager URL to Decrypt Symmetric key
+	 */
+	@Value("${mosip.kernel.keymanager-service-auth-decrypt-url}")
+	private String decryptAuthSymmetricKeyUrl;
+	/**
 	 * Key Splitter
 	 */
 	@Value("${mosip.kernel.data-key-splitter}")
@@ -234,7 +239,7 @@ public class CryptomanagerUtils {
 		HttpEntity<RequestWrapper<KeymanagerSymmetricKeyRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
 				requestWrapper, keyManagerRequestHeaders);
 		try {
-			response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST, keyManagerRequestEntity,
+			response = restTemplate.exchange(decryptAuthSymmetricKeyUrl, HttpMethod.POST, keyManagerRequestEntity,
 					String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
           authExceptionHandler(ex,KEYMANAGER);
