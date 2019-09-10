@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerAuthRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 
@@ -39,5 +40,12 @@ public interface CryptomanagerService {
 	 * @return decrypted data
 	 */
 	public CryptomanagerResponseDto decrypt(@Valid CryptomanagerRequestDto cryptoRequestDto);
+
+	// to be removed after Crypto Core merge with main branch
+	/** Decrypt auth data requested with metadata
+	 * @param request
+	 * @return
+	 */
+	public CryptomanagerResponseDto authDecrypt(CryptomanagerAuthRequestDto request);
 
 }

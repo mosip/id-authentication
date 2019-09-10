@@ -6,6 +6,7 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -34,6 +35,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
@@ -41,6 +43,7 @@ import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
@@ -97,25 +100,31 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * Keystore instance to handles and store cryptographic keys.
 	 */
 	@Autowired
-	KeyStore keyStore;
+	private KeyStore keyStore;
 
 	/**
 	 * KeyGenerator instance to generate asymmetric key pairs
 	 */
 	@Autowired
-	KeyGenerator keyGenerator;
+	private KeyGenerator keyGenerator;
 
 	/**
 	 * Decryptor instance to decrypt data
 	 */
 	@Autowired
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	/**
 	 * {@link Encryptor} instance to encrypt data
 	 */
 	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	
+	/**
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
+	 */
+	@Autowired
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> cryptoCore;
 
 	/**
 	 * {@link KeyAliasRepository} instance
@@ -737,6 +746,20 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				CryptoUtil.encodeBase64(
 						certificateResponse.getCertificateEntry().getChain()[0].getPublicKey().getEncoded()),
 				certificateResponse.getIssuedAt(), certificateResponse.getExpiryAt());
+	}
+
+	// To be merged with decryptSymmetric key
+	@Override
+	public SymmetricKeyResponseDto decryptAuthSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
+		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.SYMMETRICKEYREQUEST,
+				symmetricKeyRequestDto.toString(), KeymanagerConstant.DECRYPTKEY);
+		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
+		PrivateKey privateKey = getPrivateKeyFromRequestData(symmetricKeyRequestDto.getApplicationId(),
+				symmetricKeyRequestDto.getReferenceId(), symmetricKeyRequestDto.getTimeStamp());
+		byte[] decryptedSymmetricKey = cryptoCore.asymmetricDecrypt(privateKey,
+				CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
+		keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
+		return keyResponseDto;
 	}
 
 }
