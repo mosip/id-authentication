@@ -81,30 +81,7 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 					.findByUserIdAndRegCenterId(userId, regCenterId);
 			if (registrationCenterUser != null) {
 
-				List<String> zoneIds;
-				// get user zone and child zones list
-				List<Zone> userZones = zoneUtils.getUserZones();
-				zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-
-				List<String> zoneUsers;
-				// get given user id zone
-				List<ZoneUser> zoneUserList = zoneUserRepository.findByIdAndLangCode(userId, primaryLanguage);
-				zoneUsers = zoneUserList.parallelStream().map(ZoneUser::getZoneCode).collect(Collectors.toList());
-
-				// check the given user zones will come under access user zone
-				if (!(zoneIds.containsAll(zoneUsers))) {
-					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorCode(),
-							RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorMessage());
-				}
-
-				// get given registration center zone id
-				RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterId,
-						primaryLanguage);
-				// check the given registration center zones will come under user zone
-				if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
-					throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorCode(),
-							RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorMessage());
-				}
+				validateRegistrationCenterUserIdZones(userId, regCenterId);
 
 				// todo
 
@@ -161,6 +138,38 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 		return responseDto;
 	}
 
+	private void validateRegistrationCenterUserIdZones(String userId, String regCenterId) {
+		List<String> zoneIds;
+		// get user zone and child zones list
+		List<Zone> userZones = zoneUtils.getUserZones();
+		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+		List<String> zoneUsers;
+		// get given user id zone
+		List<ZoneUser> zoneUserList = zoneUserRepository.findByIdAndLangCode(userId, primaryLanguage);
+		zoneUsers = zoneUserList.parallelStream().map(ZoneUser::getZoneCode).collect(Collectors.toList());
+
+		// check the given user zones will come under access user zone
+		if (!(zoneIds.containsAll(zoneUsers))) {
+			throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorMessage());
+		}
+
+		// get given registration center zone id
+		RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterId,
+				primaryLanguage);
+		if(regCenterZone == null) {
+			// check the registration center is De-commissioned 
+			throw new RequestException(RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE.getErrorMessage());	
+		}
+		else if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
+			// check the given registration center zones will come under user zone
+			throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorCode(),
+					RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorMessage());
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -172,7 +181,9 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 	public UserAndRegCenterMappingResponseDto mapUserRegCenter(String userId, String regCenterId) {
 		UserAndRegCenterMappingResponseDto responseDto = new UserAndRegCenterMappingResponseDto();
 		try {
-			// todo validation-4
+			// todo validation-2
+			
+			validateRegistrationCenterUserIdZones(userId, regCenterId);
 
 			// find given User id and registration center are in DB or not
 			RegistrationCenterUser registrationCenterUser = registrationCenterUserRepository
@@ -211,7 +222,7 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 					registrationCenterUserHistory.setUpdatedDateTime(updRegistrationCenterUser.getUpdatedDateTime());
 					registrationCenterUserHistoryRepository.create(registrationCenterUserHistory);
 
-					// set success response
+					//------set success response------
 					responseDto.setStatus(MasterDataConstant.MAPPED_SUCCESSFULLY);
 					responseDto.setMessage(
 							String.format(MasterDataConstant.USER_AND_REGISTRATION_CENTER_MAPPING_SUCCESS_MESSAGE,
