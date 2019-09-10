@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
@@ -69,6 +70,9 @@ public class MosipBridgeFactory extends MosipVerticleAPIManager {
 	public void start() throws Exception {
 		String camelRoutesFileName;
 		JndiRegistry registry=null;
+		CompletableFuture<MosipEventBus> eventBus = CompletableFuture.completedFuture(mosipEventBus);
+		CompletableFuture<Void> future = CompletableFuture.allOf(eventBus);
+		future.join();
 		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), null,null));
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 		    String[] beanNames=applicationContext.getBeanDefinitionNames();
