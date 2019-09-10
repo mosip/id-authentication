@@ -92,4 +92,20 @@ public class CryptomanagerController {
 		response.setResponse(cryptomanagerService.authDecrypt(cryptomanagerAuthRequestDto.getRequest()));
 		return response;
 	}
+	
+	/**
+	 * Controller for Decrypt the data
+	 * 
+	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
+	 * @return {@link CryptomanagerResponseDto} decrypted Data
+	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
+	@ResponseFilter
+	@PostMapping(value = "/auth/encrypt", produces = "application/json")
+	public ResponseWrapper<CryptomanagerResponseDto> authEncrypt(
+			@ApiParam("AAD(Advance Authentication Data), Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerAuthRequestDto> cryptomanagerAuthRequestDto) {
+		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.authEncrypt(cryptomanagerAuthRequestDto.getRequest()));
+		return response;
+	}
 }
