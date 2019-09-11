@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -115,7 +114,7 @@ public class LocationSearchFilterIntegrationTest {
 		locations.add(location);
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
-		when(locationRepository.findLocationByHierarchyName(Mockito.anyString(), Mockito.anyString(),
+		when(locationRepository.findLocationByHierarchyLevel(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(location);
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -137,7 +136,7 @@ public class LocationSearchFilterIntegrationTest {
 		searchDto.setFilters(Arrays.asList(filter));
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
-		when(locationRepository.findLocationByHierarchyNameContains(Mockito.anyString(), Mockito.anyString(),
+		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -159,7 +158,7 @@ public class LocationSearchFilterIntegrationTest {
 		searchDto.setFilters(Arrays.asList(filter));
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
-		when(locationRepository.findLocationByHierarchyNameContains(Mockito.anyString(), Mockito.anyString(),
+		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -181,7 +180,7 @@ public class LocationSearchFilterIntegrationTest {
 		searchDto.setFilters(Arrays.asList(filter));
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
-		when(locationRepository.findLocationByHierarchyNameContains(Mockito.anyString(), Mockito.anyString(),
+		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(Arrays.asList(location));
 		MvcResult response = mockMvc
 				.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))

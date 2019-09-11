@@ -161,6 +161,7 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private DeviceUtils deviceUtil;
+	
 
 	private List<Zone> zones;
 	private ZoneUser zoneUser;
@@ -211,6 +212,8 @@ public class MasterdataSearchIntegrationTest {
 
 	private DocumentType documentType;
 	private List<DocumentType> documentTypes;
+	private List<Machine> machines;
+	private List<Device> devices;
 	private RegistrationCenterType registrationCenterType;
 	private List<RegistrationCenterType> registrationCenterTypes;
 
@@ -391,6 +394,16 @@ public class MasterdataSearchIntegrationTest {
 		holidaySearchDto.setSort(Arrays.asList());
 		holidaySearchDto.setPagination(pagination);
 		docCatTypeRequestDto.setRequest(holidaySearchDto);
+		
+		machines=new ArrayList<>();
+		Machine machine=new Machine();
+		machine.setId("10001");
+		machine.setZoneCode("CST");
+		machine.setMachineSpecId("1001");
+		machine.setMapStatus("assigned");
+		machine.setLangCode("eng");
+		machines.add(machine);
+				
 
 		when(filterTypeValidator.validate(Mockito.eq(LocationExtnDto.class), Mockito.anyList())).thenReturn(true);
 		when(filterTypeValidator.validate(Mockito.eq(RegistrationCenterTypeExtnDto.class), Mockito.anyList()))
@@ -699,7 +712,7 @@ public class MasterdataSearchIntegrationTest {
 		machine.setId("1001");
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
 		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMappedMachineId()).thenReturn(machineIdList);
+		when(machineRepository.findMappedMachineId(Mockito.anyString())).thenReturn(machineIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -741,7 +754,7 @@ public class MasterdataSearchIntegrationTest {
 		machine.setId("1001");
 		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
-		when(machineRepository.findNotMappedMachineId()).thenReturn(machineIdList);
+		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(machineIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -826,7 +839,7 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
+	
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchMachineByMachineTypeNameWithCorrespondingSpecificationIdNotFoundExceptionTest() throws Exception {
@@ -837,16 +850,111 @@ public class MasterdataSearchIntegrationTest {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
+		Object[] object= {"1001"};
+		List<Object[]> machineSpec= new ArrayList<>();
+		machineSpec.add(object);
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
-		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList());
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
-				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
-				Mockito.any())).thenReturn(pageContentSpecificationData);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(machineSpec);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+		.thenReturn(new PageImpl<>(machines,  PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchMapStatusAndDeviceTypeName() throws Exception {
+		machineSearchFilter.setColumnName("machineTypeName");
+		machineSearchFilter.setValue("Desktop");
+		SearchFilter searchFilter= new SearchFilter();
+		searchFilter.setColumnName("mapStatus");
+		searchFilter.setValue("unAssigned");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter,searchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		MachineType type = new MachineType();
+		type.setCode("machineCode");
+		Object[] object= {"1001"};
+		List<Object[]> machineSpec= new ArrayList<>();
+		machineSpec.add(object);
+		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001","10002"));
+		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(machineSpec);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+		.thenReturn(new PageImpl<>(machines,  PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.nativeMachineQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.anyBoolean())).thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void zoneNullTest() throws Exception {
+		machineSearchFilter.setColumnName("machineTypeName");
+		machineSearchFilter.setValue("Desktop");
+		SearchFilter searchFilter= new SearchFilter();
+		searchFilter.setColumnName("mapStatus");
+		searchFilter.setValue("unAssigned");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter,searchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		MachineType type = new MachineType();
+		type.setCode("machineCode");
+		Object[] object= {"1001"};
+		List<Object[]> machineSpec= new ArrayList<>();
+		machineSpec.add(object);
+		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001","10002"));
+		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(machineSpec);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+		doReturn(null).when(zoneRepository).findAllNonDeleted();
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void MachineSpecExceptionTest() throws Exception {
+		machineSearchFilter.setColumnName("machineTypeName");
+		machineSearchFilter.setValue("Desktop");
+		SearchFilter searchFilter= new SearchFilter();
+		searchFilter.setColumnName("mapStatus");
+		searchFilter.setValue("unAssigne");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter,searchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		MachineType type = new MachineType();
+		type.setCode("machineCode");
+		Object[] object= {"1001"};
+		List<Object[]> machineSpec= new ArrayList<>();
+		machineSpec.add(object);
+		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(machineSpec);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchByZone() throws Exception{
+		machineSearchFilter.setColumnName("zone");
+		machineSearchFilter.setValue("CST");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Zone.class),
+				Mockito.any(), Mockito.any())).thenReturn(new PageImpl<>(zones, PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+		.thenReturn(new PageImpl<>(machines,  PageRequest.of(0, 10), 1));
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+		.andExpect(status().isOk());
+	}
+	
+	
 
 	@Test
 	@WithUserDetails("zonal-admin")
@@ -857,6 +965,75 @@ public class MasterdataSearchIntegrationTest {
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchDeviceTestMapStatusException() throws Exception {
+		SearchFilter search=new SearchFilter();
+		search.setColumnName("mapStatus");
+		search.setValue("unAssi");
+		search.setType("equals");
+		deviceRequestDto.getRequest().setFilters(Arrays.asList(search));
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void ZoneDeviceNullTest() throws Exception {
+		
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+		doReturn(null).when(zoneRepository).findAllNonDeleted();
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void UnAssignedAndDeviceTypeNameCheck() throws Exception {
+		
+		SearchFilter deviceSearchFilter= new SearchFilter();
+		deviceSearchFilter.setColumnName("deviceTypeName");
+		deviceSearchFilter.setValue("Printer");
+		deviceSearchFilter.setType("equals");
+		SearchFilter deviceSearchFilter2= new SearchFilter();
+		deviceSearchFilter2.setColumnName("mapStatus");
+		deviceSearchFilter2.setValue("UnAssigned");
+		deviceSearchFilter2.setType("equals");
+		deviceRequestDto.getRequest().setFilters(Arrays.asList(deviceSearchFilter,deviceSearchFilter2));
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		Device device = new Device();
+		device.setId("1001");
+		device.setDeviceSpecId("10002");
+		device.setMacAddress("12:r1:6t:as:7u");
+		device.setLangCode("eng");
+		device.setSerialNum("sdsddsfsf");
+		Object[] object= {"10002"};
+		List<Object[]> devspecs=new ArrayList<>();
+		devspecs.add(object);
+		List<Device> devices= Arrays.asList(device);
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(deviceRepository.findNotMappedDeviceId(Mockito.anyString())).thenReturn(Arrays.asList("1001"));
+		when(deviceRepository
+							.findDeviceSpecByDeviceTypeNameAndLangCode(Mockito.anyString(),Mockito.anyString())).thenReturn(devspecs);
+		when(masterdataSearchHelper.nativeDeviceQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.anyBoolean())).thenReturn(new PageImpl<>(devices, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
@@ -874,7 +1051,7 @@ public class MasterdataSearchIntegrationTest {
 		Device device = new Device();
 		device.setId("1001");
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
-		when(deviceRepository.findMappedDeviceId()).thenReturn(deviceIdList);
+		when(deviceRepository.findMappedDeviceId(deviceSearchDto.getLanguageCode())).thenReturn(deviceIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -914,12 +1091,13 @@ public class MasterdataSearchIntegrationTest {
 		Device device = new Device();
 		device.setId("1001");
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
-		when(deviceRepository.findNotMappedDeviceId()).thenReturn(deviceIdList);
+		when(deviceRepository.findNotMappedDeviceId(deviceSearchDto.getLanguageCode())).thenReturn(deviceIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
+	
 
 	@Test
 	@WithUserDetails("zonal-admin")
