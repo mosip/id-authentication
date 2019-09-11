@@ -43,6 +43,7 @@ import io.mosip.kernel.masterdata.utils.ZoneUtils;
  * 
  * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
+ * @author Megha Tanga
  * @since 1.0.0
  */
 @Service
@@ -162,6 +163,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			// find given Device id and registration center are in DB or not
 			RegistrationCenterDevice registrationCenterDevice = registrationCenterDeviceRepository
 					.findByDeviceIdAndRegCenterId(deviceId, regCenterId);
+
 			if (registrationCenterDevice != null) {
 
 				List<String> zoneIds;
@@ -171,17 +173,18 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 				// get given device id zone
 				Device deviceZone = deviceRepository.findByIdAndLangCode(deviceId, primaryLang);
+
 				// get given registration center zone id
 				RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterId,
 						primaryLang);
+
 				// check the given device and registration center zones are come under user zone
 				if (!(zoneIds.contains(deviceZone.getZoneCode()) && zoneIds.contains(regCenterZone.getZoneCode()))) {
 					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorMessage());
 				}
 
-				// todo
-
+				// isActive is false, already un-mapped
 				if (!registrationCenterDevice.getIsActive()) {
 					throw new RequestException(
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
@@ -189,6 +192,8 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
 									.getErrorMessage());
 				}
+
+				// isActive is true
 				if (registrationCenterDevice.getIsActive()) {
 					RegistrationCenterDevice updRegistrationCenterDevice;
 
@@ -199,7 +204,6 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					updRegistrationCenterDevice = registrationCenterDeviceRepository.update(registrationCenterDevice);
 
 					// ----------------update history-------------------------------
-
 					RegistrationCenterDeviceHistory registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
 					MapperUtils.map(updRegistrationCenterDevice, registrationCenterDeviceHistory);
 					MapperUtils.setBaseFieldValue(updRegistrationCenterDevice, registrationCenterDeviceHistory);
@@ -211,13 +215,12 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					registrationCenterDeviceHistory
 							.setUpdatedDateTime(updRegistrationCenterDevice.getUpdatedDateTime());
 					registrationCenterDeviceHistoryRepository.create(registrationCenterDeviceHistory);
-                    
+
 					// set success response
 					responseDto.setStatus(MasterDataConstant.UNMAPPED_SUCCESSFULLY);
 					responseDto.setMessage(
 							String.format(MasterDataConstant.DEVICE_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE,
 									deviceId, regCenterId));
-
 				}
 
 			} else {
