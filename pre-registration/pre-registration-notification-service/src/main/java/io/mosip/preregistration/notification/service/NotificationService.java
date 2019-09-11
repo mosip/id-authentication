@@ -287,7 +287,7 @@ public class NotificationService {
 					"In notification service of sendNotification failed to send Email and sms request ");
 		}
 		return RequestCodes.MESSAGE.getCode();
-		}catch (Exception ex) {
+		}catch (RestClientException ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getDemographicDetailsWithPreId method of notification service - " + ex.getMessage());
@@ -395,7 +395,7 @@ public class NotificationService {
 				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_008.getCode(),
 						ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getMessage(), response);
 			}
-		} catch (Exception ex) {
+		} catch (RestClientException ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getDemographicDetails method of notification service - " + ex.getMessage());
@@ -433,7 +433,7 @@ public class NotificationService {
 				throw new BookingDetailsNotFoundException(respEntity.getBody().getErrors(), response);
 			}
 			bookingRegistrationDTO = respEntity.getBody().getResponse();
-		} catch (Exception ex) {
+		} catch (RestClientException ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAppointmentDetailsRestService method of notification service - " + ex.getMessage());
