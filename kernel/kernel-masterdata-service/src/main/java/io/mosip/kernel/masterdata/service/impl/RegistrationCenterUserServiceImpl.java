@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
+import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterUserService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -60,6 +61,9 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 	@Autowired
 	ZoneUtils zoneUtils;
 
+	@Autowired
+	ZoneRepository zoneRepository;
+
 	@Value("${mosip.primary-language}")
 	private String primaryLanguage;
 
@@ -81,10 +85,8 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 					.findByUserIdAndRegCenterId(userId, regCenterId);
 			if (registrationCenterUser != null) {
 
-				//call amethod to validate the zones
+				// call a method to validate the zones
 				validateRegistrationCenterUserIdZones(userId, regCenterId);
-
-				// todo
 
 				if (!registrationCenterUser.getIsActive()) {
 					throw new RequestException(
@@ -103,7 +105,6 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 					updRegistrationCenterUser = registrationCenterUserRepository.update(registrationCenterUser);
 
 					// ----------------update history-------------------------------
-
 					RegistrationCenterUserHistory registrationCenterUserHistory = new RegistrationCenterUserHistory();
 					MapperUtils.map(updRegistrationCenterUser, registrationCenterUserHistory);
 					MapperUtils.setBaseFieldValue(updRegistrationCenterUser, registrationCenterUserHistory);
@@ -150,9 +151,8 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 	public UserAndRegCenterMappingResponseDto mapUserRegCenter(String userId, String regCenterId) {
 		UserAndRegCenterMappingResponseDto responseDto = new UserAndRegCenterMappingResponseDto();
 		try {
-			// todo validation-2
-            
-			//call amethod to validate the zones
+
+			// call a method to validate the zones
 			validateRegistrationCenterUserIdZones(userId, regCenterId);
 
 			// find given User id and registration center are in DB or not
@@ -267,20 +267,25 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 
 	// method to validate the zone
 	private void validateRegistrationCenterUserIdZones(String userId, String regCenterId) {
+
 		List<String> zoneIds;
 		// get user zone and child zones list
 		List<Zone> userZones = zoneUtils.getUserZones();
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
-		List<String> zoneUsers;
 		// get given user id zone
-		List<ZoneUser> zoneUserList = zoneUserRepository.findByIdAndLangCode(userId, primaryLanguage);
-		zoneUsers = zoneUserList.parallelStream().map(ZoneUser::getZoneCode).collect(Collectors.toList());
+		ZoneUser zoneUser = zoneUserRepository.findByIdAndLangCode(userId);
+
+		if (zoneUser == null) {
+			// check the user is De-commissioned
+			throw new RequestException(RegistrationCenterUserErrorCode.USER_DECOMMISSIONED_STATE.getErrorCode(),
+					RegistrationCenterUserErrorCode.USER_DECOMMISSIONED_STATE.getErrorMessage());
+		}
 
 		// check the given user zones will come under access user zone
-		if (!(zoneIds.containsAll(zoneUsers))) {
-			throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorCode(),
-					RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorMessage());
+		if (!(zoneIds.contains(zoneUser.getZoneCode()))) {
+			throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_USER_ZONE.getErrorCode(),
+					RegistrationCenterUserErrorCode.INVALIDE_USER_ZONE.getErrorMessage());
 		}
 
 		// get given registration center zone id
@@ -289,13 +294,24 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 		if (regCenterZone == null) {
 			// check the registration center is De-commissioned
 			throw new RequestException(
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE.getErrorCode(),
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE.getErrorMessage());
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_DECOMMISSIONED_STATE.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_DECOMMISSIONED_STATE.getErrorMessage());
 		}
 		if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
-			// check the given registration center zones will come under user zone
-			throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorCode(),
-					RegistrationCenterUserErrorCode.INVALIDE_ZONE.getErrorMessage());
+			// check the given registration center zones will come under accessed user zones
+			throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_CENTER_ZONE.getErrorCode(),
+					RegistrationCenterUserErrorCode.INVALIDE_CENTER_ZONE.getErrorMessage());
+		}
+
+		List<String> userIdZoneCodes;
+		// list of zone and all child zones of given userId
+		List<Zone> userIdZones = zoneUtils.getUserZonesByUserId(userId);
+		userIdZoneCodes = userIdZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+		if (!(userIdZoneCodes.contains(regCenterZone.getZoneCode()))) {
+			// check the given registration center zones will come under given user zones
+			throw new RequestException(RegistrationCenterUserErrorCode.INVALIDE_CENTER_USER_ZONE.getErrorCode(),
+					RegistrationCenterUserErrorCode.INVALIDE_CENTER_USER_ZONE.getErrorMessage());
 		}
 	}
 

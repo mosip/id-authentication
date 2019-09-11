@@ -13,7 +13,11 @@ public enum RegistrationCenterUserErrorCode {
 	REGISTRATION_CENTER_USER_FETCH_EXCEPTION("KER-MSD-xxX","Error occurred while fetching Center User details"),
 	REGISTRATION_CENTER_USER_ALREADY_MAPPED_EXCEPTION("KER-MSD-yyy", "User is already mapped to the received Registration Center"),
 	REGISTRATION_CENTER_USER_INSERT_EXCEPTION("KER-MSD-UUU","Exception during inserting data into DB"),
-	REGISTRATION_CENTER_USER_DECOMMISSIONED_STATE ("KER-MSD-YYY", "Registration Center User is in Decommission state OR Not Found");
+	REGISTRATION_CENTER_DECOMMISSIONED_STATE ("KER-MSD-YYY", "Registration Center is Decommission state OR Not Found"),
+	INVALIDE_USER_ZONE("KER-MSD-xxx", "Given User Zone does not belong to accessed user"),
+	INVALIDE_CENTER_ZONE("KER-MSD-xxx", "Given Center Zone does not belong to accessed user"),
+	INVALIDE_CENTER_USER_ZONE("KER-MSD-xxx", "Given Center Zone does not belong to Geiven User Zone"),
+	USER_DECOMMISSIONED_STATE ("KER-MSD-YYY", "Given User is Decommission state OR Not Found");
 	
 	private final String errorCode;
 	private final String errorMessage;
