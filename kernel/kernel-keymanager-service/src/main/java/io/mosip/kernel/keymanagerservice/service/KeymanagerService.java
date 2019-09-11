@@ -43,4 +43,6 @@ public interface KeymanagerService {
 
 	public PublicKeyResponse<String> getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
 
+	public SymmetricKeyResponseDto decryptAuthSymmetricKey(SymmetricKeyRequestDto request);
+
 }
