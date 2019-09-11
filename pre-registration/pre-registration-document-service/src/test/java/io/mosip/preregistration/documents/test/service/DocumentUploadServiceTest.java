@@ -42,6 +42,7 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
@@ -300,20 +301,8 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = DocumentVirusScanException.class)
 	public void uploadDocumentVirusScanFailureTest1() throws Exception {
-		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(false);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenThrow(VirusScannerException.class);
 		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
-	}
-
-	@Test(expected = DocumentVirusScanException.class)
-	public void uploadDocumentVirusScanFailureTest2() throws Exception {
-		Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(false);
-		documentUploadService.uploadDocument(mockMultipartFileSizeCheck, docJson, preRegistrationId);
-	}
-
-	@Test(expected = DocumentVirusScanException.class)
-	public void uploadDocumentVirusScanFailureTest3() throws Exception {
-		Mockito.when(virusScan.scanDocument(mockMultipartFileExtnCheck.getBytes())).thenReturn(false);
-		documentUploadService.uploadDocument(mockMultipartFileExtnCheck, docJson, preRegistrationId);
 	}
 
 	@Test(expected = DocumentSizeExceedException.class)

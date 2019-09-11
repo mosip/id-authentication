@@ -159,20 +159,21 @@ public class LoginService {
 	 * @return MainResponseDTO<AuthNResponse>
 	 */
 	public MainResponseDTO<AuthNResponse> sendOTP(MainRequestDTO<OtpRequestDTO> userOtpRequest) {
-		log.info("sessionId", "idType", "id", "In callsendOtp method of login service ");
 		MainResponseDTO<AuthNResponse> response = null;
-
 		requiredRequestMap.put("id", sendOtpId);
-		response = (MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 		String userid = null;
 		boolean isSuccess = false;
+		log.info("sessionId", "idType", "id", "In callsendOtp method of login service  with request "+userOtpRequest + "and requiredRequestMap is "+requiredRequestMap);
+		
 		try {
+			response = (MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
+			log.debug("sessionId", "idType", "id", "response after loginCommonUtil"+response);
 			if (ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),
 					requiredRequestMap)/* authCommonUtil.validateRequest(userOtpRequest) */) {
 
 				OtpRequestDTO otp = userOtpRequest.getRequest();
 				userid = otp.getUserId();
-				otpChannel = loginCommonUtil.validateUserId(otp.getUserId());
+					otpChannel = loginCommonUtil.validateUserId(otp.getUserId());
 				OtpUser user = new OtpUser(otp.getUserId().toLowerCase(), otpChannel, appId, useridtype, null, context);
 				RequestWrapper<OtpUser> requestSendOtpKernel = new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
