@@ -257,6 +257,7 @@ public class DeviceController {
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Device")
 	@PutMapping("/decommission/{deviceId}")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.decommissionDevice(deviceId));
