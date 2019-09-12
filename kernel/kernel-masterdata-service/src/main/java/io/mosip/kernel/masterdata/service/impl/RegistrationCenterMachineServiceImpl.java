@@ -227,9 +227,16 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		MapperUtils.setBaseFieldValue(registrationCenterMachine, registrationCenterMachineHistory);
 		registrationCenterMachine.setUpdatedDateTime(DateUtils.getUTCCurrentDateTime());
 		registrationCenterMachine.setUpdatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+		RegistrationCenterHistory registrationCenterHistory = MapperUtils.map(registrationCenter,
+				RegistrationCenterHistory.class);
+		MetaDataUtils.setCreateMetaData(registrationCenterHistory, RegistrationCenterHistory.class);
+		registrationCenterHistory.setEffectivetimes(DateUtils.getUTCCurrentDateTime());
+		
 		try {
 			// Decrease no of kiosk
 			regRepo.update(registrationCenter);
+			
+			registrationCenterHistoryRepository.create(registrationCenterHistory);
 			// Update registration center machine with active false
 			registrationCenterMachineRepository.update(registrationCenterMachine);
 			// Audit the changes in history table
