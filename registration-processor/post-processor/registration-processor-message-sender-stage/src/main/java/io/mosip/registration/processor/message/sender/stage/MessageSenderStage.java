@@ -274,6 +274,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			description.setMessage(trimExceptionMessage.trimExceptionMessage(
 					StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + e.getMessage()));
 			description.setSubStatusCode(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getCode());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} catch (TemplateNotFoundException tnf) {
 			object.setInternalError(Boolean.TRUE);
@@ -282,6 +283,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			description.setMessage(trimExceptionMessage.trimExceptionMessage(
 					StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + tnf.getMessage()));
 			description.setSubStatusCode(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getCode());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} catch (FSAdapterException e) {
 			object.setInternalError(Boolean.TRUE);
@@ -291,6 +293,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			description.setMessage(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 			description.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} catch (Exception ex) {
 			object.setInternalError(Boolean.TRUE);
@@ -299,6 +302,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			description.setMessage(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 			description.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 		} finally {
 			registrationStatusDto.setStatusComment(description.getMessage());
 			registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
