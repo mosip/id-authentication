@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.storage.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -33,6 +34,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -207,9 +209,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-
-			demographicData.setName(JsonUtil.getJsonValues(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getName().getValue()));
+            String[] names  = regProcessorIdentityJson.getIdentity().getName().getValue().split(",");
+            List<JsonValue[]> jsonValueList = new ArrayList<>();
+            for(String name : names) {
+            	jsonValueList.add(JsonUtil.getJsonValues(demographicIdentity,name));
+            }
+			demographicData.setName(jsonValueList);
 			demographicData.setDateOfBirth((String) JsonUtil.getJSONValue(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(JsonUtil.getJsonValues(demographicIdentity,
