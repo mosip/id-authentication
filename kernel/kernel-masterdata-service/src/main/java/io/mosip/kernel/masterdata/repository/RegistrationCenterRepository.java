@@ -182,6 +182,8 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	List<RegistrationCenter> findByRegCenterIdAndIsDeletedFalseOrNull(String id);
 	
 	
+	@Query("FROM RegistrationCenter WHERE id= ?1 and lang_code=?2 ")
+	List<RegistrationCenter> findByRegIdAndLangCode(String id,String langCode);
 	
 
 	/**

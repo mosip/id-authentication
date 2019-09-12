@@ -134,5 +134,16 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	@Modifying
 	@Transactional
 	int decommissionDevice(String id);
+	
+	/**
+	 * Find by id and lang code.
+	 *
+	 * @param deviceId
+	 *            the device id
+	 * @param langCode
+	 *            the lang code
+	 * @return {@link Device}
+	 */
+	Device findByIdAndLangCode(String deviceId, String langCode);
 
 }
