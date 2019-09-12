@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 
 /**
@@ -21,6 +24,14 @@ public class IdObjectValidatorConfig {
 	@Autowired
 	private Environment env;
 
+	/**
+	 * Reference validator.
+	 *
+	 * @return the id object validator
+	 * @throws ClassNotFoundException the class not found exception
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
+	 */
 	@Bean
 	@Lazy
 	public IdObjectValidator referenceValidator()
@@ -28,7 +39,16 @@ public class IdObjectValidatorConfig {
 		if (StringUtils.isNotBlank(env.getProperty("mosip.kernel.idobjectvalidator.referenceValidator"))) {
 			return (IdObjectValidator) Class
 					.forName(env.getProperty("mosip.kernel.idobjectvalidator.referenceValidator")).newInstance();
+		} else {
+			
+			return new IdObjectValidator() {
+
+				@Override
+				public boolean validateIdObject(Object arg0, IdObjectValidatorSupportedOperations arg1)
+						throws IdObjectValidationFailedException, IdObjectIOException {
+					return true;
+				}
+			};
 		}
-		return null;
 	}
 }

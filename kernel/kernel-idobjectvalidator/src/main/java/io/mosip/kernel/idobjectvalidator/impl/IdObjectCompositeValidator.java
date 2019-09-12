@@ -1,7 +1,5 @@
 package io.mosip.kernel.idobjectvalidator.impl;
 
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
@@ -22,12 +20,15 @@ import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 @Primary
 public class IdObjectCompositeValidator implements IdObjectValidator {
 
+	/** The schema validator. */
 	@Autowired
 	private IdObjectSchemaValidator schemaValidator;
 
+	/** The pattern validator. */
 	@Autowired
 	private IdObjectPatternValidator patternValidator;
 
+	/** The reference validator. */
 	@Autowired(required = false)
 	@Qualifier("referenceValidator")
 	@Lazy
@@ -45,11 +46,8 @@ public class IdObjectCompositeValidator implements IdObjectValidator {
 			throws IdObjectValidationFailedException, IdObjectIOException {
 		schemaValidator.validateIdObject(identityObject, operation);
 		patternValidator.validateIdObject(identityObject, operation);
+		referenceValidator.validateIdObject(identityObject, operation);
 
-		if (Objects.nonNull(referenceValidator)) {
-			referenceValidator.validateIdObject(identityObject, operation);
-		}
-		
 		return true;
 	}
 
