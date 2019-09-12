@@ -43,6 +43,7 @@ import io.swagger.annotations.ApiResponses;
  * @author Megha Tanga
  * @author Ritesh Sinha
  * @author Sidhant Agarwal
+ * @author Ramadurai Pandian
  * @since 1.0.0
  *
  */
@@ -252,6 +253,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machines/filtervalues")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> machineFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -269,6 +271,7 @@ public class MachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Machine")
 	@PutMapping("/machines/decommission/{machineId}")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.decommissionMachine(machineId));
