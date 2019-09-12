@@ -31,7 +31,6 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
@@ -292,7 +291,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 
 	@Override
 	public ResponseDto mapCenterToMachineMapping(String regCenterId, String machineId) {
-		/*List<Zone> userZones = zoneUtil.getUserZones();
+		List<Zone> userZones = zoneUtil.getUserZones();
 		boolean isMachineMappedToUserZone = false;
 		boolean isRegCenterMappedToUserZone = false;
 		boolean isInSameHierarchy = false;
@@ -352,7 +351,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 								.getErrorMessage());
 			}
 			createRegMachineAndHistoryInRegistrationCenterMachine(machine, registrationCenters.get(0));
-		}*/
+		}
 
 		ResponseDto responseDto = new ResponseDto();
 		responseDto.setMessage("MachineId " + machineId + " has been mapped to registration center " + regCenterId);
