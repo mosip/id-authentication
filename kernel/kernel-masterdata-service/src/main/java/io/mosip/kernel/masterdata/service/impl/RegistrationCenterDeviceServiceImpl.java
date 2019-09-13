@@ -178,10 +178,16 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 				RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterId,
 						primaryLang);
 
-				// check the given device and registration center zones are come under user zone
-				if (!(zoneIds.contains(deviceZone.getZoneCode()) && zoneIds.contains(regCenterZone.getZoneCode()))) {
-					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorCode(),
-							RegistrationCenterDeviceErrorCode.INVALIDE_ZONE.getErrorMessage());
+				// check the given device zones are come under user zone
+				if (!(zoneIds.contains(deviceZone.getZoneCode()))) {
+					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
+							RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
+				}
+				
+				// check the given device zones are come under user zone
+				if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
+					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorCode(),
+							RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorMessage());
 				}
 
 				// isActive is false, already un-mapped
@@ -235,8 +241,8 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION.getErrorMessage());
 		}
 		return responseDto;
 	}
