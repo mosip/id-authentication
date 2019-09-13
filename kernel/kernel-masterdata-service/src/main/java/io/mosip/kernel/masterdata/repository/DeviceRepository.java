@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import javax.persistence.NamedNativeQuery;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.MachineSpecification;
 
 /**
  * Repository function to fetching device details
@@ -110,8 +115,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device id's fetched for all device those are mapped with the
 	 *         registration center from database
 	 */
-	@Query(value = "SELECT dm.id FROM master.device_master dm inner join master.reg_center_device rcd on dm.id = rcd.device_id", nativeQuery = true)
-	List<String> findMappedDeviceId();
+	@Query(value = "SELECT dm.id FROM master.device_master dm inner join master.reg_center_device rcd on dm.id = rcd.device_id and dm.lang_code=rcd.lang_code and dm.lang_code=?1", nativeQuery = true)
+	List<String> findMappedDeviceId(String langCode);
 
 	/**
 	 * This method trigger query to fetch the Device id's those are not mapped with
@@ -120,8 +125,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device id's fetched for all device those are not mapped with the
 	 *         registration center from database
 	 */
-	@Query(value = "SELECT dm.id FROM master.device_master dm left outer join master.reg_center_device rcd on dm.id = rcd.device_id where rcd.device_id is null", nativeQuery = true)
-	List<String> findNotMappedDeviceId();
+	@Query(value = "SELECT dm.id FROM master.device_master dm left outer join master.reg_center_device rcd on dm.id = rcd.device_id where rcd.device_id is null and dm.lang_code=?1", nativeQuery = true)
+	List<String> findNotMappedDeviceId(String langCode);
 
 	/**
 	 * triggers query to decommission device
@@ -134,5 +139,12 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	@Modifying
 	@Transactional
 	int decommissionDevice(String id);
+	
+	
+	@Query(value="Select * from master.device_spec ds where (ds.is_deleted is null or ds.is_deleted = false) and ds.is_active = true and ds.dtyp_code IN (select code from master.device_type dt where dt.name=?1) and ds.lang_code=?2",nativeQuery=true)
+	List<Object[]> findDeviceSpecByDeviceTypeNameAndLangCode(String typeName,String langCode);
+
+	@Query(value="select d.name from master.reg_center_device rd,master.registration_center r,master.device_master d where r.id=rd.regcntr_id and rd.device_id=d.id and d.lang_code=rd.lang_code and r.lang_code=rd.lang_code and rd.device_id in(?1) and rd.lang_code=?2",nativeQuery=true)
+	List<String> findDeviceNameByDevicesAndLangCode(List<String> devices,String langCode);
 
 }

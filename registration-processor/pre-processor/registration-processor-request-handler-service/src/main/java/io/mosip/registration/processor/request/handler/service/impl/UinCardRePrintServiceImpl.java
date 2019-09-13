@@ -21,6 +21,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -134,7 +135,7 @@ public class UinCardRePrintServiceImpl {
 				else
 					vid = uinCardRePrintRequestDto.getRequest().getId();
 
-				if (cardType.equalsIgnoreCase(VID) && vid == null) {
+				if (cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString()) && vid == null) {
 
 					VidRequestDto vidRequestDto = new VidRequestDto();
 					RequestWrapper<VidRequestDto> request = new RequestWrapper<>();

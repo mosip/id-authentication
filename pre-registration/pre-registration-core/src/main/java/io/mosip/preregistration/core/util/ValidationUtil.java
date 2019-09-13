@@ -323,8 +323,12 @@ public class ValidationUtil {
 
 	public boolean validateDocuments(String langCode, String catCode, String typeCode) {
 		getAllDocCategories(langCode);
+		log.debug("sessionId", "idType", "id","In validateDocuments method with docCatMap "+docCatMap);
+		log.debug("sessionId", "idType", "id","In validateDocuments method with langCode "+langCode+" and catCode "+catCode);
 		if (docCatMap.get(langCode).contains(catCode)) {
 			getAllDocumentTypes(langCode, catCode);
+			log.debug("sessionId", "idType", "id","In validateDocuments method with docTypeMap "+docTypeMap);
+			log.debug("sessionId", "idType", "id","In validateDocuments method with typeCode "+typeCode+" and catCode "+catCode);
 			if (docTypeMap.get(catCode).contains(typeCode)) {
 				return true;
 			} else {

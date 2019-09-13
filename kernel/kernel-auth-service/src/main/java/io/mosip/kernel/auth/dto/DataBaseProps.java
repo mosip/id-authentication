@@ -17,4 +17,5 @@ public class DataBaseProps {
 	private String password;
 	private String schemas;
 	private String driverName;
+	private String commonName;
 }

@@ -147,6 +147,23 @@ Input is list of URL of pdf files and generate Byte Array containing the resulti
 		byte[] byteArray = pdfGenerator.mergePDF(pdfFiles);
   
  ```
+ 
+ Usage 7:
+ 
+Create a Password Protected PDF.
+ 
+```
+@Autowired
+PDFGenerator pdfGenerator;
+
+StringBuilder htmlString = new StringBuilder();
+htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
+InputStream htmlStream = new ByteArrayInputStream(htmlString.toString().getBytes());
+ByteArrayOutputStream outputStream = (ByteArrayOutputStream) pdfGenerator.generate(htmlStream,"userpassword".getBytes());
+File file = new File(filename);
+FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
+  
+ ```
 
 
 

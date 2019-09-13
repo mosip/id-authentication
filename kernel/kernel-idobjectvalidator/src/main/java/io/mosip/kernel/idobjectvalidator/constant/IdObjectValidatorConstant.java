@@ -21,6 +21,7 @@ public enum IdObjectValidatorConstant {
 	DOB_FORMAT("uuuu/MM/dd"),
 	INVALID_ATTRIBUTE("Invalid attribute"),
 	ROOT_PATH("identity"),
+	IDENTITY_ARRAY_VALUE_FIELD("value"),
 	IDENTITY_REFERENCE_IDENTITY_NUMBER_PATH("identity.referenceIdentityNumber"),
 	IDENTITY_DOB_PATH("identity.dateOfBirth"),
 	IDENTITY_LANGUAGE_PATH("identity.*.*.language"),

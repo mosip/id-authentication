@@ -806,6 +806,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_CODE_PROCESSED = "PROCESSED";
 	public static final String PACKET_STATUS_CODE_PROCESSING = "PROCESSING";
 	public static final String PACKET_STATUS_CODE_REREGISTER = "REREGISTER";
+	public static final String RE_REGISTER_STATUS_COMEMNTS = "Re-Register";
 	public static final String PACKET_STATUS_CODE_REJECTED = "REJECTED";
 	public static final List<String> PACKET_STATUS_CODES_FOR_REMAPDELETE = Arrays.asList(PACKET_STATUS_CODE_REREGISTER,
 			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED,PACKET_STATUS_CODE_REJECTED);
@@ -951,6 +952,7 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "POB";
 	public static final String SERVER_STATUS_RESEND = "RESEND";
 	public static final String CLIENT_STATUS_APPROVED = "APPROVED";
+	public static final String SYNCED_STATUS = "SYNCED";
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "SYNCED", "EXPORTED");

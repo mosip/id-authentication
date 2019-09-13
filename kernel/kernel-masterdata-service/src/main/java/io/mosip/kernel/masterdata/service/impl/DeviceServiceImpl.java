@@ -360,14 +360,17 @@ public class DeviceServiceImpl implements DeviceService {
 		PageResponseDto<DeviceSearchDto> pageDto = new PageResponseDto<>();
 		List<DeviceSearchDto> devices = null;
 		List<SearchFilter> addList = new ArrayList<>();
+		List<SearchFilter> mapStatusList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<String> mappedDeviceIdList = null;
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<Zone> zones = null;
 		boolean flag = true;
+		boolean isAssigned = true;
+		String typeName = null;
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
+			/*if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
 				Zone zone = getZone(filter);
 				if (zone != null) {
 					zones = zoneUtils.getZones(zone);
@@ -375,23 +378,24 @@ public class DeviceServiceImpl implements DeviceService {
 				}
 				removeList.add(filter);
 				flag = false;
-			}
+			}*/
 
 			if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
-					mappedDeviceIdList = deviceRepository.findMappedDeviceId();
-					addList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
-					if(dto.getFilters().size()>0 && mappedDeviceIdList.isEmpty()) {
+					mappedDeviceIdList = deviceRepository.findMappedDeviceId(dto.getLanguageCode());
+					mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
+					if ( mappedDeviceIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
 						return pageDto;
 					}
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
-						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId();
-						addList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
-						if(dto.getFilters().size()>0 && mappedDeviceIdList.isEmpty()) {
+						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId(dto.getLanguageCode());
+						mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
+						isAssigned=false;
+						if (mappedDeviceIdList.isEmpty()) {
 							pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
 							return pageDto;
 						}
@@ -406,40 +410,28 @@ public class DeviceServiceImpl implements DeviceService {
 
 			if (column.equalsIgnoreCase("deviceTypeName")) {
 				filter.setColumnName(MasterDataConstant.NAME);
+				typeName = filter.getValue();
 				if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
-					Page<DeviceType> deviceTypes = masterdataSearchHelper.searchMasterdata(DeviceType.class,
-							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
-							null);
-					List<SearchFilter> deviceCodeFilter = buildDeviceTypeSearchFilter(deviceTypes.getContent());
-					if (deviceCodeFilter.isEmpty()) {
-						throw new DataNotFoundException(
-								DeviceErrorCode.DEVICE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-								String.format(DeviceErrorCode.DEVICE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
-										filter.getValue()));
-					}
-					Page<DeviceSpecification> devspecs = masterdataSearchHelper.searchMasterdata(
-							DeviceSpecification.class,
-							new SearchDto(deviceCodeFilter, Collections.emptyList(), new Pagination(), null), null);
+
+					List<Object[]> dSpecs = deviceRepository
+							.findDeviceSpecByDeviceTypeNameAndLangCode(filter.getValue(), dto.getLanguageCode());
+
 					removeList.add(filter);
-					addList.addAll(buildDeviceSpecificationSearchFilter(devspecs.getContent()));
+					addList.addAll(buildDeviceSpecificationSearchFilter(dSpecs));
 				}
 
 			}
 		}
 		if (flag) {
-			if (dto.getFilters().stream().anyMatch(filter -> (filter.getColumnName().equals("deviceTypeName")
-					|| filter.getColumnName().equals("mapStatus"))) && addList.isEmpty()) {
-				zones = new ArrayList<>();
-				zoneFilter.addAll(Collections.emptyList());
-			} else {
+			
 				zones = zoneUtils.getUserZones();
 				if (zones != null && !zones.isEmpty())
 					zoneFilter.addAll(buildZoneFilter(zones));
 				else
 					throw new MasterDataServiceException(DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 							DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorMessage());
-			}
 		}
+		
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
@@ -448,19 +440,28 @@ public class DeviceServiceImpl implements DeviceService {
 		if (filterValidator.validate(DeviceSearchDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
-			Page<Device> page = masterdataSearchHelper.searchMasterdata(Device.class, dto,
-					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
+			Page<Device> page = null;
+			if (mapStatusList.isEmpty() || addList.isEmpty()) {
+				
+				page = masterdataSearchHelper.searchMasterdata(Device.class, dto,
+						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
+			} else {
+				
+				page = masterdataSearchHelper.nativeDeviceQuerySearch(dto, typeName, zones, isAssigned);
+				
+			}
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				devices = MapperUtils.mapAll(page.getContent(), DeviceSearchDto.class);
 				setDeviceMetadata(devices, zones);
 				setDeviceTypeNames(devices);
-				setMapStatus(devices);
+				setMapStatus(devices,dto.getLanguageCode());
 				devices.forEach(device -> {
 					if (device.getMapStatus() == null) {
 						device.setMapStatus("unassigned");
 					}
 				});
 				pageDto = pageUtils.sortPage(devices, sort, pagination);
+				
 			}
 
 		}
@@ -509,23 +510,19 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @param list
 	 *            the {@link DeviceSearchDto}.
 	 */
-	private void setMapStatus(List<DeviceSearchDto> list) {
-		List<RegistrationCenterDevice> centerDeviceList = deviceUtil.getAllDeviceCentersList();
-		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
-		list.forEach(deviceSearchDto -> {
-			centerDeviceList.forEach(centerDevice -> {
-				if (centerDevice.getDevice().getId().equals(deviceSearchDto.getId())
-						&& centerDevice.getLangCode().equals(deviceSearchDto.getLangCode())) {
-					String regId = centerDevice.getRegistrationCenter().getId();
-					registrationCenterList.forEach(registrationCenter -> {
-						if (registrationCenter.getId().equals(regId)
-								&& centerDevice.getLangCode().equals(registrationCenter.getLangCode())) {
-							deviceSearchDto.setMapStatus(registrationCenter.getName());
-						}
-					});
-				}
-			});
+	private void setMapStatus(List<DeviceSearchDto> list,String langCode) {
+		
+		List<String> deviceIds=new ArrayList<>();
+		 list.stream().forEach(device ->{
+			deviceIds.add(device.getId());
 		});
+		List<String> deviceNames=deviceRepository.findDeviceNameByDevicesAndLangCode(deviceIds, langCode);
+		 list.stream().forEach(device ->{
+				deviceNames.stream().forEach(deviceName ->{
+					String dName=deviceName;
+					device.setMapStatus(dName);
+				});
+			});
 	}
 
 	/**
@@ -617,12 +614,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 *            the list of Device Type.
 	 * @return the list of {@link SearchFilter}.
 	 */
-	private List<SearchFilter> buildDeviceTypeSearchFilter(List<DeviceType> deviceTypes) {
+	/*private List<SearchFilter> buildDeviceTypeSearchFilter(List<DeviceType> deviceTypes) {
 		if (deviceTypes != null && !deviceTypes.isEmpty())
 			return deviceTypes.stream().filter(Objects::nonNull).map(this::buildDeviceType)
 					.collect(Collectors.toList());
 		return Collections.emptyList();
-	}
+	}*/
 
 	/**
 	 * This method return Device Specification list filters.
@@ -631,11 +628,19 @@ public class DeviceServiceImpl implements DeviceService {
 	 *            the list of Device Specification.
 	 * @return the list of {@link SearchFilter}.
 	 */
-	private List<SearchFilter> buildDeviceSpecificationSearchFilter(List<DeviceSpecification> deviceSpecs) {
-		if (deviceSpecs != null && !deviceSpecs.isEmpty())
-			return deviceSpecs.stream().filter(Objects::nonNull).map(this::buildDeviceSpecification)
-					.collect(Collectors.toList());
-		return Collections.emptyList();
+	private List<SearchFilter> buildDeviceSpecificationSearchFilter(List<Object[]> deviceSpecs) {
+		SearchFilter filter = null;
+		List<SearchFilter> searchFilters = new ArrayList<>();
+		for (Object[] dSpecObj : deviceSpecs) {
+			filter = new SearchFilter();
+			filter.setColumnName("deviceSpecId");
+			filter.setType(FilterTypeEnum.EQUALS.name());
+			filter.setValue(dSpecObj[0].toString());
+			searchFilters.add(filter);
+
+		}
+
+		return searchFilters;
 	}
 
 	/**
@@ -660,13 +665,13 @@ public class DeviceServiceImpl implements DeviceService {
 	 *            the device specification.
 	 * @return the {@link SearchFilter}.
 	 */
-	private SearchFilter buildDeviceSpecification(DeviceSpecification deviceSpecification) {
+	/*private SearchFilter buildDeviceSpecification(DeviceSpecification deviceSpecification) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName("deviceSpecId");
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(deviceSpecification.getId());
 		return filter;
-	}
+	}*/
 
 	/**
 	 * This method provide search filter for provided Device Type.
@@ -675,13 +680,13 @@ public class DeviceServiceImpl implements DeviceService {
 	 *            the device type.
 	 * @return the {@link SearchFilter}.
 	 */
-	private SearchFilter buildDeviceType(DeviceType deviceType) {
+	/*private SearchFilter buildDeviceType(DeviceType deviceType) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName("deviceTypeCode");
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(deviceType.getCode());
 		return filter;
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
