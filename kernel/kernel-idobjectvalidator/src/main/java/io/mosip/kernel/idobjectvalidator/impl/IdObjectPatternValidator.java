@@ -3,15 +3,7 @@ package io.mosip.kernel.idobjectvalidator.impl;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_PARSING_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.REFERENCE_IDENTITY_NUMBER_REGEX;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.DOB_FORMAT;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_REFERENCE_IDENTITY_NUMBER_PATH;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_DOB_PATH;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +27,6 @@ import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupporte
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
-import io.mosip.kernel.core.util.DateUtils;
 import net.minidev.json.JSONArray;
 
 /**
@@ -73,8 +64,6 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 			String identityString = mapper.writeValueAsString(identityObject);
 			List<ServiceError> errorList = new ArrayList<>();
 			validateAttributes(identityString, errorList);
-			validateReferenceIdentityNumber(identityString, errorList);
-			validateDateOfBirth(identityString, errorList);
 			if (errorList.isEmpty()) {
 				return true;
 			} else {
@@ -117,64 +106,6 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 						});
 			}
 		});
-	}
-	
-	/**
-	 * Validate Reference Identity Number.
-	 *
-	 * @param identity the identity
-	 * @param errorList the error list
-	 */
-	private void validateReferenceIdentityNumber(String identity, List<ServiceError> errorList) {
-		Pattern pattern = Pattern.compile(REFERENCE_IDENTITY_NUMBER_REGEX.getValue());
-		JsonPath jsonPath = JsonPath.compile(IDENTITY_REFERENCE_IDENTITY_NUMBER_PATH.getValue());
-		JSONArray pathList = jsonPath.read(identity, 
-				Configuration.defaultConfiguration()
-				.addOptions(
-						Option.SUPPRESS_EXCEPTIONS, 
-						Option.AS_PATH_LIST));
-		CharSequence data = jsonPath.read(identity,
-				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-		if (Objects.nonNull(data) && !pattern.matcher(data).matches()) {
-			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), String
-					.format(INVALID_INPUT_PARAMETER.getMessage(), convertToPath(String.valueOf(pathList.get(0))))));
-		}
-	}
-	
-	/**
-	 * Validate date of birth.
-	 *
-	 * @param identity the identity
-	 * @param errorList the error list
-	 */
-	private void validateDateOfBirth(String identity, List<ServiceError> errorList) {
-		JsonPath jsonPath = JsonPath.compile(IDENTITY_DOB_PATH.getValue());
-		JSONArray pathList = jsonPath.read(identity, 
-				Configuration.defaultConfiguration()
-				.addOptions(
-						Option.SUPPRESS_EXCEPTIONS, 
-						Option.AS_PATH_LIST));
-		String data = jsonPath.read(identity,
-				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-		try {
-			if (Objects.nonNull(data)
-					&& LocalDate
-							.parse(data,
-									DateTimeFormatter.ofPattern(DOB_FORMAT.getValue())
-											.withResolverStyle(ResolverStyle.STRICT))
-							.isAfter(DateUtils.getUTCCurrentDateTime().toLocalDate())) {
-				String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
-						convertToPath(String.valueOf(pathList.get(0))));
-				errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
-				errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
-			}
-		} catch (DateTimeParseException e) {
-			ExceptionUtils.logRootCause(e);
-			String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
-					convertToPath(String.valueOf(pathList.get(0))));
-			errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
-			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
-		}
 	}
 	
 	/**
