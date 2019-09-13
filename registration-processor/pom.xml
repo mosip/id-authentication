@@ -245,7 +245,11 @@
 			**/registration/processor/print/service/impl/PrintPostServiceImpl.java,
 
 			**/registration/processor/message/sender/constants/*.java,
-			**/registration/processor/core/abstractverticle/BaseHealthCheckModel.java
+			**/registration/processor/core/abstractverticle/BaseHealthCheckModel.java,
+			**/registration/processor/core/**/TokenValidator.java,
+			**/registration/processor/core/abstractverticle/StageHealthCheckHandler.java,
+			**/registration/processor/core/abstractverticle/MessageDTO.java,
+			**/registration/processor/request/handler/**/*.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>
