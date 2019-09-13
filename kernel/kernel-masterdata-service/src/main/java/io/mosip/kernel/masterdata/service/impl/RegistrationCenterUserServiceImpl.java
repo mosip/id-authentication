@@ -299,8 +299,7 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 				primaryLanguage);
 		if (regCenterZone == null) {
 			// check the registration center is De-commissioned
-			throw new RequestException(
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+			throw new RequestException(RegistrationCenterUserErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {

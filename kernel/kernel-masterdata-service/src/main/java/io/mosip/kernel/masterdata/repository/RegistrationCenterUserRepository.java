@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterUserID;
  * Registration Center User Repository
  * 
  * @author Abhishek Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  */
 public interface RegistrationCenterUserRepository
@@ -29,10 +30,10 @@ public interface RegistrationCenterUserRepository
 	 */
 	@Query(value = "FROM RegistrationCenterUser ru WHERE ru.registrationCenterUserID.regCenterId =?1 and (ru.isDeleted is null or ru.isDeleted =false) and ru.isActive = true")
 	public List<RegistrationCenterUser> registrationCenterUserMappings(String regCenterID);
-	
+
 	/**
-	 * Method to find valid RegistrationCenterUser based on User Id and Registration Center Id 
-	 * Type code provided.
+	 * Method to find valid RegistrationCenterUser based on User Id and Registration
+	 * Center Id Type code provided.
 	 * 
 	 * @param userId
 	 *            the User Id.
@@ -40,9 +41,9 @@ public interface RegistrationCenterUserRepository
 	 *            the registration center Id .
 	 * @return RegistrationCenterUser
 	 */
-	@Query(value = "FROM RegistrationCenterUser rc WHERE rc.registrationCenterUserID.userId = ?1 and rc.registrationCenterUserID.regCenterId = ?2 AND (rc.isDeleted is null OR rc.isDeleted = false)" )
+	@Query(value = "FROM RegistrationCenterUser rc WHERE rc.registrationCenterUserID.userId = ?1 and rc.registrationCenterUserID.regCenterId = ?2 AND (rc.isDeleted is null OR rc.isDeleted = false)")
 	public RegistrationCenterUser findByUserIdAndRegCenterId(String userId, String regCenterId);
-	
+
 	/**
 	 * Method that returns the list of registration centers mapped to users.
 	 * 

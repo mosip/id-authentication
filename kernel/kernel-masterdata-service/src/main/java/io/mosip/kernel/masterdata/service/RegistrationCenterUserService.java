@@ -9,9 +9,9 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterUserID;
  */
 
 public interface RegistrationCenterUserService {
-	
+
 	/**
-	 * This method un-maps a User  from a Registration Center .
+	 * This method un-maps a User from a Registration Center .
 	 * 
 	 * @param userId
 	 *            the user Id.
@@ -19,10 +19,10 @@ public interface RegistrationCenterUserService {
 	 *            the registration center Id.
 	 * @return {@link UserAndRegCenterMappingResponseDto}.
 	 */
-	public UserAndRegCenterMappingResponseDto unmapUserRegCenter(String userId, String regCenterId ); 
-	
+	public UserAndRegCenterMappingResponseDto unmapUserRegCenter(String userId, String regCenterId);
+
 	/**
-	 * This method map a User  from a Registration Center .
+	 * This method map a User from a Registration Center .
 	 * 
 	 * @param userId
 	 *            the user Id.
@@ -30,10 +30,14 @@ public interface RegistrationCenterUserService {
 	 *            the registration center Id.
 	 * @return {@link UserAndRegCenterMappingResponseDto}.
 	 */
-	public UserAndRegCenterMappingResponseDto mapUserRegCenter(String userId, String regCenterId ); 
-	
+	public UserAndRegCenterMappingResponseDto mapUserRegCenter(String userId, String regCenterId);
+	/**
+	 * This method create Registration Center .
+	 * 
+	 * @param regCenterUser
+	 *            RegistrationCenterUser DTO
+	 * @return {@link RegistrationCenterUserID}.
+	 */
 	public RegistrationCenterUserID createRegistrationCenterUser(RegistrationCenterUserDto regCenterUser);
-	
-	
 
 }

@@ -25,13 +25,12 @@ import io.swagger.annotations.Api;
 @RequestMapping("/registrationcenteruser")
 @Api(value = "Operation related to mapping of registration center and users", tags = { "RegistrationCenterUser" })
 public class RegistrationCenterUserController {
-	
-	
+
 	@Autowired
 	RegistrationCenterUserService registrationCenterUserService;
-	
+
 	/**
-	 * Api to un-map User  from a Registration Center .
+	 * Api to un-map User from a Registration Center .
 	 * 
 	 * @param userId
 	 *            the user Id
@@ -43,14 +42,14 @@ public class RegistrationCenterUserController {
 	@ResponseFilter
 	@PutMapping("/unmap/{userid}/{regcenterid}")
 	public ResponseWrapper<UserAndRegCenterMappingResponseDto> unmapUserRegCenter(
-			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId, @PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
+			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
+			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
 		ResponseWrapper<UserAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterUserService.unmapUserRegCenter(userId, regCenterId));
 		return responseWrapper;
 	}
-	
-	
+
 	/**
 	 * Api to map User to a Registration Center.
 	 * 
@@ -64,12 +63,12 @@ public class RegistrationCenterUserController {
 	@ResponseFilter
 	@PutMapping("/map/{userid}/{regcenterid}")
 	public ResponseWrapper<UserAndRegCenterMappingResponseDto> mapUserRegCenter(
-			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId, @PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
+			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
+			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
 		ResponseWrapper<UserAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterUserService.mapUserRegCenter(userId, regCenterId));
 		return responseWrapper;
 	}
-	
 
 }
