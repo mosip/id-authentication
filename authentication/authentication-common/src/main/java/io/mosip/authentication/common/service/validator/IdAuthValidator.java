@@ -234,9 +234,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
-		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
-		Set<String> allowedIdTypeSet = Stream.of(allowedIdTypes.split(",")).filter(str -> !str.isEmpty())
-				.collect(Collectors.toSet());
+		Set<String> allowedIdTypeSet = getAllowedIdTypes();
 		// Checks for null IdType
 		if (StringUtils.isEmpty(idType)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
@@ -284,6 +282,39 @@ public abstract class IdAuthValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
+	}
+
+	protected Set<String> getAllowedIdTypes() {
+		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
+		return Stream.of(allowedIdTypes.split(","))
+				.map(String::trim)
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
+	}
+	
+	protected Set<String> getAllowedAuthTypes() {
+		return getAllowedAuthTypes(getAllowedAuthTypeProperty());
+	}
+	
+	/**
+	 * Extract auth info.
+	 *
+	 * @param configKey the config key
+	 * @return the sets the
+	 */
+	private Set<String> getAllowedAuthTypes(String configKey) {
+		String intAllowedAuthType = env.getProperty(configKey);
+		return Stream.of(intAllowedAuthType.split(","))
+				.map(String::trim)
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
+	}
+
+	/**
+	 * @return the allowedAuthType
+	 */
+	protected String getAllowedAuthTypeProperty() {
+		return IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
 	}
 
 	protected String getAllowedIdTypesConfigKey() {
