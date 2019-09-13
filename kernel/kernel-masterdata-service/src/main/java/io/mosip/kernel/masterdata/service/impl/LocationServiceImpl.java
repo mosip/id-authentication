@@ -735,6 +735,7 @@ public class LocationServiceImpl implements LocationService {
 		PageResponseDto<LocationSearchDto> pageDto = null;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
+		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
 		List<Node<Location>> tree = locationTree.createTree(locationList);
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
@@ -778,11 +779,13 @@ public class LocationServiceImpl implements LocationService {
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		Node<Location> root = locationTree.findRootNode(tree.get(0));
 		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
+
 		leafNodes.forEach(leafNode -> {
 			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
 
 			LocationSearchDto locationSearchDto = new LocationSearchDto();
 			leafParents.forEach(p -> {
+
 				if (p.getHierarchyLevel() == 1) {
 					locationSearchDto.setRegion(p.getName());
 				}
