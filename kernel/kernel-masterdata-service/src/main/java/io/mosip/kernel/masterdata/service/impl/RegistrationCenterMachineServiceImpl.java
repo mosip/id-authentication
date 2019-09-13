@@ -191,18 +191,29 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		String hierarchyPath = registrationCenterZone.getHierarchyPath();
 		List<String> zoneHierarchy = Arrays.asList(hierarchyPath.split("/"));
 		isInSameHierarchy = zoneHierarchy.stream().anyMatch(zone -> zone.equals(machine.getZoneCode()));
-		if (isInSameHierarchy) {
-			RegistrationCenterMachine registrationCenterMachine = registrationCenterMachineRepository
-					.findByRegIdAndMachineId(regCenterId, machineId, primaryLang);
-			if (registrationCenterMachine != null && registrationCenterMachine.getIsActive()) {
-				registrationCenterMachine.setIsActive(false);
-				updateAndCreateHistoryInRegistrationCenterMachine(registrationCenterMachine, registrationCenters);
-			} else {
-				throw new MasterDataServiceException(
-						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorCode(),
-						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorMessage());
-			}
+		if (!isInSameHierarchy) {
+			throw new MasterDataServiceException(
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY.getErrorCode(),
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
+							.getErrorMessage());
 		}
+		RegistrationCenterMachine registrationCenterMachine = registrationCenterMachineRepository
+				.findByRegIdAndMachineId(regCenterId, machineId, primaryLang);
+		if(registrationCenterMachine==null) {
+			throw new MasterDataServiceException(
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorMessage());
+
+		}
+		if (registrationCenterMachine.getIsActive()) {
+			registrationCenterMachine.setIsActive(false);
+			updateAndCreateHistoryInRegistrationCenterMachine(registrationCenterMachine, registrationCenters);
+		} else {
+			throw new MasterDataServiceException(
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorCode(),
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorMessage());
+		}
+
 		ResponseDto statusResponseDto = new ResponseDto();
 		statusResponseDto.setStatus(MasterDataConstant.SUCCESS);
 		statusResponseDto.setMessage(machineId + "is successfully unmapped to the Registration Center" + regCenterId);
@@ -218,24 +229,29 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		RegistrationCenter registrationCenter = registration.get(0);
 		int decreasedKioskTime = registrationCenter.getNumberOfKiosks() - 1;
 		registrationCenter.setNumberOfKiosks((short) decreasedKioskTime);
+		MetaDataUtils.setUpdateMetaData(new RegistrationCenterHistory(), registrationCenter, false);
+		
 		RegistrationCenterMachineHistory registrationCenterMachineHistory = MetaDataUtils
 				.setCreateMetaData(registrationCenterMachine, RegistrationCenterMachineHistory.class);
 		registrationCenterMachineHistory.setRegistrationCenterMachineHistoryPk(MapperUtils.map(
 				registrationCenterMachine.getRegistrationCenterMachinePk(), RegistrationCenterMachineHistoryID.class));
 		registrationCenterMachineHistory.getRegistrationCenterMachineHistoryPk()
 				.setEffectivetimes(DateUtils.getUTCCurrentDateTime());
+		
 		MapperUtils.setBaseFieldValue(registrationCenterMachine, registrationCenterMachineHistory);
 		registrationCenterMachine.setUpdatedDateTime(DateUtils.getUTCCurrentDateTime());
 		registrationCenterMachine.setUpdatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+		
 		RegistrationCenterHistory registrationCenterHistory = MapperUtils.map(registrationCenter,
 				RegistrationCenterHistory.class);
+		
 		MetaDataUtils.setCreateMetaData(registrationCenterHistory, RegistrationCenterHistory.class);
 		registrationCenterHistory.setEffectivetimes(DateUtils.getUTCCurrentDateTime());
-		
+
 		try {
 			// Decrease no of kiosk
 			regRepo.update(registrationCenter);
-			
+
 			registrationCenterHistoryRepository.create(registrationCenterHistory);
 			// Update registration center machine with active false
 			registrationCenterMachineRepository.update(registrationCenterMachine);
@@ -284,10 +300,10 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 			if (machine == null) {
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
-				
+
 			}
-              return machine;
-		} catch (DataAccessLayerException |DataAccessException e) {
+			return machine;
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage()

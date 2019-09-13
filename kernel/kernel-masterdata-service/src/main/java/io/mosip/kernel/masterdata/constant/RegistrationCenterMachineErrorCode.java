@@ -16,7 +16,7 @@ public enum RegistrationCenterMachineErrorCode {
 	REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION("KER-MSD-106",
 			"Error occurred while deleting a mapping of Machine and Center"),
 	REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION("KER-MSD-xx","Error occurred while fetching Center Machine details"),
-	REGISTRATION_CENTER_MACHINE_ZONE_INVALID("KER-MSD-XXX","Either registrationcenter or machine is not mapped to the user-zone"),
+	REGISTRATION_CENTER_MACHINE_ZONE_INVALID("KER-MSD-411","Admin not authorized to map/un-map this Registration Center or Machine"),
 	REGISTRATION_CENTER_MACHINE_STATUS("KER-MSD-XXX","Already is in inactive status"),
 	REGISTRATION_CENTER_MACHINE_DECOMMISIONED_STATE("KER-MSD-XXX","Registration center mapped to machine is decommisioned"),
 	REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE("KER-MSD-XXX","Registration center already mapped to machine and is active"),
