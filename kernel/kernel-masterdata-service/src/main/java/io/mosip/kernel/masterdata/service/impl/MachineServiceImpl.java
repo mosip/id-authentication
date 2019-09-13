@@ -419,7 +419,7 @@ public class MachineServiceImpl implements MachineService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId(dto.getLanguageCode());
 					mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-					if (mappedMachineIdList.isEmpty()) {
+					if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
 						return pageDto;
 					}
@@ -429,7 +429,7 @@ public class MachineServiceImpl implements MachineService {
 						mappedMachineIdList = machineRepository.findNotMappedMachineId(dto.getLanguageCode());
 						mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
 						isAssigned = false;
-						if (mappedMachineIdList.isEmpty()) {
+						if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
 							pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
 							return pageDto;
 						}
@@ -474,6 +474,7 @@ public class MachineServiceImpl implements MachineService {
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = null;
 			if (mapStatusList.isEmpty() || addList.isEmpty()) {
+				addList.addAll(mapStatusList);
 				page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
