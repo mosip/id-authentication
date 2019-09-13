@@ -42,4 +42,14 @@ public interface RegistrationCenterUserRepository
 	 */
 	@Query(value = "FROM RegistrationCenterUser rc WHERE rc.registrationCenterUserID.userId = ?1 and rc.registrationCenterUserID.regCenterId = ?2 AND (rc.isDeleted is null OR rc.isDeleted = false)" )
 	public RegistrationCenterUser findByUserIdAndRegCenterId(String userId, String regCenterId);
+	
+	/**
+	 * Method that returns the list of registration centers mapped to users.
+	 * 
+	 * @param userID
+	 *            the user ID
+	 * @return the list of registration centers mapped to users.
+	 */
+	@Query(value = "FROM RegistrationCenterUser ru WHERE ru.registrationCenterUserID.userId =?1 and (ru.isDeleted is null or ru.isDeleted =false) and ru.isActive = true")
+	public List<RegistrationCenterUser> findByUserId(String userId);
 }

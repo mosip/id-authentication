@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.masterdata.dto.UserAndRegCenterMappingResponseDto;
@@ -134,8 +133,8 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_UNMAPPING_EXCEPTION.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_UNMAPPING_EXCEPTION.getErrorMessage());
 		}
 		return responseDto;
 	}
@@ -200,6 +199,13 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 				}
 
 			} else {
+
+				if (!((registrationCenterUserRepository.findByUserId(userId)).isEmpty())) {
+					throw new MasterDataServiceException(
+							RegistrationCenterUserErrorCode.USER_MAPPED_REGISTRATION_CENTER.getErrorCode(),
+							RegistrationCenterUserErrorCode.USER_MAPPED_REGISTRATION_CENTER.getErrorMessage());
+
+				}
 				// create new Mapping for the given IDs
 				RegistrationCenterUserDto registrationCenterUserDto = new RegistrationCenterUserDto();
 				registrationCenterUserDto.setUserId(userId);
@@ -216,8 +222,8 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_MAPPING_EXCEPTION.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_MAPPING_EXCEPTION.getErrorMessage());
 		}
 		return responseDto;
 	}
@@ -278,8 +284,8 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 
 		if (zoneUser == null) {
 			// check the user is De-commissioned
-			throw new RequestException(RegistrationCenterUserErrorCode.USER_DECOMMISSIONED_STATE.getErrorCode(),
-					RegistrationCenterUserErrorCode.USER_DECOMMISSIONED_STATE.getErrorMessage());
+			throw new RequestException(RegistrationCenterUserErrorCode.USER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterUserErrorCode.USER_NOT_FOUND.getErrorMessage());
 		}
 
 		// check the given user zones will come under access user zone
@@ -294,8 +300,8 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 		if (regCenterZone == null) {
 			// check the registration center is De-commissioned
 			throw new RequestException(
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_DECOMMISSIONED_STATE.getErrorCode(),
-					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_DECOMMISSIONED_STATE.getErrorMessage());
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
 			// check the given registration center zones will come under accessed user zones
