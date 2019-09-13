@@ -291,8 +291,8 @@ public class RegistrationCenterController {
 			@RequestBody @Valid RegistarionCenterReqDto<RegCenterPutReqDto> reqRegistrationCenterDto) {
 
 		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
+		responseWrapper
+				.setResponse(registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 
@@ -348,7 +348,6 @@ public class RegistrationCenterController {
 				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
-
 
 	/**
 	 * API to decommission registration center based on ID.

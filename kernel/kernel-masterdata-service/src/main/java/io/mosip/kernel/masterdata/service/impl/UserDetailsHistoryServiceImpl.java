@@ -9,15 +9,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.UserDetailsErrorCode;
+import io.mosip.kernel.masterdata.constant.UserDetailsHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.UserDetailsDto;
-import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.UserDetailsRepository;
-import io.mosip.kernel.masterdata.service.UserDetailsService;
+import io.mosip.kernel.masterdata.repository.UserDetailsHistoryRepository;
+import io.mosip.kernel.masterdata.service.UserDetailsHistoryService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
@@ -27,10 +27,10 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
  *
  */
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsHistoryServiceImpl implements UserDetailsHistoryService {
 
 	@Autowired
-	UserDetailsRepository userDetailsRepository;
+	UserDetailsHistoryRepository userDetailsHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -40,28 +40,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
-	public UserDetailsResponseDto getByUserIdAndTimestamp(String userId, String effDTimes) {
+	public UserDetailsHistoryResponseDto getByUserIdAndTimestamp(String userId, String effDTimes) {
 		List<UserDetailsHistory> userDetails = null;
-		UserDetailsResponseDto userResponseDto = new UserDetailsResponseDto();
+		UserDetailsHistoryResponseDto userResponseDto = new UserDetailsHistoryResponseDto();
 
 		LocalDateTime localDateTime = null;
 		try {
 			localDateTime = MapperUtils.parseToLocalDateTime(effDTimes);
 		} catch (DateTimeParseException e) {
 			throw new RequestException(
-					UserDetailsErrorCode.INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage());
+					UserDetailsHistoryErrorCode.INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorCode(),
+					UserDetailsHistoryErrorCode.INVALID_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION.getErrorMessage());
 		}
 		try {
-			userDetails = userDetailsRepository.getByUserIdAndTimestamp(userId, localDateTime);
+			userDetails = userDetailsHistoryRepository.getByUserIdAndTimestamp(userId, localDateTime);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(UserDetailsErrorCode.USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.USER_HISTORY_FETCH_EXCEPTION.getErrorMessage()
+			throw new MasterDataServiceException(UserDetailsHistoryErrorCode.USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+					UserDetailsHistoryErrorCode.USER_HISTORY_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (userDetails == null || userDetails.isEmpty()) {
-			throw new DataNotFoundException(UserDetailsErrorCode.USER_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
-					UserDetailsErrorCode.USER_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(UserDetailsHistoryErrorCode.USER_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
+					UserDetailsHistoryErrorCode.USER_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		} else {
 			userResponseDto.setUserResponseDto(MapperUtils.mapAll(userDetails, UserDetailsDto.class));
 		}

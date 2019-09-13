@@ -215,15 +215,15 @@ public interface RegistrationCenterService {
 	public RegistrationCenterPostResponseDto createRegistrationCenter(
 			List<RegCenterPostReqDto> reqRegistrationCenterDto);
 
-    /**
-    * This method updates the registration center by admin.
-    * 
-     * @param RegCenterPutReqDto
-    *            - pass the List of registration center DTO to update.
-    * 
-     * @return RegistrationCenterPutResponseDto - return updated registration
-    *         centers complete DTO
-    */
+	/**
+	 * This method updates the registration center by admin.
+	 * 
+	 * @param RegCenterPutReqDto
+	 *            - pass the List of registration center DTO to update.
+	 * 
+	 * @return RegistrationCenterPutResponseDto - return updated registration
+	 *         centers complete DTO
+	 */
 
 	public RegistrationCenterPutResponseDto updateRegistrationCenter(
 			List<RegCenterPutReqDto> registrationCenterPutReqAdmDto);

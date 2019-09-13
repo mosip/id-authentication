@@ -34,6 +34,7 @@ import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
@@ -803,30 +804,29 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				serviceHelper.centerTypeSearch(addList, removeList, filter);
 			}
 			// if location based search
-			if (serviceHelper.isLocationSearch(filter.getColumnName())|| MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
+			if (serviceHelper.isLocationSearch(filter.getColumnName())
+					|| MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
 				Location location = serviceHelper.locationSearch(filter);
 				if (location != null) {
 					// fetching sub-locations
 					List<Location> descendants = locationUtils.getDescedants(locations, location);
-					List<Location> leaves=descendants.parallelStream().filter(child -> child.getHierarchyLevel()==5).collect(Collectors.toList());
+					List<Location> leaves = descendants.parallelStream().filter(child -> child.getHierarchyLevel() == 5)
+							.collect(Collectors.toList());
 					locationFilter.addAll(serviceHelper.buildLocationSearchFilter(leaves));
 				}
 				removeList.add(filter);
 			}
-			/*// if zone based search
-			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
-				Location zone = serviceHelper.getZone(filter);
-				if (zone != null) {
-					List<Location> descendants = locationUtils.getDescedants(locations, zone);
-				}
-				removeList.add(filter);
-				flag = false;
-			}*/
+			/*
+			 * // if zone based search if (MasterDataConstant.ZONE.equalsIgnoreCase(column))
+			 * { Location zone = serviceHelper.getZone(filter); if (zone != null) {
+			 * List<Location> descendants = locationUtils.getDescedants(locations, zone); }
+			 * removeList.add(filter); flag = false; }
+			 */
 		}
-		/*if (flag) {
-			// fetching logged in user zones
-			zones = serviceHelper.fetchUserZone(zoneFilter, dto.getLanguageCode());
-		}*/
+		/*
+		 * if (flag) { // fetching logged in user zones zones =
+		 * serviceHelper.fetchUserZone(zoneFilter, dto.getLanguageCode()); }
+		 */
 		// removing already processed filters and adding new filters
 		if (flag) {
 			// fetching logged in user zones
@@ -875,6 +875,25 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new RequestException(RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorCode(),
 					RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorMessage());
 		}
+		List<String> zoneIds;
+		// get user zone and child zones list
+		List<Zone> userZones = zoneUtils.getUserZones();
+		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+		// get given registration center zone id
+		RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterID, primaryLang);
+
+		if (regCenterZone == null) {
+			throw new RequestException(RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
+					RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage());
+		}
+
+		// check the given device and registration center zones are come under user zone
+		if (!zoneIds.contains(regCenterZone.getZoneCode())) {
+			throw new RequestException(RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorCode(),
+					RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorMessage());
+		}
+
 		IdResponseDto idResponseDto = new IdResponseDto();
 		int decommissionedDevices = 0;
 		try {
@@ -906,7 +925,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return idResponseDto;
 	}
 
-	// megha
 	/*
 	 * (non-Javadoc)
 	 * 

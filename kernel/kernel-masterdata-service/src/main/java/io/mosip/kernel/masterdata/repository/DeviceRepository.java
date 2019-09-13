@@ -134,5 +134,18 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	@Modifying
 	@Transactional
 	int decommissionDevice(String id);
+	
+	/**
+	 * This method trigger query to fetch the Device detail for the given id and
+	 * language code for both is_Deleted false or true or null and isActive true or false
+	 * 
+	 * @param id
+	 *            the id of device
+	 * @param langCode
+	 *            language code from user
+	 * @return the device detail
+	 */
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2" )
+	Device findByIdAndLangCode(String id , String langCode);
 
 }
