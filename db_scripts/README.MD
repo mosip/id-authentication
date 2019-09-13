@@ -102,6 +102,8 @@ Once we complete with sourcing the database files, we need to follow the below D
 
 **DML_FILENAME:** DML cript file name only if the flag=1, else it will be empty or null, ex: mosip_<schema_name>_dml_deploy.sql.
 
+**Note - Make sure, There are no empty lines in .properties files (inbetween parameters or in end of the file).
+
 ## DB Deployment for all the mosip databases with single click deployment:
 		
 **Step 1** -> Make prior modification to all the respective database properties files **(mosip_<schema_name>_deploy.properties)** in the respective database directories. Path of properties file and variables list remains same as explained above. Once the properties files are ready then access the directory where the deployment script is kept.
