@@ -61,8 +61,10 @@ public class RegistrationCenterDeviceController {
 	/**
 	 * Delete the mapping of registration center and device
 	 * 
-	 * @param regCenterId Registration center id to be deleted
-	 * @param deviceId    DeviceId id to be deleted
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param deviceId
+	 *            DeviceId id to be deleted
 	 * @return {@link RegistrationCenterDeviceID}
 	 */
 	@ResponseFilter
@@ -77,9 +79,9 @@ public class RegistrationCenterDeviceController {
 				registrationCenterDeviceService.deleteRegistrationCenterDeviceMapping(regCenterId, deviceId));
 		return responseWrapper;
 	}
-	
+
 	/**
-	 * Api to un-map Device  from a Registration Center .
+	 * Api to un-map Device from a Registration Center .
 	 * 
 	 * @param deviceId
 	 *            the Device ID.
@@ -91,7 +93,8 @@ public class RegistrationCenterDeviceController {
 	@ResponseFilter
 	@PutMapping("/unmap/{deviceid}/{regcenterid}")
 	public ResponseWrapper<DeviceAndRegCenterMappingResponseDto> unmapDeviceRegCenter(
-			@PathVariable("deviceid") @NotBlank @Size(min = 1, max = 36) String deviceId, @PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
+			@PathVariable("deviceid") @NotBlank @Size(min = 1, max = 36) String deviceId,
+			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
 		ResponseWrapper<DeviceAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterDeviceService.unmapDeviceRegCenter(deviceId, regCenterId));

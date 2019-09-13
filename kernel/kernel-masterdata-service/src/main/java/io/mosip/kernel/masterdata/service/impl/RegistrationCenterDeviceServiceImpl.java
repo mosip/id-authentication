@@ -183,7 +183,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
 				}
-				
+
 				// check the given device zones are come under user zone
 				if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
 					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorCode(),
