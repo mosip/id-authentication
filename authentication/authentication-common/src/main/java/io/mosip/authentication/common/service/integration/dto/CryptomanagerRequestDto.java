@@ -52,4 +52,7 @@ public class CryptomanagerRequestDto {
 	@ApiModelProperty(notes = "Data in BASE64 encoding to encrypt/decrypt", required = true)
 	//@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
 	private String data;
+	
+	@ApiModelProperty(notes = "Additional authenticated data (AAD) in BASE64 encoding to be used in decrypt", required = false)
+	private String aad;
 }

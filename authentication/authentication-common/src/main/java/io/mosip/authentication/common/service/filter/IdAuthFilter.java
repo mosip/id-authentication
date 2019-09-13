@@ -46,6 +46,12 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	private static final String TIMESTAMP = "timestamp";
+
+	private static final String BIO_VALUE = "bioValue";
+
+	private static final String REFID_IDA_FIR = "IDA-FIR";
+
 	private static final String DATA = "data";
 
 	private static final String SESSION_KEY = "sessionKey";
@@ -105,7 +111,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
 					String reqHMAC = keyManager
-							.kernelDecrypt(
+							.kernelDecryptAndDecode(
 									CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
 											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
 											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
@@ -141,19 +147,19 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private Map<String, Object> decipherBioData(Object obj) throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> map = (Map<String, Object>) obj;
-			Object data = mapper
+			Map<String, Object> data = mapper
 					.readValue(Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64((String) map.get(DATA)) : null,
-							Map.class)
-					.get("bioValue");
+							Map.class);
+			Object bioValue = data.get(BIO_VALUE);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
-			map.replace(DATA,
-					keyManager
-							.kernelDecrypt(
-									CryptoUtil.encodeBase64(
-											CryptoUtil.combineByteArray(CryptoUtil.decodeBase64((String) data),
-													CryptoUtil.decodeBase64((String) sessionKey),
-													env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
-									"IDA-FIR"));
+			String aad = CryptoUtil.encodeBase64(String.valueOf(data.get(TIMESTAMP)).getBytes());
+			String combinedData = CryptoUtil.encodeBase64(
+					CryptoUtil.combineByteArray(CryptoUtil.decodeBase64((String) bioValue),
+							CryptoUtil.decodeBase64((String) sessionKey),
+							env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER)));
+			String decryptedData = keyManager.kernelDecrypt(combinedData, REFID_IDA_FIR, aad);
+			data.replace(BIO_VALUE, decryptedData);
+			map.replace(DATA, data);
 			return map;
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);

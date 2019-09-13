@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -93,7 +92,7 @@ public class KeyManager {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			byte[] encryptedSessionkey = Base64.decodeBase64((String) requestBody.get(SESSION_KEY));
+			byte[] encryptedSessionkey = CryptoUtil.decodeBase64((String) requestBody.get(SESSION_KEY));
 			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
@@ -123,11 +122,22 @@ public class KeyManager {
 	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey,
 			String refId) throws IdAuthenticationAppException, IOException {
 		return mapper
-				.readValue(kernelDecrypt(
+				.readValue(kernelDecryptAndDecode(
 						CryptoUtil.encodeBase64(
 								CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)),
 						refId), Map.class);
 	}
+	
+	public String kernelDecryptAndDecode(String data, String refId)
+			throws IdAuthenticationAppException {
+		return internalKernelDecryptAndDecode(data, refId, null, RestServicesConstants.DECRYPTION_SERVICE, true);
+	}
+	
+	public String kernelDecrypt(String data, String refId, String aad)
+			throws IdAuthenticationAppException {
+		return internalKernelDecryptAndDecode(data, refId, aad, RestServicesConstants.DECRYPTION_SERVICE_AUTH, false);
+	}
+
 
 	/**
 	 * This method does the necessary decryption of the request.
@@ -138,12 +148,14 @@ public class KeyManager {
 	 *            the encrypted session key
 	 * @param refId
 	 *            the ref id
+	 * @param aad
+	 *            the aad
 	 * @return the string
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String kernelDecrypt(String data, String refId) throws IdAuthenticationAppException {
+	private String internalKernelDecryptAndDecode(String data, String refId, String aad, RestServicesConstants restService, boolean decode) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 		try {
@@ -151,13 +163,21 @@ public class KeyManager {
 			cryptoManagerRequestDto.setReferenceId(refId);
 			cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
 			cryptoManagerRequestDto.setData(data);
-			RestRequestDTO restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
+			
+			if(aad != null && !aad.isEmpty()) {
+				cryptoManagerRequestDto.setAad(aad);
+			}
+
+			RestRequestDTO restRequestDTO = restRequestFactory.buildRequest(restService,
 					RestRequestFactory.createRequest(cryptoManagerRequestDto), Map.class);
-restRequestDTO.setUri("http://localhost:8087/v1/cryptomanager/decrypt");
 			Map<String, Object> cryptoResponseMap = restHelper.requestSync(restRequestDTO);
 			Object encodedIdentity = ((Map<String, Object>) cryptoResponseMap.get(IdAuthCommonConstants.RESPONSE))
 					.get(IdAuthCommonConstants.DATA);
-			decryptedRequest = new String(CryptoUtil.decodeBase64((String) encodedIdentity), StandardCharsets.UTF_8);
+			if(decode) {
+				decryptedRequest = new String(CryptoUtil.decodeBase64((String) encodedIdentity), StandardCharsets.UTF_8);
+			} else {
+				decryptedRequest = (String) encodedIdentity;
+			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());

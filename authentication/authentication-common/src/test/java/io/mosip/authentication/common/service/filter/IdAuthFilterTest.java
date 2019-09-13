@@ -127,7 +127,7 @@ public class IdAuthFilterTest {
 		String dicipheredreq = "{\"authType\":{\"address\":\"true\",\"bio\":\"true\",\"face\":\"true\",\"fingerprint\":\"true\",\"fullAddress\":\"true\",\"iris\":\"true\",\"otp\":\"true\",\"personalIdentity\":\"true\",\"pin\":\"true\"}}";
 		Mockito.when(keyManager.requestData(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new ObjectMapper().readValue(dicipheredreq.getBytes(), Map.class));
-		Mockito.when(keyManager.kernelDecrypt(Mockito.any(), Mockito.any())).thenReturn("B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
+		Mockito.when(keyManager.kernelDecryptAndDecode(Mockito.any(), Mockito.any())).thenReturn("B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
 		Map<String, Object> decipherRequest = filter.decipherRequest(requestBody);
 		decipherRequest.remove("requestHMAC");
 		decipherRequest.remove("requestSessionKey");
