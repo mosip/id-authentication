@@ -382,6 +382,10 @@ public class BioDedupeProcessor {
 
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				registrationType);
+		// TODO : temporary fix. Need to analyze more.
+		if (matchedRegIds != null && !matchedRegIds.isEmpty() && matchedRegIds.contains(registrationStatusDto.getRegistrationId())) {
+			matchedRegIds.remove(registrationStatusDto.getRegistrationId());
+		}
 		if (matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
