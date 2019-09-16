@@ -76,8 +76,8 @@ public class MosipBridgeFactory extends MosipVerticleAPIManager {
 						"MosipBridgeFactory::getEventBus()::exit", String.valueOf(mosipEventBus));
 	}
 
-	@Override
-	public void start() throws Exception {
+
+	public void startCamelBridge() throws Exception {
 		String camelRoutesFileName;
 		JndiRegistry registry=null;
 		CompletableFuture<MosipEventBus> eventBus = CompletableFuture.completedFuture(mosipEventBus);
