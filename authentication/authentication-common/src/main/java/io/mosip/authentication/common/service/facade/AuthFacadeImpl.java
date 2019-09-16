@@ -145,9 +145,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
 				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType());
-		if (Objects.nonNull(authtypeStatusList) && authtypeStatusList.isEmpty()) {
+		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
 			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
-				if (authTypeStatus.isLocked()) {
+				if (authTypeStatus.getLocked()) {
 					if (authRequestDTO.getRequestedAuth().isDemo()
 							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
 						throw new IdAuthenticationBusinessException(

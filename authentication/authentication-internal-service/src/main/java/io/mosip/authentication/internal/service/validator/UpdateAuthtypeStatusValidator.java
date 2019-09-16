@@ -2,34 +2,31 @@ package io.mosip.authentication.internal.service.validator;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
- * The Class UpdateAuthtypeStatusValidator.
+ * The Validator for Update Auth Type Status service.
  *
  * @author Dinesh T
+ * @author Loganathan S
  */
 @Component
 public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 
+	private static final String AUTH_TYPE_SEPERATOR = "-";
 	/** The Constant MISSING_AUTH_TYPES. */
-	private static final String MISSING_AUTH_TYPES = "authType(s)";
+	private static final String AUTH_TYPES = "authType(s)";
 
 	/* (non-Javadoc)
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
@@ -65,9 +62,29 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 			if (!errors.hasErrors()) {
 				validateAuthTypeRequest(authTypeStatusDto.getRequest(), errors);
 			}
+			
+			if (!errors.hasErrors()) {
+				validateLockedStatus(authTypeStatusDto.getRequest(), errors);
+			}
 
 		}
 
+	}
+
+	private void validateLockedStatus(List<AuthtypeStatus> list, Errors errors) {
+		for (AuthtypeStatus authtypeStatus : list) {
+			Boolean locked = authtypeStatus.getLocked();
+			
+			if (locked == null) {
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { AUTH_TYPES },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, AUTH_TYPES);
+			}
+			
+		}
 	}
 
 	/**
@@ -79,10 +96,10 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 	private void validateAuthTypeRequest(List<AuthtypeStatus> list, Errors errors) {
 		if (list == null || list.isEmpty()) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, MISSING_AUTH_TYPES);
+					IdAuthCommonConstants.VALIDATE, AUTH_TYPES);
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { MISSING_AUTH_TYPES },
+					new Object[] { AUTH_TYPES },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			validateAuthType(list, errors);
@@ -98,52 +115,36 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 	 */
 	private void validateAuthType(List<AuthtypeStatus> list, Errors errors) {
 
-		Set<String> allowedAuthTypes = getAllowedAuthtype();
-		Set<String> allowedAuthSubTypes = getAllowedSubTypes();
+		Set<String> allowedAuthTypes = getAllowedAuthTypes();
 		for (AuthtypeStatus authtypeStatus : list) {
 			String authType = authtypeStatus.getAuthType();
 			String authSubType = authtypeStatus.getAuthSubType();
+			
 			if (StringUtils.isEmpty(authType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { MISSING_AUTH_TYPES },
+						new Object[] { AUTH_TYPES },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, MISSING_AUTH_TYPES);
-			} else if (!allowedAuthTypes.contains(authType)) {
+						IdAuthCommonConstants.VALIDATE, AUTH_TYPES);
+			}
+			
+			String authTypeStr;
+			if(authSubType == null || authSubType.trim().isEmpty()) {
+				authTypeStr = authType;
+			} else {
+				authTypeStr = authType + AUTH_TYPE_SEPERATOR + authSubType;
+			}
+
+			if (!allowedAuthTypes.contains(authTypeStr)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
-						new Object[] { MatchType.Category.BIO.getType() + "-" + authType },
+						new Object[] { authTypeStr },
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, MISSING_AUTH_TYPES);
-			} else if (authType.equals(Category.BIO.getType()) && !allowedAuthSubTypes.contains(authSubType)) {
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
-						new Object[] { MatchType.Category.BIO.getType() + "-" + authSubType },
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, MISSING_AUTH_TYPES);
+						IdAuthCommonConstants.VALIDATE, AUTH_TYPES);
 			}
 		}
-	}
-
-	/**
-	 * Gets the allowed sub types.
-	 *
-	 * @return the allowed sub types
-	 */
-	private Set<String> getAllowedSubTypes() {
-		return Stream.of(BioAuthType.values()).map(BioAuthType::getType).collect(Collectors.toSet());
-	}
-
-	/**
-	 * Gets the allowed authtype.
-	 *
-	 * @return the allowed authtype
-	 */
-	private Set<String> getAllowedAuthtype() {
-		return Stream.of(Category.values()).map(Category::getType).collect(Collectors.toSet());
 	}
 
 }
