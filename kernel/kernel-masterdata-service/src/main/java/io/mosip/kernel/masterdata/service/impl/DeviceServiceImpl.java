@@ -62,6 +62,7 @@ import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
@@ -122,6 +123,9 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	@Autowired
 	private ZoneService zoneService;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -189,17 +193,17 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createDevice(DeviceDto deviceDto) {
+	public Device createDevice(DeviceDto deviceDto) {
 		Device device = null;
-
-		Device entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
-		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
-		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-
 		try {
-			// device.setIsActive(false);
-
+			deviceDto = masterdataCreationUtil.createMasterData(Device.class,deviceDto);
+			Device entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
+			DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
+			entityHistory.setEffectDateTime(entity.getCreatedDateTime());
+			entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
+			//entity.setIsActive(false);
+			//String id = UUID.fromString(deviceDto.getName()).toString();
+			//entity.setId(id);
 			device = deviceRepository.create(entity);
 			deviceHistoryService.createDeviceHistory(entityHistory);
 
@@ -207,11 +211,13 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
+		catch (IllegalArgumentException | IllegalAccessException|NoSuchFieldException|SecurityException e1) {
+			e1.printStackTrace();
+		} 
+		//IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		//MapperUtils.map(device, idAndLanguageCodeID);
 
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(device, idAndLanguageCodeID);
-
-		return idAndLanguageCodeID;
+		return device;
 
 	}
 
