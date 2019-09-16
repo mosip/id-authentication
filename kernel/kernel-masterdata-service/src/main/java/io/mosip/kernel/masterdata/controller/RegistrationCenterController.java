@@ -278,25 +278,6 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * This method updates registration center by Admin.
-	 * 
-	 * @param reqRegistrationCenterDto
-	 *            the request DTO for updating registration center.
-	 * @return the response i.e. the id of the registration center updated.
-	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@ResponseFilter
-	@PutMapping("/registrationcenters")
-	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegCenterPutReqDto> reqRegistrationCenterDto) {
-
-		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper
-				.setResponse(registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
-		return responseWrapper;
-	}
-
-	/**
 	 * Api to search the registration center based on the search input
 	 * 
 	 * @param request
@@ -341,13 +322,33 @@ public class RegistrationCenterController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
-	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenter(
-			@RequestBody RegistarionCenterReqDto<RegCenterPostReqDto> reqRegistrationCenterDto) {
-		ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+	public ResponseWrapper<RegistrationCenterExtnDto> createRegistrationCenter(
+			@RequestBody @Valid RequestWrapper<RegCenterPostReqDto> reqRegistrationCenterDto) {
+		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
+	
+	/**
+	 * This method updates registration center by Admin.
+	 * 
+	 * @param reqRegistrationCenterDto
+	 *            the request DTO for updating registration center.
+	 * @return the response i.e. the id of the registration center updated.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters")
+	public ResponseWrapper<RegistrationCenterExtnDto> updateRegistrationCenterAdmin(
+			@RequestBody @Valid RequestWrapper<RegCenterPutReqDto> reqRegistrationCenterDto) {
+
+		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
 
 	/**
 	 * API to decommission registration center based on ID.
