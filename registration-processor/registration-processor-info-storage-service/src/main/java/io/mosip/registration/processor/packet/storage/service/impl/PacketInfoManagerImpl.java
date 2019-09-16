@@ -210,11 +210,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
             String[] names  = regProcessorIdentityJson.getIdentity().getName().getValue().split(",");
-            List<JsonValue[]> jsonValueList = new ArrayList<>();
-            for(String name : names) {
-            	jsonValueList.add(JsonUtil.getJsonValues(demographicIdentity,name));
-            }
-			demographicData.setName(jsonValueList);
+			List<JsonValue[]> jsonValueList = new ArrayList<>();
+			for (String name : names) {
+				JsonValue[] nameArray = JsonUtil.getJsonValues(demographicIdentity, name);
+				if (nameArray != null)
+					jsonValueList.add(nameArray);
+			}
+			demographicData.setName(jsonValueList.isEmpty() ? null : jsonValueList);
 			demographicData.setDateOfBirth((String) JsonUtil.getJSONValue(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(JsonUtil.getJsonValues(demographicIdentity,
