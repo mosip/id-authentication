@@ -21,12 +21,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
 import io.vertx.camel.CamelBridgeOptions;
 
@@ -39,6 +42,9 @@ import io.vertx.camel.CamelBridgeOptions;
  */
 @Component
 public class MosipBridgeFactory extends MosipVerticleAPIManager {
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipBridgeFactory.class);
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -63,7 +69,11 @@ public class MosipBridgeFactory extends MosipVerticleAPIManager {
 	 * @return the event bus
 	 */
 	public void getEventBus() {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"camel bridge event bus ", "MosipBridgeFactory::getEventBus()::entry");
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"MosipBridgeFactory::getEventBus()::exit", String.valueOf(mosipEventBus));
 	}
 
 	@Override
@@ -73,7 +83,22 @@ public class MosipBridgeFactory extends MosipVerticleAPIManager {
 		CompletableFuture<MosipEventBus> eventBus = CompletableFuture.completedFuture(mosipEventBus);
 		CompletableFuture<Void> future = CompletableFuture.allOf(eventBus);
 		future.join();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"MosipBridgeFactory::start()::entry::mosipEventBus ", String.valueOf(mosipEventBus));
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"mosipEventBus.getEventbus() ", String.valueOf(mosipEventBus.getEventbus()));
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"router ", String.valueOf(router));
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"router post url ", String.valueOf(this.postUrl(mosipEventBus.getEventbus(), null,null)));
+		
 		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), null,null));
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"router set  ", "router.setRoute()");
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 		    String[] beanNames=applicationContext.getBeanDefinitionNames();
 		    if (beanNames != null) {
