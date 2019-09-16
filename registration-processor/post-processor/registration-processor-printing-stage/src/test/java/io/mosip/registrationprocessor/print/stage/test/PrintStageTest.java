@@ -338,6 +338,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -353,6 +354,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -368,6 +370,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -383,6 +386,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -398,6 +402,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
