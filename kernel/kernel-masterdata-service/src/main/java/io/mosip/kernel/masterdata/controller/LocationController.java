@@ -126,7 +126,7 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
@@ -144,6 +144,7 @@ public class LocationController {
 	 *            -location code
 	 * @return CodeResponseDto
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@DeleteMapping(value = "/{locationcode}")
 	public ResponseWrapper<CodeResponseDto> deleteLocationHierarchyDetails(
@@ -227,6 +228,7 @@ public class LocationController {
 	 *            input from user
 	 * @return location values
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
@@ -243,6 +245,7 @@ public class LocationController {
 	 *            input from user
 	 * @return column values corresponding to entered dto
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> locationFilterValues(
