@@ -77,10 +77,11 @@ public class LocationController {
 		return responseWrapper;
 	}
 
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@PostMapping()
-	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocationHierarchyDetails(
-			@RequestBody RequestWrapper<List<LocationDto>> locationRequestDto) {
+	@PostMapping
+	public ResponseWrapper<PostLocationCodeResponseDto> createLocationHierarchyDetails(
+			@RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
 	}
 
