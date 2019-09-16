@@ -195,6 +195,7 @@ public class LoginService {
 				response.setResponse(responseBody);
 				isSuccess = true;
 			}
+			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.info("sessionId", "idType", "id",
@@ -205,7 +206,6 @@ public class LoginService {
 			log.error("sessionId", "idType", "id", "In callsendOtp method of login service- " + ex.getMessage());
 			new LoginExceptionCatcher().handle(ex, "sendOtp", response);
 		} finally {
-			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(),
 						EventType.BUSINESS.toString(), "Otp send sucessfully", AuditLogVariables.NO_ID.toString(),
