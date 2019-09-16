@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceAndRegCenterMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
 import io.swagger.annotations.Api;
@@ -98,6 +100,27 @@ public class RegistrationCenterDeviceController {
 
 		ResponseWrapper<DeviceAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterDeviceService.unmapDeviceRegCenter(deviceId, regCenterId));
+		return responseWrapper;
+	}
+
+	/**
+	 * Map registration center device.
+	 *
+	 * @param regCenterId the reg center id
+	 * @param deviceId the device id
+	 * @return {@link ResponseDto}
+	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')") 
+	@ResponseFilter
+	@ApiOperation(value = "map registration center with device")
+	@GetMapping("map/{regCenterId}/{deviceId}")
+	public ResponseWrapper<ResponseDto> mapRegistrationCenterDevice(
+			@ApiParam("Registration center id ") @PathVariable String regCenterId,
+			@ApiParam("DeviceId id ") @PathVariable String deviceId) {
+
+		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterDeviceService.mapRegistrationCenterWithDevice(regCenterId, deviceId));
 		return responseWrapper;
 	}
 }

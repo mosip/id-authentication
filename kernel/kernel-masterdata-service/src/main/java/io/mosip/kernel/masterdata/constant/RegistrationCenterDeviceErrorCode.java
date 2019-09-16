@@ -20,7 +20,11 @@ public enum RegistrationCenterDeviceErrorCode {
 	DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION("KER-MSD-xxxx","Device Id %s - Center Id %s mapping does not exist"),
 	INVALIDE_DEVICE_ZONE("KER-MSD-415", "Admin not authorized to map/un-map this Device"),
 	INVALIDE_CENTER_ZONE("KER-MSD-411", "Admin not authorized to map/un-map this Device"),
-	REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION("KER-MSD-XXXx", "Error occurred while mapping Device to Registration Center");
+	REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION("KER-MSD-XXXx", "Error occurred while mapping Device to Registration Center"),
+	REGISTRATION_CENTER_DEVICE_NOT_IN_SAME_HIERARCHY("KER-MSD-416","Device cannot be mapped to the Center as Center and Device does not belong to the same Administrative Zone"),
+	REGISTRATION_CENTER_ALREADY_MAPPED("KER-MSD-419","Registration center is already mapped to a device"),
+	REGISTRATION_CENTER_DEVICE_ZONE_INVALID("KER-MSD-411","Either Registration center or Device zone does not match user's zone"),
+	REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE("KER-MSD-418","Cannot map as the Registration Center/Device is Decommissioned");
 	private final String errorCode;
 	private final String errorMessage;
 
@@ -28,6 +32,7 @@ public enum RegistrationCenterDeviceErrorCode {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
+	
 
 	public String getErrorCode() {
 		return errorCode;

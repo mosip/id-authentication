@@ -48,6 +48,13 @@ public interface RegistrationCenterDeviceRepository
 
 	@Query("FROM RegistrationCenterDevice rd where  (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
 	List<RegistrationCenterDevice> findAllCenterDevices();
+	
+	@Query("FROM RegistrationCenterDevice rd where rd.registrationCenterDevicePk.regCenterId = ?1 and rd.registrationCenterDevicePk.deviceId = ?2 and rd.langCode=?3 ")
+	public RegistrationCenterDevice findByRegIdAndDeviceIdAndLangCode(String regCenterId,String deviceId,String langCode);
+	
+	@Query("FROM RegistrationCenterDevice rd where  rd.registrationCenterDevicePk.deviceId = ?1 and rd.langCode=?2 and rd.isActive=true")
+	public RegistrationCenterDevice findByDeviceIdAndLangCode(String deviceId,String langCode);
+
 
 	/**
 	 * Method to find valid document based on Document Category code and Document

@@ -182,6 +182,12 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByRegCenterIdAndIsDeletedFalseOrNull(String id);
 
+	
+	
+	@Query("FROM RegistrationCenter WHERE id= ?1 and lang_code=?2 ")
+	List<RegistrationCenter> findByRegIdAndLangCode(String id,String langCode);
+	
+
 	/**
 	 * Method to decommission the reg-center.
 	 * 
