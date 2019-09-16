@@ -108,6 +108,8 @@ import javafx.util.Duration;
 
 @Component
 public class BaseController {
+	
+	private static final String ALERT_STAGE = "alertStage";
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -1374,9 +1376,10 @@ public class BaseController {
 	}
 	
 	public void closeAlreadyExistedAlert() {
-		if (SessionContext.isSessionContextAvailable()) {
-		Stage alertStageFromSession = (Stage)SessionContext.map().get("alertStage");
-		if(alertStageFromSession != null) alertStageFromSession.close();
+		if (SessionContext.isSessionContextAvailable() && SessionContext.map() != null
+				&& SessionContext.map().get(ALERT_STAGE) != null) {
+			Stage alertStageFromSession = (Stage) SessionContext.map().get(ALERT_STAGE);
+			alertStageFromSession.close();
 		}
 	}
 
