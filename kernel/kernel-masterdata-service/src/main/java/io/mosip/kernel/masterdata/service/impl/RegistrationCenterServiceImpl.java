@@ -1095,7 +1095,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findByIdAndLangCodeAndIsDeletedTrue(regCenterPutReqDto.getId(), regCenterPutReqDto.getLangCode());
 			List<RegistrationCenterMachineDevice> regCenterDevice = registrationCenterMachineDeviceRepository
 					.findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId());
-			if (CollectionUtils.isEmpty(regCenterDevice)) {
+			if (!CollectionUtils.isEmpty(regCenterDevice)) {
 				throw new MasterDataServiceException(
 						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION
 								.getErrorCode(),
@@ -1111,7 +1111,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					isValidZone = true;
 				}
 			}
-			if(isValidZone)
+			if(!isValidZone)
 			{
 				throw new MasterDataServiceException("KER-MSD-397",
 						"Cannot change the Center’s Administrative Zone as the Center is already mapped to a Device/Machine outside the new administrative zone");
@@ -1179,7 +1179,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-		registrationCenterExtnDto = MapperUtils.map(registrationCenterEntity, registrationCenterExtnDto);
+		registrationCenterExtnDto = MapperUtils.map(updRegistrationCenter, registrationCenterExtnDto);
 		// RegistrationCenterPutResponseDto registrationCenterPutResponseDto =
 		// new RegistrationCenterPutResponseDto();
 		// registrationCenterDtoList =
