@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
@@ -56,10 +57,12 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
+import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
@@ -117,6 +120,12 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private ZoneService zoneService;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -184,29 +193,35 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createDevice(DeviceDto deviceDto) {
+	public Device createDevice(DeviceDto deviceDto) {
 		Device device = null;
-
-		Device entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
-		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
-		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-
+		Device entity = null;
+		DeviceHistory entityHistory = null;
 		try {
-			// device.setIsActive(false);
-
-			device = deviceRepository.create(entity);
-			deviceHistoryService.createDeviceHistory(entityHistory);
-
+			deviceDto = masterdataCreationUtil.createMasterData(Device.class,deviceDto);
+			if(deviceDto!=null)
+			{
+				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
+				entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
+				entityHistory.setEffectDateTime(entity.getCreatedDateTime());
+				entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
+				//entity.setIsActive(false);
+				//String id = UUID.fromString(deviceDto.getName()).toString();
+				//entity.setId(id);
+				device = deviceRepository.create(entity);
+				deviceHistoryService.createDeviceHistory(entityHistory);
+			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
+		catch (IllegalArgumentException | IllegalAccessException|NoSuchFieldException|SecurityException e1) {
+			e1.printStackTrace();
+		} 
+		//IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		//MapperUtils.map(device, idAndLanguageCodeID);
 
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(device, idAndLanguageCodeID);
-
-		return idAndLanguageCodeID;
+		return device;
 
 	}
 
@@ -722,8 +737,22 @@ public class DeviceServiceImpl implements DeviceService {
 	@Transactional
 	public IdResponseDto decommissionDevice(String deviceId) {
 		IdResponseDto deviceCodeId = new IdResponseDto();
-		// MapperUtils.mapFieldValues(deviceId, deviceCodeId);
+		boolean zoneValid = false;
 		try {
+			List<Device> device = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId);
+			if(CollectionUtils.isEmpty(device))
+			{
+				throw new RequestException(DeviceErrorCode.DEVICE_ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			Optional<Device> deviceZone = device.stream().filter(a->a.getLangCode().equals("eng")).findFirst();
+			String deviceZoneCode = deviceZone.get().getZoneCode();
+			zoneValid = zoneService.getUserValidityZoneHierarchy(deviceZone.get().getLangCode(), deviceZoneCode);
+			if(!zoneValid)
+			{
+				throw new RequestException(DeviceErrorCode.DEVICE_ERROR.getErrorCode(),
+						DeviceErrorCode.DEVICE_ERROR.getErrorMessage());
+			}
 			int updatedRows = deviceRepository.decommissionDevice(deviceId);
 			if (updatedRows < 1) {
 				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),

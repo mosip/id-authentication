@@ -77,10 +77,11 @@ public class LocationController {
 		return responseWrapper;
 	}
 
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@PostMapping()
-	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocationHierarchyDetails(
-			@RequestBody RequestWrapper<List<LocationDto>> locationRequestDto) {
+	@PostMapping
+	public ResponseWrapper<PostLocationCodeResponseDto> createLocationHierarchyDetails(
+			@RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
 	}
 
@@ -125,7 +126,6 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
@@ -226,6 +226,7 @@ public class LocationController {
 	 *            input from user
 	 * @return location values
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
@@ -242,6 +243,7 @@ public class LocationController {
 	 *            input from user
 	 * @return column values corresponding to entered dto
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> locationFilterValues(

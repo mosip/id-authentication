@@ -61,6 +61,7 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.Node;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -111,6 +112,9 @@ public class LocationServiceImpl implements LocationService {
 	private List<Location> hierarchyChildList = null;
 	private List<Location> parentHierarchyList = null;
 	private List<String> childList = null;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/**
 	 * This method will all location details from the Database. Refers to
@@ -202,42 +206,45 @@ public class LocationServiceImpl implements LocationService {
 		return locationHierarchyResponseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#createLocation(java.util.
-	 * List)
-	 */
 	@Override
 	@Transactional
-	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(List<LocationDto> request) {
+	public ResponseWrapper<PostLocationCodeResponseDto> createLocation(LocationDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
-		List<LocationDto> locations = new ArrayList<>();
-		List<Location> savedEntities = null;
+		String locationCode = null;
+		Location locationEntity = null;
+		PostLocationCodeResponseDto responseDto = null;
+		//List<LocationDto> locations = new ArrayList<>();
+		//List<Location> savedEntities = null;
 
 		// request validation
-		requestValidation(request, errors, locations);
+		//requestValidation(dto, errors);
 
-		dataValidation(request);
+		//dataValidation(request);
 
-		Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
+		//Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
 		// if data present in all the configured languages then setting isActive as
 		// true, otherwise false
-		if (optional.isPresent()) {
-			List<String> languages = new ArrayList<>();
-			locations.forEach(dto -> languages.add(dto.getLangCode()));
-			if (languages.size() == languageUtils.getConfiguredLanguages().size()
-					&& languageUtils.getConfiguredLanguages().containsAll(languages)) {
-				locations.forEach(i -> i.setIsActive(true));
-			} else {
-				throw new RequestException(LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorCode(),
-						LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorMessage());
-			}
+//		if (optional.isPresent()) {
+//			List<String> languages = new ArrayList<>();
+//			locations.forEach(dto -> languages.add(dto.getLangCode()));
+//			if (languages.size() == languageUtils.getConfiguredLanguages().size()
+//					&& languageUtils.getConfiguredLanguages().containsAll(languages)) {
+//				locations.forEach(i -> i.setIsActive(true));
+//			} else {
+//				throw new RequestException(LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorCode(),
+//						LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorMessage());
+//			}
+//		}
+		try {
+			dto = masterdataCreationUtil.createMasterData(Location.class, dto);
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException| SecurityException e) {
+			// TODO Auto-generated catch block
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
-
 		// Validation name already exists
-		for (LocationDto dto : locations) {
+		if(dto!=null)
+		{
 			List<Location> list = locationRepository.findByNameAndLevel(dto.getName(), dto.getHierarchyLevel());
 			if (list != null && !list.isEmpty()) {
 				throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
@@ -245,25 +252,39 @@ public class LocationServiceImpl implements LocationService {
 								dto.getName()));
 			}
 		}
-
+			
 		// setting metadata
-		List<Location> entities = new ArrayList<>();
-		for (LocationDto dto : locations) {
+		//List<Location> entities = new ArrayList<>();
+		/*for (LocationDto dto : locations) {
 			entities.add(MetaDataUtils.setCreateMetaData(dto, Location.class));
+		}*/
+		if(dto!=null)
+		{
+			locationEntity = MetaDataUtils.setCreateMetaData(dto, Location.class);
 		}
-
+			
+//			if(dto.getLangCode().equals(primaryLang))
+//			{
+//				locationCode = getCodeFromName(dto.getName());
+//				locationEntity.setCode(locationCode);
+//			}
+			
 		try {
-			savedEntities = locationRepository.saveAll(entities);
+			locationEntity = locationRepository.create(locationEntity);
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
+		if(locationEntity!=null)
+		{
+			responseDto = MapperUtils.map(locationEntity, PostLocationCodeResponseDto.class);
+		}
+		
+		//List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities, PostLocationCodeResponseDto.class);
 
-		List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities, PostLocationCodeResponseDto.class);
-
-		ResponseWrapper<List<PostLocationCodeResponseDto>> response = new ResponseWrapper<>();
+		ResponseWrapper<PostLocationCodeResponseDto> response = new ResponseWrapper<>();
 		response.setErrors(errors);
-		response.setResponse(dtos);
+		response.setResponse(responseDto);
 		return response;
 	}
 

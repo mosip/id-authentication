@@ -102,7 +102,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void searchLocationTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -122,7 +122,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void searchLocationContainsTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -144,7 +144,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void searchLocationStartsWithTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -166,7 +166,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void searchLocationExceptionTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -197,7 +197,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void filterAllEmptyTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -230,7 +230,7 @@ public class LocationSearchFilterIntegrationTest {
 
 	
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void filterAllWithTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -262,7 +262,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 	
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void filterUniqueEmptyTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -285,7 +285,7 @@ public class LocationSearchFilterIntegrationTest {
 				.andExpect(status().isOk());
 	}
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void filterUniqueWithTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -309,7 +309,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 	
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void filterInvalidTypeExceptionLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -326,7 +326,7 @@ public class LocationSearchFilterIntegrationTest {
 				.andExpect(status().isOk());
 	}
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void filterInvalidColumnNameExceptionLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("InvalidColumn");
