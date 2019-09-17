@@ -107,6 +107,8 @@ public class RegistrationCenterValidator {
 				| validateLunchEndTime(firstObj, eachRecord, errors) | validateTimeZone(firstObj, eachRecord, errors)
 				| validateHolidayCode(firstObj, eachRecord, errors) | validateZoneCode(firstObj, eachRecord, errors);
 	}
+	
+	
 
 	
 	//  method to compare Latitude 
@@ -461,7 +463,7 @@ public class RegistrationCenterValidator {
 				throw new ValidationException(errors);
 		} else {
 			// call method to validate Zone-Id, longitude and latitude
-			validateRegCenterCreateReq(registrationCenterDto, errors);
+			//validateRegCenterCreateReq(registrationCenterDto, errors);
 			if (!errors.isEmpty()) {
 				throw new ValidationException(errors);
 			}
@@ -484,8 +486,8 @@ public class RegistrationCenterValidator {
 			constraintViolationedSecList.add(registrationCenterDto);
 
 		} else {
-			isValid(firstObject, registrationCenterDto, errors);
-			validateRegCenterCreateReq(registrationCenterDto, errors);
+			//isValid(firstObject, registrationCenterDto, errors);
+			//validateRegCenterCreateReq(registrationCenterDto, errors);
 			if (!errors.isEmpty()) {
 				registrationCenterPostResponseDto.setConstraintViolationError(errors);
 				constraintViolationedSecList.add(registrationCenterDto);
@@ -558,26 +560,26 @@ public class RegistrationCenterValidator {
 		public void validatePutRequest(List<RegCenterPutReqDto> regCenterPutReqDtos,
 				List<RegCenterPutReqDto> notUpdRegistrationCenterList, List<String> inputIdList,
 				List<String> idLangList, List<String> langList, List<ServiceError> errors) {
-			for (RegCenterPutReqDto regCenterDto : regCenterPutReqDtos) {
-				// method to compare Id
-				validateCenterId(regCenterPutReqDtos.get(0), regCenterDto);
-				// method to compare IsActive
-				validateCenterIsActive(regCenterPutReqDtos.get(0), regCenterDto, errors);
-				//called a method to compare PerKioskProcessTimed
-				validatePerKioskProcessTime(regCenterPutReqDtos.get(0), regCenterDto, errors);
-				//called a method to compare data
-				isValid(regCenterPutReqDtos.get(0), regCenterDto, errors);
-				//called a method to validate the format of the longitude and latitude, zone validation,
-				// lunch and center start and end time
-				validateRegCenterCreateReq(regCenterDto, errors);
-				inputIdList.add(regCenterDto.getId());
-				langList.add(regCenterDto.getLangCode());
-				idLangList.add(regCenterDto.getLangCode() + regCenterDto.getId());
-				if (!errors.isEmpty())
-					//if found error then add to notUpdRegistrationCenterList
-					notUpdRegistrationCenterList.add(regCenterDto);
-
-			}
+//			for (RegCenterPutReqDto regCenterDto : regCenterPutReqDtos) {
+//				// method to compare Id
+//				validateCenterId(regCenterPutReqDtos.get(0), regCenterDto);
+//				// method to compare IsActive
+//				validateCenterIsActive(regCenterPutReqDtos.get(0), regCenterDto, errors);
+//				//called a method to compare PerKioskProcessTimed
+//				validatePerKioskProcessTime(regCenterPutReqDtos.get(0), regCenterDto, errors);
+//				//called a method to compare data
+//				isValid(regCenterPutReqDtos.get(0), regCenterDto, errors);
+//				//called a method to validate the format of the longitude and latitude, zone validation,
+//				// lunch and center start and end time
+//				validateRegCenterCreateReq(regCenterDto, errors);
+//				inputIdList.add(regCenterDto.getId());
+//				langList.add(regCenterDto.getLangCode());
+//				idLangList.add(regCenterDto.getLangCode() + regCenterDto.getId());
+//				if (!errors.isEmpty())
+//					//if found error then add to notUpdRegistrationCenterList
+//					notUpdRegistrationCenterList.add(regCenterDto);
+//
+//			}
 		}
 		
 		//  method to compare ID 

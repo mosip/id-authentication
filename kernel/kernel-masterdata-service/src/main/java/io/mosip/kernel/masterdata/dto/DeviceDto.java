@@ -29,9 +29,7 @@ public class DeviceDto {
 	/**
 	 * Field for device id
 	 */
-	@NotBlank
-	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "id", required = false, dataType = "java.lang.String")
 	private String id;
 	/**
 	 * Field for device name
@@ -85,4 +83,20 @@ public class DeviceDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
 
+	private String zoneCode;
+	
+	/**
+	 * Zone name for Device.
+	 */
+	private String zone;
+	
+	/**
+	 * Device Type name of Device.
+	 */
+	private String deviceTypeName;
+
+	/**
+	 * Device center mapping status.
+	 */
+	private String mapStatus;
 }
