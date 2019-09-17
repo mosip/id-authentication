@@ -1,13 +1,13 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.UserDetailsHistoryResponseDto;
 
 /**
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
-public interface UserDetailsService {
+public interface UserDetailsHistoryService {
 	/**
 	 * @param userId
 	 *            input from user
@@ -15,6 +15,6 @@ public interface UserDetailsService {
 	 *            input from user
 	 * @return user detail DTO for the particular input data
 	 */
-	UserDetailsResponseDto getByUserIdAndTimestamp(String userId, String effDTimes);
+	UserDetailsHistoryResponseDto getByUserIdAndTimestamp(String userId, String effDTimes);
 
 }

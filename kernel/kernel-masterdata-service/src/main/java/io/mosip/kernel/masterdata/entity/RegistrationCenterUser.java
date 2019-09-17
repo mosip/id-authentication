@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.entity;
 
 import javax.persistence.AttributeOverride;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -69,7 +70,7 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Device
 	 */
-	public IdAndLanguageCodeID createDevice(DeviceDto deviceRequestDto);
+	public Device createDevice(DeviceDto deviceRequestDto);
 
 	// public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
 
