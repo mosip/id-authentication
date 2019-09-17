@@ -93,7 +93,7 @@ public class RegistrationCenterDeviceController {
 	 */
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
-	@PutMapping("/unmap/{deviceid}/{regcenterid}")
+	@PutMapping("/unmap/{regcenterid}/{deviceid}")
 	public ResponseWrapper<DeviceAndRegCenterMappingResponseDto> unmapDeviceRegCenter(
 			@PathVariable("deviceid") @NotBlank @Size(min = 1, max = 36) String deviceId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
