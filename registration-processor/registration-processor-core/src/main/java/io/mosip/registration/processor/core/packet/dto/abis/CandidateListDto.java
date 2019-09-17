@@ -1,11 +1,13 @@
 package io.mosip.registration.processor.core.packet.dto.abis;
 
 import java.util.Arrays;
+import lombok.Data;
 
 /**
  * The Class CandidateListDto.
  * @author M1048860 Kiran Raj
  */
+@Data 
 public class CandidateListDto {
 	
 	/** The count. */
@@ -13,42 +15,5 @@ public class CandidateListDto {
 	
 	/** The candidates. */
 	private CandidatesDto[] candidates;
-	
-	/**
-	 * Gets the count.
-	 *
-	 * @return the count
-	 */
-	public String getCount() {
-		return count;
-	}
-	
-	/**
-	 * Sets the count.
-	 *
-	 * @param count the new count
-	 */
-	public void setCount(String count) {
-		this.count = count;
-	}
-	
-	/**
-	 * Gets the candidates.
-	 *
-	 * @return the candidates
-	 */
-	public CandidatesDto[] getCandidates() {
-		return candidates.clone();
-		
-	}
-	
-	/**
-	 * Sets the candidates.
-	 *
-	 * @param candidates the new candidates
-	 */
-	public void setCandidates(CandidatesDto[] candidates) {
-		this.candidates = candidates != null?candidates:null;
-	}
 	
 }

@@ -45,6 +45,7 @@ import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -385,7 +386,7 @@ public class DeviceServiceImpl implements DeviceService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedDeviceIdList = deviceRepository.findMappedDeviceId(dto.getLanguageCode());
 					mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
-					if ( mappedDeviceIdList.isEmpty()) {
+					if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
 						return pageDto;
 					}
@@ -395,7 +396,7 @@ public class DeviceServiceImpl implements DeviceService {
 						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId(dto.getLanguageCode());
 						mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 						isAssigned=false;
-						if (mappedDeviceIdList.isEmpty()) {
+						if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
 							pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
 							return pageDto;
 						}
@@ -442,7 +443,7 @@ public class DeviceServiceImpl implements DeviceService {
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Device> page = null;
 			if (mapStatusList.isEmpty() || addList.isEmpty()) {
-				
+				addList.addAll(mapStatusList);
 				page = masterdataSearchHelper.searchMasterdata(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
@@ -512,17 +513,22 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	private void setMapStatus(List<DeviceSearchDto> list,String langCode) {
 		
-		List<String> deviceIds=new ArrayList<>();
-		 list.stream().forEach(device ->{
-			deviceIds.add(device.getId());
-		});
-		List<String> deviceNames=deviceRepository.findDeviceNameByDevicesAndLangCode(deviceIds, langCode);
-		 list.stream().forEach(device ->{
-				deviceNames.stream().forEach(deviceName ->{
-					String dName=deviceName;
-					device.setMapStatus(dName);
-				});
+		List<RegistrationCenterDevice> centerDeviceList = deviceUtil.getAllDeviceCentersList();
+		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
+		list.forEach(deviceSearchDto -> {
+			centerDeviceList.forEach(centerDevice -> {
+				if (centerDevice.getDevice().getId().equals(deviceSearchDto.getId())
+						&& centerDevice.getLangCode().equals(deviceSearchDto.getLangCode())) {
+					String regId = centerDevice.getRegistrationCenter().getId();
+					registrationCenterList.forEach(registrationCenter -> {
+						if (registrationCenter.getId().equals(regId)
+								&& centerDevice.getLangCode().equals(registrationCenter.getLangCode())) {
+							deviceSearchDto.setMapStatus(registrationCenter.getName());
+						}
+					});
+				}
 			});
+		});
 	}
 
 	/**

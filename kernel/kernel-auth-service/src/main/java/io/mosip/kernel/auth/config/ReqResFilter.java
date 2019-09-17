@@ -49,9 +49,6 @@ public class ReqResFilter implements Filter {
 		requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
 		responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 		chain.doFilter(requestWrapper, responseWrapper);
-		System.out.println(DateUtils.getUTCCurrentDateTimeString()+" Request : "+new String(requestWrapper.getContentAsByteArray()));
-		System.out.println(DateUtils.getUTCCurrentDateTimeString()+" Response : "+new String(responseWrapper.getContentAsByteArray()));
-		System.out.println(DateUtils.getUTCCurrentDateTimeString()+" Cookie header in Response :"+httpServletResponse.getHeader("Set-Cookie"));
 		responseWrapper.copyBodyToResponse();
 
 	}

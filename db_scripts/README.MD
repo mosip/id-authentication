@@ -60,9 +60,9 @@ Once we complete with sourcing the database files, we need to follow the below D
 1) DB Deployment for all the databases
 2) DB Deployment for single or selected databases
 
-### Properties file variable details and description. Properties file has to be updated with the required details before proceeding with deployment steps for each databases.
+### Properties file variable details and description: Properties file has to be updated with the required details before proceeding with deployment steps for each databases.
 
-**DB_SERVERIP:** Contains details of Destination SERVER_IP(Ex:10.0.0.1) where the deployment is targeted
+**DB_SERVERIP:** Contains details of Destination DB SERVER_IP(Ex:10.0.0.1) where the deployment is targeted
 
 **DB_PORT:** Contains the postgres server port details where the postgres is allowed to connect. Ex: 5433
 
@@ -72,7 +72,7 @@ Once we complete with sourcing the database files, we need to follow the below D
 
 **DEFAULT_DB_NAME:** Default database name to connect with respective postgres server i.e. ex: postgres
 
-**MOSIP_DB_NAME:** Database name for which the deployment is scheduled.
+**MOSIP_DB_NAME:** MOSIP Database name for which the deployment is scheduled.
 
 **SYSADMIN_USER:** This variable contains the mosip_common_role which indeed is going to be the super user for the remaining actions going to be performed by shell script.
 
@@ -101,6 +101,8 @@ Once we complete with sourcing the database files, we need to follow the below D
 **DML_FLAG:** Its a flag variable which contains value as 0 or 1 for any DML existance for the particular DB. if flag=0 then no DML else flag=1.
 
 **DML_FILENAME:** DML cript file name only if the flag=1, else it will be empty or null, ex: mosip_<schema_name>_dml_deploy.sql.
+
+**Note - Make sure, There is a single empty line at end of the .properties files content and No spaces in beggining and end of the parameter values**
 
 ## DB Deployment for all the mosip databases with single click deployment:
 		

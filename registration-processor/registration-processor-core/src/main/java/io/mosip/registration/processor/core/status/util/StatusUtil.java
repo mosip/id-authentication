@@ -140,14 +140,6 @@ public enum StatusUtil {
 																													+ "001",
 																											"OSI Validation is Successful"),
 
-	// Message sender stage
-	NOTIFICATION_SUCESSFUL(StatusConstants.OMESSAGE_SENDER_MODULE_SUCCESS + "001",
-			"Notification Sent Successfully"), TEMPLATE_CONFIGURATION_NOT_FOUND(
-					StatusConstants.OMESSAGE_SENDER_MODULE_FAILED + "001",
-					"Template configuration and language not found"), EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING(
-							StatusConstants.OMESSAGE_SENDER_MODULE_FAILED + "002",
-							"Email ID or Phone or Template or Notification Type is Missing"),
-
 	// printing stage
 	PDF_ADDED_TO_QUEUE_SUCCESS(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "001",
 			"PDF is added to Queue for Printing"), PDF_ADDED_TO_QUEUE_FAILED(
@@ -284,14 +276,23 @@ public enum StatusUtil {
 			"Illegal Argument Exception Occurred - "), DEMO_DEDUPE_FAILED_IN_ABIS(StatusConstants.SYSTEM_EXCEPTION_CODE,
 					"Demo Dedupe Failed  in ABIS"), RE_PROCESS_FAILED(StatusConstants.RE_PROCESS_MODULE_FAILED + "001",
 							"Reprocess count has exceeded the configured attempts"), RE_PROCESS_COMPLETED(
-									StatusConstants.RE_PROCESS_MODULE_SUCCESS + "001",
-									"Reprocess Completed"), MESSAGE_SENDER_NOTIF_SUCC(
-											StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "001",
-											"Notification sent successfully for registrationId "), MESSAGE_SENDER_EMAIL_FAILED(
-													StatusConstants.MESSAGE_SENDER_EMAIL_FAILED_CODE + "002",
-													"Email failed for registrationId "), MESSAGE_SENDER_SMS_FAILED(
-															StatusConstants.MESSAGE_SENDER_SMS_FAILED_CODE + "003",
-															"SMS failed for registrationId ");
+									StatusConstants.RE_PROCESS_MODULE_SUCCESS + "001", "Reprocess Completed"),
+
+	// Message sender stage
+	NOTIFICATION_SUCESSFUL(StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "001",
+			"Notification Sent Successfully"), TEMPLATE_CONFIGURATION_NOT_FOUND(
+					StatusConstants.MESSAGE_SENDER__FAILED_CODE + "002",
+					"Template configuration and language not found"), EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING(
+							StatusConstants.MESSAGE_SENDER__FAILED_CODE + "003",
+							"Email ID or Phone or Template or Notification Type is Missing"), NOTIFICATION_FAILED_FOR_LOST(
+									StatusConstants.MESSAGE_SENDER__FAILED_CODE + "004",
+									"Unable to Send Notification - UIN was not found for the Lost Packet"),
+
+	MESSAGE_SENDER_NOTIF_SUCC(StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "001",
+			"Notification sent successfully for registrationId "), MESSAGE_SENDER_EMAIL_FAILED(
+					StatusConstants.MESSAGE_SENDER__FAILED_CODE + "005",
+					"Email failed for registrationId "), MESSAGE_SENDER_SMS_FAILED(
+							StatusConstants.MESSAGE_SENDER__FAILED_CODE + "006", "SMS failed for registrationId ");
 
 	private final String statusComment;
 	private final String statusCode;
