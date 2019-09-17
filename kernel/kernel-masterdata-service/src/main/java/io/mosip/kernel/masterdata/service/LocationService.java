@@ -53,7 +53,7 @@ public interface LocationService {
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public ResponseWrapper<PostLocationCodeResponseDto> createLocation(
+	public ResponseWrapper<Location> createLocation(
 			LocationDto locationDto);
 
 
