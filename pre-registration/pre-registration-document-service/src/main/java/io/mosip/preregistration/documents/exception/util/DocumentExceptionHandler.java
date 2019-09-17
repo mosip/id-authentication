@@ -43,6 +43,7 @@ import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
@@ -224,6 +225,21 @@ public class DocumentExceptionHandler {
 		log.info("sessionId8", "idType", "id",
 				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
+	}
+	
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for MasterDataNotAvailableException
+	 */
+	@ExceptionHandler(MasterDataNotAvailableException.class)
+	public ResponseEntity<MainResponseDTO<?>> masterDataNotAvailableException(final MasterDataNotAvailableException e) {
+		log.info("sessionId8", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
+		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 	}
 
 	/**

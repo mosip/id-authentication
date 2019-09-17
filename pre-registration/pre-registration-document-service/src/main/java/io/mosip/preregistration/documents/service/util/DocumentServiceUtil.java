@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -31,7 +29,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -380,12 +377,10 @@ public class DocumentServiceUtil {
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 					}, params);
-			log.debug("sessionId", "idType", "id",
-					"After rest call");
-			log.debug("sessionId", "idType", "id",
-					"Response Entity "+ respEntity.getBody());
+			log.debug("sessionId", "idType", "id", "After rest call");
+			log.debug("sessionId", "idType", "id", "Response Entity " + respEntity.getBody());
 			if (respEntity.getBody().getErrors() != null) {
-				
+
 				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
 						respEntity.getBody().getErrors().get(0).getMessage());
 			}
