@@ -211,6 +211,7 @@ public class LocationServiceImpl implements LocationService {
 	public ResponseWrapper<PostLocationCodeResponseDto> createLocation(LocationDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
 		String locationCode = null;
+		Location locationEntity = null;
 		PostLocationCodeResponseDto responseDto = null;
 		//List<LocationDto> locations = new ArrayList<>();
 		//List<Location> savedEntities = null;
@@ -242,20 +243,26 @@ public class LocationServiceImpl implements LocationService {
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
 		// Validation name already exists
+		if(dto!=null)
+		{
 			List<Location> list = locationRepository.findByNameAndLevel(dto.getName(), dto.getHierarchyLevel());
 			if (list != null && !list.isEmpty()) {
 				throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
 						String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
 								dto.getName()));
 			}
-
+		}
+			
 		// setting metadata
 		//List<Location> entities = new ArrayList<>();
 		/*for (LocationDto dto : locations) {
 			entities.add(MetaDataUtils.setCreateMetaData(dto, Location.class));
 		}*/
+		if(dto!=null)
+		{
+			locationEntity = MetaDataUtils.setCreateMetaData(dto, Location.class);
+		}
 			
-			Location locationEntity = MetaDataUtils.setCreateMetaData(dto, Location.class);
 //			if(dto.getLangCode().equals(primaryLang))
 //			{
 //				locationCode = getCodeFromName(dto.getName());

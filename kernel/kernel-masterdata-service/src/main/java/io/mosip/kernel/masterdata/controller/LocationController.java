@@ -126,7 +126,6 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
@@ -144,7 +143,6 @@ public class LocationController {
 	 *            -location code
 	 * @return CodeResponseDto
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@DeleteMapping(value = "/{locationcode}")
 	public ResponseWrapper<CodeResponseDto> deleteLocationHierarchyDetails(

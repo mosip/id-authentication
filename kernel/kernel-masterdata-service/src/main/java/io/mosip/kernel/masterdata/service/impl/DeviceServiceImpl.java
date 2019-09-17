@@ -195,18 +195,22 @@ public class DeviceServiceImpl implements DeviceService {
 	@Transactional
 	public Device createDevice(DeviceDto deviceDto) {
 		Device device = null;
+		Device entity = null;
+		DeviceHistory entityHistory = null;
 		try {
 			deviceDto = masterdataCreationUtil.createMasterData(Device.class,deviceDto);
-			Device entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
-			DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
-			entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-			entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-			//entity.setIsActive(false);
-			//String id = UUID.fromString(deviceDto.getName()).toString();
-			//entity.setId(id);
-			device = deviceRepository.create(entity);
-			deviceHistoryService.createDeviceHistory(entityHistory);
-
+			if(deviceDto!=null)
+			{
+				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
+				entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
+				entityHistory.setEffectDateTime(entity.getCreatedDateTime());
+				entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
+				//entity.setIsActive(false);
+				//String id = UUID.fromString(deviceDto.getName()).toString();
+				//entity.setId(id);
+				device = deviceRepository.create(entity);
+				deviceHistoryService.createDeviceHistory(entityHistory);
+			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
