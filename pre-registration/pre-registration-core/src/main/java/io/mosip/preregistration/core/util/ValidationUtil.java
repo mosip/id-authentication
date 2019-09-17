@@ -329,6 +329,7 @@ public class ValidationUtil {
 	}
 
 	public boolean validateDocuments(String langCode, String catCode, String typeCode) {
+		try {
 		getAllDocCategories(langCode);
 		log.debug("sessionId", "idType", "id", "In validateDocuments method with docCatMap " + docCatMap);
 		log.debug("sessionId", "idType", "id",
@@ -348,6 +349,13 @@ public class ValidationUtil {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_018.toString(),
 					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
 		}
+		}
+		catch(Exception e) {
+			log.debug("sessionId", "idType", "id", "---- "+ ExceptionUtils.getStackTrace(e));
+			log.error("sessionId", "idType", "id", "---- docTypeMap  "+docTypeMap +"-- docCatMap "+docCatMap+ ExceptionUtils.getStackTrace(e));
+			
+		}
+		return false;
 	}
 
 	public Map<String, String> getDocumentTypeNameByTypeCode(String langCode, String catCode) {
