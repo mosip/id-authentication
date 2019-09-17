@@ -87,7 +87,7 @@ public class RegistrationTransactionController {
 	public ResponseEntity<RegTransactionResponseDTO> getTransactionsbyRid(@PathVariable("rid") String rid,
 			@PathVariable("langCode") String langCode,HttpServletRequest request)
 			throws Exception {
-		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
+
 		HttpHeaders headers = new HttpHeaders();
 		Cookie token=WebUtils.getCookie( request,"Authorization");
 		if (token == null || token.getValue() ==null) {
@@ -95,7 +95,7 @@ public class RegistrationTransactionController {
 		}	
 		try {	
 			tokenValidator.validate("Authorization=" + token.getValue(), "transaction");
-			dtoList =transactionService.getTransactionByRegId(rid,langCode);	
+			List<RegistrationTransactionDto> dtoList =transactionService.getTransactionByRegId(rid,langCode);	
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 
 				headers.add(RESPONSE_SIGNATURE,

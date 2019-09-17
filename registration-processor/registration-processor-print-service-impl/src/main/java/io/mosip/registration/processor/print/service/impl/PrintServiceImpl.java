@@ -624,7 +624,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String vid = null;
 		VidRequestDto vidRequestDto = new VidRequestDto();
 		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
-		VidResponseDTO vidResponse = new VidResponseDTO();
+		VidResponseDTO vidResponse;
 		vidRequestDto.setUIN(uin);
 		vidRequestDto.setVidType("Temporary");
 		request.setId(env.getProperty(VID_CREATE_ID));

@@ -830,6 +830,10 @@ public enum PlatformErrorMessages {
 	RPR_PGS_VID_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "013",
 			"Could not generate/regenerate VID as per policy,Please use existing VID"),
 
+	RPR_PGS_VID_CREATION_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "014", "VID creation Exception"),
+
+	RPR_PGS_ID_OBJECT_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "015", "ID Object Validation failed"),
+
 	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
 
