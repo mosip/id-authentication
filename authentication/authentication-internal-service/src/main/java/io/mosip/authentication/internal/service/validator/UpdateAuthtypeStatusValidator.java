@@ -10,6 +10,7 @@ import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -48,7 +49,7 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 		if (authTypeStatusDto != null) {
 			validateConsentReq(authTypeStatusDto.isConsentObtained(), errors);
 			if (!errors.hasErrors()) {
-				validateIdvId(authTypeStatusDto.getIndividualId(), authTypeStatusDto.getIndividualIdType(), errors);
+				validateIdvId(authTypeStatusDto.getIndividualId(), IdType.getIDTypeStrOrSameStr(authTypeStatusDto.getIndividualIdType()), errors);
 			}
 			String requestTime = authTypeStatusDto.getRequestTime();
 			if (!errors.hasErrors()) {

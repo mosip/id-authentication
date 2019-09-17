@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -62,7 +63,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 			if (!errors.hasErrors()) {
 				validateId(otpRequestDto.getId(), errors);
 
-				validateIdvId(otpRequestDto.getIndividualId(), otpRequestDto.getIndividualIdType(), errors,
+				validateIdvId(otpRequestDto.getIndividualId(), IdType.getIDTypeStrOrSameStr(otpRequestDto.getIndividualIdType()), errors,
 						IdAuthCommonConstants.IDV_ID);
 			}
 

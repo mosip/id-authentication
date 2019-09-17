@@ -9,6 +9,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -76,7 +77,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
 				String individualId = authRequestDto.getIndividualId();
-				String individualIdType = authRequestDto.getIndividualIdType();
+				String individualIdType = IdType.getIDTypeStrOrSameStr(authRequestDto.getIndividualIdType());
 
 				validateIdvId(individualId, individualIdType, errors);
 

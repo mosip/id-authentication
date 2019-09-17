@@ -7,6 +7,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.indauth.dto.IdType;
 
 /**
  * To validate Auth transaction inputs
@@ -28,7 +29,7 @@ public class AuthTxnValidator extends InternalAuthRequestValidator {
 	public void validate(Object target, Errors errors) {
 		if (Objects.nonNull(target)) {
 			AutnTxnRequestDto autnTxnDto = (AutnTxnRequestDto) target;
-			validateIdvId(autnTxnDto.getIndividualId(), autnTxnDto.getIndividualIdType(), errors,
+			validateIdvId(autnTxnDto.getIndividualId(), IdType.getIDTypeStrOrSameStr(autnTxnDto.getIndividualIdType()), errors,
 					IdAuthCommonConstants.IDV_ID);
 		}
 

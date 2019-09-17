@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.indauth.dto.IdType;
 /**
  * 
  * @author Dinesh Karuppiah.T
@@ -26,7 +27,7 @@ public class AuthtypeStatusValidator extends IdAuthValidator {
 	public void validate(Object target, Errors errors) {
 		if (Objects.nonNull(target)) {
 			AuthtypeRequestDto authtypeRequestDto = (AuthtypeRequestDto) target;
-			validateIdvId(authtypeRequestDto.getIndividualId(), authtypeRequestDto.getIndividualIdType(), errors,
+			validateIdvId(authtypeRequestDto.getIndividualId(), IdType.getIDTypeStrOrSameStr(authtypeRequestDto.getIndividualIdType()), errors,
 					IdAuthCommonConstants.IDV_ID);
 		}
 	}
