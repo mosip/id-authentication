@@ -1,7 +1,9 @@
 package io.mosip.kernel.idobjectvalidator.config;
 
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.REFERENCE_VALIDATOR;
+
 import javax.annotation.PostConstruct;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
