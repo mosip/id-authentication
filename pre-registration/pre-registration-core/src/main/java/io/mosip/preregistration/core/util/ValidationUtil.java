@@ -170,6 +170,7 @@ public class ValidationUtil {
 	// }
 
 	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
+		log.debug("sessionId", "idType", "id","In requestValidator");
 		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
 				+ requestMap + " againt requiredRequestMap " + requiredRequestMap);
 		for (String key : requestMap.keySet()) {

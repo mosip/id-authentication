@@ -380,12 +380,17 @@ public class DocumentServiceUtil {
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 					}, params);
+			log.debug("sessionId", "idType", "id",
+					"After rest call");
+			log.debug("sessionId", "idType", "id",
+					"Response Entity "+ respEntity.getBody());
 			if (respEntity.getBody().getErrors() != null) {
+				
 				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
 						respEntity.getBody().getErrors().get(0).getMessage());
 			}
 
-		} catch (RestClientException ex) {
+		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
 
