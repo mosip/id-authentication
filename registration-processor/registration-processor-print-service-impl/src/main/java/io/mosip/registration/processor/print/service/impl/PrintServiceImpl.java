@@ -520,7 +520,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			if (photoByte != null) {
 				int headerLength = 46;
 				DataInputStream dis = new DataInputStream(new ByteArrayInputStream(photoByte));
-				dis.skipBytes(headerLength);
+				int skippedBytes = dis.skipBytes(headerLength);
+				if (skippedBytes != 0) {
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "", "bytes skipped for image ");
+				}
 				String data = DatatypeConverter.printBase64Binary(IOUtils.toByteArray(dis));
 				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + data);
 				isPhotoSet = true;

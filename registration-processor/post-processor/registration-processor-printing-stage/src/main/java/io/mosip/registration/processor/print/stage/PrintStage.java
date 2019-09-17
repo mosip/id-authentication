@@ -533,7 +533,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 						"PrintStage::consumerListener()::exit");
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name());
 			}
 
