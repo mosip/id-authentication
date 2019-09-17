@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
 
 import org.apache.commons.collections4.SetValuedMap;
@@ -105,10 +106,10 @@ public class ValidationUtil {
 	}
 
 	/** The doc cat map. */
-	private SetValuedMap<String, String> docCatMap;
+	private ConcurrentHashMap<String, String> docCatMap;
 
 	/** The doc type map. */
-	private SetValuedMap<String, String> docTypeMap;
+	private ConcurrentHashMap<String, String> docTypeMap;
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -297,14 +298,14 @@ public class ValidationUtil {
 				.getForObject(uri, ResponseWrapper.class);
 		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
 			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTCATEGORIES);
-			docCatMap = new HashSetValuedHashMap<>(response.size());
+			docCatMap = new ConcurrentHashMap<>(response.size());
 			IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE)).forEach(
 					index -> docCatMap.put(String.valueOf(langcode), String.valueOf(response.get(index).get(CODE))));
 		}
 	}
 
 	public void getAllDocumentTypes(String langCode, String catCode) {
-		docTypeMap = new HashSetValuedHashMap<>();
+		docTypeMap = new ConcurrentHashMap<>();
 		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
 			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentTypeUri)
 					.buildAndExpand(catCode, langCode).toUriString();
