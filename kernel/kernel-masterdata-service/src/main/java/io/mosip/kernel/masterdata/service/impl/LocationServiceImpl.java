@@ -208,7 +208,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	@Transactional
-	public ResponseWrapper<PostLocationCodeResponseDto> createLocation(LocationDto dto) {
+	public ResponseWrapper<Location> createLocation(LocationDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
 		String locationCode = null;
 		Location locationEntity = null;
@@ -245,7 +245,7 @@ public class LocationServiceImpl implements LocationService {
 		// Validation name already exists
 		if(dto!=null)
 		{
-			List<Location> list = locationRepository.findByNameAndLevel(dto.getName(), dto.getHierarchyLevel());
+			List<Location> list = locationRepository.findByNameAndLevelLangCode(dto.getName(), dto.getHierarchyLevel(),dto.getLangCode());
 			if (list != null && !list.isEmpty()) {
 				throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
 						String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
@@ -275,16 +275,16 @@ public class LocationServiceImpl implements LocationService {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
-		if(locationEntity!=null)
-		{
-			responseDto = MapperUtils.map(locationEntity, PostLocationCodeResponseDto.class);
-		}
+//		if(locationEntity!=null)
+//		{
+//			responseDto = MapperUtils.map(locationEntity, PostLocationCodeResponseDto.class);
+//		}
 		
 		//List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities, PostLocationCodeResponseDto.class);
 
-		ResponseWrapper<PostLocationCodeResponseDto> response = new ResponseWrapper<>();
+		ResponseWrapper<Location> response = new ResponseWrapper<>();
 		response.setErrors(errors);
-		response.setResponse(responseDto);
+		response.setResponse(locationEntity);
 		return response;
 	}
 

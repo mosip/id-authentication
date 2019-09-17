@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,7 +79,7 @@ public class LocationController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
-	public ResponseWrapper<PostLocationCodeResponseDto> createLocationHierarchyDetails(
+	public ResponseWrapper<Location> createLocationHierarchyDetails(
 			@RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
 	}
