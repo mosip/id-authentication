@@ -27,7 +27,7 @@ public class AuthtypeStatusValidator extends IdAuthValidator {
 	public void validate(Object target, Errors errors) {
 		if (Objects.nonNull(target)) {
 			AuthtypeRequestDto authtypeRequestDto = (AuthtypeRequestDto) target;
-			validateIdvId(authtypeRequestDto.getIndividualId(), IdType.getIDTypeStrOrSameStr(authtypeRequestDto.getIndividualIdType()), errors,
+			validateIdvId(authtypeRequestDto.getIndividualId(), authtypeRequestDto.getIndividualIdType(), errors,
 					IdAuthCommonConstants.IDV_ID);
 		}
 	}

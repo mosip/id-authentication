@@ -21,15 +21,22 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
  */
 public enum IdType {
 
-	UIN("UIN"), VID("VID"),USER_ID("USERID");
+	/** The uin. */
+	UIN("UIN"), 
+	/** The vid. */
+	VID("VID"),
+	/** The user id. */
+	USER_ID("USERID");
 
 	/**
 	 * Value that indicates that default id.
 	 */
 	public static final IdType DEFAULT_ID_TYPE = IdType.UIN;
 
+	/** The type. */
 	private String type;
 	
+	/** The aliases map. */
 	private static EnumMap<IdType, String> aliasesMap = new EnumMap<>(IdType.class);
 
 	/**
@@ -52,6 +59,9 @@ public enum IdType {
 		return type;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Enum#toString()
+	 */
 	@Override
 	public String toString() {
 		return getType();
@@ -75,19 +85,52 @@ public enum IdType {
 
 	}
 	
+	/**
+	 * Gets the ID type or default.
+	 *
+	 * @param type the type
+	 * @return the ID type or default
+	 */
 	public static IdType getIDTypeOrDefault(String type) {
 		return getIDType(type).orElse(DEFAULT_ID_TYPE);
 
 	}
 	
+	/**
+	 * Gets the ID type str or default.
+	 *
+	 * @param type the type
+	 * @return the ID type str or default
+	 */
 	public static String getIDTypeStrOrDefault(String type) {
 		return getIDType(type).orElse(DEFAULT_ID_TYPE).getType();
 	}
 	
+	/**
+	 * Gets the ID type str or same str.
+	 *
+	 * @param type the type
+	 * @return the ID type str or same str
+	 */
 	public static String getIDTypeStrOrSameStr(String type) {
 		return getIDType(type).map(IdType::getType).orElse(type);
 	}
 	
+	/**
+	 * Gets the alias str or same str.
+	 *
+	 * @param type the type
+	 * @return the alias str or same str
+	 */
+	public static String getAliasStrOrSameStr(String type) {
+		return getIDType(type).flatMap(IdType::getAlias).orElse(type);
+	}
+	
+	/**
+	 * Initialize aliases.
+	 *
+	 * @param env the env
+	 */
 	public static void initializeAliases(Environment env) {
 		for(IdType idType: IdType.values()) {
 			String aliasPropertyKey = String.format(IdAuthConfigKeyConstants.ID_TYPE_ALIAS, idType.getType().toLowerCase());
@@ -98,10 +141,20 @@ public enum IdType {
 		}
 	}
 	
+	/**
+	 * Gets the alias.
+	 *
+	 * @return the alias
+	 */
 	public Optional<String> getAlias() {
 		return Optional.ofNullable(aliasesMap.get(this));
 	}
 	
+	/**
+	 * Gets the alias or type.
+	 *
+	 * @return the alias or type
+	 */
 	public String getAliasOrType() {
 		return getAlias().orElse(getType());
 	}
