@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class RegistrationCenterMachineController {
 	@Autowired
 	private RegistrationCenterMachineService registrationCenterMachineService;
 
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center and machine", notes = "Map provided registration center id and machine id")
@@ -61,6 +63,7 @@ public class RegistrationCenterMachineController {
 	 * @param machineId   MachineId id to be deleted
 	 * @return {@link RegistrationCenterMachineID}
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@ApiOperation(value = "Delete the mapping of registration center and machine")
 	@DeleteMapping("/{regCenterId}/{machineId}")
@@ -74,6 +77,7 @@ public class RegistrationCenterMachineController {
 		return responseWrapper;
 	}
 	
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@ApiOperation(value="Un-map center to machine map ")
 	@GetMapping("/unmap/{regCenterId}/{machineId}")
@@ -85,6 +89,7 @@ public class RegistrationCenterMachineController {
 		return responseWrapper;
 	}
 	
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@ApiOperation(value="Un-map center to machine map ")
 	@GetMapping("/map/{regCenterId}/{machineId}")

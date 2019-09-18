@@ -114,6 +114,7 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@PostMapping
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to create template ", notes = "create Template  and return  code")
 	@ApiResponses({ @ApiResponse(code = 201, message = " successfully created"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
@@ -135,6 +136,7 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@PutMapping
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update template ", notes = "update Template  and return  code ")
 	@ApiResponses({ @ApiResponse(code = 200, message = " successfully updated"),
 			@ApiResponse(code = 400, message = " Request body passed  is null or invalid"),
@@ -224,6 +226,7 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@PostMapping("/search")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Search template details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
@@ -243,6 +246,7 @@ public class TemplateController {
 	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "filter template details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })

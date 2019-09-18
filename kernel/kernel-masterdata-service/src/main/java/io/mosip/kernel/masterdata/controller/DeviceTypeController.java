@@ -58,6 +58,7 @@ public class DeviceTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/devicetypes")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to save Device Type", notes = "Saves Device Type and return Device Code and Languge Code")
 	@ApiResponses({
 			@ApiResponse(code = 201, message = "When Device Type successfully created", response = CodeAndLanguageCodeID.class),
@@ -109,6 +110,7 @@ public class DeviceTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/devicetypes/search")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Device Types for the given Filter parameters", notes = "Retrieve all Device Types for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> deviceTypeSearch(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
@@ -126,6 +128,7 @@ public class DeviceTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/devicetypes/filtervalues")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> deviceTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();

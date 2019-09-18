@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,7 @@ public class RegistrationCenterMachineDeviceController {
 	private RegistrationCenterMachineDeviceService registrationCenterMachineDeviceService;
 
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@PostMapping
 	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When registration center, machine and device mapped"),

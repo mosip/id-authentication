@@ -62,6 +62,7 @@ public class MachineSpecificationController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machinespecifications")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to save Machine Specification", notes = "Saves Machine Spacification and return Machine Spacification ID ")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine Specification successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -84,6 +85,7 @@ public class MachineSpecificationController {
 	 */
 	@ResponseFilter
 	@PutMapping("/machinespecifications")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update Machine Specification", notes = "update Machine Spacification and return Machine Spacification ID ")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine Specification successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -157,6 +159,7 @@ public class MachineSpecificationController {
 	 * @return the pages of {@link MachineSpecificationExtnDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@PostMapping(value = "/machinespecifications/search")
 	@ApiOperation(value = "Retrieve all machine specifications for the given Filter parameters", notes = "Retrieve all machine specifications for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> searchMachineSpecification(
@@ -174,6 +177,7 @@ public class MachineSpecificationController {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@PostMapping("/machinespecifications/filtervalues")
 	public ResponseWrapper<FilterResponseDto> machineSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
