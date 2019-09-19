@@ -81,11 +81,11 @@ public class RegistrationTransactionController {
 	 * @return list of RegTransactionResponseDTOs 
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN')")
 	@GetMapping(path = "/search/{langCode}/{rid}")
 	@ApiOperation(value = "Get the transaction entity/entities")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Transaction Entity/Entities successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch Transaction Entity/Entities") })
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN')")
 	public ResponseEntity<RegTransactionResponseDTO> getTransactionsbyRid(@PathVariable("rid") String rid,
 			@PathVariable("langCode") String langCode,HttpServletRequest request)
 			throws Exception {

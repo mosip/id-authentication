@@ -25,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -71,7 +72,8 @@ public class RegistrationTransactionControllerTest {
 	public void setUp() {
 		Mockito.doReturn("").when(digitalSignatureUtility).getDigitalSignature(ArgumentMatchers.any());
 	}
-	
+
+	@WithUserDetails("reg-admin")
 	@Test
 	public void testSyncController() throws Exception {
 		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
@@ -80,6 +82,7 @@ public class RegistrationTransactionControllerTest {
 		this.mockMvc.perform(get("/search/eng/27847657360002520190320095010").accept(MediaType.APPLICATION_JSON_VALUE).cookie(new Cookie("Authorization", "Anything"))).andExpect(status().isOk());
 	}
 
+	@WithUserDetails("reg-admin")
 	@Test
 	public void testTransactionsUnavailableException() throws Exception {
 
@@ -88,7 +91,8 @@ public class RegistrationTransactionControllerTest {
 		this.mockMvc.perform(get("/search/eng/27847657360002520190320095010").accept(MediaType.APPLICATION_JSON_VALUE).cookie(new Cookie("Authorization", "Anything")))
 				.andExpect(status().isOk());
 	}
-	
+
+	@WithUserDetails("reg-admin")
 	@Test
 	public void testRegTransactionAppException() throws Exception {
 
@@ -98,6 +102,7 @@ public class RegistrationTransactionControllerTest {
 				.andExpect(status().isOk());
 	}
 
+	@WithUserDetails("reg-admin")
 	@Test
 	public void testInvalidLangCode() throws Exception {
 
