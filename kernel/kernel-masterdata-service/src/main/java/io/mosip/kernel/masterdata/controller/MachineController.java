@@ -18,6 +18,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
@@ -159,7 +160,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@PostMapping("/machines")
+	@PostMapping("/machines/create")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -275,6 +276,29 @@ public class MachineController {
 	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.decommissionMachine(machineId));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Post API to insert a new row of Machine data
+	 * 
+	 * @param machine
+	 *            input from user Machine DTO
+	 * 
+	 * @return ResponseEntity Machine Id which is inserted successfully
+	 *         {@link ResponseEntity}
+	 */
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PostMapping("/machines")
+	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
+	public ResponseWrapper<MachineExtnDto> createMachine1(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machine) {
+		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.createMachine1(machine.getRequest()));
 		return responseWrapper;
 	}
 }
