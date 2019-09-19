@@ -29,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -135,7 +137,7 @@ public class MasterdataCreationUtil {
 			{
 				Field idColumn = dtoClass.getDeclaredField(ID_COLUMN_NAME);
 				idColumn.setAccessible(true);
-				if(!entity.equals(RegistrationCenter.class))
+				if(!entity.equals(RegistrationCenter.class) &&  !entity.equals(Machine.class))
 				{
 					primaryId = generateId();
 					E primary = getResultSet(entity, primaryLang, primaryId,primaryKeyCol);
@@ -181,7 +183,9 @@ public class MasterdataCreationUtil {
 						"Cannot create data in secondary language as data does not exist in primary language");
 			}
 		}
-		return null;
+		//return null;	
+				throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage());
 	}
 	
 	private String getCodeFromName(String name) {

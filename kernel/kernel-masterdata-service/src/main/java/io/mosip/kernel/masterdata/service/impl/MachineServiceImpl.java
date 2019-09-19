@@ -18,14 +18,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -50,6 +52,7 @@ import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
@@ -63,10 +66,12 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -131,6 +136,15 @@ public class MachineServiceImpl implements MachineService {
 	
 	@Autowired
 	private ZoneService zoneService;
+	
+	@Autowired
+	private MachineHistoryRepository machineHistoryRepository;
+	
+	@Autowired
+	private RegistrationCenterValidator registrationCenterValidator;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -783,5 +797,109 @@ public class MachineServiceImpl implements MachineService {
 		}
 		machineCodeId.setId(machineId);
 		return machineCodeId;
+	}
+	
+	
+	@Override
+	@Transactional
+	public MachineExtnDto createMachine1(MachinePostReqDto machinePostReqDto) {
+
+		// RegistrationCenterReqAdmSecDto registrationCenterReqAdmSecDtos
+				// reqRegistrationCenterDto
+				// RegistrationCenterPostResponseDto registrationCenterPostResponseDto =
+				// new RegistrationCenterPostResponseDto();
+				Machine machineEntity = new Machine();
+				MachineHistory machineHistoryEntity = null;
+				Machine machine = null;
+
+				// List<RegistrationCenter> registrationCenterList = new ArrayList<>();
+				// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+				// List<String> inputLangCodeList = new ArrayList<>();
+				String uniqueId = "";
+
+				// List<RegCenterPostReqDto> validateRegistrationCenterDtos = new
+				// ArrayList<>();
+				// List<RegCenterPostReqDto> constraintViolationedSecList = new
+				// ArrayList<>();
+				// List<ServiceError> errors = new ArrayList<>();
+
+				// Method to validate all mandatory fields of both primary and secondary
+				// language input objects
+				// registrationCenterValidator.validatePrimarySencodaryLangMandatoryFields(regCenterPostReqDto,
+				// registrationCenterPostResponseDto, inputLangCodeList,
+				// validateRegistrationCenterDtos,
+				// constraintViolationedSecList, errors);
+
+				// validate to if Records with duplicate language code
+				/*
+				 * if ((new HashSet<String>(inputLangCodeList).size()) !=
+				 * inputLangCodeList.size()) { throw new RequestException(
+				 * RegistrationCenterErrorCode.
+				 * REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorCode(),
+				 * RegistrationCenterErrorCode.
+				 * REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorMessage()); }
+				 */
+
+				try {
+					// call method generate ID or validate with DB
+					 
+					machinePostReqDto = masterdataCreationUtil.createMasterData(Machine.class,
+							machinePostReqDto);
+					// creating registration center
+
+					uniqueId =	 registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
+					machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto,
+							machineEntity.getClass());
+
+					// registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity,
+					// registrationCenterDto);
+
+					/*
+					 * RegistrationCenterID from the rcid_Seq Table,
+					 * RegistrationCenterID get by calling RegistrationCenterIdGenerator
+					 * API method generateRegistrationCenterId().
+					 * 
+					 */
+					machineEntity.setId(uniqueId);
+					/*
+					 * at the time of creation of new Registration Center Number of
+					 * Kiosks value will be Zero always
+					 */
+					//machineEntity.setNumberOfKiosks((short) 0);
+					
+					
+
+					/*
+					 * Deactivate a Center during first time creation since there will
+					 * be no machines initially mapped to the Center
+					 */
+					// registrationCenterEntity.setIsActive(false);
+					machine = machineRepository.create(machineEntity);
+					// registrationCenterList.add(registrationCenter);
+
+					// creating registration center history
+					machineHistoryEntity = MetaDataUtils.setCreateMetaData(machine,
+							MachineHistory.class);
+					
+					machineHistoryEntity.setEffectDateTime(machine.getCreatedDateTime());
+					machineHistoryEntity.setCreatedDateTime(machine.getCreatedDateTime());
+					machineHistoryRepository.create(machineHistoryEntity);
+
+				} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
+						| NoSuchFieldException | SecurityException exception) {
+					throw new MasterDataServiceException(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
+									+ ExceptionUtils.parseException(exception));
+				}
+				MachineExtnDto machineExtnDto = MapperUtils.map(machine,
+						MachineExtnDto.class);
+				// registrationCenterDtoList =
+				// MapperUtils.mapAll(registrationCenterList,
+				// RegistrationCenterExtnDto.class);
+				// registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
+				// registrationCenterPostResponseDto.setConstraintViolatedDataList(constraintViolationedSecList);
+				return machineExtnDto;
+
 	}
 }

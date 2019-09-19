@@ -1,9 +1,11 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -162,5 +164,19 @@ public interface MachineService {
 	 * @return machine ID of decommissioned machine
 	 */
 	public IdResponseDto decommissionMachine(String machineId);
+	
+	/**
+	 * Abstract method to save Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            machine DTO
+	 * 
+	 * @return IdResponseDto returning machine id which is inserted successfully
+	 *         {@link IdResponseDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving Machine
+	 */
+	public MachineExtnDto createMachine1(MachinePostReqDto machine);
 
 }
