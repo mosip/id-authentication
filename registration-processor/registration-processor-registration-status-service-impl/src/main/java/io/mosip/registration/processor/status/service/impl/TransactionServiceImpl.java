@@ -41,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
 
-	private String supportedLanguageKey = "mosip.supported-languages";
+	private static final String supportedLanguageKey = "mosip.supported-languages";
 
 	@Autowired
 	Environment environment;
@@ -56,16 +56,17 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	public TransactionEntity addRegistrationTransaction(TransactionDto transactionStatusDto) {
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-					transactionStatusDto.getRegistrationId(), "TransactionServiceImpl::addRegistrationTransaction()::entry");
+					transactionStatusDto.getRegistrationId(),
+					"TransactionServiceImpl::addRegistrationTransaction()::entry");
 			TransactionEntity entity = convertDtoToEntity(transactionStatusDto);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-					transactionStatusDto.getRegistrationId(), "TransactionServiceImpl::addRegistrationTransaction()::exit");
+					transactionStatusDto.getRegistrationId(),
+					"TransactionServiceImpl::addRegistrationTransaction()::exit");
 			return transactionRepositary.save(entity);
 		} catch (DataAccessLayerException e) {
 			throw new TransactionTableNotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		}
-		
 
 	}
 
@@ -78,7 +79,8 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	 */
 	private TransactionEntity convertDtoToEntity(TransactionDto dto) {
 		TransactionEntity transcationEntity = new TransactionEntity(dto.getTransactionId(), dto.getRegistrationId(),
-				dto.getParentid(), dto.getTrntypecode(),dto.getSubStatusCode(),dto.getStatusCode(), dto.getStatusComment());
+				dto.getParentid(), dto.getTrntypecode(), dto.getSubStatusCode(), dto.getStatusCode(),
+				dto.getStatusComment());
 		transcationEntity.setRemarks(dto.getRemarks());
 		transcationEntity.setStatusComment(dto.getStatusComment());
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
@@ -96,8 +98,8 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	 */
 	@Override
 	public TransactionDto getTransactionByRegIdAndStatusCode(String regId, String statusCode) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "TransactionServiceImpl::addRegistrationTransaction()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"TransactionServiceImpl::addRegistrationTransaction()::entry");
 		TransactionDto dto = null;
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegIdAndStatusCode(regId,
 				statusCode);
@@ -105,64 +107,50 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			dto = convertEntityToDto(transactionEntityList.get(0));
 		}
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "TransactionServiceImpl::addRegistrationTransaction()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"TransactionServiceImpl::addRegistrationTransaction()::exit");
 		return dto;
 	}
-	
 
 	@Override
-	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode) throws TransactionsUnavailableException, RegTransactionAppException {
+	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode)
+			throws TransactionsUnavailableException, RegTransactionAppException {
 
 		String supportedLanguage = environment.getProperty(supportedLanguageKey);
 		List<String> supportedLanguages = supportedLanguage != null ? Arrays.asList(supportedLanguage.split(",")) : new ArrayList<>();
 		if(!supportedLanguages.contains(langCode)) {
-			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
+			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage() + " - langCode");
 		}
 		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"TransactionServiceImpl::getTransactionByRegId()::entry");
 		try {
-		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
-		if(transactionEntityList ==null || transactionEntityList.isEmpty()) {
-			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
-					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
-		}
-		ClassLoader classLoader = getClass().getClassLoader();
-		String messagesPropertiesFileName = "globalMessages_" + langCode + ".properties";
-		InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
-		if (inputStream == null) {
-			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_DATA_POPULATION_EXCEPTION.getCode(),
-					PlatformErrorMessages.RPR_RTS_DATA_POPULATION_EXCEPTION.getMessage());
-		}
-		Properties prop = new Properties();
-		prop.load(new InputStreamReader(inputStream,"UTF-8"));
-		for (TransactionEntity transactionEntity : transactionEntityList) {
-			if(transactionEntity.getSubStatusCode()!=null && !transactionEntity.getSubStatusCode().isEmpty()) {
-			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
+			List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
+			if (transactionEntityList == null || transactionEntityList.isEmpty()) {
+				throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
+						PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
 			}
-			if(transactionEntity.getStatusCode()!=null && !transactionEntity.getStatusCode().isEmpty()) {
-			transactionEntity.setStatusCode(prop.getProperty(transactionEntity.getStatusCode()));
-			}
-			if(transactionEntity.getTrntypecode()!=null && !transactionEntity.getTrntypecode().isEmpty()) {
-			transactionEntity.setTrntypecode(prop.getProperty(transactionEntity.getTrntypecode()));
-			}
-			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
-		}
-		inputStream.close();
+			ClassLoader classLoader = getClass().getClassLoader();
+			String messagesPropertiesFileName = "globalMessages_" + langCode + ".properties";
+			InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
+			Properties prop = new Properties();
+			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
+			prop.load(streamReader);
+			setStatusComment(transactionEntityList, dtoList, prop);
+			streamReader.close();
+			inputStream.close();
 		} catch (DataAccessLayerException e) {
 			throw new TransactionTableNotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} catch (IOException e) {
-			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(), 
-					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage()+" -->"+e.getMessage());
+			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage() + " -->" + e.getMessage());
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "TransactionServiceImpl::getTransactionByRegId()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"TransactionServiceImpl::getTransactionByRegId()::exit");
 		return dtoList;
 	}
-
 
 	/**
 	 * Convert entity to dto.
@@ -173,14 +161,30 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	 */
 	private TransactionDto convertEntityToDto(TransactionEntity entity) {
 		return new TransactionDto(entity.getId(), entity.getRegistrationId(), entity.getParentid(),
-				entity.getTrntypecode(), entity.getRemarks(), entity.getStatusCode(),
-				entity.getStatusComment(),entity.getSubStatusCode());
+				entity.getTrntypecode(), entity.getRemarks(), entity.getStatusCode(), entity.getStatusComment(),
+				entity.getSubStatusCode());
 
 	}
-	
-	private RegistrationTransactionDto convertEntityToRegistrationTransactionDto(TransactionEntity entity) {
-		return new RegistrationTransactionDto(entity.getId(),entity.getRegistrationId(),entity.getTrntypecode(),
-				entity.getParentid(),entity.getStatusCode(),entity.getStatusComment(),entity.getCreateDateTime());
 
+	private RegistrationTransactionDto convertEntityToRegistrationTransactionDto(TransactionEntity entity) {
+		return new RegistrationTransactionDto(entity.getId(), entity.getRegistrationId(), entity.getTrntypecode(),
+				entity.getParentid(), entity.getStatusCode(), entity.getStatusComment(), entity.getCreateDateTime());
+
+	}
+
+	private void setStatusComment(List<TransactionEntity> transactionEntityList,
+			List<RegistrationTransactionDto> dtoList, Properties prop) {
+		for (TransactionEntity transactionEntity : transactionEntityList) {
+			if (transactionEntity.getSubStatusCode() != null && !transactionEntity.getSubStatusCode().isEmpty()) {
+				transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
+			}
+			if (transactionEntity.getStatusCode() != null && !transactionEntity.getStatusCode().isEmpty()) {
+				transactionEntity.setStatusCode(prop.getProperty(transactionEntity.getStatusCode()));
+			}
+			if (transactionEntity.getTrntypecode() != null && !transactionEntity.getTrntypecode().isEmpty()) {
+				transactionEntity.setTrntypecode(prop.getProperty(transactionEntity.getTrntypecode()));
+			}
+			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
+		}
 	}
 }

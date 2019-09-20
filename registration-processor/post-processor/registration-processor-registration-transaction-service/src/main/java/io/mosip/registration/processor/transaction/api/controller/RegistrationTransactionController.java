@@ -56,7 +56,7 @@ public class RegistrationTransactionController {
 	
 	@Autowired
 	private Environment env;
-	
+
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
 	
@@ -89,7 +89,7 @@ public class RegistrationTransactionController {
 		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			dtoList =transactionService.getTransactionByRegId(rid,langCode);
+			dtoList = transactionService.getTransactionByRegId(rid,langCode);
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 
 				headers.add(RESPONSE_SIGNATURE,

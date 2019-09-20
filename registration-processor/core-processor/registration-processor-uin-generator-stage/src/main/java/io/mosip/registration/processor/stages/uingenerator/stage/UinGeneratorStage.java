@@ -256,9 +256,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 								statusComment + "  :  " + idres);
 						object.setIsValid(false);
 					}
-					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
-							"is :" + idResponseDTO != null ? idResponseDTO.toString() : null);
+
 				} else {
 					if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(object.getReg_type().toString())) {
 						isTransactionSuccessful = reActivateUin(idResponseDTO, registrationId, uinFieldCheck, object,
