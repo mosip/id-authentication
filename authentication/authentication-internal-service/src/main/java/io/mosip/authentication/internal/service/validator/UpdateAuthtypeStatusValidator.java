@@ -27,6 +27,7 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 	private static final String AUTH_TYPE_SEPERATOR = "-";
 	/** The Constant MISSING_AUTH_TYPES. */
 	private static final String AUTH_TYPES = "authType(s)";
+	private static final String LOCKED = "locked";
 
 	/* (non-Javadoc)
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
@@ -78,10 +79,10 @@ public class UpdateAuthtypeStatusValidator extends IdAuthValidator {
 			if (locked == null) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { AUTH_TYPES },
+						new Object[] { LOCKED },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, AUTH_TYPES);
+						IdAuthCommonConstants.VALIDATE, LOCKED);
 			}
 			
 		}

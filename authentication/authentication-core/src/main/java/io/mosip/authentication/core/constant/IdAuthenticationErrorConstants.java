@@ -6,6 +6,8 @@ package io.mosip.authentication.core.constant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.indauth.dto.IdType;
+
 /**
  * List of all IDA error codes and its respective error messages.
  * 
@@ -150,11 +152,32 @@ public enum IdAuthenticationErrorConstants {
 	 * @return the errorMessage
 	 */
 	public String getErrorMessage() {
-		return errorMessage;
+		return replaceIdTypeStrWithAlias(errorMessage);
 	}
 
 	public String getActionMessage() {
-		return actionMessage;
+		return replaceIdTypeStrWithAlias(actionMessage);
+	}
+	
+	/**
+	 * Replace the occurrences of ID Type to its alias if available.
+	 * @param str the string to check 
+	 * @return the string which has replacements with alias
+	 */
+	private String replaceIdTypeStrWithAlias(String str) {
+		String s = str;
+		if (str != null) {
+			for (IdType idType : IdType.values()) {
+				Optional<String> alias = idType.getAlias();
+				if (alias.isPresent()) {
+					String type = idType.getType();
+					if (str.contains(type)) {
+						s = s.replace(type, alias.get());
+					}
+				}
+			}
+		}
+		return s;
 	}
 
 	public static Optional<String> getActionMessageForErrorCode(String errorCode) {
