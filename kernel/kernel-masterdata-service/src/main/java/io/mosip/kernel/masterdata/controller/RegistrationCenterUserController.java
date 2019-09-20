@@ -38,9 +38,9 @@ public class RegistrationCenterUserController {
 	 *            the Registration Center ID.
 	 * @return the UserAndRegCenterMappingResponseDto.
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@PutMapping("/unmap/{regcenterid}/{userid}")
+	@PutMapping("/unmap/{userid}/{regcenterid}")
 	public ResponseWrapper<UserAndRegCenterMappingResponseDto> unmapUserRegCenter(
 			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
@@ -59,9 +59,9 @@ public class RegistrationCenterUserController {
 	 *            the registration center id
 	 * @return the UserAndRegCenterMappingResponseDto.
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@PutMapping("/map/{regcenterid}/{userid}")
+	@PutMapping("/map/{userid}/{regcenterid}")
 	public ResponseWrapper<UserAndRegCenterMappingResponseDto> mapUserRegCenter(
 			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {

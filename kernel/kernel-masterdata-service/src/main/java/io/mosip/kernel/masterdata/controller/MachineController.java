@@ -158,7 +158,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@PostMapping("/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
@@ -181,7 +181,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@PutMapping("/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine successfully udated"),
@@ -205,7 +205,7 @@ public class MachineController {
 	 * @return MachineResponseDto all machines details those are mapped with given
 	 *         registration Id {@link MachineResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
@@ -236,7 +236,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machines/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineSearchDto>> searchMachine(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<MachineSearchDto>> responseWrapper = new ResponseWrapper<>();
@@ -253,7 +253,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machines/filtervalues")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> machineFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -271,7 +271,7 @@ public class MachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Machine")
 	@PutMapping("/machines/decommission/{machineId}")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.decommissionMachine(machineId));

@@ -66,7 +66,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void locationCreateSuccess() throws Exception {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
@@ -75,7 +75,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createActiveLocationSuccess() throws Exception {
 		location1.setIsActive(true);
 		location2.setIsActive(true);
@@ -89,7 +89,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createDefaultlangMissing() throws Exception {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
@@ -98,7 +98,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createActiveLocationFailure() throws Exception {
 		//dto1.setIsActive(true);
 		request.setRequest(dto1);
@@ -108,7 +108,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createLocationHierarchyLevelAlreadtExist() throws Exception {
 		when(repo.findByNameAndLevel(Mockito.anyString(), Mockito.anyShort())).thenReturn(Arrays.asList(location1));
 		request.setRequest(dto1);
@@ -118,7 +118,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createInvalidLangCode() throws Exception {
 		dto2.setLangCode("ABC");
 		request.setRequest(dto1);
@@ -128,7 +128,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createInvalidHierarachyLevel() throws Exception {
 		dto2.setHierarchyLevel((short) 1);
 		request.setRequest(dto1);
@@ -138,7 +138,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createInvalidCode() throws Exception {
 		dto2.setCode("MNB");
 		request.setRequest(dto1);
@@ -148,7 +148,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createEmptyLocationCode() throws Exception {
 		dto2.setCode("");
 		request.setRequest(dto1);
@@ -158,7 +158,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createEmptyLocationCodePrimary() throws Exception {
 		dto1.setCode("");
 		request.setRequest(dto1);
@@ -168,7 +168,7 @@ public class LocationControllerIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void createSaveFailure() throws Exception {
 		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
 		request.setRequest(dto1);

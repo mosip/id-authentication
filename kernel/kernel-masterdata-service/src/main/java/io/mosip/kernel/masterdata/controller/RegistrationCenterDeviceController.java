@@ -91,9 +91,9 @@ public class RegistrationCenterDeviceController {
 	 *            the Registration Center ID.
 	 * @return the DeviceAndRegCenterMappingResponseDto.
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@PutMapping("/unmap/{regcenterid}/{deviceid}")
+	@PutMapping("/unmap/{deviceid}/{regcenterid}")
 	public ResponseWrapper<DeviceAndRegCenterMappingResponseDto> unmapDeviceRegCenter(
 			@PathVariable("deviceid") @NotBlank @Size(min = 1, max = 36) String deviceId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
@@ -110,7 +110,7 @@ public class RegistrationCenterDeviceController {
 	 * @param deviceId the device id
 	 * @return {@link ResponseDto}
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')") 
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')") 
 	@ResponseFilter
 	@ApiOperation(value = "map registration center with device")
 	@GetMapping("map/{regCenterId}/{deviceId}")

@@ -105,7 +105,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN','ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
@@ -125,7 +125,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "update the blacklisted word")
@@ -138,7 +138,7 @@ public class BlacklistedWordsController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping(path = "/details")
 	@ApiOperation(value = "update the blacklisted word details except word")
@@ -203,6 +203,7 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@PostMapping("/search")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> searchBlackListedWords(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
@@ -221,6 +222,7 @@ public class BlacklistedWordsController {
 	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> blackListedWordsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();

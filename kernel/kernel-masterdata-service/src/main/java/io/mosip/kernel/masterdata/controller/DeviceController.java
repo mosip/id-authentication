@@ -119,7 +119,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id")
@@ -144,7 +144,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is updated successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id")
@@ -221,7 +221,7 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
@@ -239,6 +239,7 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> deviceFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -256,7 +257,7 @@ public class DeviceController {
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Device")
 	@PutMapping("/decommission/{deviceId}")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.decommissionDevice(deviceId));

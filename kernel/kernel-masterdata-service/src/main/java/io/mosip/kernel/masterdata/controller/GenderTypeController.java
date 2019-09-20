@@ -90,6 +90,7 @@ public class GenderTypeController {
 	 * @return primary key of entered row of gender
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@PostMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(
 			@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
@@ -107,6 +108,7 @@ public class GenderTypeController {
 	 * @return key of updated row
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Update Gender Type")
 	@PutMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateGenderType(
@@ -124,6 +126,7 @@ public class GenderTypeController {
 	 * @return code of deleted rows
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Delete Gender Type")
 	@DeleteMapping("/gendertypes/{code}")
 	public ResponseWrapper<CodeResponseDto> deleteGenderType(
@@ -189,6 +192,7 @@ public class GenderTypeController {
 	 * @return the response i.e. multiple entities based on the search values
 	 *         required.
 	 */
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/gendertypes/search")
 	public ResponseWrapper<PageResponseDto<GenderExtnDto>> searchGenderTypes(
@@ -208,6 +212,7 @@ public class GenderTypeController {
 	 *         name and type.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@PostMapping("/gendertypes/filtervalues")
 	public ResponseWrapper<FilterResponseDto> genderFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {

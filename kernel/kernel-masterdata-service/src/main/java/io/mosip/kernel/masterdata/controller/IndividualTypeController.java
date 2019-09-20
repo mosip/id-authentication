@@ -98,6 +98,7 @@ public class IndividualTypeController {
 	 * @return the response i.e. multiple entities based on the search values
 	 *         required.
 	 */
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> searchIndividuals(
@@ -116,6 +117,7 @@ public class IndividualTypeController {
 	 * @return the response i.e. the list of values for the specific filter column
 	 *         name and type.
 	 */
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> individualsFilterValues(

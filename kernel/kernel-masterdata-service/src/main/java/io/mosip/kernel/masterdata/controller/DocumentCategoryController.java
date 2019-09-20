@@ -113,6 +113,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documentcategories")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentCategory(
 			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
@@ -131,6 +132,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@PutMapping("/documentcategories")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentCategory(
 			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
@@ -198,7 +200,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documentcategories/search")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> searchDocCategories(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> responseWrapper = new ResponseWrapper<>();
@@ -217,7 +219,7 @@ public class DocumentCategoryController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documentcategories/filtervalues")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> docCategoriesFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
