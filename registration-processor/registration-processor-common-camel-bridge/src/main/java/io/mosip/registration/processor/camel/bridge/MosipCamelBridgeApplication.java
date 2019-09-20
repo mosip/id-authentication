@@ -13,13 +13,15 @@ public class MosipCamelBridgeApplication {
 
 	/**
 	 * @param args
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan("io.mosip.registration.processor.core.config","io.mosip.registration.processor.camel.bridge.config","io.mosip.registration.processor.rest.client.config","io.mosip.registration.processor.core.kernel.beans");
 		configApplicationContext.refresh();
 		MosipBridgeFactory mosipBridgeFactory = configApplicationContext.getBean(MosipBridgeFactory.class);
 		mosipBridgeFactory.getEventBus();
+		mosipBridgeFactory.startCamelBridge();
 	}
 
 }

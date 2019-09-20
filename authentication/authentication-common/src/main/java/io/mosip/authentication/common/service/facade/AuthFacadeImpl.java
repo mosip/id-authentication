@@ -137,14 +137,14 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
-		String idvIdType = authRequestDTO.getIndividualIdType();
+		String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvid,
 				authRequestDTO.getRequestedAuth().isBio());
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
 		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
-				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType());
+				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
 		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
 			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
 				if (authTypeStatus.getLocked()) {

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.9.1</version>
+		<version>0.10.0</version>
 	</parent>
 	<artifactId>registration-processor-info-storage-service</artifactId>
 	<name>registration-processor-info-storage-service</name>

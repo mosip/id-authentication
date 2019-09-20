@@ -98,6 +98,10 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) AND m.isActive = true")
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
+	
+	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2")
+	Machine findMachineByIdAndLangCode(String id,String langCode);
+	
 
 	/**
 	 * This method trigger query to fetch the Machine detail those are mapped with
@@ -128,4 +132,5 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	@Modifying
 	@Transactional
 	int decommissionMachine(String id);
+	
 }

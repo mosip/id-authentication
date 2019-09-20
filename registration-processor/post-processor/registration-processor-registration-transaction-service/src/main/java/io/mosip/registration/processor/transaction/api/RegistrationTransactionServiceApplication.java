@@ -11,13 +11,14 @@ import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfi
 
 @SpringBootApplication
 @ComponentScan(basePackages= {"io.mosip.registration.processor.status.*","io.mosip.registration.processor.rest.client.*",
-		"io.mosip.registration.processor.core.token.*", "io.mosip.registration.processor.core.config","io.mosip.registration.processor.transaction.*"},
+		"io.mosip.registration.processor.core.token.*", "io.mosip.registration.processor.core.config",
+		"io.mosip.registration.processor.transaction.*", "io.mosip.kernel.auth.*"},
 excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {RegistrationStatusBeanConfig.class,
 		RestConfigBean.class}))
-public class RegistrationProcessorRegistrationTransactionServiceApplication {
+public class RegistrationTransactionServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RegistrationProcessorRegistrationTransactionServiceApplication.class, args);
+		SpringApplication.run(RegistrationTransactionServiceApplication.class, args);
 	}
 
 }

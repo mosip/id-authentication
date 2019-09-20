@@ -339,7 +339,8 @@ public class Validations extends BaseController {
 							&& !getRegistrationDTOFromSession().getSelectionListDTO().isAddress())
 							|| (id.matches(RegistrationConstants.POI_DOCUMENT)
 									&& !getRegistrationDTOFromSession().getSelectionListDTO().isName())
-							|| id.matches(RegistrationConstants.POR_DOCUMENT))) {
+							|| (id.matches(RegistrationConstants.POR_DOCUMENT) && 
+									!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails()))) {
 				return true;
 			}
 			if (getRegistrationDTOFromSession().getSelectionListDTO() == null

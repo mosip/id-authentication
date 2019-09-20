@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
 import io.swagger.annotations.Api;
@@ -69,6 +71,28 @@ public class RegistrationCenterMachineController {
 		ResponseWrapper<RegistrationCenterMachineID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterMachineService.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@ApiOperation(value="Un-map center to machine map ")
+	@GetMapping("/unmap/{regCenterId}/{machineId}")
+	public ResponseWrapper<ResponseDto> unMapRegistrationCenterMachine(@ApiParam("Registration center id") @PathVariable String regCenterId,
+			@ApiParam("MachineId id ") @PathVariable String machineId){
+		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterMachineService.unMapCenterToMachineMapping(regCenterId, machineId));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@ApiOperation(value="Un-map center to machine map ")
+	@GetMapping("/map/{regCenterId}/{machineId}")
+	public ResponseWrapper<ResponseDto> mapRegistrationCenterMachine(@ApiParam("Registration center id") @PathVariable String regCenterId,
+			@ApiParam("MachineId id ") @PathVariable String machineId){
+		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterMachineService.mapCenterToMachineMapping(regCenterId, machineId));
 		return responseWrapper;
 	}
 	

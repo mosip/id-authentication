@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,7 +27,8 @@ import io.mosip.registration.processor.status.exception.TransactionsUnavailableE
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
-/**
+
+/**	
  * The Class TransactionServiceImpl.
  */
 @Service
@@ -34,16 +36,12 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(TransactionServiceImpl.class);
-
+	
 	/** The transaction repositary. */
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
 
-	private static final String PRIMARY_LANG = "transaction.primary.language";
-
-	private static final String SECONDARY_LANG = "transaction.secondary.language";
-
-	private static final String TERTIARY_LANG = "transaction.tertiary.language";
+	private static final String supportedLanguageKey = "mosip.supported-languages";
 
 	@Autowired
 	Environment environment;
@@ -118,13 +116,11 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode)
 			throws TransactionsUnavailableException, RegTransactionAppException {
 
-		String primaryLanguage = environment.getProperty(PRIMARY_LANG);
-		String secondaryLanguage = environment.getProperty(SECONDARY_LANG);
-		String tertiaryLanguage = environment.getProperty(TERTIARY_LANG);
-		if (!(langCode.matches(primaryLanguage) || langCode.matches(secondaryLanguage)
-				|| langCode.matches(tertiaryLanguage))) {
+		String supportedLanguage = environment.getProperty(supportedLanguageKey);
+		List<String> supportedLanguages = supportedLanguage != null ? Arrays.asList(supportedLanguage.split(",")) : new ArrayList<>();
+		if(!supportedLanguages.contains(langCode)) {
 			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(),
-					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage());
+					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage() + " - langCode");
 		}
 		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
@@ -136,8 +132,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 						PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
 			}
 			ClassLoader classLoader = getClass().getClassLoader();
-			String messagesPropertiesFileName = environment
-					.getProperty("registration.processor.status.messages." + langCode);
+			String messagesPropertiesFileName = "globalMessages_" + langCode + ".properties";
 			InputStream inputStream = classLoader.getResourceAsStream(messagesPropertiesFileName);
 			Properties prop = new Properties();
 			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
