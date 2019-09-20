@@ -91,7 +91,7 @@ public class RegistrationTransactionController {
 			throws Exception {
 		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
-		try {	
+		try {
 			dtoList =transactionService.getTransactionByRegId(rid,langCode);
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 

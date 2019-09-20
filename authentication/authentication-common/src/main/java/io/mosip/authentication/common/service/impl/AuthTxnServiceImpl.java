@@ -72,7 +72,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	public List<AutnTxnDto> fetchAuthTxnDetails(AutnTxnRequestDto authtxnrequestdto)
 			throws IdAuthenticationBusinessException {
 		List<AutnTxn> autnTxnList;
-		String individualIdType = authtxnrequestdto.getIndividualIdType();
+		String individualIdType = IdType.getIDTypeStrOrDefault(authtxnrequestdto.getIndividualIdType());
 		
 		if(!IdType.UIN.getType().equals(individualIdType) && !IdType.VID.getType().equals(individualIdType)) {
 			throw new IdAuthenticationBusinessException(

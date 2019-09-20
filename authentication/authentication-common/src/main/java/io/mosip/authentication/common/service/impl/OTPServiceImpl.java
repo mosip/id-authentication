@@ -119,7 +119,7 @@ public class OTPServiceImpl implements OTPService {
 		if (isOtpFlooded(hashedUin, requestTime)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			String individualIdType = otpRequestDto.getIndividualIdType();
+			String individualIdType = IdType.getIDTypeStrOrDefault(otpRequestDto.getIndividualIdType());
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
 			String uin = String.valueOf(idResDTO.get("uin"));
 			String userIdForSendOtp = uin;

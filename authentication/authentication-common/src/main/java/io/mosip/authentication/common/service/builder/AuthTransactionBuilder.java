@@ -18,6 +18,7 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.TransactionType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ParseException;
@@ -167,12 +168,12 @@ public class AuthTransactionBuilder {
 			if (authRequestDTO != null) {
 				idvId = authRequestDTO.getIndividualId();
 				reqTime = authRequestDTO.getRequestTime();
-				idvIdType = authRequestDTO.getIndividualIdType();
+				idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
 				txnID = authRequestDTO.getTransactionID();
 			} else if (otpRequestDTO != null) {
 				idvId = otpRequestDTO.getIndividualId();
 				reqTime = otpRequestDTO.getRequestTime();
-				idvIdType = otpRequestDTO.getIndividualIdType();
+				idvIdType = IdType.getIDTypeStrOrDefault(otpRequestDTO.getIndividualIdType());
 				txnID = otpRequestDTO.getTransactionID();
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
