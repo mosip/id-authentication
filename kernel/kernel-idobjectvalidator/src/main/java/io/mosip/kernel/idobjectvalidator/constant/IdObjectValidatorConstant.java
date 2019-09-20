@@ -45,7 +45,8 @@ public enum IdObjectValidatorConstant {
 	MASTERDATA_LOCATIONS_URI("mosip.kernel.idobjectvalidator.masterdata.locations.rest.uri"),
 	MASTERDATA_LOCATION_HIERARCHY_URI("mosip.kernel.idobjectvalidator.masterdata.locationhierarchy.rest.uri"),
 	APPLICATION_ID("application.id"),
-	FIELD_LIST("mosip.kernel.idobjectvalidator.mandatory-attributes.%s.%s");
+	FIELD_LIST("mosip.kernel.idobjectvalidator.mandatory-attributes.%s.%s"),
+	REFERENCE_VALIDATOR("mosip.kernel.idobjectvalidator.referenceValidator");
 
 	/**
 	 * The property present in Report.

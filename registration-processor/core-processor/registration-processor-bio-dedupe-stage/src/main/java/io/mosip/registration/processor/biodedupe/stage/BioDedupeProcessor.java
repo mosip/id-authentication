@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.biodedupe.constants.BioDedupeConstants;
 import io.mosip.registration.processor.biodedupe.stage.exception.CbeffNotFoundException;
-import io.mosip.registration.processor.biodedupe.stage.utils.StatusMessage;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
@@ -192,7 +191,8 @@ public class BioDedupeProcessor {
 
 		} catch (DataAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
-			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			registrationStatusDto.setStatusComment(trimExceptionMessage
+					.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
@@ -205,7 +205,8 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
-			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED + e.getMessage()));
+			registrationStatusDto.setStatusComment(
+					trimExceptionMessage.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
@@ -218,8 +219,7 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (CbeffNotFoundException ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto
-					.setStatusComment(StatusUtil.CBEF_NOT_FOUND.getMessage());
+			registrationStatusDto.setStatusComment(StatusUtil.CBEF_NOT_FOUND.getMessage());
 			registrationStatusDto.setSubStatusCode(StatusUtil.CBEF_NOT_FOUND.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.CBEFF_NOT_PRESENT_EXCEPTION));
@@ -232,7 +232,8 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (IdentityNotFoundException | IOException ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setStatusComment(trimExceptionMessage
+					.trimExceptionMessage(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
@@ -245,7 +246,8 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setStatusComment(trimExceptionMessage
+					.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
@@ -382,7 +384,12 @@ public class BioDedupeProcessor {
 
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				registrationType);
-		if (matchedRegIds.isEmpty()) {
+		// TODO : temporary fix. Need to analyze more.
+		if (matchedRegIds != null && !matchedRegIds.isEmpty()
+				&& matchedRegIds.contains(registrationStatusDto.getRegistrationId())) {
+			matchedRegIds.remove(registrationStatusDto.getRegistrationId());
+		}
+		if (matchedRegIds == null || matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
@@ -520,7 +527,8 @@ public class BioDedupeProcessor {
 				for (String matchedRegId : matchedRegIds) {
 					JSONObject matchedDemographicIdentity = idRepoService.getIdJsonFromIDRepo(matchedRegId,
 							utilities.getGetRegProcessorDemographicIdentity());
-					matchCount=	addMactchedRefId(matchedDemographicIdentity,matchCount,applicantAttribute,applicantKeysToMatch,demoMatchedIds,matchedRegId);
+					matchCount = addMactchedRefId(matchedDemographicIdentity, matchCount, applicantAttribute,
+							applicantKeysToMatch, demoMatchedIds, matchedRegId);
 					if (matchCount > 1)
 						break;
 				}
@@ -557,7 +565,9 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private int addMactchedRefId(JSONObject matchedDemographicIdentity, int matchCount, Map<String, String> applicantAttribute, List<String> applicantKeysToMatch, List<String> demoMatchedIds, String matchedRegId) throws IOException {
+	private int addMactchedRefId(JSONObject matchedDemographicIdentity, int matchCount,
+			Map<String, String> applicantAttribute, List<String> applicantKeysToMatch, List<String> demoMatchedIds,
+			String matchedRegId) throws IOException {
 		if (matchedDemographicIdentity != null) {
 			Map<String, String> matchedAttribute = getIdJson(matchedDemographicIdentity);
 			if (!matchedAttribute.isEmpty()) {
@@ -565,7 +575,7 @@ public class BioDedupeProcessor {
 					matchCount++;
 					demoMatchedIds.add(matchedRegId);
 				}
-				
+
 			}
 		}
 		return matchCount;

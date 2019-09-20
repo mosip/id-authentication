@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.entity.UserDetailsHistory;
  *
  */
 @Repository
-public interface UserDetailsRepository extends BaseRepository<UserDetailsHistory, UserDetailHistoryPk> {
+public interface UserDetailsHistoryRepository extends BaseRepository<UserDetailsHistory, UserDetailHistoryPk> {
 
 	/**
 	 * @param userId

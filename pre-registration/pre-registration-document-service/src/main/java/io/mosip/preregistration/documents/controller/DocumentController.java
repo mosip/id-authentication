@@ -79,9 +79,11 @@ public class DocumentController {
 			@PathVariable(value = "preRegistrationId") String preRegistrationId,
 			@RequestPart(value = "Document request", required = true) String reqDto,
 			@RequestPart(value = "file", required = true) MultipartFile file) {
-
+		log.debug("sessionId", "idType", "id", "In doc controller ");
+		log.debug("sessionId", "idType", "id", "Pre-id " + preRegistrationId);
 		log.info("sessionId", "idType", "id",
-				"In fileUpload method of document controller to upload the document for request " + reqDto);
+				"In fileUpload method of document controller to upload the document for request " + reqDto.toString());
+
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(documentUploadService.uploadDocument(file, reqDto, preRegistrationId));
 	}
@@ -171,7 +173,7 @@ public class DocumentController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@DeleteMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Delete document by document Id")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted")})
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted") })
 	public ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
 			@Valid @PathVariable(required = true) String documentId,
 			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {

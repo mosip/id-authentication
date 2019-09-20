@@ -12,7 +12,6 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -108,6 +107,8 @@ import javafx.util.Duration;
 
 @Component
 public class BaseController {
+	
+	private static final String ALERT_STAGE = "alertStage";
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -332,12 +333,12 @@ public class BaseController {
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
 			if (SessionContext.isSessionContextAvailable()) {
-				SessionContext.map().put("alertStage", alertStage);
+				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
 		} else {
 			if (SessionContext.isSessionContextAvailable()) {
-				SessionContext.map().put("alertStage", alertStage);
+				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
@@ -1374,9 +1375,10 @@ public class BaseController {
 	}
 	
 	public void closeAlreadyExistedAlert() {
-		if (SessionContext.isSessionContextAvailable()) {
-		Stage alertStageFromSession = (Stage)SessionContext.map().get("alertStage");
-		if(alertStageFromSession != null) alertStageFromSession.close();
+		if (SessionContext.isSessionContextAvailable() && SessionContext.map() != null
+				&& SessionContext.map().get(ALERT_STAGE) != null) {
+			Stage alertStageFromSession = (Stage) SessionContext.map().get(ALERT_STAGE);
+			alertStageFromSession.close();
 		}
 	}
 

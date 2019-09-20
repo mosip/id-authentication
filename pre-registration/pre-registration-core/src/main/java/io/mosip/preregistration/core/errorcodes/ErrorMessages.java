@@ -30,7 +30,8 @@ public enum ErrorMessages {
 	INVALID_DOC_TYPE_CODE("Document type code is invalid"),
 	INVALID_DATE_TIME_FORMAT("Invalid date time format"),//PRG_CORE_REQ_017
 	FROM_DATE_GREATER_THAN_TO_DATE("From date is greater than To date"),//PRG_CORE_REQ_020
-	ERROR_WHILE_PARSING("Error while Parsing the kernel response");//PRG_CORE_REQ_021
+	ERROR_WHILE_PARSING("Error while Parsing the kernel response"),//PRG_CORE_REQ_021
+	MASTERDATA_SERVICE_CALL_FAIL("Error while calling masterdata");//PRG_CORE_REQ_022
 	
 	private ErrorMessages(String message) {
 		this.message = message;
