@@ -26,10 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@ComponentScan(basePackages= {"io.mosip.registration.processor.status.service","io.mosip.registration.processor.rest.client.*",
-		"io.mosip.registration.processor.core.token.*", "io.mosip.registration.processor.core.config","io.mosip.registration.processor.transaction.*"},
-excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {RegistrationStatusBeanConfig.class,
-		RestConfigBean.class,RegistrationStatusRequestValidator.class, CoreConfigBean.class, KernelConfig.class}))
 public class RegistrationTransactionBeanConfigTest {
 	
 	@MockBean
@@ -43,11 +39,4 @@ public class RegistrationTransactionBeanConfigTest {
 	
 	@MockBean
 	public RegistrationSyncRequestValidator registrationSyncRequestValidator;
-
-	@Bean
-	public UserDetailsService userDetailsService() {
-		List<UserDetails> users = new ArrayList<>();
-		users.add(new User("reg-admin", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_REGISTRATION_ADMIN"))));
-		return new InMemoryUserDetailsManager(users);
-	}
 }
