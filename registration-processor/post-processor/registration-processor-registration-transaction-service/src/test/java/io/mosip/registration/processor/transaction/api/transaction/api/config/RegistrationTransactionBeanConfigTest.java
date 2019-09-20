@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.transaction.api.transaction.api.config;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,15 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
 import io.mosip.registration.processor.status.validator.RegistrationSyncRequestValidator;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @ComponentScan(basePackages= {"io.mosip.registration.processor.status.service","io.mosip.registration.processor.rest.client.*",
@@ -33,4 +43,11 @@ public class RegistrationTransactionBeanConfigTest {
 	
 	@MockBean
 	public RegistrationSyncRequestValidator registrationSyncRequestValidator;
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		List<UserDetails> users = new ArrayList<>();
+		users.add(new User("reg-admin", "mosip", Arrays.asList(new SimpleGrantedAuthority("ROLE_REGISTRATION_ADMIN"))));
+		return new InMemoryUserDetailsManager(users);
+	}
 }

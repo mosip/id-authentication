@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,18 +85,14 @@ public class RegistrationTransactionController {
 	@ApiOperation(value = "Get the transaction entity/entities")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Transaction Entity/Entities successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch Transaction Entity/Entities") })
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN')")
 	public ResponseEntity<RegTransactionResponseDTO> getTransactionsbyRid(@PathVariable("rid") String rid,
 			@PathVariable("langCode") String langCode,HttpServletRequest request)
 			throws Exception {
 		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
-		Cookie token=WebUtils.getCookie( request,"Authorization");
-		if (token == null || token.getValue() ==null) {
-			throw new InvalidTokenException(INVALIDTOKENMESSAGE);
-		}	
-		try {	
-			tokenValidator.validate("Authorization=" + token.getValue(), "transaction");
-			dtoList =transactionService.getTransactionByRegId(rid,langCode);	
+		try {
+			dtoList =transactionService.getTransactionByRegId(rid,langCode);
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 
 				headers.add(RESPONSE_SIGNATURE,

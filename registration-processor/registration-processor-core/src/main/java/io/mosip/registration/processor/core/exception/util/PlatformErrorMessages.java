@@ -872,6 +872,9 @@ public enum PlatformErrorMessages {
 
 	RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "003", "Invalid request"),
 
+	RPR_RTS_DATA_POPULATION_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "004",
+			"globalMessages not found for input langCode"),
+
 	RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
 			"reg Based checked exception");
 	/** The error message. */
