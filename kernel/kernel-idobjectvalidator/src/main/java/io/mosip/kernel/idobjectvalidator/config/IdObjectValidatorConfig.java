@@ -43,6 +43,7 @@ public class IdObjectValidatorConfig {
 			logger.debug("validating referenceValidator Class is present or not");
 			Class.forName(env.getProperty(REFERENCE_VALIDATOR.getValue()));
 		}
+		logger.debug("validateReferenceValidator: referenceValidator Class is not provided");
 	}
 
 	/**
