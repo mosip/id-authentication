@@ -252,7 +252,12 @@ public class HeaderController extends BaseController {
 	public void syncData(ActionEvent event) {
 		if (pageNavigantionAlert()) {
 			try {
+				// Go To Home Page 
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
 				if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 					if (isMachineRemapProcessStarted()) {
 
@@ -333,7 +338,12 @@ public class HeaderController extends BaseController {
 	public void downloadPreRegData(ActionEvent event) {
 		if (pageNavigantionAlert()) {
 			try {
+				// Go To Home Page 
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
 				if (isMachineRemapProcessStarted()) {
 
 					LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
