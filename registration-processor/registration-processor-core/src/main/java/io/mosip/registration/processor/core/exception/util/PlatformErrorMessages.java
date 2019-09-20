@@ -259,6 +259,10 @@ public enum PlatformErrorMessages {
 	RPR_QCR_BIOMETRIC_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
 			"Biometric Exception received form IDA"),
 
+	/** The rpr qcr biometric exception. */
+	RPR_QCR_BIOMETRIC_TYPE_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "008",
+			"Requested biometric type not found"),
+
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
 
