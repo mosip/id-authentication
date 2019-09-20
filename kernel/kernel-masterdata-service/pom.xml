@@ -35,11 +35,7 @@
 			<artifactId>kernel-datamapper-orika</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-         <dependency>
-         <groupId>io.mosip.kernel</groupId>
-         <artifactId>kernel-auditmanager-service</artifactId>
-         <version>${project.version}</version>
-         </dependency>
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>

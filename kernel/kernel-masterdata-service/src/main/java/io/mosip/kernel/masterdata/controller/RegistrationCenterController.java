@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -38,7 +36,6 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 
@@ -67,9 +64,6 @@ public class RegistrationCenterController {
 	 */
 	@Autowired
 	RegistrationCenterService registrationCenterService;
-
-	@Autowired
-	private AuditUtil auditUtil;
 
 	/**
 	 * Function to fetch registration centers list using location code and language
@@ -295,15 +289,6 @@ public class RegistrationCenterController {
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		auditRequestDto.setEventName(
-				(new StringBuilder().append(SearchDto.class.getName()).append(MasterDataConstant.ENTITY_IS_CALLED))
-						.toString());
-		auditRequestDto.setDescription(
-				(new StringBuilder().append(SearchDto.class.getName()).append(MasterDataConstant.ENTITY_IS_CALLED))
-						.toString());
-		auditRequestDto.setEventId(MasterDataConstant.AUDIT_SYSTEM);
-		auditUtil.auditRequest(auditRequestDto);
 		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
 		return responseWrapper;
@@ -344,7 +329,7 @@ public class RegistrationCenterController {
 				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
-
+	
 	/**
 	 * This method updates registration center by Admin.
 	 * 
@@ -359,10 +344,11 @@ public class RegistrationCenterController {
 			@RequestBody @Valid RequestWrapper<RegCenterPutReqDto> reqRegistrationCenterDto) {
 
 		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper
-				.setResponse(registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
+		responseWrapper.setResponse(
+				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
+
 
 	/**
 	 * API to decommission registration center based on ID.
