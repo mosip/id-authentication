@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,14 +40,11 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	/** The transaction repositary. */
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
-	
-	private static final String PRIMARY_LANG = "mosip.primary-language";
-	
-	private static final String SECONDARY_LANG = "mosip.secondary-language";
-	
+
+	private String supportedLanguageKey = "mosip.supported-languages";
+
 	@Autowired
 	Environment environment;
-
 
 	/*
 	 * (non-Javadoc)
@@ -115,10 +113,10 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	@Override
 	public List<RegistrationTransactionDto> getTransactionByRegId(String regId, String langCode) throws TransactionsUnavailableException, RegTransactionAppException {
-		
-		String primaryLanguage = environment.getProperty(PRIMARY_LANG);
-		String secondaryLanguage = environment.getProperty(SECONDARY_LANG);
-		if(!langCode.equalsIgnoreCase(primaryLanguage) && !langCode.equalsIgnoreCase(secondaryLanguage)) {
+
+		String supportedLanguage = environment.getProperty(supportedLanguageKey);
+		List<String> supportedLanguages = supportedLanguage != null ? Arrays.asList(supportedLanguage.split(",")) : new ArrayList<>();
+		if(!supportedLanguages.contains(langCode)) {
 			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(), 
 					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage() + " - langCode");
 		}
