@@ -14,7 +14,6 @@ import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant;
 
 /**
  * The Enum DOBMatchingStrategy - used to compare and evaluate the DOB value
@@ -59,8 +58,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	}
 
 	private static String getDateFormat() {
-		//TODO take from id object validator constant
-		return "yyyy/MM/dd";
+		return IdAuthCommonConstants.DOB_PATTERN;
 	}
 
 	/*

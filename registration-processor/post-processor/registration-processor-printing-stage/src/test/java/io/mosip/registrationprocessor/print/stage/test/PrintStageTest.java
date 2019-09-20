@@ -3,6 +3,7 @@ package io.mosip.registrationprocessor.print.stage.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 
@@ -205,7 +206,7 @@ public class PrintStageTest {
 		Map<String, byte[]> byteMap = new HashMap<>();
 		byteMap.put("uinPdf", pdfbytes);
 		byteMap.put("textFile", textBytes);
-		Mockito.when(printService.getDocuments(any(), anyString())).thenReturn(byteMap);
+		Mockito.when(printService.getDocuments(any(), anyString(), anyString(), anyBoolean())).thenReturn(byteMap);
 
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(queue);
@@ -333,10 +334,11 @@ public class PrintStageTest {
 	public void testPdfGenerationException() {
 
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
-		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString());
+		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString(), anyString(), anyBoolean());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -348,10 +350,11 @@ public class PrintStageTest {
 	@Test
 	public void testTemplateProcessingFailureException() {
 		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
-		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString());
+		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString(), anyString(), anyBoolean());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -367,6 +370,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -382,6 +386,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -397,6 +402,7 @@ public class PrintStageTest {
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
+		dto.setReg_type(RegistrationType.NEW);
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
 		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
@@ -662,7 +668,7 @@ public class PrintStageTest {
 		fieldValue1.setLabel("vid");
 		fieldValue1.setValue("1234");
 		fieldValue.setLabel("cardType");
-		fieldValue.setValue("vid");
+		fieldValue.setValue("MASKED_UIN");
 		List<FieldValue> metadata = new ArrayList<>();
 		metadata.add(fieldValue);
 		metadata.add(fieldValue1);

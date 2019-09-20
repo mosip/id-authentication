@@ -878,10 +878,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors     the errors
 	 * @param configKey  the config key
 	 */
-	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors, String configKey) {
+	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
 		if (authTypeDTO != null) {
-			Set<String> allowedAuthType = getAllowedAuthTypes(configKey);
+			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
 		} else {
 			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
@@ -949,16 +949,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
-	/**
-	 * Extract auth info.
-	 *
-	 * @param configKey the config key
-	 * @return the sets the
-	 */
-	protected Set<String> getAllowedAuthTypes(String configKey) {
-		String intAllowedAuthType = env.getProperty(configKey);
-		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
-	}
 
 	/**
 	 * validateSecondayLangCode method used to validate secondaryLangCode for KYC

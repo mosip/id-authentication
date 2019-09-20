@@ -11,7 +11,7 @@ import lombok.Data;
  *
  */
 @Data
-public class UserDetailsResponseDto {
+public class UserDetailsHistoryResponseDto {
 
 	private List<UserDetailsDto> userResponseDto;
 

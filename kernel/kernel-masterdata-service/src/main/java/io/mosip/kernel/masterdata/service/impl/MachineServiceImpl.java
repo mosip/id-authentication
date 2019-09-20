@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.MachineDto;
@@ -57,6 +58,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
+import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -126,6 +128,9 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private ZoneService zoneService;
 
 	/*
 	 * (non-Javadoc)
@@ -419,7 +424,7 @@ public class MachineServiceImpl implements MachineService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedMachineIdList = machineRepository.findMappedMachineId(dto.getLanguageCode());
 					mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
-					if (mappedMachineIdList.isEmpty()) {
+					if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
 						return pageDto;
 					}
@@ -429,7 +434,7 @@ public class MachineServiceImpl implements MachineService {
 						mappedMachineIdList = machineRepository.findNotMappedMachineId(dto.getLanguageCode());
 						mapStatusList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
 						isAssigned = false;
-						if (mappedMachineIdList.isEmpty()) {
+						if (!dto.getFilters().isEmpty() && mappedMachineIdList.isEmpty()) {
 							pageDto = pageUtils.sortPage(machines, dto.getSort(), dto.getPagination());
 							return pageDto;
 						}
@@ -474,6 +479,7 @@ public class MachineServiceImpl implements MachineService {
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = null;
 			if (mapStatusList.isEmpty() || addList.isEmpty()) {
+				addList.addAll(mapStatusList);
 				page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
@@ -754,7 +760,17 @@ public class MachineServiceImpl implements MachineService {
 	public IdResponseDto decommissionMachine(String machineId) {
 		IdResponseDto machineCodeId = new IdResponseDto();
 		MapperUtils.mapFieldValues(machineId, machineCodeId);
+		boolean zoneValid = false;
 		try {
+			List<Machine> machineList = machineRepository.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(machineId);
+			Optional<Machine> machine = machineList.stream().filter(s->s.getLangCode().equals("eng")).findFirst();
+			String machineZoneCode = machine.get().getZoneCode();
+			zoneValid = zoneService.getUserValidityZoneHierarchy(machine.get().getLangCode(), machineZoneCode);
+			if(!zoneValid)
+			{
+				throw new RequestException(MachineErrorCode.MACHINE_ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
 			int updatedRows = machineRepository.decommissionMachine(machineId);
 			if (updatedRows < 1) {
 				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),

@@ -29,6 +29,7 @@ public class RegistrationSystemPropertiesChecker {
 			+ "[a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-"
 			+ "[a-zA-Z0-9][a-zA-Z0-9])";
 	private static final String ETHERNET = "Ethernet";
+	private static final String WIFI = "Wi-Fi"; 
 
 	private RegistrationSystemPropertiesChecker() {
 
@@ -77,14 +78,16 @@ public class RegistrationSystemPropertiesChecker {
 			String line;
 			while (null != (line = in.readLine())) {
 				String[] lineSplitter = line.replaceAll("\"", "").split(",");
-				if (lineSplitter[0].equals(ETHERNET)) {
+				if (lineSplitter[0].equals(ETHERNET) || lineSplitter[0].equals(WIFI)) {
 					Pattern pattern = Pattern.compile(MAC_PATTERN);
 					Matcher matcher = pattern.matcher(line);
 					if (matcher.find()) {
 						LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
 								RegistrationConstants.APPLICATION_ID, "MAC Address : " + matcher.group(0));
 						windowsMachineId = matcher.group(0);
-						break;
+						
+						if(lineSplitter[0].equals(ETHERNET))
+							break;
 					}
 				}
 			}

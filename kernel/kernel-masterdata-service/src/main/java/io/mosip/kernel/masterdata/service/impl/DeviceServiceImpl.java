@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
@@ -45,6 +46,7 @@ import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -56,10 +58,12 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
+import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
@@ -117,6 +121,12 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private ZoneService zoneService;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -184,29 +194,35 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createDevice(DeviceDto deviceDto) {
+	public Device createDevice(DeviceDto deviceDto) {
 		Device device = null;
-
-		Device entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
-		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
-		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-
+		Device entity = null;
+		DeviceHistory entityHistory = null;
 		try {
-			// device.setIsActive(false);
-
-			device = deviceRepository.create(entity);
-			deviceHistoryService.createDeviceHistory(entityHistory);
-
+			deviceDto = masterdataCreationUtil.createMasterData(Device.class,deviceDto);
+			if(deviceDto!=null)
+			{
+				entity = MetaDataUtils.setCreateMetaData(deviceDto, Device.class);
+				entityHistory = MetaDataUtils.setCreateMetaData(deviceDto, DeviceHistory.class);
+				entityHistory.setEffectDateTime(entity.getCreatedDateTime());
+				entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
+				//entity.setIsActive(false);
+				//String id = UUID.fromString(deviceDto.getName()).toString();
+				//entity.setId(id);
+				device = deviceRepository.create(entity);
+				deviceHistoryService.createDeviceHistory(entityHistory);
+			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
+		catch (IllegalArgumentException | IllegalAccessException|NoSuchFieldException|SecurityException e1) {
+			e1.printStackTrace();
+		} 
+		//IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		//MapperUtils.map(device, idAndLanguageCodeID);
 
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(device, idAndLanguageCodeID);
-
-		return idAndLanguageCodeID;
+		return device;
 
 	}
 
@@ -385,7 +401,7 @@ public class DeviceServiceImpl implements DeviceService {
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
 					mappedDeviceIdList = deviceRepository.findMappedDeviceId(dto.getLanguageCode());
 					mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
-					if ( mappedDeviceIdList.isEmpty()) {
+					if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
 						return pageDto;
 					}
@@ -395,7 +411,7 @@ public class DeviceServiceImpl implements DeviceService {
 						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId(dto.getLanguageCode());
 						mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 						isAssigned=false;
-						if (mappedDeviceIdList.isEmpty()) {
+						if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
 							pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
 							return pageDto;
 						}
@@ -442,7 +458,7 @@ public class DeviceServiceImpl implements DeviceService {
 			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Device> page = null;
 			if (mapStatusList.isEmpty() || addList.isEmpty()) {
-				
+				addList.addAll(mapStatusList);
 				page = masterdataSearchHelper.searchMasterdata(Device.class, dto,
 						new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			} else {
@@ -512,17 +528,22 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	private void setMapStatus(List<DeviceSearchDto> list,String langCode) {
 		
-		List<String> deviceIds=new ArrayList<>();
-		 list.stream().forEach(device ->{
-			deviceIds.add(device.getId());
-		});
-		List<String> deviceNames=deviceRepository.findDeviceNameByDevicesAndLangCode(deviceIds, langCode);
-		 list.stream().forEach(device ->{
-				deviceNames.stream().forEach(deviceName ->{
-					String dName=deviceName;
-					device.setMapStatus(dName);
-				});
+		List<RegistrationCenterDevice> centerDeviceList = deviceUtil.getAllDeviceCentersList();
+		List<RegistrationCenter> registrationCenterList = deviceUtil.getAllRegistrationCenters();
+		list.forEach(deviceSearchDto -> {
+			centerDeviceList.forEach(centerDevice -> {
+				if (centerDevice.getDevice().getId().equals(deviceSearchDto.getId())
+						&& centerDevice.getLangCode().equals(deviceSearchDto.getLangCode())) {
+					String regId = centerDevice.getRegistrationCenter().getId();
+					registrationCenterList.forEach(registrationCenter -> {
+						if (registrationCenter.getId().equals(regId)
+								&& centerDevice.getLangCode().equals(registrationCenter.getLangCode())) {
+							deviceSearchDto.setMapStatus(registrationCenter.getName());
+						}
+					});
+				}
 			});
+		});
 	}
 
 	/**
@@ -727,8 +748,22 @@ public class DeviceServiceImpl implements DeviceService {
 	@Transactional
 	public IdResponseDto decommissionDevice(String deviceId) {
 		IdResponseDto deviceCodeId = new IdResponseDto();
-		// MapperUtils.mapFieldValues(deviceId, deviceCodeId);
+		boolean zoneValid = false;
 		try {
+			List<Device> device = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId);
+			if(CollectionUtils.isEmpty(device))
+			{
+				throw new RequestException(DeviceErrorCode.DEVICE_ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			Optional<Device> deviceZone = device.stream().filter(a->a.getLangCode().equals("eng")).findFirst();
+			String deviceZoneCode = deviceZone.get().getZoneCode();
+			zoneValid = zoneService.getUserValidityZoneHierarchy(deviceZone.get().getLangCode(), deviceZoneCode);
+			if(!zoneValid)
+			{
+				throw new RequestException(DeviceErrorCode.DEVICE_ERROR.getErrorCode(),
+						DeviceErrorCode.DEVICE_ERROR.getErrorMessage());
+			}
 			int updatedRows = deviceRepository.decommissionDevice(deviceId);
 			if (updatedRows < 1) {
 				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),

@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -37,4 +38,8 @@ public interface RegistrationCenterDeviceHistoryRepository
 	@Query(value = "Select rcdh.eff_dtimes, rcdh.lang_code, rcdh.regcntr_id,rcdh.cr_by, rcdh.cr_dtimes, rcdh.del_dtimes, rcdh.is_active, rcdh.is_deleted, rcdh.upd_by, rcdh.upd_dtimes, rcdh.device_id from master.reg_center_device_h rcdh where rcdh.regcntr_id = ?1 and rcdh.device_id = ?2 and rcdh.eff_dtimes <= ?3 and ( rcdh.is_deleted = false or rcdh.is_deleted is null) order by rcdh.eff_dtimes desc limit 1", nativeQuery = true)
 	RegistrationCenterDeviceHistory findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String regCenterId, String deviceId, LocalDateTime effectDtimes);
+	
+	@Modifying
+	@Query(value = " update master.reg_center_device_h set is_active=?1, upd_by=?2, upd_dtimes=?3  where  device_id=?4 and regcntr_id=?5 and (is_deleted is null or is_deleted =false);", nativeQuery = true )
+	int updateDeviceAndRegistrationCenterMapping(boolean isActive, String updatedBy, LocalDateTime updatedDateTime, String deviceId, String regCenterId);
 }

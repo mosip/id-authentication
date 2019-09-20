@@ -4,6 +4,7 @@ package io.mosip.kernel.masterdata.constant;
  * Constants for Machine Details
  * 
  * @author Megha Tanga
+ * @author Ramadurai Pandian
  * @since 1.0.0
  *
  */
@@ -22,6 +23,7 @@ public enum MachineErrorCode {
 	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-329","No Machine exist for Machine Type name:%s"),
 	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-330","No Machine Specification found for the Machine Type name:%s"),
 	MACHINE_NOT_TAGGED_TO_ZONE("KER-MSD-342","No zone assigned to the user"),
+	MACHINE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the machine "),
 	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),MACHINE_DECOMMISSION_EXCEPTION("XX","Machine cannot be Decommissioned as it is assigned to a Registration Center");;
 
 	private final String errorCode;

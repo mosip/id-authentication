@@ -44,7 +44,6 @@ import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectCompositeValidator;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectMasterDataValidator;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 
@@ -56,7 +55,7 @@ import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
 @SpringBootTest
-@Import({ IdObjectMasterDataValidator.class, IdObjectPatternValidator.class, IdObjectSchemaValidator.class,
+@Import({ IdObjectPatternValidator.class, IdObjectSchemaValidator.class,
 		IdObjectCompositeValidator.class, TestConfig.class })
 @EnableConfigurationProperties
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -73,14 +72,12 @@ public class IdObjectValidatorTest {
 	IdObjectPatternValidator patternValidator;
 
 	@Autowired
-	IdObjectMasterDataValidator masterDataValidator;
-
-	@Autowired
 	private IdObjectValidator validator;
 
 	@Test
 	public void testValidData() throws JsonParseException, JsonMappingException, IdObjectValidationFailedException,
 			IdObjectIOException, IOException {
+		ReflectionTestUtils.setField(validator, "referenceValidator", patternValidator);
 		String identityString = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4920546943,\"fullName\":[{\"language\":\"eng\",\"value\":\"Ibrahim Ibn Ali\"}],\"dateOfBirth\":\"1955/04/15\",\"age\":45,\"gender\":[{\"language\":\"eng\",\"value\":\"MLE\"}],\"addressLine1\":[{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 1\"}],\"addressLine2\":[{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 2\"}],\"addressLine3\":[{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"eng\",\"value\":\"Rabat Sale Kenitra\"}],\"province\":[{\"language\":\"eng\",\"value\":\"Kenitra\"}],\"city\":[{\"language\":\"eng\",\"value\":\"Kenitra\"}],\"postalCode\":\"10112\",\"phone\":\"9876543210\",\"email\":\"abc@xyz.com\",\"CNIENumber\":\"6789545678909\",\"localAdministrativeAuthority\":[{\"language\":\"eng\",\"value\":\"Mograne\"}],\"parentOrGuardianRID\":212124324784912,\"parentOrGuardianUIN\":212124324784912,\"parentOrGuardianName\":[{\"language\":\"eng\",\"value\":\"salma\"}],\"proofOfAddress\":{\"format\":\"pdf\",\"type\":\"Ration Card\",\"value\":\"fileReferenceID\"},\"proofOfIdentity\":{\"format\":\"txt\",\"type\":\"Passport\",\"value\":\"fileReferenceID\"},\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"Birth Certificate\",\"value\":\"fileReferenceID\"},\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"value\":\"fileReferenceID\"},\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.1,\"value\":\"fileReferenceID\"}}}";
 		validator.validateIdObject(
 				new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
@@ -209,21 +206,6 @@ public class IdObjectValidatorTest {
 					.thenThrow(new InvalidFormatException(null, "", null, null));
 			ReflectionTestUtils.setField(patternValidator, "mapper", mockMapper);
 			patternValidator.validateIdObject(null, IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
-		} catch (IdObjectIOException e) {
-			assertTrue(e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode()));
-			assertTrue(e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage()));
-		}
-	}
-
-	@Test
-	public void ztestMasterdataValidaotParsingFailure() throws IdObjectValidationFailedException, IdObjectIOException,
-			JsonParseException, JsonMappingException, IOException {
-		try {
-			ObjectMapper mockMapper = mock(ObjectMapper.class);
-			when(mockMapper.writeValueAsString(Mockito.any()))
-					.thenThrow(new InvalidFormatException(null, "", null, null));
-			ReflectionTestUtils.setField(masterDataValidator, "mapper", mockMapper);
-			masterDataValidator.validateIdObject(null, IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
 			assertTrue(e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode()));
 			assertTrue(e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage()));

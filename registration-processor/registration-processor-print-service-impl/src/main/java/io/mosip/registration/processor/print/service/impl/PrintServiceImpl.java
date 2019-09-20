@@ -1,11 +1,23 @@
 package io.mosip.registration.processor.print.service.impl;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,6 +26,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -35,24 +48,31 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.UinCardType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.packet.dto.vid.VidRequestDto;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.dto.JsonFileDTO;
 import io.mosip.registration.processor.print.service.dto.JsonRequestDTO;
@@ -64,8 +84,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-import javax.xml.bind.DatatypeConverter;
-
+// TODO: Auto-generated Javadoc
 /**
  * The Class PrintServiceImpl.
  * 
@@ -91,15 +110,18 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
 
+	/** The un masked length. */
 	@Value("${registration.processor.unMaskedUin.length}")
 	private int unMaskedLength;
 
+	/** The uin length. */
 	@Value("${mosip.kernel.uin.length}")
 	private int uinLength;
 
 	/** The Constant UIN_CARD_TEMPLATE. */
 	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
 
+	/** The Constant MASKED_UIN_CARD_TEMPLATE. */
 	private static final String MASKED_UIN_CARD_TEMPLATE = "RPR_MASKED_UIN_CARD_TEMPLATE";
 
 	/** The Constant FACE. */
@@ -107,6 +129,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/** The Constant UIN_CARD_PDF. */
 	private static final String UIN_CARD_PDF = "uinPdf";
+
+	/** The Constant UIN_CARD_PDF. */
+	private static final String UIN_CARD_HTML = "uinhtml";
 
 	/** The Constant UIN_TEXT_FILE. */
 	private static final String UIN_TEXT_FILE = "textFile";
@@ -116,6 +141,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/** The Constant QRCODE. */
 	private static final String QRCODE = "QrCode";
+
+	/** The Constant UINCARDPASSWORD. */
+	private static final String UINCARDPASSWORD = "mosip.reigstration.processor.print.service.uincard.password";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintServiceImpl.class);
@@ -128,6 +156,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Autowired
 	private TemplateGenerator templateGenerator;
 
+	/** The utilities. */
 	@Autowired
 	private Utilities utilities;
 
@@ -150,27 +179,45 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
+	/** The Constant VID_CREATE_ID. */
+	public static final String VID_CREATE_ID = "registration.processor.id.repo.generate";
+
+	/** The Constant REG_PROC_APPLICATION_VERSION. */
+	public static final String REG_PROC_APPLICATION_VERSION = "registration.processor.id.repo.vidVersion";
+
+	/** The Constant DATETIME_PATTERN. */
+	public static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+
 	/** The cbeffutil. */
 	@Autowired
 	private CbeffUtil cbeffutil;
 
+	/** The env. */
+	@Autowired
+	private Environment env;
+
+	/** The reg processor identity json. */
+	@Autowired
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
+
 	/*
-	 * 
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.processor.core.spi.print.service.PrintService#getPdf(
-	 * java.lang.String)
+	 * @see io.mosip.registration.processor.core.spi.print.service.PrintService#
+	 * getDocuments(io.mosip.registration.processor.core.constant.IdType,
+	 * java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Map<String, byte[]> getDocuments(IdType idType, String idValue) {
+	public Map<String, byte[]> getDocuments(IdType idType, String idValue, String cardType,
+			boolean isPasswordProtected) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PrintServiceImpl::getDocuments()::entry");
 
 		Map<String, byte[]> byteMap = new HashMap<>();
 		String uin = null;
 		String description = null;
+		String vid = null;
 		Map<String, Object> attributes = new LinkedHashMap<>();
 		boolean isTransactionSuccessful = false;
 		IdResponseDTO1 response = null;
@@ -180,7 +227,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				uin = idValue;
 				response = getIdRepoResponse(idType.toString(), idValue);
 			} else if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
-
+				vid = idValue;
 				uin = utilities.getUinByVid(idValue);
 				response = getIdRepoResponse(IdType.UIN.toString(), uin);
 			}
@@ -217,12 +264,17 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
 						PlatformErrorMessages.RPR_PRT_QRCODE_NOT_SET.name());
 			}
-			if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+
+			if (cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString())) {
 				template = MASKED_UIN_CARD_TEMPLATE;
-				attributes.put(IdType.VID.toString(), idValue);
+				if (vid == null) {
+					vid = getVid(uin);
+				}
+				attributes.put(IdType.VID.toString(), vid);
 				String maskedUin = maskString(uin, uinLength - unMaskedLength, '*');
 				attributes.put(IdType.UIN.toString(), maskedUin);
 			}
+
 			// getting template and placing original values
 			InputStream uinArtifact = templateGenerator.getTemplate(template, attributes, primaryLang);
 			if (uinArtifact == null) {
@@ -233,9 +285,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 			}
 
-			// generating pdf
-			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF);
+			String password = null;
+			if (isPasswordProtected) {
+				password = getPassword(uin);
+			}
 
+			// generating pdf
+			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF, password);
 			byte[] pdfbytes = pdf.toByteArray();
 			byteMap.put(UIN_CARD_PDF, pdfbytes);
 
@@ -244,45 +300,49 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			isTransactionSuccessful = true;
 
-		} catch (QrcodeGenerationException e) {
-			description = "Error while QR Code Generation";
+		} catch (VidCreationException e) {
+			description = "Error while creating VID";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					idType.toString(), PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			throw new PDFGeneratorException(e.getErrorCode(), e.getErrorText());
+
+		}
+
+		catch (QrcodeGenerationException e) {
+			description = "Error while QR Code Generation";
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					idType.toString(), PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getErrorText());
 
 		} catch (UINNotFoundInDatabase e) {
 			description = "UIN not found in database for id" + idType.toString();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					idType.toString(), PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getErrorText());
 
 		} catch (TemplateProcessingFailureException e) {
 			description = "Error while Template Processing";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
+					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage());
+			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getMessage());
 
 		} catch (PDFGeneratorException e) {
 			description = "Error while pdf generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getErrorText());
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
 			description = "Internal error occurred while processing packet id" + idType;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage());
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
+					e.getMessage());
 
 		} catch (Exception ex) {
 			description = "Process stopped due to some internal error";
@@ -319,8 +379,10 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/**
 	 * Gets the id repo response.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param idType
+	 *            the id type
+	 * @param idValue
+	 *            the id value
 	 * @return the id repo response
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
@@ -351,9 +413,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/**
 	 * Creates the text file.
-	 * 
-	 * @param attributes
 	 *
+	 * @param attributes
+	 *            the attributes
 	 * @return the byte[]
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -403,6 +465,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @param textFileByte
 	 *            the text file byte
 	 * @param attributes
+	 *            the attributes
 	 * @return true, if successful
 	 * @throws QrcodeGenerationException
 	 *             the qrcode generation exception
@@ -429,6 +492,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @param response
 	 *            the response
 	 * @param attributes
+	 *            the attributes
 	 * @return true, if successful
 	 * @throws Exception
 	 *             the exception
@@ -457,7 +521,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				int headerLength = 46;
 				DataInputStream dis = new DataInputStream(new ByteArrayInputStream(photoByte));
 				dis.skipBytes(headerLength);
-                String data = DatatypeConverter.printBase64Binary(IOUtils.toByteArray(dis));
+				String data = DatatypeConverter.printBase64Binary(IOUtils.toByteArray(dis));
 				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + data);
 				isPhotoSet = true;
 			}
@@ -516,6 +580,17 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 	}
 
+	/**
+	 * Mask string.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param maskLength
+	 *            the mask length
+	 * @param maskChar
+	 *            the mask char
+	 * @return the string
+	 */
 	private String maskString(String uin, int maskLength, char maskChar) {
 		if (uin == null || uin.equals(""))
 			return "";
@@ -530,5 +605,124 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 
 		return sbMaskString.toString() + uin.substring(0 + maskLength);
+	}
+
+	/**
+	 * Gets the vid.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the vid
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws VidCreationException
+	 *             the vid creation exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private String getVid(String uin) throws ApisResourceAccessException, VidCreationException, IOException {
+		String vid = null;
+		VidRequestDto vidRequestDto = new VidRequestDto();
+		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
+		VidResponseDTO vidResponse = new VidResponseDTO();
+		vidRequestDto.setUIN(uin);
+		vidRequestDto.setVidType("Temporary");
+		request.setId(env.getProperty(VID_CREATE_ID));
+		request.setRequest(vidRequestDto);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+		LocalDateTime localdatetime = LocalDateTime
+				.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
+		request.setRequesttime(localdatetime);
+		request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getVid():: post CREATEVID service call started with request data : "
+						+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
+
+		vidResponse = (VidResponseDTO) restClientService.postApi(ApiName.CREATEVID, "", "", request,
+				VidResponseDTO.class);
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getVid():: post CREATEVID service call ended successfully");
+
+		if (vidResponse.getErrors() != null && !vidResponse.getErrors().isEmpty()) {
+			throw new VidCreationException(PlatformErrorMessages.RPR_PRT_VID_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_PRT_VID_EXCEPTION.getMessage());
+
+		} else {
+			vid = vidResponse.getResponse().getVid();
+		}
+
+		return vid;
+	}
+
+	/**
+	 * Gets the password.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the password
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 * @throws NumberFormatException
+	 *             the number format exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private String getPassword(String uin)
+			throws IdRepoAppException, NumberFormatException, ApisResourceAccessException, IOException {
+		JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(uin));
+
+		String[] attributes = env.getProperty(UINCARDPASSWORD).split("\\|");
+		List<String> list = new ArrayList<>(Arrays.asList(attributes));
+
+		Iterator<String> it = list.iterator();
+		String uinCardPd = "";
+
+		while (it.hasNext()) {
+			String key = it.next().trim();
+
+			Object object = JsonUtil.getJSONValue(jsonObject, key);
+			if (object instanceof ArrayList) {
+				JSONArray node = JsonUtil.getJSONArray(jsonObject, key);
+				JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+				uinCardPd = uinCardPd.concat(getParameter(jsonValues, primaryLang));
+
+			} else if (object instanceof LinkedHashMap) {
+				JSONObject json = JsonUtil.getJSONObject(jsonObject, key);
+				uinCardPd = uinCardPd.concat((String) json.get(VALUE));
+			} else {
+				uinCardPd = uinCardPd.concat((String) object);
+			}
+
+		}
+
+		return uinCardPd;
+	}
+
+	/**
+	 * Gets the parameter.
+	 *
+	 * @param jsonValues
+	 *            the json values
+	 * @param langCode
+	 *            the lang code
+	 * @return the parameter
+	 */
+	private String getParameter(JsonValue[] jsonValues, String langCode) {
+
+		String parameter = null;
+		if (jsonValues != null) {
+			for (int count = 0; count < jsonValues.length; count++) {
+				String lang = jsonValues[count].getLanguage();
+				if (langCode.contains(lang)) {
+					parameter = jsonValues[count].getValue();
+					break;
+				}
+			}
+		}
+		return parameter;
 	}
 }

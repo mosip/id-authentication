@@ -96,7 +96,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	@Query(value = "FROM Location WHERE langCode=?1 AND (isDeleted is null or isDeleted=false)")
 	List<Location> findAllByLangCodeNonDeleted(String langCode);
 
-	@Query("FROM Location l where l.hierarchyLevel=?1 and lower(l.name)=?2 and l.langCode=?3 and l.isActive=true and (l.isDeleted is null or l.isDeleted=false)")
+	@Query("FROM Location l where l.hierarchyLevel=?1 and l.name =?2 and l.langCode=?3 and l.isActive=true and (l.isDeleted is null or l.isDeleted=false)")
 	Location findLocationByHierarchyLevel(short hierachyLevel, String value, String langCode);
 
 	@Query("FROM Location l where l.langCode=?1 and l.isActive=true and (l.isDeleted is null or l.isDeleted=false)")
@@ -131,5 +131,8 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 
 	@Query("FROM Location l WHERE l.name=?1 AND l.hierarchyLevel=?2 ")
 	List<Location> findByNameAndLevel(String name, Short hierarchyLevel);
+	
+	@Query("FROM Location l WHERE l.name=?1 AND l.hierarchyLevel=?2 AND l.langCode=?3")
+	List<Location> findByNameAndLevelLangCode(String name, Short hierarchyLevel,String langCode);
 
 }

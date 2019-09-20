@@ -115,7 +115,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device id's fetched for all device those are mapped with the
 	 *         registration center from database
 	 */
-	@Query(value = "SELECT dm.id FROM master.device_master dm inner join master.reg_center_device rcd on dm.id = rcd.device_id and dm.lang_code=rcd.lang_code and dm.lang_code=?1", nativeQuery = true)
+	@Query(value = "select d.id from master.device_master d where d.id in(select  distinct rdm.device_id from master.reg_center_device rdm ) and d.lang_code=?1", nativeQuery = true)
 	List<String> findMappedDeviceId(String langCode);
 
 	/**
@@ -125,7 +125,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device id's fetched for all device those are not mapped with the
 	 *         registration center from database
 	 */
-	@Query(value = "SELECT dm.id FROM master.device_master dm left outer join master.reg_center_device rcd on dm.id = rcd.device_id where rcd.device_id is null and dm.lang_code=?1", nativeQuery = true)
+	@Query(value = "select d.id from master.device_master d where d.id not in(select  distinct rdm.device_id from master.reg_center_device rdm ) and d.lang_code=?1", nativeQuery = true)
 	List<String> findNotMappedDeviceId(String langCode);
 
 	/**
@@ -146,5 +146,19 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 
 	@Query(value="select d.name from master.reg_center_device rd,master.registration_center r,master.device_master d where r.id=rd.regcntr_id and rd.device_id=d.id and d.lang_code=rd.lang_code and r.lang_code=rd.lang_code and rd.device_id in(?1) and rd.lang_code=?2",nativeQuery=true)
 	List<String> findDeviceNameByDevicesAndLangCode(List<String> devices,String langCode);
+
+	/**
+	 * This method trigger query to fetch the Device detail for the given id and
+	 * language code for both is_Deleted false or true or null and isActive true or
+	 * false
+	 * 
+	 * @param id
+	 *            the id of device
+	 * @param langCode
+	 *            language code from user
+	 * @return the device detail
+	 */
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2")
+	Device findByIdAndLangCode(String id, String langCode);
 
 }

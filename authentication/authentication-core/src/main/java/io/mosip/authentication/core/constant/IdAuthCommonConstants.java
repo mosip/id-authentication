@@ -92,5 +92,8 @@ public final class IdAuthCommonConstants {
 	public static final String VID = "vid";
 	
 	public static final String UIN_MODULO_SPLITTER = "_";
+	
+	public static final String DOB_PATTERN = "yyyy/MM/dd";
+
 }
 
