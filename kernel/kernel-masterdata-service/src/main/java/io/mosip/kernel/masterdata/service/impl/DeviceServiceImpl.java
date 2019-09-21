@@ -764,6 +764,13 @@ public class DeviceServiceImpl implements DeviceService {
 				throw new RequestException(DeviceErrorCode.DEVICE_ERROR.getErrorCode(),
 						DeviceErrorCode.DEVICE_ERROR.getErrorMessage());
 			}
+			List<RegistrationCenterDevice> registrationCenterDeviceList = registrationCenterDeviceRepository
+					.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId);
+			if(!CollectionUtils.isEmpty(registrationCenterDeviceList))
+			{
+				throw new RequestException(DeviceErrorCode.DEVICE_DECOMMISSION_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_DECOMMISSION_EXCEPTION.getErrorMessage());
+			}
 			int updatedRows = deviceRepository.decommissionDevice(deviceId);
 			if (updatedRows < 1) {
 				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),

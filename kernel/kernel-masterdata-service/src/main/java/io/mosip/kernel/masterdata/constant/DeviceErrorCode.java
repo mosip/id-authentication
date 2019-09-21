@@ -27,6 +27,7 @@ public enum DeviceErrorCode {
 			"Error occurred while fetching a Device details mapped with the given Registration Center"),
 	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Device Not Found"),
 	DEVICE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the Device "),
+	DEVICE_DECOMMISSION_EXCEPTION("XX","Device cannot be Decommissioned as it is assigned to a Registration Center"),
 	DEVICE_ERROR("KER-MSD-XXX", "Device Error");
 
 	private final String errorCode;

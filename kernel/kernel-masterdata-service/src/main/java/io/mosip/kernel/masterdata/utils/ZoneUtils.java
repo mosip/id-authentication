@@ -251,5 +251,14 @@ public class ZoneUtils {
 		else
 			return Collections.emptyList();
 	}
+	
+	public List<Zone> getChildZoneList(List<String> zoneIds, String zoneCode,String langCode)
+	{
+		List<Zone> zones = null;
+		Zone zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneCode, langCode);
+		zones = zoneRepository.findAllNonDeleted();
+		List<Zone> zoneHeirarchyList = getDescedants(zones,zone);
+		return zoneHeirarchyList;
+	}
 
 }

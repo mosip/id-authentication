@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -983,8 +984,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			regCenterPostReqDto = masterdataCreationUtil.createMasterData(RegistrationCenter.class,
 					regCenterPostReqDto);
 			// creating registration center
-
-			uniqueId =	 registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
+			if(StringUtils.isNotEmpty(primaryLang))
+			{
+				uniqueId =	 registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
+				registrationCenterEntity.setId(uniqueId);
+			}
+			
 			registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPostReqDto,
 					registrationCenterEntity.getClass());
 
@@ -997,7 +1002,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * API method generateRegistrationCenterId().
 			 * 
 			 */
-			 registrationCenterEntity.setId(uniqueId);
+			
 			/*
 			 * at the time of creation of new Registration Center Number of
 			 * Kiosks value will be Zero always
@@ -1058,8 +1063,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		// ArrayList<>();
 		// List<RegistrationCenterExtnDto> newrRegistrationCenterDtoList = null;
 
-		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-
 		// List<String> inputIdList = new ArrayList<>();
 		// List<String> idLangList = new ArrayList<>();
 		// List<String> langList = new ArrayList<>();
@@ -1091,31 +1094,21 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			// for (RegCenterPutReqDto registrationCenterDto :
 			// regCenterPutReqDto) {
 			regCenterPutReqDto = masterdataCreationUtil.updateMasterData(RegistrationCenter.class, regCenterPutReqDto);
+			
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository
 					.findByIdAndLangCodeAndIsDeletedTrue(regCenterPutReqDto.getId(), regCenterPutReqDto.getLangCode());
-			List<RegistrationCenterMachineDevice> regCenterDevice = registrationCenterMachineDeviceRepository
-					.findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId());
-			if (!CollectionUtils.isEmpty(regCenterDevice)) {
-				throw new MasterDataServiceException(
-						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION
-								.getErrorCode(),
-						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION
-								.getErrorMessage());
-			}
-			List<ZoneExtnDto> zoneList = zoneService.getUserZoneHierarchy(regCenterPutReqDto.getLangCode());
-			boolean isValidZone = false;
-			for(ZoneExtnDto zoneDto:zoneList)
-			{
-				if(regCenterPutReqDto.getZoneCode().equals(zoneDto.getCode()))
-				{
-					isValidZone = true;
-				}
-			}
-			if(!isValidZone)
-			{
-				throw new MasterDataServiceException("KER-MSD-397",
-						"Cannot change the Center’s Administrative Zone as the Center is already mapped to a Device/Machine outside the new administrative zone");
-			}
+			validateZoneMachineDevice(renRegistrationCenter,regCenterPutReqDto);
+			
+//			List<RegistrationCenterMachineDevice> regCenterDevice = registrationCenterMachineDeviceRepository
+//					.findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId());
+//			if (!CollectionUtils.isEmpty(regCenterDevice)) {
+//				throw new MasterDataServiceException(
+//						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION
+//								.getErrorCode(),
+//						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION
+//								.getErrorMessage());
+//			}
+			
 			if (renRegistrationCenter != null) {
 
 				// updating registration center
@@ -1133,7 +1126,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
 				registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
 				registrationCenterHistoryRepository.create(registrationCenterHistory);
-
+				registrationCenterExtnDto = MapperUtils.map(updRegistrationCenter, registrationCenterExtnDto);
 				// adding into updated list
 				// updRegistrationCenterList.add(updRegistrationCenter);
 			} 
@@ -1179,7 +1172,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-		registrationCenterExtnDto = MapperUtils.map(updRegistrationCenter, registrationCenterExtnDto);
+		
 		// RegistrationCenterPutResponseDto registrationCenterPutResponseDto =
 		// new RegistrationCenterPutResponseDto();
 		// registrationCenterDtoList =
@@ -1191,6 +1184,35 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		return registrationCenterExtnDto;
 
+	}
+
+	private void validateZoneMachineDevice(RegistrationCenter regRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto) {
+		
+		if(regRegistrationCenter.getZoneCode().equals(regCenterPutReqDto.getZoneCode()))
+		{
+			boolean isTagged= false;
+			List<RegistrationCenterDevice> regDevice = registrationCenterDeviceRepository
+					.findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId());
+			List<String> deviceZoneIds=regDevice.stream()
+					.map(s->s.getDevice().getZoneCode()).collect(Collectors.toList());
+			List<Zone> zoneHList = zoneUtils.getChildZoneList(deviceZoneIds, regCenterPutReqDto.getZoneCode(), regCenterPutReqDto.getLangCode());
+			List<String> zoneHIdList = zoneHList.stream().map(z->z.getCode()).collect(Collectors.toList());
+			for(String deviceZone:deviceZoneIds)
+			{
+				if(!CollectionUtils.isEmpty(zoneHIdList) && zoneHIdList.contains(deviceZone))
+				{
+					isTagged=true;
+					break;
+				}
+			}
+			
+			if(isTagged)
+			{
+				throw new MasterDataServiceException("KER-MSD-397",
+						"Cannot change the Center’s Administrative Zone as the Center is already mapped to a Device/Machine outside the new administrative zone");
+			}
+		}
+		
 	}
 
 }
