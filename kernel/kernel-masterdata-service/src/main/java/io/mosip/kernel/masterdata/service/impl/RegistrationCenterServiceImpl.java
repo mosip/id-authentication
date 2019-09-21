@@ -984,11 +984,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			regCenterPostReqDto = masterdataCreationUtil.createMasterData(RegistrationCenter.class,
 					regCenterPostReqDto);
 			// creating registration center
-			if(StringUtils.isNotEmpty(primaryLang))
-			{
-				uniqueId =	 registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
-				registrationCenterEntity.setId(uniqueId);
-			}
 			
 			registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPostReqDto,
 					registrationCenterEntity.getClass());
@@ -1002,6 +997,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * API method generateRegistrationCenterId().
 			 * 
 			 */
+			if(StringUtils.isNotEmpty(primaryLang)&&primaryLang.equals(regCenterPostReqDto.getLangCode()))
+			{
+				uniqueId =	 registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
+				registrationCenterEntity.setId(uniqueId);
+			}
 			
 			/*
 			 * at the time of creation of new Registration Center Number of
