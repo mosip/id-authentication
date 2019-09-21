@@ -1097,8 +1097,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository
 					.findByIdAndLangCodeAndIsDeletedTrue(regCenterPutReqDto.getId(), regCenterPutReqDto.getLangCode());
-			validateZoneMachineDevice(renRegistrationCenter,regCenterPutReqDto);
-			
+			if(renRegistrationCenter!=null)
+			{
+				validateZoneMachineDevice(renRegistrationCenter,regCenterPutReqDto);
+			}
+
 //			List<RegistrationCenterMachineDevice> regCenterDevice = registrationCenterMachineDeviceRepository
 //					.findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getId());
 //			if (!CollectionUtils.isEmpty(regCenterDevice)) {
