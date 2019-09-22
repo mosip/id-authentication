@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -281,6 +282,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF, password);
 			byte[] pdfbytes = pdf.toByteArray();
+			FileUtils.writeByteArrayToFile(new File("D:\\home\\pdfFormat.pdf"), pdfbytes);
 			byteMap.put(UIN_CARD_PDF, pdfbytes);
 
 			byte[] uinbyte = attributes.get(IdType.UIN.toString()).toString().getBytes();
@@ -466,8 +468,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						JSONObject json = JsonUtil.getJSONObject(demographicIdentity, value);
 						printTextFileMap.put(value, (String) json.get(VALUE));
 					} else {
-						printTextFileMap.put(value + "_" + primaryLang, (String) object);
-						printTextFileMap.put(value + "_" + secondaryLang, (String) object);
+						printTextFileMap.put(value, (String) object);
+						//printTextFileMap.put(value + "_" + secondaryLang, (String) object);
 
 					}
 				}
@@ -577,20 +579,49 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
 			for (String key : mapperJsonKeys) {
-				JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
-				Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get(VALUE));
-				if (object instanceof ArrayList) {
-					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get(VALUE));
-					JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
-					for (int count = 0; count < jsonValues.length; count++) {
-						String lang = jsonValues[count].getLanguage();
-						attribute.put(key + "_" + lang, jsonValues[count].getValue());
+				LinkedHashMap<String, String> jsonObject = JsonUtil.getJSONValue(mapperIdentity, key);
+				String values = jsonObject.get(VALUE);
+				if (NAME.equals(key)) {
+					StringBuilder primaryLangName = new StringBuilder();
+					StringBuilder secondaryLangName = new StringBuilder();
+					for (String value : values.split(",")) {
+						Object object = demographicIdentity.get(value);
+						if (object instanceof ArrayList) {
+							JSONArray node = JsonUtil.getJSONArray(demographicIdentity, value);
+							JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+							for (JsonValue jsonValue : jsonValues) {
+								if (jsonValue.getLanguage().equals(primaryLang))
+									primaryLangName.append(jsonValue.getValue());
+								if (jsonValue.getLanguage().equals(secondaryLang))
+									secondaryLangName.append(jsonValue.getValue());
+
+							}
+
+						}
+
 					}
-				} else if (object instanceof LinkedHashMap) {
-					JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String) jsonValue.get(VALUE));
-					attribute.put(key, json.get(VALUE));
-				} else {
-					attribute.put(key, object);
+					attribute.put(key + "_" + primaryLang, primaryLangName.toString());
+					attribute.put(key + "_" + secondaryLang, secondaryLangName.toString());
+				}
+				for (String value : values.split(",")) {
+					Object object = demographicIdentity.get(value);
+					if (object instanceof ArrayList) {
+						JSONArray node = JsonUtil.getJSONArray(demographicIdentity, value);
+						JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+						for (JsonValue jsonValue : jsonValues) {
+							if (jsonValue.getLanguage().equals(primaryLang))
+								attribute.put(key + "_" + primaryLang, jsonValue.getValue());
+							if (jsonValue.getLanguage().equals(secondaryLang))
+								attribute.put(key + "_" + secondaryLang, jsonValue.getValue());
+
+						}
+
+					} else if (object instanceof LinkedHashMap) {
+						JSONObject json = JsonUtil.getJSONObject(demographicIdentity, value);
+						attribute.put(key, (String) json.get(VALUE));
+					} else {
+						attribute.put(key, String.valueOf(object));
+					}
 				}
 			}
 
