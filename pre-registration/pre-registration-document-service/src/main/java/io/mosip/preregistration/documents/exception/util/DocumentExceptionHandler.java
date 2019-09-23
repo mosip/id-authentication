@@ -32,18 +32,22 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
+import io.mosip.preregistration.documents.controller.DocumentController;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
@@ -73,6 +77,7 @@ import io.mosip.preregistration.documents.exception.PrimaryKeyValidationExceptio
 public class DocumentExceptionHandler {
 
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static Logger log = LoggerConfiguration.logConfig(DocumentExceptionHandler.class);
 
 	/**
 	 * Reference for ${mosip.preregistration.document.upload.id} from property file
@@ -95,6 +100,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(TableNotAccessibleException.class)
 	public ResponseEntity<MainResponseDTO<?>> databaseerror(final TableNotAccessibleException e) {
+		log.info("sessionId", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getMainResposneDTO());
 	}
 
@@ -107,6 +114,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DemographicGetDetailsException.class)
 	public ResponseEntity<MainResponseDTO<?>> databaseerror(final DemographicGetDetailsException e) {
+		log.info("sessionId1", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -119,6 +128,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentNotValidException.class)
 	public ResponseEntity<MainResponseDTO<?>> notValidExceptionhadler(final DocumentNotValidException e) {
+		log.info("sessionId2", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -131,6 +142,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DTOMappigException.class)
 	public ResponseEntity<MainResponseDTO<?>> dtoMappingExc(final DTOMappigException e) {
+		log.info("sessionId3", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -143,6 +156,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(FileNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> fileNotFoundException(final FileNotFoundException e) {
+		log.info("sessionId4", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -155,6 +170,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(MandatoryFieldNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> mandatoryFieldNotFoundException(final MandatoryFieldNotFoundException e) {
+		log.info("sessionId5", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 
 	}
@@ -168,6 +185,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(ParsingException.class)
 	public ResponseEntity<MainResponseDTO<?>> parsingException(final ParsingException e) {
+		log.info("sessionId6", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 
 	}
@@ -189,6 +208,8 @@ public class DocumentExceptionHandler {
 		errorRes.setResponsetime(getCurrentResponseTime());
 		errorRes.setId(uploadId);
 		errorRes.setVersion(ver);
+		log.info("sessionId7", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
@@ -201,7 +222,24 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentNotFound(final DocumentNotFoundException e) {
+		log.info("sessionId8", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
+	}
+	
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for MasterDataNotAvailableException
+	 */
+	@ExceptionHandler(MasterDataNotAvailableException.class)
+	public ResponseEntity<MainResponseDTO<?>> masterDataNotAvailableException(final MasterDataNotAvailableException e) {
+		log.info("sessionId8", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
+		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 	}
 
 	/**
@@ -213,6 +251,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentSizeExceedException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentSizeExceedException(final DocumentSizeExceedException e) {
+		log.info("sessionId9", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -225,6 +265,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentFailedToUploadException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentFailedToUploadException(final DocumentFailedToUploadException e) {
+		log.info("sessionId10", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -238,6 +280,8 @@ public class DocumentExceptionHandler {
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> invalidRequestParameterException(
 			final InvalidRequestParameterException e) {
+		log.info("sessionId11", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	}
 
@@ -250,6 +294,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentVirusScanException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentVirusScanException(final DocumentVirusScanException e) {
+		log.info("sessionId12", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -262,6 +308,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentFailedToCopyException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentFailedToCopyException(final DocumentFailedToCopyException e) {
+		log.info("sessionId13", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -274,6 +322,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidDocumentIdExcepion.class)
 	public ResponseEntity<MainResponseDTO<?>> invalidDocumnetIdExcepion(final InvalidDocumentIdExcepion e) {
+		log.info("sessionId14", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -286,6 +336,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(FSServerException.class)
 	public ResponseEntity<MainResponseDTO<?>> cephServerException(final FSServerException e) {
+		log.info("sessionId15", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -298,6 +350,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(PrimaryKeyValidationException.class)
 	public ResponseEntity<MainResponseDTO<?>> primaryKeyValidationException(final PrimaryKeyValidationException e) {
+		log.info("sessionId16", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getResponse());
 	}
 
@@ -320,6 +374,8 @@ public class DocumentExceptionHandler {
 //	}
 
 	public String getCurrentResponseTime() {
+		log.info("sessionId17", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
 
@@ -337,6 +393,8 @@ public class DocumentExceptionHandler {
 		MainResponseDTO<?> errorRes = e.getMainresponseDTO();
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		log.info("sessionId18", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);	
 		
 	}
@@ -350,6 +408,8 @@ public class DocumentExceptionHandler {
 	 */
 	@ExceptionHandler(DecryptionFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> decryptionFailedException(final DecryptionFailedException e) {
+		log.info("sessionId19", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 	
@@ -361,6 +421,8 @@ public class DocumentExceptionHandler {
 		errorList.add(errorDetails);
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		log.info("sessionId20", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 	
@@ -374,6 +436,8 @@ public class DocumentExceptionHandler {
 					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
+		log.info("sessionId21", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
@@ -383,6 +447,8 @@ public class DocumentExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_015.getCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
+		log.info("sessionId22", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 	
@@ -395,6 +461,8 @@ public class DocumentExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_016.getCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
+		log.info("sessionId23", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -415,6 +483,8 @@ public class DocumentExceptionHandler {
 		JsonNode reqNode = objectMapper.readTree(requestBody);
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());
+		log.info("sessionId24", "idType", "id",
+				"In fileUpload method of document controller to upload the document for request " );
 		return responseWrapper;
 	}
 }

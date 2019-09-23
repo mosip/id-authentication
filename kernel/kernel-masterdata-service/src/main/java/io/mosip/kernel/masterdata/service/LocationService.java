@@ -49,12 +49,13 @@ public interface LocationService {
 
 	/**
 	 * 
-	 * @param locationRequestDto
+	 * @param locationDto
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(
-			List<LocationDto> locationRequestDto);
+	public ResponseWrapper<Location> createLocation(
+			LocationDto locationDto);
+
 
 	/**
 	 * 

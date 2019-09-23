@@ -219,12 +219,11 @@ public class DocumentService {
 					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
 							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode());
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
-					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
 				}
 			}
 			isUploadSuccess = true;
-
+			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In uploadDoucment method of document service - " + ex.getMessage());

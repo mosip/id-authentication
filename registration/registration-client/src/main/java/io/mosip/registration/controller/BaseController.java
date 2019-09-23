@@ -333,12 +333,12 @@ public class BaseController {
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
 			if (SessionContext.isSessionContextAvailable()) {
-				SessionContext.map().put("alertStage", alertStage);
+				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
 		} else {
 			if (SessionContext.isSessionContextAvailable()) {
-				SessionContext.map().put("alertStage", alertStage);
+				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();

@@ -45,8 +45,28 @@ public interface RegistrationCenterDeviceRepository
 	 */
 	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 and (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
 	public List<RegistrationCenterDevice> registrationCenterDeviceMappings(String regCenterID);
-	
+
 	@Query("FROM RegistrationCenterDevice rd where  (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
 	List<RegistrationCenterDevice> findAllCenterDevices();
+	
+	@Query("FROM RegistrationCenterDevice rd where rd.registrationCenterDevicePk.regCenterId = ?1 and rd.registrationCenterDevicePk.deviceId = ?2 and rd.langCode=?3 ")
+	public RegistrationCenterDevice findByRegIdAndDeviceIdAndLangCode(String regCenterId,String deviceId,String langCode);
+	
+	@Query("FROM RegistrationCenterDevice rd where  rd.registrationCenterDevicePk.deviceId = ?1 and rd.langCode=?2 and rd.isActive=true")
+	public RegistrationCenterDevice findByDeviceIdAndLangCode(String deviceId,String langCode);
+
+
+	/**
+	 * Method to find valid document based on Document Category code and Document
+	 * Type code provided.
+	 * 
+	 * @param docCategoryCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
+	 * @return ValidDocument
+	 */
+	@Query("FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.deviceId=?1 AND rd.registrationCenterDevicePk.regCenterId =?2 AND (rd.isDeleted is null OR rd.isDeleted = false)")
+	RegistrationCenterDevice findByDeviceIdAndRegCenterId(String deviceId, String regCenterId);
 
 }

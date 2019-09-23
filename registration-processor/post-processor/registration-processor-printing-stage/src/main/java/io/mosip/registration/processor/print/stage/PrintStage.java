@@ -273,7 +273,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 				}
 			}
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue, cardType,false);
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue, cardType, false);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 

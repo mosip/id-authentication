@@ -9,6 +9,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
  * Zone service
  * 
  * @author Abhishek Kumar
+ * @author Ramadurai Pandian
  * @since 1.0.0
  */
 public interface ZoneService {
@@ -33,4 +34,6 @@ public interface ZoneService {
 	public List<ZoneExtnDto> getUserLeafZone(String langCode);
 
 	public ZoneNameResponseDto getZoneNameBasedOnLangCodeAndUserID(String userID, String langCode);
+	
+	public boolean getUserValidityZoneHierarchy(String langCode,String zoneCode);
 }
