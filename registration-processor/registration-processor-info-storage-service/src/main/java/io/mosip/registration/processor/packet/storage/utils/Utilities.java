@@ -138,6 +138,10 @@ public class Utilities {
 	/** The registration processor abis json. */
 	@Value("${registration.processor.abis.json}")
 	private String registrationProcessorAbisJson;
+	
+	/** The registration processor abis json. */
+	@Value("${registration.processor.print.textfile}")
+	private String registrationProcessorPrintTextFile;
 
 	/** The id repo update. */
 	@Value("${registration.processor.id.repo.update}")
