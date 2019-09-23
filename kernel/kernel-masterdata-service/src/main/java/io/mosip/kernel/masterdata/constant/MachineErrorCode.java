@@ -24,7 +24,10 @@ public enum MachineErrorCode {
 	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-330","No Machine Specification found for the Machine Type name:%s"),
 	MACHINE_NOT_TAGGED_TO_ZONE("KER-MSD-342","No zone assigned to the user"),
 	MACHINE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the machine "),
-	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),MACHINE_DECOMMISSION_EXCEPTION("XX","Machine cannot be Decommissioned as it is assigned to a Registration Center");;
+	INVALIDE_MACHINE_ZONE("KER-MSD-XXX", "Admin not authorized to create this Machine for this Zone"),
+	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),
+	MACHINE_DECOMMISSION_EXCEPTION("KER-MSD-XXX","Machine cannot be Decommissioned as it is assigned to a Registration Center"),
+	LANGUAGE_EXCEPTION("KER-MSD-XXX", "Received language code %s is not a configured language");
 
 	private final String errorCode;
 	private final String errorMessage;

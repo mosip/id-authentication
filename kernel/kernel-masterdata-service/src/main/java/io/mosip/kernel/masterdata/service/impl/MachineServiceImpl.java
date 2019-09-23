@@ -16,11 +16,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
+import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
@@ -28,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -44,6 +48,7 @@ import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
@@ -839,28 +844,32 @@ public class MachineServiceImpl implements MachineService {
 				 * RegistrationCenterErrorCode.
 				 * REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorMessage()); }
 				 */
-
+				String machineZone = machinePostReqDto.getZoneCode();
+				validateZone(machineZone);
 				try {
 					// call method generate ID or validate with DB
 					 
 					machinePostReqDto = masterdataCreationUtil.createMasterData(Machine.class,
 							machinePostReqDto);
-					// creating registration center
-
-					uniqueId =	 registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
+					
 					machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto,
 							machineEntity.getClass());
-
+					
+					// creating registration center
+					if(machinePostReqDto.getId() == null) {
+						/*
+						 * MachineId from the mid_Seq Table,
+						 * MachineId get by calling MachineIdGenerator
+						 * API method generateMachineId().
+						 * 
+						 */
+					uniqueId =	 registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
+					machineEntity.setId(uniqueId);
+					}
+					
 					// registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity,
 					// registrationCenterDto);
-
-					/*
-					 * RegistrationCenterID from the rcid_Seq Table,
-					 * RegistrationCenterID get by calling RegistrationCenterIdGenerator
-					 * API method generateRegistrationCenterId().
-					 * 
-					 */
-					machineEntity.setId(uniqueId);
+					
 					/*
 					 * at the time of creation of new Registration Center Number of
 					 * Kiosks value will be Zero always
@@ -887,10 +896,8 @@ public class MachineServiceImpl implements MachineService {
 
 				} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 						| NoSuchFieldException | SecurityException exception) {
-					throw new MasterDataServiceException(
-							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
-							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
-									+ ExceptionUtils.parseException(exception));
+					throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(exception));
 				}
 				MachineExtnDto machineExtnDto = MapperUtils.map(machine,
 						MachineExtnDto.class);
@@ -900,6 +907,158 @@ public class MachineServiceImpl implements MachineService {
 				// registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
 				// registrationCenterPostResponseDto.setConstraintViolatedDataList(constraintViolationedSecList);
 				return machineExtnDto;
+
+	}
+
+	private void validateZone(String machineZone) {
+		List<String> zoneIds;
+		// get user zone and child zones list
+		List<Zone> userZones = zoneUtils.getUserZones();
+		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+		
+		if (!(zoneIds.contains(machineZone))) {
+			// check the given machine zones will come under accessed user zones
+			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
+					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenter1(java.util.List)
+	 */
+	@Transactional
+	@Override
+	public MachineExtnDto updateMachine1(MachinePutReqDto machinePutReqDto) {
+		MachineExtnDto machineExtnDto = new MachineExtnDto();
+		Machine updMachine = null;
+		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+		// List<RegCenterPutReqDto> notUpdRegistrationCenterList = new
+		// ArrayList<>();
+		// List<RegistrationCenter> updRegistrationCenterList = new
+		// ArrayList<>();
+		// List<RegistrationCenterExtnDto> newrRegistrationCenterDtoList = null;
+
+		Machine updMachineEntity = new Machine();
+
+		// List<String> inputIdList = new ArrayList<>();
+		// List<String> idLangList = new ArrayList<>();
+		// List<String> langList = new ArrayList<>();
+		// List<ServiceError> errors = new ArrayList<>();
+
+		// call a method to validate Put request DTOs
+		// registrationCenterValidator.validatePutRequest(regCenterPutReqDto,
+		// notUpdRegistrationCenterList, inputIdList,
+		// idLangList, langList, errors);
+		// if (!errors.isEmpty()) {
+		// throw new ValidationException(errors);
+		// }
+		// validate to check duplicate pair of ID and LanguageCode
+		/*
+		 * if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+		 * throw new RequestException( RegistrationCenterErrorCode.
+		 * REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+		 * RegistrationCenterErrorCode.
+		 * REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage()); }
+		 */
+		String machineZone = machinePutReqDto.getZoneCode();
+		validateZone(machineZone);
+		try {
+
+			// call method if isActive is True in input,then make true for all
+			// supported
+			// language by the country
+			// registrationCenterValidator.isActiveTrueAllSupLang(regCenterPutReqDto);
+
+			// for (RegCenterPutReqDto registrationCenterDto :
+			// regCenterPutReqDto) {
+			
+			Machine renMachine = machineRepository
+					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(machinePutReqDto.getId(), machinePutReqDto.getLangCode());
+			
+		
+			if (renMachine != null) {
+				
+				machinePutReqDto = masterdataCreationUtil.updateMasterData(Machine.class, machinePutReqDto);
+				
+				// todo
+				/*if(machineid is attached to the regCenter, take that id)
+				if(machinePutReqDto.getIsActive().TRUE && machinePutReqDto.getIsActive().FALSE) {
+					regCenter--
+					
+				}else if(machinePutReqDto.getIsActive().FALSE && machinePutReqDto.getIsActive().TRUE) {
+					regCenter++	
+				}*/
+
+				// updating registration center
+				updMachineEntity = MetaDataUtils.setUpdateMetaData(machinePutReqDto, renMachine,
+						false);
+				// registrationCenterValidator.mapBaseDtoEntity(updRegistrationCenterEntity,
+				// regCenterPutReqDto);
+
+				updMachine = machineRepository.update(updMachineEntity);
+
+				// creating registration center history
+				MachineHistory machineHistory = new MachineHistory();
+				MapperUtils.map(updMachine, machineHistory);
+				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
+				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
+				machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
+				machineHistoryRepository.create(machineHistory);
+
+				// adding into updated list
+				// updRegistrationCenterList.add(updRegistrationCenter);
+			} 
+			else {
+				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+				
+			}
+			/*else {
+				// if given Id and language code is not present in DB , find
+				// with only ID in DB
+				// is
+				// there any records, add notUpdRegistrationCenterList
+				List<RegistrationCenter> renRegistrationCenterList = registrationCenterRepository
+						.findByRegCenterIdAndIsDeletedFalseOrNull(regCenterPutReqDto.getId());
+
+				// no recored are found for the ID
+				if (renRegistrationCenterList.isEmpty()) {
+					throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorCode(),
+							String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorMessage(),
+									regCenterPutReqDto.getId()));
+				}
+				// found record for ID
+				else {
+
+					// created new recored for the ID and Language which is not
+					// there in DB
+					registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPutReqDto,
+							registrationCenterEntity.getClass());
+					// registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity,
+					// regCenterPutReqDto);
+					// call a method to created new recored for the ID and
+					// Language which is not
+					// there in DB
+					// newrRegistrationCenterDtoList =
+					// registrationCenterValidator.createRegCenterPut(
+					// newregistrationCenterList, registrationCenterEntity,
+					// regCenterPutReqDto);
+				}
+			}*/
+
+			// }
+		
+
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
+				| NoSuchFieldException | SecurityException exception) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(exception));
+		}
+		machineExtnDto = MapperUtils.map(updMachine, machineExtnDto);
+		return machineExtnDto;
 
 	}
 }

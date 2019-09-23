@@ -31,7 +31,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
-import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -137,7 +136,7 @@ public class MasterdataCreationUtil {
 			{
 				Field idColumn = dtoClass.getDeclaredField(ID_COLUMN_NAME);
 				idColumn.setAccessible(true);
-				if(!entity.equals(RegistrationCenter.class) &&  !entity.equals(Machine.class))
+				if(!entity.equals(RegistrationCenter.class))
 				{
 					primaryId = generateId();
 					E primary = getResultSet(entity, primaryLang, primaryId,primaryKeyCol);
@@ -162,6 +161,7 @@ public class MasterdataCreationUtil {
 							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
 								activePrimary = (boolean) field.get(t);
 					}
+							
 				}
 				if(activeDto==true)
 				{
@@ -183,8 +183,8 @@ public class MasterdataCreationUtil {
 						"Cannot create data in secondary language as data does not exist in primary language");
 			}
 		}
-		//return null;	
-				throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+		//return null;
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
 				RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage());
 	}
 	
@@ -213,7 +213,8 @@ public class MasterdataCreationUtil {
 	public <E, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
-		String entColumn=null;
+		boolean activeDto=false,activePrimary=false;
+		String primaryKeyCol=null,nameCol=null,nameValue=null;
 		Field isActive;
 		Class<?> dtoClass = t.getClass();
 		for (Field entField: entity.getDeclaredFields()) {
@@ -221,7 +222,10 @@ public class MasterdataCreationUtil {
 			 {
 				 entField.setAccessible(true);
 				 if (entField.getName() != null && !entField.getName().equals(LANGCODE_COLUMN_NAME)) {
-					 entColumn = entField.getName();
+					 primaryKeyCol = entField.getName();
+					}
+				 if (entField.getName() != null && !entField.getName().equals(NAME_COLUMN_NAME)) {
+					 nameCol = entField.getName();
 					}
 			 }
 			}
@@ -231,21 +235,55 @@ public class MasterdataCreationUtil {
 				langCode = (String) field.get(t);
 			}
 
-			if (field.getName() != null && field.getName().equals(entColumn)) {
+			if (field.getName() != null && field.getName().equals(primaryKeyCol)) {
 				id = (String) field.get(t);
+			}
+			
+			if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+				activeDto = (boolean) field.get(t);
 			}
 		}
 		
 		if (langCode.equals(primaryLang)) {
-			isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-			isActive.setAccessible(true);
-			isActive.set(t, Boolean.FALSE);
+			if(activeDto==true)
+			{
+				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+				isActive.setAccessible(true);
+				isActive.set(t, Boolean.TRUE);
+			}
+			if(activeDto==false)
+			{
+				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+				isActive.setAccessible(true);
+				isActive.set(t, Boolean.FALSE);
+			}
 			return t;
 		}
 		if (langCode.equals(secondaryLang)) {
 			
-			E secondaryLang = getResultSet(entity, primaryLang, id,entColumn);
-			
+			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
+			if (primaryEntity != null) {
+				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
+					field.setAccessible(true);
+							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+								activePrimary = (boolean) field.get(t);
+					}
+				}
+				}
+				if(activeDto==true)
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.TRUE);
+					updatePrimaryToTrue(primaryEntity.getClass(),id,primaryKeyCol,true);
+				}
+				if(activeDto==false)
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.FALSE);
+					updatePrimaryToTrue(primaryEntity.getClass(),id,primaryKeyCol,false);
+				}
 			if (secondaryLang != null) {
 				return t;
 			} else {
@@ -253,7 +291,9 @@ public class MasterdataCreationUtil {
 						"Cannot update data in secondary language as data does not exist in primary language");
 			}
 		}
-		return null;
+		//return null;
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage());
 	}
 
 

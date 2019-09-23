@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
@@ -171,12 +172,26 @@ public interface MachineService {
 	 * @param machine
 	 *            machine DTO
 	 * 
-	 * @return IdResponseDto returning machine id which is inserted successfully
-	 *         {@link IdResponseDto}
+	 * @return MachineExtnDto returning created machine.
+	 *         {@link MachineExtnDto}
 	 * 
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine
 	 */
 	public MachineExtnDto createMachine1(MachinePostReqDto machine);
+	
+	/**
+	 * Abstract method to update Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            machine DTO
+	 * 
+	 * @return MachineExtnDto returning updated machine 
+	 *         {@link MachineExtnDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving Machine
+	 */
+	public MachineExtnDto updateMachine1(MachinePutReqDto  machine);
 
 }
