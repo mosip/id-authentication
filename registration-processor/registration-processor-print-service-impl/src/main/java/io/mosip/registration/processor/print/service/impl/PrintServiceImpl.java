@@ -282,7 +282,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			// generating pdf
 			ByteArrayOutputStream pdf = uinCardGenerator.generateUinCard(uinArtifact, UinCardType.PDF, password);
 			byte[] pdfbytes = pdf.toByteArray();
-			FileUtils.writeByteArrayToFile(new File("D:\\home\\pdfFormat.pdf"), pdfbytes);
 			byteMap.put(UIN_CARD_PDF, pdfbytes);
 
 			byte[] uinbyte = attributes.get(IdType.UIN.toString()).toString().getBytes();
@@ -427,30 +426,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		Set<String> printTextFileJsonKeys = printTextFileJsonObject.keySet();
 		for (String key : printTextFileJsonKeys) {
 			String printTextFileJsonString = JsonUtil.getJSONValue(printTextFileJsonObject, key);
-			if(NAME.equals(key)) {
-				StringBuilder primaryLangName = new  StringBuilder();
-				StringBuilder secondaryLangName = new  StringBuilder();
-
-				for(String value : printTextFileJsonString.split(",")) {
-					Object object = demographicIdentity.get(value);
-					if (object instanceof ArrayList) {
-						JSONArray node = JsonUtil.getJSONArray(demographicIdentity, value);
-						JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
-						for (JsonValue jsonValue : jsonValues) {
-							if (jsonValue.getLanguage().equals(primaryLang))
-								primaryLangName.append(jsonValue.getValue());
-							if (jsonValue.getLanguage().equals(secondaryLang))
-								secondaryLangName.append(jsonValue.getValue());
-
-						}
-
-					}
-				}
-				
-				printTextFileMap.put(key + "_" + primaryLang, primaryLangName.toString());
-				printTextFileMap.put(key + "_" + secondaryLang, secondaryLangName.toString());
-
-			}else {
 				for (String value : printTextFileJsonString.split(",")) {
 					Object object = demographicIdentity.get(value);
 					if (object instanceof ArrayList) {
@@ -469,11 +444,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						printTextFileMap.put(value, (String) json.get(VALUE));
 					} else {
 						printTextFileMap.put(value, (String) object);
-						//printTextFileMap.put(value + "_" + secondaryLang, (String) object);
 
 					}
 				}
-			}
 
 		}
 		printTextFileDto.setRequest(printTextFileMap);
@@ -581,28 +554,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			for (String key : mapperJsonKeys) {
 				LinkedHashMap<String, String> jsonObject = JsonUtil.getJSONValue(mapperIdentity, key);
 				String values = jsonObject.get(VALUE);
-				if (NAME.equals(key)) {
-					StringBuilder primaryLangName = new StringBuilder();
-					StringBuilder secondaryLangName = new StringBuilder();
-					for (String value : values.split(",")) {
-						Object object = demographicIdentity.get(value);
-						if (object instanceof ArrayList) {
-							JSONArray node = JsonUtil.getJSONArray(demographicIdentity, value);
-							JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
-							for (JsonValue jsonValue : jsonValues) {
-								if (jsonValue.getLanguage().equals(primaryLang))
-									primaryLangName.append(jsonValue.getValue());
-								if (jsonValue.getLanguage().equals(secondaryLang))
-									secondaryLangName.append(jsonValue.getValue());
-
-							}
-
-						}
-
-					}
-					attribute.put(key + "_" + primaryLang, primaryLangName.toString());
-					attribute.put(key + "_" + secondaryLang, secondaryLangName.toString());
-				}
 				for (String value : values.split(",")) {
 					Object object = demographicIdentity.get(value);
 					if (object instanceof ArrayList) {
@@ -610,17 +561,17 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
 						for (JsonValue jsonValue : jsonValues) {
 							if (jsonValue.getLanguage().equals(primaryLang))
-								attribute.put(key + "_" + primaryLang, jsonValue.getValue());
+								attribute.put(value + "_" + primaryLang, jsonValue.getValue());
 							if (jsonValue.getLanguage().equals(secondaryLang))
-								attribute.put(key + "_" + secondaryLang, jsonValue.getValue());
+								attribute.put(value + "_" + secondaryLang, jsonValue.getValue());
 
 						}
 
 					} else if (object instanceof LinkedHashMap) {
 						JSONObject json = JsonUtil.getJSONObject(demographicIdentity, value);
-						attribute.put(key, (String) json.get(VALUE));
+						attribute.put(value, (String) json.get(VALUE));
 					} else {
-						attribute.put(key, String.valueOf(object));
+						attribute.put(value, String.valueOf(object));
 					}
 				}
 			}
