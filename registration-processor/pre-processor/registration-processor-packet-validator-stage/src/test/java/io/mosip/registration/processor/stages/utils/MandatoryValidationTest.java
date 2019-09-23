@@ -4,8 +4,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -54,7 +57,14 @@ public class MandatoryValidationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		mappingJsonString = "{\"identity\":{\"name\":{\"value\":\"fullName\",\"isMandatory\":true},\"gender\":{\"value\":\"gender\",\"isMandatory\":true},\"dob\":{\"value\":\"dateOfBirth\",\"isMandatory\":true},\"parentOrGuardianRID\":{\"value\":\"parentOrGuardianRID\"},\"parentOrGuardianUIN\":{\"value\":\"parentOrGuardianUIN\"},\"parentOrGuardianName\":{\"value\":\"parentOrGuardianName\"},\"poa\":{\"value\":\"proofOfAddress\"},\"poi\":{\"value\":\"proofOfIdentity\"},\"por\":{\"value\":\"proofOfRelationship\"},\"pob\":{\"value\":\"proofOfDateOfBirth\"},\"individualBiometrics\":{\"value\":\"individualBiometrics\"},\"age\":{\"value\":\"age\"},\"address\":{\"value\":\"addressLine1\"},\"region\":{\"value\":\"region\"},\"province\":{\"value\":\"province\"},\"postalCode\":{\"value\":\"postalCode\"},\"phone\":{\"value\":\"phone\"},\"email\":{\"value\":\"email\"},\"localAdministrativeAuthority\":{\"value\":\"localAdministrativeAuthority\"},\"idschemaversion\":{\"value\":\"IDSchemaVersion\"},\"cnienumber\":{\"value\":\"CNIENumber\"},\"city\":{\"value\":\"city\",\"isMandatory\":true}}}";
+		ClassLoader classLoader = getClass().getClassLoader();
+		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
+		try {
+			mappingJsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		idJsonString = "{\"identity\":{\"fullName\":[{\"language\":\"eng\",\"value\":\"Ragavendran V\"},{\"language\":\"ara\",\"value\":\"قشلشرثىيقشى ر\"}],\"dateOfBirth\":\"1999/01/01\",\"age\":20,\"gender\":[{\"language\":\"eng\",\"value\":\"Male\"},{\"language\":\"ara\",\"value\":\"الذكر\"}],\"residenceStatus\":[{\"language\":\"eng\",\"value\":\"Non-Foreigner\"},{\"language\":\"ara\",\"value\":\"غير أجنبي\"}],\"addressLine1\":[{\"language\":\"eng\",\"value\":\"Kumar street\"},{\"language\":\"ara\",\"value\":\"نعةشق سفقثثف\"}],\"addressLine3\":[{\"language\":\"eng\",\"value\":\"Line 3\"},{\"language\":\"ara\",\"value\":\"مىث ٣\"}],\"region\":[{\"language\":\"eng\",\"value\":\"Rabat Sale Kenitra\"},{\"language\":\"ara\",\"value\":\"جهة الرباط سلا القنيطرة\"}],\"province\":[{\"language\":\"eng\",\"value\":\"Kenitra\"},{\"language\":\"ara\",\"value\":\"القنيطرة\"}],\"city\":[{\"language\":\"eng\",\"value\":\"Mograne\"},{\"language\":\"ara\",\"value\":\"مڭرن\"}],\"postalCode\":\"123456\",\"phone\":\"9962385854\",\"email\":\"raghavdce@gmail.com\",\"localAdministrativeAuthority\":[{\"language\":\"eng\",\"value\":\"14023\"},{\"language\":\"ara\",\"value\":\"14023\"}],\"proofOfAddress\":{\"value\":\"POA_Rental contract\",\"type\":\"Rental contract\",\"format\":\"jpg\"},\"proofOfIdentity\":{\"value\":\"POI_CNIE card\",\"type\":\"CNIE card\",\"format\":\"jpg\"},\"proofOfRelationship\":{\"value\":\"POR_Certificate of Relationship\",\"type\":\"Certificate of Relationship\",\"format\":\"jpg\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1,\"value\":\"applicant_bio_CBEFF\"},\"IDSchemaVersion\":1,\"CNIENumber\":\"12345678809\"}}";
 
 		registrationStatusDto = new InternalRegistrationStatusDto();
@@ -91,9 +101,15 @@ public class MandatoryValidationTest {
 	@Test
 	public void mandatoryValidationMarkMandatoryFalseTest() throws Exception {
 		// Mark mandatory field false for fullName from IdentityMapping json
-		mappingJsonString = "{\"identity\":{\"name\":{\"value\":\"fullName\",\"isMandatory\":false},\"gender\":{\"value\":\"gender\",\"isMandatory\":true},\"dob\":{\"value\":\"dateOfBirth\",\"isMandatory\":true},\"parentOrGuardianRID\":{\"value\":\"parentOrGuardianRID\"},\"parentOrGuardianUIN\":{\"value\":\"parentOrGuardianUIN\"},\"parentOrGuardianName\":{\"value\":\"parentOrGuardianName\"},\"poa\":{\"value\":\"proofOfAddress\"},\"poi\":{\"value\":\"proofOfIdentity\"},\"por\":{\"value\":\"proofOfRelationship\"},\"pob\":{\"value\":\"proofOfDateOfBirth\"},\"individualBiometrics\":{\"value\":\"individualBiometrics\"},\"age\":{\"value\":\"age\"},\"addressLine1\":{\"value\":\"addressLine1\"},\"addressLine2\":{\"value\":\"addressLine2\"},\"addressLine3\":{\"value\":\"addressLine3\"},\"region\":{\"value\":\"region\"},\"province\":{\"value\":\"province\"},\"postalCode\":{\"value\":\"postalCode\"},\"phone\":{\"value\":\"phone\"},\"email\":{\"value\":\"email\"},\"localAdministrativeAuthority\":{\"value\":\"localAdministrativeAuthority\"},\"idschemaversion\":{\"value\":\"IDSchemaVersion\"},\"cnienumber\":{\"value\":\"CNIENumber\"},\"city\":{\"value\":\"city\",\"isMandatory\":true}}}";
-		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", any(), any()).thenReturn(mappingJsonString);
+		ClassLoader classLoader = getClass().getClassLoader();
+		File identityMappingjson = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		InputStream identityMappingjsonStream = new FileInputStream(identityMappingjson);
+		String identityMappingjsonString = "";
+		try {
+			identityMappingjsonString = IOUtils.toString(identityMappingjsonStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		boolean result = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 		assertTrue("Test for mandate field marked false", result);
 	}
