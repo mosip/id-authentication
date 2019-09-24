@@ -583,7 +583,7 @@ public class MasterdataSearchIntegrationTest {
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
 				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
