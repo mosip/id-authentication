@@ -259,10 +259,11 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				removeList.add(filter);
 				addList.addAll(buildMachineTypeSearchFilter(machineTypes.getContent()));
 				if (addList.isEmpty()) {
-					throw new DataNotFoundException(
+					/*throw new DataNotFoundException(
 							MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
 							String.format(MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION
-									.getErrorMessage(), filter.getValue()));
+									.getErrorMessage(), filter.getValue()));*/
+					return pageDto;
 				}
 			}
 		}

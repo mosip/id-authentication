@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -45,6 +46,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -967,11 +969,21 @@ public class LocationServiceImpl implements LocationService {
 					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
 				}
-				if (!hierarchyNames.contains(columnName)) {
+				if (!hierarchyNames.contains(columnName)&&!columnName.equals(MasterDataConstant.IS_ACTIVE)) {
 					throw new RequestException(ValidationErrorCode.INVALID_COLUMN_NAME.getErrorCode(),
 							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
+					if(filter.getColumnName().equals(MasterDataConstant.IS_ACTIVE))
+					{
+						List<String> filterValues = masterDataFilterHelper.filterValues(Location.class, filter, filterValueDto);
+						filterValues.forEach(filterValue -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(MasterDataConstant.IS_ACTIVE);
+							columnValue.setFieldValue(filterValue);
+							columnValueList.add(columnValue);
+						});
+					}
 					if (filter.getText() == null || filter.getText().isEmpty()) {
 						List<String> locationNames = locationRepository
 								.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(),
