@@ -60,6 +60,7 @@ public class MasterdataSearchHelper {
 	private static final String ENTITY_IS_NULL = "entity is null";
 	private static final String WILD_CARD_CHARACTER = "%";
 	private static final String TYPE_NAME = "typeName";
+	private static final String DECOMISSION= "isDeleted";
 
 	/**
 	 * Field for interface used to interact with the persistence context.
@@ -166,11 +167,16 @@ public class MasterdataSearchHelper {
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
 		}
+		Predicate isDeletedTrue=builder.equal(root.get(DECOMISSION), Boolean.FALSE);
+		Predicate isDeletedNull=builder.isNull(root.get(DECOMISSION));
+		Predicate isDeleted=builder.or(isDeletedTrue,isDeletedNull);
+		predicates.add(isDeleted);
 		if (!predicates.isEmpty()) {
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
 			selectQuery.where(whereClause);
 			countQuery.where(whereClause);
 		}
+		
 	}
 
 	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root, final OptionalFilter optionalFilters,

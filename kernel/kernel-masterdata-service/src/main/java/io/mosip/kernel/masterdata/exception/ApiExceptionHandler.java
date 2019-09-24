@@ -85,7 +85,7 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_INVALID_COLUMN.getErrorCode(),
 					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
