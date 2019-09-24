@@ -83,6 +83,8 @@ public class DocumentController {
 		log.debug("sessionId", "idType", "id", "Pre-id " + preRegistrationId);
 		log.info("sessionId", "idType", "id",
 				"In fileUpload method of document controller to upload the document for request " + reqDto.toString());
+		log.info("sessionId", "idType", "id",
+				"iN Controller v2");
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(documentUploadService.uploadDocument(file, reqDto, preRegistrationId));

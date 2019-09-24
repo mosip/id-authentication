@@ -37,6 +37,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
+import io.mosip.preregistration.documents.config.AuthTokenUtil;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.service.DocumentService;
@@ -69,6 +70,9 @@ public class DocumentControllerTest {
 	@MockBean
 
 	private  AuthHandler authProvider;
+	
+	@MockBean
+	private AuthTokenUtil authTokenUtil;
 
 
 	private MockMultipartFile mockMultipartFile;
