@@ -137,7 +137,7 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(Arrays.asList(location));
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
@@ -159,7 +159,7 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(Arrays.asList(location));
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
@@ -181,15 +181,13 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(Arrays.asList(location));
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		MvcResult response = mockMvc
 				.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
 		String errorResponse = response.getResponse().getContentAsString();
 		ResponseWrapper<LocationSearchDto> responseWrapper = objectMapper.readValue(errorResponse,
 				ResponseWrapper.class);
-
-		System.out.println();
 
 		assertThat(responseWrapper.getErrors().get(0).getMessage(),
 				is("Column city doesn't support filter type error-type"));

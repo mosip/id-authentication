@@ -780,10 +780,10 @@ public class LocationServiceImpl implements LocationService {
 					responseDto = getEqualsLocationSearch(filter, dto, tree,isActive);
 				} else {
 					if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
-						responseDto = getContainsLocationSearch(filter, dto, tree);
+						responseDto = getContainsLocationSearch(filter, dto, tree,isActive);
 					} else {
 						if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
-							responseDto = getStartsWithLocationSearch(filter, dto, tree);
+							responseDto = getStartsWithLocationSearch(filter, dto, tree,isActive);
 						} else {
 							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
 									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
@@ -920,14 +920,15 @@ public class LocationServiceImpl implements LocationService {
 	 *            the search DTO provided.
 	 * @param tree
 	 *            the unbalanced tree of Location.
+	 * @param isActive 
 	 * @return the list of {@link LocationSearchDto}.
 	 */
 	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree) {
+			List<Node<Location>> tree, boolean isActive) {
 		List<LocationSearchDto> responseDto = null;
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelContains(locLevel,
-				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
+				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
 			responseDto = getListOfLocationNodes(tree, loc);
 		}
@@ -943,14 +944,15 @@ public class LocationServiceImpl implements LocationService {
 	 *            the search DTO provided.
 	 * @param tree
 	 *            the unbalanced tree of Location.
+	 * @param isActive 
 	 * @retun the list of {@link LocationSearchDto}.
 	 */
 	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree) {
+			List<Node<Location>> tree, boolean isActive) {
 		List<LocationSearchDto> responseDto = null;
 		short hierarchyLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelStartsWith(hierarchyLevel,
-				filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
+				filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
 			responseDto = getListOfLocationNodes(tree, loc);
 
