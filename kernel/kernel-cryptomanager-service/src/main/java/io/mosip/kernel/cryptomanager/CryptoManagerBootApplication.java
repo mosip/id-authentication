@@ -8,6 +8,7 @@ package io.mosip.kernel.cryptomanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Crypto-Manager-Service Boot Application
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @since 1.0.0
  */
+@PropertySource("classpath:application-local.properties")
 @SpringBootApplication(scanBasePackages = { "io.mosip.kernel.cryptomanager.*", "io.mosip.kernel.auth.*" })
 public class CryptoManagerBootApplication {
 
