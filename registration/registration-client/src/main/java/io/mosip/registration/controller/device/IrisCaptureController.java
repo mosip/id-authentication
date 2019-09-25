@@ -667,22 +667,23 @@ public class IrisCaptureController extends BaseController {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				userOnboardParentController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
 						getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
-			} else {
-				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			} else if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, false);
 
-					if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-							getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
-						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-					} else {
-						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
-					}
-					registrationController.showUINUpdateCurrentPage();
+				if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
+				} else if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 				} else {
-					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
-							getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 				}
+				registrationController.showUINUpdateCurrentPage();
+			} else {
+				registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
+						getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
 			}
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
