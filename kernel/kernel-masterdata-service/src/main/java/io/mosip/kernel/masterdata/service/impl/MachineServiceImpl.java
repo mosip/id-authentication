@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.StringUtils;
@@ -735,6 +736,12 @@ public class MachineServiceImpl implements MachineService {
 			{
 				throw new RequestException(MachineErrorCode.MACHINE_ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			List<RegistrationCenterMachine> regCenterMachine = registrationCenterMachineRepository.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(machineId);
+			if(!CollectionUtils.isEmpty(regCenterMachine))
+			{
+				throw new RequestException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage());
 			}
 			int updatedRows = machineRepository.decommissionMachine(machineId);
 			if (updatedRows < 1) {

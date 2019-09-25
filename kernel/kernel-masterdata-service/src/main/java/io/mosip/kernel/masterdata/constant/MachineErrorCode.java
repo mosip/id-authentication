@@ -29,6 +29,7 @@ public enum MachineErrorCode {
 	MACHINE_DECOMMISSION_EXCEPTION("KER-MSD-XXX","Machine cannot be Decommissioned as it is assigned to a Registration Center"),
 	MACHINE_ID("KER-MSD-XXX","Machine ID %s does not exist for primary language");
 
+
 	private final String errorCode;
 	private final String errorMessage;
 

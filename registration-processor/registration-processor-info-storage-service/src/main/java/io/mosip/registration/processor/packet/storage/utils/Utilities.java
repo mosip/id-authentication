@@ -138,6 +138,10 @@ public class Utilities {
 	/** The registration processor abis json. */
 	@Value("${registration.processor.abis.json}")
 	private String registrationProcessorAbisJson;
+	
+	/** The registration processor abis json. */
+	@Value("${registration.processor.print.textfile}")
+	private String registrationProcessorPrintTextFile;
 
 	/** The id repo update. */
 	@Value("${registration.processor.id.repo.update}")
@@ -192,7 +196,7 @@ public class Utilities {
 
 	/** The Constant RANDOMIZE_FALSE. */
 	private static final String RANDOMIZE_FALSE = ")?randomize=false";
-	
+
 	private static final String CONFIGURE_MONITOR_IN_ACTIVITY = "?wireFormat.maxInactivityDuration=0";
 
 	/**
@@ -339,7 +343,7 @@ public class Utilities {
 				String userName = validateAbisQueueJsonAndReturnValue(json, USERNAME);
 				String password = validateAbisQueueJsonAndReturnValue(json, PASSWORD);
 				String brokerUrl = validateAbisQueueJsonAndReturnValue(json, BROKERURL);
-				//brokerUrl = brokerUrl + CONFIGURE_MONITOR_IN_ACTIVITY;
+				// brokerUrl = brokerUrl + CONFIGURE_MONITOR_IN_ACTIVITY;
 				String failOverBrokerUrl = FAIL_OVER + brokerUrl + "," + brokerUrl + RANDOMIZE_FALSE;
 				String typeOfQueue = validateAbisQueueJsonAndReturnValue(json, TYPEOFQUEUE);
 				String inboundQueueName = validateAbisQueueJsonAndReturnValue(json, INBOUNDQUEUENAME);
@@ -453,16 +457,10 @@ public class Utilities {
 				registrationId, "Utilities::getUIn()::entry");
 		Number number;
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		if (demographicIdentity != null) {
-			 number = JsonUtil.getJSONValue(demographicIdentity, UIN);
-		}else {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Utilities::getUIn():: error with error message "
-							+ PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-		
-		}
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+
+		number = JsonUtil.getJSONValue(demographicIdentity, UIN);
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Utilities::getUIn()::exit");
 
 		return number != null ? number.longValue() : null;
@@ -564,8 +562,8 @@ public class Utilities {
 			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId, "Utilities::retrieveUIN()::exit regId is null");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"Utilities::retrieveUIN()::exit regId is null");
 
 		return null;
 	}
@@ -764,7 +762,7 @@ public class Utilities {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(vid);
 		String uin = null;
-		VidResponseDTO response = new VidResponseDTO();
+		VidResponseDTO response;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"Stage::methodname():: RETRIEVEIUINBYVID GET service call Started");
 
@@ -858,7 +856,7 @@ public class Utilities {
 					"Utilities::retrieveIdrepoJson()::entry");
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+			IdResponseDTO1 idResponseDto;
 
 			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
 					IdResponseDTO1.class);

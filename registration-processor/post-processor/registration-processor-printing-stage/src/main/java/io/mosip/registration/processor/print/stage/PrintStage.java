@@ -50,6 +50,7 @@ import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -216,6 +217,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		} else {
 			throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
 		}
+
 	}
 
 	/*
@@ -227,6 +229,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		TrimExceptionMessage trimeExpMessage= new TrimExceptionMessage();
 		object.setMessageBusAddress(MessageBusAddress.PRINTING_BUS);
 		object.setInternalError(Boolean.FALSE);
 		String description = null;
@@ -278,7 +281,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
-				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getMessage());
+				registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getMessage()));
 				registrationStatusDto.setSubStatusCode(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getCode());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
@@ -289,7 +292,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
-				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getMessage());
+				registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getMessage()));
 				registrationStatusDto.setSubStatusCode(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getCode());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
@@ -306,8 +309,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			registrationStatusDto.setStatusComment(
-					StatusUtil.PDF_GENERATION_FAILED.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(
+					StatusUtil.PDF_GENERATION_FAILED.getMessage() + regId + SEPERATOR + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.PDF_GENERATION_FAILED.getCode());
 			description = CLASSNAME + SEPERATOR + "Pdf Generation failed for " + regId + SEPERATOR + e.getMessage();
 			object.setInternalError(Boolean.TRUE);
@@ -315,18 +318,17 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			registrationStatusDto.setStatusComment(
-					StatusUtil.TEMPLATE_PROCESSING_FAILED.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(
+					StatusUtil.TEMPLATE_PROCESSING_FAILED.getMessage() + regId + SEPERATOR + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.TEMPLATE_PROCESSING_FAILED.getCode());
 			description = CLASSNAME + SEPERATOR + "Template processing is failed for " + regId + SEPERATOR
 					+ e.getMessage();
 			object.setInternalError(Boolean.TRUE);
 		} catch (QueueConnectionNotFound e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			registrationStatusDto.setStatusComment(
-					StatusUtil.QUEUE_CONNECTION_NOT_FOUND.getMessage() + regId + SEPERATOR + e.getMessage());
+					regId, PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.name() +  ExceptionUtils.getStackTrace(e));
+			registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(
+					StatusUtil.QUEUE_CONNECTION_NOT_FOUND.getMessage() + regId + SEPERATOR + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.QUEUE_CONNECTION_NOT_FOUND.getCode());
 			description = CLASSNAME + SEPERATOR + "Queue Connection not found for " + regId + SEPERATOR
 					+ e.getMessage();
@@ -335,8 +337,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			registrationStatusDto.setStatusComment(
-					StatusUtil.QUEUE_CONNECTION_UNAVAILABLE.getMessage() + regId + SEPERATOR + e.getMessage());
+			registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(
+					StatusUtil.QUEUE_CONNECTION_UNAVAILABLE.getMessage() + regId + SEPERATOR + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.QUEUE_CONNECTION_UNAVAILABLE.getCode());
 			description = CLASSNAME + SEPERATOR + "Queue Connection unavailable for " + regId + SEPERATOR
 					+ e.getMessage();
@@ -345,7 +347,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			registrationStatusDto.setStatusComment(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage());
+			registrationStatusDto.setStatusComment(trimeExpMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			description = CLASSNAME + SEPERATOR + "Internal error occurred while processing registration id " + regId
 					+ SEPERATOR + e.getMessage();
@@ -533,7 +535,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 						"PrintStage::consumerListener()::exit");
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name());
 			}
 

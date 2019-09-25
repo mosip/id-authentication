@@ -37,5 +37,6 @@ public class MasterDataConstant {
 	public static final String DEVICE_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE = "Device %s is successfully Un-Mapped to the Registration Center %s ";
     public static final String USER_AND_REGISTRATION_CENTER_UNMAPPING_SUCCESS_MESSAGE = "User %s - Registration Center Mapping %s is updated successfully";
     public static final String USER_AND_REGISTRATION_CENTER_MAPPING_SUCCESS_MESSAGE = "User %s - Registration Center Mapping %s is added successfully";
-    public static final String SUCCESS="Success";
+    public static final String SUCCESS="Success"; 
+    public static final String IS_ACTIVE="isActive";
 }

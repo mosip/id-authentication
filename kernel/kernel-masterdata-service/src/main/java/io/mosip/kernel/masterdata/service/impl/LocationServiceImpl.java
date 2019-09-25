@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -30,6 +31,7 @@ import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -45,6 +47,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -754,23 +757,33 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
+		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
 		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
 		List<Node<Location>> tree = locationTree.createTree(locationList);
+		if(!CollectionUtils.isEmpty(dto.getFilters()))
+		{
+			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
+			if(isActiveFilter.isPresent())
+			{
+				String active = isActiveFilter.get().getValue();
+				isActive = Boolean.valueOf(active);
+			}
+		}
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
 		} else {
 			for (SearchFilter filter : dto.getFilters()) {
 				String type = filter.getType();
 				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
-					responseDto = getEqualsLocationSearch(filter, dto, tree);
+					responseDto = getEqualsLocationSearch(filter, dto, tree,isActive);
 				} else {
 					if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
-						responseDto = getContainsLocationSearch(filter, dto, tree);
+						responseDto = getContainsLocationSearch(filter, dto, tree,isActive);
 					} else {
 						if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
-							responseDto = getStartsWithLocationSearch(filter, dto, tree);
+							responseDto = getStartsWithLocationSearch(filter, dto, tree,isActive);
 						} else {
 							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
 									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
@@ -845,14 +858,15 @@ public class LocationServiceImpl implements LocationService {
 	 *            the search DTO provided.
 	 * @param tree
 	 *            the unbalanced tree of Location.
+	 * @param isActive 
 	 * @return the list of {@link LocationSearchDto}.
 	 */
 	private List<LocationSearchDto> getEqualsLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree) {
+			List<Node<Location>> tree, boolean isActive) {
 		List<LocationSearchDto> locationSearch = null;
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		Location location = locationRepository.findLocationByHierarchyLevel(locLevel, filter.getValue(),
-				dto.getLanguageCode());
+				dto.getLanguageCode(),isActive);
 		if (location != null) {
 			locationSearch = getListOfLocationNodes(tree, location);
 		}
@@ -906,14 +920,15 @@ public class LocationServiceImpl implements LocationService {
 	 *            the search DTO provided.
 	 * @param tree
 	 *            the unbalanced tree of Location.
+	 * @param isActive 
 	 * @return the list of {@link LocationSearchDto}.
 	 */
 	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree) {
+			List<Node<Location>> tree, boolean isActive) {
 		List<LocationSearchDto> responseDto = null;
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelContains(locLevel,
-				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
+				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
 			responseDto = getListOfLocationNodes(tree, loc);
 		}
@@ -929,14 +944,15 @@ public class LocationServiceImpl implements LocationService {
 	 *            the search DTO provided.
 	 * @param tree
 	 *            the unbalanced tree of Location.
+	 * @param isActive 
 	 * @retun the list of {@link LocationSearchDto}.
 	 */
 	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
-			List<Node<Location>> tree) {
+			List<Node<Location>> tree, boolean isActive) {
 		List<LocationSearchDto> responseDto = null;
 		short hierarchyLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelStartsWith(hierarchyLevel,
-				filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
+				filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
 			responseDto = getListOfLocationNodes(tree, loc);
 
@@ -967,11 +983,21 @@ public class LocationServiceImpl implements LocationService {
 					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
 				}
-				if (!hierarchyNames.contains(columnName)) {
+				if (!hierarchyNames.contains(columnName)&&!columnName.equals(MasterDataConstant.IS_ACTIVE)) {
 					throw new RequestException(ValidationErrorCode.INVALID_COLUMN_NAME.getErrorCode(),
 							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
+					if(filter.getColumnName().equals(MasterDataConstant.IS_ACTIVE))
+					{
+						List<String> filterValues = masterDataFilterHelper.filterValues(Location.class, filter, filterValueDto);
+						filterValues.forEach(filterValue -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(MasterDataConstant.IS_ACTIVE);
+							columnValue.setFieldValue(filterValue);
+							columnValueList.add(columnValue);
+						});
+					}
 					if (filter.getText() == null || filter.getText().isEmpty()) {
 						List<String> locationNames = locationRepository
 								.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(),
@@ -1042,6 +1068,7 @@ public class LocationServiceImpl implements LocationService {
 			case MasterDataConstant.POSTAL_CODE:
 				return "5";
 			case MasterDataConstant.ZONE:
+			case "Zone":
 				return "4";
 			case MasterDataConstant.CITY:
 				return "3";

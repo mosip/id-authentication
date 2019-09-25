@@ -323,9 +323,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					removeList.add(filter);
 					deviceCodeFilter = buildDeviceTypeSearchFilter(deviceTypes.getContent());
 					if (deviceCodeFilter.isEmpty()) {
-						throw new DataNotFoundException(
-								DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
-								DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
+//						throw new DataNotFoundException(
+//								DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
+//								DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
+						return pageDto;
 					}
 
 				}

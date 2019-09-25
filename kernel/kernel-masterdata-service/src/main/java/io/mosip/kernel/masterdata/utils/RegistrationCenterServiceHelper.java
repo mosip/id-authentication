@@ -193,10 +193,11 @@ public class RegistrationCenterServiceHelper {
 			if (locations.hasContent()) {
 				return locations.getContent().get(0);
 			} else {
-				throw new MasterDataServiceException(
+				/*throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
 						String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
-								filter.getValue()));
+								filter.getValue()));*/
+				return null;
 			}
 		}
 		return null;

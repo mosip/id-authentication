@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -62,6 +64,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component("schema")
 @RefreshScope
 public class IdObjectSchemaValidator implements IdObjectValidator {
+	
+	private static final Logger logger = LoggerFactory.getLogger(IdObjectSchemaValidator.class);
 
 	/** The Constant OPERATION. */
 	private static final String OPERATION = "operation";
@@ -80,7 +84,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/** The Constant UNWANTED. */
 	private static final String UNWANTED = "unwanted";
 
-	/** The config server file storage URL. */
+	/** The config server file storage URL. 
 	/*
 	 * Address of Spring cloud config server for getting the schema file
 	 */
@@ -91,7 +95,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	@Value("${mosip.kernel.idobjectvalidator.schema-name}")
 	private String schemaName;
 
-	/** The property source. */
+	/** The property source. 
 	/*
 	 * Property source from which schema file has to be taken, can be either
 	 * CONFIG_SERVER or LOCAL
@@ -112,6 +116,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	public void loadSchema() throws IdObjectIOException {
 		try {
 			if (APPLICATION_CONTEXT.getPropertySource().equals(propertySource)) {
+				logger.debug("schema loaded from application context");
 				schema = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			}
 		} catch (IOException e) {
@@ -142,7 +147,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
 			final JsonSchema jsonSchema = factory.getJsonSchema(jsonSchemaNode);
 			report = jsonSchema.validate(jsonObjectNode);
-
+			logger.debug("schema validation report generated : " + report);
 			List<ServiceError> errorList = new ArrayList<>();
 			if (!report.isSuccess()) {
 				report.forEach(processingMessage -> {
@@ -167,9 +172,10 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			}
 			validateMandatoryFields(jsonObjectNode, operation, errorList);
 			if (!errorList.isEmpty()) {
+				logger.debug("IdObjectValidationFailedException thrown with errors : " + errorList); 
 				throw new IdObjectValidationFailedException(ID_OBJECT_VALIDATION_FAILED, errorList);
 			}
-			return report.isSuccess();
+			return true;
 		} catch (IOException e) {
 			ExceptionUtils.logRootCause(e);
 			throw new IdObjectIOException(ID_OBJECT_PARSING_FAILED, e);
@@ -194,11 +200,13 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	private void validateMandatoryFields(JsonNode jsonObjectNode, IdObjectValidatorSupportedOperations operation,
 			List<ServiceError> errorList) throws IdObjectIOException {
 		if (Objects.isNull(operation)) {
+			logger.debug("mandatory field input operation is null");
 			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getMessage(), OPERATION));
 		}
 		String appId = env.getProperty(APPLICATION_ID.getValue());
 		if (Objects.isNull(appId)) {
+			logger.debug("mandatory field input appId is null");
 			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
 		}
@@ -301,6 +309,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 *             the id object IO exception
 	 */
 	private JsonNode getJsonSchemaNode() throws IdObjectIOException {
+		logger.debug("propertySource is set to " + propertySource);
 		JsonNode jsonSchemaNode = null;
 		/*
 		 * If the property source selected is CONFIG_SERVER. In this scenario schema is
@@ -311,6 +320,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			try {
 				// creating a JsonSchema node against which the JSON object will be validated.
 				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
+				logger.debug("schema is loaded from config server");
 			} catch (IOException e) {
 				ExceptionUtils.logRootCause(e);
 				throw new IdObjectIOException(SCHEMA_IO_EXCEPTION, e);
@@ -321,6 +331,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		else if (LOCAL.getPropertySource().equals(propertySource)) {
 			try {
 				jsonSchemaNode = JsonLoader.fromResource(PATH_SEPERATOR.getValue() + schemaName);
+				logger.debug("schema is loaded from LOCAL");
 			} catch (IOException e) {
 				ExceptionUtils.logRootCause(e);
 				throw new IdObjectIOException(SCHEMA_IO_EXCEPTION.getErrorCode(), SCHEMA_IO_EXCEPTION.getMessage(),
@@ -328,6 +339,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			}
 		} else if (APPLICATION_CONTEXT.getPropertySource().equals(propertySource)) {
 			jsonSchemaNode = schema;
+			logger.debug("schema is loaded from APPLICATION_CONTEXT");
 		}
 		return jsonSchemaNode;
 	}

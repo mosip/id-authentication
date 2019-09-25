@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,9 @@ public class RegIdObjectValidatorTest {
 	
 	@Mock
 	private ObjectMapper mapper;
+	
+	@Mock
+	private ConfigurableEnvironment environment;
 	
 
 	@InjectMocks

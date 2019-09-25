@@ -143,8 +143,9 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
 		StringBuilder languages = new StringBuilder();
-		if (demoDto.getName() != null) {
-			getLanguages(demoDto.getName(),languages);
+		if (!demoDto.getName().isEmpty()) {
+			for(JsonValue[] jsonValue : demoDto.getName())
+			getLanguages(jsonValue,languages);
 		}
 		String[] languageArray = getLanguages(demoDto.getGender(),languages);
 		for (int i = 0; i < languageArray.length; i++) {
@@ -157,10 +158,13 @@ public class PacketInfoMapper {
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
-			String applicantName = null;
-			if (demoDto.getName() != null) {
-				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
-				entity.setName(applicantName!=null?getHMACHashCode(applicantName.trim().toUpperCase()):null);
+			StringBuilder applicantFullName = new StringBuilder();
+			
+			if (!demoDto.getName().isEmpty()) {
+				for(JsonValue[] jsonValue : demoDto.getName()) {
+					applicantFullName.append(getJsonValues(jsonValue, languageArray[i]));
+				}
+				entity.setName(!applicantFullName.toString().isEmpty()?getHMACHashCode(applicantFullName.toString().trim().toUpperCase()):null);
 			}
 
 			if (demoDto.getDateOfBirth() != null) {
