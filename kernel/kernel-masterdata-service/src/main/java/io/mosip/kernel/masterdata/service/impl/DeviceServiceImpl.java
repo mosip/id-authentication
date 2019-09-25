@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -127,6 +128,9 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	
+	@Value("${mosip.primary-language}")
+	private String primaryLangCode;
 
 	/*
 	 * (non-Javadoc)
@@ -384,6 +388,12 @@ public class DeviceServiceImpl implements DeviceService {
 		boolean flag = true;
 		boolean isAssigned = true;
 		String typeName = null;
+		String langCode=null;
+		if (dto.getLanguageCode().equals("all")) {
+			langCode = primaryLangCode;
+		} else {
+			langCode = dto.getLanguageCode();
+		}
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			/*if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
