@@ -36,6 +36,7 @@ import javax.naming.ldap.LdapContext;
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
@@ -312,7 +313,6 @@ public class LdapDataStore implements DataStore {
 		try {
 			Dn searchBase = new Dn("ou=roles,c="+dataBaseConfig.getCommonName());
 			String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=" + userdn + "))";
-
 			EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 
 			Set<String> roles = new HashSet<String>();
@@ -353,6 +353,7 @@ public class LdapDataStore implements DataStore {
 		LdapConnection connection = null;
 		try {
 			connection = createAnonymousConnection();
+			connection.bind(dataBaseConfig.getAdminDN(), dataBaseConfig.getAdminPassword());
 			List<Role> roleDtos = new ArrayList<>();
 			Dn searchBase = new Dn("ou=roles,c="+dataBaseConfig.getCommonName());
 			String searchFilter = "(objectClass=organizationalRole)";
@@ -377,9 +378,10 @@ public class LdapDataStore implements DataStore {
 		finally
 		{
 			try {
+				connection.unBind();
 				rolesData.close();
 				connection.close();
-			} catch (IOException e) {
+			} catch (IOException | LdapException e) {
 				throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
 						LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),e);
 			}	
@@ -394,7 +396,7 @@ public class LdapDataStore implements DataStore {
 			List<MosipUserDto> mosipUserDtos = new ArrayList<>();
 
 			connection = createAnonymousConnection();
-
+			connection.bind(dataBaseConfig.getAdminDN(), dataBaseConfig.getAdminPassword());
 			for (String user : users) {
 				Dn userdn = createUserDn(user);
 				MosipUserDto data = lookupUserDetails(userdn, connection);
@@ -411,6 +413,7 @@ public class LdapDataStore implements DataStore {
 		}
 		finally
 		{
+			connection.unBind();
 			connection.close();
 		}
 	}
@@ -423,6 +426,7 @@ public class LdapDataStore implements DataStore {
 		try
 		{
 		connection = createAnonymousConnection();
+		connection.bind(dataBaseConfig.getAdminDN(), dataBaseConfig.getAdminPassword());
 		Dn searchBase = new Dn("ou=people,c="+dataBaseConfig.getCommonName());
 		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson))";
 		EntryCursor peoplesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
@@ -445,6 +449,7 @@ public class LdapDataStore implements DataStore {
 		}
 		finally
 		{
+			connection.unBind();
 			connection.close();
 		}
 		mosipUserSaltList.setMosipUserSaltList(mosipUserDtos);
