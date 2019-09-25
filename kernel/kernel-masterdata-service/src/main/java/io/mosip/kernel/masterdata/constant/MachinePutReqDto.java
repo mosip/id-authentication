@@ -28,6 +28,7 @@ public class MachinePutReqDto {
 	/**
 	 * Field for machine id
 	 */
+	@NotBlank
 	@Size(min = 1, max = 10)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;

@@ -53,7 +53,6 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -252,75 +251,7 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.MachineService#createMachine(io.mosip.
-	 * kernel.masterdata.dto.RequestDto)
-	 */
-	@Override
-	@Transactional
-	public IdAndLanguageCodeID createMachine1(MachineDto machine) {
-		Machine crtMachine = null;
-		Machine entity = MetaDataUtils.setCreateMetaData(machine, Machine.class);
-		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine, MachineHistory.class);
-		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-		try {
-			crtMachine = machineRepository.create(entity);
-			machineHistoryService.createMachineHistory(entityHistory);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
-		}
-
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(crtMachine, idAndLanguageCodeID);
-
-		return idAndLanguageCodeID;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.MachineService#updateMachine(io.mosip.
-	 * kernel.masterdata.dto.RequestDto)
-	 */
-	@Override
-	@Transactional
-	public IdAndLanguageCodeID updateMachine1(MachineDto machine) {
-		Machine updMachine = null;
-		try {
-			Machine renmachine = machineRepository
-					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
-							machine.getId(), machine.getLangCode());
-
-			if (renmachine != null) {
-				MetaDataUtils.setUpdateMetaData(machine, renmachine, false);
-				updMachine = machineRepository.update(renmachine);
-
-				MachineHistory machineHistory = new MachineHistory();
-				MapperUtils.map(updMachine, machineHistory);
-				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
-				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
-				machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
-				machineHistoryService.createMachineHistory(machineHistory);
-			} else {
-				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
-		}
-
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(updMachine, idAndLanguageCodeID);
-		return idAndLanguageCodeID;
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
