@@ -115,7 +115,7 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevel(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(location);
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(location);
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
