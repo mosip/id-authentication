@@ -745,7 +745,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				}
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
 	}
 
@@ -1110,7 +1110,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.getSyncControlOfJob(RegistrationConstants.OPT_TO_REG_PDS_J00003);
 
 		if (syncControl != null) {
-			Timestamp lastPreRegPacketDownloaded = syncControl.getUpdDtimes();
+			Timestamp lastPreRegPacketDownloaded = syncControl.getLastSyncDtimes();
 
 			if (lastPreRegPacketDownloaded != null) {
 

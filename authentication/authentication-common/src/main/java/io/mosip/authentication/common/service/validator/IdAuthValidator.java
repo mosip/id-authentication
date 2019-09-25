@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -230,60 +231,105 @@ public abstract class IdAuthValidator implements Validator {
 	 * Validate UIN, VID.
 	 *
 	 * @param id     the id
-	 * @param idType the id type
+	 * @param idTypeOrAlias the id type
 	 * @param errors the errors
 	 */
-	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
-		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
-		Set<String> allowedIdTypeSet = Stream.of(allowedIdTypes.split(",")).filter(str -> !str.isEmpty())
-				.collect(Collectors.toSet());
+	private void validateIdtypeUinVid(String id, String idTypeOrAlias, Errors errors, String idFieldName) {
+		Set<String> allowedIdTypeSet = getAllowedIdTypes();
 		// Checks for null IdType
-		if (StringUtils.isEmpty(idType)) {
+		if (StringUtils.isEmpty(idTypeOrAlias)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID_TYPE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		} // checks IdType is Allowed orN Not
-		else if (allowedIdTypeSet.contains(idType)) {
-			if (idType.equals(IdType.UIN.getType())) {
-				try {
-					uinValidator.validateId(id);
-				} catch (InvalidIDException e) {
-					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-							"InvalidIDException - " + e);
-					errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
-							IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
+		} // checks IdType is Allowed or Not
+		else if (allowedIdTypeSet.contains(IdType.getIDTypeStrOrSameStr(idTypeOrAlias))) {
+			Optional<IdType> idTypeOpt = IdType.getIDType(idTypeOrAlias);
+			if(idTypeOpt.isPresent()) {
+				IdType idType = idTypeOpt.get();
+				//If UIN alias is configured only that is allowed
+				if (idType.getAliasOrType().equals(idTypeOrAlias)) {
+					if (idType == IdType.UIN) {
+						try {
+							uinValidator.validateId(id);
+						} catch (InvalidIDException e) {
+							mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+									"InvalidIDException - " + e);
+							errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
+									IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 
-				}
-			} else if (idType.equals(IdType.VID.getType())) {
-				try {
-					vidValidator.validateId(id);
-				} catch (InvalidIDException e) {
+						}
+					} else if (idType == IdType.VID) {
+						try {
+							vidValidator.validateId(id);
+						} catch (InvalidIDException e) {
+							mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+									"InvalidIDException - " + e);
+							errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
+									IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
+						}
+					}
+				} else {
 					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-							"InvalidIDException - " + e);
-					errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
-							IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
+							"INCORRECT_IDTYPE - " + idTypeOrAlias);
+					errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { IDV_ID_TYPE },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
 			}
 		} else {
 			// Checks idType is valid or invalid.If Valid and not configured
 			// IDENTITYTYPE_NOT_ALLOWED error is thrown else INVALID_INPUT_PARAMETER will be
 			// thrown.
-			if (IdType.getIDType(idType).isPresent()) {
+			if (IdType.getIDType(idTypeOrAlias)
+					.filter(idType -> idType.getAliasOrType().equals(idTypeOrAlias)).isPresent()) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						"NOT ALLOWED IDENTITY TYPE - " + idType);
+						"NOT ALLOWED IDENTITY TYPE - " + idTypeOrAlias);
 				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.IDENTITYTYPE_NOT_ALLOWED.getErrorCode(),
-						new Object[] { idType },
+						new Object[] { idTypeOrAlias },
 						IdAuthenticationErrorConstants.IDENTITYTYPE_NOT_ALLOWED.getErrorMessage());
 			} else {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						"INCORRECT_IDTYPE - " + idType);
+						"INCORRECT_IDTYPE - " + idTypeOrAlias);
 				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { IDV_ID_TYPE },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
+	}
+
+	protected Set<String> getAllowedIdTypes() {
+		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
+		return Stream.of(allowedIdTypes.split(","))
+				.map(String::trim)
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
+	}
+	
+	protected Set<String> getAllowedAuthTypes() {
+		return getAllowedAuthTypes(getAllowedAuthTypeProperty());
+	}
+	
+	/**
+	 * Extract auth info.
+	 *
+	 * @param configKey the config key
+	 * @return the sets the
+	 */
+	private Set<String> getAllowedAuthTypes(String configKey) {
+		String intAllowedAuthType = env.getProperty(configKey);
+		return Stream.of(intAllowedAuthType.split(","))
+				.map(String::trim)
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
+	}
+
+	/**
+	 * @return the allowedAuthType
+	 */
+	protected String getAllowedAuthTypeProperty() {
+		return IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
 	}
 
 	protected String getAllowedIdTypesConfigKey() {

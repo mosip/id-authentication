@@ -98,6 +98,10 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) AND m.isActive = true")
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
+	
+	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2")
+	Machine findMachineByIdAndLangCode(String id,String langCode);
+	
 
 	/**
 	 * This method trigger query to fetch the Machine detail those are mapped with
@@ -115,14 +119,18 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(String id,
 			String langCode);
 
-	@Query(value = "select m.id from master.machine_master m where m.id in(select  distinct rcm.machine_id from master.reg_center_machine rcm )", nativeQuery = true)
-	List<String> findMappedMachineId();
+	@Query(value = "select m.id from master.machine_master m where m.id in(select  distinct rcm.machine_id from master.reg_center_machine rcm ) and m.lang_code=?1", nativeQuery = true)
+	List<String> findMappedMachineId(String langCode);
 
-	@Query(value = "select m.id from master.machine_master m where m.id not in(select  distinct rcm.machine_id from master.reg_center_machine rcm )", nativeQuery = true)
-	List<String> findNotMappedMachineId();
-
+	@Query(value = "select m.id from master.machine_master m where m.id not in(select  distinct rcm.machine_id from master.reg_center_machine rcm ) and m.lang_code=?1", nativeQuery = true)
+	List<String> findNotMappedMachineId(String langCode);
+	
+	@Query(value="Select * from master.machine_spec ms where (ms.is_deleted is null or ms.is_deleted = false) and ms.is_active = true and ms.mtyp_code IN (select code from master.machine_type mt where mt.name=?1) and ms.lang_code=?2",nativeQuery = true)
+	List<Object[]> findMachineSpecByMachineTypeNameAndLangCode(String name,String langCode);
+	
 	@Query("UPDATE Machine m SET m.isDeleted = true,m.isActive = false WHERE m.id=?1 and (m.isDeleted is null or m.isDeleted =false)")
 	@Modifying
 	@Transactional
 	int decommissionMachine(String id);
+	
 }

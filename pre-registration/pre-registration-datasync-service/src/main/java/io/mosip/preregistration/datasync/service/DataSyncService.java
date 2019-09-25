@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -136,6 +137,7 @@ public class DataSyncService {
 		} catch (
 
 		Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
 			new DataSyncExceptionCatcher().handle(ex, responseDto);
@@ -178,6 +180,7 @@ public class DataSyncService {
 			responseDto.setResponse(preRegArchiveDTO);
 			isRetrieveSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getPreRegistrationData method of datasync service - " + ex.getMessage());
 			new DataSyncExceptionCatcher().handle(ex, responseDto);
@@ -223,6 +226,7 @@ public class DataSyncService {
 			}
 			isSaveSuccess = true;
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In storeConsumedPreRegistrations method of datasync service - " + ex.getMessage());
 

@@ -179,6 +179,7 @@ public class BookingServiceUtil {
 			}
 
 		} catch (HttpClientErrorException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
@@ -224,6 +225,7 @@ public class BookingServiceUtil {
 			}
 
 		} catch (HttpClientErrorException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
@@ -269,6 +271,7 @@ public class BookingServiceUtil {
 			return true;
 
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callUpdateStatusRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
@@ -317,6 +320,7 @@ public class BookingServiceUtil {
 						respEntity.getBody().getErrors().get(0).getMessage());
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetStatusRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
@@ -380,6 +384,7 @@ public class BookingServiceUtil {
 
 			}
 		} catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callGetStatusForCancelRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
@@ -754,6 +759,7 @@ public class BookingServiceUtil {
 				throw new NotificationException(validationErrorList, null);
 			}
 		} catch (HttpClientErrorException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In emailNotification method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
@@ -799,6 +805,7 @@ public class BookingServiceUtil {
 				}
 			}
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for preregistration id - "
 							+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),

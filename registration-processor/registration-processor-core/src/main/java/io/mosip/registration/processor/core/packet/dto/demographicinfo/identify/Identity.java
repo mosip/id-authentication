@@ -45,13 +45,7 @@ public class Identity {
 	private IdentityJsonValues city;
 
 	/** The address line 1. */
-	private IdentityJsonValues addressLine1;
-
-	/** The address line 2. */
-	private IdentityJsonValues addressLine2;
-
-	/** The address line 3. */
-	private IdentityJsonValues addressLine3;
+	private IdentityJsonValues address;
 
 	/** The region. */
 	private IdentityJsonValues region;

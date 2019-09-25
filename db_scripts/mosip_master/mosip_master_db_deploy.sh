@@ -19,7 +19,7 @@ echo `date "+%m/%d/%Y %H:%M:%S"` ": ------------------ Database server and servi
 
 today=`date '+%d%m%Y_%H%M%S'`;
 LOG="${LOG_PATH}${MOSIP_DB_NAME}-${today}.log"
-touch $
+touch $LOG
 
 
 SERVICE=$(PGPASSWORD=$SU_USER_PWD  psql --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -t -c "select count(1) from pg_roles where rolname IN('sysadmin')";exit; > /dev/null)

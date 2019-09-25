@@ -100,7 +100,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="3.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Button mnemonicParsing="false" onAction="#goToHomePacketUpload" styleClass="homeButton" text="%home" />
                         <Label styleClass="headerLabel" text="%/uploadpacket" />
                      </children>
                      <GridPane.margin>

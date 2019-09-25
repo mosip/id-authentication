@@ -15,16 +15,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -35,7 +35,6 @@ import io.mosip.registration.processor.status.api.controller.RegistrationSyncCon
 import io.mosip.registration.processor.status.dto.SyncErrorDTO;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
-import io.mosip.registration.processor.status.sync.response.dto.RegStatusResponseDTO;
 import io.mosip.registration.processor.status.sync.response.dto.RegSyncResponseDTO;
 
 
@@ -143,7 +142,7 @@ public class RegistrationSyncExceptionHandler {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().serializeNulls().create();
 
 
 		if(isEnabled) {

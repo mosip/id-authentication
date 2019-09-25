@@ -1,13 +1,17 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -37,6 +41,9 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -52,6 +59,8 @@ public class MasterdataSearchHelper {
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
 	private static final String ENTITY_IS_NULL = "entity is null";
 	private static final String WILD_CARD_CHARACTER = "%";
+	private static final String TYPE_NAME = "typeName";
+	private static final String DECOMISSION= "isDeleted";
 
 	/**
 	 * Field for interface used to interact with the persistence context.
@@ -158,11 +167,16 @@ public class MasterdataSearchHelper {
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
 		}
+		Predicate isDeletedTrue=builder.equal(root.get(DECOMISSION), Boolean.FALSE);
+		Predicate isDeletedNull=builder.isNull(root.get(DECOMISSION));
+		Predicate isDeleted=builder.or(isDeletedTrue,isDeletedNull);
+		predicates.add(isDeleted);
 		if (!predicates.isEmpty()) {
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
 			selectQuery.where(whereClause);
 			countQuery.where(whereClause);
 		}
+		
 	}
 
 	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root, final OptionalFilter optionalFilters,
@@ -509,4 +523,93 @@ public class MasterdataSearchHelper {
 		return false;
 	}
 
+	public Page<Machine> nativeMachineQuerySearch(SearchDto searchDto, String typeName, List<Zone> zones,
+			boolean isAssigned) {
+		List<String> zoneCodes = new ArrayList<>();
+		zones.stream().forEach(zone -> {
+			zoneCodes.add(zone.getCode());
+		});
+		StringBuilder nativeQuery = null;
+		if (isAssigned) {
+			nativeQuery = new StringBuilder().append("SELECT * FROM master.machine_master m where m.id IN");
+		} else {
+			nativeQuery = new StringBuilder().append("SELECT * FROM master.machine_master m where m.id NOT IN");
+
+		}
+		nativeQuery.append(
+				"(select  rcm.machine_id from master.reg_center_machine rcm ) and m.lang_code=:langCode and m.mspec_id in(select id from master.machine_spec ms , master.machine_type mt where ms.mtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)");
+		Iterator<SearchFilter> searchIterator = searchDto.getFilters().iterator();
+		while (searchIterator.hasNext()) {
+			SearchFilter searchFilter = searchIterator.next();
+			String columnName = getColumnName(searchFilter.getColumnName(), Machine.class);
+			nativeQuery.append(" and m." + columnName + "=:" + searchFilter.getColumnName());
+		}
+
+		Query query = entityManager.createNativeQuery(nativeQuery.toString(), Machine.class);
+		query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
+		query.setParameter(TYPE_NAME, typeName);
+		query.setParameter("zoneCode", zoneCodes);
+		searchDto.getFilters().stream().forEach(search -> {
+			query.setParameter(search.getColumnName(), search.getValue());
+		});
+		List<Machine> result = query.getResultList();
+		return new PageImpl<>(result,
+				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
+				query.getResultList().size());
+
+	}
+
+	public Page<Device> nativeDeviceQuerySearch(SearchDto searchDto, String typeName, List<Zone> zones,
+			boolean isAssigned) {
+		List<String> zoneCodes = new ArrayList<>();
+		zones.stream().forEach(zone -> {
+			zoneCodes.add(zone.getCode());
+		});
+		StringBuilder nativeQuery = null;
+		if (isAssigned) {
+			nativeQuery = new StringBuilder().append("SELECT * FROM master.device_master m where m.id IN");
+		} else {
+			nativeQuery = new StringBuilder().append("SELECT * FROM master.device_master m where m.id NOT IN");
+
+		}
+		nativeQuery.append(
+				"(select  distinct rcm.device_id from master.reg_center_device rcm ) and m.lang_code=:langCode and m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)");
+		Iterator<SearchFilter> searchIterator = searchDto.getFilters().iterator();
+		while (searchIterator.hasNext()) {
+			SearchFilter searchFilter = searchIterator.next();
+			String columnName = getColumnName(searchFilter.getColumnName(), Device.class);
+			nativeQuery.append(" and m." + columnName + "=:" + searchFilter.getColumnName());
+		}
+
+		nativeQuery.append(" OFFSET " + searchDto.getPagination().getPageStart() + " ROWS FETCH NEXT "
+				+ searchDto.getPagination().getPageFetch() + " ROWS ONLY");
+
+		Query query = entityManager.createNativeQuery(nativeQuery.toString(), Device.class);
+		query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
+		query.setParameter(TYPE_NAME, typeName);
+		query.setParameter("zoneCode", zoneCodes);
+		searchDto.getFilters().stream().forEach(search -> {
+			query.setParameter(search.getColumnName(), search.getValue());
+		});
+		List<Device> result = query.getResultList();
+
+		return new PageImpl<>(result,
+				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
+				query.getResultList().size());
+
+	}
+
+	private <E> String getColumnName(String fieldName, Class<E> entity) {
+		String columnName = null;
+		for (Field field : entity.getDeclaredFields()) {
+			if (field.isAnnotationPresent(Column.class)) {
+				String entityColumnName = field.getAnnotation(Column.class).name();
+				if (fieldName.equals(field.getName())) {
+					columnName = entityColumnName;
+					break;
+				}
+			}
+		}
+		return columnName;
+	}
 }

@@ -53,7 +53,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="3.0" GridPane.valignment="CENTER">
                      <children>
-                        <Text onMouseClicked="#goToHomePageFromRegistration" text="%home" />
+                        <Text onMouseClicked="#goToHomeAckTemplate" text="%home" />
                         <Text fx:id="registrationNavLabel" text="%/newregistration" />
                         <Text text="%/acknowledgement" />
                      </children>

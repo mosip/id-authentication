@@ -216,6 +216,49 @@ public class Encrypt {
 		encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
 		return encryptionResponseDto;
 	}
+	
+	@PostMapping(path = "/splitEncryptedData", produces = MediaType.APPLICATION_JSON_VALUE) 
+	public SplittedEncryptedData splitEncryptedData(@RequestBody String data) {
+		byte[] dataBytes = CryptoUtil.decodeBase64(data);
+		byte[][] splits = splitAtFirstOccurance(dataBytes, keySplitter.getBytes());
+		return new SplittedEncryptedData(CryptoUtil.encodeBase64(splits[0]), CryptoUtil.encodeBase64(splits[1]));
+	}
+	
+	@PostMapping(path = "/combineDataToEncrypt", consumes = MediaType.APPLICATION_JSON_VALUE) 
+	public String combineDataToEncrypt(@RequestBody SplittedEncryptedData splittedData) {
+		return CryptoUtil.encodeBase64String(
+				CryptoUtil.combineByteArray(
+						CryptoUtil.decodeBase64(splittedData.getEncryptedData()), 
+						CryptoUtil.decodeBase64(splittedData.getEncryptedSessionKey()), 
+						keySplitter));
+	}
+	
+	private static byte[][] splitAtFirstOccurance(byte[] strBytes, byte[] sepBytes) {
+		int index = findIndex(strBytes, sepBytes);
+		if (index >= 0) {
+			byte[] bytes1 = new byte[index];
+			byte[] bytes2 = new byte[strBytes.length - (bytes1.length + sepBytes.length)];
+			System.arraycopy(strBytes, 0, bytes1, 0, bytes1.length);
+			System.arraycopy(strBytes, (bytes1.length + sepBytes.length), bytes2, 0, bytes2.length);
+			return new byte[][] { bytes1, bytes2 };
+		} else {
+			return new byte[][] { strBytes, new byte[0] };
+		}
+	}
+
+	private static int findIndex(byte arr[], byte[] subarr) {
+		int len = arr.length;
+		int subArrayLen = subarr.length;
+		return IntStream.range(0, len).filter(currentIndex -> {
+			if ((currentIndex + subArrayLen) <= len) {
+				byte[] sArray = new byte[subArrayLen];
+				System.arraycopy(arr, currentIndex, sArray, 0, subArrayLen);
+				return Arrays.equals(sArray, subarr);
+			}
+			return false;
+		}).findFirst() // first occurence
+				.orElse(-1); // No element found
+	} 	
 
 	
 	/**

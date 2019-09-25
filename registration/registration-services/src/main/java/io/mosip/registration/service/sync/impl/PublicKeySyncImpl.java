@@ -119,13 +119,11 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 			responseDTO = getResponse(triggerPoint);
 		}
 
-		responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
-				null);
+		setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 	}
 
 	private ResponseDTO getResponse(String triggerPoint) throws RegBaseCheckedException {
-		ResponseDTO responseDTO;
-		responseDTO = insertPublickey(triggerPoint);
+		ResponseDTO responseDTO = insertPublickey(triggerPoint);
 
 		if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
 			responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,

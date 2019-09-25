@@ -126,7 +126,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home">
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromApproval" styleClass="homeButton" text="%home">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin></Button>

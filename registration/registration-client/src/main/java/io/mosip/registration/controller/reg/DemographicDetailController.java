@@ -1199,6 +1199,9 @@ public class DemographicDetailController extends BaseController {
 					parentFieldValidation();
 				}
 			} else {
+				updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
+				updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE, true);
+				updatePageFlow(RegistrationConstants.IRIS_CAPTURE, true);
 				dd.clear();
 				mm.clear();
 				yyyy.clear();
@@ -1212,6 +1215,7 @@ public class DemographicDetailController extends BaseController {
 				parentName.clear();
 				parentNameLocalLanguage.clear();
 				parentRegId.clear();
+				isChild=false;
 			}
 		} else {
 			ageField.setText(RegistrationConstants.EMPTY);

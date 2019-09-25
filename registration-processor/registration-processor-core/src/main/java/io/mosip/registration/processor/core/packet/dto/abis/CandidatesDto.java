@@ -1,17 +1,17 @@
 package io.mosip.registration.processor.core.packet.dto.abis;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import lombok.Data;
 
 /**
  * The Class CandidatesDto.
+ * 
  * @author M1048860 Kiran Raj
  */
 @Data
 public class CandidatesDto implements Serializable {
-	
+
 	/**
 	 * 
 	 */
@@ -22,24 +22,27 @@ public class CandidatesDto implements Serializable {
 
 	/** The scaled score. */
 	private String scaledScore;
-	
+
 	private String internalScore;
-	
+
 	private Analytics[] analytics;
+
+	private AbisScores[] scores;
+
 	public Analytics[] getAnalytics() {
-		return analytics.clone();
+		return analytics != null ? analytics.clone() : null;
 	}
 
 	public void setAnalytics(Analytics[] analytics) {
-		this.analytics = analytics!=null?analytics:null;
-	}
-	
-	private AbisScores[] scores;
-	public AbisScores[] getScores() {
-		return scores.clone();
+		this.analytics = analytics != null ? analytics : null;
 	}
 
-	public void setAbisScores(AbisScores[] scores) {
-		this.scores = scores!=null?scores:null;
+	public AbisScores[] getScores() {
+		return scores != null ? scores.clone() : null;
 	}
+
+	public void setScores(AbisScores[] scores) {
+		this.scores = scores != null ? scores : null;
+	}
+
 }

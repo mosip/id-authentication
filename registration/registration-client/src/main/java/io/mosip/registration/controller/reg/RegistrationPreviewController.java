@@ -32,6 +32,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -74,6 +75,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
 	
 	@Autowired
 	private IrisCaptureController irisCaptureController;
@@ -324,6 +328,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 		SessionContext.map().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 		fingerPrintCaptureController.initializeCaptureCount();
 		irisCaptureController.initializeCaptureCount();
+		guardianBiometricsController.intializeCaptureCount();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_REGISTRATIONPREVIEW, false);
 

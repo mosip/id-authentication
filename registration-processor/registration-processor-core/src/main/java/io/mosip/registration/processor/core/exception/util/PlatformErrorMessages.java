@@ -270,8 +270,7 @@ public enum PlatformErrorMessages {
 	RPR_PVM_DATA_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "002",
 			"Data Not Available in Master DB"),
 	/** The rpr pvm update packet deactivated. */
-	RPR_PVM_UPDATE_DEACTIVATED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "014",
-			"UIN is Deactivated"),
+	RPR_PVM_UPDATE_DEACTIVATED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "014", "UIN is Deactivated"),
 
 	/** The rpr pvm identity not found. */
 	RPR_PVM_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "003",
@@ -740,6 +739,29 @@ public enum PlatformErrorMessages {
 	/** The print validation failed. */
 	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011", "Error while print data validation"),
 
+	RPR_PRT_CARDTYPE_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "012",
+			"Invalid CardType : Enter UIN or MASKED_UIN"),
+
+	RPR_PRT_IDTYPE_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "013",
+			"Invalid IdType : Enter UIN or VID or RID"),
+
+	RPR_PRT_UIN_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "014", "UIN is not valid"),
+
+	RPR_PRT_VID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "015", "VID is not valid"),
+
+	RPR_PRT_RID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "016", "RID is not valid"),
+
+	RPR_PRT_VID_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "017", "Error while creating VID"),
+
+	RPR_PRT_VID_EXCEPTION(PlatformConstants.RPR_PRINTING_MODULE + "018",
+			"Could not generate/regenerate VID as per policy,Please use existing VID"),
+
+	/** The missing input parameter. */
+	RPR_PRT_MISSING_INPUT_PARAMETER(PlatformConstants.RPR_PRINTING_MODULE + "019", "Missing Input Parameter - %s"),
+
+	/** The missing input parameter. */
+	RPR_PRT_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_PRINTING_MODULE + "019", "Invalid Input Parameter - %s"),
+
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
 
@@ -805,7 +827,12 @@ public enum PlatformErrorMessages {
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
 
-	RPR_PGS_VID_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "013", "VID status is not active"),
+	RPR_PGS_VID_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "013",
+			"Could not generate/regenerate VID as per policy,Please use existing VID"),
+
+	RPR_PGS_VID_CREATION_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "014", "VID creation Exception"),
+
+	RPR_PGS_ID_OBJECT_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "015", "ID Object Validation failed"),
 
 	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
@@ -843,13 +870,16 @@ public enum PlatformErrorMessages {
 	/** The missing mandatory fields. */
 	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing"),
 
-    TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"001","RID Not Found"),
+	TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "001", "RID Not Found"),
 
-    RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"002","Unknown Exception Occured"),
-    
-    RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"003","Invalid request"),
+	RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "002", "Unknown Exception Occured"),
 
-    RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
+	RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "003", "Invalid request"),
+
+	RPR_RTS_DATA_POPULATION_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "004",
+			"globalMessages not found for input langCode"),
+
+	RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
 			"reg Based checked exception");
 	/** The error message. */
 	private final String errorMessage;

@@ -10,6 +10,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum RequestErrorCode {
 
 	REQUEST_DATA_NOT_VALID("KER-MSD-999", "Invalid request input"),
+	REQUEST_INVALID_COLUMN("KER-MSD-319", "Invalid request input"),
 	INTERNAL_SERVER_ERROR("KER-MSD-500", "Internal server error");
 
 	private final String errorCode;

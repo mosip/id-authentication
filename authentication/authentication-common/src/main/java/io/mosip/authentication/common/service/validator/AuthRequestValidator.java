@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -61,7 +60,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (authRequestDto != null) {
 			if (!errors.hasErrors()) {
 				validateConsentReq(authRequestDto.isConsentObtained(), errors);
-				validateAllowedAuthTypes(authRequestDto, errors, getAllowedAuthTypeProperty());
+				validateAllowedAuthTypes(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
 				validateReqTime(authRequestDto.getRequestTime(), errors, IdAuthCommonConstants.REQ_TIME);
@@ -112,16 +111,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (authType.isDemo()) {
 			checkDemoAuth(authRequest, errors);
 		} else if (authType.isBio()) {
-			Set<String> allowedAuthType = getAllowedAuthTypes(getAllowedAuthTypeProperty());
+			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
 		}
-	}
-
-	/**
-	 * @return the allowedAuthType
-	 */
-	protected String getAllowedAuthTypeProperty() {
-		return IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
 	}
 
 	@Override

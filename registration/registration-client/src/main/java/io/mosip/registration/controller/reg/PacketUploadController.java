@@ -71,7 +71,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
@@ -693,6 +692,31 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+	
+	/**
+	 * Go to home ack template.
+	 */
+	public void goToHomePacketUpload() {
+		try {
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				clearOnboardData();
+				clearRegistrationData();
+			} else {
+				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+						RegistrationConstants.ENABLE);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI - ACK_RECEIPT_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+		} catch (RuntimeException runtimException) {
+			LOGGER.error("REGISTRATION - UI - ACK_RECEIPT_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					runtimException.getMessage() + ExceptionUtils.getStackTrace(runtimException));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+		}
+
 	}
 
 }

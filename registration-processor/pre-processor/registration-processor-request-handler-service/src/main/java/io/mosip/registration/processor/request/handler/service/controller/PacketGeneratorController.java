@@ -107,7 +107,7 @@ public class PacketGeneratorController {
 
 			if (isEnabled) {
 				PacketGeneratorResponseDto response = buildPacketGeneratorResponse(packerGeneratorResDto);
-				Gson gson = new GsonBuilder().create();
+				Gson gson = new GsonBuilder().serializeNulls().create();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
 				return ResponseEntity.ok().headers(headers).body(response);

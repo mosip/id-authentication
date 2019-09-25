@@ -2,6 +2,7 @@ package io.mosip.registration.processor.request.handler.service.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,10 +18,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -124,7 +128,6 @@ public class UinCardRePrintServiceImpl {
 				&& validator.isValidIdType(uinCardRePrintRequestDto.getRequest().getIdType())
 				&& validator.isValidCardType(uinCardRePrintRequestDto.getRequest().getCardType())
 				&& isValidUinVID(uinCardRePrintRequestDto)) {
-
 			try {
 				String cardType = uinCardRePrintRequestDto.getRequest().getCardType();
 				String regType = uinCardRePrintRequestDto.getRequest().getRegistrationType();
@@ -134,11 +137,11 @@ public class UinCardRePrintServiceImpl {
 				else
 					vid = uinCardRePrintRequestDto.getRequest().getId();
 
-				if (cardType.equalsIgnoreCase(VID) && vid == null) {
+				if (cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString()) && vid == null) {
 
 					VidRequestDto vidRequestDto = new VidRequestDto();
 					RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
-					VidResponseDTO response = new VidResponseDTO();
+					VidResponseDTO response;
 					vidRequestDto.setUIN(uin);
 					vidRequestDto.setVidType("Temporary");
 					request.setId(env.getProperty(VID_CREATE_ID));
@@ -194,15 +197,26 @@ public class UinCardRePrintServiceImpl {
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), rid,
 							"UinCardRePrintServiceImpl::createPacket():: RID link to UIN failed");
-			} catch (Exception e) {
+			} catch (ApisResourceAccessException e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(),
-						PlatformErrorMessages.RPR_RHS_REG_BASE_EXCEPTION.getMessage(), ExceptionUtils.getStackTrace(e));
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RHS_REG_BASE_EXCEPTION,
-						ExceptionUtils.getStackTrace(e), e);
-
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION, e);
+			} catch (VidCreationException
+					| io.mosip.registration.processor.packet.storage.exception.VidCreationException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						PlatformErrorMessages.RPR_PGS_VID_CREATION_EXCEPTION.getMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_VID_CREATION_EXCEPTION, e);
+			} catch (IdObjectValidationFailedException | IdObjectIOException | ParseException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						PlatformErrorMessages.RPR_PGS_ID_OBJECT_EXCEPTION.getMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_ID_OBJECT_EXCEPTION, e);
 			}
-
 		}
 		return packetGeneratorResDto;
 	}
@@ -306,8 +320,8 @@ public class UinCardRePrintServiceImpl {
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
 		String rid = null;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		JSONObject ridJson = new JSONObject();
+		ResponseWrapper<?> responseWrapper;
+		JSONObject ridJson;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 

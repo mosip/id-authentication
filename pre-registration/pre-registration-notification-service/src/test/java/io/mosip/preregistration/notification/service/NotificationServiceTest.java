@@ -315,7 +315,7 @@ public class NotificationServiceTest {
 	 * 
 	 * @throws JsonProcessingException
 	 */
-	@Test(expected = IllegalParamException.class)
+	@Test(expected = RestCallException.class)
 	public void sendNotificationFailureTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
@@ -330,10 +330,13 @@ public class NotificationServiceTest {
 		response.setMessage("Email and sms request successfully submitted");
 		responseDTO.setResponse(response);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenThrow(RestClientException.class);
 		String stringjson = mapper.writeValueAsString(mainReqDto);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
-		assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
+		//assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
 
 	}
 

@@ -12,7 +12,6 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -108,6 +107,8 @@ import javafx.util.Duration;
 
 @Component
 public class BaseController {
+	
+	private static final String ALERT_STAGE = "alertStage";
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -295,6 +296,7 @@ public class BaseController {
 	 */
 	protected void generateAlert(String title, String context) {
 		try {
+			closeAlreadyExistedAlert();
 			alertStage = new Stage();
 			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
 			Scene scene = new Scene(authRoot);
@@ -330,8 +332,14 @@ public class BaseController {
 				&& !context.contains(RegistrationConstants.SUCCESS.toUpperCase())
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
+			if (SessionContext.isSessionContextAvailable()) {
+				SessionContext.map().put(ALERT_STAGE, alertStage);
+			}
 			alertController.generateAlertResponse(title, context);
 		} else {
+			if (SessionContext.isSessionContextAvailable()) {
+				SessionContext.map().put(ALERT_STAGE, alertStage);
+			}
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
 		}
@@ -1189,6 +1197,9 @@ public class BaseController {
 		alert.initStyle(StageStyle.UNDECORATED);
 		alert.initModality(Modality.WINDOW_MODAL);
 		alert.initOwner(fXComponents.getStage());
+		if(SessionContext.isSessionContextAvailable()) {
+		SessionContext.map().put("alert", alert);
+		}
 		return alert;
 	}
 
@@ -1360,6 +1371,14 @@ public class BaseController {
 				header.reorderingProperty()
 						.addListener((observable, oldValue, newValue) -> header.setReordering(false));
 			});
+		}
+	}
+	
+	public void closeAlreadyExistedAlert() {
+		if (SessionContext.isSessionContextAvailable() && SessionContext.map() != null
+				&& SessionContext.map().get(ALERT_STAGE) != null) {
+			Stage alertStageFromSession = (Stage) SessionContext.map().get(ALERT_STAGE);
+			alertStageFromSession.close();
 		}
 	}
 

@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -352,7 +352,8 @@ public class DocumentServiceUtil {
 		try {
 			log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
 			return virusScan.scanDocument(file.getBytes());
-		} catch (java.io.IOException e) {
+		} catch (Exception e) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(e));
 			log.error("sessionId", "idType", "id", e.getMessage());
 			throw new VirusScannerException(ErrorCodes.PRG_PAM_DOC_010.toString(),
 					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
@@ -376,12 +377,15 @@ public class DocumentServiceUtil {
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 					}, params);
+			log.debug("sessionId", "idType", "id", "After rest call");
+			log.debug("sessionId", "idType", "id", "Response Entity " + respEntity.getBody());
 			if (respEntity.getBody().getErrors() != null) {
+
 				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
 						respEntity.getBody().getErrors().get(0).getMessage());
 			}
 
-		} catch (RestClientException ex) {
+		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
 
