@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
-import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -80,8 +81,11 @@ public class CryptographicUtilTest {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	/**
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
+	 */
 	@MockBean
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	private KeyPair keyPair;
 
@@ -114,7 +118,7 @@ public class CryptographicUtilTest {
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerPublicKeyResponseDto.class)))
 				.thenThrow(new IOException("IOEXCEPTION"));
 		cryptomanagerUtil.getPublicKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 
 	@Test(expected = ParseResponseException.class)
@@ -125,9 +129,9 @@ public class CryptographicUtilTest {
 				withSuccess(map.writeValueAsString(keymanagerSymmetricKeyResponseDto), MediaType.APPLICATION_JSON));
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerSymmetricKeyResponseDto.class)))
 				.thenThrow(new IOException("IOEXCEPTION"));
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	
@@ -135,18 +139,18 @@ public class CryptographicUtilTest {
 	public void testAuthenticationDecrypt() throws Exception {
 		server.expect(requestTo(symmetricKeyUrl)).andRespond(
 				withUnauthorizedRequest());
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	@Test(expected=AccessDeniedException.class)
 	public void testAuthorizationDecrypt() throws Exception {
 		server.expect(requestTo(symmetricKeyUrl)).andRespond(
 				withStatus(HttpStatus.FORBIDDEN));
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	@Test(expected=AuthNException.class)
@@ -158,9 +162,9 @@ public class CryptographicUtilTest {
 		responseWrapper.setErrors(errors);
 		server.expect(requestTo(symmetricKeyUrl)).andRespond(
 				withUnauthorizedRequest().body(map.writeValueAsString(responseWrapper)));
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	@Test(expected=AuthZException.class)
@@ -172,18 +176,18 @@ public class CryptographicUtilTest {
 		responseWrapper.setErrors(errors);
 		server.expect(requestTo(symmetricKeyUrl)).andRespond(
 				withStatus(HttpStatus.FORBIDDEN).body(map.writeValueAsString(responseWrapper)));
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	@Test(expected=CryptoManagerSerivceException.class)
 	public void testInternelServerException() throws Exception {
 		server.expect(requestTo(symmetricKeyUrl)).andRespond(
 				withServerError());
-	   when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+	   when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	@Test(expected=KeymanagerServiceException.class)
@@ -195,9 +199,9 @@ public class CryptographicUtilTest {
 		responseWrapper.setErrors(errors);
 		server.expect(requestTo(symmetricKeyUrl)).andRespond(
 				withServerError().body(map.writeValueAsString(responseWrapper)));
-	    when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+	    when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		cryptomanagerUtil.getDecryptedSymmetricKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 	
 	@Test(expected=KeymanagerServiceException.class)
@@ -212,7 +216,7 @@ public class CryptographicUtilTest {
 		when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(KeymanagerPublicKeyResponseDto.class)))
 				.thenThrow(new IOException("IOEXCEPTION"));
 		cryptomanagerUtil.getPublicKey(new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw","ykrkpgjjtChlVdvDNJJEnQ"));
+				LocalDateTime.parse("2018-12-06T12:07:44.403"), "dXJ2aWw","ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk"));
 	}
 
 }
