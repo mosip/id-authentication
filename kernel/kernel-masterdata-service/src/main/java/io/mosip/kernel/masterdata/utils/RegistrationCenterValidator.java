@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.MachineIdGenerator;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
+import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -716,12 +717,12 @@ public class RegistrationCenterValidator {
 			// Get Machine Id by calling MachineIdGenerator API
 			uniqueId = machineIdGenerator.generateMachineId();
 		} else {
-			List<Machine> renRegistrationCenters = machineRepository
+			List<Machine> renMachine = machineRepository
 					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
-			if (renRegistrationCenters.isEmpty()) {
+			if (renMachine.isEmpty()) {
 				// for the given ID, we don't have data in primary language
-				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID.getErrorMessage(), uniqueId));
+				throw new RequestException(MachineErrorCode.MACHINE_ID.getErrorCode(),
+						String.format(MachineErrorCode.MACHINE_ID.getErrorMessage(), uniqueId));
 			}
 		}
 		return uniqueId;
