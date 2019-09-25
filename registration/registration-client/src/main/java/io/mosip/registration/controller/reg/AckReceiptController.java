@@ -81,10 +81,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 				"Page loading has been started");
 
 		setImagesOnHover();
-
-		if (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION) != null
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.NOTIFICATION_DISABLE_FLAG))) {
+		String notificationType = getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION); 
+		if (notificationType != null && !notificationType.trim().isEmpty() && !notificationType.equals("NONE")) {
 
 			sendNotification.setVisible(true);
 		} else {
