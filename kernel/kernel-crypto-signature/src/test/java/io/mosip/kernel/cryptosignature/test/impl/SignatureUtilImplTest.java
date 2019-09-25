@@ -34,8 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -46,7 +45,6 @@ import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptosignature.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptosignature.dto.SignatureRequestDto;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -86,10 +84,7 @@ public class SignatureUtilImplTest {
 	private KeyGenerator generator;
 
 	@Autowired
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	@Autowired
 	private SignatureUtil signingUtil;
@@ -202,9 +197,8 @@ public class SignatureUtilImplTest {
 	public void validateWithPublicKeyTest() throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		PrivateKey privateKey = keyPair.getPrivate();
-		byte[] hashedData = HMACUtils.generateHash("admin".getBytes());
-		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedData);
-		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "admin",
+		String signature = cryptoCore.sign("admin".getBytes(), privateKey);
+		boolean isVerfied = signingUtil.validateWithPublicKey(signature, "MOCKEDDATATOSIGN",
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()));
 		assertTrue(isVerfied);
 	}
@@ -219,9 +213,8 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 		PrivateKey privateKey = keyPair.getPrivate();
-		byte[] hashedData = HMACUtils.generateHash("signedData".getBytes());
-		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedData);
-		boolean isVerfied = signingUtil.validate(CryptoUtil.encodeBase64(encryptedData), "signedData",
+		String signature = cryptoCore.sign("MOCKEDDATATOSIGN".getBytes(), privateKey);
+		boolean isVerfied = signingUtil.validate(signature, "signedData",
 				"2019-09-09T09:09:09.000Z");
 		assertTrue(isVerfied);
 	}
