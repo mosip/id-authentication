@@ -354,18 +354,20 @@ public class ValidationUtil {
 
 	public void getAllDocCategoriesAndTypes(String langcode, HttpHeaders headers) {
 		try {
-			log.debug("sessionId", "idType", "id", "inside getAllDocCategories preRegistrationId ");
+			log.debug("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes preRegistrationId ");
 			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.masterdataUri).buildAndExpand(langcode)
 					.toUriString();
 			HttpEntity entity = new HttpEntity<>(headers);
+			log.info("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes with url "+uri );
 			@SuppressWarnings("unchecked")
+			
 			ResponseEntity<ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>>> response = restTemplate
 					.exchange(uri, HttpMethod.GET, entity,
 							new ParameterizedTypeReference<ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>>>() {
 							});
 
 			if (Objects.isNull(response.getBody().getErrors()) || response.getBody().getErrors().isEmpty()) {
-				log.debug("sessionId", "idType", "id", "inside getAllDocCategories inside if preRegistrationId ");
+				log.debug("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes inside if preRegistrationId ");
 				ArrayList<LinkedHashMap<String, Object>> resp = response.getBody().getResponse()
 						.get(DOCUMENTCATEGORIES);
 				ArrayList<Object> typeList = new ArrayList<>();
@@ -380,7 +382,7 @@ public class ValidationUtil {
 									.forEach(secIndex -> validDocsMap.put(String.valueOf(resp.get(index).get(CODE)),
 											String.valueOf(intResponse.get(secIndex).get(CODE))));
 						});
-				System.out.println("op " + validDocsMap);
+				log.info("sessionId", "idType", "id", " validDocsMap " + validDocsMap);
 			} else {
 				log.debug("sessionId", "idType", "id", "inside getAllDocCategories inside else  preRegistrationId ");
 				log.debug("sessionId", "idType", "id", " cat code" + response.getBody().getErrors().toString());
