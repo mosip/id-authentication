@@ -46,6 +46,10 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	private static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
+
+	private static final int DEFAULT_SALT_LAST_BYTES_NUM = 12;
+
 	private static final String TIMESTAMP = "timestamp";
 
 	private static final String BIO_VALUE = "bioValue";
@@ -152,18 +156,33 @@ public class IdAuthFilter extends BaseAuthFilter {
 							Map.class);
 			Object bioValue = data.get(BIO_VALUE);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
-			String aad = CryptoUtil.encodeBase64(String.valueOf(data.get(TIMESTAMP)).getBytes());
-			String combinedData = CryptoUtil.encodeBase64(
-					CryptoUtil.combineByteArray(CryptoUtil.decodeBase64((String) bioValue),
-							CryptoUtil.decodeBase64((String) sessionKey),
-							env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER)));
-			String decryptedData = keyManager.kernelDecrypt(combinedData, REFID_IDA_FIR, aad);
+			String timestamp = String.valueOf(data.get(TIMESTAMP));
+			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
+			String salt = CryptoUtil.encodeBase64(saltLastBytes);
+			byte[] aadLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
+			String aad = CryptoUtil.encodeBase64(aadLastBytes);
+			String combinedData = combineDataForDecryption(String.valueOf(bioValue), String.valueOf(sessionKey));
+			String decryptedData = keyManager.kernelDecrypt(combinedData, env.getProperty(IdAuthConfigKeyConstants.CRYPTO_FIR_REF_ID, REFID_IDA_FIR), aad, salt);
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
 			return map;
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	private String combineDataForDecryption(String bioValue, String sessionKey) {
+		byte[] combineByteArray = CryptoUtil.combineByteArray(
+				CryptoUtil.decodeBase64(bioValue),
+				CryptoUtil.decodeBase64(sessionKey),
+				env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
+		return CryptoUtil.encodeBase64(
+				combineByteArray);
+	}
+
+	private byte[] getLastBytes(String timestamp, int lastBytesNum) {
+		assert(timestamp.length() >= lastBytesNum);
+		return timestamp.substring(timestamp.length() - lastBytesNum).getBytes();
 	}
 
 	/**

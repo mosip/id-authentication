@@ -130,12 +130,12 @@ public class KeyManager {
 	
 	public String kernelDecryptAndDecode(String data, String refId)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(data, refId, null, RestServicesConstants.DECRYPTION_SERVICE, true);
+		return internalKernelDecryptAndDecode(data, refId, null, null, RestServicesConstants.DECRYPTION_SERVICE, true);
 	}
 	
-	public String kernelDecrypt(String data, String refId, String aad)
+	public String kernelDecrypt(String data, String refId, String aad, String salt)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(data, refId, aad, RestServicesConstants.DECRYPTION_SERVICE_AUTH, false);
+		return internalKernelDecryptAndDecode(data, refId, aad, salt, RestServicesConstants.DECRYPTION_SERVICE_AUTH, false);
 	}
 
 
@@ -150,12 +150,13 @@ public class KeyManager {
 	 *            the ref id
 	 * @param aad
 	 *            the aad
+	 * @param salt 
 	 * @return the string
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	private String internalKernelDecryptAndDecode(String data, String refId, String aad, RestServicesConstants restService, boolean decode) throws IdAuthenticationAppException {
+	private String internalKernelDecryptAndDecode(String data, String refId, String aad, String salt, RestServicesConstants restService, boolean decode) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 		try {
@@ -166,6 +167,9 @@ public class KeyManager {
 			
 			if(aad != null && !aad.isEmpty()) {
 				cryptoManagerRequestDto.setAad(aad);
+			}
+			if(salt != null && !salt.isEmpty()) {
+				cryptoManagerRequestDto.setSalt(salt);
 			}
 
 			RestRequestDTO restRequestDTO = restRequestFactory.buildRequest(restService,

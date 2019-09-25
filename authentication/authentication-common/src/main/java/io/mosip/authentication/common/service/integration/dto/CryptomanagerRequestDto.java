@@ -55,4 +55,7 @@ public class CryptomanagerRequestDto {
 	
 	@ApiModelProperty(notes = "Additional authenticated data (AAD) in BASE64 encoding to be used in decrypt", required = false)
 	private String aad;
+	
+	@ApiModelProperty(notes = "Salt (aka IV) in BASE64 encoding to be used in decrypt", required = false)
+	private String salt;
 }

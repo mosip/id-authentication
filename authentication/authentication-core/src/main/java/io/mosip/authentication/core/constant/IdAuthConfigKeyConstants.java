@@ -88,5 +88,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String FACE_PROVIDER = "ida.face.provider";
 	public static final String IRIS_PROVIDER = "ida.iris.provider";
 	public static final String OTP_INTERNAL_ID_SUFFIX = "otp.internal";
+	public static final String IDA_AAD_LASTBYTES_NUM = "ida.aad.lastbytes.num";
+	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
+	public static final String CRYPTO_FIR_REF_ID = "cryptomanager.fir.id";
 
 }
