@@ -10,6 +10,7 @@ import java.security.spec.MGF1ParameterSpec;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -24,6 +25,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PSource.PSpecified;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
@@ -33,6 +35,7 @@ import io.mosip.kernel.core.crypto.exception.SignatureException;
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
@@ -56,46 +59,34 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
  */
 //Code optimization remaining (Code Dupe)
 @Component
-public class CryptoCore
-		implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> {
+public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> {
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
 	private static final String MGF1 = "MGF1";
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
+
 	private static final String HASH_ALGO = "SHA-256";
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
+
 	private static final String AES = "AES";
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.gcm-tag-length}")
-	private int tagLength = 128;
+	@Value("${mosip.kernel.crypto.gcm-tag-length}")
+	private int tagLength;
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
-	private String symmetricAlgorithm = "AES/GCM/PKCS5Padding";
+	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
+	private String symmetricAlgorithm;
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
-	private String asymmetricAlgorithm = "RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING";
+	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
+	private String asymmetricAlgorithm;
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
-	private String passwordAlgorithm = "PBKDF2WithHmacSHA512";
+	@Value("${mosip.kernel.crypto.hash-algorithm-name}")
+	private String passwordAlgorithm;
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
-	private String signAlgorithm = "SHA512withRSA";
+	@Value("${mosip.kernel.crypto.sign-algorithm-name}")
+	private String signAlgorithm;
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.hash-algorithm-name}")
-	private int symmetricKeyLength = 256;
+	@Value("${mosip.kernel.crypto.hash-symmetric-key-length}")
+	private int symmetricKeyLength;
 
-	// will be changed later will come from property files
-	// @Value("${mosip.kernel.crypto.hash-iteration}")
-	private int iterations = 100000;
+	@Value("${mosip.kernel.crypto.hash-iteration}")
+	private int iterations;
 
 	private Map<String, Cipher> cipherRegistry;
 
@@ -123,8 +114,9 @@ public class CryptoCore
 
 	@Override
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] aad) {
-		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
+		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
 		byte[] output = null;
 		byte[] randomIV = generateIV(cipher.getBlockSize());
 		try {
@@ -151,11 +143,12 @@ public class CryptoCore
 
 	@Override
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
-		if(iv == null) {
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
+		if (iv == null) {
 			symmetricEncrypt(key, data, aad);
 		}
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
-		CryptoUtils.verifyData(data);
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, iv);
@@ -176,11 +169,12 @@ public class CryptoCore
 
 	@Override
 	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] aad) {
-		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
+		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
 		byte[] output = null;
-		byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
 		try {
+			byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
@@ -205,11 +199,12 @@ public class CryptoCore
 
 	@Override
 	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] iv, byte[] aad) {
-		if(iv == null) {
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
+		if (iv == null) {
 			symmetricDecrypt(key, data, aad);
 		}
 		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
-		CryptoUtils.verifyData(data);
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, iv);
@@ -230,31 +225,13 @@ public class CryptoCore
 
 	@Override
 	public byte[] asymmetricEncrypt(PublicKey key, byte[] data) {
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
 		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
 				PSpecified.DEFAULT);
 		try {
 			cipher.init(Cipher.ENCRYPT_MODE, key, oaepParams);
-		} catch (java.security.InvalidKeyException e) {
-			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
-					e.getMessage(), e);
-		}catch (InvalidAlgorithmParameterException e) {
-			throw new InvalidParamSpecException(
-					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
-		}
-		return doFinal(data, cipher);
-	}
-
-	@Override
-	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
-		CryptoUtils.verifyData(data);
-		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
-		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
-				PSpecified.DEFAULT);
-		try {
-			cipher.init(Cipher.DECRYPT_MODE, key, oaepParams);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
@@ -267,8 +244,63 @@ public class CryptoCore
 	}
 
 	@Override
-	public byte[] hash(char[] data, byte[] salt) {
-		PBEKeySpec pbeKeySpec = new PBEKeySpec(data, salt, iterations, symmetricKeyLength);
+	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
+        Cipher cipher = null;
+		try {
+			cipher = Cipher.getInstance("RSA/ECB/NoPadding");
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
+				PSpecified.DEFAULT);
+        try {
+			cipher.init(Cipher.DECRYPT_MODE, key);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		} /*catch (InvalidAlgorithmParameterException e) {
+			throw new InvalidParamSpecException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
+		}*/
+        byte[] paddedPlainText= doFinal(data, cipher);
+        int RSA_KEY_SIZE=2048;
+        if (paddedPlainText.length < RSA_KEY_SIZE / 8) {
+        	   byte[] tmp = new byte[RSA_KEY_SIZE / 8];
+        	   System.arraycopy(paddedPlainText, 0, tmp, tmp.length - paddedPlainText.length, paddedPlainText.length);
+        	   System.out.println("Zero padding to " + (RSA_KEY_SIZE / 8));
+        	   paddedPlainText = tmp;
+        	}
+       
+        	OAEPParameterSpec paramSpec = new OAEPParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSpecified.DEFAULT);
+        	sun.security.rsa.RSAPadding padding = null;
+			try {
+				padding = sun.security.rsa.RSAPadding.getInstance(sun.security.rsa.RSAPadding.PAD_OAEP_MGF1, RSA_KEY_SIZE / 8, new SecureRandom(), paramSpec);
+			} catch (java.security.InvalidKeyException | InvalidAlgorithmParameterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	try {
+				return padding.unpad(paddedPlainText);
+			} catch (BadPaddingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return paddedPlainText;
+	
+	}
+
+	@Override
+	public byte[] hash(byte[] data, byte[] salt) {
+		CryptoUtils.verifyData(data);
+		CryptoUtils.verifyData(salt, SecurityExceptionCodeConstant.SALT_PROVIDED_IS_NULL_OR_EMPTY.getErrorCode(),
+				SecurityExceptionCodeConstant.SALT_PROVIDED_IS_NULL_OR_EMPTY.getErrorMessage());
+		char[] convertedData = new char[data.length];
+		System.arraycopy(data, 0, convertedData, 0, data.length);
+		PBEKeySpec pbeKeySpec = new PBEKeySpec(convertedData, salt, iterations, symmetricKeyLength);
 		SecretKey key;
 		try {
 			key = secretKeyFactory.generateSecret(pbeKeySpec);
@@ -281,6 +313,8 @@ public class CryptoCore
 
 	@Override
 	public String sign(byte[] data, PrivateKey privateKey) {
+		Objects.requireNonNull(privateKey, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
 		try {
 			signature.initSign(privateKey);
 			signature.update(data);
@@ -296,6 +330,12 @@ public class CryptoCore
 
 	@Override
 	public boolean verifySignature(byte[] data, String sign, PublicKey publicKey) {
+		if (EmptyCheckUtils.isNullEmpty(sign)) {
+			throw new SignatureException(SecurityExceptionCodeConstant.MOSIP_SIGNATURE_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_SIGNATURE_EXCEPTION.getErrorMessage());
+		}
+		Objects.requireNonNull(publicKey, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
 		try {
 			signature.initVerify(publicKey);
 			signature.update(data);
@@ -310,6 +350,7 @@ public class CryptoCore
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SecureRandom random() {
 		return secureRandom;
