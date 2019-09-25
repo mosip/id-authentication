@@ -757,7 +757,7 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
-		boolean isActive=false;
+		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
 		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
@@ -1068,6 +1068,7 @@ public class LocationServiceImpl implements LocationService {
 			case MasterDataConstant.POSTAL_CODE:
 				return "5";
 			case MasterDataConstant.ZONE:
+			case "Zone":
 				return "4";
 			case MasterDataConstant.CITY:
 				return "3";
