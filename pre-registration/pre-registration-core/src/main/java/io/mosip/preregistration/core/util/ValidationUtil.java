@@ -358,7 +358,9 @@ public class ValidationUtil {
 			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.masterdataUri).buildAndExpand(langcode)
 					.toUriString();
 			HttpEntity entity = new HttpEntity<>(headers);
+			System.out.println("URL "+uri);
 			log.info("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes with url "+uri );
+			
 			@SuppressWarnings("unchecked")
 			
 			ResponseEntity<ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>>> response = restTemplate
@@ -382,6 +384,7 @@ public class ValidationUtil {
 									.forEach(secIndex -> validDocsMap.put(String.valueOf(resp.get(index).get(CODE)),
 											String.valueOf(intResponse.get(secIndex).get(CODE))));
 						});
+				System.out.println();
 				log.info("sessionId", "idType", "id", " validDocsMap " + validDocsMap);
 			} else {
 				log.debug("sessionId", "idType", "id", "inside getAllDocCategories inside else  preRegistrationId ");
