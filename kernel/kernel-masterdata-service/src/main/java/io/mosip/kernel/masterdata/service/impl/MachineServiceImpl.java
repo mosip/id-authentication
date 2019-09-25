@@ -261,7 +261,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID createMachine(MachineDto machine) {
+	public IdAndLanguageCodeID createMachine1(MachineDto machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine, Machine.class);
 		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine, MachineHistory.class);
@@ -290,7 +290,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public IdAndLanguageCodeID updateMachine(MachineDto machine) {
+	public IdAndLanguageCodeID updateMachine1(MachineDto machine) {
 		Machine updMachine = null;
 		try {
 			Machine renmachine = machineRepository
@@ -829,7 +829,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Override
 	@Transactional
-	public MachineExtnDto createMachine1(MachinePostReqDto machinePostReqDto) {
+	public MachineExtnDto createMachine(MachinePostReqDto machinePostReqDto) {
 		Machine machineEntity = null;
 		MachineHistory machineHistoryEntity = null;
 		Machine crtMachine = null;
@@ -893,7 +893,7 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Transactional
 	@Override
-	public MachineExtnDto updateMachine1(MachinePutReqDto machinePutReqDto) {
+	public MachineExtnDto updateMachine(MachinePutReqDto machinePutReqDto) {
 
 		Machine updMachine = null;
 		Machine updMachineEntity = null;

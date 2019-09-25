@@ -88,7 +88,7 @@ public interface MachineService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine
 	 */
-	public IdAndLanguageCodeID createMachine(MachineDto machine);
+	public IdAndLanguageCodeID createMachine1(MachineDto machine);
 
 	/**
 	 * Abstract method to update Machine Details to the Database
@@ -105,7 +105,7 @@ public interface MachineService {
 	 *             if any error occurred while updating Machine
 	 * 
 	 */
-	public IdAndLanguageCodeID updateMachine(MachineDto machine);
+	public IdAndLanguageCodeID updateMachine1(MachineDto machine);
 
 	/**
 	 * Abstract method to delete Machine Details to the Database
@@ -170,7 +170,7 @@ public interface MachineService {
 	 * Abstract method to save Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            machine DTO
+	 *            Machine Post Request DTO
 	 * 
 	 * @return MachineExtnDto returning created machine.
 	 *         {@link MachineExtnDto}
@@ -178,20 +178,20 @@ public interface MachineService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Machine
 	 */
-	public MachineExtnDto createMachine1(MachinePostReqDto machine);
+	public MachineExtnDto createMachine(MachinePostReqDto machine);
 	
 	/**
 	 * Abstract method to update Machine Details to the Database
 	 * 
 	 * @param machine
-	 *            machine DTO
+	 *            Machine Put Request DTO
 	 * 
 	 * @return MachineExtnDto returning updated machine 
 	 *         {@link MachineExtnDto}
 	 * 
 	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine
+	 *             if any error occurred while updating Machine
 	 */
-	public MachineExtnDto updateMachine1(MachinePutReqDto  machine);
+	public MachineExtnDto updateMachine(MachinePutReqDto  machine);
 
 }

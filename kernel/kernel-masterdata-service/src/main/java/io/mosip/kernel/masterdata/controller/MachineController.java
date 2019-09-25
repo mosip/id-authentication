@@ -161,15 +161,15 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@PostMapping("/machines/create")
+	@PostMapping("/machines/old")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> createMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+	public ResponseWrapper<IdAndLanguageCodeID> createMachine1(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.createMachine(machine.getRequest()));
+		responseWrapper.setResponse(machineService.createMachine1(machine.getRequest()));
 		return responseWrapper;
 	}
 
@@ -190,10 +190,10 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> updateMachine(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
+	public ResponseWrapper<IdAndLanguageCodeID> updateMachine1(@Valid @RequestBody RequestWrapper<MachineDto> machine) {
 
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.updateMachine(machine.getRequest()));
+		responseWrapper.setResponse(machineService.updateMachine1(machine.getRequest()));
 		return responseWrapper;
 	}
 
@@ -286,7 +286,7 @@ public class MachineController {
 	 * @param machine
 	 *            input from user Machine DTO
 	 * 
-	 * @return ResponseEntity Machine Id which is inserted successfully
+	 * @return Responding with Machine which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
@@ -297,28 +297,28 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseWrapper<MachineExtnDto> createMachine1(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machine) {
+	public ResponseWrapper<MachineExtnDto> createMachine(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machine) {
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.createMachine1(machine.getRequest()));
+		responseWrapper.setResponse(machineService.createMachine(machine.getRequest()));
 		return responseWrapper;
 	}
 	
 	/**
 	 * This method updates Machine by Admin.
 	 * 
-	 * @param reqRegistrationCenterDto
-	 *            the request DTO for updating registration center.
-	 * @return the response i.e. the id of the registration center updated.
+	 * @param machineCenterDto
+	 *            the request DTO for updating machine.
+	 * @return the response i.e. the updated machine.
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/machines")
-	public ResponseWrapper<MachineExtnDto> updateMachienAdmin1(
+	public ResponseWrapper<MachineExtnDto> updateMachienAdmin(
 			@RequestBody @Valid RequestWrapper<MachinePutReqDto> machineCenterDto) {
 
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
-				machineService.updateMachine1(machineCenterDto.getRequest()));
+				machineService.updateMachine(machineCenterDto.getRequest()));
 		return responseWrapper;
 	}
 }
