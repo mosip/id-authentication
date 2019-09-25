@@ -61,6 +61,12 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 @Component
 public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> {
 
+	// Used as a hack for softhsm oeap padding usecase will be removed in HSM
+	private static final String RSA_ECB_NO_PADDING = "RSA/ECB/NoPadding";
+
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-length}")
+	private int asymmetricKeyLength;
+
 	private static final String MGF1 = "MGF1";
 
 	private static final String HASH_ALGO = "SHA-256";
@@ -102,6 +108,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		try {
 			cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
 			cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
+			cipherRegistry.put(RSA_ECB_NO_PADDING, Cipher.getInstance(RSA_ECB_NO_PADDING));
 			secretKeyFactory = SecretKeyFactory.getInstance(passwordAlgorithm);
 			signature = Signature.getInstance(signAlgorithm);
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
@@ -228,7 +235,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
 		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
-		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
+		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, MGF1ParameterSpec.SHA256,
 				PSpecified.DEFAULT);
 		try {
 			cipher.init(Cipher.ENCRYPT_MODE, key, oaepParams);
@@ -247,50 +254,51 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
-        Cipher cipher = null;
+		Cipher cipher = cipherRegistry.get(RSA_ECB_NO_PADDING);
 		try {
-			cipher = Cipher.getInstance("RSA/ECB/NoPadding");
-		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, new MGF1ParameterSpec(HASH_ALGO),
-				PSpecified.DEFAULT);
-        try {
 			cipher.init(Cipher.DECRYPT_MODE, key);
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
-		} /*catch (InvalidAlgorithmParameterException e) {
+		}
+		// This is a hack of removing OEAP padding after decryption with NO Padding as
+		// SoftHSM does not support it.
+		// Will be removed after HSM implementation
+		byte[] paddedPlainText = doFinal(data, cipher);
+		if (paddedPlainText.length < asymmetricKeyLength / 8) {
+			byte[] tempPipe = new byte[asymmetricKeyLength / 8];
+			System.arraycopy(paddedPlainText, 0, tempPipe, tempPipe.length - paddedPlainText.length,
+					paddedPlainText.length);
+			paddedPlainText = tempPipe;
+		}
+		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, MGF1ParameterSpec.SHA256,
+				PSpecified.DEFAULT);
+		return unpadOEAPPadding(paddedPlainText, oaepParams);
+
+	}
+
+	// This is a hack of removing OEAP padding after decryption with NO Padding as
+	// SoftHSM does not support it.
+	// Will be removed after HSM implementation
+	@SuppressWarnings("restriction")
+	private byte[] unpadOEAPPadding(byte[] paddedPlainText, OAEPParameterSpec paramSpec) {
+		byte[] unpaddedData = null;
+		try {
+			sun.security.rsa.RSAPadding padding = sun.security.rsa.RSAPadding.getInstance(
+					sun.security.rsa.RSAPadding.PAD_OAEP_MGF1, asymmetricKeyLength / 8, new SecureRandom(), paramSpec);
+			unpaddedData = padding.unpad(paddedPlainText);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
 			throw new InvalidParamSpecException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
-		}*/
-        byte[] paddedPlainText= doFinal(data, cipher);
-        int RSA_KEY_SIZE=2048;
-        if (paddedPlainText.length < RSA_KEY_SIZE / 8) {
-        	   byte[] tmp = new byte[RSA_KEY_SIZE / 8];
-        	   System.arraycopy(paddedPlainText, 0, tmp, tmp.length - paddedPlainText.length, paddedPlainText.length);
-        	   System.out.println("Zero padding to " + (RSA_KEY_SIZE / 8));
-        	   paddedPlainText = tmp;
-        	}
-       
-        	OAEPParameterSpec paramSpec = new OAEPParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSpecified.DEFAULT);
-        	sun.security.rsa.RSAPadding padding = null;
-			try {
-				padding = sun.security.rsa.RSAPadding.getInstance(sun.security.rsa.RSAPadding.PAD_OAEP_MGF1, RSA_KEY_SIZE / 8, new SecureRandom(), paramSpec);
-			} catch (java.security.InvalidKeyException | InvalidAlgorithmParameterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        	try {
-				return padding.unpad(paddedPlainText);
-			} catch (BadPaddingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return paddedPlainText;
-	
+		} catch (BadPaddingException e) {
+			throw new InvalidDataException(SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
+		return unpaddedData;
 	}
 
 	@Override
