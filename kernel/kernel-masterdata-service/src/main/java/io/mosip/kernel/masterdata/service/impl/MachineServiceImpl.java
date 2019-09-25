@@ -11,16 +11,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -158,6 +159,11 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
 	
+	/**
+	 * get list of secondary languages supported by MOSIP from configuration file
+	 */
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
 
 
 	/*
@@ -839,9 +845,7 @@ public class MachineServiceImpl implements MachineService {
 
 			machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto, Machine.class);
 
-			// creating registration center
-			if (machinePostReqDto.getId() == null) {
-
+			if(StringUtils.isNotEmpty(primaryLang)&&primaryLang.equals(machinePostReqDto.getLangCode())){
 				// MachineId from the mid_Seq Table,MachineId get by calling MachineIdGenerator
 				// API method generateMachineId()
 				uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
@@ -852,12 +856,10 @@ public class MachineServiceImpl implements MachineService {
 			crtMachine = machineRepository.create(machineEntity);
 
 			// creating Machine history
-
 			machineHistoryEntity = MetaDataUtils.setCreateMetaData(crtMachine, MachineHistory.class);
 			machineHistoryEntity.setEffectDateTime(crtMachine.getCreatedDateTime());
 			machineHistoryEntity.setCreatedDateTime(crtMachine.getCreatedDateTime());
 			machineHistoryService.createMachineHistory(machineHistoryEntity);
-			// machineHistoryRepository.create(machineHistoryEntity);
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
@@ -947,7 +949,6 @@ public class MachineServiceImpl implements MachineService {
 	// method to update the NumKiosis for the regCenter id which has got mapped with
 	// machine id
 	private void updateNumKiosksRegCenter(MachinePutReqDto machinePutReqDto, Machine renMachine) {
-
 		// find given machine id is attached to which regCenter center id
 		List<RegistrationCenterMachine> regCenterMachines = registrationCenterMachineRepository
 				.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(renMachine.getId());
@@ -995,7 +996,6 @@ public class MachineServiceImpl implements MachineService {
 	// method to added new row in RegCenter History for updating NumKiosis value in
 	// RegCenter Table
 	private void updateRegCenterHistory(RegistrationCenter updRegistrationCenter) {
-
 		RegistrationCenterHistory registrationCenterHistoryEntity;
 		registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(updRegistrationCenter,
 				RegistrationCenterHistory.class);
