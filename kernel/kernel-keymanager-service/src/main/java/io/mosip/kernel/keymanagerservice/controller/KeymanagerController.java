@@ -110,24 +110,6 @@ public class KeymanagerController {
 		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
 		return response;
 	}
-	
-	// To be merged with decrypt
-	/**
-	 * Request mapping to decrypt symmetric key
-	 * 
-	 * @param symmetricKeyRequestDto having encrypted symmetric key
-	 * 
-	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
-	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@PostMapping(value = "/auth/decrypt")
-	public ResponseWrapper<SymmetricKeyResponseDto> decryptAuthSymmetricKey(
-			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody RequestWrapper<SymmetricKeyRequestDto> symmetricKeyRequestDto) {
-        ResponseWrapper<SymmetricKeyResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.decryptAuthSymmetricKey(symmetricKeyRequestDto.getRequest()));
-		return response;
-	}
 
 /*	
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN')")
