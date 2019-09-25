@@ -6,7 +6,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -36,8 +35,6 @@ import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -108,23 +105,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	private KeyGenerator keyGenerator;
 
 	/**
-	 * Decryptor instance to decrypt data
-	 */
-	@Autowired
-	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	/**
-	 * {@link Encryptor} instance to encrypt data
-	 */
-	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-	
-	/**
 	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
 	 */
 	@Autowired
-	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> cryptoCore;
-
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+	
 	/**
 	 * {@link KeyAliasRepository} instance
 	 */
@@ -409,7 +394,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
 		PrivateKey privateKey = getPrivateKeyFromRequestData(symmetricKeyRequestDto.getApplicationId(),
 				symmetricKeyRequestDto.getReferenceId(), symmetricKeyRequestDto.getTimeStamp());
-		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
+		byte[] decryptedSymmetricKey = cryptoCore.asymmetricDecrypt(privateKey,
 				CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
 		keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
 		return keyResponseDto;
@@ -444,7 +429,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 			}
-			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbKeyStore.get().getMasterAlias());
+			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbKeyStore.get().getMasterAlias());			
 			/**
 			 * If the private key is in dbstore, then it will be first decrypted with
 			 * application's master private key from softhsm's keystore
@@ -572,13 +557,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				Optional.of(signatureRequestDto.getReferenceId()), signatureRequestDto.getTimeStamp());
 		keymanagerUtil.isCertificateValid(certificateResponse.getCertificateEntry(),
 				DateUtils.parseUTCToDate(signatureRequestDto.getTimeStamp()));
-		byte[] encryptedSignedData = null;
+		String encryptedSignedData = null;
 		if (certificateResponse.getCertificateEntry() != null) {
-			encryptedSignedData = encryptor.asymmetricPrivateEncrypt(
-					certificateResponse.getCertificateEntry().getPrivateKey(),
-					CryptoUtil.decodeBase64(signatureRequestDto.getData()));
+			encryptedSignedData = cryptoCore.sign(CryptoUtil.decodeBase64(signatureRequestDto.getData()), certificateResponse.getCertificateEntry().getPrivateKey());
 		}
-		return new SignatureResponseDto(CryptoUtil.encodeBase64(encryptedSignedData));
+		return new SignatureResponseDto(encryptedSignedData);
 	}
 
 	// TODO: To Be Removed once upload certificate functionality is implemented
@@ -747,18 +730,5 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				certificateResponse.getIssuedAt(), certificateResponse.getExpiryAt());
 	}
 
-	// To be merged with decryptSymmetric key
-	@Override
-	public SymmetricKeyResponseDto decryptAuthSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
-		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.SYMMETRICKEYREQUEST,
-				symmetricKeyRequestDto.toString(), KeymanagerConstant.DECRYPTKEY);
-		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
-		PrivateKey privateKey = getPrivateKeyFromRequestData(symmetricKeyRequestDto.getApplicationId(),
-				symmetricKeyRequestDto.getReferenceId(), symmetricKeyRequestDto.getTimeStamp());
-		byte[] decryptedSymmetricKey = cryptoCore.asymmetricDecrypt(privateKey,
-				CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
-		keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
-		return keyResponseDto;
-	}
 
 }
