@@ -955,10 +955,9 @@ public class MachineServiceImpl implements MachineService {
 
 		// given machine id is attached to regCenter center or not
 		if (!regCenterMachines.isEmpty()) {
-
+            String regCenterId = regCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
 			List<RegistrationCenter> renRegistrationCenters = registrationCenterRepository
-					.findByRegIdAndIsDeletedFalseOrNull(
-							regCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId());
+					.findByRegIdAndIsDeletedFalseOrNull(regCenterId);
 
 			// requested machine is true and in DB machine false state
 			if (machinePutReqDto.getIsActive() && !renMachine.getIsActive()) {
