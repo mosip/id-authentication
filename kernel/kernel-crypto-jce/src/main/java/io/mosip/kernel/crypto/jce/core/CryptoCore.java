@@ -61,7 +61,8 @@ import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 @Component
 public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> {
 
-	// Used as a hack for softhsm oeap padding usecase will be removed in HSM
+	// Used as a hack for softhsm oeap padding decryption usecase will be when we
+	// will use in HSM
 	private static final String RSA_ECB_NO_PADDING = "RSA/ECB/NoPadding";
 
 	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-length}")
@@ -261,9 +262,10 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
 		}
-		// This is a hack of removing OEAP padding after decryption with NO Padding as
-		// SoftHSM does not support it.
-		// Will be removed after HSM implementation
+		/*
+		 * This is a hack of removing OEAP padding after decryption with NO Padding as
+		 * SoftHSM does not support it.Will be removed after HSM implementation
+		 */
 		byte[] paddedPlainText = doFinal(data, cipher);
 		if (paddedPlainText.length < asymmetricKeyLength / 8) {
 			byte[] tempPipe = new byte[asymmetricKeyLength / 8];
@@ -277,9 +279,10 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 
 	}
 
-	// This is a hack of removing OEAP padding after decryption with NO Padding as
-	// SoftHSM does not support it.
-	// Will be removed after HSM implementation
+	/*
+	 * This is a hack of removing OEAP padding after decryption with NO Padding as
+	 * SoftHSM does not support it.Will be removed after HSM implementation
+	 */
 	@SuppressWarnings("restriction")
 	private byte[] unpadOEAPPadding(byte[] paddedPlainText, OAEPParameterSpec paramSpec) {
 		byte[] unpaddedData = null;
