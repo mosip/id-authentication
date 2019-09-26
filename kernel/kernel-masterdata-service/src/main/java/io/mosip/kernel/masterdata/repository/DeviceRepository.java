@@ -1,8 +1,7 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.persistence.NamedNativeQuery;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.MachineSpecification;
 
 /**
  * Repository function to fetching device details
@@ -134,11 +130,11 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @param id
 	 *            input
 	 * @return id of decommissioned device
-	 */
+	 *//*
 	@Query("UPDATE Device m SET m.isDeleted = true,m.isActive = false WHERE m.id=?1 and (m.isDeleted is null or m.isDeleted =false)")
 	@Modifying
 	@Transactional
-	int decommissionDevice(String id);
+	int decommissionDevice(String id);*/
 	
 	
 	@Query(value="Select * from master.device_spec ds where (ds.is_deleted is null or ds.is_deleted = false) and ds.is_active = true and ds.dtyp_code IN (select code from master.device_type dt where dt.name=?1) and ds.lang_code=?2",nativeQuery=true)
@@ -160,5 +156,22 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 */
 	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2")
 	Device findByIdAndLangCode(String id, String langCode);
+	
+	/**
+	 * Method to decommission the Device
+	 * 
+	 * @param deviceID
+	 *            the device id which needs to be decommissioned.
+	 * @param deCommissionedBy
+	 *            the user name retrieved from the context who performs this
+	 *            operation.
+	 * @param deCommissionedDateTime
+	 *            date and time at which the center was decommissioned.
+	 * @return the number of device decommissioned.
+	 */
+	@Query("UPDATE Device m SET d.isDeleted = true, d.isActive = false, d.updatedBy = ?2, d.deletedDateTime=?3 WHERE d.id=?1 and (d.isDeleted is null or d.isDeleted =false)")
+	@Modifying
+	@Transactional
+	int decommissionDevice(String id, String deCommissionedBy, LocalDateTime deCommissionedDateTime);
 
 }
