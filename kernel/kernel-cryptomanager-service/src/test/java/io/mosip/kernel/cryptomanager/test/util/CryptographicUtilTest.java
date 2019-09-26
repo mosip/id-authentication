@@ -66,8 +66,6 @@ public class CryptographicUtilTest {
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String symmetricKeyUrl;
 	
-	private String malformedURL="localhost:9090/malformedURL";
-
 	@Autowired
 	private CryptomanagerUtils cryptomanagerUtil;
 
