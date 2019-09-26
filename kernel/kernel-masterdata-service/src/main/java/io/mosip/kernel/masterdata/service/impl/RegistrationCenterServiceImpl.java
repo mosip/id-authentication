@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
@@ -68,6 +69,7 @@ import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
@@ -980,7 +982,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		try {
 			// call method generate ID or validate with DB
-			 
+			List<ServiceError> errors = new ArrayList<>();
+			registrationCenterValidator.validateRegCenterCreate(regCenterPostReqDto, errors);
+			 if (!errors.isEmpty()) {
+			 throw new ValidationException(errors);
+			 }
 			regCenterPostReqDto = masterdataCreationUtil.createMasterData(RegistrationCenter.class,
 					regCenterPostReqDto);
 			// creating registration center

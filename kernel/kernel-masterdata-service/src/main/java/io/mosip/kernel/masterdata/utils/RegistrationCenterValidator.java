@@ -21,19 +21,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.idgenerator.spi.MachineIdGenerator;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
+import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 
@@ -308,8 +314,21 @@ public class RegistrationCenterValidator {
 
 	// method to validate the format of the longitude and latitude, zone validation,
 	// lunch and center start and end time
-	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> void validateRegCenterCreateReq(
-			T registrationCenterDto, List<ServiceError> errors) {
+//	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> void validateRegCenterCreateReq(
+//			T registrationCenterDto, List<ServiceError> errors) {
+//
+//		String latitude = registrationCenterDto.getLatitude();
+//		String longitude = registrationCenterDto.getLongitude();
+//
+//		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
+//		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
+//		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
+//		formatValidationLongitudeLatitude(errors, latitude, longitude);
+//
+//	}
+	
+	public void validateRegCenterCreate(
+			RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors) {
 
 		String latitude = registrationCenterDto.getLatitude();
 		String longitude = registrationCenterDto.getLongitude();
@@ -331,7 +350,7 @@ public class RegistrationCenterValidator {
 
 	// validation to check entered zoneCode is mapped with eligible user or not and
 	// is valid zoneCode
-	private <T extends RegcenterBaseDto> void zoneUserMapValidation(T registrationCenterDto, List<ServiceError> errors,
+	private void zoneUserMapValidation(RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors,
 			List<String> zoneIds) {
 
 		if (!zoneIds.isEmpty()) {
@@ -358,7 +377,7 @@ public class RegistrationCenterValidator {
 	// validation to check the RegCenter Lunch Start Time is greater
 	// than RegCenter
 	// Lunch End Time
-	private <T extends RegcenterBaseDto> void lunchStartEndTimeGrtValidation(T registrationCenterDto,
+	private void lunchStartEndTimeGrtValidation(RegCenterPostReqDto registrationCenterDto,
 			List<ServiceError> errors) {
 		// validation to check the RegCenter Lunch Start Time is greater than RegCenter
 		// Lunch End Time
@@ -374,7 +393,7 @@ public class RegistrationCenterValidator {
 
 	// validation to check the RegCenter Start Time is greater than
 	// RegCenter End Time
-	private <T extends RegcenterBaseDto> void zoneStartEndTimeGtrValidation(T registrationCenterDto,
+	private void zoneStartEndTimeGtrValidation(RegCenterPostReqDto registrationCenterDto,
 			List<ServiceError> errors) {
 		if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 			errors.add(new ServiceError(
@@ -698,6 +717,30 @@ public class RegistrationCenterValidator {
 
 		newrRegistrationCenterDtoList = MapperUtils.mapAll(newregistrationCenterList, RegistrationCenterExtnDto.class);
 		return newrRegistrationCenterDtoList;
+	}
+	
+	
+	@Autowired
+	MachineIdGenerator<String> machineIdGenerator;
+
+	@Autowired
+	MachineRepository machineRepository;
+
+	// call method generate ID or validate with DB
+	public String generateMachineIdOrvalidateWithDB(String uniqueId) {
+		if (uniqueId.isEmpty()) {
+			// Get Machine Id by calling MachineIdGenerator API
+			uniqueId = machineIdGenerator.generateMachineId();
+		} else {
+			List<Machine> renMachine = machineRepository
+					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
+			if (renMachine.isEmpty()) {
+				// for the given ID, we don't have data in primary language
+				throw new RequestException(MachineErrorCode.MACHINE_ID.getErrorCode(),
+						String.format(MachineErrorCode.MACHINE_ID.getErrorMessage(), uniqueId));
+			}
+		}
+		return uniqueId;
 	}
 
 }
