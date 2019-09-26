@@ -557,11 +557,10 @@ public class MasterdataSearchHelper {
 		if (!searchDto.getLanguageCode().equals("all")) {
 			query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
 		}
+		setMachineQueryParams(query, searchDto.getFilters());
 		query.setParameter(TYPE_NAME, typeName);
 		query.setParameter("zoneCode", zoneCodes);
-		searchDto.getFilters().stream().forEach(search -> {
-			query.setParameter(search.getColumnName(), search.getValue());
-		});
+
 		List<Machine> result = query.getResultList();
 		return new PageImpl<>(result,
 				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
@@ -585,7 +584,7 @@ public class MasterdataSearchHelper {
 
 		if (searchDto.getLanguageCode().equals("all")) {
 			nativeQuery.append(
-					"(select  distinct rcm.device_id from master.reg_center_device rcm ) and m.lang_code=:langCode and m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName) AND m.zone_code in (:zoneCode)");
+					"(select  distinct rcm.device_id from master.reg_center_device rcm ) and  m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName) AND m.zone_code in (:zoneCode)");
 		} else {
 			nativeQuery.append(
 					"(select  distinct rcm.device_id from master.reg_center_device rcm ) and m.lang_code=:langCode and m.dspec_id in(select id from master.device_spec ms , master.device_type mt where ms.dtyp_code= mt.code and mt.name=:typeName and ms.lang_code=:langCode and ms.lang_code=mt.lang_code) AND m.zone_code in (:zoneCode)");
@@ -601,17 +600,71 @@ public class MasterdataSearchHelper {
 				+ searchDto.getPagination().getPageFetch() + " ROWS ONLY");
 
 		Query query = entityManager.createNativeQuery(nativeQuery.toString(), Device.class);
-		query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
+
+		setDeviceQueryParams(query, searchDto.getFilters());
+		if (!searchDto.getLanguageCode().equals("all")) {
+			query.setParameter(LANGCODE_COLUMN_NAME, searchDto.getLanguageCode());
+		}
 		query.setParameter(TYPE_NAME, typeName);
 		query.setParameter("zoneCode", zoneCodes);
-		searchDto.getFilters().stream().forEach(search -> {
-			query.setParameter(search.getColumnName(), search.getValue());
-		});
 		List<Device> result = query.getResultList();
 
 		return new PageImpl<>(result,
 				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
 				query.getResultList().size());
+
+	}
+
+	private void setDeviceQueryParams(Query query, List<SearchFilter> list) {
+		Iterator<SearchFilter> searchIter = list.iterator();
+		while (searchIter.hasNext()) {
+			SearchFilter searchFilter = searchIter.next();
+			switch (searchFilter.getColumnName()) {
+			case "deviceName":
+				query.setParameter("deviceName", searchFilter.getValue());
+				break;
+			case "isActive":
+				query.setParameter("isActive", Boolean.valueOf(searchFilter.getValue()));
+				break;
+			case "macAddress":
+				query.setParameter("macAddress", searchFilter.getValue());
+				break;
+			case "serialNum":
+				query.setParameter("serialNum", searchFilter.getValue());
+				break;
+			case "deviceSpecId":
+				query.setParameter("deviceSpecId", searchFilter.getValue());
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	private void setMachineQueryParams(Query query, List<SearchFilter> list) {
+		Iterator<SearchFilter> searchIter = list.iterator();
+		while (searchIter.hasNext()) {
+			SearchFilter searchFilter = searchIter.next();
+			switch (searchFilter.getColumnName()) {
+			case "name":
+				query.setParameter("name", searchFilter.getValue());
+				break;
+			case "isActive":
+				query.setParameter("isActive", Boolean.valueOf(searchFilter.getValue()));
+				break;
+			case "macAddress":
+				query.setParameter("macAddress", searchFilter.getValue());
+				break;
+			case "serialNum":
+				query.setParameter("serialNum", searchFilter.getValue());
+				break;
+			case "machineSpecId":
+				query.setParameter("machineSpecId", searchFilter.getValue());
+				break;
+			default:
+				break;
+			}
+		}
 
 	}
 

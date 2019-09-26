@@ -396,20 +396,11 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-			/*if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
-				Zone zone = getZone(filter);
-				if (zone != null) {
-					zones = zoneUtils.getZones(zone);
-					zoneFilter.addAll(buildZoneFilter(zones));
-				}
-				removeList.add(filter);
-				flag = false;
-			}*/
 
 			if (column.equalsIgnoreCase("mapStatus")) {
 
 				if (filter.getValue().equalsIgnoreCase("assigned")) {
-					mappedDeviceIdList = deviceRepository.findMappedDeviceId(dto.getLanguageCode());
+					mappedDeviceIdList = deviceRepository.findMappedDeviceId(langCode);
 					mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 					if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
 						pageDto = pageUtils.sortPage(devices, dto.getSort(), dto.getPagination());
@@ -418,7 +409,7 @@ public class DeviceServiceImpl implements DeviceService {
 
 				} else {
 					if (filter.getValue().equalsIgnoreCase("unassigned")) {
-						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId(dto.getLanguageCode());
+						mappedDeviceIdList = deviceRepository.findNotMappedDeviceId(langCode);
 						mapStatusList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 						isAssigned=false;
 						if (!dto.getFilters().isEmpty() && mappedDeviceIdList.isEmpty()) {
@@ -440,7 +431,7 @@ public class DeviceServiceImpl implements DeviceService {
 				if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
 
 					List<Object[]> dSpecs = deviceRepository
-							.findDeviceSpecByDeviceTypeNameAndLangCode(filter.getValue(), dto.getLanguageCode());
+							.findDeviceSpecByDeviceTypeNameAndLangCode(filter.getValue(), langCode);
 
 					removeList.add(filter);
 					addList.addAll(buildDeviceSpecificationSearchFilter(dSpecs));
