@@ -94,17 +94,7 @@ public class ApiExceptionHandler {
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
-	@ExceptionHandler(JsonMappingException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> jsonMappingException(
-			final HttpServletRequest httpServletRequest, final JsonMappingException e) throws IOException {
-		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
-		 
-		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-				e.getCause().getMessage());
-		errorResponse.getErrors().add(error);
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
-	}
-
+	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
