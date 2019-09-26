@@ -47,6 +47,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
+import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -59,6 +61,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -79,6 +82,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
@@ -122,6 +126,9 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private BiometricAttributeService biometricAttributeService;
+
+	@MockBean
+	private RegWorkingNonWorkingService regWorkingNonWorkingService;
 
 	// private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{
 	// \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\",
@@ -210,6 +217,9 @@ public class MasterdataControllerTest {
 	private TemplateFileFormatService templateFileFormatService;
 
 	private ObjectMapper mapper;
+	
+	WeekDaysResponseDto weekDaysResponseDto=new WeekDaysResponseDto();
+	WorkingDaysResponseDto workingDaysResponseDto=new WorkingDaysResponseDto();
 
 	@Before
 	public void setUp() {
@@ -236,7 +246,16 @@ public class MasterdataControllerTest {
 		templateSetup();
 
 		templateFileFormatSetup();
+		
+		regWorkingDaySetup();
 
+	}
+
+	public void regWorkingDaySetup() {
+
+		List<WeekDaysDto> WeekDaysResponseList = new ArrayList<>();
+		WeekDaysDto weekDaysDto = new WeekDaysDto();
+		WeekDaysResponseList.add(weekDaysDto);
 	}
 
 	private void templateSetup() {
@@ -303,7 +322,7 @@ public class MasterdataControllerTest {
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
 		locationDto.setName("INDIA");
-		locationDto.setHierarchyLevel((short)0);
+		locationDto.setHierarchyLevel((short) 0);
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
 		locationDto.setLangCode("HIN");
@@ -312,7 +331,7 @@ public class MasterdataControllerTest {
 		locationHierarchies.add(locationDto);
 		locationDto.setCode("KAR");
 		locationDto.setName("KARNATAKA");
-		locationDto.setHierarchyLevel((short)1);
+		locationDto.setHierarchyLevel((short) 1);
 		locationDto.setHierarchyName("STATE");
 		locationDto.setParentLocCode("IND");
 		locationDto.setLangCode("eng");
@@ -772,25 +791,23 @@ public class MasterdataControllerTest {
 	}
 
 	/**
-	@Test
-	@WithUserDetails("test")
-	public void testSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
-		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-
-	@Test
-	@WithUserDetails("test")
-	public void testNegativeSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.createLocationHierarchy(Mockito.any()))
-				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
-		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
-	}
-
-**/
+	 * @Test @WithUserDetails("test") public void testSaveLocationHierarchy() throws
+	 *       Exception {
+	 *       Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
+	 *       mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+	 *       .content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+	 *       }
+	 * 
+	 * @Test @WithUserDetails("test") public void
+	 *       testNegativeSaveLocationHierarchy() throws Exception {
+	 *       Mockito.when(locationService.createLocationHierarchy(Mockito.any()))
+	 *       .thenThrow(new MasterDataServiceException("1111111", "Error from
+	 *       database"));
+	 *       mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+	 *       .content(LOCATION_JSON_EXPECTED_POST))
+	 *       .andExpect(MockMvcResultMatchers.status().isInternalServerError()); }
+	 * 
+	 **/
 	@Test
 	@WithUserDetails("central-admin")
 	public void testUpdateLocationDetails() throws Exception {
@@ -1092,6 +1109,25 @@ public class MasterdataControllerTest {
 				.thenThrow(new DataNotFoundException("11111", "Data not found exception"));
 
 		mockMvc.perform(get("/registrationcenters/validate/1/eng/2017-12-12T17:59:59.999Z")).andExpect(status().isOk());
+
+	}
+
+	// -----------------------------WorkingDayControllerTest------------------------
+	@Test
+	@WithUserDetails("reg-processor")
+	public void weekDaysControllerTest() throws Exception {
+
+		Mockito.when(regWorkingNonWorkingService.getWeekDaysList("10001", "eng")).thenReturn(weekDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/weekdays/10001/eng")).andExpect(status().isOk());
+
+	}
+
+	@Test
+	@WithUserDetails("reg-processor")
+	public void workDaysControllerTest() throws Exception {
+
+		Mockito.when(regWorkingNonWorkingService.getWorkingDays("10001", "101")).thenReturn(workingDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/101")).andExpect(status().isOk());
 
 	}
 

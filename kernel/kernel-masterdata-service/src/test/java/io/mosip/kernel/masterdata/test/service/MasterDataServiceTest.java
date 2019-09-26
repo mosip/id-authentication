@@ -32,15 +32,17 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
+import io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
-import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
@@ -51,6 +53,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
+import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
@@ -82,6 +86,7 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
@@ -97,6 +102,7 @@ import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -197,6 +203,12 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	RegistrationCenterMachineDeviceHistoryService registrationCenterMachineDeviceHistoryService;
+	
+	@MockBean
+	RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
+	
+	@Autowired
+	RegWorkingNonWorkingService regWorkingNonWorkingService;
 
 	private DocumentCategory documentCategory1;
 	private DocumentCategory documentCategory2;
@@ -2289,6 +2301,87 @@ public class MasterDataServiceTest {
 	public void zoneCodeValidationRegCenterUpdateExcpTest() {
 		registrationCenterService.updateRegistrationCenterAdmin(updRequestZoneCode);
 	}*/
+	
+	// -----------------------------WorkingDayControllerTest------------------------
+	
+		@Test
+		public void getWeekService() {
+
+			List<DayNameAndSeqListDto> nameSeqDtoList=new ArrayList<>();
+			DayNameAndSeqListDto nameSeqDto=new DayNameAndSeqListDto();
+			nameSeqDto.setDaySeq((short)1);
+			nameSeqDto.setName("Monday");
+			nameSeqDtoList.add(nameSeqDto);
+			
+			List<WeekDaysDto> weekdayList = new ArrayList<>();
+			WeekDaysResponseDto weekdays = new WeekDaysResponseDto();
+			WeekDaysDto daysDto=new WeekDaysDto();
+			daysDto.setLanguageCode("eng");
+			daysDto.setName("Monday");
+			daysDto.setOrder((short)1);
+			weekdayList.add(daysDto);
+			weekdays.setWeekdays(weekdayList);
+			
+			Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecode(Mockito.anyString(),
+					Mockito.anyString())).thenReturn(nameSeqDtoList);
+			assertEquals("Monday",regWorkingNonWorkingService.getWeekDaysList("10001", "eng").getWeekdays().get(0).getName());
+		}
+		
+		@Test
+		public void getWorkingDaysServiceTest() {
+			List<WorkingDaysDto> workingDaysDtos=new ArrayList<>();
+			WorkingDaysDto workingDaysDto=new WorkingDaysDto();
+			workingDaysDto.setActive(true);
+			workingDaysDto.setDayCode("101");
+			workingDaysDto.setName("Monday");
+			workingDaysDto.setLanguagecode("eng");
+			workingDaysDtos.add(workingDaysDto);
+			
+			
+			Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAnddayCode("10001", "101")).thenReturn(workingDaysDtos);
+			
+			assertEquals("Monday",regWorkingNonWorkingService.getWorkingDays("10001", "101").getWorkingdays().get(0).getName());
+		}
+		
+		@Test(expected = DataNotFoundException.class)
+		public void getWorkingDaysServiceFailureTest() {
+			List<WorkingDaysDto> workingDaysDtos=new ArrayList<>();
+			WorkingDaysDto workingDaysDto=new WorkingDaysDto();
+			
+			workingDaysDtos.add(workingDaysDto);
+			
+			
+			Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAnddayCode("10001", "101")).thenReturn(null);
+			regWorkingNonWorkingService.getWorkingDays("10001", "101");
+		}
+		
+		@Test(expected = MasterDataServiceException.class)
+		public void getWorkingDaysServiceFailureTest2() {
+			List<WorkingDaysDto> workingDaysDtos = new ArrayList<>();
+			WorkingDaysDto workingDaysDto = new WorkingDaysDto();
+
+			workingDaysDtos.add(workingDaysDto);
+
+			Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAnddayCode("10001", "101"))
+					.thenThrow(new DataAccessLayerException("", "", new Throwable()));
+			regWorkingNonWorkingService.getWorkingDays("10001", "101");
+		}
+		
+		@Test(expected=DataNotFoundException.class)
+		public void getWeekServiceFailureTest() {
+			
+			Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecode(Mockito.anyString(),
+					Mockito.anyString())).thenReturn(null);
+			regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
+		}
+		
+		@Test(expected=MasterDataServiceException.class)
+		public void getWeekServiceFailureTest2() {
+			
+			Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecode(Mockito.anyString(),
+					Mockito.anyString())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
+			regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
+		}
 	
 
 }

@@ -16,7 +16,6 @@ import org.apache.commons.io.IOCase;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.packet.manager.service.impl.FileSystemManagerImpl;
 
 /**
  * Class to unzip the packets
@@ -25,7 +24,7 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileSystemMan
  * @since 1.0.0
  */
 public class ZipUtils {
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ZipUtils.class);
 
@@ -73,9 +72,9 @@ public class ZipUtils {
 			out.close();
 		}
 		if (flag) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-					"ZipUtils::unzipAndGetFile()::exit");
-			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "ZipUtils::unzipAndGetFile()::exit");
+
 			return new ByteArrayInputStream(out.toByteArray());
 		}
 
@@ -97,7 +96,7 @@ public class ZipUtils {
 		boolean isExist = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"ZipUtils::unzipAndCheckIsFileExist()::entry");
-		
+
 		try (ZipInputStream zis = new ZipInputStream(packetStream)) {
 			ZipEntry ze = zis.getNextEntry();
 			while (ze != null) {
@@ -116,7 +115,7 @@ public class ZipUtils {
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"ZipUtils::unzipAndCheckIsFileExist()::exit");
-		
+
 		return isExist;
 	}
 
@@ -134,31 +133,36 @@ public class ZipUtils {
 		byte[] buffer = new byte[1024];
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"ZipUtils::unZipFromInputStream()::entry");
-		
+
 		try (ZipInputStream zis = new ZipInputStream(input)) {
 			File folder = FileUtils.getFile(desDir);
 			if (!folder.exists()) {
-				if(folder.mkdir()) {
-					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-							folder + "created");
-					
+				if (folder.mkdir()) {
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "", folder + "created");
+
 				}
 			}
 			ZipEntry ze = zis.getNextEntry();
 			while (ze != null) {
 				if (ze.isDirectory()) {
-					FileUtils.getFile(desDir + ze.getName()).mkdir();
+					File file = FileUtils.getFile(desDir + ze.getName());
+					if (file.mkdir()) {
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), "", file + "created");
+
+					}
 				} else {
 					String fileName = ze.getName();
 					File newFile = FileUtils.getFile(desDir + File.separator + fileName);
-					if(FileUtils.getFile(newFile.getParent()).mkdirs()) {
-					FileOutputStream fos = new FileOutputStream(newFile);
-					int len;
-					while ((len = zis.read(buffer)) > 0) {
-						fos.write(buffer, 0, len);
+					if (FileUtils.getFile(newFile.getParent()).mkdirs()) {
+						FileOutputStream fos = new FileOutputStream(newFile);
+						int len;
+						while ((len = zis.read(buffer)) > 0) {
+							fos.write(buffer, 0, len);
+						}
+						fos.close();
 					}
-					fos.close();
-				}
 				}
 				ze = zis.getNextEntry();
 			}
@@ -168,6 +172,6 @@ public class ZipUtils {
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"ZipUtils::unZipFromInputStream()::exit");
-		
+
 	}
 }

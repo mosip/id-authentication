@@ -5,6 +5,8 @@ import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConsta
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,8 @@ import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
  */
 @Configuration
 public class IdObjectValidatorConfig {
+	
+	private static final Logger logger = LoggerFactory.getLogger(IdObjectValidatorConfig.class);
 
 	/** The env. */
 	@Autowired
@@ -36,8 +40,10 @@ public class IdObjectValidatorConfig {
 	@PostConstruct
 	public void validateReferenceValidator() throws ClassNotFoundException {
 		if (StringUtils.isNotBlank(env.getProperty(REFERENCE_VALIDATOR.getValue()))) {
+			logger.debug("validating referenceValidator Class is present or not");
 			Class.forName(env.getProperty(REFERENCE_VALIDATOR.getValue()));
 		}
+		logger.debug("validateReferenceValidator: referenceValidator Class is not provided");
 	}
 
 	/**
@@ -53,10 +59,11 @@ public class IdObjectValidatorConfig {
 	public IdObjectValidator referenceValidator()
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		if (StringUtils.isNotBlank(env.getProperty(REFERENCE_VALIDATOR.getValue()))) {
+			logger.debug("instance of referenceValidator is created");
 			return (IdObjectValidator) Class
 					.forName(env.getProperty(REFERENCE_VALIDATOR.getValue())).newInstance();
 		} else {
-			
+			logger.debug("no reference validator is provided");
 			return new IdObjectValidator() {
 
 				@Override

@@ -19,6 +19,7 @@ import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
@@ -54,7 +55,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
 	 */
 	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(AuthTypeStatusDto authTypeStatusDto) throws IdAuthenticationBusinessException {
-		Map<String, Object> idResDTO = idService.processIdType(authTypeStatusDto.getIndividualIdType(),
+		Map<String, Object> idResDTO = idService.processIdType(IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
 				authTypeStatusDto.getIndividualId(), false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
