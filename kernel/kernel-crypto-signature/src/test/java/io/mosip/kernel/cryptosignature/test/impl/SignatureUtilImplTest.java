@@ -197,7 +197,7 @@ public class SignatureUtilImplTest {
 	public void validateWithPublicKeyTest() throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		PrivateKey privateKey = keyPair.getPrivate();
-		String signature = cryptoCore.sign("admin".getBytes(), privateKey);
+		String signature = cryptoCore.sign("MOCKEDDATATOSIGN".getBytes(), privateKey);
 		boolean isVerfied = signingUtil.validateWithPublicKey(signature, "MOCKEDDATATOSIGN",
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()));
 		assertTrue(isVerfied);
@@ -214,7 +214,7 @@ public class SignatureUtilImplTest {
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 		PrivateKey privateKey = keyPair.getPrivate();
 		String signature = cryptoCore.sign("MOCKEDDATATOSIGN".getBytes(), privateKey);
-		boolean isVerfied = signingUtil.validate(signature, "signedData",
+		boolean isVerfied = signingUtil.validate(signature, "MOCKEDDATATOSIGN",
 				"2019-09-09T09:09:09.000Z");
 		assertTrue(isVerfied);
 	}
