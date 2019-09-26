@@ -96,4 +96,18 @@ public class SortUtils {
 		}
 	}
 
+	/**
+	 * @param clazz
+	 *            - generic class
+	 * @param searchSorts
+	 *            - {@link SearchSort}
+	 */
+	public <T> void validateSortField(Class<T> clazz, List<SearchSort> searchSorts) {
+		List<Field> fields = extractField(clazz);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+		}
+
+	}
+
 }

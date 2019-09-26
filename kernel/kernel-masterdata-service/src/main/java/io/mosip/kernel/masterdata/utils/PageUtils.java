@@ -51,6 +51,10 @@ public class PageUtils {
 		return pageResponse;
 	}
 
+	public <T> void validateSortField(Class<T> clazz, List<SearchSort> searchSorts) {
+		sortUtils.validateSortField(clazz, searchSorts);
+	}
+
 	public <D> PageResponseDto<D> sortPage(List<D> content, List<SearchSort> sort, Pagination page) {
 		PageResponseDto<D> pageResponse = new PageResponseDto<>();
 		List<D> sortedList = sortUtils.sort(content, sort);

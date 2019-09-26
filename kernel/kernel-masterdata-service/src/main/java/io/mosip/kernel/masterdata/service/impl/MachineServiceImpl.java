@@ -133,6 +133,7 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	private ZoneService zoneService;
 
+
 	@Value("${mosip.primary-language}")
 	private String primaryLangCode;
 
@@ -412,6 +413,7 @@ public class MachineServiceImpl implements MachineService {
 		boolean isAssigned = true;
 		String typeName = null;
 		String langCode = null;
+
 		if (dto.getLanguageCode().equals("all")) {
 			langCode = primaryLangCode;
 		} else {
@@ -481,6 +483,7 @@ public class MachineServiceImpl implements MachineService {
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
+		pageUtils.validateSortField(Machine.class, sort);
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
 		if (filterValidator.validate(MachineSearchDto.class, dto.getFilters())) {
