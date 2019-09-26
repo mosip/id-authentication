@@ -132,5 +132,7 @@ public class PridGeneratorTest {
 		when(counterRepository.findMaxSequence()).thenReturn(nullSequenceEntity);
 		assertThat(pridGenerator.generateId(), isA(String.class));
 	}
+	
+	
 
 }
