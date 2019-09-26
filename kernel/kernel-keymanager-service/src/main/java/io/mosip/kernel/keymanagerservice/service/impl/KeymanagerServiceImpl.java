@@ -559,7 +559,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				DateUtils.parseUTCToDate(signatureRequestDto.getTimeStamp()));
 		String encryptedSignedData = null;
 		if (certificateResponse.getCertificateEntry() != null) {
-			encryptedSignedData = cryptoCore.sign(CryptoUtil.decodeBase64(signatureRequestDto.getData()), certificateResponse.getCertificateEntry().getPrivateKey());
+			encryptedSignedData = cryptoCore.sign(signatureRequestDto.getData().getBytes(), certificateResponse.getCertificateEntry().getPrivateKey());
 		}
 		return new SignatureResponseDto(encryptedSignedData);
 	}
