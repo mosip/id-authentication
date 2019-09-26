@@ -46,8 +46,6 @@ public class CryptoUtils {
 	/**
 	 * Verify if data is null or empty
 	 * 
-	 * @param      <T>
-	 * 
 	 * @param data data provided by user
 	 */
 	public static void verifyData(byte[] data, String errorCode, String message) {

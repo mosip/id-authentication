@@ -300,8 +300,4 @@ public class CryptomanagerUtils {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
-	
-	
-	
-
 }

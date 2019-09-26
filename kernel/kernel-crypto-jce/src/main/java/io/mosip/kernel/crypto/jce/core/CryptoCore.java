@@ -24,6 +24,7 @@ import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PSource.PSpecified;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -112,6 +113,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 			cipherRegistry.put(RSA_ECB_NO_PADDING, Cipher.getInstance(RSA_ECB_NO_PADDING));
 			secretKeyFactory = SecretKeyFactory.getInstance(passwordAlgorithm);
 			signature = Signature.getInstance(signAlgorithm);
+		
 		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
@@ -129,7 +131,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		byte[] randomIV = generateIV(cipher.getBlockSize());
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
-			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
+		 	GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, randomIV);
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
 			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
 			if (aad != null && aad.length != 0) {
@@ -305,12 +307,11 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	}
 
 	@Override
-	public byte[] hash(byte[] data, byte[] salt) {
+	public String hash(byte[] data, byte[] salt) {
 		CryptoUtils.verifyData(data);
 		CryptoUtils.verifyData(salt, SecurityExceptionCodeConstant.SALT_PROVIDED_IS_NULL_OR_EMPTY.getErrorCode(),
 				SecurityExceptionCodeConstant.SALT_PROVIDED_IS_NULL_OR_EMPTY.getErrorMessage());
-		char[] convertedData = new char[data.length];
-		System.arraycopy(data, 0, convertedData, 0, data.length);
+		char[] convertedData = new String(data).toCharArray();
 		PBEKeySpec pbeKeySpec = new PBEKeySpec(convertedData, salt, iterations, symmetricKeyLength);
 		SecretKey key;
 		try {
@@ -319,7 +320,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 			throw new InvalidParamSpecException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(), e.getMessage(), e);
 		}
-		return key.getEncoded();
+		return DatatypeConverter.printHexBinary(key.getEncoded());
 	}
 
 	@Override

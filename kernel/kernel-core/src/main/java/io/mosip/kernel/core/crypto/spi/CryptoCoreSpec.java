@@ -276,7 +276,7 @@ public interface CryptoCoreSpec<R, D, S, P, K, T> {
 	 *             should be at least 32 bytes long.
 	 * @return hashed data
 	 */
-	R hash(D data, D salt);
+	T hash(D data, D salt);
 
 	/**
 	 * This method is responsible for core <b> Digital Signature </b>.
