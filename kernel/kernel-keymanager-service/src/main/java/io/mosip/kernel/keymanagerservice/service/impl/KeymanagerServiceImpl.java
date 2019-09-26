@@ -78,6 +78,10 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 @Transactional
 public class KeymanagerServiceImpl implements KeymanagerService {
 
+	private static final String VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID = "Valid reference Id. Getting key alias with referenceId";
+
+	private static final String NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID = "Not a valid reference Id. Getting key alias without referenceId";
+
 	private static final Logger LOGGER = KeymanagerLogger.getLogger(KeymanagerServiceImpl.class);
 
 	private static final int MAX_TRIES = 3;
@@ -501,11 +505,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 		if (!keymanagerUtil.isValidReferenceId(referenceId)) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
+					NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID);
 			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeymanagerConstant.CURRENTKEYALIAS);
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
+					VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID);
 			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
 					.get(KeymanagerConstant.CURRENTKEYALIAS);
 		}
@@ -529,13 +533,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private CertificateEntry<X509Certificate, PrivateKey> createCertificateEntry() {
 
-		// byte[] certData = null;
 		CertificateFactory cf = null;
 		X509Certificate cert = null;
 		PrivateKey privateKey = null;
 		try {
-			// certData =
-			// IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
 			cf = CertificateFactory.getInstance(certificateType);
 			cert = (X509Certificate) cf
 					.generateCertificate(resourceLoader.getResource(certificateFilePath).getInputStream());
@@ -574,11 +575,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 		if (!keymanagerUtil.isValidReferenceId(certificateSignRefID)) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
+					NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(signApplicationid, null, timestamp);
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
+					VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(signApplicationid, certificateSignRefID, timestamp);
 		}
 		currentKeyAlias = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
@@ -591,8 +592,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId and timestamp");
 			storeCertificate(timestamp, keyAliasMap);
 		} else if (currentKeyAlias.size() == 1) {
-			System.out.println("\n Signature key details present in DB - " + currentKeyAlias.get(0) + "\n");
-
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()),
+					"Signature key details present in DB" + currentKeyAlias.get(0));
 		}
 	}
 
@@ -611,14 +613,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		while (tries < MAX_TRIES) {
 			try {
 				alias = UUID.randomUUID().toString();
-				System.out.println("\n Signature Key and Crt storing in keystore...\n");
 				keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
 				Thread.sleep(1000);
 				if (keyStore.getPrivateKey(alias) != null) {
-//					LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
-//							KeymanagerConstant.STORECERTIFICATE,
-//							"private key found in keystore safe to save in database");
-
 					System.out.println("\n Signature key details storing in DB - " + alias + "\n");
 					break;
 				} else {
@@ -689,11 +686,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		LocalDateTime localDateTimeStamp = keymanagerUtil.parseToLocalDateTime(timestamp);
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
+					NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(applicationId, null, localDateTimeStamp);
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
+					VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(applicationId, referenceId.get(), localDateTimeStamp);
 		}
 		currentKeyAlias = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
