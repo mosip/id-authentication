@@ -114,7 +114,6 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	 * @return Provider
 	 */
 	private Provider setupProvider(String configPath) {
-		System.out.println("setting provider");
 		Provider provider = null;
 		try {
 			provider = new SunPKCS11(configPath);
