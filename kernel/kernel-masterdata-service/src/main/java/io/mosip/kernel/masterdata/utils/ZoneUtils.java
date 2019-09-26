@@ -44,6 +44,10 @@ public class ZoneUtils {
 
 	@Value("mosip.kernel.masterdata.zone-heirarchy-path-delimiter:/")
 	private String hierarchyPathDelimiter;
+	
+	
+	@Value("${mosip.primary-language}")
+	private String primaryLangugage;
 
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and
@@ -192,8 +196,14 @@ public class ZoneUtils {
 			Optional<String> zoneId = userZones.stream().map(ZoneUser::getZoneCode).findFirst();
 			if (zoneId.isPresent()) {
 				List<Zone> zones = getUserZones();
-				List<Zone> langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
-						.collect(Collectors.toList());
+				List<Zone> langSpecificZones = null;
+				if (!langCode.equals("all")) {
+					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+							.collect(Collectors.toList());
+				} else {
+					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(primaryLangugage))
+							.collect(Collectors.toList());
+				}
 				List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
 				Node<Zone> node = zoneTree.findNode(tree, zoneId.get());
 				return zoneTree.findLeafsValue(node);
@@ -201,8 +211,8 @@ public class ZoneUtils {
 		}
 		return Collections.emptyList();
 	}
-	
-	//----------------------------------------
+
+	// ----------------------------------------
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and
 	 * will fetch all the child hierarchy.
@@ -227,9 +237,10 @@ public class ZoneUtils {
 		}
 		return zoneIds;
 	}
-	
+
 	/**
-	 * Method to fetch the users zone as well as all the child zones of the given userId.
+	 * Method to fetch the users zone as well as all the child zones of the given
+	 * userId.
 	 * 
 	 * @return list of zones
 	 */
@@ -251,13 +262,12 @@ public class ZoneUtils {
 		else
 			return Collections.emptyList();
 	}
-	
-	public List<Zone> getChildZoneList(List<String> zoneIds, String zoneCode,String langCode)
-	{
+
+	public List<Zone> getChildZoneList(List<String> zoneIds, String zoneCode, String langCode) {
 		List<Zone> zones = null;
 		Zone zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneCode, langCode);
 		zones = zoneRepository.findAllNonDeleted();
-		List<Zone> zoneHeirarchyList = getDescedants(zones,zone);
+		List<Zone> zoneHeirarchyList = getDescedants(zones, zone);
 		return zoneHeirarchyList;
 	}
 
