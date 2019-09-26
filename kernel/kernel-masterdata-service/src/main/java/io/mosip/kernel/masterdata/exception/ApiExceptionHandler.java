@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -85,22 +88,52 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_INVALID_COLUMN.getErrorCode(),
+			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+	@ExceptionHandler(JsonMappingException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> jsonMappingException(
+			final HttpServletRequest httpServletRequest, final JsonMappingException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+		 
+		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+				e.getCause().getMessage());
+		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
+		if(e.getCause() instanceof JsonMappingException)
+		{
+			JsonMappingException jme = (JsonMappingException) e.getCause();
+			 List<JsonMappingException.Reference> references = jme.getPath();
+			    List<String> ret = new LinkedList<>();
+			    if (references != null) {
+			      for (JsonMappingException.Reference reference : references) {
+			    	  if(!reference.getFieldName().equals("request"))
+			    		  ret.add(reference.getFieldName());
+			      }
+			    }	
+			    String exField = StringUtils.join(ret);
+			    ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+				ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						"Invalid Format in field : "+exField);
+				errorResponse.getErrors().add(error);
+				return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		}
 		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 				e.getCause().getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
+	
+	
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
