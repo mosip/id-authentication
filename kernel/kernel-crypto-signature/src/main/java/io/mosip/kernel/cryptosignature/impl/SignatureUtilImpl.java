@@ -34,7 +34,6 @@ import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 import io.mosip.kernel.cryptosignature.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptosignature.dto.SignatureRequestDto;

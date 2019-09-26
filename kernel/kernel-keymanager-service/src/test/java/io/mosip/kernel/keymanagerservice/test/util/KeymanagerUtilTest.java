@@ -5,9 +5,9 @@ import static org.junit.Assert.assertThat;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 

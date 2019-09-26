@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +13,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.test.model.Car;
 import io.mosip.kernel.core.test.model.JsonUtilTestConstants;
 import io.mosip.kernel.core.test.model.ParentCar2;
-import io.mosip.kernel.core.test.model.SampleClass;
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonGenerationException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;

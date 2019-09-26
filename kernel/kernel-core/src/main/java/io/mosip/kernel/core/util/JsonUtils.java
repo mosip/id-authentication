@@ -1,6 +1,5 @@
 package io.mosip.kernel.core.util;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.constant.JsonUtilConstants;
-import io.mosip.kernel.core.util.exception.JsonGenerationException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;

@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
-import javax.persistence.NamedNativeQuery;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,9 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.MachineSpecification;
 
 /**
  * Repository function to fetching device details

@@ -6,8 +6,6 @@ package io.mosip.kernel.core.cbeffutil.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;

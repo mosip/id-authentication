@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 
 @SpringBootTest
