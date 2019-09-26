@@ -778,9 +778,9 @@ public class DeviceServiceImpl implements DeviceService {
 						MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
+			/*throw new MasterDataServiceException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(e));*/
 		}
 		deviceCodeId.setId(deviceId);
 		return deviceCodeId;

@@ -123,15 +123,6 @@ public interface MachineService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto);
-
-	/**
-	 * Method to decommission machine
-	 * 
-	 * @param machineId
-	 *            input from user
-	 * @return machine ID of decommissioned machine
-	 */
-	public IdResponseDto decommissionMachine(String machineId);
 	
 	/**
 	 * Abstract method to save Machine Details to the Database
@@ -160,5 +151,20 @@ public interface MachineService {
 	 *             if any error occurred while updating Machine
 	 */
 	public MachineExtnDto updateMachine(MachinePutReqDto  machine);
+	
+	/**
+	 * Abstract method to decommission machine
+	 * 
+	 * @param machineId
+	 *            Machine Id which one need to decommission
+	 * 
+	 * @return IdResponseDto returning decommission machine id
+	 *         {@link IdResponseDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while decommissioning the Machine
+	 */
+	public IdResponseDto decommissionMachine(String machineId);
+	
 
 }
