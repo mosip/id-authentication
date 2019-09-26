@@ -21,20 +21,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.idgenerator.spi.MachineIdGenerator;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
+import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 
@@ -712,6 +717,30 @@ public class RegistrationCenterValidator {
 
 		newrRegistrationCenterDtoList = MapperUtils.mapAll(newregistrationCenterList, RegistrationCenterExtnDto.class);
 		return newrRegistrationCenterDtoList;
+	}
+	
+	
+	@Autowired
+	MachineIdGenerator<String> machineIdGenerator;
+
+	@Autowired
+	MachineRepository machineRepository;
+
+	// call method generate ID or validate with DB
+	public String generateMachineIdOrvalidateWithDB(String uniqueId) {
+		if (uniqueId.isEmpty()) {
+			// Get Machine Id by calling MachineIdGenerator API
+			uniqueId = machineIdGenerator.generateMachineId();
+		} else {
+			List<Machine> renMachine = machineRepository
+					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
+			if (renMachine.isEmpty()) {
+				// for the given ID, we don't have data in primary language
+				throw new RequestException(MachineErrorCode.MACHINE_ID.getErrorCode(),
+						String.format(MachineErrorCode.MACHINE_ID.getErrorMessage(), uniqueId));
+			}
+		}
+		return uniqueId;
 	}
 
 }
