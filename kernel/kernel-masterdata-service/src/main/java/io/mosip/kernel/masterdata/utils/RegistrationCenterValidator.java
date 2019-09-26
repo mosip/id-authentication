@@ -26,6 +26,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
@@ -308,8 +309,21 @@ public class RegistrationCenterValidator {
 
 	// method to validate the format of the longitude and latitude, zone validation,
 	// lunch and center start and end time
-	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> void validateRegCenterCreateReq(
-			T registrationCenterDto, List<ServiceError> errors) {
+//	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> void validateRegCenterCreateReq(
+//			T registrationCenterDto, List<ServiceError> errors) {
+//
+//		String latitude = registrationCenterDto.getLatitude();
+//		String longitude = registrationCenterDto.getLongitude();
+//
+//		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
+//		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
+//		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
+//		formatValidationLongitudeLatitude(errors, latitude, longitude);
+//
+//	}
+	
+	public void validateRegCenterCreate(
+			RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors) {
 
 		String latitude = registrationCenterDto.getLatitude();
 		String longitude = registrationCenterDto.getLongitude();
@@ -331,7 +345,7 @@ public class RegistrationCenterValidator {
 
 	// validation to check entered zoneCode is mapped with eligible user or not and
 	// is valid zoneCode
-	private <T extends RegcenterBaseDto> void zoneUserMapValidation(T registrationCenterDto, List<ServiceError> errors,
+	private void zoneUserMapValidation(RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors,
 			List<String> zoneIds) {
 
 		if (!zoneIds.isEmpty()) {
@@ -358,7 +372,7 @@ public class RegistrationCenterValidator {
 	// validation to check the RegCenter Lunch Start Time is greater
 	// than RegCenter
 	// Lunch End Time
-	private <T extends RegcenterBaseDto> void lunchStartEndTimeGrtValidation(T registrationCenterDto,
+	private void lunchStartEndTimeGrtValidation(RegCenterPostReqDto registrationCenterDto,
 			List<ServiceError> errors) {
 		// validation to check the RegCenter Lunch Start Time is greater than RegCenter
 		// Lunch End Time
@@ -374,7 +388,7 @@ public class RegistrationCenterValidator {
 
 	// validation to check the RegCenter Start Time is greater than
 	// RegCenter End Time
-	private <T extends RegcenterBaseDto> void zoneStartEndTimeGtrValidation(T registrationCenterDto,
+	private void zoneStartEndTimeGtrValidation(RegCenterPostReqDto registrationCenterDto,
 			List<ServiceError> errors) {
 		if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 			errors.add(new ServiceError(
