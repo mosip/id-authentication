@@ -118,9 +118,9 @@ public class ServiceDelegateUtil {
 
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
-			url = url != null ? url.replace("${mosip.hostname}", System.getenv("mosip.hostname")) : "";
+			url = url != null && System.getenv("mosip.hostname") !=null ? url.replace("${mosip.hostname}", System.getenv("mosip.hostname")) : url;
 			Map<String, String> queryParams = new HashMap<>();
-			for (String key : requestParams.keySet()) {
+			for(String key : requestParams.keySet()) {
 				if (!url.contains("{" + key + "}")) {
 					queryParams.put(key, requestParams.get(key));
 				}
