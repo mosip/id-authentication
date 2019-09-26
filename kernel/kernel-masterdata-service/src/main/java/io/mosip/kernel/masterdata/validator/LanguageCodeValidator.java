@@ -25,8 +25,8 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Value("${mosip.supported-languages}")
 	private String supportedLanguages;
 
-	@Value("${mosip.all-languages}")
-	private String allLanguages;
+	//@Value("${mosip.all-languages}")
+	//private String allLanguages;
 
 	/*
 	 * (non-Javadoc)
@@ -43,7 +43,7 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 				String[] langArray = supportedLanguages.split(",");
 
 				for (String string : langArray) {
-					if (langCode.equals(string) || langCode.equals(allLanguages)) {
+					if (langCode.equals(string) || langCode.equals("all")) {
 						return true;
 					}
 				}
