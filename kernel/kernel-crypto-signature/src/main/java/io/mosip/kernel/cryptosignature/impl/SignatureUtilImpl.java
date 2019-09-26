@@ -115,11 +115,10 @@ public class SignatureUtilImpl implements SignatureUtil {
 
 	@Override
 	public SignatureResponse sign(String response, String timestamp) {
-		String responseHash = CryptoUtil.encodeBase64(HMACUtils.generateHash(response.getBytes()));
 		SignatureRequestDto signatureRequestDto = new SignatureRequestDto();
 		signatureRequestDto.setApplicationId(signApplicationid);
 		signatureRequestDto.setReferenceId(signRefid);
-		signatureRequestDto.setData(responseHash);
+		signatureRequestDto.setData(response);
 		signatureRequestDto.setTimeStamp(timestamp);
 		RequestWrapper<SignatureRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(signDataRequestId);
