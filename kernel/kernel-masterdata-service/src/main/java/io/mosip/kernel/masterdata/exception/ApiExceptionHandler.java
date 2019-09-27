@@ -10,6 +10,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tomcat.util.buf.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -24,6 +26,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -202,17 +205,21 @@ public class ApiExceptionHandler {
 		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
 			return responseWrapper;
 		} else {
-			int idIndex = requestBody.indexOf("id") + 5;
-			int verIndex = requestBody.indexOf("version");
-			String arr[] = requestBody.substring(idIndex).split(",");
-			String verr[] = requestBody.substring(verIndex).split(":");
-			String id = arr[0].trim();
-			id = id.replace("\"", "");
-			String version = verr[1].split("}")[0].trim();
-			version = version.replace("\"", "");
-			responseWrapper.setId("string");
-			responseWrapper.setVersion(version);
-
+			try {
+				JSONObject json = new JSONObject(requestBody);
+				responseWrapper.setId((String)json.get("id"));
+				responseWrapper.setVersion((String)json.get("version"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}     
+//			int idIndex = requestBody.indexOf("id") + 5;
+//			int verIndex = requestBody.indexOf("version");
+//			String arr[] = requestBody.substring(idIndex).split(",");
+//			String verr[] = requestBody.substring(verIndex).split(":");
+//			String id = arr[0].trim();
+//			id = id.replace("\"", "");
+//			String version = verr[1].split("}")[0].trim();
+//			version = version.replace("\"", "");
 			return responseWrapper;
 		}
 	}
