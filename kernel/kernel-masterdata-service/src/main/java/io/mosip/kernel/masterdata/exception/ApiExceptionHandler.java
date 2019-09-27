@@ -25,6 +25,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -98,7 +99,15 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
-		if(e.getCause() instanceof JsonMappingException)
+		if(e.getCause() instanceof MismatchedInputException)
+		{
+			ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+					e.getCause().getMessage());
+			errorResponse.getErrors().add(error);
+			return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		}
+		else if(e.getCause() instanceof JsonMappingException)
 		{
 			JsonMappingException jme = (JsonMappingException) e.getCause();
 			 List<JsonMappingException.Reference> references = jme.getPath();
@@ -116,11 +125,14 @@ public class ApiExceptionHandler {
 				errorResponse.getErrors().add(error);
 				return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 		}
-		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
-		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-				e.getCause().getMessage());
-		errorResponse.getErrors().add(error);
-		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		else
+		{
+			ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+					e.getCause().getMessage());
+			errorResponse.getErrors().add(error);
+			return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		}
 	}
 	
 	
@@ -198,7 +210,7 @@ public class ApiExceptionHandler {
 			id = id.replace("\"", "");
 			String version = verr[1].split("}")[0].trim();
 			version = version.replace("\"", "");
-			responseWrapper.setId(id);
+			responseWrapper.setId("string");
 			responseWrapper.setVersion(version);
 
 			return responseWrapper;

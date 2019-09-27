@@ -185,7 +185,7 @@ public class MasterdataCreationUtil {
 		}
 		//return null;
 		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-				RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage());
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
 	
 	private String getCodeFromName(String name) {
@@ -293,7 +293,7 @@ public class MasterdataCreationUtil {
 		}
 		//return null;
 		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-				RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage());
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
 
 
