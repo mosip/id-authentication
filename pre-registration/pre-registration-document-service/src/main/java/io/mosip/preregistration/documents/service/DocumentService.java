@@ -138,7 +138,7 @@ public class DocumentService {
 	/**
 	 * primaryLang
 	 */
-	@Value("$mosip.primary-language")
+	@Value("${mosip.primary-language}")
 	private String primaryLang;
 
 	/**

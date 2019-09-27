@@ -358,7 +358,6 @@ public class ValidationUtil {
 			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.masterdataUri).buildAndExpand(langcode)
 					.toUriString();
 			HttpEntity entity = new HttpEntity<>(headers);
-			System.out.println("URL "+uri);
 			log.info("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes with url "+uri );
 			
 			@SuppressWarnings("unchecked")
