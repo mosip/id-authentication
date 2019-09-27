@@ -55,16 +55,4 @@ public interface ManualVerificationService {
 	 */
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO, String stageName);
 
-	/**
-	 * Gets the applicant packet info.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the applicant packet info
-	 * @throws java.io.IOException 
-	 * @throws IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
-	 */
-	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException;
 }

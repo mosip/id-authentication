@@ -227,7 +227,10 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			fileInStream = getApplicantBiometricFile(regId, PacketFiles.APPLICANT_BIO_CBEFF.name());
 		} else if (PacketFiles.DEMOGRAPHIC.name().equals(fileName)) {
 			fileInStream = getApplicantDemographicFile(regId, PacketFiles.ID.name());
-		} else {
+		} else if(PacketFiles.PACKET_META_INFO.name().equals(fileName)){
+			fileInStream = getApplicantMetaInfoFile(regId, PacketFiles.PACKET_META_INFO.name());
+		}
+		else {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, "ManualVerificationServiceImpl::getApplicantFile()"
 							+ PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
@@ -281,6 +284,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			throws PacketDecryptionFailureException, ApisResourceAccessException,
 			io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
+	}
+	
+	private InputStream getApplicantMetaInfoFile(String regId, String fileName)
+			throws PacketDecryptionFailureException, ApisResourceAccessException,
+			io.mosip.kernel.core.exception.IOException, IOException {
+		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
 	}
 
 	/*
@@ -409,44 +418,6 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	private boolean isRegAndMactedRefIdEmpty(String registrationId, String matchedRefId) {
 		
 		return registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see io.mosip.registration.processor.manual.verification.service.
-	 * ManualVerificationService#getApplicantPacketInfo(java.lang.String)
-	 */
-	@Override
-	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException,
-			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
-		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
-
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::entry");
-		if (regId == null || regId.isEmpty()) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "ManualVerificationServiceImpl::getApplicantPacketInfo()"
-							+ PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
-			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
-					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
-		}
-		InputStream fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PACKETMETAINFO);
-		try {
-			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(fileInStream, PacketMetaInfo.class);
-		} catch (UnsupportedEncodingException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, e.getMessage() + ExceptionUtils.getStackTrace(e));
-		}
-		if (packetMetaInfo != null) {
-			packetMetaInfo.getIdentity().setMetaData(null);
-			packetMetaInfo.getIdentity().setHashSequence(null);
-			packetMetaInfo.getIdentity().setCheckSum(null);
-			packetMetaInfo.getIdentity().setOsiData(null);
-		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::exit");
-		return packetMetaInfo;
 	}
 
 	@SuppressWarnings("unchecked")
