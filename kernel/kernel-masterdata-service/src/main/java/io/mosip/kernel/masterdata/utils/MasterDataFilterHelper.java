@@ -100,8 +100,7 @@ public class MasterDataFilterHelper {
 		columnTypeValidator(rootType, columnName);
 
 		// check column type is not boolean
-		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class)
-				&& filterValueDto.getLanguageCode().equals("all"))) {
+		if (filterValueDto.getLanguageCode().equals("all") && !(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			criteriaQueryByType.where(criteriaBuilder.and(caseSensitivePredicate));
 		} else if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
