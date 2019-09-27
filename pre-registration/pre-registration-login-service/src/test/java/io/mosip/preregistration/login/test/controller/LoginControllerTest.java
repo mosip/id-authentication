@@ -13,9 +13,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,14 +26,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.WebDataBinder;
 
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.login.PreRegistartionLoginApplication;
+import io.mosip.preregistration.login.config.LoginValidator;
+import io.mosip.preregistration.login.controller.LoginController;
 import io.mosip.preregistration.login.service.LoginService;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
 import net.minidev.json.parser.JSONParser;
@@ -41,6 +47,7 @@ import net.minidev.json.parser.ParseException;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= {PreRegistartionLoginApplication.class})
 @AutoConfigureMockMvc
+@ConfigurationProperties("mosip.preregistration.login")
 public class LoginControllerTest {
 
 	@Autowired
@@ -51,6 +58,12 @@ public class LoginControllerTest {
 	
 	@MockBean
 	private LoginCommonUtil authCommonUtil;
+	
+	@Mock
+	private LoginValidator loginValidator;
+	
+	@InjectMocks
+	private LoginController controller;
 	
 	
 	private HttpHeaders httpHeaders;
@@ -65,9 +78,20 @@ public class LoginControllerTest {
 	
 	private Object jsonObject = null;
 	
+
+	/**
+	 * Test init binder.
+	 */
+	@Test
+	public void testInitBinder() {
+		controller.initBinder(Mockito.mock(WebDataBinder.class));
+	}
+	
 	private Object jsonObject1 = null;
 	@Before
 	public void setup() throws URISyntaxException, FileNotFoundException, ParseException {
+		
+		ReflectionTestUtils.setField(controller, "loginValidator", loginValidator);
 		ClassLoader classLoader = getClass().getClassLoader();
 		JSONParser parser = new JSONParser();
 
