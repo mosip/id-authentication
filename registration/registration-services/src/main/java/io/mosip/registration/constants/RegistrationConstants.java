@@ -194,6 +194,8 @@ public class RegistrationConstants {
 	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
+	
+	public static final String LANGUAGE_SUPPORT = "mosip.supported-languages";
 
 	// Login
 	public static final String BLOCKED = "BLOCKED";
