@@ -27,9 +27,9 @@ public enum DeviceErrorCode {
 			"Error occurred while fetching a Device details mapped with the given Registration Center"),
 	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Device Not Found"),
 	DEVICE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the Device "),
-	MAPPED_TO_REGCENTER("XX","Device cannot be Decommissioned as it is assigned to a Registration Center"),
+	MAPPED_TO_REGCENTER("KER-MSD-438","Device cannot be Decommissioned as it is assigned to a Registration Center"),
 	DEVICE_ERROR("KER-MSD-XXX", "Device Error"),
-	INVALIDE_DEVICE_ZONE("KER-MSD-XXX", "Admin not authorized to access this Machine for this Zone");
+	INVALIDE_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone");
 
 	private final String errorCode;
 	private final String errorMessage;
