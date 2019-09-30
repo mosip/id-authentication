@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -216,6 +217,9 @@ public class MasterdataSearchIntegrationTest {
 	private List<Device> devices;
 	private RegistrationCenterType registrationCenterType;
 	private List<RegistrationCenterType> registrationCenterTypes;
+	
+	@Value("${mosip.primary-language}")
+	private String primaryLangCode;
 
 	@Before
 	public void setup() throws JsonProcessingException {
@@ -792,26 +796,26 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-
-	@Ignore
+	
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchMachineByMachineTypeNameTest() throws Exception {
 		machineSearchFilter.setColumnName("machineTypeName");
 		machineSearchFilter.setValue("Desktop");
 		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineSearchDto.setLanguageCode("all");
 		machineRequestDto.setRequest(machineSearchDto);
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
 		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
-		MachineSpecification specification = new MachineSpecification();
-		specification.setId("1001");
+		Machine machine = new Machine();
+		machine.setId("1001");
 		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
-		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
+		Page<Machine> pageContentSpecificationData = new PageImpl<>(Arrays.asList(machine));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -1118,13 +1122,17 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
+	
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void searchDeviceRequestExceptionTest() throws Exception {
+	public void searchDeviceAllLangTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
 		deviceSearchFilter.setValue("unassigned");
-		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		SearchFilter searchFilter=new SearchFilter();
+		searchFilter.setColumnName("deviceTypeName");
+		searchFilter.setValue("Printer");
+		deviceSearchDto.setLanguageCode("all");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter,searchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
