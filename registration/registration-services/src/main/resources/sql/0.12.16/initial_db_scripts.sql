@@ -123,3 +123,21 @@ insert into reg.global_param values ('auth.jwt.secret','auth.jwt.secret','authjw
 insert into reg.global_param values ('auth.jwt.base','auth.jwt.base','Mosip-Token','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
 
 insert into reg.global_param values ('mosip.kernel.pdf_owner_password','mosip.kernel.pdf_owner_password','{cipher}AQBUgUNlaJfAh44K+n1DenAzBAHaYh42nHxYd4kgYlSTh+Jgs5KOxKpNfW6TFpbpokiE+qM29J2aww5o1HDWKUhboLfpRfIkssNKxThaOI9crKE6LSNQK0mmDejcvOoyj1OuY5imX+bIgLRdunBJtyZljGPquw7l0oqcHSolYaWCnt2UgX5Hdx1aovSrP+sgGUEZs23ASzEXTTAA8GQKZJxYsqz6sMyzvD6bCkU1FMSxN04d+j5N71GsSh1WzoUNSy09ydq997WEi8TLOZHTnZ6W142cYJoNvVSOhZuDT9FZogxQKaZ6mgxcO9aF/k2cYLVsy2axGbBm8Vba04/AyfK2pgRcnE4M5pvUJsNydOZvmcgQNial4+PAAz9xqKLURMA=','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('mosip.kernel.crypto.gcm-tag-length','mosip.kernel.crypto.gcm-tag-length','128','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('mosip.kernel.crypto.hash-symmetric-key-length','mosip.kernel.crypto.hash-symmetric-key-length','256','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('mosip.kernel.crypto.hash-algorithm-name','mosip.kernel.crypto.hash-algorithm-name','PBKDF2WithHmacSHA512','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('mosip.kernel.crypto.sign-algorithm-name','mosip.kernel.crypto.sign-algorithm-name','SHA512withRSA','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('mosip.kernel.crypto.hash-iteration','mosip.kernel.crypto.hash-iteration','100000','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('mosip.kernel.data-key-splitter','mosip.kernel.data-key-splitter','#KEY_SPLITTER#','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+update reg.global_param set val = 'RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING' where code = 'mosip.kernel.crypto.asymmetric-algorithm-name' ;
+update reg.global_param set val = 'AES/GCM/PKCS5Padding' where code = 'mosip.kernel.crypto.symmetric-algorithm-name' ;
+
+update reg.global_param set val = 'RSA' where code = 'mosip.kernel.keygenerator.asymmetric-algorithm-name' ;
+update reg.global_param  set val = 'AES' where code = 'mosip.kernel.keygenerator.symmetric-algorithm-name';

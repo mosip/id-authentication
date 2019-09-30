@@ -121,3 +121,4 @@ insert into reg.global_param values ('mosip.kernel.otp.expiry-time','mosip.kerne
 insert into reg.global_param values ('auth.jwt.secret','auth.jwt.secret','authjwtsecret','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
 
 insert into reg.global_param values ('auth.jwt.base','auth.jwt.base','Mosip-Token','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
