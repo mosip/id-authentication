@@ -29,8 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -52,8 +51,6 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 public class KeymanagerUtil {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-	private static final String EMPTY="";
 	
 	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
@@ -71,16 +68,10 @@ public class KeymanagerUtil {
 	KeyGenerator keyGenerator;
 
 	/**
-	 * Decryptor instance to decrypt data
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
 	 */
 	@Autowired
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	/**
-	 * Encryptor instance to decrypt data
-	 */
-	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/**
 	 * Field for symmetric Algorithm Name
@@ -150,8 +141,8 @@ public class KeymanagerUtil {
 	 */
 	public byte[] encryptKey(PrivateKey privateKey, PublicKey masterKey) {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
-		byte[] encryptedPrivateKey = encryptor.symmetricEncrypt(symmetricKey, privateKey.getEncoded());
-		byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(masterKey, symmetricKey.getEncoded());
+		byte[] encryptedPrivateKey = cryptoCore.symmetricEncrypt(symmetricKey, privateKey.getEncoded(),null);
+		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(masterKey, symmetricKey.getEncoded());
 		return CryptoUtil.combineByteArray(encryptedPrivateKey, encryptedSymmetricKey, keySplitter);
 	}
 
@@ -163,16 +154,18 @@ public class KeymanagerUtil {
 	 * @return decrypted key
 	 */
 	public byte[] decryptKey(byte[] key, PrivateKey privateKey) {
+		
+		
 		int keyDemiliterIndex = 0;
 		final int cipherKeyandDataLength = key.length;
 		final int keySplitterLength = keySplitter.length();
 		keyDemiliterIndex = CryptoUtil.getSplitterIndex(key, keyDemiliterIndex, keySplitter);
 		byte[] encryptedKey = copyOfRange(key, 0, keyDemiliterIndex);
 		byte[] encryptedData = copyOfRange(key, keyDemiliterIndex + keySplitterLength, cipherKeyandDataLength);
-		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedKey);
+		byte[] decryptedSymmetricKey = cryptoCore.asymmetricDecrypt(privateKey, encryptedKey);
 		SecretKey symmetricKey = new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length,
 				symmetricAlgorithmName);
-		return decryptor.symmetricDecrypt(symmetricKey, encryptedData);
+		return cryptoCore.symmetricDecrypt(symmetricKey, encryptedData,null);
 	}
 
 	/**
@@ -201,9 +194,7 @@ public class KeymanagerUtil {
 		KeyFactory kf = null;
 		PKCS8EncodedKeySpec keySpec = null;
 		PrivateKey privateKey = null;
-		//byte[] privateKeyPEM;
 		try {
-			//privateKeyPEM = FileUtils.readFileToByteArray(privateKeyFile);
 			StringWriter stringWriter= new StringWriter();
 			IOUtils.copy(privateKeyInputStream, stringWriter, StandardCharsets.UTF_8);
 			String privateKeyPEMString= stringWriter.toString(); 

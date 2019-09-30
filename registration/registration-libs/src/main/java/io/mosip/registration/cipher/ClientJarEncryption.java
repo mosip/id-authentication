@@ -7,24 +7,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.FileUtils;
 
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
-import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
+import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
+import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
 /**
  * Encrypt the Client Jar with Symmetric Key
@@ -54,6 +63,8 @@ public class ClientJarEncryption {
 
 	private static final String MOSIP_RUN_BAT = "run.bat";
 
+	private SecureRandom secureRandom;
+
 	/**
 	 * Encrypt the bytes
 	 * 
@@ -65,8 +76,7 @@ public class ClientJarEncryption {
 		// Generate AES Session Key
 		SecretKey symmetricSecretKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricSecretKey, data,
-				Cipher.ENCRYPT_MODE, null);
+		return symmetricEncrypt(symmetricSecretKey, data, null);
 	}
 
 	/**
@@ -113,7 +123,6 @@ public class ClientJarEncryption {
 					// Executable jar run.jar
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
 
-
 					// Bat file run.bat
 					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9])));
 					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
@@ -128,7 +137,7 @@ public class ClientJarEncryption {
 
 					// Add mosip-Version to mosip-application.properties file
 					addProperties(new File(args[10]), args[2]);
-					
+
 					// DB file
 					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
@@ -210,6 +219,8 @@ public class ClientJarEncryption {
 
 					System.out.println("Zip Creation ended with path :::" + zipFilename);
 				}
+			} catch(InvalidKeyException invalidKeyException) {
+				invalidKeyException.printStackTrace();
 			}
 		}
 	}
@@ -333,4 +344,70 @@ public class ClientJarEncryption {
 		}
 
 	}
+
+	private static byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] aad) {
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
+		byte[] output = null;
+
+		try {
+			Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
+
+			byte[] randomIV = generateIV(cipher.getBlockSize());
+			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES_ALGORITHM);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, randomIV);
+			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
+			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
+			if (aad != null && aad.length != 0) {
+				cipher.updateAAD(aad);
+			}
+			byte[] processData = doFinal(data, cipher);
+			System.arraycopy(processData, 0, output, 0, processData.length);
+			System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
+		} catch (java.security.NoSuchAlgorithmException noSuchAlgorithmException) {
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),
+					noSuchAlgorithmException);
+		} catch (NoSuchPaddingException noSuchPaddingException) {
+			throw new InvalidKeyException("No Such Padding Exception", "No Such Padding Exception",
+					noSuchPaddingException);
+
+		}
+		return output;
+	}
+
+	/**
+	 * Generator for IV(Initialisation Vector)
+	 * 
+	 * @param blockSize
+	 *            blocksize of current cipher
+	 * @return generated IV
+	 */
+	private static byte[] generateIV(int blockSize) {
+		byte[] byteIV = new byte[blockSize];
+		new SecureRandom().nextBytes(byteIV);
+		return byteIV;
+	}
+
+	private static byte[] doFinal(byte[] data, Cipher cipher) {
+		try {
+			return cipher.doFinal(data);
+		} catch (IllegalBlockSizeException e) {
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(), e.getMessage(), e);
+		} catch (BadPaddingException e) {
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
+	}
+
 }

@@ -41,7 +41,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -78,8 +78,6 @@ public class CryptographicServiceIntegrationExceptionTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@MockBean
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	private MockRestServiceServer server;
 
@@ -90,6 +88,12 @@ public class CryptographicServiceIntegrationExceptionTest {
 	private CryptomanagerRequestDto requestDto;
 
 	private RequestWrapper<CryptomanagerRequestDto> requestWrapper;
+	
+	/**
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
+	 */
+	@MockBean
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	private static final String ID = "mosip.crypto.service";
 	private static final String VERSION = "V1.0";
@@ -219,7 +223,7 @@ public class CryptographicServiceIntegrationExceptionTest {
 		errorResponse.setErrors(errors);
 		server.expect(requestTo(symmetricKeyUrl))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(errorResponse), MediaType.APPLICATION_JSON));
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);
 

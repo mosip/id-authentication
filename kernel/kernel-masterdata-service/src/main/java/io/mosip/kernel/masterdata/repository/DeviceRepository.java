@@ -14,6 +14,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.Machine;
 
+
 /**
  * Repository function to fetching device details
  * 

@@ -3,6 +3,7 @@ package io.mosip.registration.test.service;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.SocketTimeoutException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -81,7 +82,8 @@ public class UserOnBoardServiceImplTest {
 	private ServiceDelegateUtil serviceDelegateUtil;
 	
 	@Mock
-	private Encryptor<?, PublicKey, SecretKey> encryptor;
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> encryptor;
+
 	
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
@@ -227,8 +229,8 @@ public class UserOnBoardServiceImplTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(publicKeyResponse);
 		SecretKey mock = PowerMockito.mock(SecretKey.class);
 		PowerMockito.when(keyGenerator.getSymmetricKey()).thenReturn(PowerMockito.mock(SecretKey.class));
-		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any(),null)).thenReturn("test".getBytes());
+		Mockito.when(encryptor.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(), Mockito.anyString())).thenReturn(responseApi);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		
@@ -362,8 +364,8 @@ public class UserOnBoardServiceImplTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(publicKeyResponse);
 		SecretKey mock = PowerMockito.mock(SecretKey.class);
 		PowerMockito.when(keyGenerator.getSymmetricKey()).thenReturn(PowerMockito.mock(SecretKey.class));
-		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any(),null)).thenReturn("test".getBytes());
+		Mockito.when(encryptor.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(), Mockito.anyString())).thenReturn(responseApi);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		
@@ -492,8 +494,8 @@ public class UserOnBoardServiceImplTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(publicKeyResponse);
 		SecretKey mock = PowerMockito.mock(SecretKey.class);
 		PowerMockito.when(keyGenerator.getSymmetricKey()).thenReturn(PowerMockito.mock(SecretKey.class));
-		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any(),null)).thenReturn("test".getBytes());
+		Mockito.when(encryptor.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(), Mockito.anyString())).thenReturn(responseApi);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
 		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		

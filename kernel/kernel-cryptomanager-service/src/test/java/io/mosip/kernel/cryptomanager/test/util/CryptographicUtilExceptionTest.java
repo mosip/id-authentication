@@ -3,16 +3,12 @@ package io.mosip.kernel.cryptomanager.test.util;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.crypto.SecretKey;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -33,7 +28,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -60,9 +54,6 @@ public class CryptographicUtilExceptionTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
-	@MockBean
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	private MockRestServiceServer server;
 
@@ -92,7 +83,7 @@ public class CryptographicUtilExceptionTest {
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
 				objectMapper.writeValueAsString(responseWrapper), MediaType.APPLICATION_JSON));
 		CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto("REGISTRATION", "ref123",
-				LocalDateTime.parse("2018-12-06T12:07:44.403Z", DateTimeFormatter.ISO_DATE_TIME), "test", "ykrkpgjjtChlVdvDNJJEnQ");
+				LocalDateTime.parse("2018-12-06T12:07:44.403Z", DateTimeFormatter.ISO_DATE_TIME), "test", "ykrkpgjjtChlVdvDNJJEnQ","VGhpcyBpcyBzYW1wbGUgYWFk");
 		cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);
 	}
 }

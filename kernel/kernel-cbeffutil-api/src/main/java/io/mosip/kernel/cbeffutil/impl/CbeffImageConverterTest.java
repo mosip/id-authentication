@@ -1,7 +1,6 @@
 package io.mosip.kernel.cbeffutil.impl;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
