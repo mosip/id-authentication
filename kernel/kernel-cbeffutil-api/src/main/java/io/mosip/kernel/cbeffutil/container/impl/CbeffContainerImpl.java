@@ -12,7 +12,6 @@ import io.mosip.kernel.core.cbeffutil.common.CbeffXSDValidator;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.VersionType;
 
 /**
  * @author Ramadurai Pandian

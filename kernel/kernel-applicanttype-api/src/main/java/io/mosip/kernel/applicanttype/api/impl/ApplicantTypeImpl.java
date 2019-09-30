@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.applicanttype.api.constant.ApplicantTypeErrorCode;
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 
 /**
  * Implementation for Applicant Type.

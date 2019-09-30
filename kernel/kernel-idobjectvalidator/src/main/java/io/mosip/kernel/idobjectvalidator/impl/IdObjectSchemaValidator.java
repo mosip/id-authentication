@@ -11,11 +11,11 @@ import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorP
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.APPLICATION_ID;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.ERROR;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.FIELD_LIST;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_ARRAY_VALUE_FIELD;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.INSTANCE;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.PATH_SEPERATOR;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.POINTER;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.ROOT_PATH;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_ARRAY_VALUE_FIELD;
 
 import java.io.IOException;
 import java.net.URL;
