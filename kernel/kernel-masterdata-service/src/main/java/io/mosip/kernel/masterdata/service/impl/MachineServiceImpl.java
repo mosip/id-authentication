@@ -735,18 +735,17 @@ public class MachineServiceImpl implements MachineService {
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// get machine from DB by given id
-		Machine renMachine = machineRepository
-				.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(machineId,
-						primaryLang);
+		List<Machine> renMachines = machineRepository
+				.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(machineId);
 
 		// machine is not in DB
-		if (renMachine == null) {
+		if (renMachines.isEmpty()) {
 			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-
+		
 		// check the given device and registration center zones are come under user zone
-		if (!zoneIds.contains(renMachine.getZoneCode())) {
+		if (!zoneIds.contains(renMachines.get(0).getZoneCode())) {
 			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
 					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
 		}
@@ -757,6 +756,19 @@ public class MachineServiceImpl implements MachineService {
 			}
 			decommissionedMachine = machineRepository.decommissionMachine(machineId,MetaDataUtils.getContextUser(), 
 					MetaDataUtils.getCurrentDateTime());
+			
+			// create Machine history	
+			for(Machine machine : renMachines) {
+			MachineHistory machineHistory = new MachineHistory();
+			MapperUtils.map(machine, machineHistory);
+			MapperUtils.setBaseFieldValue(machine, machineHistory);
+			machineHistory.setIsActive(false);
+			machineHistory.setIsDeleted(true);
+			machineHistory.setUpdatedBy(MetaDataUtils.getContextUser());
+			machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			machineHistory.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			machineHistoryRepository.create(machineHistory);
+			}
 
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
@@ -878,7 +890,7 @@ public class MachineServiceImpl implements MachineService {
 				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
 				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
 				machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
-				machineHistoryRepository.create(machineHistory);
+				machineHistoryService.createMachineHistory(machineHistory);
 
 			} else {
 				// if given Id and language code is not present in DB
