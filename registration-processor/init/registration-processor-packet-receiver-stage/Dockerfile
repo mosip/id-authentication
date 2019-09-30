@@ -26,7 +26,7 @@ ENV spring_config_label_env=${spring_config_label}
 ENV spring_config_label_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/ftp1/ARCHIVE_PACKET_LOCATION /home/ftp1/LANDING_ZONE /home/Glowrot
+VOLUME /home/ftp1/ARCHIVE_PACKET_LOCATION /home/ftp1/LANDING_ZONE /home/Glowroot
 
 COPY ./target/registration-processor-packet-receiver-stage-*.jar registration-processor-packet-receiver-stage.jar
 
