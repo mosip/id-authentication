@@ -1062,6 +1062,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter updRegistrationCenter = null;
 		RegistrationCenter updRegistrationCenterEntity = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
+		RegistrationCenterHistory registrationCenterHistoryEntity = null;
+		String uniqueId = "";
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		// List<RegCenterPutReqDto> notUpdRegistrationCenterList = new
 		// ArrayList<>();
@@ -1103,11 +1105,25 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository
 					.findByIdAndLangCodeAndIsDeletedTrue(regCenterPutReqDto.getId(), regCenterPutReqDto.getLangCode());
-			if(renRegistrationCenter==null)
+			if(renRegistrationCenter==null&&primaryLang.equals(regCenterPutReqDto.getLangCode()))
 			{
 				throw new MasterDataServiceException(RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
 						RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage());
 			}
+			else if(renRegistrationCenter==null&&secondaryLang.equals(regCenterPutReqDto.getLangCode()))
+			{
+				RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+				registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPutReqDto,
+						registrationCenterEntity.getClass());
+				registrationCenterEntity = registrationCenterRepository.create(registrationCenterEntity);
+				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+						RegistrationCenterHistory.class);
+				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+				registrationCenterExtnDto = MapperUtils.map(registrationCenterEntity, registrationCenterExtnDto);
+			}
+			
 			if(renRegistrationCenter!=null)
 			{
 				validateZoneMachineDevice(renRegistrationCenter,regCenterPutReqDto);
