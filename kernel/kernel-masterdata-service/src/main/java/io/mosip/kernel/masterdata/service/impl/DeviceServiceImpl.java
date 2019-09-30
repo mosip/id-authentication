@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,11 +19,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
@@ -47,7 +47,6 @@ import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -131,6 +130,7 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	@Value("${mosip.primary-language}")
 	private String primaryLangCode;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -738,52 +738,66 @@ public class DeviceServiceImpl implements DeviceService {
 		return filterResponseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.DeviceService#decommissionDevice(java.lang
-	 * .String)
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DeviceService#decommissionDevice(java.lang.String)
 	 */
 	@Override
 	@Transactional
 	public IdResponseDto decommissionDevice(String deviceId) {
-		IdResponseDto deviceCodeId = new IdResponseDto();
-		boolean zoneValid = false;
-		try {
-			List<Device> device = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId);
-			if(CollectionUtils.isEmpty(device))
-			{
-				throw new RequestException(DeviceErrorCode.DEVICE_ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-			Optional<Device> deviceZone = device.stream().filter(a->a.getLangCode().equals("eng")).findFirst();
-			String deviceZoneCode = deviceZone.get().getZoneCode();
-			zoneValid = zoneService.getUserValidityZoneHierarchy(deviceZone.get().getLangCode(), deviceZoneCode);
-			if(!zoneValid)
-			{
-				throw new RequestException(DeviceErrorCode.DEVICE_ERROR.getErrorCode(),
-						DeviceErrorCode.DEVICE_ERROR.getErrorMessage());
-			}
-			List<RegistrationCenterDevice> registrationCenterDeviceList = registrationCenterDeviceRepository
-					.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId);
-			if(!CollectionUtils.isEmpty(registrationCenterDeviceList))
-			{
-				throw new RequestException(DeviceErrorCode.DEVICE_DECOMMISSION_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_DECOMMISSION_EXCEPTION.getErrorMessage());
-			}
-			int updatedRows = deviceRepository.decommissionDevice(deviceId);
-			if (updatedRows < 1) {
-				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
-		}
-		deviceCodeId.setId(deviceId);
-		return deviceCodeId;
-	}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		int decommissionedDevice = 0;
+		List<String> zoneIds;
 
+		// get user zone and child zones list
+		List<Zone> userZones = zoneUtils.getUserZones();
+		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+		// get machine from DB by given id
+		List<Device> renDevices = deviceRepository
+				.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(deviceId);
+
+		// device is not in DB
+		if (renDevices.isEmpty()) {
+			throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+
+		// check the given device and registration center zones are come under user zone
+		if (!zoneIds.contains(renDevices.get(0).getZoneCode())) {
+			throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
+					DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
+		}
+		try {	
+			// check the device has mapped to any reg-Center
+			if(!registrationCenterDeviceRepository.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId).isEmpty()){
+				throw new RequestException(DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
+						DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
+			}
+			decommissionedDevice = deviceRepository.decommissionDevice(deviceId,MetaDataUtils.getContextUser(), 
+					MetaDataUtils.getCurrentDateTime());
+			
+			// create Device history
+			for (Device device : renDevices) {
+				DeviceHistory deviceHistory = new DeviceHistory();
+				MapperUtils.map(device, deviceHistory);
+				MapperUtils.setBaseFieldValue(device, deviceHistory);
+				deviceHistory.setIsActive(false);
+				deviceHistory.setIsDeleted(true);
+				deviceHistory.setUpdatedBy(MetaDataUtils.getContextUser());
+				deviceHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				deviceHistory.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				deviceHistoryService.createDeviceHistory(deviceHistory);
+			}
+
+		} catch (DataAccessException | DataAccessLayerException exception) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause());
+		}
+		if (decommissionedDevice > 0) {
+			idResponseDto.setId(deviceId);
+		}
+		return idResponseDto;
+	}
+	
+	
 }

@@ -981,16 +981,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		 */
 
 		try {
-			// call method generate ID or validate with DB
+			
+			
+			// validate zone, Center start and end time and holidayCode
 			List<ServiceError> errors = new ArrayList<>();
 			registrationCenterValidator.validateRegCenterCreate(regCenterPostReqDto, errors);
 			 if (!errors.isEmpty()) {
 			 throw new ValidationException(errors);
 			 }
+			 
+			// call method generate ID or validate with DB
 			regCenterPostReqDto = masterdataCreationUtil.createMasterData(RegistrationCenter.class,
 					regCenterPostReqDto);
-			// creating registration center
 			
+			// creating registration center Entity
 			registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPostReqDto,
 					registrationCenterEntity.getClass());
 
@@ -1038,14 +1042,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
 		}
-		RegistrationCenterExtnDto registrationCenterExtnDto = MapperUtils.map(registrationCenter,
-				RegistrationCenterExtnDto.class);
+		return  MapperUtils.map(registrationCenter,RegistrationCenterExtnDto.class);
 		// registrationCenterDtoList =
 		// MapperUtils.mapAll(registrationCenterList,
 		// RegistrationCenterExtnDto.class);
 		// registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
 		// registrationCenterPostResponseDto.setConstraintViolatedDataList(constraintViolationedSecList);
-		return registrationCenterExtnDto;
+		//return registrationCenterExtnDto;
 
 	}
 

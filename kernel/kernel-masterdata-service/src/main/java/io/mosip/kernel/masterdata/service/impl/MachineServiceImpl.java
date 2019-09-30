@@ -19,13 +19,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
@@ -723,47 +723,61 @@ public class MachineServiceImpl implements MachineService {
 		return filterResponseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.MachineService#decommissionMachine(java.
-	 * lang.String)
-	 */
 	@Override
 	@Transactional
 	public IdResponseDto decommissionMachine(String machineId) {
-		IdResponseDto machineCodeId = new IdResponseDto();
-		MapperUtils.mapFieldValues(machineId, machineCodeId);
-		boolean zoneValid = false;
-		try {
-			List<Machine> machineList = machineRepository
-					.findMachineBymachineSpecIdAndIsDeletedFalseorIsDeletedIsNull(machineId);
-			Optional<Machine> machine = machineList.stream().filter(s -> s.getLangCode().equals("eng")).findFirst();
-			String machineZoneCode = machine.get().getZoneCode();
-			zoneValid = zoneService.getUserValidityZoneHierarchy(machine.get().getLangCode(), machineZoneCode);
-			if (!zoneValid) {
-				throw new RequestException(MachineErrorCode.MACHINE_ZONE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MACHINE_ZONE_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-			List<RegistrationCenterMachine> regCenterMachine = registrationCenterMachineRepository
-					.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(machineId);
-			if (!CollectionUtils.isEmpty(regCenterMachine)) {
-				throw new RequestException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage());
-			}
-			int updatedRows = machineRepository.decommissionMachine(machineId);
-			if (updatedRows < 1) {
-				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+		IdResponseDto idResponseDto = new IdResponseDto();
+		int decommissionedMachine = 0;
+		List<String> zoneIds;
+
+		// get user zone and child zones list
+		List<Zone> userZones = zoneUtils.getUserZones();
+		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+		// get machine from DB by given id
+		List<Machine> renMachines = machineRepository
+				.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(machineId);
+
+		// machine is not in DB
+		if (renMachines.isEmpty()) {
+			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		machineCodeId.setId(machineId);
-		return machineCodeId;
+		
+		// check the given device and registration center zones are come under user zone
+		if (!zoneIds.contains(renMachines.get(0).getZoneCode())) {
+			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
+					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
+		}
+		try {		
+			if(!registrationCenterMachineRepository.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(machineId).isEmpty()){
+				throw new RequestException(MachineErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
+						MachineErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
+			}
+			decommissionedMachine = machineRepository.decommissionMachine(machineId,MetaDataUtils.getContextUser(), 
+					MetaDataUtils.getCurrentDateTime());
+			
+			// create Machine history	
+			for(Machine machine : renMachines) {
+			MachineHistory machineHistory = new MachineHistory();
+			MapperUtils.map(machine, machineHistory);
+			MapperUtils.setBaseFieldValue(machine, machineHistory);
+			machineHistory.setIsActive(false);
+			machineHistory.setIsDeleted(true);
+			machineHistory.setUpdatedBy(MetaDataUtils.getContextUser());
+			machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			machineHistory.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			machineHistoryRepository.create(machineHistory);
+			}
+
+		} catch (DataAccessException | DataAccessLayerException exception) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause());
+		}
+		if (decommissionedMachine > 0) {
+			idResponseDto.setId(machineId);
+		}
+		return idResponseDto;
 	}
 	
 	
@@ -876,7 +890,7 @@ public class MachineServiceImpl implements MachineService {
 				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
 				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
 				machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
-				machineHistoryRepository.create(machineHistory);
+				machineHistoryService.createMachineHistory(machineHistory);
 
 			} else {
 				// if given Id and language code is not present in DB
