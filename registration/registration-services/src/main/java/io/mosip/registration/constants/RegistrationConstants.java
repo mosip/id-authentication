@@ -194,6 +194,8 @@ public class RegistrationConstants {
 	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
+	
+	public static final String LANGUAGE_SUPPORT = "mosip.supported-languages";
 
 	// Login
 	public static final String BLOCKED = "BLOCKED";
@@ -871,7 +873,6 @@ public class RegistrationConstants {
 	public static final String INVALID_LOGIN_COUNT = "mosip.registration.invalid_login_count";
 	public static final String INVALID_LOGIN_TIME = "mosip.registration.invalid_login_time";
 	public static final String FACE_RECAPTURE_TIME = "mosip.registration.face_recapture_time";
-	public static final String NOTIFICATION_DISABLE_FLAG = "mosip.registration.send_notification_disable_flag";
 	public static final String MIN_AGE = "mosip.kernel.applicant.type.age.limit";
 	public static final String MAX_AGE = "mosip.registration.max_age";
 	public static final String DOC_SIZE = "mosip.registration.document_size";

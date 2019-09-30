@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
@@ -66,6 +67,7 @@ import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
@@ -977,12 +979,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		 */
 
 		try {
-			// call method generate ID or validate with DB
+			
+			
+			// validate zone, Center start and end time and holidayCode
+			List<ServiceError> errors = new ArrayList<>();
+			registrationCenterValidator.validateRegCenterCreate(regCenterPostReqDto, errors);
+			 if (!errors.isEmpty()) {
+			 throw new ValidationException(errors);
+			 }
 			 
+			// call method generate ID or validate with DB
 			regCenterPostReqDto = masterdataCreationUtil.createMasterData(RegistrationCenter.class,
 					regCenterPostReqDto);
-			// creating registration center
 			
+			// creating registration center Entity
 			registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPostReqDto,
 					registrationCenterEntity.getClass());
 
@@ -1030,14 +1040,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
 		}
-		RegistrationCenterExtnDto registrationCenterExtnDto = MapperUtils.map(registrationCenter,
-				RegistrationCenterExtnDto.class);
+		return  MapperUtils.map(registrationCenter,RegistrationCenterExtnDto.class);
 		// registrationCenterDtoList =
 		// MapperUtils.mapAll(registrationCenterList,
 		// RegistrationCenterExtnDto.class);
 		// registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
 		// registrationCenterPostResponseDto.setConstraintViolatedDataList(constraintViolationedSecList);
-		return registrationCenterExtnDto;
+		//return registrationCenterExtnDto;
 
 	}
 
@@ -1054,6 +1063,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter updRegistrationCenter = null;
 		RegistrationCenter updRegistrationCenterEntity = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
+		RegistrationCenterHistory registrationCenterHistoryEntity = null;
+		String uniqueId = "";
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		// List<RegCenterPutReqDto> notUpdRegistrationCenterList = new
 		// ArrayList<>();
@@ -1095,11 +1106,25 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository
 					.findByIdAndLangCodeAndIsDeletedTrue(regCenterPutReqDto.getId(), regCenterPutReqDto.getLangCode());
-			if(renRegistrationCenter==null)
+			if(renRegistrationCenter==null&&primaryLang.equals(regCenterPutReqDto.getLangCode()))
 			{
 				throw new MasterDataServiceException(RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
 						RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage());
 			}
+			else if(renRegistrationCenter==null&&secondaryLang.equals(regCenterPutReqDto.getLangCode()))
+			{
+				RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+				registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPutReqDto,
+						registrationCenterEntity.getClass());
+				registrationCenterEntity = registrationCenterRepository.create(registrationCenterEntity);
+				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+						RegistrationCenterHistory.class);
+				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+				registrationCenterExtnDto = MapperUtils.map(registrationCenterEntity, registrationCenterExtnDto);
+			}
+			
 			if(renRegistrationCenter!=null)
 			{
 				validateZoneMachineDevice(renRegistrationCenter,regCenterPutReqDto);
