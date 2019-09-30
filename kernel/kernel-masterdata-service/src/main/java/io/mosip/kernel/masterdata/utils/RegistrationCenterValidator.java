@@ -27,18 +27,19 @@ import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
@@ -98,6 +99,9 @@ public class RegistrationCenterValidator {
 
 	@Autowired
 	RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
+	
+	@Autowired
+	HolidayRepository holidayRepository;
 	
 	
     // method to compare data
@@ -337,7 +341,19 @@ public class RegistrationCenterValidator {
 		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
 		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
+		holidayVlidation(registrationCenterDto, errors);
 
+	}
+	
+	// validate Holiday against DB
+	private void holidayVlidation(RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors) {
+		List<Holiday> holidays = holidayRepository
+				.findHolidayByHolidayIdLocationCode(registrationCenterDto.getHolidayLocationCode());
+		if (holidays.isEmpty()) {
+			errors.add(new ServiceError(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorMessage(),
+							registrationCenterDto.getZoneCode())));
+		 }
 	}
 
 	// list zone Id mapped with the called user
