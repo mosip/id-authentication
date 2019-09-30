@@ -31,6 +31,6 @@ VOLUME /home/ftp1/ARCHIVE_PACKET_LOCATION /home/ftp1/LANDING_ZONE /home/Glowroot
 COPY ./target/registration-processor-packet-receiver-stage-*.jar registration-processor-packet-receiver-stage.jar
 
 EXPOSE 8081
-EXPOSE 4000
+EXPOSE 4001
 
 CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-packet-receiver-stage.jar"]
