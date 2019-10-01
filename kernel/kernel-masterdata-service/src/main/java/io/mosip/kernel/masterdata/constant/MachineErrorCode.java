@@ -27,7 +27,7 @@ public enum MachineErrorCode {
 	INVALIDE_MACHINE_ZONE("KER-MSD-436", "Admin not authorized to access this Machine for this Zone"),
 	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),
 	MACHINE_ID("KER-MSD-437","Machine ID %s does not exist for primary language"),
-	MAPPED_TO_REGCENTER("KER-MSD-352","Machine cannot Decommission the Machine, as some Registration center are mapped to the Registration center");
+	MAPPED_TO_REGCENTER("KER-MSD-352","Machine cannot Decommission the Machine, as some Registration centers are mapped to the Machine");
 
 
 

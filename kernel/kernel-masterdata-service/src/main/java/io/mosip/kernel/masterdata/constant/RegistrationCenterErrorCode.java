@@ -72,7 +72,7 @@ public enum RegistrationCenterErrorCode {
 	INVALID_RCID_LENGTH("KER-MSD-353","Center ID specified for decommission has invalid length"),
 	REG_CENTER_INVALIDE_ZONE("KER-MSD-441", "Admin not authorized to access this Registration Center for this Zone"),
 	DECOMMISSIONED("KER-MSD-442", "Registration center has been already decommissioned or Registration center not found"),
-	HOLIDAY_NOT_FOUND("KER-MSD-440", "Holiday Not Found");
+	HOLIDAY_NOT_FOUND("KER-MSD-440", "HolidayLocationCode Not Found");
 
 
 	private final String errorCode;

@@ -66,6 +66,8 @@ public class MasterdataSearchHelper {
 	private static final String SERIAL_NUMBER="serialNum";
 	private static final String MACHINE_SPEC_ID="machineSpecId";
 	private static final String DEVICE_SPEC_ID="deviceSpecId";
+	private static final String IS_ACTIVE_COLUMN_NAME="isActive";
+	
 
 	/**
 	 * Field for interface used to interact with the persistence context.
@@ -485,7 +487,18 @@ public class MasterdataSearchHelper {
 	 */
 	private boolean validateFilter(SearchFilter filter) {
 		boolean flag = false;
-		if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
+		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filter.getType())
+				&& filter.getColumnName().equalsIgnoreCase(IS_ACTIVE_COLUMN_NAME)) {
+			String value = filter.getValue();
+			if (value != null && !value.trim().isEmpty()
+					&& (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false"))) {
+				flag = true;
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.INVALID_VALUE.getErrorCode(),
+						MasterdataSearchErrorCode.INVALID_VALUE.getErrorMessage());
+			}
+
+		}else if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
 			String value = filter.getValue();
 			if (value != null && !value.trim().isEmpty()) {
 				flag = true;
@@ -493,7 +506,7 @@ public class MasterdataSearchHelper {
 				throw new RequestException(MasterdataSearchErrorCode.INVALID_VALUE.getErrorCode(),
 						MasterdataSearchErrorCode.INVALID_VALUE.getErrorMessage());
 			}
-		} else {
+		}else {
 			String fromValue = filter.getFromValue();
 			String toValue = filter.getToValue();
 			if (fromValue != null && !fromValue.trim().isEmpty() && toValue != null && !toValue.trim().isEmpty()) {
