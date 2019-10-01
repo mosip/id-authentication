@@ -61,6 +61,11 @@ public class MasterdataSearchHelper {
 	private static final String WILD_CARD_CHARACTER = "%";
 	private static final String TYPE_NAME = "typeName";
 	private static final String DECOMISSION = "isDeleted";
+	private static final String DEVICE_NAME="deviceName";
+	private static final String MAC_ADDRESS="macAddress";
+	private static final String SERIAL_NUMBER="serialNum";
+	private static final String MACHINE_SPEC_ID="machineSpecId";
+	private static final String DEVICE_SPEC_ID="deviceSpecId";
 
 	/**
 	 * Field for interface used to interact with the persistence context.
@@ -620,17 +625,17 @@ public class MasterdataSearchHelper {
 		while (searchIter.hasNext()) {
 			SearchFilter searchFilter = searchIter.next();
 			switch (searchFilter.getColumnName()) {
-			case "deviceName":
-				query.setParameter("deviceName", searchFilter.getValue());
+			case DEVICE_NAME:
+				query.setParameter(DEVICE_NAME, searchFilter.getValue());
 				break;
 			case "isActive":
 				query.setParameter("isActive", Boolean.valueOf(searchFilter.getValue()));
 				break;
-			case "macAddress":
-				query.setParameter("macAddress", searchFilter.getValue());
+			case MAC_ADDRESS:
+				query.setParameter(MAC_ADDRESS, searchFilter.getValue());
 				break;
-			case "serialNum":
-				query.setParameter("serialNum", searchFilter.getValue());
+			case SERIAL_NUMBER:
+				query.setParameter(SERIAL_NUMBER, searchFilter.getValue());
 				break;
 			case "deviceSpecId":
 				query.setParameter("deviceSpecId", searchFilter.getValue());
@@ -652,14 +657,14 @@ public class MasterdataSearchHelper {
 			case "isActive":
 				query.setParameter("isActive", Boolean.valueOf(searchFilter.getValue()));
 				break;
-			case "macAddress":
-				query.setParameter("macAddress", searchFilter.getValue());
+			case MAC_ADDRESS:
+				query.setParameter(MAC_ADDRESS, searchFilter.getValue());
 				break;
-			case "serialNum":
-				query.setParameter("serialNum", searchFilter.getValue());
+			case SERIAL_NUMBER:
+				query.setParameter(SERIAL_NUMBER, searchFilter.getValue());
 				break;
-			case "machineSpecId":
-				query.setParameter("machineSpecId", searchFilter.getValue());
+			case MACHINE_SPEC_ID:
+				query.setParameter(MACHINE_SPEC_ID, searchFilter.getValue());
 				break;
 			default:
 				break;

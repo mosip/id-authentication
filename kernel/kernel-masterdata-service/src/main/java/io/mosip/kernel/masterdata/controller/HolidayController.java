@@ -190,7 +190,7 @@ public class HolidayController {
 	@ResponseFilter
 	@PostMapping("/search")
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
-	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
+	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchHoliday(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
