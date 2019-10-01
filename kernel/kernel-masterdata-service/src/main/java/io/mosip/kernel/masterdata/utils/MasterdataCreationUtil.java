@@ -213,7 +213,7 @@ public class MasterdataCreationUtil {
 	public <E, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
-		boolean activeDto=false,activePrimary=false;
+		boolean activeDto=false,activePrimary=false,activeSecondary=false;
 		String primaryKeyCol=null,nameCol=null,nameValue=null;
 		Field isActive;
 		Class<?> dtoClass = t.getClass();
@@ -247,9 +247,37 @@ public class MasterdataCreationUtil {
 		if (langCode.equals(primaryLang)) {
 			if(activeDto==true)
 			{
-				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-				isActive.setAccessible(true);
-				isActive.set(t, Boolean.TRUE);
+				E secondaryEntity = getResultSet(entity, secondaryLang, id,primaryKeyCol);
+				
+				if(secondaryEntity!=null)
+				{
+					for (Field field : secondaryEntity.getClass().getDeclaredFields()) {
+						field.setAccessible(true);
+								if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+									activeSecondary= (boolean) field.get(t);
+						}
+					}
+					if(activeSecondary==true)
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.TRUE);
+					}
+					else
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.FALSE);
+					}
+					
+				}
+				else
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.FALSE);
+				}
+				
 			}
 			if(activeDto==false)
 			{
