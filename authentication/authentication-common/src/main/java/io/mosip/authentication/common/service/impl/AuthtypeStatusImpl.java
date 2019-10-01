@@ -14,6 +14,7 @@ import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 
@@ -47,7 +48,7 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	public List<AuthtypeStatus> fetchAuthtypeStatus(AuthtypeRequestDto authtypeRequestDto)
 			throws IdAuthenticationBusinessException {
 		String individualId = authtypeRequestDto.getIndividualId();
-		String individualIdType = authtypeRequestDto.getIndividualIdType();
+		String individualIdType = IdType.getIDTypeStrOrDefault(authtypeRequestDto.getIndividualIdType());
 		List<AuthtypeLock> authTypeLockList = new ArrayList<>();
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {

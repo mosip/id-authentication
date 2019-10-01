@@ -1,5 +1,9 @@
 package io.mosip.registration.service.security.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -10,7 +14,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.PolicySyncDAO;
@@ -21,10 +25,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.security.RSAEncryptionService;
 import io.mosip.registration.util.publickey.PublicKeyGenerationUtil;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * Accepts AES session key as bytes and encrypt it by using RSA algorithm
@@ -41,7 +41,7 @@ public class RSAEncryptionServiceImpl extends BaseService implements RSAEncrypti
 	@Autowired
 	private PolicySyncDAO policySyncDAO;
 	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/*
 	 * (non-Javadoc)
@@ -70,7 +70,7 @@ public class RSAEncryptionServiceImpl extends BaseService implements RSAEncrypti
 			}
 			PublicKey publicKey = PublicKeyGenerationUtil.generatePublicKey(rsaPublicKey.getPublicKey());
 
-			return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
+			return cryptoCore.asymmetricEncrypt(publicKey, sessionKey);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException compileTimeException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_INVALID_DATA_RSA_ENCRYPTION.getErrorCode(),

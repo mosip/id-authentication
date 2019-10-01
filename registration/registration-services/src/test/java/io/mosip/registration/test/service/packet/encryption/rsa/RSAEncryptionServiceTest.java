@@ -23,8 +23,9 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
@@ -54,8 +55,9 @@ public class RSAEncryptionServiceTest {
 	private MachineMasterRepository machineMasterRepository;
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	@Mock@Autowired
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+
 	@Mock
 	PolicySyncRepository policySyncRepository;
 	
@@ -82,7 +84,7 @@ public class RSAEncryptionServiceTest {
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
-		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
+		when(cryptoCore.asymmetricEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
@@ -110,7 +112,7 @@ public class RSAEncryptionServiceTest {
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keyStore);
 		
-		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
+		when(cryptoCore.asymmetricEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 		
 		rsaEncryptionServiceImpl.encrypt(sessionbytes);
@@ -131,7 +133,7 @@ public class RSAEncryptionServiceTest {
 
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
-		when(encryptor.asymmetricPublicEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
+		when(cryptoCore.asymmetricEncrypt(Mockito.any(PublicKey.class), Mockito.anyString().getBytes()))
 				.thenReturn(decodedbytes);
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn("1001");
 		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn("1001");

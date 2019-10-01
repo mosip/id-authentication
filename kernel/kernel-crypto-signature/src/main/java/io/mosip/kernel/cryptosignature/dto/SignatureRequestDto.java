@@ -6,11 +6,7 @@
  */
 package io.mosip.kernel.cryptosignature.dto;
 
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

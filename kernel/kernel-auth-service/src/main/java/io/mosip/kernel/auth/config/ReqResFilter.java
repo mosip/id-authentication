@@ -1,8 +1,6 @@
 package io.mosip.kernel.auth.config;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,12 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
-
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * This class is for input logging of all parameters in HTTP requests
@@ -49,9 +43,6 @@ public class ReqResFilter implements Filter {
 		requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
 		responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 		chain.doFilter(requestWrapper, responseWrapper);
-		System.out.println(DateUtils.getUTCCurrentDateTimeString()+" Request : "+new String(requestWrapper.getContentAsByteArray()));
-		System.out.println(DateUtils.getUTCCurrentDateTimeString()+" Response : "+new String(responseWrapper.getContentAsByteArray()));
-		System.out.println(DateUtils.getUTCCurrentDateTimeString()+" Cookie header in Response :"+httpServletResponse.getHeader("Set-Cookie"));
 		responseWrapper.copyBodyToResponse();
 
 	}

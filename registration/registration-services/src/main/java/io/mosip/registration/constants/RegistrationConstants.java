@@ -194,6 +194,8 @@ public class RegistrationConstants {
 	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
+	
+	public static final String LANGUAGE_SUPPORT = "mosip.supported-languages";
 
 	// Login
 	public static final String BLOCKED = "BLOCKED";
@@ -806,6 +808,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_CODE_PROCESSED = "PROCESSED";
 	public static final String PACKET_STATUS_CODE_PROCESSING = "PROCESSING";
 	public static final String PACKET_STATUS_CODE_REREGISTER = "REREGISTER";
+	public static final String RE_REGISTER_STATUS_COMEMNTS = "Re-Register";
 	public static final String PACKET_STATUS_CODE_REJECTED = "REJECTED";
 	public static final List<String> PACKET_STATUS_CODES_FOR_REMAPDELETE = Arrays.asList(PACKET_STATUS_CODE_REREGISTER,
 			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED,PACKET_STATUS_CODE_REJECTED);
@@ -852,7 +855,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_SERVICE = "email";
 	public static final String SMS_SERVICE = "sms";
 	public static final String NOTIFICATION_SERVICE = "REGISTRATION - NOTIFICATION SERVICE ";
-	public static final String MODE_OF_COMMUNICATION = "mosip.registration.modeofcommunication";
+	public static final String MODE_OF_COMMUNICATION = "mosip.notificationtype";
 
 	// Global configuration parameters
 	public static final String REGISTARTION_CENTER = "REGISTARTION_CENTER";
@@ -870,7 +873,6 @@ public class RegistrationConstants {
 	public static final String INVALID_LOGIN_COUNT = "mosip.registration.invalid_login_count";
 	public static final String INVALID_LOGIN_TIME = "mosip.registration.invalid_login_time";
 	public static final String FACE_RECAPTURE_TIME = "mosip.registration.face_recapture_time";
-	public static final String NOTIFICATION_DISABLE_FLAG = "mosip.registration.send_notification_disable_flag";
 	public static final String MIN_AGE = "mosip.kernel.applicant.type.age.limit";
 	public static final String MAX_AGE = "mosip.registration.max_age";
 	public static final String DOC_SIZE = "mosip.registration.document_size";
@@ -951,6 +953,7 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "POB";
 	public static final String SERVER_STATUS_RESEND = "RESEND";
 	public static final String CLIENT_STATUS_APPROVED = "APPROVED";
+	public static final String SYNCED_STATUS = "SYNCED";
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	public static final List<String> PACKET_STATUS_UPLOAD = Arrays.asList("APPROVED", "REJECTED", "SYNCED", "EXPORTED");

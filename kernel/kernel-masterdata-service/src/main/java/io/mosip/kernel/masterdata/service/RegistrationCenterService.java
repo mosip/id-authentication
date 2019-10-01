@@ -2,16 +2,16 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
@@ -212,8 +212,8 @@ public interface RegistrationCenterService {
 	 * @return RegistrationCenterPostResponseDto - return created registration
 	 *         centers complete DTO
 	 */
-	public RegistrationCenterPostResponseDto createRegistrationCenter(
-			List<RegCenterPostReqDto> reqRegistrationCenterDto);
+	public RegistrationCenterExtnDto createRegistrationCenter(
+			RegCenterPostReqDto reqRegistrationCenterDto);
 
     /**
     * This method updates the registration center by admin.
@@ -225,8 +225,8 @@ public interface RegistrationCenterService {
     *         centers complete DTO
     */
 
-	public RegistrationCenterPutResponseDto updateRegistrationCenter(
-			List<RegCenterPutReqDto> registrationCenterPutReqAdmDto);
+	public RegistrationCenterExtnDto updateRegistrationCenter(
+			@Valid RegCenterPutReqDto reqRegistrationCenterDto);
 
 	/**
 	 * Service method to decommission registration center.

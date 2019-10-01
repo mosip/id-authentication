@@ -24,6 +24,7 @@ import io.mosip.kernel.emailnotification.constant.MailNotifierExceptionClassName
 @Component
 public class EmailNotificationAsyncHandler implements AsyncUncaughtExceptionHandler {
 
+	Logger mosipLogger = LoggerConfiguration.logConfig(EmailNotificationAsyncHandler.class);
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -33,7 +34,6 @@ public class EmailNotificationAsyncHandler implements AsyncUncaughtExceptionHand
 	 */
 	@Override
 	public void handleUncaughtException(Throwable ex, Method method, Object... params) {
-		Logger mosipLogger = LoggerConfiguration.logConfig(EmailNotificationAsyncHandler.class);
 		switch (ex.getClass().toString()) {
 		case MailNotifierExceptionClassNameConstants.MAIL_AUTH_EXCEPTION_CLASS_NAME:
 			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(),

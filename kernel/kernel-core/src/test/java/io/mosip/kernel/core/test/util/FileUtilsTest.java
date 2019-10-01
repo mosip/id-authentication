@@ -42,6 +42,7 @@ import io.mosip.kernel.core.util.FileUtils;
 //@RunWith(SpringRunner.class)
 public class FileUtilsTest {
 	
+	
 	FileUtils fileutils;
 
 	@Test
@@ -727,7 +728,7 @@ public class FileUtilsTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void moveDirectoryTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");

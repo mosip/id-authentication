@@ -29,7 +29,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.itextpdf.text.pdf.PdfStamper;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
@@ -225,27 +225,40 @@ public class PDFGeneratorImpl implements PDFGenerator {
 						PDFGeneratorExceptionCodeConstant.OWNER_PASSWORD_NULL_EMPTY_EXCEPTION.getErrorMessage());
 			}
 			OutputStream pdfStream = new ByteArrayOutputStream();
-			com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-			try {
-				com.itextpdf.text.pdf.PdfWriter pdfWriter = com.itextpdf.text.pdf.PdfWriter.getInstance(document,
-						pdfStream);
-				pdfWriter.setEncryption(password, pdfOwnerPassword.getBytes(),
+			PdfReader pdfReader = null;
+			PdfStamper pdfStamper = null;
+			try (OutputStream outputStream = generate(dataInputStream)) {
+				pdfReader = new PdfReader(((ByteArrayOutputStream) outputStream).toByteArray());
+				pdfStamper = new PdfStamper(pdfReader, pdfStream);
+				pdfStamper.setEncryption(password, pdfOwnerPassword.getBytes(),
 						com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING,
 						com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
-				document.open();
-				XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, dataInputStream);
 			} catch (DocumentException e) {
 				throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 						e.getMessage(), e);
-			} catch (IOException e) {
-				throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-						PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 			} finally {
-				document.close();
+				if(pdfStamper != null) {
+				closeQuietly(pdfStamper);
+				}
+				if(pdfReader != null) {
+				pdfReader.close();
+				}
 			}
 			return pdfStream;
 		}
+		
 	}
+
+	// Quietly close the pdfStamper.
+	private void closeQuietly(final PdfStamper pdfStamper) throws IOException{
+		try {
+			pdfStamper.close();
+		} catch (DocumentException e) {
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		} 
+	}
+
 
 	private void isValidInputStream(InputStream dataInputStream) {
 		if (EmptyCheckUtils.isNullEmpty(dataInputStream)) {

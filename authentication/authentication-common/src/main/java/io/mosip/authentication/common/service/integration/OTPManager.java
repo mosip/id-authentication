@@ -36,7 +36,6 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -110,7 +109,7 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, Map<String, String> valueMap)
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String userIdForSendOtp, String userIdTypeForSendOtp, Map<String, String> valueMap)
 			throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		RestRequestDTO restRequestDTO = null;
@@ -122,10 +121,10 @@ public class OTPManager {
 			String context = environment.getProperty(IdAuthConfigKeyConstants.OTP_CONTEXT);
 			otpGeneratorRequestDto.setAppId(appId);
 			otpGeneratorRequestDto.setContext(context);
-			otpGeneratorRequestDto.setUserId(uin);
-			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, valueMap);
+			otpGeneratorRequestDto.setUserId(userIdForSendOtp);
+			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, userIdForSendOtp, valueMap);
 			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
-			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
+			otpGeneratorRequestDto.setUseridtype(userIdTypeForSendOtp);
 			List<String> otpChannel = new ArrayList<>();
 			for (String channel : otpRequestDTO.getOtpChannel()) {
 				NotificationType.getNotificationTypeForChannel(channel).ifPresent(type -> otpChannel.add(type.getApiChannel().toLowerCase()));

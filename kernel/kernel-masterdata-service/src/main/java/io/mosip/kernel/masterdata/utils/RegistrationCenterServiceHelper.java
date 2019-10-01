@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -70,6 +71,9 @@ public class RegistrationCenterServiceHelper {
 	@Autowired
 	private LocationRepository locationRepository;
 
+	@Value("${mosip.primary-language}")
+	private String primaryLangugage;
+
 	@Autowired
 	private PageUtils pageUtils;
 
@@ -120,7 +124,11 @@ public class RegistrationCenterServiceHelper {
 	public List<Location> fetchLocations(String langCode) {
 		List<Location> locations = null;
 		try {
-			locations = locationRepository.findAllByLangCodeNonDeleted(langCode);
+			if (!langCode.equals("all")) {
+				locations = locationRepository.findAllByLangCodeNonDeleted(langCode);
+			} else {
+				locations = locationRepository.findAllByLangCodeNonDeleted(primaryLangugage);
+			}
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
@@ -193,10 +201,13 @@ public class RegistrationCenterServiceHelper {
 			if (locations.hasContent()) {
 				return locations.getContent().get(0);
 			} else {
-				throw new MasterDataServiceException(
-						RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
-						String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
-								filter.getValue()));
+				/*
+				 * throw new MasterDataServiceException(
+				 * RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
+				 * String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.
+				 * getErrorMessage(), filter.getValue()));
+				 */
+				return null;
 			}
 		}
 		return null;
@@ -222,7 +233,7 @@ public class RegistrationCenterServiceHelper {
 				return "2";
 			case MasterDataConstant.REGION:
 				return "1";
-				
+
 			default:
 				return "0";
 			}

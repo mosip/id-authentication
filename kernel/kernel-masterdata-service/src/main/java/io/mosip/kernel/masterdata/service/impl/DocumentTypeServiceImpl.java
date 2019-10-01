@@ -104,8 +104,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		if (documents != null && !documents.isEmpty()) {
 			listOfDocumentTypeDto = MapperUtils.mapAll(documents, DocumentTypeDto.class);
 		} else {
-			throw new DataNotFoundException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			listOfDocumentTypeDto = new ArrayList<>();
 		}
 		return listOfDocumentTypeDto;
 

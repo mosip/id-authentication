@@ -105,7 +105,7 @@ public class ValidDocumentController {
 	 *            types should be fetch
 	 * @return the valid documents
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER','PRE_REGISTRATION_ADMIN','PRE_REGISTRATION')")
 	@ResponseFilter
 	@GetMapping("/validdocuments/{languagecode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a languagecode")

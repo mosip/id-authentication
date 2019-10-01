@@ -25,7 +25,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -52,7 +52,8 @@ public class AESEncryptionServiceTest {
 	@Mock
 	private AuditManagerService auditFactory;
 	@Mock
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+
 
 	private String keySplitter = "#Key_Splitter#";
 
@@ -72,7 +73,7 @@ public class AESEncryptionServiceTest {
 
 		when(keyGenerator.getSymmetricKey()).thenReturn(sessionKey);
 		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		when(encryptor.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes()))
+		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),null))
 				.thenReturn("encrypted".getBytes());
 
 		byte[] dataToEncrypt = "original data".getBytes();
@@ -93,7 +94,7 @@ public class AESEncryptionServiceTest {
 	public void invalidKeyExpTest() throws RegBaseCheckedException, NoSuchAlgorithmException {
 		SecretKey sessionKey = new SecretKeySpec(new byte[] {22}, "AES");
 		when(this.keyGenerator.getSymmetricKey()).thenReturn(sessionKey);
-		when(encryptor.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes()))
+		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),null))
 		.thenThrow(MosipInvalidKeyException.class);
 		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
 
@@ -108,7 +109,7 @@ public class AESEncryptionServiceTest {
 
 		when(keyGenerator.getSymmetricKey()).thenReturn(sessionKey);
 		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		when(encryptor.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes()))
+		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),null))
 		.thenThrow(MosipInvalidDataException.class);
 
 		aesEncryptionServiceImpl.encrypt("dataToEncrypt".getBytes());

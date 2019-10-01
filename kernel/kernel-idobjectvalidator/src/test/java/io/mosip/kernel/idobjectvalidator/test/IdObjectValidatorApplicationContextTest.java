@@ -1,7 +1,10 @@
 package io.mosip.kernel.idobjectvalidator.test;
 
-import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.*;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.*;
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_PARSING_FAILED;
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.SCHEMA_IO_EXCEPTION;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.APPLICATION_ID;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.FIELD_LIST;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;

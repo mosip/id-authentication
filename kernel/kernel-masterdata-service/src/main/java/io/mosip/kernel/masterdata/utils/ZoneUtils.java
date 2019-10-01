@@ -44,6 +44,10 @@ public class ZoneUtils {
 
 	@Value("mosip.kernel.masterdata.zone-heirarchy-path-delimiter:/")
 	private String hierarchyPathDelimiter;
+	
+	
+	@Value("${mosip.primary-language}")
+	private String primaryLangugage;
 
 	/**
 	 * Method to get the all the users zones based on the passed list of zone and
@@ -192,14 +196,79 @@ public class ZoneUtils {
 			Optional<String> zoneId = userZones.stream().map(ZoneUser::getZoneCode).findFirst();
 			if (zoneId.isPresent()) {
 				List<Zone> zones = getUserZones();
-				List<Zone> langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
-						.collect(Collectors.toList());
+				List<Zone> langSpecificZones = null;
+				if (!langCode.equals("all")) {
+					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(langCode))
+							.collect(Collectors.toList());
+				} else {
+					langSpecificZones = zones.stream().filter(i -> i.getLangCode().equals(primaryLangugage))
+							.collect(Collectors.toList());
+				}
 				List<Node<Zone>> tree = zoneTree.createTree(langSpecificZones);
 				Node<Zone> node = zoneTree.findNode(tree, zoneId.get());
 				return zoneTree.findLeafsValue(node);
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	// ----------------------------------------
+	/**
+	 * Method to get the all the users zones based on the passed list of zone and
+	 * will fetch all the child hierarchy.
+	 * 
+	 * @param zones
+	 *            input to search the users zones
+	 * @param userId
+	 *            user id for that need zones and child zones
+	 * @return list of zones
+	 */
+	public List<Zone> getUserZonesByUserId(List<Zone> zones, String userId) {
+		List<Zone> zoneIds = new ArrayList<>();
+		String userName = userId;
+		List<ZoneUser> userZones = getZoneUser(userName);
+		if (userZones != null && !userZones.isEmpty()) {
+			for (ZoneUser zu : userZones) {
+				searchZones(zones, zoneIds, zu);
+			}
+		} else {
+			throw new MasterDataServiceException(ZoneErrorCode.USER_ZONE_UNAVAILABLE.getErrorCode(),
+					String.format(ZoneErrorCode.USER_ZONE_UNAVAILABLE.getErrorMessage(), userName));
+		}
+		return zoneIds;
+	}
+
+	/**
+	 * Method to fetch the users zone as well as all the child zones of the given
+	 * userId.
+	 * 
+	 * @return list of zones
+	 */
+	public List<Zone> getUserZonesByUserId(String userId) {
+		List<Zone> zones = null;
+		try {
+			zones = zoneRepository.findAllNonDeleted();
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(ZoneErrorCode.ZONE_FETCH_EXCEPTION.getErrorCode(),
+					ZoneErrorCode.ZONE_FETCH_EXCEPTION.getErrorMessage());
+		}
+
+		if (zones != null && !zones.isEmpty()) {
+			List<Zone> userZones = getUserZonesByUserId(zones, userId);
+			List<String> zoneIds = userZones.stream().map(Zone::getCode).collect(Collectors.toList());
+			return zones.stream().filter(i -> zoneIds.contains(i.getCode())).collect(Collectors.toList());
+		}
+
+		else
+			return Collections.emptyList();
+	}
+
+	public List<Zone> getChildZoneList(List<String> zoneIds, String zoneCode, String langCode) {
+		List<Zone> zones = null;
+		Zone zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneCode, langCode);
+		zones = zoneRepository.findAllNonDeleted();
+		List<Zone> zoneHeirarchyList = getDescedants(zones, zone);
+		return zoneHeirarchyList;
 	}
 
 }

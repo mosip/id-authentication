@@ -8,8 +8,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
@@ -17,6 +15,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.StringUtils;
+import io.netty.handler.codec.http.HttpMethod;
 
 /**
  * The Class OTPFilter.
@@ -88,7 +87,7 @@ public class DefaultInternalFilter extends IdAuthFilter {
 	@Override
 	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		String id = null;
-		String reqUrl = ((HttpServletRequest) requestWrapper).getRequestURL().toString();
+		String reqUrl = requestWrapper.getRequestURL().toString();
 		if (reqUrl != null && !reqUrl.isEmpty()) {
 			String[] path = reqUrl.split(IdAuthCommonConstants.INTERNAL_URL);
 			if (path[1] != null && !path[1].isEmpty()) {
@@ -99,8 +98,12 @@ public class DefaultInternalFilter extends IdAuthFilter {
 						id = attribute + IdAuthConfigKeyConstants.OTP_INTERNAL_ID_SUFFIX;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
 						id = attribute + IdAuthConfigKeyConstants.AUTH_TRANSACTION;
-					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
-						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)
+							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.GET)) {
+						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE_READ;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)
+							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
+						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE_UPDATE;
 					}
 				}
 			}

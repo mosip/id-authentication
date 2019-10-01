@@ -29,6 +29,10 @@ import io.mosip.authentication.internal.service.validator.UpdateAuthtypeStatusVa
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
+/**
+ * @author Dinesh Karuppaiah T
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -62,19 +66,20 @@ public class InternalUpdateAuthTypeControllerTest {
 	public void before() {
 		ReflectionTestUtils.invokeMethod(internalUpdateAuthTypeController, "initBinder", binder);
 		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "environment", environment);
+		ReflectionTestUtils.setField(updateAuthtypeStatusService, "environment", environment);
 		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "updateAuthtypeStatusService",
 				updateAuthtypeStatusService);
 	}
 
 	@Test
-	public void TestupdateAuthtypeStatus() throws IdAuthenticationAppException {
+	public void testupdateAuthtypeStatus() throws IdAuthenticationAppException {
 		AuthTypeStatusDto authTypeStatusDto = new AuthTypeStatusDto();
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		internalUpdateAuthTypeController.updateAuthtypeStatus(authTypeStatusDto, errors);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
-	public void TestIdValidationException() throws IdAuthenticationAppException {
+	public void testIdValidationException() throws IdAuthenticationAppException {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(false);
 		AuthTypeStatusDto authTypeStatusDto = new AuthTypeStatusDto();
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
@@ -83,7 +88,7 @@ public class InternalUpdateAuthTypeControllerTest {
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
-	public void TestIdBusinessException() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+	public void testIdBusinessException() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		AuthTypeStatusDto authTypeStatusDto = new AuthTypeStatusDto();
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))

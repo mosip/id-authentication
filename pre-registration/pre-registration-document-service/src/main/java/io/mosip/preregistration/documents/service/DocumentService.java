@@ -91,6 +91,12 @@ public class DocumentService {
 	 */
 	@Value("${mosip.preregistration.document.upload.id}")
 	private String uploadId;
+	
+	/**
+	 * Reference for ${mosip.preregistration.document.scan} from property file
+	 */
+	@Value("${mosip.preregistration.document.scan}")
+	private Boolean scanDocument;
 
 	/**
 	 * Reference for ${mosip.preregistration.document.copy.id} from property file
@@ -191,7 +197,7 @@ public class DocumentService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
 			String preRegistrationId) {
-		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
+		log.info("sessionId", "idType", "id", "In uploadDocument method of document service with document string "+documentJsonString);
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
 		boolean isUploadSuccess = false;
@@ -203,22 +209,21 @@ public class DocumentService {
 			responseDto.setVersion(docReqDto.getVersion());
 			requiredRequestMap.put("id", uploadId);
 			if (ValidationUtil.requestValidator(prepareRequestParamMap(docReqDto), requiredRequestMap)) {
-				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
+				if(scanDocument) {
+					serviceUtil.isVirusScanSuccess(file);
+				}
+				if (serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
 					validationUtil.langvalidation(docReqDto.getRequest().getLangCode());
 					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
 							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode());
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
-					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
-				} else {
-					throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-							ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.getMessage());
 				}
 			}
 			isUploadSuccess = true;
-
+			responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In uploadDoucment method of document service - " + ex.getMessage());

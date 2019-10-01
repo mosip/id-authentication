@@ -17,7 +17,15 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface AuthLockRepository extends BaseRepository<AuthtypeLock, Integer> {
 
-	@Query(value = "Select * from ida.uin_auth_lock where uin=:individualId ORDER BY cr_dtimes DESC", nativeQuery = true)
-	public List<AuthtypeLock> findByUin(@Param("individualId") String individualId);
+	@Query(value = "select t.* " + 
+			"from  ida.uin_auth_lock t " + 
+			"inner join ( " + 
+			"    select auth_type_code, MAX(cr_dtimes) as crd " + 
+			"    from ida.uin_auth_lock " + 
+			"    group by uin_hash, auth_type_code " + 
+			") tm on t.auth_type_code = tm.auth_type_code and t.cr_dtimes = tm.crd " + 
+			"where t.uin = :uin", 
+			nativeQuery = true)
+	public List<AuthtypeLock> findByUin(@Param("uin") String uin);
 
-}
+}	

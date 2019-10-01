@@ -7,12 +7,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.crypto.SecretKey;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
@@ -54,9 +49,6 @@ public class PridGeneratorTest {
 
 	@Value("${mosip.kernel.prid.test.random-counter-number}")
 	private String key;
-
-	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 
 	@Autowired
 	private PridGenerator<String> pridGenerator;
@@ -140,5 +132,7 @@ public class PridGeneratorTest {
 		when(counterRepository.findMaxSequence()).thenReturn(nullSequenceEntity);
 		assertThat(pridGenerator.generateId(), isA(String.class));
 	}
+	
+	
 
 }

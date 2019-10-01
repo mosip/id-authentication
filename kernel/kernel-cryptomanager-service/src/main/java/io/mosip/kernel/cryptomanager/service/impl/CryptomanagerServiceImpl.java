@@ -17,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
@@ -56,16 +55,10 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	CryptomanagerUtils cryptomanagerUtil;
 
 	/**
-	 * {@link Encryptor} instance
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
 	 */
 	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-
-	/**
-	 * {@link Decryptor} instance
-	 */
-	@Autowired
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/*
 	 * (non-Javadoc)
@@ -78,15 +71,18 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	public CryptomanagerResponseDto encrypt(CryptomanagerRequestDto cryptoRequestDto) {
 		SecretKey secretKey = keyGenerator.getSymmetricKey();
 		final byte[] encryptedData;
-		if(cryptomanagerUtil.isValidSalt(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt()))) {
-			encryptedData = encryptor.symmetricEncrypt(secretKey,
-					CryptoUtil.decodeBase64(cryptoRequestDto.getData()),CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt())));
-		}else {
-			encryptedData = encryptor.symmetricEncrypt(secretKey,
-					CryptoUtil.decodeBase64(cryptoRequestDto.getData()));
+		if (cryptomanagerUtil.isValidSalt(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt()))) {
+			encryptedData = cryptoCore.symmetricEncrypt(secretKey,
+					CryptoUtil.decodeBase64(cryptoRequestDto.getData()),
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt())),
+							CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getAad())));
+		} else {
+			encryptedData = cryptoCore.symmetricEncrypt(secretKey,
+					CryptoUtil.decodeBase64(cryptoRequestDto.getData()),
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getAad())));
 		}
 		PublicKey publicKey = cryptomanagerUtil.getPublicKey(cryptoRequestDto);
-		final byte[] encryptedSymmetricKey = encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
+		final byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey, secretKey.getEncoded());
 		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
 		cryptoResponseDto.setData(CryptoUtil
 				.encodeBase64(CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter)));
@@ -111,13 +107,16 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
 		SecretKey decryptedSymmetricKey = cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
 		final byte[] decryptedData;
-		if(cryptomanagerUtil.isValidSalt(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt()))) {
-			decryptedData = decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData,CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt())));
-		}else {
-			decryptedData =  decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData);
-		}CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
-		cryptoResponseDto
-				.setData(CryptoUtil.encodeBase64(decryptedData));
+		if (cryptomanagerUtil.isValidSalt(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt()))) {
+			decryptedData = cryptoCore.symmetricDecrypt(decryptedSymmetricKey, encryptedData,
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getSalt())),
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getAad())));
+		} else {
+			decryptedData = cryptoCore.symmetricDecrypt(decryptedSymmetricKey, encryptedData,
+					CryptoUtil.decodeBase64(CryptomanagerUtils.nullOrTrim(cryptoRequestDto.getAad())));
+		}
+		CryptomanagerResponseDto cryptoResponseDto = new CryptomanagerResponseDto();
+		cryptoResponseDto.setData(CryptoUtil.encodeBase64(decryptedData));
 		return cryptoResponseDto;
 	}
 

@@ -19,8 +19,8 @@ localhost:8087/cryptomanager/swagger-ui.html
 #----------------------- Crypto --------------------------------------------------
 mosip.kernel.crypto.asymmetric-algorithm-name=RSA
 mosip.kernel.crypto.symmetric-algorithm-name=AES
-mosip.kernel.keygenerator.asymmetric-algorithm-length=2048
-mosip.kernel.keygenerator.symmetric-algorithm-length=256
+mosip.kernel.keygenerator.asymmetric-key-length=2048
+mosip.kernel.keygenerator.symmetric-key-length=256
 mosip.kernel.data-key-splitter=#KEY_SPLITTER#
 
 

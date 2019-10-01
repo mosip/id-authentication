@@ -13,12 +13,18 @@ import io.mosip.registration.processor.core.constant.IdType;
 public interface PrintService<T> {
 
 	/**
-	 * Gets the pdf.
+	 * Gets the documents.
 	 *
-	 * @param regId
-	 *            the reg id
-	 * @return the pdf
+	 * @param type
+	 *            the type
+	 * @param idValue
+	 *            the id value
+	 * @param cardType
+	 *            the card type
+	 * @param isPasswordProtected
+	 *            the is password protected
+	 * @return the documents
 	 */
-	public T getDocuments(IdType type, String idValue);
+	public T getDocuments(IdType type, String idValue, String cardType, boolean isPasswordProtected);
 
 }

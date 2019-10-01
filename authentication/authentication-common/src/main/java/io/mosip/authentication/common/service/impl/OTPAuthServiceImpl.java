@@ -28,6 +28,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
@@ -95,7 +96,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnAndIdvid(txnId, uin);
+			boolean isValidRequest = validateTxnAndIdvid(txnId, uin, IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -174,6 +175,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *
 	 * @param txnId
 	 *            the txn id
+	 * @param idType 
 	 * @param idvid
 	 *            the idvid
 	 * @return true, if successful
@@ -181,7 +183,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *             the id authentication business exception
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId, String uin) throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvid(String txnId, String uin, String idType) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
 		long uinModulo = Long.valueOf(uin)
 				% environment.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
@@ -194,10 +196,16 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 					"Invalid TransactionID");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 		} else {
-			if (!authTxn.get().getUinHash().equalsIgnoreCase(hashedUin)) {
+			if (idType.equals(authTxn.get().getRefIdType())) {
+				if (!authTxn.get().getUinHash().equalsIgnoreCase(hashedUin)) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
+							"OTP id mismatch");
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+				}
+			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
-						"OTP id mismatch");
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+						"OTP id type mismatch");
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_AUTH_IDTYPE_MISMATCH);
 			}
 			validOtpAuth = true;
 		}

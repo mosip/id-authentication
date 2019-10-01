@@ -166,7 +166,7 @@ public class NotificationService {
 		response = new MainResponseDTO<>();
 
 		ResponseDTO notificationResponse = new ResponseDTO();
-		log.info("sessionId", "idType", "id", "In notification service of sendNotification ");
+		log.info("sessionId", "idType", "id", "In notification service of sendNotification with request  "+jsonString +" and langCode "+langCode);
 		requiredRequestMap.put("id", Id);
 		response.setId(Id);
 		response.setVersion(version);
@@ -247,6 +247,7 @@ public class NotificationService {
 	 */
 	private String getDemographicDetailsWithPreId(NotificationDTO notificationDto, String langCode, MultipartFile file)
 			throws IOException {
+		try {
 		String url = demographicResourceUrl + "/" + "applications" + "/" + notificationDto.getPreRegistrationId();
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -286,6 +287,15 @@ public class NotificationService {
 					"In notification service of sendNotification failed to send Email and sms request ");
 		}
 		return RequestCodes.MESSAGE.getCode();
+		}catch (RestClientException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
+			log.error("sessionId", "idType", "id",
+					"In getDemographicDetailsWithPreId method of notification service - " + ex.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_011.getCode(),
+					ErrorMessages.DEMOGRAPHIC_CALL_FAILED.getMessage());
+
+		}
+
 	}
 
 	/**
@@ -318,6 +328,7 @@ public class NotificationService {
 			BookingRegistrationDTO bookingDTO = getAppointmentDetailsRestService(dto.getPreRegistrationId());
 			String time = LocalTime.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
 					.format(DateTimeFormatter.ofPattern("hh:mm a"));
+			log.info("sessionId", "idType", "id", "In notificationDtoValidation with bookingDTO "+bookingDTO);
 			if (dto.getAppointmentDate() != null && !dto.getAppointmentDate().trim().equals("")) {
 				if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
 					if (dto.getAppointmentTime() != null && !dto.getAppointmentTime().trim().equals("")) {

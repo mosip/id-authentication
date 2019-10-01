@@ -2,8 +2,6 @@ package io.mosip.kernel.keymanagerservice.service;
 
 import java.util.Optional;
 
-import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
-import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
@@ -42,5 +40,4 @@ public interface KeymanagerService {
 	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto);
 
 	public PublicKeyResponse<String> getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
-
 }

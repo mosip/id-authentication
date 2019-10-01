@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIDExceptionConstant;
@@ -41,11 +41,8 @@ import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdSequenceRepository;
 @Component
 public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 
-	/**
-	 * Reference to {@link Encryptor}.
-	 */
 	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	@Autowired
 	private TokenIdSeedRepository seedRepository;
@@ -118,7 +115,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 			}
 			SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
 					TokenIdPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
-			byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, randomSeed.getBytes());
+			byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, randomSeed.getBytes(),null);
 			BigInteger bigInteger = new BigInteger(encryptedData);
 			tokenId = String.valueOf(bigInteger.abs());
 		} catch (DataAccessLayerException | DataAccessException e) {

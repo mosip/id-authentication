@@ -3,6 +3,7 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,11 +11,13 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -78,10 +81,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 				"Page loading has been started");
 
 		setImagesOnHover();
-
-		if (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION) != null
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.NOTIFICATION_DISABLE_FLAG))) {
+		String notificationType = getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION); 
+		if (notificationType != null && !notificationType.trim().isEmpty() && !notificationType.equals("NONE")) {
 
 			sendNotification.setVisible(true);
 		} else {
@@ -159,6 +160,31 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		clearRegistrationData();
 		packetController.createPacket();
+	}
+	
+	/**
+	 * Go to home ack template.
+	 */
+	public void goToHomeAckTemplate() {
+		try {
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+				clearOnboardData();
+				clearRegistrationData();
+			} else {
+				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+						RegistrationConstants.ENABLE);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI - ACK_RECEIPT_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+		} catch (RuntimeException runtimException) {
+			LOGGER.error("REGISTRATION - UI - ACK_RECEIPT_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					runtimException.getMessage() + ExceptionUtils.getStackTrace(runtimException));
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+		}
+
 	}
 
 }

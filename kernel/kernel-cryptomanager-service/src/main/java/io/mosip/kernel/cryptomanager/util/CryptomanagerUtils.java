@@ -91,13 +91,13 @@ public class CryptomanagerUtils {
 	/**
 	 * Asymmetric Algorithm Name
 	 */
-	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
 
 	/**
 	 * Symmetric Algorithm Name
 	 */
-	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 
 	/**
@@ -113,6 +113,11 @@ public class CryptomanagerUtils {
 	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String decryptSymmetricKeyUrl;
 
+	/**
+	 * Keymanager URL to Decrypt Symmetric key
+	 */
+	@Value("${mosip.kernel.keymanager-service-auth-decrypt-url}")
+	private String decryptAuthSymmetricKeyUrl;
 	/**
 	 * Key Splitter
 	 */
@@ -212,9 +217,6 @@ public class CryptomanagerUtils {
 		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
-
-	
-
 	
 	/**
 	 * Change Parameter form to trim if not null
@@ -297,9 +299,5 @@ public class CryptomanagerUtils {
 	public LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
-
-	
-	
-	
 
 }

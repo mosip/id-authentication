@@ -667,22 +667,23 @@ public class IrisCaptureController extends BaseController {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				userOnboardParentController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
 						getOnboardPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
-			} else {
-				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			} else if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
-					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_IRISCAPTURE, false);
 
-					if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-							getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
-						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
-					} else {
-						SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
-					}
-					registrationController.showUINUpdateCurrentPage();
+				if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
+				} else if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
 				} else {
-					registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
-							getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
+					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, true);
 				}
+				registrationController.showUINUpdateCurrentPage();
+			} else {
+				registrationController.showCurrentPage(RegistrationConstants.IRIS_CAPTURE,
+						getPageDetails(RegistrationConstants.IRIS_CAPTURE, RegistrationConstants.PREVIOUS));
 			}
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -723,9 +724,7 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			for (IrisDetailsDTO irisDetailsDTO : getIrises()) {
-				if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
-					return true;
-				if (validateIrisCapture(irisDetailsDTO)) {
+				if (validateIrisCapture(irisDetailsDTO) || (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					if (irisDetailsDTO.getIrisType().contains(RegistrationConstants.LEFT)) {
 						isLeftEyeCaptured = true;
 					} else if (irisDetailsDTO.getIrisType().contains(RegistrationConstants.RIGHT)) {
@@ -837,11 +836,8 @@ public class IrisCaptureController extends BaseController {
 
 	private void removeIrisException() {
 		if (getRegistrationDTOFromSession() != null) {
-			List<BiometricExceptionDTO> biometricExceptionDtos = getRegistrationDTOFromSession().getBiometricDTO()
-					.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			List<BiometricExceptionDTO> uponRemoval = biometricExceptionDtos.stream().filter(bio->!bio.getBiometricType().contains("iris")).collect(Collectors.toList());
 			getRegistrationDTOFromSession().getBiometricDTO()
-			.getApplicantBiometricDTO().setBiometricExceptionDTO(uponRemoval);
+					.getApplicantBiometricDTO().getBiometricExceptionDTO().removeIf(bio->bio.getBiometricType().contains("iris") && !bio.isMarkedAsException() );
 		}
 	}
 
@@ -919,12 +915,23 @@ public class IrisCaptureController extends BaseController {
 
 			if ((!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO().isEmpty() && isForceCapturedFingerprint())
-					|| !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-							.getIrisDetailsDTO().isEmpty()
 					|| irisCountIntroducer == 2) {
 				continueBtn.setDisable(false);
 			} else {
 				continueBtn.setDisable(true);
+			}
+			if(!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+							.getIrisDetailsDTO().isEmpty()) {
+				//check for the quality as well as the number of time it is captured
+				long capturedIris=0;
+				capturedIris = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+						.getIrisDetailsDTO().stream().filter(v->v.getQualityScore()>=Double
+								.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)) || v.getNumOfIrisRetry()==Double
+										.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)) ).count();
+				if(capturedIris>0)
+					continueBtn.setDisable(false);
+				else
+					continueBtn.setDisable(true);
 			}
 		}
 	}
