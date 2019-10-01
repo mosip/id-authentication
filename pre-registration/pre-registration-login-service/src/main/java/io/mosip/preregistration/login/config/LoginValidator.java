@@ -2,38 +2,23 @@ package io.mosip.preregistration.login.config;
 
 import java.util.Objects;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
-import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.BaseValidator;
 
 @Component
-@ConfigurationProperties("mosip.preregistration.login")
 public class LoginValidator extends BaseValidator implements Validator {
 
 	/** The Constant REQUEST. */
 	private static final String ID = "id";
-
-	/** The Constant REQUEST. */
-	private static final String VALIDATEOTP = "validateotp";
-
-	/** The Constant REQUEST. */
-	private static final String SENDOTP = "sendotp";
-
-	/** The Constant REQUEST. */
-	private static final String INVALIDATETOKEN = "invalidatetoken";
-
-	/** The Constant REQUEST. */
-	private static final String CONFIG = "config";
 
 	/**
 	 * Logger configuration for BaseValidator

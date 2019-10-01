@@ -108,28 +108,5 @@ public abstract class BaseValidator {
 		}
 	}
 
-	/**
-	 * This method will validate the id field in the request.
-	 *
-	 * @param id
-	 *            the id
-	 * @param operation
-	 *            the operation
-	 * @throws InvalidRequestParameterException
-	 *             the prereg app exception
-	 */
-	// public void validateId(String id,String operation) throws
-	// InvalidRequestParameterException {
-	// if (Objects.isNull(id)) {
-	// mosipLogger.error("","", "validateId", "id is null");
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-	// String.format(ErrorMessages.INVALID_REQUEST_ID.getMessage(), ID),null);
-	// } else if (!this.id.get(operation).equals(id)) {
-	// mosipLogger.error("","", "validateId", "id is invalid");
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-	// String.format(ErrorMessages.INVALID_REQUEST_ID.getMessage(), ID),null);
-	// }
-	// }
+	
 }

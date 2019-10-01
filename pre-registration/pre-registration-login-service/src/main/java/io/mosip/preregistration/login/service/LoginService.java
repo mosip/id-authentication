@@ -46,7 +46,6 @@ import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
-import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.login.dto.ClientSecretDTO;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.OtpUser;
@@ -130,14 +129,9 @@ public class LoginService {
 
 	@PostConstruct
 	public void setupLoginService() {
-		// globalConfig = loginCommonUtil.getConfig(globalFileName);
-		// preregConfig = loginCommonUtil.getConfig(preRegFileName);
+		 globalConfig = loginCommonUtil.getConfig(globalFileName);
+		 preregConfig = loginCommonUtil.getConfig(preRegFileName);
 	}
-	/**
-	 * Reference for ${mosip.prereg.app-id} from property file
-	 */
-	// @Value("${mosip.prereg.app-id}")
-	// private String appId;
 
 	/**
 	 * It will fetch otp from Kernel auth service and send to the userId provided
