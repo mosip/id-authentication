@@ -143,8 +143,6 @@ update reg.global_param set val = 'AES/GCM/PKCS5Padding' where code = 'mosip.ker
 update reg.global_param set val = 'RSA' where code = 'mosip.kernel.keygenerator.asymmetric-algorithm-name' ;
 update reg.global_param  set val = 'AES' where code = 'mosip.kernel.keygenerator.symmetric-algorithm-name';
 
+update reg.global_param set code = 'mosip.kernel.keygenerator.asymmetric-key-length',name = 'mosip.kernel.keygenerator.asymmetric-key-length' where code = 'mosip.kernel.keygenerator.asymmetric-algorithm-length';
 
- 
-
- 
- 
+update reg.global_param set code = 'mosip.kernel.keygenerator.symmetric-key-length',name = 'mosip.kernel.keygenerator.symmetric-key-length' where code = 'mosip.kernel.keygenerator.symmetric-algorithm-length';
