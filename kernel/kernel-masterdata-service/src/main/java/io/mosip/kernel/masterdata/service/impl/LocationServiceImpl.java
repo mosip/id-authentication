@@ -761,9 +761,6 @@ public class LocationServiceImpl implements LocationService {
 		String active = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
-		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
-		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
-		List<Node<Location>> tree = locationTree.createTree(locationList);
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
@@ -773,9 +770,13 @@ public class LocationServiceImpl implements LocationService {
 				isActive = Boolean.valueOf(active);
 			}
 		}
+		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode(),isActive);
+		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
+		List<Node<Location>> tree = locationTree.createTree(locationList);
+		
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
-		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active))
+		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active) && !tree.isEmpty())
 		{
 			responseDto = emptyFilterLocationSearch(tree,isActive);
 		}
@@ -873,7 +874,6 @@ public class LocationServiceImpl implements LocationService {
 
 			LocationSearchDto locationSearchDto = new LocationSearchDto();
 			leafParents.forEach(p -> {
-				System.out.println(p.getIsActive() +" :::::: "+isActive);
 				if(p.getIsActive()==isActive)
 				{
 					if (p.getHierarchyLevel() == 1) {
