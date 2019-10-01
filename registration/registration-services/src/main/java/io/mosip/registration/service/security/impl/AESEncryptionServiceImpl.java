@@ -13,7 +13,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
@@ -50,7 +50,8 @@ public class AESEncryptionServiceImpl extends BaseService implements AESEncrypti
 	@Autowired
 	private RSAEncryptionService rsaEncryptionService;
 	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+
 	/**
 	 * Instance of {@code AuditFactory}
 	 */
@@ -82,7 +83,7 @@ public class AESEncryptionServiceImpl extends BaseService implements AESEncrypti
 			final SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 
 			// Encrypt the Data using AES
-			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
+			final byte[] encryptedData = cryptoCore.symmetricEncrypt(symmetricKey, dataToEncrypt,null);
 
 			LOGGER.info(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"In-Memory zip file encrypted using AES Algorithm successfully");

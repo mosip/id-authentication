@@ -41,6 +41,8 @@ public class ReqResFilter implements Filter {
 			requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
 			responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 			chain.doFilter(requestWrapper, responseWrapper);
+//			System.out.println("Request : " + new String(requestWrapper.getContentAsByteArray(),"UTF-8"));
+//			System.out.println("Response : " + new String(responseWrapper.getContentAsByteArray(),"UTF-8"));
 			responseWrapper.copyBodyToResponse();
 		} catch (Exception e) {
 			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);

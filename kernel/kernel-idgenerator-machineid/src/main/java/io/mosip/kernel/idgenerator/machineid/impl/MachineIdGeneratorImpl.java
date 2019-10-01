@@ -74,6 +74,8 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<String> {
 				entity.setMId(generatedMID);
 				entity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				entity.setUpdatedBy("SYSTEM");
+				entity.setCreatedBy("SYSTEM");
 				machineIdRepository.create(entity);
 			}
 

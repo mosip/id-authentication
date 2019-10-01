@@ -100,7 +100,9 @@ public class MasterDataFilterHelper {
 		columnTypeValidator(rootType, columnName);
 
 		// check column type is not boolean
-		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+		if (filterValueDto.getLanguageCode().equals("all") && !(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			criteriaQueryByType.where(criteriaBuilder.and(caseSensitivePredicate));
+		} else if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
 		}
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
@@ -111,7 +113,6 @@ public class MasterDataFilterHelper {
 			return (List<T>) valuesForStatusColumn();
 		}
 
-		
 		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)) {
 			criteriaQueryByType.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
@@ -143,19 +144,21 @@ public class MasterDataFilterHelper {
 
 		columnTypeValidator(rootType, columnName);
 
-		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+		if (filterValueDto.getLanguageCode().equals("all") && !(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			criteriaQueryByType.where(criteriaBuilder.and(caseSensitivePredicate));
+		} else if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
 		}
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
-		//if column type is Boolean then add value as true or false
-		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
-				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL)  || columnType.equals(FILTER_VALUE_EMPTY) )) {
+		// if column type is Boolean then add value as true or false
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class) && (columnType.equals(FILTER_VALUE_UNIQUE)
+				|| columnType.equals(FILTER_VALUE_ALL) || columnType.equals(FILTER_VALUE_EMPTY))) {
 			return valuesForStatusColumnCode();
 		}
 
-		//if column type is other than Boolean 
-		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY) ) {
+		// if column type is other than Boolean
+		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)) {
 			criteriaQueryByType.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
 			criteriaQueryByType.distinct(false);

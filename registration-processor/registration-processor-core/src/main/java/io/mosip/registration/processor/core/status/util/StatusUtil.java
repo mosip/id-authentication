@@ -251,7 +251,9 @@ public enum StatusUtil {
 																	StatusConstants.SYSTEM_EXCEPTION_CODE,
 																	"Biometric Exception Occurred in IDA "), BIO_METRIC_FILE_MISSING(
 																			StatusConstants.SYSTEM_EXCEPTION_CODE,
-																			"Applicant biometric fileName/file is missing"),
+																			"Applicant biometric fileName/file is missing"), BIO_METRIC_TYPE_EXCEPTION(
+																					StatusConstants.SYSTEM_EXCEPTION_CODE,
+																					"Requested biometric type not found"),
 
 	UNKNOWN_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE,
 			"Unknown exception occured "), API_RESOUCE_ACCESS_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE,

@@ -22,10 +22,11 @@ ENV spring_config_label_env=${spring_config_label}
 ENV spring_config_label_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/logs
+VOLUME /home/logs /home/Glowroot
 
 COPY ./target/registration-processor-registration-status-service-*.jar registration-processor-registration-status-service.jar
 
 EXPOSE 8083
+EXPOSE 4000
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-registration-status-service.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","-javaagent:/home/Glowroot/glowroot.jar","registration-processor-registration-status-service.jar"]

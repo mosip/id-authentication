@@ -2,31 +2,37 @@ package io.mosip.registration.cipher;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.security.InvalidAlgorithmParameterException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
 
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
-import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
+import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
+import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 import io.mosip.registration.config.SoftwareInstallationHandler;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
@@ -114,8 +120,7 @@ public class ClientJarDecryption extends Application {
 		// Generate AES Session Key
 		SecretKey symmetricKey = new SecretKeySpec(encodedString, AES_ALGORITHM);
 
-		return SymmetricProcessor.process(SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING, symmetricKey, data,
-				Cipher.DECRYPT_MODE, null);
+		return symmetricDecrypt(symmetricKey, data,null);
 	}
 
 	/**
@@ -156,7 +161,6 @@ public class ClientJarDecryption extends Application {
 	private void executeVerificationTask() {
 		ClientJarDecryption aesDecrypt = new ClientJarDecryption();
 
-		
 		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 				LoggerConstants.APPLICATION_ID, "Started loading properties of mosip-application.properties");
 
@@ -189,14 +193,14 @@ public class ClientJarDecryption extends Application {
 
 							updateMessage(IS_TPM_AVAILABLE);
 
-//							// Encrypt the Keys
-//							boolean isTPMAvailable = isTPMAvailable(properties);
-//
-//							if (isTPMAvailable) {
-//								updateMessage(ENCRYPT_PROPERTIES);
-//
-//								encryptRequiredProperties(properties, propsFilePath);
-//							}
+							// // Encrypt the Keys
+							// boolean isTPMAvailable = isTPMAvailable(properties);
+							//
+							// if (isTPMAvailable) {
+							// updateMessage(ENCRYPT_PROPERTIES);
+							//
+							// encryptRequiredProperties(properties, propsFilePath);
+							// }
 
 							try {
 								LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
@@ -310,7 +314,6 @@ public class ClientJarDecryption extends Application {
 
 										updateMessage(TERMINATING_APPLICATION);
 
-
 										generateAlertAndTerminate(FAILED_TO_LAUNCH);
 									}
 
@@ -324,10 +327,8 @@ public class ClientJarDecryption extends Application {
 												LoggerConstants.APPLICATION_NAME, LoggerConstants.APPLICATION_ID,
 												"Preparing command to launch the reg-client");
 
-										String cmd = "java"
-												+ " -Dfile.encoding=UTF-8"
-												+ " -cp " + tempPath + "/*;" + libPath
-												+ "/* io.mosip.registration.controller.Initialization";
+										String cmd = "java" + " -Dfile.encoding=UTF-8" + " -cp " + tempPath + "/*;"
+												+ libPath + "/* io.mosip.registration.controller.Initialization";
 
 										Process process = Runtime.getRuntime().exec(cmd);
 
@@ -356,7 +357,6 @@ public class ClientJarDecryption extends Application {
 													updateMessage(TERMINATING_APPLICATION);
 
 													process.destroyForcibly();
-
 
 													generateAlertAndTerminate(FAILED_TO_LAUNCH);
 												}
@@ -434,7 +434,7 @@ public class ClientJarDecryption extends Application {
 							updateMessage(TERMINATING_APPLICATION);
 
 							generateAlertAndTerminate(DB_NOT_FOUND);
-							
+
 						}
 
 						return false;
@@ -516,18 +516,22 @@ public class ClientJarDecryption extends Application {
 		return value;
 	}
 
-//	private void encryptRequiredProperties(Properties properties, String propertiesFilePath) throws IOException {
-//		if (!(properties.containsKey(ENCRYPTED_KEY)
-//				&& properties.getProperty(ENCRYPTED_KEY).equals(IS_KEY_ENCRYPTED))) {
-//			try (OutputStream propertiesFile = new FileOutputStream(propertiesFilePath)) {
-//				properties.put(ENCRYPTED_KEY, IS_KEY_ENCRYPTED);
-//				properties.put(MOSIP_REGISTRATION_APP_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_APP_KEY));
-//				properties.put(MOSIP_REGISTRATION_DB_KEY, getEncryptedValue(properties, MOSIP_REGISTRATION_DB_KEY));
-//				properties.store(propertiesFile, "Updated");
-//				propertiesFile.flush();
-//			}
-//		}
-//	}
+	// private void encryptRequiredProperties(Properties properties, String
+	// propertiesFilePath) throws IOException {
+	// if (!(properties.containsKey(ENCRYPTED_KEY)
+	// && properties.getProperty(ENCRYPTED_KEY).equals(IS_KEY_ENCRYPTED))) {
+	// try (OutputStream propertiesFile = new FileOutputStream(propertiesFilePath))
+	// {
+	// properties.put(ENCRYPTED_KEY, IS_KEY_ENCRYPTED);
+	// properties.put(MOSIP_REGISTRATION_APP_KEY, getEncryptedValue(properties,
+	// MOSIP_REGISTRATION_APP_KEY));
+	// properties.put(MOSIP_REGISTRATION_DB_KEY, getEncryptedValue(properties,
+	// MOSIP_REGISTRATION_DB_KEY));
+	// properties.store(propertiesFile, "Updated");
+	// propertiesFile.flush();
+	// }
+	// }
+	// }
 
 	private String getEncryptedValue(Properties properties, String key) {
 		return CryptoUtil.encodeBase64String(asymmetricEncryptionService.encryptUsingTPM(
@@ -562,5 +566,61 @@ public class ClientJarDecryption extends Application {
 
 			exit();
 		});
+	}
+
+
+
+	private static byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] aad) {
+		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
+		CryptoUtils.verifyData(data);
+		byte[] output = null;
+		try {
+			Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
+
+			byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
+			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES_ALGORITHM);
+			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, randomIV);
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+			if (aad != null && aad.length != 0) {
+				cipher.updateAAD(aad);
+			}
+			output = doFinal(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorMessage(), e);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage(), e);
+		} catch (java.security.NoSuchAlgorithmException noSuchAlgorithmException) {
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),
+					noSuchAlgorithmException);
+		} catch (NoSuchPaddingException noSuchPaddingException) {
+			throw new InvalidKeyException("No Such Padding Exception", "No Such Padding Exception",
+					noSuchPaddingException);
+
+		}
+		return output;
+	}
+
+
+
+	private static byte[] doFinal(byte[] data, Cipher cipher) {
+		try {
+			return cipher.doFinal(data);
+		} catch (IllegalBlockSizeException e) {
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(), e.getMessage(), e);
+		} catch (BadPaddingException e) {
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		}
 	}
 }
