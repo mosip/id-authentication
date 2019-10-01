@@ -1348,7 +1348,7 @@ public class MasterdataSearchIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 
 		mockMvc.perform(post("/devices/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -1367,7 +1367,7 @@ public class MasterdataSearchIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
@@ -1385,7 +1385,7 @@ public class MasterdataSearchIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(null);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		mockMvc.perform(post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
