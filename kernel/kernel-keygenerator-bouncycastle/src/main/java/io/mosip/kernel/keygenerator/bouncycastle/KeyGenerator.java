@@ -29,7 +29,7 @@ public class KeyGenerator {
 	/**
 	 * Symmetric key length
 	 */
-	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-length}")
+	@Value("${mosip.kernel.keygenerator.symmetric-key-length}")
 	private int symmetricKeyLength;
 
 	/**
@@ -41,7 +41,7 @@ public class KeyGenerator {
 	/**
 	 * Asymmetric key length
 	 */
-	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-length}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-key-length}")
 	private int asymmetricKeyLength;
 
 	/**
