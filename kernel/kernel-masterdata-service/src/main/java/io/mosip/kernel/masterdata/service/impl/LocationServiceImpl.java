@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -757,6 +758,7 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
+		String active = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
@@ -767,13 +769,17 @@ public class LocationServiceImpl implements LocationService {
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
 			if(isActiveFilter.isPresent())
 			{
-				String active = isActiveFilter.get().getValue();
+				active = isActiveFilter.get().getValue();
 				isActive = Boolean.valueOf(active);
 			}
 		}
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
-		} else {
+		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active))
+		{
+			responseDto = emptyFilterLocationSearch(tree,isActive);
+		}
+		else {
 			for (SearchFilter filter : dto.getFilters()) {
 				String type = filter.getType();
 				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
@@ -842,6 +848,58 @@ public class LocationServiceImpl implements LocationService {
 				locationSearchDto.setIsDeleted(p.getIsDeleted());
 				locationSearchDto.setUpdatedBy(p.getUpdatedBy());
 				locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+			});
+			responseDto.add(locationSearchDto);
+		});
+
+		return responseDto;
+	}
+	
+	
+	/**
+	 * Method to search Location with no filter mentioned.
+	 * 
+	 * @param tree
+	 *            the Location Tree.
+	 * @return list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree,boolean isActive) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		Node<Location> root = locationTree.findRootNode(tree.get(0));
+		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
+
+		leafNodes.forEach(leafNode -> {
+			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+
+			LocationSearchDto locationSearchDto = new LocationSearchDto();
+			leafParents.forEach(p -> {
+				System.out.println(p.getIsActive() +" :::::: "+isActive);
+				if(p.getIsActive()==isActive)
+				{
+					if (p.getHierarchyLevel() == 1) {
+						locationSearchDto.setRegion(p.getName());
+					}
+					if (p.getHierarchyLevel() == 2) {
+						locationSearchDto.setProvince(p.getName());
+					}
+					if (p.getHierarchyLevel() == 3) {
+						locationSearchDto.setCity(p.getName());
+					}
+					if (p.getHierarchyLevel() == 4) {
+						locationSearchDto.setZone(p.getName());
+					}
+					if (p.getHierarchyLevel() == 5) {
+						locationSearchDto.setPostalCode(p.getName());
+					}
+					locationSearchDto.setCreatedBy(p.getCreatedBy());
+					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+					locationSearchDto.setIsActive(p.getIsActive());
+					locationSearchDto.setIsDeleted(p.getIsDeleted());
+					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+				}
+				
 			});
 			responseDto.add(locationSearchDto);
 		});
