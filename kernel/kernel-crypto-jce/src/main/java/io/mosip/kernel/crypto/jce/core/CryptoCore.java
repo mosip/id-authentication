@@ -66,7 +66,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	// will use in HSM
 	private static final String RSA_ECB_NO_PADDING = "RSA/ECB/NoPadding";
 
-	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-length}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-key-length:2048}")
 	private int asymmetricKeyLength;
 
 	private static final String MGF1 = "MGF1";
@@ -75,25 +75,25 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 
 	private static final String AES = "AES";
 
-	@Value("${mosip.kernel.crypto.gcm-tag-length}")
+	@Value("${mosip.kernel.crypto.gcm-tag-length:128}")
 	private int tagLength;
 
-	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.symmetric-algorithm-name:AES/GCM/PKCS5Padding}")
 	private String symmetricAlgorithm;
 
-	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name:RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING}")
 	private String asymmetricAlgorithm;
 
-	@Value("${mosip.kernel.crypto.hash-algorithm-name}")
+	@Value("${mosip.kernel.crypto.hash-algorithm-name:PBKDF2WithHmacSHA512}")
 	private String passwordAlgorithm;
 
-	@Value("${mosip.kernel.crypto.sign-algorithm-name}")
+	@Value("${mosip.kernel.crypto.sign-algorithm-name:SHA512withRSA}")
 	private String signAlgorithm;
 
-	@Value("${mosip.kernel.crypto.hash-symmetric-key-length}")
+	@Value("${mosip.kernel.crypto.hash-symmetric-key-length:256}")
 	private int symmetricKeyLength;
 
-	@Value("${mosip.kernel.crypto.hash-iteration}")
+	@Value("${mosip.kernel.crypto.hash-iteration:100000}")
 	private int iterations;
 
 	private Map<String, Cipher> cipherRegistry;
