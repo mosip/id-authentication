@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.65"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="10,180" last-zoom="0.3"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -63,7 +63,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="applicant_valid_document">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2200" y="280"/>
+	<position x="2600" y="280"/>
 	<column name="apptyp_code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -105,7 +105,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="app_audit_log">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="120" y="2120"/>
+	<position x="520" y="2120"/>
 	<column name="log_id" not-null="true">
 		<type name="character varying" length="64"/>
 	</column>
@@ -168,7 +168,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="app_authentication_method">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2900" y="300"/>
+	<position x="3300" y="300"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -233,7 +233,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="app_detail">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1000" y="40"/>
+	<position x="1400" y="40"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -283,7 +283,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="app_role_priority">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2920" y="20"/>
+	<position x="3320" y="20"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -342,7 +342,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="audit_log_control">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="120" y="1880"/>
+	<position x="520" y="1880"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="39"/>
 	</column>
@@ -378,7 +378,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="authentication_method">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3280" y="300"/>
+	<position x="3680" y="300"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -417,7 +417,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="biometric_attribute">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1880" y="280"/>
+	<position x="2280" y="280"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -462,7 +462,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="biometric_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1900" y="40"/>
+	<position x="2300" y="40"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -504,7 +504,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="blacklisted_words">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1440" y="540"/>
+	<position x="1840" y="540"/>
 	<column name="word" not-null="true">
 		<type name="character varying" length="128"/>
 	</column>
@@ -543,7 +543,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="device_master">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1860" y="2320"/>
+	<position x="2260" y="2320"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -597,7 +597,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="device_spec">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1360" y="2360"/>
+	<position x="1760" y="2360"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -651,7 +651,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="device_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="920" y="2400"/>
+	<position x="1320" y="2400"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -693,7 +693,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="doc_category">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2220" y="20"/>
+	<position x="2620" y="20"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -735,7 +735,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="doc_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2600" y="20"/>
+	<position x="3000" y="20"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -777,7 +777,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="gender">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="340" y="280"/>
+	<position x="740" y="280"/>
 	<column name="code" not-null="true">
 		<type name="character" length="16"/>
 	</column>
@@ -816,7 +816,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="global_param">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="380" y="500"/>
+	<position x="780" y="500"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="128"/>
 	</column>
@@ -861,7 +861,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="id_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="20" y="280"/>
+	<position x="420" y="280"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -903,7 +903,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="individual_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="380" y="740"/>
+	<position x="3000" y="820"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -942,7 +942,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="key_store">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3280" y="540"/>
+	<position x="3680" y="540"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -990,7 +990,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="language">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="740" y="520"/>
+	<position x="1140" y="520"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="3"/>
 	</column>
@@ -1032,7 +1032,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="location">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1080" y="520"/>
+	<position x="1480" y="520"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1080,7 +1080,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="machine_master">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2680" y="2320"/>
+	<position x="3080" y="2320"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1140,7 +1140,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="machine_spec">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2520" y="1960"/>
+	<position x="2920" y="1960"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1194,7 +1194,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="machine_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2140" y="2020"/>
+	<position x="2540" y="2020"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1236,7 +1236,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="pre_registration_list">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="0" y="500"/>
+	<position x="400" y="500"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1305,7 +1305,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="process_list">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1340" y="40"/>
+	<position x="1740" y="40"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1347,7 +1347,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reason_category">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="0" y="20"/>
+	<position x="400" y="20"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1389,7 +1389,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reason_list">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="360" y="20"/>
+	<position x="760" y="20"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1434,7 +1434,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="registration">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="60" y="1240"/>
+	<position x="460" y="1240"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="39"/>
 	</column>
@@ -1539,7 +1539,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="registration_center">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1540" y="1700"/>
+	<position x="1940" y="1700"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1632,7 +1632,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="registration_transaction">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="500" y="1720"/>
+	<position x="900" y="1720"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1683,7 +1683,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_device">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1680" y="1280"/>
+	<position x="2080" y="1280"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1722,7 +1722,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_machine">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2000" y="1740"/>
+	<position x="2400" y="1740"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1761,7 +1761,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_machine_device">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2300" y="2340"/>
+	<position x="2700" y="2340"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1803,7 +1803,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="680" y="280"/>
+	<position x="1080" y="280"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1845,7 +1845,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_user">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2040" y="1280"/>
+	<position x="2440" y="1280"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1884,7 +1884,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reg_center_user_machine">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="980" y="2040"/>
+	<position x="1380" y="2040"/>
 	<column name="regcntr_id" not-null="true">
 		<type name="character varying" length="10"/>
 	</column>
@@ -1926,7 +1926,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="rid_seq">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="520" y="2380"/>
+	<position x="920" y="2380"/>
 	<column name="curr_seq_no" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
@@ -1950,7 +1950,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="role_list">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3240" y="40"/>
+	<position x="3640" y="40"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1989,7 +1989,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="screen_authorization">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1000" y="280"/>
+	<position x="1400" y="280"/>
 	<column name="screen_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2031,7 +2031,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="screen_detail">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1340" y="280"/>
+	<position x="1740" y="280"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2076,7 +2076,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sync_control">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2400" y="1160"/>
+	<position x="2800" y="1160"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2127,7 +2127,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sync_job_def">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2800" y="1180"/>
+	<position x="3200" y="1180"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2186,7 +2186,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sync_transaction">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2560" y="1560"/>
+	<position x="2960" y="1560"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2255,7 +2255,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="template">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2560" y="520"/>
+	<position x="2960" y="520"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2315,7 +2315,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="template_file_format">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2220" y="520"/>
+	<position x="2620" y="520"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2354,7 +2354,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="template_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1900" y="520"/>
+	<position x="2300" y="520"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2393,7 +2393,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="title">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="700" y="40"/>
+	<position x="1100" y="40"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="16"/>
 	</column>
@@ -2435,7 +2435,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="transaction_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="580" y="2100"/>
+	<position x="980" y="2100"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2474,7 +2474,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="user_biometric">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="500" y="1240"/>
+	<position x="900" y="1240"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 	</column>
@@ -2528,7 +2528,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="user_detail">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1000" y="1620"/>
+	<position x="1400" y="1620"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 	</column>
@@ -2594,7 +2594,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="user_pwd">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="1280" y="1280"/>
+	<position x="1680" y="1280"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 	</column>
@@ -2639,7 +2639,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="user_role">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="920" y="1260"/>
+	<position x="1320" y="1260"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 	</column>
@@ -2678,7 +2678,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="valid_document">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2580" y="280"/>
+	<position x="2980" y="280"/>
 	<column name="doccat_code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2711,6 +2711,132 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_valdoc_code" type="pk-constr" table="reg.valid_document">
 		<columns names="doccat_code,doctyp_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="daysofweek_list">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="440" y="840"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_daysofweek_code" type="pk-constr" table="reg.daysofweek_list">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_working_nonworking">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="760" y="840"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="10"/>
+	</column>
+	<column name="day_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_working" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_working_nonworking" type="pk-constr" table="reg.reg_working_nonworking">
+		<columns names="regcntr_id,day_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_exceptional_holiday">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="1100" y="840"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="10"/>
+	</column>
+	<column name="hol_date" not-null="true">
+		<type name="date" length="3"/>
+	</column>
+	<column name="hol_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="hol_reason">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_exceptional_hol" type="pk-constr" table="reg.reg_exceptional_holiday">
+		<columns names="regcntr_id,hol_date" ref-type="src-columns"/>
 	</constraint>
 </table>
 

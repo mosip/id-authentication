@@ -56,6 +56,10 @@ run 'ddl/reg-user_pwd.sql';
 run 'ddl/reg-user_role.sql';
 run 'ddl/reg-valid_document.sql';
 
+run 'ddl/reg-daysofweek_list.sql';
+run 'ddl/reg-reg_exceptional_holiday.sql';
+run 'ddl/reg-reg_working_nonworking.sql';
+
 run 'ddl/reg-fk.sql';
 
 run 'mosip_reg_dml_deploy.sql';

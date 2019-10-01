@@ -77,4 +77,8 @@
 \ir ddl/master-registered_device_master.sql
 \ir ddl/master-registered_device_master_h.sql
 
+\ir ddl/master-daysofweek_list.sql
+\ir ddl/master-reg_working_nonworking.sql
+\ir ddl/master-reg_exceptional_holiday.sql
+
 \ir ddl/master-fk.sql
