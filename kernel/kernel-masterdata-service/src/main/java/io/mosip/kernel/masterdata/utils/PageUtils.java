@@ -9,9 +9,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
@@ -49,6 +51,10 @@ public class PageUtils {
 			pageResponse.setTotalRecord(totalItem);
 		}
 		return pageResponse;
+	}
+
+	public <T extends BaseEntity> void validateSortField(Class<T> clazz, List<SearchSort> searchSorts) {
+		sortUtils.validateSortField(clazz, searchSorts);
 	}
 
 	public <D> PageResponseDto<D> sortPage(List<D> content, List<SearchSort> sort, Pagination page) {

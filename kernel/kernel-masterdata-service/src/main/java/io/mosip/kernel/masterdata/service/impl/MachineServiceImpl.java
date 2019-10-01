@@ -708,6 +708,14 @@ public class MachineServiceImpl implements MachineService {
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
+		List<Zone> zones = zoneUtils.getUserZones();
+		List<SearchFilter> zoneFilter = new ArrayList<>();
+		if (zones != null && !zones.isEmpty()) {
+			zoneFilter.addAll(buildZoneFilter(zones));
+			filterValueDto.setOptionalFilters(zoneFilter);
+		} else {
+			return filterResponseDto;
+		}
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<?> filterValues = masterDataFilterHelper.filterValues(Machine.class, filterDto, filterValueDto);

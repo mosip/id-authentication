@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
+
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
@@ -85,6 +89,14 @@ public class SortUtils {
 		return fields;
 	}
 
+	private <T extends BaseEntity> List<Field> extractEntityFields(Class<T> clazz) {
+		List<Field> fields = new ArrayList<>();
+		fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+		fields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
+		return fields;
+
+	}
+
 	private Field findField(List<Field> fields, String name) {
 		Optional<Field> field = fields.stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
 		if (field.isPresent()) {
@@ -94,6 +106,20 @@ public class SortUtils {
 					String.format(MasterdataSearchErrorCode.INVALID_SORT_FIELD.getErrorMessage(), name));
 
 		}
+	}
+
+	/**
+	 * @param clazz
+	 *            - generic class
+	 * @param searchSorts
+	 *            - {@link SearchSort}
+	 */
+	public <T extends BaseEntity> void validateSortField(Class<T> clazz, List<SearchSort> searchSorts) {
+		List<Field> fields = extractEntityFields(clazz);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+		}
+
 	}
 
 }

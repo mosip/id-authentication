@@ -113,7 +113,7 @@ public class LocationServiceImpl implements LocationService {
 	private List<Location> hierarchyChildList = null;
 	private List<Location> parentHierarchyList = null;
 	private List<String> childList = null;
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
@@ -214,74 +214,78 @@ public class LocationServiceImpl implements LocationService {
 		String locationCode = null;
 		Location locationEntity = null;
 		PostLocationCodeResponseDto responseDto = null;
-		//List<LocationDto> locations = new ArrayList<>();
-		//List<Location> savedEntities = null;
+		// List<LocationDto> locations = new ArrayList<>();
+		// List<Location> savedEntities = null;
 
 		// request validation
-		//requestValidation(dto, errors);
+		// requestValidation(dto, errors);
 
-		//dataValidation(request);
+		// dataValidation(request);
 
-		//Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
+		// Optional<LocationDto> optional = locations.stream().filter(dto ->
+		// dto.getIsActive().equals(true)).findAny();
 		// if data present in all the configured languages then setting isActive as
 		// true, otherwise false
-//		if (optional.isPresent()) {
-//			List<String> languages = new ArrayList<>();
-//			locations.forEach(dto -> languages.add(dto.getLangCode()));
-//			if (languages.size() == languageUtils.getConfiguredLanguages().size()
-//					&& languageUtils.getConfiguredLanguages().containsAll(languages)) {
-//				locations.forEach(i -> i.setIsActive(true));
-//			} else {
-//				throw new RequestException(LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorCode(),
-//						LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorMessage());
-//			}
-//		}
+		// if (optional.isPresent()) {
+		// List<String> languages = new ArrayList<>();
+		// locations.forEach(dto -> languages.add(dto.getLangCode()));
+		// if (languages.size() == languageUtils.getConfiguredLanguages().size()
+		// && languageUtils.getConfiguredLanguages().containsAll(languages)) {
+		// locations.forEach(i -> i.setIsActive(true));
+		// } else {
+		// throw new
+		// RequestException(LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorCode(),
+		// LocationErrorCode.UNABLE_TO_ACTIVATE.getErrorMessage());
+		// }
+		// }
 		try {
 			dto = masterdataCreationUtil.createMasterData(Location.class, dto);
-		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException| SecurityException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			// TODO Auto-generated catch block
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
 		// Validation name already exists
-		if(dto!=null)
-		{
-			List<Location> list = locationRepository.findByNameAndLevelLangCode(dto.getName(), dto.getHierarchyLevel(),dto.getLangCode());
+		if (dto != null) {
+			List<Location> list = locationRepository.findByNameAndLevelLangCode(dto.getName(), dto.getHierarchyLevel(),
+					dto.getLangCode());
 			if (list != null && !list.isEmpty()) {
 				throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
 						String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
 								dto.getName()));
 			}
 		}
-			
+
 		// setting metadata
-		//List<Location> entities = new ArrayList<>();
-		/*for (LocationDto dto : locations) {
-			entities.add(MetaDataUtils.setCreateMetaData(dto, Location.class));
-		}*/
-		if(dto!=null)
-		{
+		// List<Location> entities = new ArrayList<>();
+		/*
+		 * for (LocationDto dto : locations) {
+		 * entities.add(MetaDataUtils.setCreateMetaData(dto, Location.class)); }
+		 */
+		if (dto != null) {
 			locationEntity = MetaDataUtils.setCreateMetaData(dto, Location.class);
 		}
-			
-//			if(dto.getLangCode().equals(primaryLang))
-//			{
-//				locationCode = getCodeFromName(dto.getName());
-//				locationEntity.setCode(locationCode);
-//			}
-			
+
+		// if(dto.getLangCode().equals(primaryLang))
+		// {
+		// locationCode = getCodeFromName(dto.getName());
+		// locationEntity.setCode(locationCode);
+		// }
+
 		try {
 			locationEntity = locationRepository.create(locationEntity);
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
-//		if(locationEntity!=null)
-//		{
-//			responseDto = MapperUtils.map(locationEntity, PostLocationCodeResponseDto.class);
-//		}
-		
-		//List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities, PostLocationCodeResponseDto.class);
+		// if(locationEntity!=null)
+		// {
+		// responseDto = MapperUtils.map(locationEntity,
+		// PostLocationCodeResponseDto.class);
+		// }
+
+		// List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities,
+		// PostLocationCodeResponseDto.class);
 
 		ResponseWrapper<Location> response = new ResponseWrapper<>();
 		response.setErrors(errors);
@@ -757,8 +761,10 @@ public class LocationServiceImpl implements LocationService {
 		PageResponseDto<LocationSearchDto> pageDto = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
+		pageUtils.validateSortField(Location.class, dto.getSort());
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
-		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
+		locationList = locationList.stream().filter(location -> location.getHierarchyLevel() != 0)
+				.collect(Collectors.toList());
 		List<Node<Location>> tree = locationTree.createTree(locationList);
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
@@ -981,14 +987,14 @@ public class LocationServiceImpl implements LocationService {
 					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
 				}
-				if (!hierarchyNames.contains(columnName)&&!columnName.equals(MasterDataConstant.IS_ACTIVE)) {
+				if (!hierarchyNames.contains(columnName) && !columnName.equals(MasterDataConstant.IS_ACTIVE)) {
 					throw new RequestException(ValidationErrorCode.INVALID_COLUMN_NAME.getErrorCode(),
 							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
-					if(filter.getColumnName().equals(MasterDataConstant.IS_ACTIVE))
-					{
-						List<String> filterValues = masterDataFilterHelper.filterValues(Location.class, filter, filterValueDto);
+					if (filter.getColumnName().equals(MasterDataConstant.IS_ACTIVE)) {
+						List<String> filterValues = masterDataFilterHelper.filterValues(Location.class, filter,
+								filterValueDto);
 						filterValues.forEach(filterValue -> {
 							ColumnValue columnValue = new ColumnValue();
 							columnValue.setFieldID(MasterDataConstant.IS_ACTIVE);
