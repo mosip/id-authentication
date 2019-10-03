@@ -55,6 +55,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
+import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -86,6 +87,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
 import io.mosip.kernel.masterdata.utils.UBtree;
@@ -216,6 +218,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private ZoneService zoneService;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	/**
 	 * Constructing regex for matching the Latitude and Longitude format
@@ -802,6 +807,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		boolean flag = true;
 		// fetching locations
 		locations = serviceHelper.fetchLocations(dto.getLanguageCode());
+		pageUtils.validateSortField(RegistrationCenter.class, dto.getSort());
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
@@ -1232,7 +1238,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return Collections.emptyList();
 	}
-	
+
 	/**
 	 * Method to create SearchFilter for the recieved zoneCode
 	 * 

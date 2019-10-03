@@ -248,7 +248,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		List<MachineSpecificationExtnDto> machineSpecifications = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-
+		pageUtils.validateSortField(MachineSpecification.class, searchRequestDto.getSort());
 		for (SearchFilter filter : searchRequestDto.getFilters()) {
 			String column = filter.getColumnName();
 

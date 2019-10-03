@@ -24,6 +24,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.IndividualType;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -60,6 +61,9 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
+	
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -131,6 +135,7 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 		PageResponseDto<IndividualTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<IndividualTypeExtnDto> individuals = null;
 		if (filterTypeValidator.validate(IndividualTypeExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(IndividualType.class, dto.getSort());
 			Page<IndividualType> page = masterDataSearchHelper.searchMasterdata(IndividualType.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);

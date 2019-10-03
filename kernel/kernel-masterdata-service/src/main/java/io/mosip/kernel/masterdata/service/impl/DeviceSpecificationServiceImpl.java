@@ -86,10 +86,10 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 	@Autowired
 	FilterTypeValidator filterValidator;
-	
+
 	@Autowired
 	private DeviceUtils deviceUtil;
-	
+
 	@Autowired
 	private PageUtils pageUtils;
 
@@ -312,20 +312,22 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<DeviceSpecificationExtnDto> devices = null;
 		List<SearchFilter> deviceCodeFilter = null;
+		
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (column.equalsIgnoreCase("deviceTypeName")) {
 				filter.setColumnName("name");
 				if (filterValidator.validate(DeviceTypeDto.class, Arrays.asList(filter))) {
+					pageUtils.validateSortField(DeviceSpecification.class, dto.getSort());
 					Page<DeviceType> deviceTypes = masterDataSearchHelper.searchMasterdata(DeviceType.class,
 							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
 							null);
 					removeList.add(filter);
 					deviceCodeFilter = buildDeviceTypeSearchFilter(deviceTypes.getContent());
 					if (deviceCodeFilter.isEmpty()) {
-//						throw new DataNotFoundException(
-//								DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
-//								DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
+						// throw new DataNotFoundException(
+						// DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
+						// DeviceSpecificationErrorCode.PAGE_DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
 						return pageDto;
 					}
 
@@ -353,14 +355,14 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 		return pageDto;
 	}
-	
+
 	private void setDeviceTypeName(List<DeviceSpecificationExtnDto> devicesSpecifications) {
 		List<DeviceType> deviceTypes = deviceUtil.getDeviceTypes();
 		devicesSpecifications.forEach(deviceSpec -> {
 			deviceTypes.forEach(mt -> {
 				if (deviceSpec.getDeviceTypeCode().equals(mt.getCode())
 						&& deviceSpec.getLangCode().equals(mt.getLangCode())) {
-					deviceSpec.setDeviceTypeName(mt.getName());   
+					deviceSpec.setDeviceTypeName(mt.getName());
 				}
 			});
 		});
