@@ -25,6 +25,4 @@ copy ./target/pre-registration-login-service-*.jar pre-registration-login-servic
 
 EXPOSE 9090
 
-EXPOSE 4000
-
-CMD ["java","-javaagent:ssh madmin@13.71.92.43 /home/Glowroot/glowroot.jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","pre-registration-login-service.jar"] 
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","pre-registration-login-service.jar"] 

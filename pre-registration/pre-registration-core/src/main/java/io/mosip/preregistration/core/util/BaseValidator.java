@@ -64,11 +64,11 @@ public abstract class BaseValidator {
 			errors.rejectValue(REQUEST_TIME, ErrorCodes.PRG_CORE_REQ_003.toString(),
 					String.format(ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), REQUEST_TIME));
 		} else {
-			if (DateUtils.after(reqTime, Date.from( DateUtils.getUTCCurrentDateTime().atZone( ZoneId.systemDefault()).toInstant()))) {
-				mosipLogger.error("", "", "validateReqTime", "requesttime is InValid");
-				errors.rejectValue(REQUEST_TIME, ErrorCodes.PRG_CORE_REQ_013.getCode(), String
-						.format(ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), REQUEST_TIME));
-			}
+//			if (DateUtils.after(reqTime, Date.from( DateUtils.getUTCCurrentDateTime().atZone( ZoneId.systemDefault()).toInstant()))) {
+//				mosipLogger.error("", "", "validateReqTime", "requesttime is InValid");
+//				errors.rejectValue(REQUEST_TIME, ErrorCodes.PRG_CORE_REQ_013.getCode(), String
+//						.format(ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), REQUEST_TIME));
+//			}
 		}
 	}
 
