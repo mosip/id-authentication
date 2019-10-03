@@ -30,9 +30,9 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
-import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -48,7 +48,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -214,9 +213,7 @@ public class LocationServiceImpl implements LocationService {
 	@Transactional
 	public ResponseWrapper<Location> createLocation(LocationDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
-		String locationCode = null;
 		Location locationEntity = null;
-		PostLocationCodeResponseDto responseDto = null;
 		//List<LocationDto> locations = new ArrayList<>();
 		//List<Location> savedEntities = null;
 
@@ -782,6 +779,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 		else {
 			for (SearchFilter filter : dto.getFilters()) {
+				validateFilters(filter);
 				String type = filter.getType();
 				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
 					responseDto = getEqualsLocationSearch(filter, dto, tree,isActive);
@@ -807,6 +805,25 @@ public class LocationServiceImpl implements LocationService {
 		List<SearchSort> sort = dto.getSort();
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
+	}
+	
+	
+	private boolean validateFilters(SearchFilter filter) {
+		if (filter != null) {
+			if (filter.getColumnName() != null && !filter.getColumnName().trim().isEmpty()) {
+				if (filter.getType() != null && !filter.getType().trim().isEmpty()) {
+					return true;
+				} else {
+					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
+							String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
+									filter.getColumnName()));
+				}
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
+			}
+		}
+		return false;
 	}
 
 	/**
