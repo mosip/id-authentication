@@ -223,6 +223,7 @@ public class MasterDataFilterHelper {
 		String value = filter.getValue();
 
 		return builder.equal(root.get(columnName), value);
+		
 
 	}
 }

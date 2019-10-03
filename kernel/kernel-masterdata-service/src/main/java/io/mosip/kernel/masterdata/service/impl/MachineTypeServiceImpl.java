@@ -79,6 +79,9 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
+	
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -149,6 +152,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		List<MachineTypeExtnDto> machineTypes = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		if (filterValidator.validate(MachineTypeExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(MachineType.class, dto.getSort());
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
 			Page<MachineType> page = masterdataSearchHelper.searchMasterdata(MachineType.class, dto,
 					new OptionalFilter[] { optionalFilter });

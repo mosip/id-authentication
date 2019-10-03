@@ -55,18 +55,21 @@ public class TitleServiceImpl implements TitleService {
 
 	@Autowired
 	private TitleRepository titleRepository;
-	
+
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
-	
+
 	@Autowired
 	private MasterdataSearchHelper masterDataSearchHelper;
-	
+
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
-	
+
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
+	
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -242,14 +245,19 @@ public class TitleServiceImpl implements TitleService {
 		return pageDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TitleService#searchTitles(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#searchTitles(io.mosip.kernel.
+	 * masterdata.dto.request.SearchDto)
 	 */
 	@Override
 	public PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto) {
 		PageResponseDto<TitleExtnDto> pageDto = new PageResponseDto<>();
 		List<TitleExtnDto> titles = null;
 		if (filterTypeValidator.validate(TitleExtnDto.class, searchDto.getFilters())) {
+			pageUtils.validateSortField(Title.class, searchDto.getSort());
 			Page<Title> page = masterDataSearchHelper.searchMasterdata(Title.class, searchDto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
@@ -258,30 +266,34 @@ public class TitleServiceImpl implements TitleService {
 			}
 		}
 		return pageDto;
-		
+
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TemplateService#filterTemplates(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateService#filterTemplates(io.mosip.
+	 * kernel.masterdata.dto.request.FilterValueDto)
 	 */
 	@Override
 	public FilterResponseDto filterTitles(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		
-	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Title.class)) {
-	    	  filterValueDto.getFilters().stream().forEach(filter ->{
-	    		  masterDataFilterHelper.filterValues(Title.class, filter, filterValueDto).forEach(filteredValue ->{
-	    			  if(filteredValue!=null) {
-	    				  ColumnValue columnValue = new ColumnValue();
-							columnValue.setFieldID(filter.getColumnName());
-							columnValue.setFieldValue(filteredValue.toString());
-							columnValueList.add(columnValue);
-	    			  }
-	    		  });
-	    	  });
-	    	  filterResponseDto.setFilters(columnValueList);
-	       }
+
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Title.class)) {
+			filterValueDto.getFilters().stream().forEach(filter -> {
+				masterDataFilterHelper.filterValues(Title.class, filter, filterValueDto).forEach(filteredValue -> {
+					if (filteredValue != null) {
+						ColumnValue columnValue = new ColumnValue();
+						columnValue.setFieldID(filter.getColumnName());
+						columnValue.setFieldValue(filteredValue.toString());
+						columnValueList.add(columnValue);
+					}
+				});
+			});
+			filterResponseDto.setFilters(columnValueList);
+		}
 		return filterResponseDto;
 	}
 
