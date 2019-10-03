@@ -938,18 +938,17 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getEqualsLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> locationSearch = null;
+		List<LocationSearchDto> locationSearch = new ArrayList<>();
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		Location location = locationRepository.findLocationByHierarchyLevel(locLevel, filter.getValue(),
 				dto.getLanguageCode(),isActive);
 		if (location != null) {
-			locationSearch = getListOfLocationNodes(tree, location);
+			locationSearch = getListOfLocationNodes(tree, location,locationSearch);
 		}
 		return locationSearch;
 	}
 
-	private List<LocationSearchDto> getListOfLocationNodes(List<Node<Location>> tree, Location location) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
+	private List<LocationSearchDto> getListOfLocationNodes(List<Node<Location>> tree, Location location,List<LocationSearchDto> responseDto) {	
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
@@ -1000,14 +999,14 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> responseDto = null;
+		List<LocationSearchDto> locationSearch = new ArrayList<>();
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelContains(locLevel,
 				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
-			responseDto = getListOfLocationNodes(tree, loc);
+			locationSearch = getListOfLocationNodes(tree, loc,locationSearch);
 		}
-		return responseDto;
+		return locationSearch;
 	}
 
 	/**
@@ -1024,16 +1023,16 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> responseDto = null;
+		List<LocationSearchDto> locationSearch = new ArrayList<>();
 		short hierarchyLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelStartsWith(hierarchyLevel,
 				filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
-			responseDto = getListOfLocationNodes(tree, loc);
+			locationSearch = getListOfLocationNodes(tree, loc,locationSearch);
 
 		}
 
-		return responseDto;
+		return locationSearch;
 	}
 
 	/*
