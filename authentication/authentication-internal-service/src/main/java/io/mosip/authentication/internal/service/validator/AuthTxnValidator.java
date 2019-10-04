@@ -7,7 +7,6 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.indauth.dto.IdType;
 
 /**
  * To validate Auth transaction inputs

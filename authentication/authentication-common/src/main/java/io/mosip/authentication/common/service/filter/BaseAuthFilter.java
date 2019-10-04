@@ -15,16 +15,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -34,7 +29,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -58,20 +52,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	/** The public key. */
 	protected PublicKey publicKey;
-
-	/** The encryptor. */
-	protected EncryptorImpl encryptor;
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseIDAFilter#init(javax.servlet.FilterConfig)
-	 */
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		super.init(filterConfig);
-		WebApplicationContext context = WebApplicationContextUtils
-				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		encryptor = context.getBean(EncryptorImpl.class);
-	}
 
 	/*
 	 * (non-Javadoc)

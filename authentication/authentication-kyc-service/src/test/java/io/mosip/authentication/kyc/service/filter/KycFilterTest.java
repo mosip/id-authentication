@@ -17,8 +17,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +39,6 @@ import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -59,8 +56,6 @@ public class KycFilterTest {
 	@Mock
 	KeyManager keyManager;
 
-	@Mock
-	EncryptorImpl encryptor;
 
 	byte[] key = { 48, -126, 1, 34, 48, 13, 6, 9, 42, -122, 72, -122, -9, 13, 1, 1, 1, 5, 0, 3, -126, 1, 15, 0, 48,
 			-126, 1, 10, 2, -126, 1, 1, 0, -56, 41, -49, 92, 30, -78, 87, 22, -103, -23, -14, 106, -89, 84, -73, 51,
@@ -89,62 +84,11 @@ public class KycFilterTest {
 			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
 		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
-		ReflectionTestUtils.setField(kycAuthFilter, "encryptor", encryptor);
 		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		Map<String, Object> readValue = mapper.readValue(
 				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:28.141+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:27.697+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"staticToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":\"1234567890\",\"ttl\":\"24\",\"ver\":\"1.0\"}",
 				new TypeReference<Map<String, Object>>() {
 				});
-		Mockito.when(encryptor.symmetricEncrypt(new SecretKey() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getFormat() {
-
-				return null;
-			}
-
-			@Override
-			public byte[] getEncoded() {
-
-				return null;
-			}
-
-			@Override
-			public String getAlgorithm() {
-
-				return null;
-			}
-		}, "asdsad".toString().getBytes())).thenReturn("asad".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(new PublicKey() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getFormat() {
-
-				return null;
-			}
-
-			@Override
-			public byte[] getEncoded() {
-
-				return null;
-			}
-
-			@Override
-			public String getAlgorithm() {
-
-				return null;
-			}
-		}, "adsad".toString().getBytes())).thenReturn("asad".getBytes());
 		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encipherResponse", Map.class);
 		encodeMethod.setAccessible(true);
 		encodeMethod.invoke(kycAuthFilter, readValue);
@@ -230,7 +174,6 @@ public class KycFilterTest {
 			InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
 		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
-		ReflectionTestUtils.setField(kycAuthFilter, "encryptor", encryptor);
 		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		/*
 		 * Class<KycAuthFilter> myClass = (Class<KycAuthFilter>)
@@ -246,56 +189,6 @@ public class KycFilterTest {
 				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"staticToken\":\"550543405005021870151441274950230450\"},\"response\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null},\"txnID\":null,\"ttl\":\"24\"}",
 				new TypeReference<Map<String, Object>>() {
 				});
-		Mockito.when(encryptor.symmetricEncrypt(new SecretKey() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getFormat() {
-
-				return null;
-			}
-
-			@Override
-			public byte[] getEncoded() {
-
-				return null;
-			}
-
-			@Override
-			public String getAlgorithm() {
-
-				return null;
-			}
-		}, resValue.toString().getBytes())).thenReturn("asad".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(new PublicKey() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getFormat() {
-
-				return null;
-			}
-
-			@Override
-			public byte[] getEncoded() {
-
-				return null;
-			}
-
-			@Override
-			public String getAlgorithm() {
-
-				return null;
-			}
-		}, resValue.toString().getBytes())).thenReturn("asad".getBytes());
 		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
 		txvIdMethod.setAccessible(true);
 		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
@@ -335,62 +228,11 @@ public class KycFilterTest {
 			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = null;
 		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
-		ReflectionTestUtils.setField(kycAuthFilter, "encryptor", encryptor);
 		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		Map<String, Object> readValue = mapper.readValue(
 				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:28.141+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:27.697+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"staticToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":\"1234567890\",\"ttl\":\"24\",\"ver\":\"1.0\"}",
 				new TypeReference<Map<String, Object>>() {
 				});
-		Mockito.when(encryptor.symmetricEncrypt(new SecretKey() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getFormat() {
-
-				return null;
-			}
-
-			@Override
-			public byte[] getEncoded() {
-
-				return null;
-			}
-
-			@Override
-			public String getAlgorithm() {
-
-				return null;
-			}
-		}, "asdsad".toString().getBytes())).thenReturn("asad".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(new PublicKey() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getFormat() {
-
-				return null;
-			}
-
-			@Override
-			public byte[] getEncoded() {
-
-				return null;
-			}
-
-			@Override
-			public String getAlgorithm() {
-
-				return null;
-			}
-		}, "adsad".toString().getBytes())).thenReturn("asad".getBytes());
 		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encipherResponse", Map.class);
 		encodeMethod.setAccessible(true);
 		encodeMethod.invoke(kycAuthFilter, readValue);
