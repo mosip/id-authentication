@@ -82,16 +82,16 @@ public class LoginServiceTest {
 	private List<String> list;
 	private Map<String,String> requestMap;
 	
-	@Value("${mosip.preregistration.sendotp.id}")
+	@Value("${mosip.preregistration.login.id.sendotp}")
 	private String sendOtpId;
 	
-	@Value("${mosip.preregistration.validateotp.id}")
+	@Value("${mosip.preregistration.login.id.validateotp}")
 	private String userIdOtpId;
 	
-	@Value("${mosip.preregistration.invalidatetoken.id}")
+	@Value("${mosip.preregistration.login.id.invalidatetoken}")
 	private String invalidateTokenId;
 	
-	@Value("${mosip.preregistration.config.id}")
+	@Value("${mosip.preregistration.login.id.config}")
 	private String configId;
 	
 	@Value("${mosip.preregistration.login.service.version}")

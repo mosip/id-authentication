@@ -83,10 +83,10 @@ public class LoginService {
 	@Value("${ui.config.params}")
 	private String uiConfigParams;
 
-	@Value("${mosip.preregistration.invalidatetoken.id}")
+	@Value("${mosip.preregistration.login.id.invalidatetoken}")
 	private String invalidateTokenId;
 
-	@Value("${mosip.preregistration.config.id}")
+	@Value("${mosip.preregistration.login.id.config}")
 	private String configId;
 
 	@Value("${mosip.preregistration.login.service.version}")

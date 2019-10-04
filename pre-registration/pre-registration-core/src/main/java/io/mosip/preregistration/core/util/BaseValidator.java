@@ -1,6 +1,8 @@
 package io.mosip.preregistration.core.util;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +16,7 @@ import org.springframework.validation.Errors;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
@@ -64,11 +67,12 @@ public abstract class BaseValidator {
 			errors.rejectValue(REQUEST_TIME, ErrorCodes.PRG_CORE_REQ_003.toString(),
 					String.format(ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), REQUEST_TIME));
 		} else {
-//			if (DateUtils.after(reqTime, Date.from( DateUtils.getUTCCurrentDateTime().atZone( ZoneId.systemDefault()).toInstant()))) {
-//				mosipLogger.error("", "", "validateReqTime", "requesttime is InValid");
-//				errors.rejectValue(REQUEST_TIME, ErrorCodes.PRG_CORE_REQ_013.getCode(), String
-//						.format(ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), REQUEST_TIME));
-//			}
+			LocalDate localDate = reqTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			LocalDate serverDate = new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
+				errors.rejectValue(REQUEST_TIME, ErrorCodes.PRG_CORE_REQ_013.getCode(), String
+						.format(ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), REQUEST_TIME));
+			}
 		}
 	}
 
