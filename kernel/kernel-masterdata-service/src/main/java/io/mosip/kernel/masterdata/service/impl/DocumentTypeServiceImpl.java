@@ -84,6 +84,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
 
+	@Autowired
+	private PageUtils pageUtils;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -276,6 +279,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentTypeExtnDto> doumentTypes = null;
 		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(DocumentType.class, dto.getSort());
 			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);

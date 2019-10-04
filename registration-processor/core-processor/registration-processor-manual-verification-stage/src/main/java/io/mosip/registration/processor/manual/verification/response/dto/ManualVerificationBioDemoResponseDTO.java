@@ -9,22 +9,26 @@ import lombok.EqualsAndHashCode;
 
 /**
  * Instantiates a new manual verification bio demo response DTO.
+ * 
  * @author Rishabh Keshari
  */
 @Data
 
-/* (non-Javadoc)
- * @see io.mosip.registration.processor.core.packet.dto.BaseRequestResponseDTO#hashCode()
+/*
+ * (non-Javadoc)
+ * 
+ * @see io.mosip.registration.processor.core.packet.dto.BaseRequestResponseDTO#
+ * hashCode()
  */
 @EqualsAndHashCode(callSuper = true)
 public class ManualVerificationBioDemoResponseDTO extends BaseRestResponseDTO {
-	
+
 	private static final long serialVersionUID = -8196265427738296193L;
 
 	/** The response. */
-	private String file;
-	
+	private Response response;
+
 	/** The error. */
 	private List<ErrorDTO> errors;
-	
+
 }

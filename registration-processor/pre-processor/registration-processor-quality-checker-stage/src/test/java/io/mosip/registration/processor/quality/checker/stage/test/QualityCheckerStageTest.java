@@ -56,7 +56,7 @@ public class QualityCheckerStageTest {
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
-	
+
 	@Mock
 	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
@@ -77,7 +77,7 @@ public class QualityCheckerStageTest {
 	private CbeffUtil cbeffUtil;
 
 	@Mock
-	private IBioApi iBioApi;
+	private IBioApi fingerApi;
 
 	@InjectMocks
 	private QualityCheckerStage qualityCheckerStage = new QualityCheckerStage() {
@@ -102,7 +102,9 @@ public class QualityCheckerStageTest {
 		ReflectionTestUtils.setField(qualityCheckerStage, "rightFingerThreshold", 80);
 		ReflectionTestUtils.setField(qualityCheckerStage, "thumbFingerThreshold", 80);
 		ReflectionTestUtils.setField(qualityCheckerStage, "faceThreshold", 25);
-
+		ReflectionTestUtils.setField(qualityCheckerStage, "fingerApi", fingerApi);
+		ReflectionTestUtils.setField(qualityCheckerStage, "faceApi", fingerApi);
+		ReflectionTestUtils.setField(qualityCheckerStage, "irisApi", fingerApi);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
@@ -124,10 +126,10 @@ public class QualityCheckerStageTest {
 		List<BIRType> birTypeList = new ArrayList<>();
 		BIRType birType1 = new BIRType();
 		BDBInfoType bdbInfoType1 = new BDBInfoType();
-		RegistryIDType registryIDType=new RegistryIDType();
+		RegistryIDType registryIDType = new RegistryIDType();
 		registryIDType.setOrganization("Mosip");
 		registryIDType.setType("257");
-		QualityType quality=new QualityType();
+		QualityType quality = new QualityType();
 		quality.setAlgorithm(registryIDType);
 		quality.setScore(90l);
 		bdbInfoType1.setQuality(quality);
@@ -190,7 +192,7 @@ public class QualityCheckerStageTest {
 	public void testQualityCheckerSuccess() throws BiometricException {
 		QualityScore qualityScore = new QualityScore();
 		qualityScore.setInternalScore(90);
-		Mockito.when(iBioApi.checkQuality(any(), any())).thenReturn(qualityScore);
+		Mockito.when(fingerApi.checkQuality(any(), any())).thenReturn(qualityScore);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890");
@@ -203,7 +205,7 @@ public class QualityCheckerStageTest {
 	public void testQualityCheckFailure() throws BiometricException {
 		QualityScore qualityScore = new QualityScore();
 		qualityScore.setInternalScore(50);
-		Mockito.when(iBioApi.checkQuality(any(), any())).thenReturn(qualityScore);
+		Mockito.when(fingerApi.checkQuality(any(), any())).thenReturn(qualityScore);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890");
@@ -213,7 +215,8 @@ public class QualityCheckerStageTest {
 	}
 
 	@Test
-	public void testParameterMissing() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+	public void testParameterMissing() throws IOException, PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
 				+ "      \"language\" : \"eng\",\n" + "      \"value\" : \"Ragavendran V\"\n" + "    }, {\n"
 				+ "      \"language\" : \"ara\",\n" + "      \"value\" : \"قشلشرثىيقشى ر\"\n" + "    } ]\n" + "  }\n"
@@ -229,7 +232,8 @@ public class QualityCheckerStageTest {
 	}
 
 	@Test
-	public void testFileNameMissing() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+	public void testFileNameMissing() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException,
+			io.mosip.kernel.core.exception.IOException {
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
 				+ "      \"language\" : \"eng\",\n" + "      \"value\" : \"Ragavendran V\"\n" + "    }, {\n"
 				+ "      \"language\" : \"ara\",\n" + "      \"value\" : \"قشلشرثىيقشى ر\"\n" + "    } ],\n"
@@ -246,7 +250,8 @@ public class QualityCheckerStageTest {
 	}
 
 	@Test
-	public void testFsAdapterException() throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+	public void testFsAdapterException() throws PacketDecryptionFailureException, ApisResourceAccessException,
+			io.mosip.kernel.core.exception.IOException, IOException {
 		FSAdapterException exception = new FSAdapterException("", "");
 		Mockito.when(adapter.getFile(any(), any())).thenThrow(exception);
 		MessageDTO dto = new MessageDTO();
@@ -259,7 +264,7 @@ public class QualityCheckerStageTest {
 	@Test
 	public void testBiometricException() throws BiometricException {
 		BiometricException exception = new BiometricException("", "");
-		Mockito.when(iBioApi.checkQuality(any(), any())).thenThrow(exception);
+		Mockito.when(fingerApi.checkQuality(any(), any())).thenThrow(exception);
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890");
 		MessageDTO result = qualityCheckerStage.process(dto);
@@ -269,13 +274,11 @@ public class QualityCheckerStageTest {
 
 	private static List<BIR> getBIRList(List<BIRType> birTypeList) {
 		List<BIR> birList = new ArrayList<>();
-		for(BIRType birType:birTypeList)
-		{
+		for (BIRType birType : birTypeList) {
 			BIR bir = new BIR.BIRBuilder().withBdb(birType.getBDB()).withElement(birType.getAny())
-					.withBdbInfo(new BDBInfo.BDBInfoBuilder()
-							.withQuality(birType.getBDBInfo().getQuality())
-							.withType(birType.getBDBInfo().getType())
-							.withSubtype(birType.getBDBInfo().getSubtype()).build())
+					.withBdbInfo(new BDBInfo.BDBInfoBuilder().withQuality(birType.getBDBInfo().getQuality())
+							.withType(birType.getBDBInfo().getType()).withSubtype(birType.getBDBInfo().getSubtype())
+							.build())
 					.build();
 			birList.add(bir);
 		}

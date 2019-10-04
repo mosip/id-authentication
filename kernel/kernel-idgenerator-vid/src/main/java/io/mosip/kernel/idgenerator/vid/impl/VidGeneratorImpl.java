@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
@@ -44,11 +44,8 @@ import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 @Component
 public class VidGeneratorImpl implements VidGenerator<String> {
 
-	/**
-	 * Reference to {@link Encryptor}.
-	 */
 	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/**
 	 * Reference to {@link VidSeedRepository}.
@@ -169,7 +166,7 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 
 		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
 				VidPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
-		byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, randomSeed.getBytes());
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, randomSeed.getBytes(),null);
 		BigInteger bigInteger = new BigInteger(encryptedData);
 		vid = String.valueOf(bigInteger.abs());
 		vid = vid.substring(0, vidLength - 1);

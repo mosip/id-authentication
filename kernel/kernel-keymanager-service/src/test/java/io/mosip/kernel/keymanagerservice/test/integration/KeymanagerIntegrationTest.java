@@ -46,8 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
@@ -93,11 +92,11 @@ public class KeymanagerIntegrationTest {
 	@MockBean
 	private KeyStoreRepository keyStoreRepository;
 
+	/**
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
+	 */
 	@MockBean
-	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	@MockBean
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	@Mock
 	private PublicKey publicKey;
@@ -326,7 +325,7 @@ public class KeymanagerIntegrationTest {
 	public void decryptSymmetricKey() throws Exception {
 		setupSingleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(decryptor.asymmetricPrivateDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto("applicationId",
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null, "");
 		requestWrapper.setRequest(symmetricKeyRequestDto);
@@ -340,7 +339,7 @@ public class KeymanagerIntegrationTest {
 	@Test
 	public void decryptSymmetricKeyWithReferenceIdException() throws Exception {
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(decryptor.asymmetricPrivateDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto("applicationId",
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "referenceId",
 				"");
@@ -357,7 +356,7 @@ public class KeymanagerIntegrationTest {
 	public void decryptSymmetricKeyWithReferenceIdMultipleAliasException() throws Exception {
 		setupMultipleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(decryptor.asymmetricPrivateDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto("applicationId",
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "referenceId",
 				"");
@@ -373,7 +372,7 @@ public class KeymanagerIntegrationTest {
 	public void decryptSymmetricKeyWithReferenceIdDBException() throws Exception {
 		setupSingleKeyAlias();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(decryptor.asymmetricPrivateDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto("applicationId",
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "referenceId",
 				"");
@@ -391,7 +390,7 @@ public class KeymanagerIntegrationTest {
 		setupDBKeyStore();
 		when(keyStoreRepository.findByAlias(Mockito.any())).thenReturn(dbKeyStore);
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(decryptor.asymmetricPrivateDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
 		doReturn("".getBytes()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto("applicationId",
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "referenceId",
@@ -411,7 +410,7 @@ public class KeymanagerIntegrationTest {
 		setupKey();
 		when(keyStoreRepository.findByAlias(Mockito.any())).thenReturn(dbKeyStore);
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(decryptor.asymmetricPrivateDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
 		doReturn(key.getPrivate().getEncoded()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());
 		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto("applicationId",
 				LocalDateTime.parse("2010-05-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), "referenceId",
@@ -432,7 +431,7 @@ public class KeymanagerIntegrationTest {
 		setupSingleKeyAlias();
 		setupKey();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(encryptor.asymmetricPrivateEncrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.sign(Mockito.any(), Mockito.any())).thenReturn("");
 		when(keyStore.getAsymmetricKey(Mockito.any())).thenReturn(privateKeyEntry);
 		
 		doReturn(key.getPrivate().getEncoded()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());
@@ -464,7 +463,7 @@ public class KeymanagerIntegrationTest {
 		setupSingleKeyAlias();
 		setupKey();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(encryptor.asymmetricPrivateEncrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.sign(Mockito.any(), Mockito.any())).thenReturn("");
 		when(keyStore.getAsymmetricKey(Mockito.any())).thenReturn(privateKeyEntry);
 		MvcResult result = mockMvc.perform(get("/publickey/KERNEL?referenceId=SIGN&timeStamp=2010-01-01T12:00:00.000Z"))
 				.andExpect(status().is(200)).andReturn();
@@ -486,7 +485,7 @@ public class KeymanagerIntegrationTest {
 		setupMultipleKeyAlias();
 		setupKey();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(encryptor.asymmetricPrivateEncrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.sign(Mockito.any(), Mockito.any())).thenReturn("");
 		when(keyStore.getAsymmetricKey(Mockito.any())).thenReturn(privateKeyEntry);
 		
 		doReturn(key.getPrivate().getEncoded()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());
@@ -516,7 +515,7 @@ public class KeymanagerIntegrationTest {
 		setupMultipleKeyAlias();
 		setupKey();
 		when(keyAliasRepository.findByApplicationIdAndReferenceId(Mockito.any(), Mockito.any())).thenReturn(keyalias);
-		when(encryptor.asymmetricPrivateEncrypt(Mockito.any(), Mockito.any())).thenReturn("".getBytes());
+		when(cryptoCore.sign(Mockito.any(), Mockito.any())).thenReturn("");
 		when(keyStore.getAsymmetricKey(Mockito.any())).thenReturn(privateKeyEntry);
 		
 		doReturn(key.getPrivate().getEncoded()).when(keymanagerUtil).decryptKey(Mockito.any(), Mockito.any());

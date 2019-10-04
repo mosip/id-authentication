@@ -39,7 +39,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -64,6 +64,12 @@ public class CryptographicServiceIntegrationTest {
 
 	@Value("${mosip.kernel.keymanager-service-encrypt-url}")
 	private String encryptUrl;
+	
+	/**
+	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
+	 */
+	@MockBean
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -76,9 +82,6 @@ public class CryptographicServiceIntegrationTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
-	@MockBean
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	private KeyPair keyPair;
 
@@ -123,7 +126,8 @@ public class CryptographicServiceIntegrationTest {
 		response.setResponse(keymanagerPublicKeyResponseDto);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
-
+        when(cryptoCore.symmetricEncrypt(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("MOCKENCRYPTEDDATA".getBytes());
+		when(cryptoCore.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("MOCKENCRYPTEDSESSIONKEY".getBytes());
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);
 
@@ -137,7 +141,7 @@ public class CryptographicServiceIntegrationTest {
 		MvcResult result = mockMvc
 				.perform(post("/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
-
+        System.out.println(result);
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(result.getResponse().getContentAsString(),
 				ResponseWrapper.class);
 		CryptomanagerResponseDto cryptomanagerResponseDto = objectMapper.readValue(
@@ -155,7 +159,7 @@ public class CryptographicServiceIntegrationTest {
 		response.setResponse(keymanagerSymmetricKeyResponseDto);
 		server.expect(requestTo(symmetricKeyUrl))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
-		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
+		when(cryptoCore.symmetricDecrypt(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 
 		requestDto = new CryptomanagerRequestDto();
 		requestWrapper.setRequest(requestDto);

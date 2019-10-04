@@ -37,6 +37,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -82,6 +83,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	/**
 	 * Autowired reference for {@link DataMapper}
@@ -330,7 +334,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
 		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
 		List<BlacklistedWordsExtnDto> blackListedWords = null;
+
 		if (filterTypeValidator.validate(BlacklistedWordsExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(BlacklistedWords.class, dto.getSort());
 			Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);

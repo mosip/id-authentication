@@ -91,7 +91,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 
 	@Autowired
 	private MachineUtil machineUtil;
-	
+
 	@Autowired
 	private PageUtils pageUtils;
 
@@ -248,7 +248,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		List<MachineSpecificationExtnDto> machineSpecifications = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-
+		pageUtils.validateSortField(MachineSpecification.class, searchRequestDto.getSort());
 		for (SearchFilter filter : searchRequestDto.getFilters()) {
 			String column = filter.getColumnName();
 
@@ -259,10 +259,6 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				removeList.add(filter);
 				addList.addAll(buildMachineTypeSearchFilter(machineTypes.getContent()));
 				if (addList.isEmpty()) {
-					/*throw new DataNotFoundException(
-							MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-							String.format(MachineSpecificationErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION
-									.getErrorMessage(), filter.getValue()));*/
 					return pageDto;
 				}
 			}
@@ -291,7 +287,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 			machineTypes.forEach(mt -> {
 				if (machineSpec.getMachineTypeCode().equals(mt.getCode())
 						&& machineSpec.getLangCode().equals(mt.getLangCode())) {
-					machineSpec.setMachineTypeName(mt.getName());   
+					machineSpec.setMachineTypeName(mt.getName());
 				}
 			});
 		});

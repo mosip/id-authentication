@@ -39,6 +39,8 @@ mvn javadoc:javadoc
 **Exceptions to be handled while using this functionality:**
 1. InvalidKeyException
 2. InvalidDataException
+3. SignatureException
+4. InvalidParamSpecException
 
 **Usage Sample**
 
@@ -49,9 +51,9 @@ mvn javadoc:javadoc
  
  ```
 @Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 	
-   byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, dataToEncrypt);
+byte[] encryptedData =cryptoCore.symmetricEncrypt(secretKey,data,iv,aad);
 ```
  
  *Output*
@@ -63,10 +65,10 @@ mvn javadoc:javadoc
  *Usage Asymmetric Encryption:*
  
  ```
- @Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+@Autowired
+private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 	
-	encryptor.asymmetricPublicEncrypt(keyPair.getPublic(),dataToEncrypt));
+cryptoCore.asymmetricEncrypt(keyPair.getPublic(),dataToEncrypt));
 	
  ```
  
@@ -81,10 +83,10 @@ S݄=Җ[<C&!r��˅Б�ɦ-�	�T��	�$0�P����e�T7�
  *Usage Symmetric Decryption:*
  
  ```
- @Autowired 
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+@Autowired
+private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 	
-	byte[] decryptedData = decryptor.symmetricDecrypt(secretKey, encryptedData);
+byte[] decryptedData = cryptoCore.symmetricDecrypt(secretKey, encryptedData,iv,aad);
 ```
 
 
@@ -97,10 +99,9 @@ This is Plain Text
 *Usage Asymmetric Decryption:*
 
 ```
-@Autowired 
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 	
-byte[] decryptedData = decryptor.asymmetricPrivateDecrypt(privatekey, encryptedData);
+byte[] decryptedData = cryptoCore.asymmetricDecrypt(privatekey, encryptedData);
 ```
 
 *Output*
@@ -108,3 +109,34 @@ byte[] decryptedData = decryptor.asymmetricPrivateDecrypt(privatekey, encryptedD
 ```
 This is Plain Text
 ```
+
+*Usage Signing and Verify*
+
+```
+private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+
+String signnedData=cryptoCore.sign(dataTOSign,certificateResponse.getCertificateEntry().getPrivateKey());
+
+boolean result = cryptoCore.verifySignature(dataTOSign.getBytes(), signnedData, certificateResponse.getCertificateEntry().getPublicKey());
+
+```
+
+*Output*
+
+```
+true
+```
+
+*Usage Hashing*
+
+```
+private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+
+String hashedData = cryptoCore.hash(datatoHash.getBytes(),salt.getBytes());
+```
+*Output*
+
+```
+5058438A3A25B9E4E16D2D65B0D994FD041222016B8B72615A7159655908C55D
+```
+

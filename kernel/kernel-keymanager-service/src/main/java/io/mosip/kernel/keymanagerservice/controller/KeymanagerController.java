@@ -50,12 +50,6 @@ public class KeymanagerController {
 	 */
 	@Autowired
 	KeymanagerService keymanagerService;
-	
-/*	*//**
-	 * Instance of simpleAES
-	 *//*
-	@Autowired
-	SimpleAES simpleAES*/;
 
 	/**
 	 * Request mapping to get Public Key
@@ -108,24 +102,6 @@ public class KeymanagerController {
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
-		return response;
-	}
-	
-	// To be merged with decrypt
-	/**
-	 * Request mapping to decrypt symmetric key
-	 * 
-	 * @param symmetricKeyRequestDto having encrypted symmetric key
-	 * 
-	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
-	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@PostMapping(value = "/auth/decrypt")
-	public ResponseWrapper<SymmetricKeyResponseDto> decryptAuthSymmetricKey(
-			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody RequestWrapper<SymmetricKeyRequestDto> symmetricKeyRequestDto) {
-        ResponseWrapper<SymmetricKeyResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.decryptAuthSymmetricKey(symmetricKeyRequestDto.getRequest()));
 		return response;
 	}
 

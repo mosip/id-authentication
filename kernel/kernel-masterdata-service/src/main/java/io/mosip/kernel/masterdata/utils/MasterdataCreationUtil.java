@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -182,7 +183,9 @@ public class MasterdataCreationUtil {
 						"Cannot create data in secondary language as data does not exist in primary language");
 			}
 		}
-		return null;
+		//return null;
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
 	
 	private String getCodeFromName(String name) {
@@ -210,7 +213,7 @@ public class MasterdataCreationUtil {
 	public <E, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
-		boolean activeDto=false,activePrimary=false;
+		boolean activeDto=false,activePrimary=false,activeSecondary=false;
 		String primaryKeyCol=null,nameCol=null,nameValue=null;
 		Field isActive;
 		Class<?> dtoClass = t.getClass();
@@ -244,9 +247,37 @@ public class MasterdataCreationUtil {
 		if (langCode.equals(primaryLang)) {
 			if(activeDto==true)
 			{
-				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-				isActive.setAccessible(true);
-				isActive.set(t, Boolean.TRUE);
+				E secondaryEntity = getResultSet(entity, secondaryLang, id,primaryKeyCol);
+				
+				if(secondaryEntity!=null)
+				{
+					for (Field field : secondaryEntity.getClass().getDeclaredFields()) {
+						field.setAccessible(true);
+								if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+									activeSecondary= (boolean) field.get(t);
+						}
+					}
+					if(activeSecondary==true)
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.TRUE);
+					}
+					else
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.FALSE);
+					}
+					
+				}
+				else
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.FALSE);
+				}
+				
 			}
 			if(activeDto==false)
 			{
@@ -288,7 +319,9 @@ public class MasterdataCreationUtil {
 						"Cannot update data in secondary language as data does not exist in primary language");
 			}
 		}
-		return null;
+		//return null;
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
 
 

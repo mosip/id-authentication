@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -29,9 +30,9 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
-import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -47,7 +48,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.ColumnCodeValue;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
@@ -213,9 +213,7 @@ public class LocationServiceImpl implements LocationService {
 	@Transactional
 	public ResponseWrapper<Location> createLocation(LocationDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
-		String locationCode = null;
 		Location locationEntity = null;
-		PostLocationCodeResponseDto responseDto = null;
 		//List<LocationDto> locations = new ArrayList<>();
 		//List<Location> savedEntities = null;
 
@@ -757,24 +755,31 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
-		boolean isActive=false;
+		String active = null;
+		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
-		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
-		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
-		List<Node<Location>> tree = locationTree.createTree(locationList);
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
 			if(isActiveFilter.isPresent())
 			{
-				String active = isActiveFilter.get().getValue();
+				active = isActiveFilter.get().getValue();
 				isActive = Boolean.valueOf(active);
 			}
 		}
+		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode(),isActive);
+		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
+		List<Node<Location>> tree = locationTree.createTree(locationList);
+		
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
-		} else {
+		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active) && !tree.isEmpty())
+		{
+			responseDto = emptyFilterLocationSearch(tree,isActive);
+		}
+		else {
 			for (SearchFilter filter : dto.getFilters()) {
+				validateFilters(filter);
 				String type = filter.getType();
 				if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
 					responseDto = getEqualsLocationSearch(filter, dto, tree,isActive);
@@ -800,6 +805,25 @@ public class LocationServiceImpl implements LocationService {
 		List<SearchSort> sort = dto.getSort();
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
+	}
+	
+	
+	private boolean validateFilters(SearchFilter filter) {
+		if (filter != null) {
+			if (filter.getColumnName() != null && !filter.getColumnName().trim().isEmpty()) {
+				if (filter.getType() != null && !filter.getType().trim().isEmpty()) {
+					return true;
+				} else {
+					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
+							String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
+									filter.getColumnName()));
+				}
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -848,6 +872,57 @@ public class LocationServiceImpl implements LocationService {
 
 		return responseDto;
 	}
+	
+	
+	/**
+	 * Method to search Location with no filter mentioned.
+	 * 
+	 * @param tree
+	 *            the Location Tree.
+	 * @return list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree,boolean isActive) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		Node<Location> root = locationTree.findRootNode(tree.get(0));
+		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
+
+		leafNodes.forEach(leafNode -> {
+			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+
+			LocationSearchDto locationSearchDto = new LocationSearchDto();
+			leafParents.forEach(p -> {
+				if(p.getIsActive()==isActive)
+				{
+					if (p.getHierarchyLevel() == 1) {
+						locationSearchDto.setRegion(p.getName());
+					}
+					if (p.getHierarchyLevel() == 2) {
+						locationSearchDto.setProvince(p.getName());
+					}
+					if (p.getHierarchyLevel() == 3) {
+						locationSearchDto.setCity(p.getName());
+					}
+					if (p.getHierarchyLevel() == 4) {
+						locationSearchDto.setZone(p.getName());
+					}
+					if (p.getHierarchyLevel() == 5) {
+						locationSearchDto.setPostalCode(p.getName());
+					}
+					locationSearchDto.setCreatedBy(p.getCreatedBy());
+					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+					locationSearchDto.setIsActive(p.getIsActive());
+					locationSearchDto.setIsDeleted(p.getIsDeleted());
+					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+				}
+				
+			});
+			responseDto.add(locationSearchDto);
+		});
+
+		return responseDto;
+	}
 
 	/**
 	 * Method to find Location for equal data.
@@ -863,18 +938,17 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getEqualsLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> locationSearch = null;
+		List<LocationSearchDto> locationSearch = new ArrayList<>();
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		Location location = locationRepository.findLocationByHierarchyLevel(locLevel, filter.getValue(),
 				dto.getLanguageCode(),isActive);
 		if (location != null) {
-			locationSearch = getListOfLocationNodes(tree, location);
+			locationSearch = getListOfLocationNodes(tree, location,locationSearch);
 		}
 		return locationSearch;
 	}
 
-	private List<LocationSearchDto> getListOfLocationNodes(List<Node<Location>> tree, Location location) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
+	private List<LocationSearchDto> getListOfLocationNodes(List<Node<Location>> tree, Location location,List<LocationSearchDto> responseDto) {	
 		Node<Location> node = locationTree.findNode(tree, location.getCode());
 		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
 		leafNodes.forEach(leafNode -> {
@@ -925,14 +999,14 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> responseDto = null;
+		List<LocationSearchDto> locationSearch = new ArrayList<>();
 		short locLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelContains(locLevel,
 				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
-			responseDto = getListOfLocationNodes(tree, loc);
+			locationSearch = getListOfLocationNodes(tree, loc,locationSearch);
 		}
-		return responseDto;
+		return locationSearch;
 	}
 
 	/**
@@ -949,16 +1023,16 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
 			List<Node<Location>> tree, boolean isActive) {
-		List<LocationSearchDto> responseDto = null;
+		List<LocationSearchDto> locationSearch = new ArrayList<>();
 		short hierarchyLevel = Short.parseShort(getHierarchyLevel(filter.getColumnName()));
 		List<Location> locationList = locationRepository.findLocationByHierarchyLevelStartsWith(hierarchyLevel,
 				filter.getValue().toLowerCase() + "%", dto.getLanguageCode(),isActive);
 		for (Location loc : locationList) {
-			responseDto = getListOfLocationNodes(tree, loc);
+			locationSearch = getListOfLocationNodes(tree, loc,locationSearch);
 
 		}
 
-		return responseDto;
+		return locationSearch;
 	}
 
 	/*
@@ -1068,6 +1142,7 @@ public class LocationServiceImpl implements LocationService {
 			case MasterDataConstant.POSTAL_CODE:
 				return "5";
 			case MasterDataConstant.ZONE:
+			case "Zone":
 				return "4";
 			case MasterDataConstant.CITY:
 				return "3";

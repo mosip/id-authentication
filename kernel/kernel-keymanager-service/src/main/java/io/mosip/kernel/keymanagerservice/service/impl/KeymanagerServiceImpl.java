@@ -6,7 +6,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -36,8 +35,6 @@ import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -81,6 +78,10 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 @Transactional
 public class KeymanagerServiceImpl implements KeymanagerService {
 
+	private static final String VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID = "Valid reference Id. Getting key alias with referenceId";
+
+	private static final String NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID = "Not a valid reference Id. Getting key alias without referenceId";
+
 	private static final Logger LOGGER = KeymanagerLogger.getLogger(KeymanagerServiceImpl.class);
 
 	private static final int MAX_TRIES = 3;
@@ -108,23 +109,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	private KeyGenerator keyGenerator;
 
 	/**
-	 * Decryptor instance to decrypt data
-	 */
-	@Autowired
-	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	/**
-	 * {@link Encryptor} instance to encrypt data
-	 */
-	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-	
-	/**
 	 * {@link CryptoCoreSpec} instance for cryptographic functionalities.
 	 */
 	@Autowired
-	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String, SecureRandom, char[]> cryptoCore;
-
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
+	
 	/**
 	 * {@link KeyAliasRepository} instance
 	 */
@@ -409,7 +398,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
 		PrivateKey privateKey = getPrivateKeyFromRequestData(symmetricKeyRequestDto.getApplicationId(),
 				symmetricKeyRequestDto.getReferenceId(), symmetricKeyRequestDto.getTimeStamp());
-		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey,
+		byte[] decryptedSymmetricKey = cryptoCore.asymmetricDecrypt(privateKey,
 				CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
 		keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
 		return keyResponseDto;
@@ -444,7 +433,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
 						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 			}
-			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbKeyStore.get().getMasterAlias());
+			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbKeyStore.get().getMasterAlias());			
 			/**
 			 * If the private key is in dbstore, then it will be first decrypted with
 			 * application's master private key from softhsm's keystore
@@ -516,11 +505,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 		if (!keymanagerUtil.isValidReferenceId(referenceId)) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
+					NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID);
 			currentKeyAlias = getKeyAliases(applicationId, null, timeStamp).get(KeymanagerConstant.CURRENTKEYALIAS);
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
+					VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID);
 			currentKeyAlias = getKeyAliases(applicationId, referenceId, timeStamp)
 					.get(KeymanagerConstant.CURRENTKEYALIAS);
 		}
@@ -544,13 +533,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private CertificateEntry<X509Certificate, PrivateKey> createCertificateEntry() {
 
-		// byte[] certData = null;
 		CertificateFactory cf = null;
 		X509Certificate cert = null;
 		PrivateKey privateKey = null;
 		try {
-			// certData =
-			// IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
 			cf = CertificateFactory.getInstance(certificateType);
 			cert = (X509Certificate) cf
 					.generateCertificate(resourceLoader.getResource(certificateFilePath).getInputStream());
@@ -572,13 +558,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				Optional.of(signatureRequestDto.getReferenceId()), signatureRequestDto.getTimeStamp());
 		keymanagerUtil.isCertificateValid(certificateResponse.getCertificateEntry(),
 				DateUtils.parseUTCToDate(signatureRequestDto.getTimeStamp()));
-		byte[] encryptedSignedData = null;
+		String encryptedSignedData = null;
 		if (certificateResponse.getCertificateEntry() != null) {
-			encryptedSignedData = encryptor.asymmetricPrivateEncrypt(
-					certificateResponse.getCertificateEntry().getPrivateKey(),
-					CryptoUtil.decodeBase64(signatureRequestDto.getData()));
+			encryptedSignedData = cryptoCore.sign(signatureRequestDto.getData().getBytes(), certificateResponse.getCertificateEntry().getPrivateKey());
 		}
-		return new SignatureResponseDto(CryptoUtil.encodeBase64(encryptedSignedData));
+		return new SignatureResponseDto(encryptedSignedData);
 	}
 
 	// TODO: To Be Removed once upload certificate functionality is implemented
@@ -591,11 +575,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 		if (!keymanagerUtil.isValidReferenceId(certificateSignRefID)) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
+					NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(signApplicationid, null, timestamp);
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
+					VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(signApplicationid, certificateSignRefID, timestamp);
 		}
 		currentKeyAlias = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
@@ -608,8 +592,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId and timestamp");
 			storeCertificate(timestamp, keyAliasMap);
 		} else if (currentKeyAlias.size() == 1) {
-			System.out.println("\n Signature key details present in DB - " + currentKeyAlias.get(0) + "\n");
-
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()),
+					"Signature key details present in DB" + currentKeyAlias.get(0));
 		}
 	}
 
@@ -628,14 +613,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		while (tries < MAX_TRIES) {
 			try {
 				alias = UUID.randomUUID().toString();
-				System.out.println("\n Signature Key and Crt storing in keystore...\n");
 				keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
 				Thread.sleep(1000);
 				if (keyStore.getPrivateKey(alias) != null) {
-//					LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
-//							KeymanagerConstant.STORECERTIFICATE,
-//							"private key found in keystore safe to save in database");
-
 					System.out.println("\n Signature key details storing in DB - " + alias + "\n");
 					break;
 				} else {
@@ -706,11 +686,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		LocalDateTime localDateTimeStamp = keymanagerUtil.parseToLocalDateTime(timestamp);
 		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Not a valid reference Id. Getting key alias without referenceId");
+					NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(applicationId, null, localDateTimeStamp);
 		} else {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
-					"Valid reference Id. Getting key alias with referenceId");
+					VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITH_REFERENCE_ID);
 			keyAliasMap = getKeyAliases(applicationId, referenceId.get(), localDateTimeStamp);
 		}
 		currentKeyAlias = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
@@ -747,18 +727,5 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				certificateResponse.getIssuedAt(), certificateResponse.getExpiryAt());
 	}
 
-	// To be merged with decryptSymmetric key
-	@Override
-	public SymmetricKeyResponseDto decryptAuthSymmetricKey(SymmetricKeyRequestDto symmetricKeyRequestDto) {
-		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.SYMMETRICKEYREQUEST,
-				symmetricKeyRequestDto.toString(), KeymanagerConstant.DECRYPTKEY);
-		SymmetricKeyResponseDto keyResponseDto = new SymmetricKeyResponseDto();
-		PrivateKey privateKey = getPrivateKeyFromRequestData(symmetricKeyRequestDto.getApplicationId(),
-				symmetricKeyRequestDto.getReferenceId(), symmetricKeyRequestDto.getTimeStamp());
-		byte[] decryptedSymmetricKey = cryptoCore.asymmetricDecrypt(privateKey,
-				CryptoUtil.decodeBase64(symmetricKeyRequestDto.getEncryptedSymmetricKey()));
-		keyResponseDto.setSymmetricKey(CryptoUtil.encodeBase64(decryptedSymmetricKey));
-		return keyResponseDto;
-	}
 
 }
