@@ -135,7 +135,7 @@ public class KeyManager {
 	
 	public String kernelDecrypt(String data, String refId, String aad, String salt)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(data, refId, aad, salt, RestServicesConstants.DECRYPTION_SERVICE_AUTH, false);
+		return internalKernelDecryptAndDecode(data, refId, aad, salt, RestServicesConstants.DECRYPTION_SERVICE, false);
 	}
 
 

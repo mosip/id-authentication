@@ -37,8 +37,6 @@ public enum RestServicesConstants {
 
 	DECRYPTION_SERVICE("decrypt-service"),
 	
-	DECRYPTION_SERVICE_AUTH("decrypt-service-auth"),
-	
 	TITLE_SERVICE("id-masterdata-title-service"),
 	
 	USERID_RID("userid-rid"),
