@@ -66,7 +66,7 @@ public class OldDecrypt {
 		CryptoUtility cryptoUtil=new CryptoUtility();
 		SecretKey secKey=null;;
 		try {
-			secKey = cryptoUtil.asymmetricDecrypt(privateKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodedKey));
+			secKey = cryptoUtil.getSecretKey(privateKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodedKey));
 			 finalvalue = cryptoUtil.symmetricDecrypt(secKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodeData));
 		} catch (InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
 			// TODO Auto-generated catch block
