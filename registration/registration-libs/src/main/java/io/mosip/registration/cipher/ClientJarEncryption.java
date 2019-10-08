@@ -351,7 +351,7 @@ public class ClientJarEncryption {
 		byte[] output = null;
 
 		try {
-			Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
+			Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
 			byte[] randomIV = generateIV(cipher.getBlockSize());
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES_ALGORITHM);
