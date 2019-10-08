@@ -9,16 +9,13 @@ import java.security.SecureRandom;
 import java.security.Security;
 
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
@@ -32,10 +29,6 @@ import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
  */
 @Component
 public class CryptoUtility {
-
-	/** The Constant RSAPADDING. */
-	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
-	private String rsaPadding;
 
 	/** The Constant SYM_ALGORITHM. */
 	private static final String SYM_ALGORITHM = "AES";
@@ -78,25 +71,6 @@ public class CryptoUtility {
 
 	}
 	
-	
-	/**
-	 * Asymmetric decrypt.
-	 *
-	 * @param privateKey the private key
-	 * @param encryptedSecretKeyByteArr the encrypted secret key byte arr
-	 * @return the secret key
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws NoSuchPaddingException the no such padding exception
-	 * @throws InvalidKeyException the invalid key exception
-	 * @throws IllegalBlockSizeException the illegal block size exception
-	 * @throws BadPaddingException the bad padding exception
-	 */
-	public SecretKey getSecretKey(PrivateKey privateKey, byte[] encryptedSecretKeyByteArr) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-	   Cipher  cipher=Cipher.getInstance(rsaPadding);
-		cipher.init(Cipher.DECRYPT_MODE, privateKey);
-		 byte[] decryptedSecretKeyByteArr=cipher.doFinal(encryptedSecretKeyByteArr,0,encryptedSecretKeyByteArr.length);
-	      return new SecretKeySpec(decryptedSecretKeyByteArr, 0, decryptedSecretKeyByteArr.length,CryptoUtility.SYM_ALGORITHM);	 
-	}
 	
 	
 	/**
