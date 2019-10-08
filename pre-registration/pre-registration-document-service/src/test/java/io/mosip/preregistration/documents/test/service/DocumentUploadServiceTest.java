@@ -62,6 +62,7 @@ import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
+import io.mosip.preregistration.documents.config.AuthTokenUtil;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
@@ -92,6 +93,9 @@ public class DocumentUploadServiceTest {
 
 	@Autowired
 	private DocumentServiceUtil serviceUtil;
+	
+	@MockBean
+	private AuthTokenUtil authTokenUtil;
 
 	private DemographicEntity preRegistrationEntity;
 
@@ -254,7 +258,7 @@ public class DocumentUploadServiceTest {
 				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
 		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
-		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString()))
 				.thenReturn(true);
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
 				docJson, preRegistrationId);
@@ -288,7 +292,7 @@ public class DocumentUploadServiceTest {
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
 				docJson, preRegistrationId);
 		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
-		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(),Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		assertEquals(responseDto.getResponse().getDocCatCode(), responseUpload.getResponse().getDocCatCode());
 	}
@@ -348,7 +352,7 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
 
 		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
-		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(),Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
 	}
@@ -387,7 +391,7 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
 
 		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
-		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(),Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
 	}
@@ -413,7 +417,7 @@ public class DocumentUploadServiceTest {
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 
 		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
-		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(),Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.copyDocument("POA", "48690172097498",
 				"48690172097499");

@@ -13,7 +13,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +29,8 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.DataValidationUtil;
+import io.mosip.preregistration.login.config.LoginValidator;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.service.LoginService;
@@ -33,6 +39,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * This class provides different api to perform operation for login 
@@ -51,6 +58,26 @@ public class LoginController {
 	@Autowired
 	private LoginCommonUtil loginCommonUtil;
 	
+	@Autowired
+	private LoginValidator loginValidator;
+	
+	/** The Constant SENDOTP. */
+	private static final String SENDOTP = "sendotp";
+	
+	
+	/** The Constant VALIDATEOTP. */
+	private static final String VALIDATEOTP = "validateotp";
+	
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(loginValidator);
+	}
+	
 	
 	private Logger log = LoggerConfiguration.logConfig(LoginController.class);
 	
@@ -62,9 +89,11 @@ public class LoginController {
 	@PostMapping(value = "/sendOtp",produces=MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Send Otp to UserId")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<MainResponseDTO<AuthNResponse>> sendOTP(@RequestBody MainRequestDTO<OtpRequestDTO> userOtpRequest ){
+	public ResponseEntity<MainResponseDTO<AuthNResponse>> sendOTP(@Validated @RequestBody MainRequestDTO<OtpRequestDTO> userOtpRequest, @ApiIgnore Errors errors ){
 		log.info("sessionId", "idType", "id",
 				"In sendOtp method of Login controller for sending Otp ");
+		loginValidator.validateId(SENDOTP, userOtpRequest.getId(), errors);
+		DataValidationUtil.validate(errors,SENDOTP);
 		return ResponseEntity.status(HttpStatus.OK).body(loginService.sendOTP(userOtpRequest));
 		}
 	
@@ -76,9 +105,11 @@ public class LoginController {
 	@PostMapping(value="/validateOtp",produces=MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Validate UserId and Otp")
 	@ResponseStatus(value=HttpStatus.OK)
-	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@RequestBody MainRequestDTO<User> userIdOtpRequest,HttpServletResponse res){
+	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@Validated @RequestBody MainRequestDTO<User> userIdOtpRequest,HttpServletResponse res,@ApiIgnore Errors errors){
 		log.info("sessionId", "idType", "id",
 				"In validateWithUserIdotp method of Login controller for validating user and Otp and providing the access token ");
+		loginValidator.validateId(VALIDATEOTP, userIdOtpRequest.getId(), errors);
+		DataValidationUtil.validate(errors,VALIDATEOTP);
 		MainResponseDTO<ResponseEntity<String>> serviceResponse=loginService.validateWithUserIdOtp(userIdOtpRequest);
 		MainResponseDTO<AuthNResponse> responseBody=new MainResponseDTO<>();
 		responseBody.setId(serviceResponse.getId());

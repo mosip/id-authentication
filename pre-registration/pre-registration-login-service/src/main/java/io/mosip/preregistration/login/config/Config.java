@@ -4,6 +4,8 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.Filter;
@@ -12,6 +14,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +28,31 @@ import org.springframework.web.client.RestTemplate;
  *
  */
 @Configuration
+@ConfigurationProperties("mosip.preregistration.login")
 public class Config {
 
+	/** The id. */
+	private Map<String, String> id;
+	
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the id
+	 */
+	public void setId(Map<String, String> id) {
+		this.id = id;
+	}
+	
+
+	/**
+	 * Id.
+	 *
+	 * @return the map
+	 */
+	@Bean
+	public Map<String, String> ic() {
+		return Collections.unmodifiableMap(id);
+	}
 
 	@Bean
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {

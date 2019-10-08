@@ -25,7 +25,7 @@ public final class LoggerConfiguration {
 		mosipRollingFileAppender.setFileName("/home/logs/preregistration.log");
 		mosipRollingFileAppender.setFileNamePattern("/home/logs/preregistration-%d{yyyy-MM-dd}-%i.log");
 		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setMaxFileSize("3mb");
+		mosipRollingFileAppender.setMaxFileSize("50mb");
 //		mosipRollingFileAppender.setMaxHistory(3);
 		mosipRollingFileAppender.setPrudent(false);
 //		mosipRollingFileAppender.setTotalCap("50mb");

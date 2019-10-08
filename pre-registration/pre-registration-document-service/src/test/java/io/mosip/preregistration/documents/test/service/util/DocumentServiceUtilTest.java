@@ -22,6 +22,8 @@ import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.documents.config.AuthTokenUtil;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -39,6 +41,12 @@ public class DocumentServiceUtilTest {
 	private VirusScanner<Boolean, InputStream> virusScan;
 	
 	List<DocumentEntity> docEntity = new ArrayList<>();
+	
+	@MockBean
+	private AuthTokenUtil authTokenUtil;
+	
+	@MockBean
+	private ValidationUtil util;
 	
 	@Autowired
 	private DocumentServiceUtil serviceUtil;
