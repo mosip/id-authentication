@@ -63,7 +63,7 @@ public enum IdAuthenticationErrorConstants {
 
 	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
 	DUPLICATE_FINGER("IDA-BIA-002", "Duplicate fingers in request", "Please try again with distinct fingers"),
-	FINGER_EXCEEDING("IDA-BIA-003", "Number of FMR should not exceed 2"),
+	FINGER_EXCEEDING("IDA-BIA-003", "Number of Fingers should not exceed 2"),
 	INVALID_DEVICEID("IDA-BIA-004", "Device not registered with MOSIP"),
 	INVALID_PROVIDERID("IDA-BIA-005", "Device provider not registered with MOSIP"),
 	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
