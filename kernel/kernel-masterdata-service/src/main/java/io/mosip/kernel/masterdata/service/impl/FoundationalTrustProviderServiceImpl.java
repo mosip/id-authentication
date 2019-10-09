@@ -4,7 +4,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,11 +38,11 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 			FoundationalTrustProviderDto foundationalTrustProviderDto) {
 		FoundationalTrustProvider foundationalTrustProvider = null;
 		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
-		foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias());
+		/*foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias());
 		if(foundationalTrustProvider!=null)
 		{
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage());
-		}
+		}*/
 		foundationalTrustProvider = MetaDataUtils.setCreateMetaData(foundationalTrustProviderDto, FoundationalTrustProvider.class);
 		foundationalTrustProvider.setIsActive(true);
 		foundationalTrustProvider = foundationalTrustProviderRepository.create(foundationalTrustProvider);
