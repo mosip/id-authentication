@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.FoundationalTrustProviderErrorCode;
 import io.mosip.kernel.masterdata.dto.FoundationalTrustProviderDto;
 import io.mosip.kernel.masterdata.dto.getresponse.FoundationalTrustProviderResDto;
 import io.mosip.kernel.masterdata.entity.FoundationalTrustProvider;
@@ -39,13 +40,12 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 		FoundationalTrustProvider foundationalTrustProvider = null;
 		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
 		foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias());
-		if(foundationalTrustProvider==null)
+		if(foundationalTrustProvider!=null)
 		{
-			throw new MasterDataServiceException("","");
+			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage());
 		}
-		String id = UUID.randomUUID().toString();
 		foundationalTrustProvider = MetaDataUtils.setCreateMetaData(foundationalTrustProviderDto, FoundationalTrustProvider.class);
-		foundationalTrustProvider.setId(id);
+		foundationalTrustProvider.setIsActive(true);
 		foundationalTrustProvider = foundationalTrustProviderRepository.create(foundationalTrustProvider);
 		if(foundationalTrustProvider!=null)
 		{

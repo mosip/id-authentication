@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "foundational_trust_provider_h", schema = "master")
-@IdClass(CodeAndLanguageCodeID.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -35,8 +34,8 @@ public class FoundationalTrustProviderHistory extends BaseEntity implements Seri
 	 */
 	private static final long serialVersionUID = 7547973611404461248L;
 	
-	
 	@Id
+	@Column(name = "id", nullable = false, length = 36)
 	private String id;
 	
 	/**

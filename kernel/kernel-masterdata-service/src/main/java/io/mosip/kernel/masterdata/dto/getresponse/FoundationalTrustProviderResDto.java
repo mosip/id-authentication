@@ -25,6 +25,8 @@ public class FoundationalTrustProviderResDto  extends BaseEntity implements Seri
 	 * 
 	 */
 	private static final long serialVersionUID = 7789639319339045489L;
+	
+	private String id;
 
 	private String name;
 	

@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FoundationalTrustProviderDto {
 	
+	private String id;
+	
 	private String name;
 	
 	private String address;

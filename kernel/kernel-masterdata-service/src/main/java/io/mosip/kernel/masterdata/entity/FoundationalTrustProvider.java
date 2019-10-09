@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "foundational_trust_provider", schema = "master")
-@IdClass(CodeAndLanguageCodeID.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
