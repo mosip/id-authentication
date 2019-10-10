@@ -27,17 +27,17 @@
 
 ## Each release database folder has the following files / folders
 
-* **mosip_<schema>/ddl folder:** Contains table creation scripts for the release.
+* **mosip_<schema_name>/ddl folder:** Contains table creation scripts for the release.
 
-* **mosip_<schema>/dml folder:** Contains seed/master data CSVs for the release.
+* **mosip_<schema_name>/dml folder:** Contains seed/master data CSVs for the release.
 
-* **mosip_<schema>/sql folder:** SQL alter script files for the release and revoke, Specific to release version.
+* **mosip_<schema_name>/sql folder:** SQL alter script files for the release and revoke, Specific to release version.
 
-* **mosip_<schema>/<schema>_release_db_deploy.sh:**  Script to deploy alter scripts.
+* **mosip_<schema_name>/<schema_name>_release_db_deploy.sh:**  Script to deploy alter scripts.
 
-* **mosip_<schema>/<schema>_release_deploy.properties:** Parameters required for release DB deployment
+* **mosip_<schema_name>/<schema_name>_release_deploy.properties:** Parameters required for release DB deployment
 
-* **mosip_<schema>/<schema>_revoke_db_deploy.sh:**  Script to revoke database deployment.
+* **mosip_<schema_name>/<schema_name>_revoke_db_deploy.sh:**  Script to revoke database deployment.
 
 * **mosip_release_db_deployment.sh:**  DB release deployment script for all database.
 
