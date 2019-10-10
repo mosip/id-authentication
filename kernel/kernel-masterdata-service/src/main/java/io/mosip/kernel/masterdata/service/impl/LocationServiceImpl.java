@@ -765,7 +765,9 @@ public class LocationServiceImpl implements LocationService {
 			{
 				active = isActiveFilter.get().getValue();
 				isActive = Boolean.valueOf(active);
+				dto.getFilters().remove(isActiveFilter.get());
 			}
+			
 		}
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode(),isActive);
 		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
