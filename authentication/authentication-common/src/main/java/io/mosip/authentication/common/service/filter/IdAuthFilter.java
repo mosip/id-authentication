@@ -8,7 +8,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -297,6 +296,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	private String digest(byte[] hash) {
+		return HMACUtils.digestAsPlainText(hash);
+	}
+
 	/**
 	 * Gets the hash.
 	 *
@@ -338,12 +341,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throwMissingInputParameter(BIO_DATA_INPUT_PARAM);
 		}
 		
-		byte[] inputHash = CryptoUtil.decodeBase64(hashOpt.get());
+		String inputHashDigest = hashOpt.get();
 		byte[] currentHash =getHash(CryptoUtil.decodeBase64(dataOpt.get()));
 		byte[] concatenatedBytes = concatBytes(previousHash, currentHash);
 		byte[] finalHash = getHash(concatenatedBytes);
+		String finalHashDigest = digest(finalHash);
 		
-		if(!Arrays.equals(inputHash, finalHash)) {
+		if(!inputHashDigest.equals(finalHashDigest)) {
 			throwInvalidInputParameter(HASH_INPUT_PARAM);
 		}
 		
