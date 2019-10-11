@@ -4,6 +4,12 @@
 
 This stages saves the Demographic data, i.e, Name, DOB and Gender. Post saving it performs Deduplication using exact one to one match of these parameters.
 
+
+#### **** Important NOTE ****
+
+
+The demo dedupe will be performed on exact match of name, date of birth and gender. If additional fields need to be included for demo dedupe match then code need to be modified. 
+
 ##### Default context-path and Ports
 ```
 server.port=8091
