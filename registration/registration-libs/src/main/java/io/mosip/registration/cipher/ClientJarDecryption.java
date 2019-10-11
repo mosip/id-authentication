@@ -575,7 +575,7 @@ public class ClientJarDecryption extends Application {
 		CryptoUtils.verifyData(data);
 		byte[] output = null;
 		try {
-			Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
+			Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
 			byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES_ALGORITHM);

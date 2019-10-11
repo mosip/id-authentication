@@ -1,7 +1,3 @@
-/* 
- * Copyright
- * 
- */
 package io.mosip.preregistration.documents.service;
 
 import java.io.ByteArrayInputStream;
@@ -22,11 +18,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.nimbusds.jose.Header;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -135,6 +134,12 @@ public class DocumentService {
 	 */
 	@Value("${version}")
 	private String ver;
+	
+	/**
+	 * primaryLang
+	 */
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
 
 	/**
 	 * Autowired reference for {@link #FileSystemAdapter}
@@ -165,6 +170,9 @@ public class DocumentService {
 
 	@Autowired
 	ValidationUtil validationUtil;
+	
+	@Autowired
+	private io.mosip.preregistration.documents.config.AuthTokenUtil tokenUtil;
 
 	/**
 	 * Logger configuration for document service
@@ -177,7 +185,9 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
+		HttpHeaders headers= tokenUtil.getTokenHeader();
 		requiredRequestMap.put("version", ver);
+		validationUtil.getAllDocCategoriesAndTypes(primaryLang,headers);
 	}
 
 	public AuthUserDetails authUserDetails() {
@@ -197,6 +207,7 @@ public class DocumentService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
 			String preRegistrationId) {
+		log.info("sessionId", "idType", "id","In service" );
 		log.info("sessionId", "idType", "id", "In uploadDocument method of document service with document string "+documentJsonString);
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
@@ -204,6 +215,7 @@ public class DocumentService {
 		responseDto.setId(uploadId);
 		responseDto.setVersion(ver);
 		try {
+			log.info("sessionId", "idType", "id","calling serviceUtil.createUploadDto  preRegistrationId"+preRegistrationId);
 			docReqDto = serviceUtil.createUploadDto(documentJsonString, preRegistrationId);
 			responseDto.setId(docReqDto.getId());
 			responseDto.setVersion(docReqDto.getVersion());
@@ -216,8 +228,9 @@ public class DocumentService {
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
 					validationUtil.langvalidation(docReqDto.getRequest().getLangCode());
+					log.info("sessionId", "idType", "id","calling validationUtil.validateDocuments preRegistrationId"+preRegistrationId);
 					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
-							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode());
+							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode(),preRegistrationId);
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
 					responseDto.setResponse(docResponseDtos);
 				}
