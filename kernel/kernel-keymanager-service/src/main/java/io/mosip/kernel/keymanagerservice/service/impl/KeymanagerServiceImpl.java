@@ -312,7 +312,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
 		}
 
-		return new PublicKeyResponse<>(alias, publicKey, generationDateTime, expiryDadeteTime);
+		return new PublicKeyResponse<>(alias, publicKey, generationDateTime, expiryDateTime);
 
 	}
 
