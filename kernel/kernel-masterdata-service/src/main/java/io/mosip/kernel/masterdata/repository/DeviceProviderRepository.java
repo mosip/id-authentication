@@ -1,9 +1,11 @@
 package io.mosip.kernel.masterdata.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.DeviceProvider;
+import io.mosip.kernel.masterdata.entity.RegistrationDeviceSubType;
 
 /**
  * The Interface DeviceProviderRepository.
@@ -22,4 +24,8 @@ public interface DeviceProviderRepository extends BaseRepository<DeviceProvider,
 	 * @return the device provider
 	 */
 	DeviceProvider findByIdAndIsActiveIsTrue(String id);
+	
+	
+	@Query("FROM DeviceProvider d where d.id=?1 AND (d.isDeleted is null OR d.isDeleted = false) AND d.isActive = true")
+	DeviceProvider findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(String id);
 }
