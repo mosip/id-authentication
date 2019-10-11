@@ -140,6 +140,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
 
 				}
+				
+				validateBioDataInRequest(request);
 				decipherBioData(request);
 				requestBody.replace(REQUEST, request);
 			}
@@ -258,8 +260,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 			String policyId = validMISPPartnerMapping(partnerId, mispId);
 			checkAllowedAuthTypeBasedOnPolicy(policyId, requestBody);
 		}
-		
-		validateBioDataInRequest(requestBody);
 	}
 
 	/**
@@ -270,9 +270,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@SuppressWarnings("unchecked")
 	private void validateBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		List<Map<String, Object>> biometricsList = Optional.ofNullable(requestBody.get(REQUEST))
-				.filter(obj -> obj instanceof Map)
-				.map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
+		List<Map<String, Object>> biometricsList = Optional.ofNullable(requestBody.get(BIOMETRICS))
 				.filter(obj -> obj instanceof List)
 				.map(obj -> (List<Map<String, Object>>) obj)
 				.orElse(Collections.emptyList());
