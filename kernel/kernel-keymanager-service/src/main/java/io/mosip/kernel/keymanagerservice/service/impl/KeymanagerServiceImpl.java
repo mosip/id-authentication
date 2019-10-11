@@ -312,7 +312,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
 		}
 
-		return new PublicKeyResponse<>(alias, publicKey, generationDateTime, expiryDateTime);
+		return new PublicKeyResponse<>(alias, publicKey, generationDateTime, expiryDadeteTime);
 
 	}
 
@@ -446,7 +446,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
 					| NullMethodException | InvalidKeySpecException | NoSuchAlgorithmException e) {
 				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
-						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage());
+						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage()+e.getMessage());
 			}
 		}
 	}
