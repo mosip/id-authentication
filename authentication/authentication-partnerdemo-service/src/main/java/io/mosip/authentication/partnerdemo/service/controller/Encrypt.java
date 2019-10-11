@@ -136,6 +136,44 @@ public class Encrypt {
 			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		return kernelEncrypt(encryptionRequestDto, isInternal);
 	}
+
+	/**
+	 * this method is used to call Kernel encrypt api.
+	 *
+	 * @param encryptionRequestDto            the encryption request dto
+	 * @param isInternal the is internal
+	 * @return the encryption response dto
+	 * @throws KeyManagementException             the key management exception
+	 * @throws NoSuchAlgorithmException             the no such algorithm exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws JSONException             the JSON exception
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws BadPaddingException the bad padding exception
+	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws RestClientException             the rest client exception
+	 */
+	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
+			throws KeyManagementException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeyException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
+			InvalidKeySpecException {
+		String identityBlock = objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
+		SecretKey secretKey = cryptoUtil.genSecKey();
+		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
+		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
+		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
+		String publicKeyStr = getPublicKey(identityBlock, isInternal);
+		PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
+				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
+		byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
+		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
+		byte[] byteArr = cryptoUtil.symmetricEncrypt(
+				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes(), secretKey);
+		encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
+		return encryptionResponseDto;
+	}
 	
 
 	@PostMapping(path = "/splitEncryptedData", produces = MediaType.APPLICATION_JSON_VALUE) 
@@ -180,45 +218,6 @@ public class Encrypt {
 		}).findFirst() // first occurence
 				.orElse(-1); // No element found
 	}
-
-	/**
-	 * this method is used to call Kernel encrypt api.
-	 *
-	 * @param encryptionRequestDto            the encryption request dto
-	 * @param isInternal the is internal
-	 * @return the encryption response dto
-	 * @throws KeyManagementException             the key management exception
-	 * @throws NoSuchAlgorithmException             the no such algorithm exception
-	 * @throws IOException             Signals that an I/O exception has occurred.
-	 * @throws JSONException             the JSON exception
-	 * @throws InvalidKeyException the invalid key exception
-	 * @throws NoSuchPaddingException the no such padding exception
-	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
-	 * @throws IllegalBlockSizeException the illegal block size exception
-	 * @throws BadPaddingException the bad padding exception
-	 * @throws InvalidKeySpecException the invalid key spec exception
-	 * @throws RestClientException             the rest client exception
-	 */
-	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
-			throws KeyManagementException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeyException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
-			InvalidKeySpecException {
-		String identityBlock = objMapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
-		SecretKey secretKey = cryptoUtil.genSecKey();
-		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
-		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
-		String publicKeyStr = getPublicKey(identityBlock, isInternal);
-		PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
-				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
-		byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
-		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
-		byte[] byteArr = cryptoUtil.symmetricEncrypt(
-				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes(), secretKey);
-		encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
-		return encryptionResponseDto;
-	}
-
 	
 	/**
 	 * Gets the encrypted value.
