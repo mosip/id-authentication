@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package io.mosip.kernel.masterdata.entity;
 
 import java.time.LocalDateTime;
@@ -13,15 +16,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class DeviceService.
+ * @author Ramadurai Pandian
+ *
  */
 @Entity
-@Table(name = "mosip_device_service", schema = "master")
+@Table(name = "mosip_device_service_h", schema = "master")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeviceService extends BaseEntity {
+public class DeviceServiceHistory extends BaseEntity {
+	
+
 
 	/** The id. */
 	@Id
@@ -63,4 +69,6 @@ public class DeviceService extends BaseEntity {
 	/** The sw expiry time. */
 	@Column(name = "sw_expiry_dtimes")
 	private LocalDateTime swExpiryTime;
+
+	private LocalDateTime effectivetimes;
 }
