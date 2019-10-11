@@ -1,7 +1,14 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +22,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
@@ -34,30 +39,42 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
- * the authenticating partner done for request as AUTH and KYC
+ * the authenticating partner done for request as AUTH and KYC.
  *
  * @author Manoj SP
  * @author Sanjay Murali
+ * @author Loganathan Sekar
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
 	private static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
 
+	/** The Constant DEFAULT_SALT_LAST_BYTES_NUM. */
 	private static final int DEFAULT_SALT_LAST_BYTES_NUM = 12;
 
+	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "timestamp";
 
+	/** The Constant BIO_VALUE. */
 	private static final String BIO_VALUE = "bioValue";
 
+	/** The Constant BIO_DATA_INPUT_PARAM. */
+	private static final String BIO_DATA_INPUT_PARAM = REQUEST + "/" + BIO_VALUE + "/" + DATA;
+
+	/** The Constant HASH_INPUT_PARAM. */
+	private static final String HASH_INPUT_PARAM = REQUEST + "/" + BIO_VALUE + "/" + HASH;
+
+	/** The Constant REFID_IDA_FIR. */
 	private static final String REFID_IDA_FIR = "IDA-FIR";
 
-	private static final String DATA = "data";
-
+	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "sessionKey";
 
 	/** The Constant EKYC. */
@@ -124,7 +141,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 				}
 				decipherBioData(request);
-				requestBody.replace(IdAuthCommonConstants.REQUEST, request);
+				requestBody.replace(REQUEST, request);
 			}
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
@@ -132,9 +149,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Decipher bio data.
+	 *
+	 * @param request the request
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
 	private void decipherBioData(Map<String, Object> request) throws IdAuthenticationAppException {
-		Object biometrics = request.get(IdAuthCommonConstants.BIOMETRICS);
+		Object biometrics = request.get(BIOMETRICS);
 		if (Objects.nonNull(biometrics) && biometrics instanceof List) {
 			List<Object> bioIdentity = (List<Object>) biometrics;
 			List<Object> bioIdentityInfo = new ArrayList<>();
@@ -143,10 +166,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 					bioIdentityInfo.add(decipherBioData(obj));
 				}
 			}
-			request.replace(IdAuthCommonConstants.BIOMETRICS, bioIdentityInfo);
+			request.replace(BIOMETRICS, bioIdentityInfo);
 		}
 	}
 
+	/**
+	 * Decipher bio data.
+	 *
+	 * @param obj the obj
+	 * @return the map
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherBioData(Object obj) throws IdAuthenticationAppException {
 		try {
@@ -171,6 +201,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Combine data for decryption.
+	 *
+	 * @param bioValue the bio value
+	 * @param sessionKey the session key
+	 * @return the string
+	 */
 	private String combineDataForDecryption(String bioValue, String sessionKey) {
 		byte[] combineByteArray = CryptoUtil.combineByteArray(
 				CryptoUtil.decodeBase64(bioValue),
@@ -180,13 +217,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 				combineByteArray);
 	}
 
+	/**
+	 * Gets the last bytes.
+	 *
+	 * @param timestamp the timestamp
+	 * @param lastBytesNum the last bytes num
+	 * @return the last bytes
+	 */
 	private byte[] getLastBytes(String timestamp, int lastBytesNum) {
 		assert(timestamp.length() >= lastBytesNum);
 		return timestamp.substring(timestamp.length() - lastBytesNum).getBytes();
 	}
 
 	/**
-	 * Method to get the reference id
+	 * Method to get the reference id.
 	 *
 	 * @return the string
 	 */
@@ -214,6 +258,159 @@ public class IdAuthFilter extends BaseAuthFilter {
 			String policyId = validMISPPartnerMapping(partnerId, mispId);
 			checkAllowedAuthTypeBasedOnPolicy(policyId, requestBody);
 		}
+		
+		validateBioDataInRequest(requestBody);
+	}
+
+	/**
+	 * Validate bio data in request.
+	 *
+	 * @param requestBody the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@SuppressWarnings("unchecked")
+	private void validateBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		List<Map<String, Object>> biometricsList = Optional.ofNullable(requestBody.get(REQUEST))
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
+				.filter(obj -> obj instanceof List)
+				.map(obj -> (List<Map<String, Object>>) obj)
+				.orElse(Collections.emptyList());
+		
+		validateBioData(biometricsList);
+		
+	}
+
+	/**
+	 * Validate bio data.
+	 *
+	 * @param biometricsList the biometrics list
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void validateBioData(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
+		try {
+			byte[] previousHash =  getHash("");
+			
+			for (Map<String, Object> biometricData : biometricsList) {
+				previousHash = validateHash(biometricData, previousHash);
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	/**
+	 * Gets the hash.
+	 *
+	 * @param string the string
+	 * @return the hash
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	private byte[] getHash(String string) throws UnsupportedEncodingException {
+		return getHash(string.getBytes(UTF_8));
+	}
+	
+	/**
+	 * Gets the hash.
+	 *
+	 * @param bytes the bytes
+	 * @return the hash
+	 */
+	private byte[] getHash(byte[] bytes) {
+		return HMACUtils.generateHash(bytes);
+	}
+
+	/**
+	 * Validate hash.
+	 *
+	 * @param biometricData the biometric data
+	 * @param previousHash the previous hash
+	 * @return the byte[]
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private byte[] validateHash(Map<String, Object> biometricData, byte[] previousHash) throws IdAuthenticationAppException {
+		Optional<String> hashOpt = getStringValue(biometricData, HASH);
+		Optional<String> dataOpt = getStringValue(biometricData, DATA);
+		
+		if(!hashOpt.isPresent()) {
+			throwMissingInputParameter(HASH_INPUT_PARAM);
+		}
+		
+		if(!dataOpt.isPresent()) {
+			throwMissingInputParameter(BIO_DATA_INPUT_PARAM);
+		}
+		
+		byte[] inputHash = CryptoUtil.decodeBase64(hashOpt.get());
+		byte[] currentHash =getHash(CryptoUtil.decodeBase64(dataOpt.get()));
+		byte[] concatenatedBytes = concatBytes(previousHash, currentHash);
+		byte[] finalHash = getHash(concatenatedBytes);
+		
+		if(!Arrays.equals(inputHash, finalHash)) {
+			throwInvalidInputParameter(HASH_INPUT_PARAM);
+		}
+		
+		return finalHash;
+		
+	}
+
+	/**
+	 * Concat bytes.
+	 *
+	 * @param previousHash the previous hash
+	 * @param currentHash the current hash
+	 * @return the byte[]
+	 */
+	private byte[] concatBytes(byte[] previousHash, byte[] currentHash) {
+		byte[] finalBytes = new byte[previousHash.length + currentHash.length];
+		System.arraycopy(previousHash, 0, finalBytes, 0, previousHash.length);
+		System.arraycopy(currentHash, 0, finalBytes, previousHash.length, currentHash.length);
+		return finalBytes;
+	}
+
+	/**
+	 * Throw missing input parameter.
+	 *
+	 * @param inputParam the input param
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void throwMissingInputParameter(String inputParam) throws IdAuthenticationAppException {
+		throwError(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER, inputParam);
+	}
+	
+	/**
+	 * Throw error.
+	 *
+	 * @param errorConst the error const
+	 * @param args the args
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void throwError(IdAuthenticationErrorConstants errorConst, String... args) throws IdAuthenticationAppException {
+		throw new IdAuthenticationAppException(errorConst.getErrorCode(), 
+				String.format(errorConst.getErrorMessage(), 
+						(Object[])args));
+	}
+	
+	/**
+	 * Throw invalid input parameter.
+	 *
+	 * @param inputParam the input param
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void throwInvalidInputParameter(String inputParam) throws IdAuthenticationAppException {
+		throwError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, inputParam);
+	}
+
+	/**
+	 * Gets the string value.
+	 *
+	 * @param biometricData the biometric data
+	 * @param fieldName the field name
+	 * @return the string value
+	 */
+	private Optional<String> getStringValue(Map<String, Object> biometricData, String fieldName) {
+		return Optional.ofNullable(biometricData.get(fieldName))
+				.filter(obj -> obj instanceof String)
+				.map(obj -> (String) obj);
 	}
 
 	/*
@@ -403,20 +600,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type for bio.
 	 *
-	 * @param requestBody
-	 *            the request body
-	 * @param authPolicies
-	 *            the auth policies
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws JsonProcessingException
-	 *             the json processing exception
+	 * @param requestBody            the request body
+	 * @param authPolicies            the auth policies
+	 * @throws IdAuthenticationAppException             the id authentication app exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkAllowedAuthTypeForBio(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
