@@ -33,10 +33,10 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/mosipdeviceservice")
 @Api(tags = { "MOSIPDeviceService" })
 public class MOSIPDeviceServiceController {
-	
+
 	@Autowired
 	MOSIPDeviceServices mosipDeviceServices;
-	
+
 	/**
 	 * Post API to insert a new row of MOSIPDeviceService data
 	 * 
@@ -57,7 +57,8 @@ public class MOSIPDeviceServiceController {
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
 
 		ResponseWrapper<MOSIPDeviceService> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(mosipDeviceServices.createMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
+		responseWrapper
+				.setResponse(mosipDeviceServices.createMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
 		return responseWrapper;
 
 	}

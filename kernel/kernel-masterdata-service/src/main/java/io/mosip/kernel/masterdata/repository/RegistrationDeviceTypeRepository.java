@@ -13,8 +13,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationDeviceType;
  *
  */
 @Repository
-public interface RegistrationDeviceTypeRepository extends BaseRepository<RegistrationDeviceType, String>{
-	
+public interface RegistrationDeviceTypeRepository extends BaseRepository<RegistrationDeviceType, String> {
+
 	@Query("FROM RegistrationDeviceType d where d.code=?1 AND (d.isDeleted is null OR d.isDeleted = false) AND d.isActive = true")
 	RegistrationDeviceType findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(String code);
 

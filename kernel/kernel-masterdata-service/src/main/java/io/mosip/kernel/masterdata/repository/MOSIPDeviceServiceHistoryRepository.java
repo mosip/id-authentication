@@ -14,7 +14,6 @@ import io.mosip.kernel.masterdata.entity.MOSIPDeviceServiceHistory;
  */
 
 @Repository
-public interface MOSIPDeviceServiceHistoryRepository extends BaseRepository<MOSIPDeviceServiceHistory, String>  {
+public interface MOSIPDeviceServiceHistoryRepository extends BaseRepository<MOSIPDeviceServiceHistory, String> {
 
 }
-

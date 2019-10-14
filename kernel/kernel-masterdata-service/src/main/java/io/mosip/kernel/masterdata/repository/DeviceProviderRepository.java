@@ -24,8 +24,7 @@ public interface DeviceProviderRepository extends BaseRepository<DeviceProvider,
 	 * @return the device provider
 	 */
 	DeviceProvider findByIdAndIsActiveIsTrue(String id);
-	
-	
+
 	@Query("FROM DeviceProvider d where d.id=?1 AND (d.isDeleted is null OR d.isDeleted = false) AND d.isActive = true")
 	DeviceProvider findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(String id);
 }

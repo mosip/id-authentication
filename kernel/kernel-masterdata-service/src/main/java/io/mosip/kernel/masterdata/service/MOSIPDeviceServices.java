@@ -10,8 +10,7 @@ import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
  */
 
 public interface MOSIPDeviceServices {
-	
-	public MOSIPDeviceService createMOSIPDeviceService(MOSIPDeviceServiceDto dto);
 
+	public MOSIPDeviceService createMOSIPDeviceService(MOSIPDeviceServiceDto dto);
 
 }

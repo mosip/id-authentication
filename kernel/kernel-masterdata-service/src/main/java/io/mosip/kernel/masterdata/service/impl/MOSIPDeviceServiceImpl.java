@@ -20,7 +20,6 @@ import io.mosip.kernel.masterdata.repository.RegistrationDeviceSubTypeRepository
 import io.mosip.kernel.masterdata.repository.RegistrationDeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.MOSIPDeviceServices;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
-import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -30,9 +29,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  */
 @Service
 public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
-
-	@Autowired
-	MasterdataCreationUtil masterdataCreationUtil;
 
 	@Autowired
 	MOSIPDeviceServiceRepository mosipDeviceServiceRepository;
@@ -45,7 +41,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
 	@Autowired
 	RegistrationDeviceSubTypeRepository registrationDeviceSubTypeRepository;
-	
+
 	@Autowired
 	DeviceProviderRepository deviceProviderRepository;
 
@@ -64,15 +60,15 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 							MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorMessage());
 				}
 				if ((registrationDeviceSubTypeRepository.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-							dto.getRegDeviceSubCode())) == null) {
-						throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage());	
-						}
+						dto.getRegDeviceSubCode())) == null) {
+					throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorCode(),
+							MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage());
+				}
 				if ((deviceProviderRepository.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
 						dto.getDeviceProviderId())) == null) {
 					throw new RequestException(MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
-							MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());	
-					}
+							MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
+				}
 
 				entity = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceService.class);
 				entity.setIsActive(true);
