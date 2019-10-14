@@ -12,6 +12,9 @@ import io.mosip.kernel.masterdata.constant.DeviceProviderManagementErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceProvider;
+
+import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
+import io.mosip.kernel.masterdata.entity.MOSIPDeviceServiceHistory;
 import io.mosip.kernel.masterdata.entity.DeviceProviderHistory;
 import io.mosip.kernel.masterdata.entity.DeviceService;
 import io.mosip.kernel.masterdata.entity.DeviceServiceHistory;
@@ -20,8 +23,8 @@ import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceProviderHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceProviderRepository;
-import io.mosip.kernel.masterdata.repository.DeviceServiceHistoryRepository;
-import io.mosip.kernel.masterdata.repository.DeviceServiceRepository;
+import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
+import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceProviderService;
@@ -44,7 +47,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	private DeviceProviderRepository deviceProviderRepository;
 
 	@Autowired
-	private DeviceServiceRepository deviceServiceRepository;
+	private MOSIPDeviceServiceRepository deviceServiceRepository;
 
 	@Autowired
 	private DeviceProviderHistoryRepository deviceProviderHistoryRepository;
@@ -53,7 +56,8 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	private RegisteredDeviceHistoryRepository registeredDeviceHistoryRepository;
 
 	@Autowired
-	private DeviceServiceHistoryRepository deviceServiceHistoryRepository;
+	private MOSIPDeviceServiceHistoryRepository deviceServiceHistoryRepository;
+
 
 	@Override
 	public ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
@@ -115,7 +119,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	}
 
 	private boolean isValidServiceId(String serviceId, String serviceSoftwareVersion) {
-		DeviceService deviceService = null;
+		MOSIPDeviceService deviceService = null;
 		try {
 			deviceService = deviceServiceRepository.findByIdAndIsActiveIsTrue(serviceId);
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -137,7 +141,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	}
 
 	private boolean checkMappingBetweenProviderAndService(String providerId, String serviceId) {
-		DeviceService deviceService = null;
+		MOSIPDeviceService deviceService = null;
 		try {
 			deviceService = deviceServiceRepository.findByIdAndDProviderId(serviceId,providerId);
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -173,7 +177,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 
 	private boolean checkMappingBetweenProviderHistoryAndService(String id, String deviceProviderId,
 			LocalDateTime effTimes) {
-		DeviceServiceHistory deviceServiceHistory = null;
+		MOSIPDeviceServiceHistory deviceServiceHistory = null;
 		try {
 			deviceServiceHistory = deviceServiceHistoryRepository.findByIdAndDProviderId(id, deviceProviderId,
 					effTimes);
@@ -193,7 +197,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 
 	private boolean isValidServiceIdFromHistory(String deviceServiceId, String deviceServiceVersion,
 			LocalDateTime effTimes) {
-		DeviceServiceHistory deviceServiceHistory = null;
+		MOSIPDeviceServiceHistory deviceServiceHistory = null;
 		try {
 			deviceServiceHistory = deviceServiceHistoryRepository
 					.findByIdAndIsActiveIsTrueAndByEffectiveTimes(deviceServiceId, effTimes);
