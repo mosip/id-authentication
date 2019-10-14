@@ -19,10 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.masterdata.entity.DeviceProvider;
-import io.mosip.kernel.masterdata.entity.DeviceService;
+import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.repository.DeviceProviderRepository;
-import io.mosip.kernel.masterdata.repository.DeviceServiceRepository;
+import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 
@@ -38,7 +38,7 @@ import io.mosip.kernel.masterdata.test.TestBootApplication;
 public class DeviceProviderManagementIntegrationTest {
 
 	@MockBean
-	private DeviceServiceRepository deviceServiceRepository;
+	private MOSIPDeviceServiceRepository deviceServiceRepository;
 
 	@MockBean
 	private DeviceProviderRepository deviceProviderRepository;
@@ -49,7 +49,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Autowired
 	private MockMvc mockBean;
 
-	private DeviceService deviceService;
+	private MOSIPDeviceService deviceService;
 
 	private DeviceProvider deviceProvider;
 
@@ -57,9 +57,9 @@ public class DeviceProviderManagementIntegrationTest {
 
 	@Before
 	public void setUp() {
-		deviceService = new DeviceService();
+		deviceService = new MOSIPDeviceService();
 		deviceService.setId("1111");
-		deviceService.setDProviderId("10001");
+		deviceService.setDeviceProviderId("10001");
 		deviceService.setSwVersion("0.1v");
 
 		deviceProvider = new DeviceProvider();
@@ -68,7 +68,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice = new RegisteredDevice();
 		registeredDevice.setDeviceId("10001");
 
-		when(deviceServiceRepository.findByIdAndDProviderId(Mockito.anyString(), Mockito.anyString()))
+		when(deviceServiceRepository.findByIdAndDeviceProviderId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(deviceService);
 		when(deviceServiceRepository.findByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(deviceService);
 		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString())).thenReturn(registeredDevice);
