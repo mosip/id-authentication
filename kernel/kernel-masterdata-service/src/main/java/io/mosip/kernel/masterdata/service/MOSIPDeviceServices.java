@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceDto;
-import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
+import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceExtDto;
 
 /**
  * 
@@ -11,6 +11,6 @@ import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 
 public interface MOSIPDeviceServices {
 
-	public MOSIPDeviceService createMOSIPDeviceService(MOSIPDeviceServiceDto dto);
+	public MOSIPDeviceServiceExtDto createMOSIPDeviceService(MOSIPDeviceServiceDto dto);
 
 }

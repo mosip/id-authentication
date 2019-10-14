@@ -14,7 +14,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceDto;
-import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
+import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceExtDto;
 import io.mosip.kernel.masterdata.service.MOSIPDeviceServices;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,10 +53,10 @@ public class MOSIPDeviceServiceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When MOSIPDeviceService successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating MOSIPDeviceService any error occured") })
-	public ResponseWrapper<MOSIPDeviceService> createMOSIPDeviceService(
+	public ResponseWrapper<MOSIPDeviceServiceExtDto> createMOSIPDeviceService(
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
 
-		ResponseWrapper<MOSIPDeviceService> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<MOSIPDeviceServiceExtDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(mosipDeviceServices.createMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
 		return responseWrapper;

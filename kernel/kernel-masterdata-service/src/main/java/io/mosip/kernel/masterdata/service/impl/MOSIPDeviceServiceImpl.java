@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MOSIPDeviceServiceErrorCode;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceDto;
+import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceExtDto;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceServiceHistory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationDeviceSubTypeRepository
 import io.mosip.kernel.masterdata.repository.RegistrationDeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.MOSIPDeviceServices;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -47,13 +48,17 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
 	@Override
 	@Transactional
-	public MOSIPDeviceService createMOSIPDeviceService(MOSIPDeviceServiceDto dto) {
+	public MOSIPDeviceServiceExtDto createMOSIPDeviceService(MOSIPDeviceServiceDto dto) {
 		MOSIPDeviceService mosipDeviceService = null;
 		MOSIPDeviceService entity = null;
 		MOSIPDeviceServiceHistory entityHistory = null;
 		try {
 			if (dto != null) {
 
+				if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
+					throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
+							String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
+				}
 				if ((registrationDeviceTypeRepository.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
 						dto.getRegDeviceTypeCode())) == null) {
 					throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorCode(),
@@ -81,11 +86,11 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException
 				| SecurityException exception) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorCode(),
+					MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
 		}
-		return mosipDeviceService;
+		return MapperUtils.map(mosipDeviceService, MOSIPDeviceServiceExtDto.class);
 
 	}
 
