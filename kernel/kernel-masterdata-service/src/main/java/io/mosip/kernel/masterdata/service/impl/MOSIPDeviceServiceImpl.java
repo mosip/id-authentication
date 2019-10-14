@@ -84,8 +84,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 				mosipDeviceServiceHistoryRepository.create(entityHistory);
 			}
 
-		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException
-				| SecurityException exception) {
+		} catch (DataAccessLayerException | DataAccessException  exception) {
 			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorCode(),
 					MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
