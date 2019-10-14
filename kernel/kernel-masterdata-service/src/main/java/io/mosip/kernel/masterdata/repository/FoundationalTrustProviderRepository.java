@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.entity.FoundationalTrustProvider;
 public interface FoundationalTrustProviderRepository extends BaseRepository<FoundationalTrustProvider,String>
 {
 
-	@Query(value="select ftp from foundational_trust_provider ftp WHERE ftp.name = ?1 and ftp.email=?2 and ftp.address=?3 and ftp.certAlias=?4 and (ftp.isDeleted is null or ftp.isDeleted =false) AND ftp.isActive = true",nativeQuery=true)
-	FoundationalTrustProvider findByDetails(String name, String email, String address, String certAlias);
+	@Query("from FoundationalTrustProvider WHERE name = ?1 and email=?2 and address=?3 and certAlias=?4 and (isDeleted is null or isDeleted =false) AND isActive = ?5")
+	FoundationalTrustProvider findByDetails(String name, String email, String address, String certAlias,boolean isActive);
 
 }
