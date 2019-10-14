@@ -55,6 +55,8 @@ public class DeviceProviderManagementIntegrationTest {
 
 	private RegisteredDevice registeredDevice;
 
+	private static final String DPM_url = "/deviceprovidermanagement/validate?deviceCode=10001&deviceProviderId=1111&deviceServiceId=10001&deviceServiceVersion=0.1v";
+
 	@Before
 	public void setUp() {
 		deviceService = new MOSIPDeviceService();
@@ -80,14 +82,14 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	public void validateDeviceProvider() throws Exception {
 
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenRegisteredDeviceNull() throws Exception {
 		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString())).thenReturn(null);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -95,8 +97,7 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenRegisteredDeviceDataBaseException() throws Exception {
 		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v"))
-				.andExpect(status().isInternalServerError());
+		mockBean.perform(get(DPM_url)).andExpect(status().isInternalServerError());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -104,14 +105,14 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenUnRegistered() throws Exception {
 		registeredDevice.setStatusCode("UnRegistered");
 		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString())).thenReturn(registeredDevice);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceProviderNull() throws Exception {
 		when(deviceProviderRepository.findByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(null);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -119,15 +120,14 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenDeviceProviderDbException() throws Exception {
 		when(deviceProviderRepository.findByIdAndIsActiveIsTrue(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v"))
-				.andExpect(status().isInternalServerError());
+		mockBean.perform(get(DPM_url)).andExpect(status().isInternalServerError());
 	}
 
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceserviceNull() throws Exception {
 		when(deviceServiceRepository.findByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(null);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -135,8 +135,7 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenDeviceServiceDbException() throws Exception {
 		when(deviceServiceRepository.findByIdAndIsActiveIsTrue(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v"))
-				.andExpect(status().isInternalServerError());
+		mockBean.perform(get(DPM_url)).andExpect(status().isInternalServerError());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -144,7 +143,7 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenDeviceserviceVersionMismatch() throws Exception {
 		deviceService.setSwVersion("0.3v");
 		when(deviceServiceRepository.findByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(deviceService);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -153,7 +152,7 @@ public class DeviceProviderManagementIntegrationTest {
 
 		when(deviceServiceRepository.findByIdAndDeviceProviderId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v")).andExpect(status().isOk());
+		mockBean.perform(get(DPM_url)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
@@ -162,8 +161,7 @@ public class DeviceProviderManagementIntegrationTest {
 
 		when(deviceServiceRepository.findByIdAndDeviceProviderId(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockBean.perform(get("/deviceprovider/validate/10001/1111/10001/0.1v"))
-				.andExpect(status().isInternalServerError());
+		mockBean.perform(get(DPM_url)).andExpect(status().isInternalServerError());
 	}
 
 }
