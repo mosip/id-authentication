@@ -1,5 +1,5 @@
 ### ID-Authentication Identity Mapping
-ID Authentication Services uses a country specific [Identity mapping configuration JSON file](https://github.com/mosip/mosip-config-mt/blob/master/config/id-authentication-mapping.json) to map ID attributes used in the Authentication requests to the Platform Identity attributes.
+A country can customize [MOSIP ID Schema](https://github.com/mosip/mosip-config/blob/master/config-templates/mosip-identity-json-schema-env.json). ID Authentication Services maps ID attributes used in the Authentication requests with ID attributes to Platform Identity attributes configured by a country using mapping json - [Identity mapping configuration JSON file](https://github.com/mosip/mosip-config/blob/master/config-templates/id-authentication-mapping.json) 
 
 For example:
 ````
@@ -31,6 +31,8 @@ For example:
 
 Below are the considerations for maintaining Idenity Mapping configuration file:
 
-1. The left hand side attributes (such as `name`, `dob`) are fixed. They are not subject to be changed as part of a configuration change.
-2. The right hand side values can be modified as part of a configuration change.
-3. Any additional attributes required for demo-auth will require code change.
+1. Left hand side ID attributes (such as `name`, `dob`) are fixed. They are not subject to be changed as part of a configuration change.
+2. Right hand side values represent mapping Platform ID attributes that can be modified as part of a configuration change. 
+For example, Authentication Service uses `name` as the request attribute, which is mapped to `fullName` of Platform ID Attribute.
+
+**Note** - Any additional attributes required for Authentication Services will require code change.
