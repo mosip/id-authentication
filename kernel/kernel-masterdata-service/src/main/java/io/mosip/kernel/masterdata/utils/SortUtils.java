@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.exception.RequestException;
