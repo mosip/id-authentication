@@ -4,14 +4,13 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -67,6 +66,8 @@ public class FoundationalTrustProviderHistory extends BaseEntity implements Seri
 	 */
 	@Column(name = "certificate_alias", nullable = false, length = 256)
 	private String certAlias;
+	
+	private LocalDateTime effectivetimes;
 
 
 }
