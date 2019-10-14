@@ -53,8 +53,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 		MOSIPDeviceService entity = null;
 		MOSIPDeviceServiceHistory entityHistory = null;
 		try {
-			if (dto != null) {
-
+			
 				if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
 					throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
 							String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
@@ -82,7 +81,6 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 				entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 				mosipDeviceService = mosipDeviceServiceRepository.create(entity);
 				mosipDeviceServiceHistoryRepository.create(entityHistory);
-			}
 
 		} catch (DataAccessLayerException | DataAccessException  exception) {
 			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorCode(),
