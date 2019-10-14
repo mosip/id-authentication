@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -36,8 +37,7 @@ public class RegCenterPostReqDto {
 	@Size(min = 0, max = 256)
 	private String addressLine3;
 
-	@NotBlank
-	@Size(min=3)
+	@ValidLangCode
 	private String langCode;
 
 	@Size(min = 0, max = 128)

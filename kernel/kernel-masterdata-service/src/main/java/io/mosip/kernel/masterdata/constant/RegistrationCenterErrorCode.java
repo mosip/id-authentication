@@ -24,7 +24,7 @@ public enum RegistrationCenterErrorCode {
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
 	REGISTRATION_CENTER_START_END_EXCEPTION("KER-MSD-309", "Center Start Time must be smaller than Center End Time"),
 	REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION("KER-MSD-308", "Center Lunch Start Time must be smaller than Center Lunch End Time"),
-	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-307", "Latitude or Longitude must have minimum 4 digits after decimal"),
+	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-999", "Latitude or Longitude must have minimum 4 digits after decimal"),
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database"),
 	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
 	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s"),
