@@ -14,6 +14,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 
+ * @author Megha Tanga
+ *
+ */
 @Data
 @ApiModel(value = "MOSIPDeviceService", description = "MOSIP Device Service resource")
 @EqualsAndHashCode(callSuper = true)

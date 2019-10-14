@@ -6,4 +6,7 @@ public interface DeviceProviderService {
 
 	ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
 			String deviceServiceVersion);
+
+	ResponseDto validateDeviceProviderHistory(String deviceCode, String deviceProviderId, String deviceServiceId,
+			String deviceServiceVersion, String timeStamp);
 }
