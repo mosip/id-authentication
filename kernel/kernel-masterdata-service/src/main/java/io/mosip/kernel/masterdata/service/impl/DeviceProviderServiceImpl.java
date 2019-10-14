@@ -17,7 +17,9 @@ import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceServiceHistory;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceProviderHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceProviderRepository;
 import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository;
@@ -55,19 +57,17 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	@Autowired
 	private MOSIPDeviceServiceHistoryRepository deviceServiceHistoryRepository;
 
-
 	@Override
 	public ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
 			String deviceServiceVersion) {
 		ResponseDto responseDto = new ResponseDto();
-		responseDto.setStatus(MasterDataConstant.INVALID);
-		responseDto.setMessage(MasterDataConstant.INVALID);
-		if (isRegisteredDevice(deviceCode) && isDeviceProviderPresent(deviceProviderId)
-				&& isValidServiceId(deviceServiceId, deviceServiceVersion)
-				&& checkMappingBetweenProviderAndService(deviceProviderId, deviceServiceId)) {
-			responseDto.setStatus(MasterDataConstant.VALID);
-			responseDto.setMessage(MasterDataConstant.VALID);
-		}
+		isRegisteredDevice(deviceCode);
+		isDeviceProviderPresent(deviceProviderId);
+		isValidServiceId(deviceServiceId, deviceServiceVersion);
+		checkMappingBetweenProviderAndService(deviceProviderId, deviceServiceId);
+		responseDto.setStatus(MasterDataConstant.VALID);
+		responseDto.setMessage(MasterDataConstant.VALID);
+
 		return responseDto;
 	}
 
@@ -82,12 +82,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 
 		if (registeredDevice == null) {
-			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorCode(),
+			throw new DataNotFoundException(DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorMessage());
 		}
 		if (!registeredDevice.getStatusCode().equalsIgnoreCase("Registered")) {
-			throw new MasterDataServiceException(
-					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorMessage());
 		}
 		isRegistered = true;
@@ -106,8 +105,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 		if (deviceProvider == null) {
-			throw new MasterDataServiceException(
-					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INACTIVE.getErrorCode(),
+			throw new DataNotFoundException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INACTIVE.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INACTIVE.getErrorMessage());
 		}
 
@@ -124,13 +122,12 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 		if (deviceService == null) {
-			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.MDS_INACTIVE_STATE.getErrorCode(),
+			throw new DataNotFoundException(DeviceProviderManagementErrorCode.MDS_INACTIVE_STATE.getErrorCode(),
 					DeviceProviderManagementErrorCode.MDS_INACTIVE_STATE.getErrorMessage());
 		}
 
 		if (!deviceService.getSwVersion().equals(serviceSoftwareVersion)) {
-			throw new MasterDataServiceException(
-					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorMessage());
 		}
 
@@ -140,14 +137,14 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	private boolean checkMappingBetweenProviderAndService(String providerId, String serviceId) {
 		MOSIPDeviceService deviceService = null;
 		try {
-			deviceService = deviceServiceRepository.findByIdAndDeviceProviderId(serviceId,providerId);
+			deviceService = deviceServiceRepository.findByIdAndDeviceProviderId(serviceId, providerId);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 
 		if (deviceService == null) {
-			throw new MasterDataServiceException(
+			throw new DataNotFoundException(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_SERVICE_ID_NOT_MAPPED.getErrorCode(),
 					DeviceProviderManagementErrorCode.PROVIDER_AND_SERVICE_ID_NOT_MAPPED.getErrorMessage());
 		}
