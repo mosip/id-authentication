@@ -6,10 +6,12 @@ package io.mosip.kernel.masterdata.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.FoundationalTrustProviderDto;
 import io.mosip.kernel.masterdata.dto.FoundationalTrustProviderPutDto;
@@ -33,14 +35,15 @@ public class FoundationalTrustProviderController {
 	@Autowired
 	private FoundationalTrustProviderService foundationalTrustProviderService;
 	
+	@ResponseFilter
 	@PostMapping
-	public ResponseWrapper<FoundationalTrustProviderResDto> registerFoundationalTrustProvider(RequestWrapper<FoundationalTrustProviderDto> foundationalTrustProviderDto)
+	public ResponseWrapper<FoundationalTrustProviderResDto> registerFoundationalTrustProvider(@RequestBody RequestWrapper<FoundationalTrustProviderDto> foundationalTrustProviderDto)
 	{
 		return foundationalTrustProviderService.registerFoundationalTrustProvider(foundationalTrustProviderDto.getRequest());
 	}
 	
 	@PutMapping
-	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(RequestWrapper<FoundationalTrustProviderPutDto> foundationalTrustProviderDto)
+	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(@RequestBody RequestWrapper<FoundationalTrustProviderPutDto> foundationalTrustProviderDto)
 	{
 		return foundationalTrustProviderService.updateFoundationalTrustProvider(foundationalTrustProviderDto.getRequest());
 	}

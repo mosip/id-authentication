@@ -10,6 +10,7 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum FoundationalTrustProviderErrorCode {
+	ID_NOT_PRESENT("ADM-DPM-999", "FTP is not present for id"),
 	MANDATORY_PARAM_MISSING("ADM-DPM-015", "Mandatory input parameter is missing"),
 	FTP_ALREADY_PRESENT("ADM-DPM-016", "Foundational Trust Provider already exist"),
 	FTP_REGISTER_ERROR("ADM-DPM-017", "Error occurred while registering a Foundational Trust Provider");

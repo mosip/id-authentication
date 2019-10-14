@@ -67,6 +67,7 @@ public class FoundationalTrustProviderHistory extends BaseEntity implements Seri
 	@Column(name = "certificate_alias", nullable = false, length = 256)
 	private String certAlias;
 	
+	@Column(name = "eff_dtimes")
 	private LocalDateTime effectivetimes;
 
 
