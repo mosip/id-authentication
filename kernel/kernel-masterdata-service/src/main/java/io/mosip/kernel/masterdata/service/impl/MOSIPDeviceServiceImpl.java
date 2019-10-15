@@ -49,45 +49,48 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 	@Override
 	@Transactional
 	public MOSIPDeviceServiceExtDto createMOSIPDeviceService(MOSIPDeviceServiceDto dto) {
-		MOSIPDeviceService mosipDeviceService = null;
+		MOSIPDeviceService crtMosipDeviceService = null;
 		MOSIPDeviceService entity = null;
-		MOSIPDeviceServiceHistory entityHistory = null;
+
 		try {
-			
-				if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
-					throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
-							String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
-				}
-				if ((registrationDeviceTypeRepository.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-						dto.getRegDeviceTypeCode())) == null) {
-					throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorCode(),
-							MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorMessage());
-				}
-				if ((registrationDeviceSubTypeRepository.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-						dto.getRegDeviceSubCode())) == null) {
-					throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorCode(),
-							MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage());
-				}
-				if ((deviceProviderRepository.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-						dto.getDeviceProviderId())) == null) {
-					throw new RequestException(MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
-							MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
-				}
 
-				entity = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceService.class);
-				entity.setIsActive(true);
-				entityHistory = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceServiceHistory.class);
-				entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-				entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-				mosipDeviceService = mosipDeviceServiceRepository.create(entity);
-				mosipDeviceServiceHistoryRepository.create(entityHistory);
+			if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
+				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
+						String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
+			}
+			if ((registrationDeviceTypeRepository
+					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getRegDeviceTypeCode())) == null) {
+				throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorCode(),
+						MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorMessage());
+			}
+			if ((registrationDeviceSubTypeRepository
+					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getRegDeviceSubCode())) == null) {
+				throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorCode(),
+						MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage());
+			}
+			if ((deviceProviderRepository
+					.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceProviderId())) == null) {
+				throw new RequestException(MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
+						MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
+			}
 
-		} catch (DataAccessLayerException | DataAccessException  exception) {
+			entity = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceService.class);
+			entity.setIsActive(true);
+			crtMosipDeviceService = mosipDeviceServiceRepository.create(entity);
+
+			MOSIPDeviceServiceHistory entityHistory = new MOSIPDeviceServiceHistory();
+			MapperUtils.map(crtMosipDeviceService, entityHistory);
+			MapperUtils.setBaseFieldValue(crtMosipDeviceService, entityHistory);
+			entityHistory.setEffectDateTime(crtMosipDeviceService.getCreatedDateTime());
+			entityHistory.setCreatedDateTime(crtMosipDeviceService.getCreatedDateTime());
+			mosipDeviceServiceHistoryRepository.create(entityHistory);
+
+		} catch (DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorCode(),
 					MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
 		}
-		return MapperUtils.map(mosipDeviceService, MOSIPDeviceServiceExtDto.class);
+		return MapperUtils.map(crtMosipDeviceService, MOSIPDeviceServiceExtDto.class);
 
 	}
 

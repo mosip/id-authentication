@@ -3,14 +3,18 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.bouncycastle.crypto.DataLengthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceProviderManagementErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
 import io.mosip.kernel.masterdata.entity.DeviceProvider;
 import io.mosip.kernel.masterdata.entity.DeviceProviderHistory;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
@@ -27,11 +31,15 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceProviderService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * Device provider service class
  * 
  * @author Srinivasan
+ * @author Megha Tanga
  *
  */
 @Service
@@ -56,6 +64,8 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 
 	@Autowired
 	private MOSIPDeviceServiceHistoryRepository deviceServiceHistoryRepository;
+
+	;
 
 	@Override
 	public ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
@@ -257,6 +267,47 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 
 	public LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceProviderService#createDeviceProvider
+	 * (io.mosip.kernel.masterdata.dto.DeviceProviderDto)
+	 */
+	@Override
+	@Transactional
+	public DeviceProviderExtnDto createDeviceProvider(DeviceProviderDto dto) {
+		DeviceProvider entity = null;
+		DeviceProvider crtDeviceProvider = null;
+		try {
+
+			if (deviceProviderRepository.findById(DeviceProvider.class, dto.getId()) != null) {
+				throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_EXIST.getErrorCode(),
+						String.format(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_EXIST.getErrorMessage(),
+								dto.getId()));
+			}
+			entity = MetaDataUtils.setCreateMetaData(dto, DeviceProvider.class);
+			entity.setIsActive(true);
+			crtDeviceProvider = deviceProviderRepository.create(entity);
+
+			// add new row to the history table
+			DeviceProviderHistory entityHistory = new DeviceProviderHistory();
+			MapperUtils.map(crtDeviceProvider, entityHistory);
+			MapperUtils.setBaseFieldValue(crtDeviceProvider, entityHistory);
+			entityHistory.setEffectivetimes(crtDeviceProvider.getCreatedDateTime());
+			entityHistory.setCreatedDateTime(crtDeviceProvider.getCreatedDateTime());
+			deviceProviderHistoryRepository.create(entityHistory);
+
+		} catch (DataAccessException | DataLengthException ex) {
+			throw new MasterDataServiceException(
+					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorCode(),
+					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(ex));
+		}
+		return MapperUtils.map(crtDeviceProvider, DeviceProviderExtnDto.class);
+
 	}
 
 }
