@@ -319,15 +319,16 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	public DeviceProviderExtnDto updateDeviceProvider(DeviceProviderDto dto) {
 		DeviceProvider entity = null;
 		DeviceProvider updtDeviceProvider = null;
+		DeviceProvider renDeviceProvider= null;
 		try {
+			renDeviceProvider = deviceProviderRepository.findById(DeviceProvider.class, dto.getId());
 
-			if (deviceProviderRepository.findById(DeviceProvider.class, dto.getId()) == null) {
+			if (renDeviceProvider == null) {
 				throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 						String.format(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage(),
 								dto.getId()));
 			}
-			entity = MetaDataUtils.setCreateMetaData(dto, DeviceProvider.class);
-			entity.setIsActive(true);
+			entity = MetaDataUtils.setUpdateMetaData(dto, renDeviceProvider,false);
 			updtDeviceProvider = deviceProviderRepository.update(entity);
 
 			// add new row to the history table
