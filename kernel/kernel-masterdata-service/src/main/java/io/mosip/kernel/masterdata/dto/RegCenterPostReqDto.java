@@ -37,7 +37,7 @@ public class RegCenterPostReqDto {
 	@Size(min = 0, max = 256)
 	private String addressLine3;
 
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	@Size(min = 0, max = 128)

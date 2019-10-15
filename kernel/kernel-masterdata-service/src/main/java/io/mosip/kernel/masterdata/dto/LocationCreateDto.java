@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LocationDto {
+public class LocationCreateDto {
 
 	@Size(min = 0, max = 36)
 	@NotBlank
@@ -30,7 +30,6 @@ public class LocationDto {
 
 	@Size(min = 0, max = 128)
 	@NotBlank
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	private String name;
 
 	@Range(min = 0)

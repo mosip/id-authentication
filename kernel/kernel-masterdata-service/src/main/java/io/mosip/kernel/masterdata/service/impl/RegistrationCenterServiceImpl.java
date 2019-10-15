@@ -1078,6 +1078,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		String uniqueId = "";
+		List<ServiceError> errors = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		// List<RegCenterPutReqDto> notUpdRegistrationCenterList = new
 		// ArrayList<>();
@@ -1115,6 +1116,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			// for (RegCenterPutReqDto registrationCenterDto :
 			// regCenterPutReqDto) {
+			registrationCenterValidator.validateRegCenterUpdate(regCenterPutReqDto, errors);
 			regCenterPutReqDto = masterdataCreationUtil.updateMasterData(RegistrationCenter.class, regCenterPutReqDto);
 
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository

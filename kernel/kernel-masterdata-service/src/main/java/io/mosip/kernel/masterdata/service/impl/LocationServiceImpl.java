@@ -33,6 +33,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -211,7 +212,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	@Transactional
-	public ResponseWrapper<Location> createLocation(LocationDto dto) {
+	public ResponseWrapper<Location> createLocation(LocationCreateDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
 		Location locationEntity = null;
 		//List<LocationDto> locations = new ArrayList<>();
@@ -220,7 +221,7 @@ public class LocationServiceImpl implements LocationService {
 		// request validation
 		//requestValidation(dto, errors);
 
-		//dataValidation(request);
+		dataValidation(dto);
 
 		//Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
 		// if data present in all the configured languages then setting isActive as
@@ -299,8 +300,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @param locations
 	 *            adding validation location to this list
 	 */
-	private void requestValidation(List<LocationDto> request, List<ServiceError> errors, List<LocationDto> locations) {
-		for (LocationDto dto : request) {
+	private void requestValidation(LocationDto dto, List<ServiceError> errors) {
 			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
 				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
 				if (!validations.isEmpty()) {
@@ -308,24 +308,18 @@ public class LocationServiceImpl implements LocationService {
 							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
 					throw new ValidationException(errors);
-				} else {
-					locations.add(dto);
-				}
+				} 
 			} else if (dto.getLangCode() != null && languageUtils.getSecondaryLanguages().contains(dto.getLangCode())) {
 				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
 				if (!validations.isEmpty()) {
 					validations.forEach(
 							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
-				} else {
-					locations.add(dto);
-				}
-
+				} 
 			} else {
 				errors.add(new ServiceError(LocationErrorCode.INVALID_LANG_CODE.getErrorCode(),
 						String.format(LocationErrorCode.INVALID_LANG_CODE.getErrorMessage(), dto.getLangCode())));
 			}
-		}
 	}
 
 	/**
@@ -334,26 +328,24 @@ public class LocationServiceImpl implements LocationService {
 	 * @param request
 	 *            list of location to be validated
 	 */
-	private void dataValidation(List<LocationDto> request) {
-		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
-		if (ids.size() > 1) {
-			throw new RequestException(LocationErrorCode.DIFFERENT_LOC_CODE.getErrorCode(),
-					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
-		}
+	private void dataValidation(LocationCreateDto request) {
+//		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
+//		if (ids.size() > 1) {
+//			throw new RequestException(LocationErrorCode.DIFFERENT_LOC_CODE.getErrorCode(),
+//					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
+//		}
 
-		Optional<LocationDto> defaultLanguage = request.stream()
-				.filter(i -> i.getLangCode().equals(languageUtils.getPrimaryLanguage())).findAny();
-		if (!defaultLanguage.isPresent()) {
+		if(!request.getCode().equals(languageUtils.getPrimaryLanguage()))
+		{
 			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
 					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
 							languageUtils.getPrimaryLanguage()));
 		}
-
-		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
-		if (levels.size() > 1) {
-			throw new RequestException(LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorCode(),
-					LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorMessage());
-		}
+//		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
+//		if (levels.size() > 1) {
+//			throw new RequestException(LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorCode(),
+//					LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorMessage());
+//		}
 	}
 
 	/**

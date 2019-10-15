@@ -759,4 +759,73 @@ public class RegistrationCenterValidator {
 		return uniqueId;
 	}
 
+
+
+
+	public void validateRegCenterUpdate(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
+		String latitude = registrationCenterDto.getLatitude();
+		String longitude = registrationCenterDto.getLongitude();
+
+		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
+		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
+		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
+		formatValidationLongitudeLatitude(errors, latitude, longitude);
+		holidayVlidation(registrationCenterDto, errors);
+		
+	}
+	
+	// validate Holiday against DB
+		private void holidayVlidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
+			List<Holiday> holidays = holidayRepository
+					.findHolidayByHolidayIdLocationCode(registrationCenterDto.getHolidayLocationCode());
+			if (holidays.isEmpty()) {
+				errors.add(new ServiceError(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorMessage(),
+								registrationCenterDto.getZoneCode())));
+			 }
+		}
+	
+	// validation to check entered zoneCode is mapped with eligible user or not and
+		// is valid zoneCode
+		private void zoneUserMapValidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors,
+				List<String> zoneIds) {
+
+			if (!zoneIds.isEmpty()) {
+				if (!zoneIds.contains(registrationCenterDto.getZoneCode())) {
+					errors.add(new ServiceError(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
+							String.format(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage(),
+									registrationCenterDto.getZoneCode())));
+				}
+			}
+		}
+
+		// validation to check the RegCenter Lunch Start Time is greater
+		// than RegCenter
+		// Lunch End Time
+		private void lunchStartEndTimeGrtValidation(RegCenterPutReqDto registrationCenterDto,
+				List<ServiceError> errors) {
+			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// Lunch End Time
+			if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						String.format(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getLunchEndTime())));
+
+			}
+		}
+
+		// validation to check the RegCenter Start Time is greater than
+		// RegCenter End Time
+		private void zoneStartEndTimeGtrValidation(RegCenterPutReqDto registrationCenterDto,
+				List<ServiceError> errors) {
+			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getCenterEndTime())));
+			}
+		}
+
 }
