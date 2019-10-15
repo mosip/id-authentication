@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -102,7 +103,25 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
-		if(e.getCause() instanceof MismatchedInputException)
+		if(e.getCause() instanceof InvalidFormatException)
+		{
+			JsonMappingException jme = (JsonMappingException) e.getCause();
+			 List<JsonMappingException.Reference> references = jme.getPath();
+			    List<String> ret = new LinkedList<>();
+			    if (references != null) {
+			      for (JsonMappingException.Reference reference : references) {
+			    	  if(!reference.getFieldName().equals("request"))
+			    		  ret.add(reference.getFieldName());
+			      }
+			    }	
+			    String exField = StringUtils.join(ret);
+			    ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+				ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						"Invalid Format in field : "+exField);
+				errorResponse.getErrors().add(error);
+				return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		}
+		else if(e.getCause() instanceof MismatchedInputException)
 		{
 			ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
 			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),

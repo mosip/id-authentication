@@ -33,6 +33,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -211,7 +212,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	@Transactional
-	public ResponseWrapper<Location> createLocation(LocationDto dto) {
+	public ResponseWrapper<Location> createLocation(LocationCreateDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
 		Location locationEntity = null;
 		//List<LocationDto> locations = new ArrayList<>();
