@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -50,5 +51,11 @@ public class DeviceProviderDto {
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "certificateAlias", dataType = "java.lang.String")
 	private String certificateAlias;
+	
+	/**
+	 * Field for is active
+	 */
+	@NotNull
+	private Boolean isActive;
 
 }
