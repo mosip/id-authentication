@@ -55,8 +55,6 @@ public class MOSIPDeviceServiceDto {
 	@ApiModelProperty(value = "model", required = true, dataType = "java.lang.String")
 	private String model;
 
-	@NotNull
-	private Boolean isActive;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime swCreateDateTime;

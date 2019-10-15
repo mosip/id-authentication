@@ -13,7 +13,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceProviderService;
 
 /**
- * Device provider controller
+ * Device provider management controller
  * @author Srinivasan
  *
  */

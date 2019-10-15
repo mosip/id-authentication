@@ -47,7 +47,9 @@ public class DeviceProviderHistory extends BaseEntity {
 	/** The certificate alias. */
 	@Column(name = "certificate_alias")
 	private String certificateAlias;
-	
+
+	/** The effective date and time. */
+	@Column(name = "eff_dtimes")
 	private LocalDateTime effectivetimes;
 
 }
