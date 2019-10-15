@@ -5,12 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.DeviceProvider;
-import io.mosip.kernel.masterdata.entity.RegistrationDeviceSubType;
 
 /**
  * The Interface DeviceProviderRepository.
  * 
  * @author Srinivasan
+ * @author Megha Tanga
  * @since 1.0.0
  */
 @Repository

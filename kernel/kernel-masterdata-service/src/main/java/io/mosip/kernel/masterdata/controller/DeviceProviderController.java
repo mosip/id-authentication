@@ -19,17 +19,18 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Device provider controller for CURD operation 
+ * Device provider controller for CURD operation
+ * 
  * @author Megha Tanga
  *
  */
 @RestController
-@RequestMapping(value="/deviceprovider")
+@RequestMapping(value = "/deviceprovider")
 public class DeviceProviderController {
-	
+
 	@Autowired
 	private DeviceProviderService deviceProviderSerice;
-	
+
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PostMapping
 	@ApiOperation(value = "Service to save Device Provide", notes = "Saves Device Provider Detail and return Device Provider")
@@ -37,7 +38,8 @@ public class DeviceProviderController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Device Provider found"),
 			@ApiResponse(code = 500, message = "While creating Device Provider any error occured") })
-	public ResponseWrapper<DeviceProviderExtnDto>createDeviceProvider(@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
+	public ResponseWrapper<DeviceProviderExtnDto> createDeviceProvider(
+			@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
 		ResponseWrapper<DeviceProviderExtnDto> response = new ResponseWrapper<>();
 		response.setResponse(deviceProviderSerice.createDeviceProvider(deviceProviderDto.getRequest()));
 		return response;

@@ -65,7 +65,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	@Autowired
 	private MOSIPDeviceServiceHistoryRepository deviceServiceHistoryRepository;
 
-	;
+	
 
 	@Override
 	public ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
