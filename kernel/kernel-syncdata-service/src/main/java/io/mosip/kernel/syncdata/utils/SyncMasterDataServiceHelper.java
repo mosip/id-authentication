@@ -1702,8 +1702,8 @@ public class SyncMasterDataServiceHelper {
 			deviceProviders = deviceProviderRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
 					currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_PROVIDER_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_PROVIDER_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceProviders != null && !deviceProviders.isEmpty()) {
 			deviceProviderDtos = MapperUtils.mapAll(deviceProviders, DeviceProviderDto.class);
@@ -1723,8 +1723,8 @@ public class SyncMasterDataServiceHelper {
 			deviceServices = deviceServiceRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
 					currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SERVICE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_SERVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceServices != null && !deviceServices.isEmpty()) {
 			deviceServiceDtos = MapperUtils.mapAll(deviceServices, DeviceServiceDto.class);
@@ -1733,19 +1733,19 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	@Async
-	public CompletableFuture<List<RegisteredDeviceDto>> getRegisteredDeviceDetails(String regId,LocalDateTime lastUpdatedTime,
-			LocalDateTime currentTimeStamp) {
+	public CompletableFuture<List<RegisteredDeviceDto>> getRegisteredDeviceDetails(String regId,
+			LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
 		List<RegisteredDevice> registeredDevices = null;
 		List<RegisteredDeviceDto> registeredDeviceDtos = null;
 		try {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
 			}
-			registeredDevices = registeredDeviceRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
+			registeredDevices = registeredDeviceRepository.findAllLatestCreatedUpdateDeleted(regId, lastUpdatedTime,
 					currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.REGISTERED_DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.REGISTERED_DEVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (registeredDevices != null && !registeredDevices.isEmpty()) {
 			registeredDeviceDtos = MapperUtils.mapAll(registeredDevices, RegisteredDeviceDto.class);
@@ -1787,15 +1787,15 @@ public class SyncMasterDataServiceHelper {
 			deviceTypeDPMs = deviceTypeDPMRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
 					currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceTypeDPMs != null && !deviceTypeDPMs.isEmpty()) {
 			deviceTypeDPMDtos = MapperUtils.mapAll(deviceTypeDPMs, DeviceTypeDPMDto.class);
 		}
 		return CompletableFuture.completedFuture(deviceTypeDPMDtos);
 	}
-	
+
 	@Async
 	public CompletableFuture<List<DeviceSubTypeDPMDto>> getDeviceSubTypeDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
@@ -1808,8 +1808,8 @@ public class SyncMasterDataServiceHelper {
 			deviceSubTypeDPMs = deviceSubTypeDPMRepository.findAllLatestCreatedUpdateDeleted(lastUpdatedTime,
 					currentTimeStamp);
 		} catch (DataAccessException ex) {
-			throw new SyncDataServiceException(MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.SCREEN_DETAIL_FETCH_EXCEPTION.getErrorMessage());
+			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SUB_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					MasterDataErrorCode.DEVICE_SUB_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceSubTypeDPMs != null && !deviceSubTypeDPMs.isEmpty()) {
 			deviceSubTypeDPMDtos = MapperUtils.mapAll(deviceSubTypeDPMs, DeviceSubTypeDPMDto.class);

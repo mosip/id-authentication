@@ -61,7 +61,14 @@ public enum MasterDataErrorCode {
 	MACHINE_NOT_FOUND("KER-SNC-155","Machine not found"),
 	MACHINE_PUBLIC_UPLOAD_EXCEPTION("KER-SNC-156","Error occurred while uploading public key in database"),
 	MACHINE_PUBLIC_KEY_ALREADY_EXIST("KER-SNC-157","A different public key already exist against the Machine Name received"),
-	INVALID_INPUT_REQUEST("KER-SNC-158","");
+	INVALID_INPUT_REQUEST("KER-SNC-158",""),
+	DEVICE_PROVIDER_FETCH_EXCEPTION("KER-SNC-159","Error while fetching device provider"),
+	DEVICE_SERVICE_FETCH_EXCEPTION("KER-SNC-159","Error while fetching device service"),
+	REGISTERED_DEVICE_FETCH_EXCEPTION("KER-SNC-159","Error while fetching registered devices"),
+	DEVICE_TYPE_FETCH_FETCH_EXCEPTION("KER-SNC-160","Error while fetching device type"),
+	DEVICE_SUB_TYPE_FETCH_EXCEPTION("KER-SNC-161","Error while fetching device sub type"),
+	FOUNDATIONAL_TRUST_RPOVIDER_FETCH_EXCEPTION("KER-SNC-162","Error while fetching foundation trust provider");
+	
 	
 	private final String errorCode;
 	private final String errorMessage;

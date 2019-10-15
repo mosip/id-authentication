@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
  * The Class DeviceService.
  */
 @Entity
-@Table(name = "device_service", schema = "master")
+@Table(name = "mosip_device_service", schema = "master")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
