@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LocationDto {
 
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	@NotBlank
 	private String code;
 
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
 	@NotBlank
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	private String name;
@@ -36,7 +36,7 @@ public class LocationDto {
 	@Range(min = 0)
 	private short hierarchyLevel;
 
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@NotBlank
 	private String hierarchyName;
 
