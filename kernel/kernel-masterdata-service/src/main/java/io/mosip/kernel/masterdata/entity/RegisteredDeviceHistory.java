@@ -84,7 +84,8 @@ public class RegisteredDeviceHistory extends BaseEntity {
 
 	@Column(name = "dprovider_signature")
 	private byte[] dProviderSignature;
-
+	
+	@Column(name = "eff_dtimes")
 	private LocalDateTime effectivetimes;
 
 }
