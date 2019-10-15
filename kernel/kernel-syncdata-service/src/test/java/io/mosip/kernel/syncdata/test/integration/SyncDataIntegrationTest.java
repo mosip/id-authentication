@@ -17,6 +17,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -59,10 +60,15 @@ import io.mosip.kernel.syncdata.entity.BiometricAttribute;
 import io.mosip.kernel.syncdata.entity.BiometricType;
 import io.mosip.kernel.syncdata.entity.BlacklistedWords;
 import io.mosip.kernel.syncdata.entity.Device;
+import io.mosip.kernel.syncdata.entity.DeviceProvider;
+import io.mosip.kernel.syncdata.entity.DeviceService;
 import io.mosip.kernel.syncdata.entity.DeviceSpecification;
+import io.mosip.kernel.syncdata.entity.DeviceSubTypeDPM;
 import io.mosip.kernel.syncdata.entity.DeviceType;
+import io.mosip.kernel.syncdata.entity.DeviceTypeDPM;
 import io.mosip.kernel.syncdata.entity.DocumentCategory;
 import io.mosip.kernel.syncdata.entity.DocumentType;
+import io.mosip.kernel.syncdata.entity.FoundationalTrustProvider;
 import io.mosip.kernel.syncdata.entity.Gender;
 import io.mosip.kernel.syncdata.entity.Holiday;
 import io.mosip.kernel.syncdata.entity.IdType;
@@ -75,6 +81,7 @@ import io.mosip.kernel.syncdata.entity.MachineType;
 import io.mosip.kernel.syncdata.entity.ProcessList;
 import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
+import io.mosip.kernel.syncdata.entity.RegisteredDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistory;
@@ -114,11 +121,16 @@ import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.syncdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.syncdata.repository.DeviceProviderRepository;
 import io.mosip.kernel.syncdata.repository.DeviceRepository;
+import io.mosip.kernel.syncdata.repository.DeviceServiceRepository;
 import io.mosip.kernel.syncdata.repository.DeviceSpecificationRepository;
+import io.mosip.kernel.syncdata.repository.DeviceSubTypeDPMRepository;
+import io.mosip.kernel.syncdata.repository.DeviceTypeDPMRepository;
 import io.mosip.kernel.syncdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.syncdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.syncdata.repository.DocumentTypeRepository;
+import io.mosip.kernel.syncdata.repository.FoundationalTrustProviderRepository;
 import io.mosip.kernel.syncdata.repository.GenderRepository;
 import io.mosip.kernel.syncdata.repository.HolidayRepository;
 import io.mosip.kernel.syncdata.repository.IdTypeRepository;
@@ -132,6 +144,7 @@ import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
 import io.mosip.kernel.syncdata.repository.ProcessListRepository;
 import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
+import io.mosip.kernel.syncdata.repository.RegisteredDeviceRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
@@ -302,6 +315,18 @@ public class SyncDataIntegrationTest {
 	private ScreenDetailRepository screenDetailRepo;
 	@MockBean
 	private SignatureUtil signatureUtil;
+	@MockBean
+	private DeviceProviderRepository deviceProviderRepository;
+	@MockBean
+	private DeviceServiceRepository deviceServiceRepository;
+	@MockBean
+	private RegisteredDeviceRepository registeredDeviceRepository;
+	@MockBean
+	private FoundationalTrustProviderRepository foundationalTrustProviderRepository;
+	@MockBean
+	private DeviceTypeDPMRepository deviceTypeDPMRepository;
+	@MockBean
+	private DeviceSubTypeDPMRepository deviceSubTypeDPMRepository;
 
 	@Value("${mosip.kernel.syncdata.syncjob-base-url:http://localhost:8099/v1/admin/syncjobdef}")
 	private String baseUri;
@@ -323,6 +348,18 @@ public class SyncDataIntegrationTest {
 	private IndividualTypeRepository individualTypeRepository;
 
 	StringBuilder builder;
+
+	private DeviceService deviceService;
+
+	private DeviceProvider deviceProvider;
+
+	private RegisteredDevice registeredDevice;
+
+	private DeviceTypeDPM deviceTypeDPM;
+
+	private DeviceSubTypeDPM deviceSubTypeDPM;
+
+	private FoundationalTrustProvider foundationalTrustProvider;
 
 	@Value("${mosip.kernel.syncdata.auth-manager-base-uri}")
 	private String authBaseUri;
@@ -358,7 +395,7 @@ public class SyncDataIntegrationTest {
 		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
 		machines = new ArrayList<>();
 		machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
-				tpmPublicKey, keyIndex,"ZONE", null);
+				tpmPublicKey, keyIndex, "ZONE", null);
 		machines.add(machine);
 		machineSpecification = new ArrayList<>();
 		machineSpecification.add(
@@ -630,6 +667,31 @@ public class SyncDataIntegrationTest {
 		screenDetailList = new ArrayList<>();
 		screenDetailList.add(screenDetail);
 
+		deviceService = new DeviceService();
+		deviceService.setId("1111");
+		deviceService.setDProviderId("10001");
+		deviceService.setSwVersion("0.1v");
+
+		deviceProvider = new DeviceProvider();
+		deviceProvider.setId("1111");
+
+		registeredDevice = new RegisteredDevice();
+		registeredDevice.setDeviceId("10001");
+		registeredDevice.setStatusCode("Registered");
+
+		deviceTypeDPM = new DeviceTypeDPM();
+		deviceTypeDPM.setCode("1111");
+		deviceTypeDPM.setName("devicetype");
+
+		deviceSubTypeDPM = new DeviceSubTypeDPM();
+		deviceSubTypeDPM.setCode("1234");
+		deviceSubTypeDPM.setDtypeCode("1111");
+		deviceSubTypeDPM.setName("deviceSubType");
+
+		foundationalTrustProvider = new FoundationalTrustProvider();
+		foundationalTrustProvider.setId("11111");
+		foundationalTrustProvider.setName("ftps");
+
 		reqWrapper = new RequestWrapper<>();
 		UploadPublicKeyRequestDto uploadPublicKeyRequestDto = new UploadPublicKeyRequestDto();
 		uploadPublicKeyRequestDto.setMachineName(MACHINE_NAME);
@@ -793,6 +855,19 @@ public class SyncDataIntegrationTest {
 				"1970-01-01T00:00:00.000Z");
 		server.expect(requestTo(builder.toUriString())).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
 		when(signatureUtil.sign(Mockito.anyString(), Mockito.anyString())).thenReturn(signResponse);
+		when(deviceProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(deviceProvider));
+		when(deviceServiceRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(deviceService));
+		when(registeredDeviceRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenReturn(Arrays.asList(registeredDevice));
+		when(foundationalTrustProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(foundationalTrustProvider));
+		when(deviceTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(deviceTypeDPM));
+		when(deviceSubTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(deviceSubTypeDPM));
+
 	}
 
 	@Test
@@ -1153,6 +1228,60 @@ public class SyncDataIntegrationTest {
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
+	public void syncMasterDataRegistrationCenterWithDeviceProviderException() throws Exception {
+		mockSuccess();
+		when(deviceProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncMasterDataRegistrationCenterWithDeviceServiceException() throws Exception {
+		mockSuccess();
+		when(deviceServiceRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncMasterDataRegistrationCenterWithRegisteredDeviceException() throws Exception {
+		mockSuccess();
+		when(registeredDeviceRepository.findAllLatestCreatedUpdateDeleted(Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncMasterDataRegistrationCenterWithFTPException() throws Exception {
+		mockSuccess();
+		when(foundationalTrustProviderRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncMasterDataRegistrationCenterWithDeviceTypeException() throws Exception {
+		mockSuccess();
+		when(deviceTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncMasterDataRegistrationCenterWithDeviceSubTypeException() throws Exception {
+		mockSuccess();
+		when(deviceSubTypeDPMRepository.findAllLatestCreatedUpdateDeleted(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataRegistrationCenterMachineHistoryFetchException() throws Exception {
 		mockSuccess();
 		when(registrationCenterMachineHistoryRepository.findLatestRegistrationCenterMachineHistory(Mockito.anyString(),
@@ -1373,21 +1502,24 @@ public class SyncDataIntegrationTest {
 
 	}
 
-//	@Test
-//	@WithUserDetails(value = "reg-officer")
-//	public void syncJobDefException() throws Exception {
-//		mockSuccess();
-//		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-//		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
-//		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
-//	}
+	// @Test
+	// @WithUserDetails(value = "reg-officer")
+	// public void syncJobDefException() throws Exception {
+	// mockSuccess();
+	// MockRestServiceServer server =
+	// MockRestServiceServer.bindTo(restTemplate).build();
+	// server.expect(requestTo(baseUri +
+	// "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
+	// mockMvc.perform(get(syncDataUrlMacAdress,
+	// "10001")).andExpect(status().isInternalServerError());
+	// }
 
 	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncTPMPublicKey() throws Exception {
 		mockSuccess();
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		List<Machine>machineList=new ArrayList<>();
+		List<Machine> machineList = new ArrayList<>();
 		machineList.add(machine);
 		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machineList);
 		MvcResult mvcResult = mockMvc
@@ -1407,7 +1539,7 @@ public class SyncDataIntegrationTest {
 	public void syncTPMPublicKeyRequestException() throws Exception {
 		mockSuccess();
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		List<Machine>machineList=new ArrayList<>();
+		List<Machine> machineList = new ArrayList<>();
 		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machineList);
 		MvcResult mvcResult = mockMvc
 				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
