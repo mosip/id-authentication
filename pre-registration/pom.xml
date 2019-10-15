@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -51,7 +52,7 @@
 
 		<!-- For Cache -->
 		<ignite.version>2.3.0</ignite.version>
-        <apache.httpclient.version>4.5.6</apache.httpclient.version>
+		<apache.httpclient.version>4.5.6</apache.httpclient.version>
 
 		<!-- Support tools & utilities -->
 		<commons-math3>3.6.1</commons-math3>
@@ -73,13 +74,13 @@
 
 		<!-- Json Simple -->
 		<jsonsimple.version>1.1</jsonsimple.version>
-		
+
 		<uuid.fasterxml.version>3.1.4</uuid.fasterxml.version>
 		<org.json.version>20080701</org.json.version>
 		<modelmapper.version>0.7.4</modelmapper.version>
 		<java.interceptor.version>1.2</java.interceptor.version>
 		<icu.version>63.1</icu.version>
-		
+
 
 		<sonar.coverage.exclusions>**/code/**,**/config/**,**/dao/**,**/dto/**,**/entity/**,**/errorcodes/**,**/exception/**,**/exception/system/**,**/exception/util/**,**/repository/**,**/*Config.java,**/*Application.java,**/batchjob/**,**/util/**,**/stateUtil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -88,11 +89,13 @@
 		<module>pre-registration-core</module>
 		<module>pre-registration-login-service</module>
 		<module>pre-registration-demographic-service</module>
+		<module>pre-registration-demographic-service-impl</module>
 		<module>pre-registration-document-service</module>
+		<module>pre-registration-document-service-impl</module>
 		<module>pre-registration-booking-service</module>
+		<module>pre-registration-booking-service-impl</module>
 		<module>pre-registration-datasync-service</module>
 		<module>pre-registration-batchjob</module>
-		<module>pre-registration-batchjob-service</module>
 		<module>pre-registration-translitration-service</module>
 		<module>pre-registration-notification-service</module>
 		<module>pre-registration-generateqrcode-service</module>
@@ -219,4 +222,3 @@
 		</plugins>
 	</build>
 </project>
-
