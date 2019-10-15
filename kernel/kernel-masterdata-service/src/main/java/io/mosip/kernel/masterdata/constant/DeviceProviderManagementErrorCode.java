@@ -18,7 +18,8 @@ public enum DeviceProviderManagementErrorCode {
 	SOFTWARE_VERSION_IS_NOT_A_MATCH("ADM-DPM-007","Software version does not match against the Service ID"),
 	PROVIDER_AND_SERVICE_ID_NOT_MAPPED("ADM-DPM-008","Device Provider ID does not match against the Service ID"),
 	DEVICE_PROVIDER_INSERTION_EXCEPTION("ADM-DPM-012", "Error occurred while registering Device Provider"),
-	DEVICE_PROVIDER_EXIST("ADM-DPM-011","%s Device Provider already exist");
+	DEVICE_PROVIDER_EXIST("ADM-DPM-011","%s Device Provider already exist"),
+	DEVICE_PROVIDER_UPDATE_EXCEPTION("ADM-DPM-014", "Error occurred while updating a Device Provider");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.bouncycastle.crypto.DataLengthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -64,8 +63,6 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 
 	@Autowired
 	private MOSIPDeviceServiceHistoryRepository deviceServiceHistoryRepository;
-
-	
 
 	@Override
 	public ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
@@ -300,7 +297,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 			entityHistory.setCreatedDateTime(crtDeviceProvider.getCreatedDateTime());
 			deviceProviderHistoryRepository.create(entityHistory);
 
-		} catch (DataAccessException | DataLengthException ex) {
+		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorMessage() + " "
@@ -308,6 +305,46 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		return MapperUtils.map(crtDeviceProvider, DeviceProviderExtnDto.class);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceProviderService#updateDeviceProvider
+	 * (io.mosip.kernel.masterdata.dto.DeviceProviderDto)
+	 */
+	@Override
+	@Transactional
+	public DeviceProviderExtnDto updateDeviceProvider(DeviceProviderDto dto) {
+		DeviceProvider entity = null;
+		DeviceProvider updtDeviceProvider = null;
+		try {
+
+			if (deviceProviderRepository.findById(DeviceProvider.class, dto.getId()) == null) {
+				throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
+						String.format(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage(),
+								dto.getId()));
+			}
+			entity = MetaDataUtils.setCreateMetaData(dto, DeviceProvider.class);
+			entity.setIsActive(true);
+			updtDeviceProvider = deviceProviderRepository.update(entity);
+
+			// add new row to the history table
+			DeviceProviderHistory entityHistory = new DeviceProviderHistory();
+			MapperUtils.map(updtDeviceProvider, entityHistory);
+			MapperUtils.setBaseFieldValue(updtDeviceProvider, entityHistory);
+			entityHistory.setEffectivetimes(updtDeviceProvider.getUpdatedDateTime());
+			entityHistory.setCreatedDateTime(updtDeviceProvider.getUpdatedDateTime());
+			deviceProviderHistoryRepository.create(entityHistory);
+
+		} catch (DataAccessLayerException | DataAccessException ex) {
+			throw new MasterDataServiceException(
+					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(ex));
+		}
+		return MapperUtils.map(updtDeviceProvider, DeviceProviderExtnDto.class);
 	}
 
 }

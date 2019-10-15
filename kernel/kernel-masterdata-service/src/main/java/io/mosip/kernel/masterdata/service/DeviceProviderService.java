@@ -28,4 +28,14 @@ public interface DeviceProviderService {
 	 * @return DeviceProviderExtnDto device Provider dto which has created
 	 */
 	public DeviceProviderExtnDto createDeviceProvider(DeviceProviderDto dto);
+	
+
+	/**
+	 * Method to update Device Provider
+	 * 
+	 * @param dto
+	 *            Device Provider dto from user
+	 * @return DeviceProviderExtnDto device Provider dto which has updated
+	 */
+	public DeviceProviderExtnDto updateDeviceProvider(DeviceProviderDto dto);
 }
