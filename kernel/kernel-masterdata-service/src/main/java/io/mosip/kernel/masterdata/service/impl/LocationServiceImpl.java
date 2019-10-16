@@ -750,6 +750,7 @@ public class LocationServiceImpl implements LocationService {
 		String active = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
+		pageUtils.validateSortField(Location.class, dto.getSort());
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
