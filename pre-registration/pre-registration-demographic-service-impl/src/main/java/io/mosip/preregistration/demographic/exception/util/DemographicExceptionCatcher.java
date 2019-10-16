@@ -8,6 +8,7 @@ import org.springframework.beans.factory.BeanCreationException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
@@ -142,6 +143,11 @@ public class DemographicExceptionCatcher {
 			throw new DemographicServiceException(((DemographicServiceException) ex).getValidationErrorList(),
 					mainResponsedto);
 		}
+		else if (ex instanceof NoSuchAlgorithmException) {
+			throw new InvalidRequestParameterException(((NoSuchAlgorithmException) ex).getErrorCode(),
+					((NoSuchAlgorithmException) ex).getErrorText(), mainResponsedto);
+		}
+		
 	}
 
 }
