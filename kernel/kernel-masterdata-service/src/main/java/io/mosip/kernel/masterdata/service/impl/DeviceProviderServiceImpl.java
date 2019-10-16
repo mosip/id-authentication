@@ -73,7 +73,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		isValidServiceId(deviceServiceId, deviceServiceVersion);
 		checkMappingBetweenProviderAndService(deviceProviderId, deviceServiceId);
 		responseDto.setStatus(MasterDataConstant.VALID);
-		responseDto.setMessage(MasterDataConstant.VALID);
+		responseDto.setMessage("Device  details validated successfully");
 
 		return responseDto;
 	}
@@ -164,14 +164,14 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 			String deviceServiceVersion, String timeStamp) {
 		ResponseDto responseDto = new ResponseDto();
 		responseDto.setStatus(MasterDataConstant.INVALID);
-		responseDto.setMessage(MasterDataConstant.INVALID);
+		responseDto.setMessage("Device details history is invalid");
 		LocalDateTime effTimes = parseToLocalDateTime(timeStamp);
 		if (isRegisteredDeviceHistory(deviceCode, effTimes)
 				&& isDeviceProviderHistoryPresent(deviceProviderId, effTimes)
 				&& isValidServiceIdFromHistory(deviceServiceId, deviceServiceVersion, effTimes)
 				&& checkMappingBetweenProviderHistoryAndService(deviceServiceId, deviceProviderId, effTimes)) {
 			responseDto.setStatus(MasterDataConstant.VALID);
-			responseDto.setMessage(MasterDataConstant.VALID);
+			responseDto.setMessage("Device details history validated successfully");
 		}
 		return responseDto;
 	}
