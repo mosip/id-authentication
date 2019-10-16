@@ -775,9 +775,6 @@ public class LocationServiceImpl implements LocationService {
 		
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
-		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active) && !tree.isEmpty())
-		{
-			responseDto = emptyFilterLocationSearch(tree,isActive);
 		}
 		else {
 			for (SearchFilter filter : dto.getFilters()) {
