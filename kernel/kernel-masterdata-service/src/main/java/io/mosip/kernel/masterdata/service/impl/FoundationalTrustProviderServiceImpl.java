@@ -42,14 +42,25 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 			FoundationalTrustProviderDto foundationalTrustProviderDto) {
 		FoundationalTrustProvider foundationalTrustProvider = null;
 		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
+		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
 		foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias(),foundationalTrustProviderDto.isActive());
 		if(foundationalTrustProvider!=null)
 		{
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage());
 		}
-		foundationalTrustProvider = MetaDataUtils.setCreateMetaData(foundationalTrustProviderDto, FoundationalTrustProvider.class);
-		foundationalTrustProvider.setIsActive(foundationalTrustProviderDto.isActive());
-		foundationalTrustProvider = foundationalTrustProviderRepository.create(foundationalTrustProvider);
+		if(foundationalTrustProviderDto!=null)
+		{
+			foundationalTrustProvider = MetaDataUtils.setCreateMetaData(foundationalTrustProviderDto, FoundationalTrustProvider.class);
+			foundationalTrustProvider.setIsActive(foundationalTrustProviderDto.isActive());
+			foundationalTrustProvider = foundationalTrustProviderRepository.create(foundationalTrustProvider);
+			if(foundationalTrustProvider!=null)
+			{
+				foundationalTrustProviderResDto =  MetaDataUtils.setCreateMetaData(foundationalTrustProvider, FoundationalTrustProviderResDto.class);
+				response.setResponse(foundationalTrustProviderResDto);
+				response.setResponsetime(LocalDateTime.now());
+			}	
+		}
+		
 		if(foundationalTrustProvider!=null)
 		{
 			FoundationalTrustProviderHistory foundationalTrustProviderHistory = MetaDataUtils.setCreateMetaData(foundationalTrustProvider, FoundationalTrustProviderHistory.class);
@@ -58,10 +69,6 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 			foundationalTrustProviderHistory.setCreatedDateTime(foundationalTrustProvider.getCreatedDateTime());
 			foundationalTrustProviderRepositoryHistory.create(foundationalTrustProviderHistory);
 		}
-		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
-		foundationalTrustProviderResDto =  MetaDataUtils.setCreateMetaData(foundationalTrustProvider, FoundationalTrustProviderResDto.class);
-		response.setResponse(foundationalTrustProviderResDto);
-		response.setResponsetime(LocalDateTime.now());
 		return response;
 	}
 
