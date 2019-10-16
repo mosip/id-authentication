@@ -74,7 +74,6 @@ import io.mosip.kernel.syncdata.dto.ValidDocumentDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.entity.Machine;
 import io.mosip.kernel.syncdata.entity.MachineHistory;
-import io.mosip.kernel.syncdata.entity.RegisteredDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
@@ -318,6 +317,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setScreenAuthorizations(screenAuthorizations.get());
 		response.setSyncJobDefinitions(syncJobDefDtos.get());
 		response.setScreenDetails(screenDetails.get());
+		response.setRegisteredDevices(registeredDevices.get());
+		response.setDeviceProviders(deviceProviders.get());
+		response.setDeviceServices(deviceServices.get());
+		response.setDeviceTypeDPMs(deviceTypeDPMs.get());
+		response.setDeviceSubTypeDPMs(deviceSubTypeDPMs.get());
+		response.setFunctionalTrustProviders(ftps.get());
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
@@ -328,7 +333,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setRegistrationCenterDeviceHistory(registrationCenterDeviceHistoryList.get());
 		response.setRegistrationCenterMachineHistory(registrationCenterMachineHistoryList.get());
 		response.setRegistrationCenterMachineDeviceHistory(registrationCenterMachineDeviceHistoryList.get());
-		
 
 		return response;
 
