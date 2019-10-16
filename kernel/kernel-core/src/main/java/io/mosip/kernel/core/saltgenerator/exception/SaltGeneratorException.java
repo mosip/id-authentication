@@ -4,7 +4,7 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.saltgenerator.constant.SaltGeneratorErrorConstants;
 
 /**
- * The Class IdRepoAppException.
+ * The Class SaltGeneratorException.
  *
  * @author Manoj SP
  */
@@ -17,14 +17,14 @@ public class SaltGeneratorException extends BaseCheckedException {
 	private String operation;
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 */
 	public SaltGeneratorException() {
 		super();
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param errorCode    the error code
 	 * @param errorMessage the error message
@@ -34,7 +34,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param errorCode    the error code
 	 * @param errorMessage the error message
@@ -45,7 +45,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param exceptionConstant the exception constant
 	 */
@@ -54,7 +54,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause         the root cause
@@ -64,7 +64,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param errorCode    the error code
 	 * @param errorMessage the error message
@@ -76,7 +76,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param errorCode    the error code
 	 * @param errorMessage the error message
@@ -89,7 +89,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param operation the operation
@@ -100,7 +100,7 @@ public class SaltGeneratorException extends BaseCheckedException {
 	}
 
 	/**
-	 * Instantiates a new id repo app exception.
+	 * Instantiates a new SaltGeneratorException.
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause         the root cause
