@@ -760,6 +760,7 @@ public class LocationServiceImpl implements LocationService {
 				isActive = Boolean.valueOf(active);
 				dto.getFilters().remove(isActiveFilter.get());
 			}
+			
 		}
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode(),isActive);
 		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
@@ -767,9 +768,6 @@ public class LocationServiceImpl implements LocationService {
 		
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
-		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active) && !tree.isEmpty())
-		{
-			responseDto = emptyFilterLocationSearch(tree,isActive);
 		}
 		else {
 			for (SearchFilter filter : dto.getFilters()) {
