@@ -19,7 +19,7 @@ import org.springframework.core.env.Environment;
 import io.mosip.kernel.saltgenerator.entity.SaltEntity;
 
 /**
- * The Class IdRepoJobConfig - provides configuration for Salt generator Job.
+ * The Class SaltGeneratorJobConfig - provides configuration for Salt generator Job.
  *
  * @author Manoj SP
  */
