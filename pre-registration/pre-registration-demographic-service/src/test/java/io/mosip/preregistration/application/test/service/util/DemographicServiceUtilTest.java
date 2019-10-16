@@ -18,15 +18,15 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.preregistration.application.DemographicTestApplication;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.exception.OperationNotAllowedException;
-import io.mosip.preregistration.application.exception.system.DateParseException;
-import io.mosip.preregistration.application.exception.system.JsonParseException;
-import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
+import io.mosip.preregistration.demographic.exception.OperationNotAllowedException;
+import io.mosip.preregistration.demographic.exception.system.DateParseException;
+import io.mosip.preregistration.demographic.exception.system.JsonParseException;
+import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
 
 /**
  * Test class to test the PreRegistration Service util methods
