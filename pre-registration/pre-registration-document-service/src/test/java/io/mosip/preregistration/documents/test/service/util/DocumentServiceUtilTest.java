@@ -23,10 +23,10 @@ import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.documents.config.AuthTokenUtil;
-import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
-import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
+import io.mosip.preregistration.document.config.AuthTokenUtil;
+import io.mosip.preregistration.document.dto.DocumentRequestDTO;
+import io.mosip.preregistration.document.exception.InvalidDocumentIdExcepion;
+import io.mosip.preregistration.document.service.util.DocumentServiceUtil;
 
 
 /**

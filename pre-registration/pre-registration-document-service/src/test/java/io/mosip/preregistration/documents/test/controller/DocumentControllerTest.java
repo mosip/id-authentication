@@ -36,12 +36,12 @@ import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
-import io.mosip.preregistration.documents.code.DocumentStatusMessages;
-import io.mosip.preregistration.documents.config.AuthTokenUtil;
-import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
-import io.mosip.preregistration.documents.service.DocumentService;
-import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
+import io.mosip.preregistration.document.code.DocumentStatusMessages;
+import io.mosip.preregistration.document.config.AuthTokenUtil;
+import io.mosip.preregistration.document.dto.DocumentRequestDTO;
+import io.mosip.preregistration.document.dto.DocumentResponseDTO;
+import io.mosip.preregistration.document.service.DocumentService;
+import io.mosip.preregistration.document.service.util.DocumentServiceUtil;
 import io.mosip.preregistration.documents.test.DocumentTestApplication;
 
 /**

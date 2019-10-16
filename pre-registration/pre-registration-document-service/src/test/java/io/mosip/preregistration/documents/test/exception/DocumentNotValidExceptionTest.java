@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +16,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
-import io.mosip.preregistration.documents.exception.DocumentNotValidException;
-import io.mosip.preregistration.documents.service.DocumentService;
+import io.mosip.preregistration.document.dto.DocumentRequestDTO;
+import io.mosip.preregistration.document.errorcodes.ErrorCodes;
+import io.mosip.preregistration.document.exception.DocumentNotValidException;
+import io.mosip.preregistration.document.service.DocumentService;
 
 /**
  * Test class to test the DocumentNotValid Exception
