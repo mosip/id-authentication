@@ -66,6 +66,8 @@ import io.mosip.preregistration.demographic.exception.RestCallException;
 import io.mosip.preregistration.demographic.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.demographic.repository.DemographicRepository;
 import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
+import io.mosip.preregistration.document.service.DocumentService;
+import io.mosip.preregistration.booking.serviceimpl.service.BookingService;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
@@ -132,6 +134,11 @@ public class DemographicService {
 	 */
 	@Autowired
 	private IdObjectValidator jsonValidator;
+	
+	@Autowired
+	private DocumentService documentServiceImpl;
+	
+	private BookingService bookingServiceImpl;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -443,7 +450,7 @@ public class DemographicService {
 						"get demographic details end time : " + DateUtils.getUTCCurrentDateTimeString());
 				if (!serviceUtil.isNull(demographicEntities)) {
 					/*
-					 * Fetch all the records for the user irrespective of page index and page sixe
+					 * Fetch all the records for the user irrespective of page index and page size
 					 */
 					if (serviceUtil.isNull(pageIdx)) {
 						prepareDemographicResponse(demographicMetadataDTO, demographicEntities);
@@ -811,37 +818,10 @@ public class DemographicService {
 	private void getDocumentServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> responseEntity = null;
-		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("preRegistrationId", preregId);
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(docResourceUrl + "/documents/preregistration/");
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
-			String strUriBuilder = uriBuilder.build().encode().toUriString();
-			strUriBuilder += "{preRegistrationId}";
-			log.info("sessionId", "idType", "id",
-					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
-			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainResponseDTO<DocumentDeleteResponseDTO>>() {
-					}, params);
-
-			if (responseEntity.getBody().getErrors() != null) {
-				if (!responseEntity.getBody().getErrors().get(0).getErrorCode()
-						.equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
-					throw new DocumentFailedToDeleteException(
-							responseEntity.getBody().getErrors().get(0).getErrorCode(),
-							responseEntity.getBody().getErrors().get(0).getMessage());
-				}
-			}
-		} catch (RestClientException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In callDocumentServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
-			throw new RestCallException(ErrorCodes.PRG_PAM_APP_014.getCode(),
-					ErrorMessages.DOCUMENT_SERVICE_FAILED_TO_CALL.getMessage());
+		MainResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId = documentServiceImpl.deleteAllByPreId(preregId);
+		if (deleteAllByPreId.getErrors() != null) {
+			throw new DocumentFailedToDeleteException(deleteAllByPreId.getErrors().get(0).getErrorCode(),
+					deleteAllByPreId.getErrors().get(0).getMessage());
 		}
 	}
 
@@ -872,33 +852,10 @@ public class DemographicService {
 	private void getBookingServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> responseEntity = null;
-		try {
-
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(deleteAppointmentResourseUrl + "/appointment")
-					.queryParam("preRegistrationId", preregId);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainResponseDTO<DeleteBookingDTO>> httpEntity = new HttpEntity<>(headers);
-			String strUriBuilder = uriBuilder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callBookingServiceToDeleteAllByPreId method URL- " + strUriBuilder);
-			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
-					new ParameterizedTypeReference<MainResponseDTO<DeleteBookingDTO>>() {
-					});
-
-			if (responseEntity.getBody().getErrors() != null) {
-				throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.getCode(),
-						ErrorMessages.BOOKING_FAILED_TO_DELETE.getMessage());
-
-			}
-		} catch (RestClientException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In callBookingServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
-			throw new BookingDeletionFailedException(ErrorCodes.PRG_PAM_DOC_016.getCode(),
-					ErrorMessages.BOOKING_FAILED_TO_DELETE.getMessage());
+		MainResponseDTO<DeleteBookingDTO> deleteBooking=bookingServiceImpl.deleteBooking(preregId);
+		if(deleteBooking.getErrors()!=null) {
+			throw new BookingDeletionFailedException(deleteBooking.getErrors().get(0).getErrorCode(),
+					deleteBooking.getErrors().get(0).getMessage());
 		}
 	}
 
