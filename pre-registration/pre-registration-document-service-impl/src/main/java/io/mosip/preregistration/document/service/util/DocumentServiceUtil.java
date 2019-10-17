@@ -362,7 +362,8 @@ public class DocumentServiceUtil {
 
 	public boolean getPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
-		try {
+		
+		/*try {
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/");
@@ -391,7 +392,7 @@ public class DocumentServiceUtil {
 
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
 					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.getMessage(), ex.getCause());
-		}
+		}*/
 		return true;
 	}
 
