@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ public class DeviceProviderManagementController {
 	@Autowired
 	private DeviceProviderService deviceProviderService;
 
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@GetMapping("/validate")
 	public ResponseWrapper<ResponseDto> validateDeviceProvider(@RequestParam @NotBlank String deviceCode,
 			@RequestParam @NotBlank String deviceProviderId, @RequestParam @NotBlank String deviceServiceId,
@@ -35,6 +37,7 @@ public class DeviceProviderManagementController {
 
 	}
 	
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@GetMapping("/validate/history")
 	public ResponseWrapper<ResponseDto> validateDeviceProviderHistory(@RequestParam @NotBlank String deviceCode,@RequestParam @NotBlank String deviceProviderId ,
 			@RequestParam @NotBlank String deviceServiceId,@RequestParam @NotBlank String deviceServiceVersion,@RequestParam String timeStamp)
