@@ -405,6 +405,22 @@ public class RegistrationCenterValidator {
 							registrationCenterDto.getLunchEndTime())));
 
 		}
+		if (registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+			errors.add(new ServiceError(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
+					String.format(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorMessage(),
+							registrationCenterDto.getLunchEndTime())));
+
+		}
+		if(registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime()))
+		{
+			errors.add(new ServiceError(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),
+					String.format(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorMessage(),
+							registrationCenterDto.getLunchEndTime())));
+		}
 	}
 
 	// validation to check the RegCenter Start Time is greater than

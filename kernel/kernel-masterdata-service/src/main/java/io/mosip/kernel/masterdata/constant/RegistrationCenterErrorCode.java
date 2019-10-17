@@ -22,6 +22,8 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION("KER-MSD-306", "Records with duplicate language code found"),
 	DEPENDENCY_EXCEPTION("KER-MSD-149", "Cannot delete as dependency found"),
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
+	REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION("KER-MSD-310", "Lunch Start time cannot less than Center Start time"),
+	REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION("KER-MSD-310", "Lunch end Time cannot be Greater Than Center End Time"),
 	REGISTRATION_CENTER_START_END_EXCEPTION("KER-MSD-309", "Center Start Time must be smaller than Center End Time"),
 	REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION("KER-MSD-308", "Center Lunch Start Time must be smaller than Center Lunch End Time"),
 	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-999", "Latitude or Longitude must have minimum 4 digits after decimal"),
