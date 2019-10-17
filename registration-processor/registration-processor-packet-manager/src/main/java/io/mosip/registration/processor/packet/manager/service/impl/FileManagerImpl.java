@@ -370,7 +370,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::getSftpConnection()::entry");
 
-		if (channelSftp != null && channelSftp.isConnected()) {
+		if (channelSftp != null && channelSftp.isConnected() && !channelSftp.isClosed()) {
 			return channelSftp;
 		}
 		String dmzServerPwd = env.getProperty(DMZ_SERVER_PASSWORD);
