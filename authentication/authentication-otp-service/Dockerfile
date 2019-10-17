@@ -25,7 +25,7 @@ ENV spring_config_url_env=${spring_config_url}
 
 ADD target/authentication-otp-service-*.jar authentication-otp-service.jar
 
-ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/kernel/kernel-otpmanager-service/glowroot.zip glowroot.zip
+ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/authentication/authentication-otp-service/glowroot.zip glowroot.zip
 RUN ls
 
 RUN apt-get update && apt-get install -y unzip
