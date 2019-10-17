@@ -80,13 +80,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<version>${spring.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.preregistration</groupId>
+			<artifactId>pre-registration-document-service-impl</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -106,7 +109,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
 
