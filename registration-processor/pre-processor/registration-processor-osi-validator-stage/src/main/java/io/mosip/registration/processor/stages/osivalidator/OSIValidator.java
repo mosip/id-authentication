@@ -109,6 +109,9 @@ public class OSIValidator {
 
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
+	
+	@Value("${registration.processor.validate.introducer}")
+	private boolean intoducerValidation;
 
 	private static final String VALUE = "value";
 
@@ -448,6 +451,8 @@ public class OSIValidator {
 			int age = utility.getApplicantAge(registrationId);
 			int ageThreshold = Integer.parseInt(ageLimit);
 			if (age < ageThreshold) {
+				if(!intoducerValidation)
+					return true;
 				String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
 				String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
 				Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
