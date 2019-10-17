@@ -21,6 +21,7 @@ import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.preregistration.booking.serviceimpl.entity.AvailabilityPK;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

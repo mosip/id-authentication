@@ -2,6 +2,7 @@ package io.mosip.preregistration.booking.dto;
 
 import java.util.List;
 
+import io.mosip.preregistration.booking.serviceimpl.dto.MultiBookingRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 

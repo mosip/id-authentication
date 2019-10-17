@@ -15,7 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.booking.entity.AvailibityEntity;
+import io.mosip.preregistration.booking.serviceimpl.entity.AvailibityEntity;
 
 /**
  * This repository interface is used to define the JPA methods for Booking application.

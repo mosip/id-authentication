@@ -6,8 +6,6 @@ package io.mosip.preregistration.booking.service.util;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.preregistration.core.config.LoggerConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
