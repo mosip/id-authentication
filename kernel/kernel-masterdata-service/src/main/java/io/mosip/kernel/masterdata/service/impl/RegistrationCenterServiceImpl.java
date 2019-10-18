@@ -1117,6 +1117,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			// for (RegCenterPutReqDto registrationCenterDto :
 			// regCenterPutReqDto) {
 			registrationCenterValidator.validateRegCenterUpdate(regCenterPutReqDto, errors);
+			if (!errors.isEmpty()) {
+				 throw new ValidationException(errors);
+				 }
 			regCenterPutReqDto = masterdataCreationUtil.updateMasterData(RegistrationCenter.class, regCenterPutReqDto);
 
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository
