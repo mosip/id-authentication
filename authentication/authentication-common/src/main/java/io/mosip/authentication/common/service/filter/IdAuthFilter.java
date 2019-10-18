@@ -286,7 +286,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private void validateBioData(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
 		try {
-			byte[] previousHash =  getHash("");
+			String previousHash =  digest(getHash(""));
 			
 			for (Map<String, Object> biometricData : biometricsList) {
 				previousHash = validateHash(biometricData, previousHash);
@@ -328,8 +328,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param previousHash the previous hash
 	 * @return the byte[]
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws UnsupportedEncodingException 
 	 */
-	private byte[] validateHash(Map<String, Object> biometricData, byte[] previousHash) throws IdAuthenticationAppException {
+	private String validateHash(Map<String, Object> biometricData, String previousHash) throws IdAuthenticationAppException, UnsupportedEncodingException {
 		Optional<String> hashOpt = getStringValue(biometricData, HASH);
 		Optional<String> dataOpt = getStringValue(biometricData, DATA);
 		
@@ -342,31 +343,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 		
 		String inputHashDigest = hashOpt.get();
-		byte[] currentHash =getHash(CryptoUtil.decodeBase64(dataOpt.get()));
-		byte[] concatenatedBytes = concatBytes(previousHash, currentHash);
-		byte[] finalHash = getHash(concatenatedBytes);
+		String currentHash =digest(getHash(CryptoUtil.decodeBase64(dataOpt.get())));
+		String concatenatedHash = previousHash + currentHash;
+		byte[] finalHash = getHash(concatenatedHash);
 		String finalHashDigest = digest(finalHash);
 		
 		if(!inputHashDigest.equals(finalHashDigest)) {
 			throwInvalidInputParameter(HASH_INPUT_PARAM);
 		}
 		
-		return finalHash;
+		return finalHashDigest;
 		
-	}
-
-	/**
-	 * Concat bytes.
-	 *
-	 * @param previousHash the previous hash
-	 * @param currentHash the current hash
-	 * @return the byte[]
-	 */
-	private byte[] concatBytes(byte[] previousHash, byte[] currentHash) {
-		byte[] finalBytes = new byte[previousHash.length + currentHash.length];
-		System.arraycopy(previousHash, 0, finalBytes, 0, previousHash.length);
-		System.arraycopy(currentHash, 0, finalBytes, previousHash.length, currentHash.length);
-		return finalBytes;
 	}
 
 	/**
