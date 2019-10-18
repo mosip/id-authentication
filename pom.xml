@@ -4,7 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>	
 	<groupId>io.mosip</groupId>
 	<artifactId>mosip-parent</artifactId>
+<<<<<<< HEAD
 	<version>0.10.0</version>
+=======
+	<version>0.9.1-SNAPSHOT</version>
+>>>>>>> refs/heads/master
 	<packaging>pom</packaging>	
 	
 	<name>MOSIP Project Parent POM</name>	
