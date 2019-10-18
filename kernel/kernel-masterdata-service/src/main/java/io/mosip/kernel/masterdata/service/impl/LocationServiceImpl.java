@@ -335,11 +335,21 @@ public class LocationServiceImpl implements LocationService {
 //					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
 //		}
 
-		if(!request.getCode().equals(languageUtils.getPrimaryLanguage()))
+//		if(!request.getLangCode().equals(languageUtils.getPrimaryLanguage()))
+//		{
+//			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
+//					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
+//							languageUtils.getPrimaryLanguage()));
+//		}
+		if(StringUtils.isNotBlank(request.getParentLocCode()))
 		{
-			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
-					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
-							languageUtils.getPrimaryLanguage()));
+			
+			List<Location> locationList = locationRepository.findByCode(request.getParentLocCode());
+			if(CollectionUtils.isEmpty(locationList))
+			{
+				throw new RequestException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
+						LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
+			}
 		}
 //		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
 //		if (levels.size() > 1) {
@@ -750,6 +760,7 @@ public class LocationServiceImpl implements LocationService {
 		String active = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
+		pageUtils.validateSortField(Location.class, dto.getSort());
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
@@ -759,6 +770,7 @@ public class LocationServiceImpl implements LocationService {
 				isActive = Boolean.valueOf(active);
 				dto.getFilters().remove(isActiveFilter.get());
 			}
+			
 		}
 		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode(),isActive);
 		locationList=locationList.stream().filter(location -> location.getHierarchyLevel()!=0).collect(Collectors.toList());
@@ -766,9 +778,6 @@ public class LocationServiceImpl implements LocationService {
 		
 		if (dto.getFilters().isEmpty()) {
 			responseDto = emptyFilterLocationSearch(tree);
-		}else if(dto.getFilters().size()==1 && !StringUtils.isEmpty(active) && !tree.isEmpty())
-		{
-			responseDto = emptyFilterLocationSearch(tree,isActive);
 		}
 		else {
 			for (SearchFilter filter : dto.getFilters()) {
@@ -866,56 +875,6 @@ public class LocationServiceImpl implements LocationService {
 		return responseDto;
 	}
 	
-	
-	/**
-	 * Method to search Location with no filter mentioned.
-	 * 
-	 * @param tree
-	 *            the Location Tree.
-	 * @return list of {@link LocationSearchDto}.
-	 */
-	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree,boolean isActive) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-		Node<Location> root = locationTree.findRootNode(tree.get(0));
-		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
-
-		leafNodes.forEach(leafNode -> {
-			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
-
-			LocationSearchDto locationSearchDto = new LocationSearchDto();
-			leafParents.forEach(p -> {
-				if(p.getIsActive()==isActive)
-				{
-					if (p.getHierarchyLevel() == 1) {
-						locationSearchDto.setRegion(p.getName());
-					}
-					if (p.getHierarchyLevel() == 2) {
-						locationSearchDto.setProvince(p.getName());
-					}
-					if (p.getHierarchyLevel() == 3) {
-						locationSearchDto.setCity(p.getName());
-					}
-					if (p.getHierarchyLevel() == 4) {
-						locationSearchDto.setZone(p.getName());
-					}
-					if (p.getHierarchyLevel() == 5) {
-						locationSearchDto.setPostalCode(p.getName());
-					}
-					locationSearchDto.setCreatedBy(p.getCreatedBy());
-					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
-					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
-					locationSearchDto.setIsActive(p.getIsActive());
-					locationSearchDto.setIsDeleted(p.getIsDeleted());
-					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
-					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
-				}
-				
-			});
-			responseDto.add(locationSearchDto);
-		});
-
-		return responseDto;
-	}
 
 	/**
 	 * Method to find Location for equal data.

@@ -44,6 +44,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -377,6 +378,7 @@ public class MachineServiceImpl implements MachineService {
 		boolean isAssigned = true;
 		String typeName = null;
 		String langCode = null;
+		pageUtils.validateSortField(Location.class, dto.getSort());
 		if (dto.getLanguageCode().equals("all")) {
 			langCode = primaryLangCode;
 		} else {

@@ -27,10 +27,15 @@ import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
 import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.syncdata.dto.DeviceDto;
+import io.mosip.kernel.syncdata.dto.DeviceProviderDto;
+import io.mosip.kernel.syncdata.dto.DeviceServiceDto;
 import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.syncdata.dto.DeviceSubTypeDPMDto;
+import io.mosip.kernel.syncdata.dto.DeviceTypeDPMDto;
 import io.mosip.kernel.syncdata.dto.DeviceTypeDto;
 import io.mosip.kernel.syncdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
+import io.mosip.kernel.syncdata.dto.FoundationalTrustProviderDto;
 import io.mosip.kernel.syncdata.dto.GenderDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.IdTypeDto;
@@ -43,6 +48,7 @@ import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
+import io.mosip.kernel.syncdata.dto.RegisteredDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
@@ -169,6 +175,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<AppRolePriorityDto>> appRolePriorities = null;
 		CompletableFuture<List<ScreenAuthorizationDto>> screenAuthorizations = null;
 		CompletableFuture<List<ProcessListDto>> processList = null;
+		CompletableFuture<List<DeviceProviderDto>> deviceProviders = null;
+		CompletableFuture<List<DeviceServiceDto>> deviceServices = null;
+		CompletableFuture<List<RegisteredDeviceDto>> registeredDevices = null;
+		CompletableFuture<List<FoundationalTrustProviderDto>> ftps = null;
+		CompletableFuture<List<DeviceTypeDPMDto>> deviceTypeDPMs = null;
+		CompletableFuture<List<DeviceSubTypeDPMDto>> deviceSubTypeDPMs = null;
 
 		CompletableFuture<List<RegistrationCenterMachineDto>> registrationCenterMachines = null;
 		CompletableFuture<List<RegistrationCenterDeviceDto>> registrationCenterDevices = null;
@@ -237,6 +249,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimeStamp);
 		syncJobDefDtos = serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
 		screenDetails = serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
+		registeredDevices = serviceHelper.getRegisteredDeviceDetails(regCenterId, lastUpdated, currentTimeStamp);
+		deviceProviders = serviceHelper.getDeviceProviderDetails(lastUpdated, currentTimeStamp);
+		deviceServices = serviceHelper.getDeviceServiceDetails(lastUpdated, currentTimeStamp);
+		ftps = serviceHelper.getFPDetails(lastUpdated, currentTimeStamp);
+		deviceTypeDPMs = serviceHelper.getDeviceTypeDetails(lastUpdated, currentTimeStamp);
+		deviceSubTypeDPMs = serviceHelper.getDeviceSubTypeDetails(lastUpdated, currentTimeStamp);
 		CompletableFuture<Void> future = CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes,
 				registrationCenters, templates, templateFileFormats, reasonCategory, reasonList, holidays,
 				blacklistedWords, biometricTypes, biometricAttributes, titles, languages, devices, documentCategories,
@@ -247,7 +265,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterUserMachineMappingHistoryList, registrationCenterMachineDeviceHistoryList,
 				registrationCenterDeviceHistoryList, registrationCenterMachineHistoryList, applicantValidDocumentList,
 				individualTypeList, appAuthenticationMethods, appDetails, appRolePriorities, processList,
-				screenAuthorizations, syncJobDefDtos, screenDetails);
+				screenAuthorizations, syncJobDefDtos, screenDetails, registeredDevices, deviceProviders, deviceServices,
+				ftps, deviceTypeDPMs, deviceSubTypeDPMs);
 
 		try {
 			future.join();
@@ -298,6 +317,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setScreenAuthorizations(screenAuthorizations.get());
 		response.setSyncJobDefinitions(syncJobDefDtos.get());
 		response.setScreenDetails(screenDetails.get());
+		response.setRegisteredDevices(registeredDevices.get());
+		response.setDeviceProviders(deviceProviders.get());
+		response.setDeviceServices(deviceServices.get());
+		response.setDeviceTypeDPMs(deviceTypeDPMs.get());
+		response.setDeviceSubTypeDPMs(deviceSubTypeDPMs.get());
+		response.setFunctionalTrustProviders(ftps.get());
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
@@ -434,17 +459,17 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 		try {
 			if (machineDetail != null && !machineDetail.isEmpty()) {
-				List<Machine>updatedMachineList=new ArrayList<>();
-				List<MachineHistory>updatedMachineHistoryList=new ArrayList<>();
+				List<Machine> updatedMachineList = new ArrayList<>();
+				List<MachineHistory> updatedMachineHistoryList = new ArrayList<>();
 				machineDetail.forEach(machineEntity -> {
 					Machine machine = MetaDataUtils.setUpdateMetaData(machineEntity);
 					machine.setPublicKey(publicKey);
 					machine.setKeyIndex(keyIndex);
 					MachineHistory machineHistory = MapperUtils.map(machine, MachineHistory.class);
 					machineHistory.setEffectDateTime(machine.getUpdatedDateTime());
-					MapperUtils.mapBaseFieldValue(machine, machineHistory);	
-                    updatedMachineList.add(machine);
-                    updatedMachineHistoryList.add(machineHistory);
+					MapperUtils.mapBaseFieldValue(machine, machineHistory);
+					updatedMachineList.add(machine);
+					updatedMachineHistoryList.add(machineHistory);
 				});
 
 				machineRepo.saveAll(updatedMachineList);
