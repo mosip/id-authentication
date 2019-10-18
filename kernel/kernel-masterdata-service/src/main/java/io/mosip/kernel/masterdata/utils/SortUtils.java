@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
@@ -96,6 +98,7 @@ public class SortUtils {
 
 	private Field findField(List<Field> fields, String name) {
 		Optional<Field> field = fields.stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
+	
 		if (field.isPresent()) {
 			return field.get();
 		} else {
@@ -117,6 +120,19 @@ public class SortUtils {
 			findField(fields, searchSort.getSortField());
 		}
 
+	}
+
+	public <T> void validateSortLocationField(Class<T> clazz, List<SearchSort> searchSorts) {
+		List<Field> fields = extractFields(clazz);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+		}
+	}
+
+	private<T> List<Field> extractFields(Class<T> clazz) {
+		List<Field> fields = new ArrayList<>();
+		fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+		return fields;
 	}
 
 }

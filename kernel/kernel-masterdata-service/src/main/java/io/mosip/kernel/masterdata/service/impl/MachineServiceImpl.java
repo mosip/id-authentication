@@ -378,7 +378,7 @@ public class MachineServiceImpl implements MachineService {
 		boolean isAssigned = true;
 		String typeName = null;
 		String langCode = null;
-		pageUtils.validateSortField(Location.class, dto.getSort());
+		
 		if (dto.getLanguageCode().equals("all")) {
 			langCode = primaryLangCode;
 		} else {
@@ -445,6 +445,7 @@ public class MachineServiceImpl implements MachineService {
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
+		pageUtils.validateSortField(Machine.class, dto.getSort());
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();

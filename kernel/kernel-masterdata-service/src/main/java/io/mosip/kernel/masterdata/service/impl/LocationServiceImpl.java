@@ -760,7 +760,7 @@ public class LocationServiceImpl implements LocationService {
 		String active = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
-		pageUtils.validateSortField(Location.class, dto.getSort());
+		
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
@@ -805,6 +805,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
+		pageUtils.validateSortFieldLocation(LocationSearchDto.class, dto.getSort());
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
 	}
