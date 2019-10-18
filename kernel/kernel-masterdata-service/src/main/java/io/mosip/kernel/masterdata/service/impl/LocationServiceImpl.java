@@ -348,8 +348,7 @@ public class LocationServiceImpl implements LocationService {
 			if(CollectionUtils.isEmpty(locationList))
 			{
 				throw new RequestException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
-						String.format(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage(),
-								languageUtils.getPrimaryLanguage()));
+						LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
 			}
 		}
 //		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
