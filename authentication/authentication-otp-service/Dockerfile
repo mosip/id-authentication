@@ -42,4 +42,4 @@ EXPOSE 8092
 RUN if [ "$active_profile_env" = "preprod" ]; then \
 	command_to_run="java","-jar","-javaagent:glowroot/glowroot.jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "-Dcom.sun.management.jmxremote=true", "-Dcom.sun.management.jmxremote.rmi.port=8190" , "-Dcom.sun.management.jmxremote.port=8190", "-Dcom.sun.management.jmxremote.ssl=false" ,"-Dcom.sun.management.jmxremote.authenticate=false",  "-Dcom.sun.management.jmxremote.local.only=false", "-Djava.rmi.server.hostname=13.71.81.26", "-Dcom.sun.management.jmxremote.local.only=false", "authentication-otp-service.jar" ; \
     fi
-CMD ["$command_to_run"]
+CMD [$command_to_run]
