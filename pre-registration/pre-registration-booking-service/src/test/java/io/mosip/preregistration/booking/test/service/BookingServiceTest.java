@@ -92,6 +92,7 @@ import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
 import io.mosip.preregistration.core.exception.AppointmentReBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+import io.mosip.preregistration.core.service.intf.BookingServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
@@ -130,7 +131,7 @@ public class BookingServiceTest {
 	@Autowired
 	private BookingServiceUtil serviceUtil;
 
-	private BookingService serviceSpy;
+	private BookingServiceIntf serviceSpy;
 
 	private DemographicEntity preRegistrationEntity;
 
@@ -1199,7 +1200,7 @@ public class BookingServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
 		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
-		Mockito.when(bookingDAO.getDemographicStatus(Mockito.any())).thenReturn("Booked");
+		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
 		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(null);
 		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
 		Mockito.when(bookingDAO.deleteSlots(Mockito.any(), Mockito.any())).thenReturn(1);
@@ -1269,7 +1270,7 @@ public class BookingServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
-		Mockito.when(bookingDAO.getDemographicStatus(Mockito.any())).thenReturn("Booked");
+		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
 		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
 		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(insertedDate);
 		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
@@ -1350,7 +1351,7 @@ public class BookingServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
-		Mockito.when(bookingDAO.getDemographicStatus(Mockito.any())).thenReturn("Booked");
+		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
 		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
 		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(insertedDate);
 		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
@@ -1434,7 +1435,7 @@ public class BookingServiceTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
-		Mockito.when(bookingDAO.getDemographicStatus(Mockito.any())).thenReturn("Booked");
+		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
 		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
 		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(insertedDate);
 		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);

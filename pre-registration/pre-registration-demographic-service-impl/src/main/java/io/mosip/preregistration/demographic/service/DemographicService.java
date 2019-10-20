@@ -16,22 +16,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,29 +37,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.preregistration.demographic.code.RequestCodes;
-import io.mosip.preregistration.demographic.dto.DeletePreRegistartionDTO;
-import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
-import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
-import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
-import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
-import io.mosip.preregistration.demographic.dto.DemographicViewDTO;
-import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
-import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
-import io.mosip.preregistration.demographic.exception.BookingDeletionFailedException;
-import io.mosip.preregistration.demographic.exception.DemographicServiceException;
-import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
-import io.mosip.preregistration.demographic.exception.PreIdInvalidForUserIdException;
-import io.mosip.preregistration.demographic.exception.RecordFailedToDeleteException;
-import io.mosip.preregistration.demographic.exception.RecordFailedToUpdateException;
-import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
-import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsException;
-import io.mosip.preregistration.demographic.exception.RestCallException;
-import io.mosip.preregistration.demographic.exception.util.DemographicExceptionCatcher;
-import io.mosip.preregistration.demographic.repository.DemographicRepository;
-import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
-import io.mosip.preregistration.document.service.DocumentService;
-import io.mosip.preregistration.booking.serviceimpl.service.BookingService;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
@@ -89,10 +58,33 @@ import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
+import io.mosip.preregistration.core.service.intf.BookingServiceIntf;
+import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
+import io.mosip.preregistration.core.service.intf.DocumentServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.demographic.code.RequestCodes;
+import io.mosip.preregistration.demographic.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
+import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
+import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
+import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
+import io.mosip.preregistration.demographic.dto.DemographicViewDTO;
+import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
+import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
+import io.mosip.preregistration.demographic.exception.BookingDeletionFailedException;
+import io.mosip.preregistration.demographic.exception.DemographicServiceException;
+import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.demographic.exception.PreIdInvalidForUserIdException;
+import io.mosip.preregistration.demographic.exception.RecordFailedToDeleteException;
+import io.mosip.preregistration.demographic.exception.RecordFailedToUpdateException;
+import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
+import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsException;
+import io.mosip.preregistration.demographic.exception.util.DemographicExceptionCatcher;
+import io.mosip.preregistration.demographic.repository.DemographicRepository;
+import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
 
 /**
  * This class provides the service implementation for Demographic
@@ -105,7 +97,7 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  * @since 1.0.0
  */
 @Service
-public class DemographicService {
+public class DemographicService implements DemographicServiceIntf {
 
 	/**
 	 * logger instance
@@ -136,9 +128,10 @@ public class DemographicService {
 	private IdObjectValidator jsonValidator;
 	
 	@Autowired
-	private DocumentService documentServiceImpl;
+	private DocumentServiceIntf documentServiceImpl;
 	
-	private BookingService bookingServiceImpl;
+	@Autowired
+	private BookingServiceIntf bookingServiceImpl;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -263,6 +256,10 @@ public class DemographicService {
 	@Autowired
 	CryptoUtil cryptoUtil;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#authUserDetails()
+	 */
+	@Override
 	public AuthUserDetails authUserDetails() {
 		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
@@ -279,6 +276,10 @@ public class DemographicService {
 	 * 
 	 * @return responseDTO
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#addPreRegistration(io.mosip.preregistration.core.common.dto.MainRequestDTO)
+	 */
+	@Override
 	public MainResponseDTO<DemographicCreateResponseDTO> addPreRegistration(
 			MainRequestDTO<DemographicRequestDTO> request) {
 		log.info("sessionId", "idType", "id", "In addPreRegistration method of pre-registration service ");
@@ -354,6 +355,10 @@ public class DemographicService {
 	 * 
 	 * @return responseDTO
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#updatePreRegistration(io.mosip.preregistration.core.common.dto.MainRequestDTO, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public MainResponseDTO<DemographicUpdateResponseDTO> updatePreRegistration(
 			MainRequestDTO<DemographicRequestDTO> request, String preRegistrationId, String userId) {
 		log.info("sessionId", "idType", "id", "In updatePreRegistration method of pre-registration service ");
@@ -422,15 +427,10 @@ public class DemographicService {
 		return mainResponseDTO;
 	}
 
-	/**
-	 * This Method is used to fetch all the applications created by User
-	 * 
-	 * @param userId
-	 *            pass a userId through which user has logged in which can be either
-	 *            email Id or phone number
-	 * @return List of groupIds
-	 * 
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#getAllApplicationDetails(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<DemographicMetadataDTO> getAllApplicationDetails(String userId, String pageIdx) {
 		log.info("sessionId", "idType", "id", "In getAllApplicationDetails method of pre-registration service ");
 		MainResponseDTO<DemographicMetadataDTO> response = new MainResponseDTO<>();
@@ -574,15 +574,10 @@ public class DemographicService {
 
 	}
 
-	/**
-	 * This Method is used to fetch status of particular preId
-	 * 
-	 * @param preRegId
-	 *            pass preRegId of the user
-	 * @return response status of the preRegId
-	 * 
-	 * 
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#getApplicationStatus(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<PreRegistartionStatusDTO> getApplicationStatus(String preRegId, String userId) {
 		log.info("sessionId", "idType", "id", "In getApplicationStatus method of pre-registration service ");
 		PreRegistartionStatusDTO statusdto = new PreRegistartionStatusDTO();
@@ -629,15 +624,10 @@ public class DemographicService {
 		return response;
 	}
 
-	/**
-	 * This Method is used to delete the Individual Application and documents
-	 * associated with it
-	 * 
-	 * @param preregId
-	 *            pass the preregId of individual
-	 * @return response
-	 * 
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#deleteIndividual(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<DeletePreRegistartionDTO> deleteIndividual(String preregId, String userId) {
 		log.info("sessionId", "idType", "id", "In deleteIndividual method of pre-registration service ");
 		MainResponseDTO<DeletePreRegistartionDTO> response = new MainResponseDTO<>();
@@ -696,13 +686,10 @@ public class DemographicService {
 		return response;
 	}
 
-	/**
-	 * This Method is used to retrieve the demographic
-	 * 
-	 * @param preRegId
-	 *            pass the preregId of individual
-	 * @return response DemographicData of preRegId
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#getDemographicData(java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<DemographicResponseDTO> getDemographicData(String preRegId) {
 		log.info("sessionId", "idType", "id", "In getDemographicData method of pre-registration service ");
 		MainResponseDTO<DemographicResponseDTO> response = new MainResponseDTO<>();
@@ -749,17 +736,10 @@ public class DemographicService {
 		return response;
 	}
 
-	/**
-	 * This Method is used to update status of particular preId
-	 * 
-	 * @param preRegId
-	 *            pass the preregId of individual
-	 * @param status
-	 *            pass the status of individual
-	 * @return response
-	 * 
-	 * 
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#updatePreRegistrationStatus(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<String> updatePreRegistrationStatus(String preRegId, String status, String userId) {
 		log.info("sessionId", "idType", "id", "In updatePreRegistrationStatus method of pre-registration service ");
 		MainResponseDTO<String> response = new MainResponseDTO<>();
@@ -859,6 +839,10 @@ public class DemographicService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.demographic.service.DemographicServiceIntf#getUpdatedDateTimeForPreIds(io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO)
+	 */
+	@Override
 	public MainResponseDTO<Map<String, String>> getUpdatedDateTimeForPreIds(
 			PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO) {
 		log.info("sessionId", "idType", "id",

@@ -355,7 +355,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
 				}), Mockito.anyMap())).thenThrow(ex);
-		serviceUtil.callUpdateStatusRestService("23587986034785", "Pending_Appointment");
+		serviceUtil.updateDemographicStatus("23587986034785", "Pending_Appointment");
 
 	}
 
@@ -375,7 +375,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
 				}), Mockito.anyMap())).thenReturn(resp2);
-		serviceUtil.callUpdateStatusRestService("23587986034785", "Pending_Appointment");
+		serviceUtil.updateDemographicStatus("23587986034785", "Pending_Appointment");
 
 	}
 
@@ -399,7 +399,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
-		serviceUtil.callGetStatusForCancelRestService("23587986034785");
+		serviceUtil.getDemographicStatusForCancel("23587986034785");
 
 	}
 
@@ -409,7 +409,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenThrow(ex);
-		serviceUtil.callGetStatusForCancelRestService("23587986034785");
+		serviceUtil.getDemographicStatusForCancel("23587986034785");
 
 	}
 
@@ -431,7 +431,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
-		serviceUtil.callGetStatusForCancelRestService("23587986034785");
+		serviceUtil.getDemographicStatusForCancel("23587986034785");
 
 	}
 
@@ -453,7 +453,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
-		serviceUtil.callGetStatusRestService("23587986034785");
+		serviceUtil.getDemographicStatus("23587986034785");
 
 	}
 
@@ -463,7 +463,7 @@ public class BookingServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenThrow(ex);
-		serviceUtil.callGetStatusRestService("23587986034785");
+		serviceUtil.getDemographicStatus("23587986034785");
 
 	}
 

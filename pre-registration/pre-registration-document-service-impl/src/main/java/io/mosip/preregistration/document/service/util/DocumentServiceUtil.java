@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -22,16 +20,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -50,6 +41,7 @@ import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -100,6 +92,9 @@ public class DocumentServiceUtil {
 
 	@Autowired
 	ValidationUtil validationUtil;
+	
+	@Autowired
+	private DemographicServiceIntf demographgicServiceItf;
 
 	/**
 	 * Reference for ${demographic.resource.url} from property file
@@ -362,37 +357,12 @@ public class DocumentServiceUtil {
 
 	public boolean getPreRegInfoRestService(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
-		
-		/*try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applications/");
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
-			uriBuilder += "{preRegistrationId}";
-			log.info("sessionId", "idType", "id",
-					"In callGetPreRegInfoRestService method of document service util url " + uriBuilder);
-			ResponseEntity<MainResponseDTO<DemographicResponseDTO>> respEntity = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, httpEntity,
-					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-					}, params);
-			log.debug("sessionId", "idType", "id", "After rest call");
-			log.debug("sessionId", "idType", "id", "Response Entity " + respEntity.getBody());
-			if (respEntity.getBody().getErrors() != null) {
 
-				throw new DemographicGetDetailsException(respEntity.getBody().getErrors().get(0).getErrorCode(),
-						respEntity.getBody().getErrors().get(0).getMessage());
-			}
-
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
-
-			throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.getMessage(), ex.getCause());
-		}*/
+		MainResponseDTO<DemographicResponseDTO> getDemographicData = demographgicServiceItf.getDemographicData(preId);
+		if (getDemographicData.getErrors() != null) {
+			throw new DemographicGetDetailsException(getDemographicData.getErrors().get(0).getErrorCode(),
+					getDemographicData.getErrors().get(0).getMessage());
+		}
 		return true;
 	}
 

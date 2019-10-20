@@ -46,6 +46,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.service.intf.DocumentServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -74,7 +75,7 @@ import io.mosip.preregistration.document.service.util.DocumentServiceUtil;
  * @since 1.0.0
  */
 @Component
-public class DocumentService {
+public class DocumentService implements DocumentServiceIntf {
 
 	/**
 	 * Autowired reference for {@link #DocumnetDAO}
@@ -310,18 +311,10 @@ public class DocumentService {
 		return docResponseDto;
 	}
 
-	/**
-	 * This method is used to copy the document from source preId to destination
-	 * preId
-	 * 
-	 * @param catCode
-	 *            pass category code
-	 * @param sourcePreId
-	 *            pass source preRegistrationId
-	 * @param destinationPreId
-	 *            pass destination preRegistrationId
-	 * @return ResponseDTO
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#copyDocument(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentResponseDTO> copyDocument(String catCode, String sourcePreId,
 			String destinationPreId) {
@@ -413,13 +406,10 @@ public class DocumentService {
 		}
 	}
 
-	/**
-	 * This method is used to get all the documents for a preId
-	 * 
-	 * @param preId
-	 *            pass preRegistrationId
-	 * @return ResponseDTO
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#getAllDocumentForPreId(java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<DocumentsMetaData> getAllDocumentForPreId(String preId) {
 		log.info("sessionId", "idType", "id", "In getAllDocumentForPreId method of document service");
 		MainResponseDTO<DocumentsMetaData> responseDto = new MainResponseDTO<>();
@@ -467,15 +457,10 @@ public class DocumentService {
 		return responseDto;
 	}
 
-	/**
-	 * This method is used to get particular document for a docId
-	 * 
-	 * @param docId
-	 *            pass documentId
-	 * @param preId
-	 *            pass preRegistrationId
-	 * @return ResponseDTO
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#getDocumentForDocId(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public MainResponseDTO<DocumentDTO> getDocumentForDocId(String docId, String preId) {
 		log.info("sessionId", "idType", "id", "In getAllDocumentForDocId method of document service");
 		MainResponseDTO<DocumentDTO> responseDto = new MainResponseDTO<>();
@@ -568,13 +553,10 @@ public class DocumentService {
 		return documentsMetaData;
 	}
 
-	/**
-	 * This method is used to delete the document for document Id
-	 * 
-	 * @param documentId
-	 *            pass documentID
-	 * @return ResponseDTO
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#deleteDocument(java.lang.String, java.lang.String)
 	 */
+	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId, String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In deleteDocument method of document service");
@@ -637,13 +619,10 @@ public class DocumentService {
 		return delResponseDto;
 	}
 
-	/**
-	 * This method is used to delete all the documents for a preId
-	 * 
-	 * @param preregId
-	 *            pass preRegistrationId
-	 * @return ResponseDTO
+	/* (non-Javadoc)
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#deleteAllByPreId(java.lang.String)
 	 */
+	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");

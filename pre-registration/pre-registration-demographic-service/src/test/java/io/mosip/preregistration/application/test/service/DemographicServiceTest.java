@@ -85,6 +85,7 @@ import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -107,7 +108,6 @@ import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsExc
 import io.mosip.preregistration.demographic.exception.RestCallException;
 import io.mosip.preregistration.demographic.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.demographic.repository.DemographicRepository;
-import io.mosip.preregistration.demographic.service.DemographicService;
 import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
 
 /**
@@ -160,7 +160,7 @@ public class DemographicServiceTest {
 	 * Autowired reference for $link{DemographicService}
 	 */
 	@Autowired
-	private DemographicService preRegistrationService;
+	private DemographicServiceIntf preRegistrationService;
 
 	@MockBean
 	private AuditLogUtil auditLogUtil;
@@ -258,7 +258,7 @@ public class DemographicServiceTest {
 	private ObjectMapper mapper;
 	JSONArray fullname;
 	LocalDateTime encryptionDateTime = DateUtils.getUTCCurrentDateTime();
-	DemographicService spyDemographicService;
+	DemographicServiceIntf spyDemographicService;
 	String preId = "";
 	String identityMappingJson = "";
 

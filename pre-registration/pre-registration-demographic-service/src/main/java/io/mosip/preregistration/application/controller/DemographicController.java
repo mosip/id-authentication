@@ -31,12 +31,12 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
 import io.mosip.preregistration.demographic.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
 import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
 import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
-import io.mosip.preregistration.demographic.service.DemographicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -62,7 +62,7 @@ public class DemographicController {
 
 	/** Autowired reference for {@link #DemographicService}. */
 	@Autowired
-	private DemographicService preRegistrationService;
+	private DemographicServiceIntf preRegistrationService;
 
 	private Logger log = LoggerConfiguration.logConfig(DemographicController.class);
 

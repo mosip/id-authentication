@@ -38,13 +38,13 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
 import io.mosip.preregistration.demographic.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
 import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
 import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.demographic.dto.DemographicViewDTO;
-import io.mosip.preregistration.demographic.service.DemographicService;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
@@ -78,7 +78,7 @@ public class DemographicControllerTest {
 	 * Creating Mock Bean for DemographicService
 	 */
 	@MockBean
-	private DemographicService preRegistrationService;
+	private DemographicServiceIntf preRegistrationService;
 
 	@Mock
 	private AuthUserDetails authUserDetails;

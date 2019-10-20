@@ -4,7 +4,6 @@
  */
 package io.mosip.preregistration.booking.serviceimpl.service.util;
 
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,7 +32,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -75,7 +73,6 @@ import io.mosip.preregistration.booking.serviceimpl.exception.TimeSpanException;
 import io.mosip.preregistration.booking.serviceimpl.repository.impl.BookingDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
-import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
@@ -87,6 +84,7 @@ import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
@@ -107,6 +105,9 @@ public class BookingServiceUtil {
 	 */
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	private DemographicServiceIntf demographicServiceIntf;
 
 	/**
 	 * Reference for ${regCenter.url} from property file
@@ -156,7 +157,6 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
-			// RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -243,42 +243,16 @@ public class BookingServiceUtil {
 	 * @param status
 	 * @return response entity
 	 */
-	public boolean callUpdateStatusRestService(String preId, String status) {
+	public boolean updateDemographicStatus(String preId, String status) {
 		log.info("sessionId", "idType", "id", "In callUpdateStatusRestService method of Booking Service Util");
-		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(preRegResourceUrl + "/applications/status/{preRegistrationId}");
-
-			URI uri = builder.buildAndExpand(params).toUri();
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(uri).queryParam("statusCode", status);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainResponseDTO<String>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilderString = uriBuilder.build().encode().toUriString();
-			log.info("sessionId", "idType", "id", "Call Update Status in demographic URL : " + uriBuilderString);
-			ResponseEntity<MainResponseDTO<String>> bookingResponse = restTemplate.exchange(uriBuilderString,
-					HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<MainResponseDTO<String>>() {
-					}, params);
-			if (bookingResponse.getBody().getErrors() != null) {
-				throw new DemographicStatusUpdationException(
-						bookingResponse.getBody().getErrors().get(0).getErrorCode(),
-						bookingResponse.getBody().getErrors().get(0).getMessage());
-			}
-
-			return true;
-
-		} catch (RestClientException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In callUpdateStatusRestService method of Booking Service Util for HttpClientErrorException- "
-							+ ex.getMessage());
-
-			throw new DemographicStatusUpdationException(ErrorCodes.PRG_BOOK_RCI_011.getCode(),
-					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.getMessage(), ex.getCause());
+		String userId = authUserDetails().getUserId();
+		MainResponseDTO<String> updatePreRegistrationStatus = demographicServiceIntf.updatePreRegistrationStatus(preId,
+				status, userId);
+		if (updatePreRegistrationStatus.getErrors() != null) {
+			throw new DemographicStatusUpdationException(updatePreRegistrationStatus.getErrors().get(0).getErrorCode(),
+					updatePreRegistrationStatus.getErrors().get(0).getMessage());
 		}
+		return true;
 	}
 
 	/**
@@ -287,48 +261,20 @@ public class BookingServiceUtil {
 	 * @param preId
 	 * @return status code
 	 */
-	public String callGetStatusRestService(String preId) {
+	public String getDemographicStatus(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusRestService method of Booking Service Util");
-		String statusCode = "";
-		try {
-
-			// RestTemplate restTemplate = restTemplateBuilder.build();
-			Map<String, Object> params = new HashMap<>();
-			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(preRegResourceUrl + "/applications/status/");
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
-			uriBuilder += "{preRegistrationId}";
-			log.info("sessionId", "idType", "id", "Call Get Status from demographic URL : " + uriBuilder);
-			ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, httpEntity,
-					new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
-					}, params);
-
-			if (respEntity.getBody().getErrors() == null) {
-				ObjectMapper mapper = new ObjectMapper();
-				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
-						.convertValue(respEntity.getBody().getResponse(), PreRegistartionStatusDTO.class);
-
-				statusCode = preRegResponsestatusDto.getStatusCode().trim();
-			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErrors().get(0).getErrorCode(),
-						respEntity.getBody().getErrors().get(0).getMessage());
-			}
-		} catch (RestClientException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In callGetStatusRestService method of Booking Service Util for HttpClientErrorException- "
-							+ ex.getMessage());
-
-			throw new DemographicGetStatusException(ErrorCodes.PRG_BOOK_RCI_012.getCode(),
-					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.getMessage());
+		
+		String userId=authUserDetails().getUserId();
+		
+		MainResponseDTO<PreRegistartionStatusDTO> getApplicationStatus=demographicServiceIntf.getApplicationStatus(preId, userId);
+		
+		if(getApplicationStatus.getErrors()!=null) {
+			throw new DemographicGetStatusException(getApplicationStatus.getErrors().get(0).getErrorCode(),
+					getApplicationStatus.getErrors().get(0).getMessage());
 		}
-		return statusCode;
+		return getApplicationStatus.getResponse().getStatusCode();
+		
+		
 	}
 
 	/**
@@ -337,59 +283,28 @@ public class BookingServiceUtil {
 	 * @param preId
 	 * @return status code
 	 */
-	public boolean callGetStatusForCancelRestService(String preId) {
+	public boolean getDemographicStatusForCancel(String preId) {
 		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
-		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(preRegResourceUrl + "/applications/status/");
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
-			uriBuilder += "{preRegistrationId}";
-			log.info("sessionId", "idType", "id",
-					"In callGetStatusForCancelRestService method of Booking Service URL- " + uriBuilder);
-
-			ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = restTemplate.exchange(uriBuilder,
-					HttpMethod.GET, httpEntity,
-					new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
-					}, params);
-
-			if (respEntity.getBody().getErrors() == null) {
-				ObjectMapper mapper = new ObjectMapper();
-				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
-						.convertValue(respEntity.getBody().getResponse(), PreRegistartionStatusDTO.class);
-
-				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
-
-				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
-					if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
-						throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
-								ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
-					}
-
-					else {
-						throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
-								ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
-					}
-
-				}
-			} else {
-				for (ExceptionJSONInfoDTO dto : respEntity.getBody().getErrors()) {
-					throw new DemographicGetStatusException(dto.getErrorCode(), dto.getMessage());
-				}
-
+		String userId=authUserDetails().getUserId();
+		
+		MainResponseDTO<PreRegistartionStatusDTO> getApplicationStatus=demographicServiceIntf.getApplicationStatus(preId, userId);
+		if(getApplicationStatus.getErrors()!=null) {
+			throw new DemographicGetStatusException(getApplicationStatus.getErrors().get(0).getErrorCode(),
+					getApplicationStatus.getErrors().get(0).getMessage());
+		}
+		String statusCode =getApplicationStatus.getResponse().getStatusCode();
+		
+		if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
+			if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
+						ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
 			}
-		} catch (RestClientException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In callGetStatusForCancelRestService method of Booking Service Util for HttpClientErrorException- "
-							+ ex.getMessage());
-			throw new DemographicGetStatusException(ErrorCodes.PRG_BOOK_RCI_012.getCode(),
-					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.getMessage());
+
+			else {
+				throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
+						ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
+			}
+
 		}
 		return true;
 	}

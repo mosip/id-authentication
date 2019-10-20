@@ -62,15 +62,5 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.preregistration</groupId>
-			<artifactId>pre-registration-document-service-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.preregistration</groupId>
-			<artifactId>pre-registration-booking-service-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 	</dependencies>
 </project>
