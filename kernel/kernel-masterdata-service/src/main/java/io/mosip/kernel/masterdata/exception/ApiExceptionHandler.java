@@ -93,8 +93,18 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-					x.getField() + ": " + x.getDefaultMessage());
+			ServiceError error = null;
+			if(x!=null && x.getDefaultMessage().contains("Language Code"))
+			{
+				error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						x.getDefaultMessage());
+			}
+			else
+			{
+				error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						x.getField() + ": " + x.getDefaultMessage());
+			}
+			
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);

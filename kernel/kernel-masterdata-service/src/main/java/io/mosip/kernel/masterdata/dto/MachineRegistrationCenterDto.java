@@ -72,9 +72,9 @@ public class MachineRegistrationCenterDto extends BaseDto{
 	/**
 	 * Field for language code
 	 */
-	@ValidLangCode
-	@NotBlank
-	@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
+	//@NotBlank
+	//@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 	
