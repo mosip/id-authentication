@@ -38,7 +38,7 @@ RUN ls glowroot/
 
 EXPOSE 8092
 
-RUN if [ "$active_profile_env" = "preprod" ]; then \
+CMD if [ "$active_profile_env" = "preprod" ]; then \
     #echo hello ; \
     java -jar  authentication-otp-service.jar ; \
     else \
