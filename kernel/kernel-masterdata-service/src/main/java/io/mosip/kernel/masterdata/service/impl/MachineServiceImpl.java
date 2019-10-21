@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -751,8 +752,8 @@ public class MachineServiceImpl implements MachineService {
 
 		// machine is not in DB
 		if (renMachines.isEmpty()) {
-			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new RequestException(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
+					String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId));
 		}
 		
 		// check the given device and registration center zones are come under user zone
