@@ -110,6 +110,9 @@ public class OSIValidator {
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
 
+	@Value("${registration.processor.validate.introducer}")
+	private boolean introducerValidation;
+
 	private static final String VALUE = "value";
 
 	@Autowired
@@ -186,10 +189,11 @@ public class OSIValidator {
 				String userId;
 				if (regOsi.getOfficerId() != null && !regOsi.getOfficerId().isEmpty()) {
 					userId = regOsi.getOfficerId();
-				}else {
+				} else {
 					userId = regOsi.getSupervisorId();
 				}
-				registrationStatusDto.setStatusComment(StatusUtil.SUPERVISOR_OR_OFFICER_WAS_INACTIVE.getMessage() + userId);
+				registrationStatusDto
+						.setStatusComment(StatusUtil.SUPERVISOR_OR_OFFICER_WAS_INACTIVE.getMessage() + userId);
 				registrationStatusDto.setSubStatusCode(StatusUtil.SUPERVISOR_OR_OFFICER_WAS_INACTIVE.getCode());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -222,7 +226,8 @@ public class OSIValidator {
 				}
 			} else {
 				List<ServerError> errors = officerResponse.getErrors();
-				registrationStatusDto.setStatusComment(StatusUtil.OFFICER_AUTHENTICATION_FAILED.getMessage() + errors.get(0).getMessage());
+				registrationStatusDto.setStatusComment(
+						StatusUtil.OFFICER_AUTHENTICATION_FAILED.getMessage() + errors.get(0).getMessage());
 				registrationStatusDto.setSubStatusCode(StatusUtil.OFFICER_AUTHENTICATION_FAILED.getCode());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
@@ -241,7 +246,8 @@ public class OSIValidator {
 				}
 			} else {
 				List<ServerError> errors = supervisorResponse.getErrors();
-				registrationStatusDto.setStatusComment(StatusUtil.SUPERVISOR_AUTHENTICATION_FAILED.getMessage() + errors.get(0).getMessage());
+				registrationStatusDto.setStatusComment(
+						StatusUtil.SUPERVISOR_AUTHENTICATION_FAILED.getMessage() + errors.get(0).getMessage());
 				registrationStatusDto.setSubStatusCode(StatusUtil.SUPERVISOR_AUTHENTICATION_FAILED.getCode());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
@@ -257,13 +263,12 @@ public class OSIValidator {
 		pathSegments.add(operatorId);
 		pathSegments.add(creationDate);
 
-			userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments, "", "",
-					UserResponseDto.class);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"OSIValidator::isUserActive()::User Details Api ended with response data : "
-							+ JsonUtil.objectMapperObjectToJson(userResponse));
-
+		userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments, "", "",
+				UserResponseDto.class);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationStatusDto.getRegistrationId(),
+				"OSIValidator::isUserActive()::User Details Api ended with response data : "
+						+ JsonUtil.objectMapperObjectToJson(userResponse));
 
 		return userResponse;
 	}
@@ -448,6 +453,8 @@ public class OSIValidator {
 			int age = utility.getApplicantAge(registrationId);
 			int ageThreshold = Integer.parseInt(ageLimit);
 			if (age < ageThreshold) {
+				if (!introducerValidation)
+					return true;
 				String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
 				String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
 				Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
@@ -504,8 +511,10 @@ public class OSIValidator {
 						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 								.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-						registrationStatusDto.setStatusComment(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getMessage());
-						registrationStatusDto.setSubStatusCode(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getCode());
+						registrationStatusDto
+								.setStatusComment(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getMessage());
+						registrationStatusDto
+								.setSubStatusCode(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getCode());
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
@@ -607,7 +616,8 @@ public class OSIValidator {
 				registrationStatusDto.setLatestTransactionStatusCode(
 						registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_FAILED));
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				registrationStatusDto.setStatusComment(StatusUtil.OFFICER_SUPERVISOR_AUTHENTICATION_FAILED.getMessage() + userId);
+				registrationStatusDto
+						.setStatusComment(StatusUtil.OFFICER_SUPERVISOR_AUTHENTICATION_FAILED.getMessage() + userId);
 				registrationStatusDto.setSubStatusCode(StatusUtil.OFFICER_SUPERVISOR_AUTHENTICATION_FAILED.getCode());
 				return false;
 			}

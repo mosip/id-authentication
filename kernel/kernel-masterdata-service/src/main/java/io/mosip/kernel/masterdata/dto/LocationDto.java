@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Range;
 
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,11 +24,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LocationDto {
 
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	@NotBlank
 	private String code;
 
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
 	@NotBlank
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	private String name;
@@ -35,14 +36,13 @@ public class LocationDto {
 	@Range(min = 0)
 	private short hierarchyLevel;
 
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@NotBlank
 	private String hierarchyName;
 
 	private String parentLocCode;
 
-	@Size(min = 1, max = 3)
-	@NotBlank
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	@NotNull
