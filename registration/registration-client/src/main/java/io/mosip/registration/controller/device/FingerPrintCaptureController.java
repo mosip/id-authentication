@@ -1159,6 +1159,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		if (detailsDTO.isCaptured()) {
+			
+			streamer.setStreamImageToImageView();
+			
 			int retries=0;
 			if(!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));

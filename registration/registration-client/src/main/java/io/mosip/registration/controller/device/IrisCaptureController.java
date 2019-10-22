@@ -517,6 +517,8 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			if (irisDetailsDTO.isCaptured()) {
+				
+				streamer.setStreamImageToImageView();
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				if (!bioservice.isMdmEnabled()) {
 					scanPopUpViewController.getScanImage()

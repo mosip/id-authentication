@@ -825,6 +825,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 		}
 
+		//Clear all bio-captures data
+		BioServiceImpl.clearAllCaptures();
+		
 		// packet creation
 		ResponseDTO response = packetHandlerService.handle(registrationDTO);
 
