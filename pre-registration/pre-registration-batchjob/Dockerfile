@@ -25,4 +25,16 @@ copy ./target/pre-registration-batchjob-*.jar pre-registration-batchjob.jar
 
 EXPOSE 9097
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-batchjob.jar"]
+CMD if [ "$active_profile_env" = "preprod" ]; then \
+    wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
+    apt-get update && apt-get install -y unzip ; \
+    unzip glowroot.zip ; \
+    rm -rf glowroot.zip ; \
+    
+    sed -i 's/<service_name>/pre-registration-batchjob/g' glowroot/glowroot.properties ; \
+    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" pre-registration-batchjob.jar ; \
+    else \
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" pre-registration-batchjob.jar ; \
+    fi
+
+#CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","pre-registration-batchjob.jar"]
