@@ -52,6 +52,13 @@ public enum PlatformErrorMessages {
 	RPR_PKR_INVALID_PACKET_SIZE_SYNCED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "013",
 			"Packet Size is Not Matching"),
 
+	/** The rpr pkr invalid packet size synced. */
+	UNEQUAL_PACKET_HASH_PR(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "014",
+			"The Registration Packet HashSequence is not equal as synced packet HashSequence"),
+
+	/** The rpr pkr invalid packet size synced. */
+	RPR_PKR_DECRYPTION_FAILED(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "015", "Packet Decryption Failed"),
+
 	/** The rpr rgs registration table not accessible. */
 	// Registration Status Exception error code and message
 	RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "001",
@@ -262,6 +269,17 @@ public enum PlatformErrorMessages {
 	/** The rpr qcr biometric exception. */
 	RPR_QCR_BIOMETRIC_TYPE_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "008",
 			"Requested biometric type not found"),
+
+	/** The rpr qcr biometric exception. */
+	INDIVIDUAL_BIOMETRIC_NOT_FOUND(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "009",
+			"Individual Biometric Parameter Not Found in ID JSON"),
+
+	/** The rpr qcr biometric exception. */
+	BIOMETRIC_QUALITY_CHECK_FAILED(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "010",
+			"Quality Score of Biometrics Captured is Below the Threshold"),
+
+	RPR_QCR_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "011",
+			"The Packet store set by the System is not accessible"),
 
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
@@ -548,7 +566,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "002",
-			"File is Already exists in File Store And its now Deleted from Virus scanner job"),
+			"File is Already exists in File Store And its now Deleted from landing zone"),
 
 	/** The rpr pum packet store not accessible. */
 	RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "003",
@@ -576,6 +594,16 @@ public enum PlatformErrorMessages {
 	/** The rpr pum packet decryption failed. */
 	RPR_PUM_PACKET_DECRYPTION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "009",
 			"Registration packet decryption failed"),
+
+	RPR_PUM_PACKET_DELETION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "010",
+			"packet upload failed during cleanup"),
+
+	RPR_PUM_PACKET_ARCHIVAL_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "010",
+			"packet upload failed during archival"),
+
+	/** The rpr pum packet not found exception. */
+	RPR_PUM_PACKET_UPLOAD_FAILURE(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "011",
+			"Failure in uploading the packet to Packet Store"),
 
 	/** The rpr bdd abis internal error. */
 	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
@@ -784,6 +812,23 @@ public enum PlatformErrorMessages {
 									"IO exception"), RPR_UGS_VID_EXCEPTION(
 											PlatformConstants.RPR_UIN_GENERATOR_STAGE + "005",
 											"VID status is not active"),
+
+	RPR_UGS_UIN_UPDATE_FAILURE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "006", "UIN updation failure"),
+
+	UIN_ALREADY_ACTIVATED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "007", "UIN is already Activated"),
+
+	UIN_ALREADY_DEACTIVATED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "008", "UIN already deactivated"),
+
+	UIN_ACTIVATED_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "009", "UIN Activation Failed"),
+
+	UIN_REACTIVATION_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "010", "UIN Reactivation  failed"),
+
+	UIN_DEACTIVATION_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "011", "UIN Deactivation  failed"),
+
+	LINK_RID_FOR_LOST_PACKET_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "012",
+			"UIn not found the the matched RID"),
+
+	UIN_GENERATION_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "013", "UIN Generation failed"),
 
 	/** The rpr pgs file not present. */
 	RPR_PGS_FILE_NOT_PRESENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "001",

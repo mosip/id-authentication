@@ -8,6 +8,10 @@ package io.mosip.registration.processor.core.code;
  */
 public enum ModuleName {
 
+	PACKET_RECEIVER,
+
+	PACKET_UPLOAD,
+
 	/** The packet validator. */
 	PACKET_VALIDATOR,
 
@@ -22,9 +26,11 @@ public enum ModuleName {
 
 	/** The re processor. */
 	RE_PROCESSOR,
-	
+
 	/** The biometric authentication. */
 	BIOMETRIC_AUTHENTICATION,
 
-	EXTERNAL;
+	EXTERNAL,
+
+	UIN_GENERATOR;
 }
