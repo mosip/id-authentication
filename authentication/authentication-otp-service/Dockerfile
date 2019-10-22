@@ -41,7 +41,7 @@ EXPOSE 8092
 CMD if [ "$active_profile_env" = "preprod" ]; then \
     #echo hello ; \
     #java -jar  authentication-otp-service.jar ; \
-    wget http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
+    wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
     apt-get update && apt-get install -y unzip ; \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
