@@ -40,7 +40,7 @@ public class RegCenterPutReqDto
 	@Size(min = 0, max = 256)
 	private String addressLine3;
 
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	private Short numberOfKiosks;

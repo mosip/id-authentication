@@ -18,6 +18,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -80,7 +81,7 @@ public class LocationController {
 	@ResponseFilter
 	@PostMapping
 	public ResponseWrapper<Location> createLocationHierarchyDetails(
-			@RequestBody RequestWrapper<LocationDto> locationRequestDto) {
+			@RequestBody @Valid RequestWrapper<LocationCreateDto> locationRequestDto) {
 		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
 	}
 

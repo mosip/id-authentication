@@ -71,7 +71,7 @@ public class RegistrationCenterSearchDto extends BaseDto {
 	@Size(min = 1, max = 32)
 	private String workingHours;
 
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	private Short numberOfKiosks;

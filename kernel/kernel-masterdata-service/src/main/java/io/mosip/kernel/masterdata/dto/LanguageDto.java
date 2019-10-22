@@ -23,9 +23,9 @@ public class LanguageDto {
 	/**
 	 * Field for language code
 	 */
-	@NotBlank
-	@ValidLangCode
-	@Size(min = 1, max = 3)
+	//@NotBlank
+	@ValidLangCode(message = "Language Code is Invalid")
+	//@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String code;
 

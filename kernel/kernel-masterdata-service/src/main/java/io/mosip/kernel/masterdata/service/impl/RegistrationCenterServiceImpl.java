@@ -64,6 +64,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -78,6 +79,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepo
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
@@ -176,10 +178,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
+	
+	@Autowired
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	@Autowired
 	private LocationRepository locationRepository;
-
 	/**
 	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
@@ -994,14 +998,29 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		 */
 
 		try {
-			
-			
-			// validate zone, Center start and end time and holidayCode
 			List<ServiceError> errors = new ArrayList<>();
 			registrationCenterValidator.validateRegCenterCreate(regCenterPostReqDto, errors);
 			 if (!errors.isEmpty()) {
 			 throw new ValidationException(errors);
 			 }
+			// validate zone, Center start and end time and holidayCode
+			RegistrationCenterType regCenterType = registrationCenterTypeRepository.
+			findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(regCenterPostReqDto.getCenterTypeCode(), regCenterPostReqDto.getLangCode());
+			if(regCenterType==null)
+			{
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+						"Invalid centerTypeCode");
+			}
+			List<Location> location = locationRepository.
+					findLocationHierarchyByCodeAndLanguageCode(regCenterPostReqDto.getLocationCode(), regCenterPostReqDto.getLangCode());
+			if(CollectionUtils.isEmpty(location))
+			{
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+						"Invalid Location Code");
+			}
+			
 			 
 			// call method generate ID or validate with DB
 			regCenterPostReqDto = masterdataCreationUtil.createMasterData(RegistrationCenter.class,
@@ -1078,6 +1097,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		String uniqueId = "";
+		List<ServiceError> errors = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		// List<RegCenterPutReqDto> notUpdRegistrationCenterList = new
 		// ArrayList<>();
@@ -1115,6 +1135,30 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			// for (RegCenterPutReqDto registrationCenterDto :
 			// regCenterPutReqDto) {
+			
+			registrationCenterValidator.validateRegCenterUpdate(regCenterPutReqDto, errors);
+			if (!errors.isEmpty()) {
+				 throw new ValidationException(errors);
+				 }
+			RegistrationCenterType regCenterType = registrationCenterTypeRepository.
+					findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getCenterTypeCode(), regCenterPutReqDto.getLangCode());
+					if(regCenterType==null)
+					{
+						throw new MasterDataServiceException(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+								"Invalid centerTypeCode");
+					}
+					
+					List<Location> location = locationRepository.
+							findLocationHierarchyByCodeAndLanguageCode(regCenterPutReqDto.getLocationCode(), regCenterPutReqDto.getLangCode());
+					if(CollectionUtils.isEmpty(location))
+					{
+						throw new MasterDataServiceException(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+								"Invalid Location Code");
+					}
+			
+			
 			regCenterPutReqDto = masterdataCreationUtil.updateMasterData(RegistrationCenter.class, regCenterPutReqDto);
 
 			RegistrationCenter renRegistrationCenter = registrationCenterRepository

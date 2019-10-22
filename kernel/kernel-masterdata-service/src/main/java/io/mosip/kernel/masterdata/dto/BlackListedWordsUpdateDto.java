@@ -18,9 +18,9 @@ public class BlackListedWordsUpdateDto {
 	@Size(min = 1, max = 128)
 	private String oldWord;
 
-	@ValidLangCode
-	@NotBlank
-	@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
+	//@NotBlank
+	//@Size(min = 1, max = 3)
 	private String langCode;
 
 	@Size(min = 1, max = 256)

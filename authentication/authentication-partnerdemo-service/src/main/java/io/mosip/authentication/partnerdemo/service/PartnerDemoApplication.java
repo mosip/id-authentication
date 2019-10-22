@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.partnerdemo.service.config.SwaggerConfig;
+import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 
 /**
@@ -14,7 +15,7 @@ import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
-@Import(value = {  TemplateManagerImpl.class, VelocityEngine.class, SwaggerConfig.class,
+@Import(value = {  TemplateManagerImpl.class, VelocityEngine.class, SwaggerConfig.class, CryptoCore.class
 		 })
 public class PartnerDemoApplication {
 
