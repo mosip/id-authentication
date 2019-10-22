@@ -223,7 +223,7 @@ public class DeviceProviderManagementIntegrationTest {
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(deviceServiceRepository.findByDeviceCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
-		mockBean.perform(post(DPM_url).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
+		mockBean.perform(post(DPM_url).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isInternalServerError());
 	}
 
 	@WithUserDetails("zonal-admin")
