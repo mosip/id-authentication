@@ -19,6 +19,9 @@ ARG spring_config_name
 ARG server_port
 
 # can be passed during Docker build as build time environment for schema name for Salt Generator 
+ARG salt_gen_db_alias
+
+# can be passed during Docker build as build time environment for schema name for Salt Generator 
 ARG salt_gen_schema_name
 
 # can be passed during Docker build as build time environment for table name for Salt Generator
@@ -40,7 +43,7 @@ ENV spring_config_url_env=${spring_config_url}
 ENV spring_server_port=${server_port}
 
 # environment variable to pass schema name to salt generator, at docker runtime
-ENV db_url=${salt_gen_db_url}
+ENV db_alias=${salt_gen_db_alias}
 
 # environment variable to pass schema name to salt generator, at docker runtime
 ENV schema_name=${salt_gen_schema_name}
@@ -52,5 +55,5 @@ COPY ./target/kernel-salt-generator-*.jar kernel-salt-generator.jar
 
 #EXPOSE 8092
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.cloud.config.name=${spring_config_name_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-Dserver.port=${spring_server_port}","-Dmosip.kernel.salt-generator.db.url=${db_url}","-Dmosip.kernel.salt-generator.schemaName=${schema_name}","-Dmosip.kernel.salt-generator.tableName=${table_name}", "kernel-salt-generator.jar"]
+CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.cloud.config.name=${spring_config_name_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-Dserver.port=${spring_server_port}","-Dmosip.kernel.salt-generator.db.key-alias=${db_alias}","-Dmosip.kernel.salt-generator.schemaName=${schema_name}","-Dmosip.kernel.salt-generator.tableName=${table_name}", "kernel-salt-generator.jar"]
 
