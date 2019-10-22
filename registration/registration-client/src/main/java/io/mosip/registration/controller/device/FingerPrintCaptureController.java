@@ -40,6 +40,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.security.AuthenticationService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -719,6 +720,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * Clear finger print DTO.
 	 */
 	public void clearFingerPrintDTO() {
+		
+		BioServiceImpl.clearCaptures(RegistrationConstants.LEFT_SLAP);
+		BioServiceImpl.clearCaptures(RegistrationConstants.RIGHT_SLAP);
+		BioServiceImpl.clearCaptures(RegistrationConstants.TWO_THUMBS);
+		
 		initializeCaptureCount();
 		removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_LEFT, leftHandPalmImageview, leftSlapQualityScore,
 				RegistrationConstants.LEFTPALM_IMG_PATH, leftSlapAttempt);

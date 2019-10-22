@@ -57,6 +57,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -429,6 +430,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void createPacket() {
 
+		BioServiceImpl.clearAllCaptures();
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -484,6 +486,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void lostUIN() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -691,6 +695,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	public void updateUIN() {
 
+		BioServiceImpl.clearAllCaptures();
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -770,6 +775,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void onBoardUser() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -933,6 +940,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void loadReRegistrationScreen() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - LOAD_RE_REGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
