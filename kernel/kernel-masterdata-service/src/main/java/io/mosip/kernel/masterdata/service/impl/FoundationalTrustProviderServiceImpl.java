@@ -41,34 +41,33 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 	public ResponseWrapper<FoundationalTrustProviderResDto> registerFoundationalTrustProvider(
 			FoundationalTrustProviderDto foundationalTrustProviderDto) {
 		FoundationalTrustProvider foundationalTrustProvider = null;
-		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
+		FoundationalTrustProvider foundationalTrustProviderEntity = null;
+		FoundationalTrustProviderResDto foundationalTrustProviderResDto = new FoundationalTrustProviderResDto();
 		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
 		foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias(),foundationalTrustProviderDto.isActive());
 		if(foundationalTrustProvider!=null)
 		{
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage());
 		}
-		if(foundationalTrustProviderDto!=null)
+		else
 		{
 			foundationalTrustProvider = MetaDataUtils.setCreateMetaData(foundationalTrustProviderDto, FoundationalTrustProvider.class);
-			foundationalTrustProvider.setIsActive(foundationalTrustProviderDto.isActive());
-			foundationalTrustProvider = foundationalTrustProviderRepository.create(foundationalTrustProvider);
-			if(foundationalTrustProvider!=null)
+			foundationalTrustProvider.setIsActive(foundationalTrustProviderDto.isActive());	
+			foundationalTrustProviderEntity = foundationalTrustProviderRepository.create(foundationalTrustProvider);
+			if(foundationalTrustProviderEntity!=null)
 			{
-				foundationalTrustProviderResDto =  MetaDataUtils.setCreateMetaData(foundationalTrustProvider, FoundationalTrustProviderResDto.class);
+				foundationalTrustProviderResDto =  MetaDataUtils.setCreateMetaData(foundationalTrustProviderEntity, FoundationalTrustProviderResDto.class);
 				response.setResponse(foundationalTrustProviderResDto);
 				response.setResponsetime(LocalDateTime.now());
-			}	
+				FoundationalTrustProviderHistory foundationalTrustProviderHistory = MetaDataUtils.setCreateMetaData(foundationalTrustProviderEntity, FoundationalTrustProviderHistory.class);
+				foundationalTrustProviderHistory.setIsActive(foundationalTrustProviderDto.isActive());
+				foundationalTrustProviderHistory.setEffectivetimes(foundationalTrustProvider.getCreatedDateTime());
+				foundationalTrustProviderHistory.setCreatedDateTime(foundationalTrustProvider.getCreatedDateTime());
+				foundationalTrustProviderRepositoryHistory.create(foundationalTrustProviderHistory);
+			}
+			
 		}
-		
-		if(foundationalTrustProvider!=null)
-		{
-			FoundationalTrustProviderHistory foundationalTrustProviderHistory = MetaDataUtils.setCreateMetaData(foundationalTrustProvider, FoundationalTrustProviderHistory.class);
-			foundationalTrustProviderHistory.setIsActive(foundationalTrustProviderDto.isActive());
-			foundationalTrustProviderHistory.setEffectivetimes(foundationalTrustProvider.getCreatedDateTime());
-			foundationalTrustProviderHistory.setCreatedDateTime(foundationalTrustProvider.getCreatedDateTime());
-			foundationalTrustProviderRepositoryHistory.create(foundationalTrustProviderHistory);
-		}
+			
 		return response;
 	}
 
@@ -77,7 +76,7 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(
 			FoundationalTrustProviderPutDto foundationalTrustProviderPutDto) {
 		FoundationalTrustProvider updateFoundationalTrustProvider = new FoundationalTrustProvider();
-		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
+		FoundationalTrustProviderResDto foundationalTrustProviderResDto = new FoundationalTrustProviderResDto();
 		updateFoundationalTrustProvider = foundationalTrustProviderRepository.findById(FoundationalTrustProvider.class, foundationalTrustProviderPutDto.getId());
 		if(updateFoundationalTrustProvider==null)
 		{

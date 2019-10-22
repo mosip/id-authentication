@@ -872,56 +872,6 @@ public class LocationServiceImpl implements LocationService {
 		return responseDto;
 	}
 	
-	
-	/**
-	 * Method to search Location with no filter mentioned.
-	 * 
-	 * @param tree
-	 *            the Location Tree.
-	 * @return list of {@link LocationSearchDto}.
-	 */
-	private List<LocationSearchDto> emptyFilterLocationSearch(List<Node<Location>> tree,boolean isActive) {
-		List<LocationSearchDto> responseDto = new ArrayList<>();
-		Node<Location> root = locationTree.findRootNode(tree.get(0));
-		List<Node<Location>> leafNodes = locationTree.findLeafs(root);
-
-		leafNodes.forEach(leafNode -> {
-			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
-
-			LocationSearchDto locationSearchDto = new LocationSearchDto();
-			leafParents.forEach(p -> {
-				if(p.getIsActive()==isActive)
-				{
-					if (p.getHierarchyLevel() == 1) {
-						locationSearchDto.setRegion(p.getName());
-					}
-					if (p.getHierarchyLevel() == 2) {
-						locationSearchDto.setProvince(p.getName());
-					}
-					if (p.getHierarchyLevel() == 3) {
-						locationSearchDto.setCity(p.getName());
-					}
-					if (p.getHierarchyLevel() == 4) {
-						locationSearchDto.setZone(p.getName());
-					}
-					if (p.getHierarchyLevel() == 5) {
-						locationSearchDto.setPostalCode(p.getName());
-					}
-					locationSearchDto.setCreatedBy(p.getCreatedBy());
-					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
-					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
-					locationSearchDto.setIsActive(p.getIsActive());
-					locationSearchDto.setIsDeleted(p.getIsDeleted());
-					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
-					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
-				}
-				
-			});
-			responseDto.add(locationSearchDto);
-		});
-
-		return responseDto;
-	}
 
 	/**
 	 * Method to find Location for equal data.
