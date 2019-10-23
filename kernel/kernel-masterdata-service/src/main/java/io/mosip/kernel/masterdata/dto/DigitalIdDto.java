@@ -35,11 +35,11 @@ public class DigitalIdDto {
 
 	/** The dp. */
 	@NotBlank
-	private String deviceProviderName;
+	private String dp;
 
 	/** The dp id. */
 	@NotBlank
-	private String deviceProviderId;
+	private String dpId;
 
 	/** The date time. */
 

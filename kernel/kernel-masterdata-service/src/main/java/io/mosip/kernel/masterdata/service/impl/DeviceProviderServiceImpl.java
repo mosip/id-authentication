@@ -76,9 +76,9 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	public ResponseDto validateDeviceProviders(ValidateDeviceDto validateDeviceDto) {
 		ResponseDto responseDto = new ResponseDto();
 		findRegisteredDevice(validateDeviceDto.getDeviceCode());
-		isDeviceProviderPresent(validateDeviceDto.getDigitalId().getDeviceProviderId());
+		isDeviceProviderPresent(validateDeviceDto.getDigitalId().getDpId());
 		isValidServiceSoftwareVersion(validateDeviceDto.getDeviceServiceVersion());
-		checkMappingBetweenProviderAndService(validateDeviceDto.getDigitalId().getDeviceProviderId(),
+		checkMappingBetweenProviderAndService(validateDeviceDto.getDigitalId().getDpId(),
 				validateDeviceDto.getDeviceServiceVersion());
 		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
 		validateDeviceCodeAndDigitalId(validateDeviceDto.getDeviceCode(), validateDeviceDto.getDigitalId());
@@ -208,20 +208,20 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getModel()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getProviderId().equals(digitalIdDto.getDeviceProviderId())) {
+		if (!registeredDevice.getProviderId().equals(digitalIdDto.getDpId())) {
 			ServiceError serviceError= new ServiceError();
 			serviceError.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
-					digitalIdDto.getDeviceProviderId()));
+					digitalIdDto.getDpId()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getProviderName().equals(digitalIdDto.getDeviceProviderName())) {
+		if (!registeredDevice.getProviderName().equals(digitalIdDto.getDp())) {
 			ServiceError serviceError= new ServiceError();
 			serviceError.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
-					digitalIdDto.getDeviceProviderName()));
+					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
 		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getSerialNo())) {
