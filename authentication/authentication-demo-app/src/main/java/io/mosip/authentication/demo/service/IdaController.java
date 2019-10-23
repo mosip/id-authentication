@@ -231,7 +231,7 @@ public class IdaController {
 		}
 		String result = stringBuilder.toString();
 		String error = ((Map) mapper.readValue(result, Map.class).get("error")).get("errorCode").toString();
-		if (error == "0") {
+		if (error.equals("0")) {
 			responsetextField.setText("Capture Success");
 		} else {
 			responsetextField.setText("Capture Failed");
