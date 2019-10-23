@@ -347,7 +347,7 @@ public class IdaController {
 		System.out.println(identityBlock);
 		System.err.println(authResponse.getBody());
 
-		System.err.println("Auth Request : " + authRequestMap);
+		System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
 	}
 
 	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)

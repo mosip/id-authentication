@@ -78,9 +78,11 @@ public class BioMatcherUtil {
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];
 		Optional<BIR> reqBIR = Stream.of(reqInfoObj)
+				.filter(Objects::nonNull)
 				.map(req -> this.getBir(req, reqInfo.get(CbeffConstant.class.getName()))).filter(Objects::nonNull)
 				.findFirst();
 		BIR[] entityBIR = Stream.of(entityInfoObj)
+				.filter(Objects::nonNull)
 				.map(req -> this.getBir(req, reqInfo.get(CbeffConstant.class.getName())))
 				.toArray(size -> new BIR[size]);
 		if (reqBIR.isPresent()) {
