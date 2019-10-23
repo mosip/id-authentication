@@ -1,5 +1,5 @@
 package io.mosip.authentication.demo.service;
-import java.io.FileInputStream;
+
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -14,24 +14,18 @@ import javafx.stage.Stage;
  * @author Sanjay Murali
  */
 @SuppressWarnings("restriction")
-public class IdaStarter extends Application
-{
-	public static void main(String[] args)
-	{
+public class IdaStarter extends Application {
+	public static void main(String[] args) {
 		Application.launch(args);
 	}
 
 	@Override
-	public void start(Stage stage) throws IOException
-	{
+	public void start(Stage stage) throws IOException {
 		// Create the FXMLLoader
 		FXMLLoader loader = new FXMLLoader();
-		// Path to the FXML File
-			String fxmlDocPath = "C:\\Users\\M1047395\\Desktop\\demosip\\demosip\\src\\main\\resources\\fxml\\idaFXML.fxml";
-		FileInputStream fxmlStream = new FileInputStream(fxmlDocPath);
 
 		// Create the Pane and all Details
-		GridPane root = (GridPane) loader.load(fxmlStream);
+		GridPane root = loader.load(this.getClass().getClassLoader().getResourceAsStream("fxml/idaFXML.fxml"));
 
 		// Create the Scene
 		Scene scene = new Scene(root);

@@ -38,6 +38,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -90,20 +92,28 @@ import javafx.scene.layout.AnchorPane;
 @Component
 public class IdaController {
 
+	@Autowired
+	private Environment env;
+
 	private static final String ASYMMETRIC_ALGORITHM_NAME = "RSA";
 
 	private static final String SSL = "SSL";
-	
+
 	ObjectMapper mapper = new ObjectMapper();
 
+	ComboBox<String> fingerCount;
+
 	@FXML
-	ComboBox<String> fingerSubType;
+	ComboBox<String> count;
 
 	@FXML
 	private TextField idValue;
 
 	@FXML
 	private CheckBox fingerAuthType;
+
+	@FXML
+	private CheckBox irisAuthType;
 
 	@FXML
 	private CheckBox otpAuthType;
@@ -118,14 +128,14 @@ public class IdaController {
 	private AnchorPane otpAnchorPane;
 
 	@FXML
-	private AnchorPane fingerPrintAnchorPane;
+	private AnchorPane bioAnchorPane;
 
 	@FXML
 	private TextField responsetextField;
 
 	@FXML
 	private ImageView img;
-	
+
 	@FXML
 	private Button requestOtp;
 
@@ -133,20 +143,38 @@ public class IdaController {
 
 	@FXML
 	private void initialize() {
-		ObservableList<String> fingerSubTypeChoices = FXCollections.observableArrayList("LEFT_THUMB", "LEFT_INDEX",
-				"LEFT_LITTLE", "LEFT_MIDDLE", "LEFT_RING", "RIGHT_INDEX", "RIGHT_LITTLE", "RIGHT_MIDDLE", "RIGHT_RING",
-				"RIGHT_THUMB", "UNKNOWN");
 		ObservableList<String> idTypeChoices = FXCollections.observableArrayList("UIN", "VID", "USERID");
-		fingerSubType.setItems(fingerSubTypeChoices);
+		count.setValue("1");
 		idTypebox.setItems(idTypeChoices);
+		idTypebox.setValue("UIN");
 		otpAnchorPane.setDisable(true);
-		fingerPrintAnchorPane.setDisable(true);
+		bioAnchorPane.setDisable(true);
 		responsetextField.setDisable(true);
 	}
 
 	@FXML
 	private void onFingerPrintAuth() {
-		fingerPrintAnchorPane.setDisable(!fingerPrintAnchorPane.isDisable());
+		if (fingerAuthType.isSelected()) {
+			bioAnchorPane.setDisable(false);
+		} else {
+			bioAnchorPane.setDisable(true);
+		}
+		irisAuthType.setSelected(false);
+		ObservableList<String> fingerCountChoices = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10");
+		count.setItems(fingerCountChoices);
+	}
+
+	@FXML
+	private void onIrisAuth() {
+		if (irisAuthType.isSelected()) {
+			bioAnchorPane.setDisable(false);
+		} else {
+			bioAnchorPane.setDisable(true);
+		}
+		fingerAuthType.setSelected(false);
+		ObservableList<String> irisCountChoices = FXCollections.observableArrayList("1", "2");
+		count.setItems(irisCountChoices);
 	}
 
 	@FXML
@@ -163,15 +191,23 @@ public class IdaController {
 	}
 
 	@FXML
-	private void onCaptureFingerPrint() {
-		capture = capture();
+	private void onCapture() {
+		if (fingerAuthType.isSelected()) {
+			capture = captureFingerprint();
+		} else if (irisAuthType.isSelected()) {
+			capture = captureIris();
+		}
 	}
 
-	private String capture() {
-		//String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":100000,\"captureTime\":\"0001-01-01T00:00:00\",\"registrationID\":\"123456789123\",\"bio\":[{\"type\":\"FIR\",\"count\":1,\"exception\":[],\"requestedScore\":40,\"deviceId\":\"1c7f1e29-db9b-4afc-98fc-91d6d40bc8e2\",\"deviceSubId\":1,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+	private String captureFingerprint() {
+		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"FIR\",\"count\":"
+				+ count.getValue()
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"bc0b6848-6d45-46d1-a9bd-b334410bf823\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 
-		String requestBody="{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":100000,\"captureTime\":\"0001-01-01T00:00:00\",\"registrationID\":\"123456789123\",\"bio\":[{\"type\":\"FIR\",\"count\":1,\"exception\":[],\"requestedScore\":40,\"deviceId\":\"c1d40add-7417-44a6-8e3f-a753e9322287\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
-		
+		return capturebiometrics(requestBody);
+	}
+
+	private String capturebiometrics(String requestBody) {
 		CloseableHttpClient client = HttpClients.createDefault();
 		StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
 		HttpUriRequest request = RequestBuilder.create("CAPTURE").setUri("http://127.0.0.1:4501/capture")
@@ -194,6 +230,13 @@ public class IdaController {
 		return stringBuilder.toString();
 	}
 
+	private String captureIris() {
+		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
+				+ count.getValue()
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"ceec5f62-77b7-46f3-816b-3e734305a9c8\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+		return capturebiometrics(requestBody);
+	}
+
 	@SuppressWarnings("rawtypes")
 	@FXML
 	private void onRequestOtp() {
@@ -210,8 +253,9 @@ public class IdaController {
 			RestTemplate restTemplate = createTemplate();
 			HttpEntity<OtpRequestDTO> httpEntity = new HttpEntity<>(otpRequestDTO);
 			ResponseEntity<Map> response = restTemplate.exchange(
-					"https://ext-int.mosip.io/idauthentication/v1/otp/1873299273/735899345", HttpMethod.POST, httpEntity,
-					Map.class);
+					env.getProperty("ida.otp.url",
+							"https://ext-int.mosip.io/idauthentication/v1/otp/1873299273/735899345"),
+					HttpMethod.POST, httpEntity, Map.class);
 			System.err.println(response);
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -225,7 +269,7 @@ public class IdaController {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(fingerAuthType.isSelected());
+		authTypeDTO.setBio(fingerAuthType.isSelected() || irisAuthType.isSelected());
 		authTypeDTO.setOtp(otpAuthType.isSelected());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		// set Individual Id
@@ -235,34 +279,38 @@ public class IdaController {
 
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setTimestamp(getUTCCurrentDateTimeString());
-		
+
 		if (otpAuthType.isSelected()) {
 			requestDTO.setOtp(otpValue.getText());
 		}
 		Map<String, Object> identityBlock = mapper.convertValue(requestDTO, Map.class);
-		if (fingerAuthType.isSelected()) {
-			try {
-				Map<String, Object> identityResponse = mapper.readValue(getFingerprintValue(), Map.class);
-				List<Map<String,Object>> biometrics = (List<Map<String,Object>>) identityResponse.get("biometrics");
-				
-				//Workaround for bioType missing issue 
-				for (Map<String,Object> bio : biometrics) {
-					String dataStr = (String) bio.get("data");
-					Map<String, Object> dataMap = mapper.readValue(CryptoUtil.decodeBase64(dataStr), Map.class);
-					dataMap.put("bioType", "FIR");
-					dataMap.put("bioSubType", "LEFT_THUMB");
-					
-					String jsonData = mapper.writeValueAsString(dataMap);
-					bio.put("data", CryptoUtil.encodeBase64String(jsonData.getBytes()));
-				}
-				//System.err.println(biometrics);
-				//System.err.println(new String(CryptoUtil.decodeBase64((String) biometrics.get(0).get("data"))));
-				identityBlock.replace("biometrics", biometrics);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
+		// if (fingerAuthType.isSelected()) {
+		// try {
+		// Map<String, Object> identityResponse =
+		// mapper.readValue(getFingerprintValue(), Map.class);
+		// List<Map<String, Object>> biometrics = (List<Map<String, Object>>)
+		// identityResponse.get("biometrics");
+		//
+		// // Workaround for bioType missing issue
+		// for (Map<String, Object> bio : biometrics) {
+		// String dataStr = (String) bio.get("data");
+		// Map<String, Object> dataMap =
+		// mapper.readValue(CryptoUtil.decodeBase64(dataStr), Map.class);
+		// dataMap.put("bioType", "FIR");
+		// dataMap.put("bioSubType", "LEFT_THUMB");
+		//
+		// String jsonData = mapper.writeValueAsString(dataMap);
+		// bio.put("data", CryptoUtil.encodeBase64String(jsonData.getBytes()));
+		// }
+		// // System.err.println(biometrics);
+		// // System.err.println(new String(CryptoUtil.decodeBase64((String)
+		// // biometrics.get(0).get("data"))));
+		// identityBlock.replace("biometrics", biometrics);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// }
+
 		System.err.println("******* Request ************ " + identityBlock);
 		EncryptionRequestDto encryptionRequestDto = new EncryptionRequestDto();
 		encryptionRequestDto.setIdentityRequest(identityBlock);
@@ -285,8 +333,9 @@ public class IdaController {
 			RestTemplate restTemplate = createTemplate();
 			HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
 			ResponseEntity<Map> authResponse = restTemplate.exchange(
-					"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345", HttpMethod.POST, httpEntity,
-					Map.class);
+					env.getProperty("ida.bio.url",
+							"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
+					HttpMethod.POST, httpEntity, Map.class);
 			if (authResponse.getStatusCode().is2xxSuccessful()) {
 				boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response"))
 						.get("authStatus");
@@ -301,17 +350,13 @@ public class IdaController {
 				responsetextField.setText("Error");
 				responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 			}
-			//System.out.println(identityBlock);
+			// System.out.println(identityBlock);
 			System.err.println(authResponse.getBody());
-			
+
 			System.err.println("Auth Request : " + authRequestMap);
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private String getFingerprintValue() {
-		return capture;
 	}
 
 	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal) {
@@ -356,7 +401,8 @@ public class IdaController {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("appId", "IDA");
 		UriComponentsBuilder builder = UriComponentsBuilder
-				.fromUriString("https://ext-int.mosip.io/v1/keymanager/publickey/IDA")
+				.fromUriString(
+						env.getProperty("ida.publickey.url", "https://ext-int.mosip.io/v1/keymanager/publickey/IDA"))
 				.queryParam("timeStamp", DateUtils.getUTCCurrentDateTimeString())
 				.queryParam("referenceId", publicKeyId);
 		ResponseEntity<Map> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET, null, Map.class);
@@ -391,7 +437,9 @@ public class IdaController {
 		RequestWrapper<ObjectNode> request = new RequestWrapper<>();
 		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 		request.setRequest(requestBody);
-		ClientResponse response = WebClient.create("https://ext-int.mosip.io/v1/authmanager/authenticate/clientidsecretkey")
+		ClientResponse response = WebClient
+				.create(env.getProperty("ida.authmanager.url",
+						"https://ext-int.mosip.io/v1/authmanager/authenticate/clientidsecretkey"))
 				.post().syncBody(request).exchange().block();
 		List<ResponseCookie> list = response.cookies().get("Authorization");
 		if (list != null && !list.isEmpty()) {
@@ -436,17 +484,18 @@ public class IdaController {
 	public static String getTransactionID() {
 		return "1234567890";
 	}
-	
+
 	@FXML
 	private void onReset() {
-		fingerSubType.setValue(null);
+		count.setValue("1");
 		idValue.setText(null);
 		fingerAuthType.setSelected(false);
+		irisAuthType.setSelected(false);
 		otpAuthType.setSelected(false);
-		idTypebox.setValue(null);
+		idTypebox.setValue("UIN");
 		otpValue.setText(null);
 		otpAnchorPane.setDisable(true);
-		fingerPrintAnchorPane.setDisable(true);
+		bioAnchorPane.setDisable(true);
 		responsetextField.setText(null);
 	}
 }
