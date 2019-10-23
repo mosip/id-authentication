@@ -75,6 +75,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 
 /**
  * The Class IdaController.
@@ -136,6 +137,7 @@ public class IdaController {
 
 	@FXML
 	private void initialize() {
+		responsetextField.setText(null);
 		ObservableList<String> idTypeChoices = FXCollections.observableArrayList("UIN", "VID", "USERID");
 		count.setValue("1");
 		idTypebox.setItems(idTypeChoices);
@@ -147,6 +149,7 @@ public class IdaController {
 
 	@FXML
 	private void onFingerPrintAuth() {
+		responsetextField.setText(null);
 		if (fingerAuthType.isSelected()) {
 			bioAnchorPane.setDisable(false);
 		} else {
@@ -160,6 +163,7 @@ public class IdaController {
 
 	@FXML
 	private void onIrisAuth() {
+		responsetextField.setText(null);
 		if (irisAuthType.isSelected()) {
 			bioAnchorPane.setDisable(false);
 		} else {
@@ -172,19 +176,24 @@ public class IdaController {
 
 	@FXML
 	private void onOTPAuth() {
+		responsetextField.setText(null);
 		otpAnchorPane.setDisable(!otpAnchorPane.isDisable());
 	}
 
 	@FXML
 	private void onIdTypeChange() {
+		responsetextField.setText(null);
 	}
 
 	@FXML
 	private void onSubTypeSelection() {
+		responsetextField.setText(null);
 	}
 
 	@FXML
-	private void onCapture() {
+	private void onCapture() throws Exception {
+		responsetextField.setText("capturing...");
+		responsetextField.setFont(Font.font("Times New Roman", javafx.scene.text.FontWeight.EXTRA_BOLD, 20));
 		if (fingerAuthType.isSelected()) {
 			capture = captureFingerprint();
 		} else if (irisAuthType.isSelected()) {
@@ -192,15 +201,15 @@ public class IdaController {
 		}
 	}
 
-	private String captureFingerprint() {
+	private String captureFingerprint() throws Exception {
 		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"FIR\",\"count\":"
 				+ count.getValue()
-				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"bc0b6848-6d45-46d1-a9bd-b334410bf823\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("finger.deviceId") + "\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 
 		return capturebiometrics(requestBody);
 	}
 
-	private String capturebiometrics(String requestBody) {
+	private String capturebiometrics(String requestBody) throws Exception {
 		CloseableHttpClient client = HttpClients.createDefault();
 		StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
 		HttpUriRequest request = RequestBuilder.create("CAPTURE").setUri("http://127.0.0.1:4501/capture")
@@ -220,20 +229,28 @@ public class IdaController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(stringBuilder.toString());
-		return stringBuilder.toString();
+		String result = stringBuilder.toString();
+		String error = ((Map) mapper.readValue(result, Map.class).get("error")).get("errorCode").toString();
+		if (error == "0") {
+			responsetextField.setText("Capture Success");
+		} else {
+			responsetextField.setText("Capture Failed");
+		}
+		System.out.println(result);
+		return result;
 	}
 
-	private String captureIris() {
+	private String captureIris() throws Exception {
 		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
 				+ count.getValue()
-				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"6e7de5df-7ccd-4730-a103-ac776c261436\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("iris.deviceId") + "\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 		return capturebiometrics(requestBody);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@FXML
 	private void onRequestOtp() {
+		responsetextField.setText(null);
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		otpRequestDTO.setId("mosip.identity.otp");
 		otpRequestDTO.setIndividualId(idValue.getText());
@@ -259,7 +276,8 @@ public class IdaController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
 	private void onSendAuthRequest() throws Exception {
-		responsetextField.setText("");
+		responsetextField.setText(null);
+		responsetextField.setText("Preparing Auth Request...");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -279,13 +297,19 @@ public class IdaController {
 		}
 		Map<String, Object> identityBlock = mapper.convertValue(requestDTO, Map.class);
 		identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
-
+		responsetextField.setText("Encrypting Auth Request...");
 		System.err.println("******* Request before encryption ************ \n\n");
 		System.err.println(identityBlock);
 		EncryptionRequestDto encryptionRequestDto = new EncryptionRequestDto();
 		encryptionRequestDto.setIdentityRequest(identityBlock);
-		EncryptionResponseDto kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
-
+		EncryptionResponseDto kernelEncrypt = null;
+		try {
+			kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
+			responsetextField.setText("Encryption successful...Authenticating");
+		} catch (Exception e) {
+			e.printStackTrace();
+			responsetextField.setText("Encryption of Auth Request Failed");
+		}
 		// Set request block
 		authRequestDTO.setRequest(requestDTO);
 
@@ -307,7 +331,7 @@ public class IdaController {
 				HttpMethod.POST, httpEntity, Map.class);
 		if (authResponse.getStatusCode().is2xxSuccessful()) {
 			boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response")).get("authStatus");
-			String response = status ? "Success" : "Failure";
+			String response = status ? "Authentication Success" : "Authentication Failed";
 			if (status) {
 				responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
 			} else {
@@ -315,7 +339,7 @@ public class IdaController {
 			}
 			responsetextField.setText(response);
 		} else {
-			responsetextField.setText("Error");
+			responsetextField.setText("Authentication Failed with Error");
 			responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 		}
 		System.out.println(identityBlock);
