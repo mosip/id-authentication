@@ -21,29 +21,29 @@ import javafx.stage.Stage;
 @SuppressWarnings("restriction")
 @SpringBootApplication
 public class IdaStarter extends Application {
-	
-    private ConfigurableApplicationContext context;
-    FXMLLoader loader = new FXMLLoader();
-    GridPane root;
-//	public static void main(String[] args) {
-//		Application.launch(args);
-//	}
-	
+
+	private ConfigurableApplicationContext context;
+	FXMLLoader loader = new FXMLLoader();
+	GridPane root;
+
+	public static void main(String[] args) {
+		Application.launch(IdaStarter.class, args);
+	}
+
 	@Override
-    public void init() throws Exception {
-        SpringApplicationBuilder builder = new SpringApplicationBuilder(IdaStarter.class);
-        context = builder.run(getParameters().getRaw().toArray(new String[0]));
- 
-        loader.setControllerFactory(context::getBean);
-        root = loader.load(this.getClass().getClassLoader().getResourceAsStream("fxml/idaFXML.fxml"));
-    }
+	public void init() throws Exception {
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(IdaStarter.class);
+		context = builder.run(getParameters().getRaw().toArray(new String[0]));
+
+		loader.setControllerFactory(context::getBean);
+		root = loader.load(this.getClass().getClassLoader().getResourceAsStream("fxml/idaFXML.fxml"));
+	}
 
 	@Override
 	public void start(Stage stage) throws IOException {
 		// Create the FXMLLoader
 
 		// Create the Pane and all Details
-		
 
 		// Create the Scene
 		Scene scene = new Scene(root);
