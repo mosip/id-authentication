@@ -228,11 +228,11 @@ public class PrintServiceRequestValidator implements Validator {
 
 	private boolean validateIdValue(RequestDTO dto) throws RegPrintAppException {
 		boolean isValid = false;
-		if (dto.getIdtype().equals(IdType.RID)) {
+		if (dto.getIdtype().name().equals(IdType.RID.name())) {
 			isValid = validateRID(dto.getIdValue());
-		} else if (dto.getIdtype().equals(IdType.UIN)) {
+		} else if (dto.getIdtype().name().equals(IdType.UIN.name())) {
 			isValid = validateUIN(dto.getIdValue());
-		} else if (dto.getIdtype().equals(IdType.VID)) {
+		} else if (dto.getIdtype().name().equals(IdType.VID.name())) {
 			isValid = validateVID(dto.getIdValue());
 		}
 		return isValid;
@@ -317,8 +317,8 @@ public class PrintServiceRequestValidator implements Validator {
 	}
 
 	private boolean validateIdType(IdType idtype) throws RegPrintAppException {
-		if (idtype != null && !idtype.toString().isEmpty()
-				&& (idtype.equals(IdType.UIN) || (idtype.equals(IdType.VID) || (idtype.equals(IdType.RID))))) {
+		if (idtype != null && !idtype.toString().isEmpty() && ((idtype.name().equals(IdType.UIN.name()))
+				|| (idtype.name().equals(IdType.VID.name())) || (idtype.name().equals(IdType.RID.name())))) {
 			return true;
 		} else {
 
