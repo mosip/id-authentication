@@ -8,7 +8,7 @@ package io.mosip.registration.processor.core.status.util;
  */
 public class TrimExceptionMessage {
 
-	private static final int MESSAGE_LENGTH = 199;
+	private static final int MESSAGE_LENGTH = 220;
 
 	public String trimExceptionMessage(String exceptionMessage) {
 		return exceptionMessage.substring(0, Math.min(exceptionMessage.length(), MESSAGE_LENGTH));

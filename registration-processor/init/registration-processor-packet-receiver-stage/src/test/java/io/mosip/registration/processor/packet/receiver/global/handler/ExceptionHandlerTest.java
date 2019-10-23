@@ -55,7 +55,7 @@ public class ExceptionHandlerTest {
 	private List<ErrorDTO> errors = new ArrayList<>();
 	ErrorDTO errorDTO = new ErrorDTO("", "");
 
-	Gson gson = new GsonBuilder().create();
+	Gson gson = new GsonBuilder().serializeNulls().create();
 
 	/**
 	 * Sets the up.

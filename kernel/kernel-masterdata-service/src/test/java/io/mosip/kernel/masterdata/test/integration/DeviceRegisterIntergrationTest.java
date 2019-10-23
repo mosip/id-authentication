@@ -82,13 +82,13 @@ public class DeviceRegisterIntergrationTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("device-provider")
 	public void registerDeviceTest() throws Exception {
 		mockMvc.perform(post("/device/register").content(objectMapper.writeValueAsString(deviceRegisterDto))
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("device-provider")
 	public void deRegisterDeviceTest() throws JsonProcessingException, Exception {
 		mockMvc.perform(delete("/device/deregister").content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto)).
 				contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());

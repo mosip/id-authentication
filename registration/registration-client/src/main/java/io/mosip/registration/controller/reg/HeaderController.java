@@ -182,14 +182,16 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to Home page on Logout and destroying Session context
 	 * 
-	 * @param event logout event
+	 * @param event
+	 *            logout event
 	 */
 	public void logout(ActionEvent event) {
 		if (pageNavigantionAlert()) {
 			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context" + SessionContext.authTokenDTO());
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+					"Clearing Session context" + SessionContext.authTokenDTO());
 
 			if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null
 					&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -205,7 +207,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Logout clean up.
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public void logoutCleanUp() {
 
@@ -229,7 +232,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to Home page
 	 * 
-	 * @param event event for redirecting to home
+	 * @param event
+	 *            event for redirecting to home
 	 */
 	public void redirectHome(ActionEvent event) {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -242,12 +246,18 @@ public class HeaderController extends BaseController {
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
 		if (pageNavigantionAlert()) {
 			try {
+				// Go To Home Page 
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
 				if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 					if (isMachineRemapProcessStarted()) {
 
@@ -286,7 +296,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to PacketStatusSync Page
 	 * 
-	 * @param event event for sync packet status
+	 * @param event
+	 *            event for sync packet status
 	 */
 	public void syncPacketStatus(ActionEvent event) {
 		if (isMachineRemapProcessStarted()) {
@@ -320,21 +331,35 @@ public class HeaderController extends BaseController {
 	/**
 	 * This method is to trigger the Pre registration sync service
 	 * 
-	 * @param event event for downloading pre reg data
+	 * @param event
+	 *            event for downloading pre reg data
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
 		if (pageNavigantionAlert()) {
-			if (isMachineRemapProcessStarted()) {
+			try {
+				// Go To Home Page 
+				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
+				if (isMachineRemapProcessStarted()) {
 
-				LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-						RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-				return;
+					LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+							RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+					return;
+				}
+				auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+				executeDownloadPreRegDataTask(homeController.getMainBox(),
+						packetHandlerController.getProgressIndicator());
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - REDIRECTHOME - HEADER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 			}
-			auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			executeDownloadPreRegDataTask(homeController.getMainBox(), packetHandlerController.getProgressIndicator());
 
 		}
 	}
@@ -675,7 +700,8 @@ public class HeaderController extends BaseController {
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
-						return jobConfigurationService.executeJob(RegistrationConstants.OPT_TO_REG_PDS_J00003,RegistrationConstants.JOB_TRIGGER_POINT_USER);
+						return jobConfigurationService.executeJob(RegistrationConstants.OPT_TO_REG_PDS_J00003,
+								RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 					}
 				};
@@ -699,7 +725,7 @@ public class HeaderController extends BaseController {
 				if (responseDTO.getSuccessResponseDTO() != null) {
 					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 					generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
-					
+
 					packetHandlerController.setLastPreRegPacketDownloadedTime();
 
 				} else if (responseDTO.getErrorResponseDTOs() != null) {
@@ -717,7 +743,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to PacketStatusSync Page
 	 * 
-	 * @param event event for sync packet status
+	 * @param event
+	 *            event for sync packet status
 	 */
 	public void userGuide(ActionEvent event) {
 		userGuide.setOnAction(e -> {

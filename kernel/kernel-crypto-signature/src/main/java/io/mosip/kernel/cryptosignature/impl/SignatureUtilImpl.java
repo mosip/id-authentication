@@ -24,8 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -35,7 +34,6 @@ import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 import io.mosip.kernel.cryptosignature.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptosignature.dto.SignatureRequestDto;
@@ -92,13 +90,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 
 	private static final String RESPONSE_SOURCE = "Keymanager";
 
-	/** The decryptor. */
 	@Autowired
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	/** The encryptor. */
-	@Autowired
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/** The key gen. */
 	@Autowired
@@ -114,23 +107,17 @@ public class SignatureUtilImpl implements SignatureUtil {
 	@Override
 	public boolean validateWithPublicKey(String signature, String data, String publickey)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
-		byte[] syncDataBytearray = HMACUtils.generateHash(data.getBytes());
-		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
 		PublicKey key = KeyFactory.getInstance("RSA")
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publickey)));
-		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(signature);
-		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
-		String signedHash = CryptoUtil.encodeBase64(hashedEncodedData);
-		return signedHash.equals(actualHash);
+		return cryptoCore.verifySignature(data.getBytes(), signature, key);
 	}
 
 	@Override
 	public SignatureResponse sign(String response, String timestamp) {
-		String responseHash = CryptoUtil.encodeBase64(HMACUtils.generateHash(response.getBytes()));
 		SignatureRequestDto signatureRequestDto = new SignatureRequestDto();
 		signatureRequestDto.setApplicationId(signApplicationid);
 		signatureRequestDto.setReferenceId(signRefid);
-		signatureRequestDto.setData(responseHash);
+		signatureRequestDto.setData(response);
 		signatureRequestDto.setTimeStamp(timestamp);
 		RequestWrapper<SignatureRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(signDataRequestId);
@@ -190,9 +177,6 @@ public class SignatureUtilImpl implements SignatureUtil {
 				PublicKeyResponse.class);
 		PublicKey publicKey = KeyFactory.getInstance(asymmetricAlgorithmName)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponse.getPublicKey())));
-		String decryptedSignature = CryptoUtil
-				.encodeBase64(decryptor.asymmetricPublicDecrypt(publicKey, CryptoUtil.decodeBase64(signature)));
-		String actualDataHash = CryptoUtil.encodeBase64(HMACUtils.generateHash(actualData.getBytes()));
-		return decryptedSignature.equals(actualDataHash);
+		return cryptoCore.verifySignature(actualData.getBytes(), signature, publicKey);
 	}
 }

@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.w3c.dom.Element;
-
-import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**

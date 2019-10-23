@@ -8,7 +8,7 @@ package io.mosip.kernel.masterdata.validator;
  *
  */
 public enum FilterColumnEnum {
-	UNIQUE("unique"), ALL("all");
+	UNIQUE("unique"), ALL("all"), EMPTY("");
 
 	private String filterColumn;
 

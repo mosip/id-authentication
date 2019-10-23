@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.Machine;
+
 
 /**
  * Repository function to fetching device details
@@ -110,8 +113,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device id's fetched for all device those are mapped with the
 	 *         registration center from database
 	 */
-	@Query(value = "SELECT dm.id FROM master.device_master dm inner join master.reg_center_device rcd on dm.id = rcd.device_id", nativeQuery = true)
-	List<String> findMappedDeviceId();
+	@Query(value = "select d.id from master.device_master d where d.id in(select  distinct rdm.device_id from master.reg_center_device rdm ) and d.lang_code=?1", nativeQuery = true)
+	List<String> findMappedDeviceId(String langCode);
 
 	/**
 	 * This method trigger query to fetch the Device id's those are not mapped with
@@ -120,19 +123,57 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 * @return Device id's fetched for all device those are not mapped with the
 	 *         registration center from database
 	 */
-	@Query(value = "SELECT dm.id FROM master.device_master dm left outer join master.reg_center_device rcd on dm.id = rcd.device_id where rcd.device_id is null", nativeQuery = true)
-	List<String> findNotMappedDeviceId();
+	@Query(value = "select d.id from master.device_master d where d.id not in(select  distinct rdm.device_id from master.reg_center_device rdm ) and d.lang_code=?1", nativeQuery = true)
+	List<String> findNotMappedDeviceId(String langCode);
+
+	
+	@Query(value="Select * from master.device_spec ds where (ds.is_deleted is null or ds.is_deleted = false) and ds.is_active = true and ds.dtyp_code IN (select code from master.device_type dt where dt.name=?1) and ds.lang_code=?2",nativeQuery=true)
+	List<Object[]> findDeviceSpecByDeviceTypeNameAndLangCode(String typeName,String langCode);
+
+	@Query(value="select d.name from master.reg_center_device rd,master.registration_center r,master.device_master d where r.id=rd.regcntr_id and rd.device_id=d.id and d.lang_code=rd.lang_code and r.lang_code=rd.lang_code and rd.device_id in(?1) and rd.lang_code=?2",nativeQuery=true)
+	List<String> findDeviceNameByDevicesAndLangCode(List<String> devices,String langCode);
 
 	/**
-	 * triggers query to decommission device
+	 * This method trigger query to fetch the Device detail for the given id and
+	 * language code for both is_Deleted false or true or null and isActive true or
+	 * false
 	 * 
 	 * @param id
-	 *            input
-	 * @return id of decommissioned device
+	 *            the id of device
+	 * @param langCode
+	 *            language code from user
+	 * @return the device detail
 	 */
-	@Query("UPDATE Device m SET m.isDeleted = true,m.isActive = false WHERE m.id=?1 and (m.isDeleted is null or m.isDeleted =false)")
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2")
+	Device findByIdAndLangCode(String id, String langCode);
+	
+	/**
+	 * This method trigger query to fetch the Machine detail for the given id code.
+	 * 
+	 * @param id
+	 *            machine Id provided by user
+	 * 
+	 * @return MachineDetail fetched from database
+	 */
+
+	@Query("FROM Device d where d.id = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	List<Device> findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(String id);
+	
+	/**
+	 * Method to decommission the Device
+	 * 
+	 * @param deviceID
+	 *            the device id which needs to be decommissioned.
+	 * @param deCommissionedBy
+	 *            the user name retrieved from the context who performs this
+	 *            operation.
+	 * @param deCommissionedDateTime
+	 *            date and time at which the center was decommissioned.
+	 * @return the number of device decommissioned.
+	 */
+	@Query("UPDATE Device d SET d.isDeleted = true, d.isActive = false, d.updatedBy = ?2, d.deletedDateTime=?3 WHERE d.id=?1 and (d.isDeleted is null or d.isDeleted =false)")
 	@Modifying
 	@Transactional
-	int decommissionDevice(String id);
+	int decommissionDevice(String id, String deCommissionedBy, LocalDateTime deCommissionedDateTime);
 
 }

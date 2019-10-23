@@ -289,7 +289,7 @@ public class ManualVerificationExceptionHandler {
 
 			response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			response.setVersion(env.getProperty(APPLICATION_VERSION));
-			response.setFile(null);
+			response.setResponse(null);
 			return response;
 		}
 

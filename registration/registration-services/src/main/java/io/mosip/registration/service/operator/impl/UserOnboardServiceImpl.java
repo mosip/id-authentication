@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
@@ -23,7 +24,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -64,7 +65,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 	private KeyGenerator keyGenerator;
 
 	@Autowired
-	private Encryptor<?, PublicKey, SecretKey> encryptor;
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/**
 	 * logger for logging
@@ -363,23 +364,23 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "preparing request.....");
 					// request
 					idaRequestMap.put(RegistrationConstants.ON_BOARD_REQUEST,
-							CryptoUtil.encodeBase64(encryptor.symmetricEncrypt(symmentricKey,
-									new ObjectMapper().writeValueAsString(requestMap).getBytes())));
+							CryptoUtil.encodeBase64(cryptoCore.symmetricEncrypt(symmentricKey,
+									new ObjectMapper().writeValueAsString(requestMap).getBytes(),null)));
 
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "preparing request HMAC.....");
 					// requestHMAC
 					idaRequestMap
 							.put(RegistrationConstants.ON_BOARD_REQUEST_HMAC,
-									CryptoUtil.encodeBase64(encryptor.symmetricEncrypt(symmentricKey,
+									CryptoUtil.encodeBase64(cryptoCore.symmetricEncrypt(symmentricKey,
 											HMACUtils.digestAsPlainText(HMACUtils.generateHash(
 													new ObjectMapper().writeValueAsString(requestMap).getBytes()))
-													.getBytes())));
+													.getBytes(),null)));
 
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							"preparing request Session Key.....");
 					// requestSession Key
 					idaRequestMap.put(RegistrationConstants.ON_BOARD_REQUEST_SESSION_KEY, CryptoUtil
-							.encodeBase64(encryptor.asymmetricPublicEncrypt(publicKey, symmentricKey.getEncoded())));
+							.encodeBase64(cryptoCore.asymmetricEncrypt(publicKey, symmentricKey.getEncoded())));
 
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Ida Auth rest calling.....");
 

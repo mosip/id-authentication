@@ -38,7 +38,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 
 // 
 /**
@@ -47,7 +46,7 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
  * @author M1046368 Arun Bose S
 */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, DecryptorImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @WebMvcTest
 public class KeyManagerTest {
 

@@ -26,6 +26,7 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -124,10 +125,14 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Validate.
 	 *
-	 * @param requestTime the request time
-	 * @param requestId the request id
-	 * @param requestVersion the request version
-	 * @throws RequestHandlerValidationException             the packet generator validation exception
+	 * @param requestTime
+	 *            the request time
+	 * @param requestId
+	 *            the request id
+	 * @param requestVersion
+	 *            the request version
+	 * @throws RequestHandlerValidationException
+	 *             the packet generator validation exception
 	 */
 	public void validate(String requestTime, String requestId, String requestVersion)
 			throws RequestHandlerValidationException {
@@ -150,14 +155,12 @@ public class RequestHandlerRequestValidator {
 	private void validateId(String id) throws RequestHandlerValidationException {
 		RequestHandlerValidationException exception = new RequestHandlerValidationException();
 		if (Objects.isNull(id)) {
-			throw new RequestHandlerValidationException(
-					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+			throw new RequestHandlerValidationException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), ID_FIELD),
 					exception);
 
 		} else if (!this.id.containsValue(id)) {
-			throw new RequestHandlerValidationException(
-					PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
+			throw new RequestHandlerValidationException(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), ID_FIELD),
 					exception);
 
@@ -176,13 +179,11 @@ public class RequestHandlerRequestValidator {
 		String version = env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION);
 		RequestHandlerValidationException exception = new RequestHandlerValidationException();
 		if (Objects.isNull(ver)) {
-			throw new RequestHandlerValidationException(
-					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+			throw new RequestHandlerValidationException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), VER), exception);
 
 		} else if (!version.equals(ver)) {
-			throw new RequestHandlerValidationException(
-					PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
+			throw new RequestHandlerValidationException(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), VER), exception);
 
 		}
@@ -199,8 +200,7 @@ public class RequestHandlerRequestValidator {
 	private void validateReqTime(String timestamp) throws RequestHandlerValidationException {
 		RequestHandlerValidationException exception = new RequestHandlerValidationException();
 		if (Objects.isNull(timestamp)) {
-			throw new RequestHandlerValidationException(
-					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+			throw new RequestHandlerValidationException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), TIMESTAMP),
 					exception);
 
@@ -214,7 +214,8 @@ public class RequestHandlerRequestValidator {
 							.isAfter(new DateTime().minusSeconds(gracePeriod))
 							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
-						regProcLogger.error(REQUEST_HANDLER_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
+						regProcLogger.error(REQUEST_HANDLER_SERVICE, "PacketGeneratorRequestValidator",
+								"validateReqTime",
 								"\n" + PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage());
 
 						throw new RequestHandlerValidationException(
@@ -241,10 +242,13 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid center.
 	 *
-	 * @param centerId            the center id
+	 * @param centerId
+	 *            the center id
 	 * @return true, if is valid center
-	 * @throws RegBaseCheckedException the reg base checked exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean isValidCenter(String centerId) throws RegBaseCheckedException, IOException {
 		boolean isValidCenter = false;
@@ -293,10 +297,13 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid machine.
 	 *
-	 * @param machine            the machine
+	 * @param machine
+	 *            the machine
 	 * @return true, if is valid machine
-	 * @throws RegBaseCheckedException the reg base checked exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean isValidMachine(String machine) throws RegBaseCheckedException, IOException {
 		boolean isValidMachine = false;
@@ -347,9 +354,11 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid uin.
 	 *
-	 * @param uin the uin
+	 * @param uin
+	 *            the uin
 	 * @return true, if is valid uin
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public boolean isValidUin(String uin) throws RegBaseCheckedException {
 		boolean isValidUIN = false;
@@ -381,9 +390,11 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid re print registration type.
 	 *
-	 * @param registrationType the registration type
+	 * @param registrationType
+	 *            the registration type
 	 * @return true, if is valid re print registration type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public boolean isValidRePrintRegistrationType(String registrationType) throws RegBaseCheckedException {
 		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString()))) {
@@ -398,10 +409,13 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid registration type and uin.
 	 *
-	 * @param registrationType the registration type
-	 * @param uin the uin
+	 * @param registrationType
+	 *            the registration type
+	 * @param uin
+	 *            the uin
 	 * @return true, if is valid registration type and uin
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException {
 		try {
@@ -434,9 +448,11 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid vid.
 	 *
-	 * @param vid the vid
+	 * @param vid
+	 *            the vid
 	 * @return true, if is valid vid
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public boolean isValidVid(String vid) throws RegBaseCheckedException {
 		boolean isValidVID = false;
@@ -468,9 +484,11 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid id type.
 	 *
-	 * @param idType the id type
+	 * @param idType
+	 *            the id type
 	 * @return true, if is valid id type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public boolean isValidIdType(String idType) throws RegBaseCheckedException {
 		if (idType != null && (idType.equalsIgnoreCase(UIN) || idType.equalsIgnoreCase(VID))) {
@@ -485,16 +503,19 @@ public class RequestHandlerRequestValidator {
 	/**
 	 * Checks if is valid card type.
 	 *
-	 * @param cardType the card type
+	 * @param cardType
+	 *            the card type
 	 * @return true, if is valid card type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public boolean isValidCardType(String cardType) throws RegBaseCheckedException {
-		if (cardType != null && (cardType.equalsIgnoreCase(UIN) || cardType.equalsIgnoreCase(VID))) {
+		if (cardType != null && !cardType.isEmpty() && (cardType.equalsIgnoreCase(CardType.UIN.toString())
+				|| cardType.equalsIgnoreCase(CardType.MASKED_UIN.toString()))) {
 			return true;
 		} else {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-					"Invalid CardType : Enter UIN or VID", new Throwable());
+					"Invalid CardType : Enter UIN or MASKED_UIN", new Throwable());
 		}
 
 	}

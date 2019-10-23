@@ -1,16 +1,17 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
+import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -74,37 +75,6 @@ public interface MachineService {
 	public MachineResponseDto getMachine(String langCode);
 
 	/**
-	 * Abstract method to save Machine Details to the Database
-	 * 
-	 * @param machine
-	 *            machine DTO
-	 * 
-	 * @return IdResponseDto returning machine id which is inserted successfully
-	 *         {@link IdResponseDto}
-	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine
-	 */
-	public IdAndLanguageCodeID createMachine(MachineDto machine);
-
-	/**
-	 * Abstract method to update Machine Details to the Database
-	 * 
-	 * @param machine
-	 *            machine DTO
-	 * 
-	 * @return IdResponseDto returning machine id which is updated successfully
-	 *         {@link IdResponseDto}
-	 * @throws RequestException
-	 *             if Machine not Found
-	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while updating Machine
-	 * 
-	 */
-	public IdAndLanguageCodeID updateMachine(MachineDto machine);
-
-	/**
 	 * Abstract method to delete Machine Details to the Database
 	 * 
 	 * @param id
@@ -153,14 +123,48 @@ public interface MachineService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto);
-
+	
 	/**
-	 * Method to decommission machine
+	 * Abstract method to save Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            Machine Post Request DTO
+	 * 
+	 * @return MachineExtnDto returning created machine.
+	 *         {@link MachineExtnDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving Machine
+	 */
+	public MachineExtnDto createMachine(MachinePostReqDto machine);
+	
+	/**
+	 * Abstract method to update Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            Machine Put Request DTO
+	 * 
+	 * @return MachineExtnDto returning updated machine 
+	 *         {@link MachineExtnDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine
+	 */
+	public MachineExtnDto updateMachine(MachinePutReqDto  machine);
+	
+	/**
+	 * Abstract method to decommission machine
 	 * 
 	 * @param machineId
-	 *            input from user
-	 * @return machine ID of decommissioned machine
+	 *            Machine Id which one need to decommission
+	 * 
+	 * @return IdResponseDto returning decommission machine id
+	 *         {@link IdResponseDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while decommissioning the Machine
 	 */
 	public IdResponseDto decommissionMachine(String machineId);
+	
 
 }

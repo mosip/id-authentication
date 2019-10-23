@@ -2,18 +2,24 @@
 	"identity": {
 		"name": {
 			"value": "fullName",
-			"weight": 20
+			"isMandatory" : true
 		},
 		"gender": {
 			"value": "gender",
-			"weight": 20
+			"isMandatory" : true
 		},
 		"dob": {
 			"value": "dateOfBirth",
-			"weight": 20
+			"isMandatory" : true
 		},
-		"pheoniticName": {
-			"weight": 20
+		"parentOrGuardianRID": {
+			"value" : "parentOrGuardianRID"
+		},
+		"parentOrGuardianUIN": {
+			"value" : "parentOrGuardianUIN"
+		},
+		"parentOrGuardianName": {
+			"value" : "parentOrGuardianName"
 		},
 		"poa": {
 			"value" : "proofOfAddress"
@@ -33,14 +39,8 @@
 		"age": {
 			"value" : "age"
 		},
-		"addressLine1": {
-			"value" : "addressLine1"
-		},
-		"addressLine2": {
-			"value" : "addressLine2"
-		},
-		"addressLine3": {
-			"value" : "addressLine3"
+		"address": {
+			"value" : "addressLine1,addressLine2,addressLine3"
 		},
 		"region": {
 			"value" : "region"
@@ -68,6 +68,9 @@
 		},
 		"city": {
 			"value" : "city"
+		},
+		"parentOrGuardianBiometrics": {
+			"value" : "parentOrGuardianBiometrics"
 		}
 	}
-} 
+}

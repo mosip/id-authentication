@@ -17,7 +17,13 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,6 +35,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
 
 @Component
 public class ValidationUtil {
@@ -48,6 +55,10 @@ public class ValidationUtil {
 	private static String documentTypeUri;
 
 	private static String documentCategoryUri;
+	
+	private static String validDocUri;
+
+	private static String masterdataUri;
 
 	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
 
@@ -103,12 +114,14 @@ public class ValidationUtil {
 	public void setDocCatCode(String value) {
 		ValidationUtil.documentCategoryUri = value;
 	}
+	
+	@Value("${mosip.kernel.masterdata.validdoc.rest.uri}")
+	public void setDocCatTypeCode(String value) {
+		ValidationUtil.masterdataUri = value;
+	}
 
-	/** The doc cat map. */
-	private SetValuedMap<String, String> docCatMap;
-
-	/** The doc type map. */
-	private SetValuedMap<String, String> docTypeMap;
+	/** The validDocsMap. */
+	private static SetValuedMap<String, String> validDocsMap= new HashSetValuedHashMap<>();
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -118,6 +131,8 @@ public class ValidationUtil {
 	private static final String DOCUMENTCATEGORIES = "documentcategories";
 
 	private static final String IS_ACTIVE = "isActive";
+
+	private static final String DOC_TYPES = "documenttypes";
 
 	private static final String CODE = "code";
 
@@ -142,31 +157,8 @@ public class ValidationUtil {
 		return true;
 	}
 
-	// public static boolean requestValidator(MainListRequestDTO<?> mainRequest) {
-	// log.info("sessionId", "idType", "id",
-	// "In requestValidator method of pre-registration core with mainRequest " +
-	// mainRequest);
-	// if (mainRequest.getId() == null) {
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-	// ErrorMessages.INVALID_REQUEST_ID.getMessage(),null);
-	// } else if (mainRequest.getRequest() == null) {
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
-	// ErrorMessages.INVALID_REQUEST_BODY.getMessage(),null);
-	// } else if (mainRequest.getRequesttime() == null) {
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-	// ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),null);
-	// } else if (mainRequest.getVersion() == null) {
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
-	// ErrorMessages.INVALID_REQUEST_VERSION.getMessage(),null);
-	// }
-	// return true;
-	// }
-
 	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
+		log.debug("sessionId", "idType", "id", "In requestValidator");
 		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
 				+ requestMap + " againt requiredRequestMap " + requiredRequestMap);
 		for (String key : requestMap.keySet()) {
@@ -255,8 +247,7 @@ public class ValidationUtil {
 	/**
 	 * This method is used as Null checker for different input keys.
 	 *
-	 * @param key
-	 *            pass the key
+	 * @param key pass the key
 	 * @return true if key not null and return false if key is null.
 	 */
 	public static boolean isNull(Object key) {
@@ -289,52 +280,43 @@ public class ValidationUtil {
 		}
 	}
 
-	public void getAllDocCategories(String langcode) {
-		String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentCategoryUri).buildAndExpand(langcode)
-				.toUriString();
-		@SuppressWarnings("unchecked")
-		ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-				.getForObject(uri, ResponseWrapper.class);
-		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTCATEGORIES);
-			docCatMap = new HashSetValuedHashMap<>(response.size());
-			IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE)).forEach(
-					index -> docCatMap.put(String.valueOf(langcode), String.valueOf(response.get(index).get(CODE))));
-		}
-	}
-
-	public void getAllDocumentTypes(String langCode, String catCode) {
-		docTypeMap = new HashSetValuedHashMap<>();
-		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
-			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentTypeUri)
-					.buildAndExpand(catCode, langCode).toUriString();
-			@SuppressWarnings("unchecked")
-			ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-					.getForObject(uri, ResponseWrapper.class);
-			if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-				ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
-				IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
-						.forEach(index -> {
-							docTypeMap.put(catCode, String.valueOf(response.get(index).get(CODE)));
-						});
-			}
-		}
-	}
-
-	public boolean validateDocuments(String langCode, String catCode, String typeCode) {
-		getAllDocCategories(langCode);
-		if (docCatMap.get(langCode).contains(catCode)) {
-			getAllDocumentTypes(langCode, catCode);
-			if (docTypeMap.get(catCode).contains(typeCode)) {
+	
+	public boolean validateDocuments(String langCode, String catCode, String typeCode, String preRegistrationId) {
+		log.debug("sessionId", "idType", "id", "beforegetAllDocCategories preRegistrationId " + preRegistrationId);
+		log.debug("sessionId", "idType", "id", "aftergetAllDocCategories preRegistrationId " + preRegistrationId);
+		log.debug("sessionId", "idType", "id",
+				"In validateDocuments method with docCatMap " + validDocsMap + " preRegistrationId " + preRegistrationId);
+		log.debug("sessionId", "idType", "id", "In validateDocuments method with langCode " + langCode + " and catCode "
+				+ catCode + " preRegistrationId " + preRegistrationId);
+		if (validDocsMap.containsKey(catCode)) {
+			log.debug("sessionId", "idType", "id",
+					"inside validateDocuments inside if preRegistrationId " + preRegistrationId);
+			log.debug("sessionId", "idType", "id",
+					"inside validateDocuments after getAllDocumentTypes  preRegistrationId " + preRegistrationId);
+			log.debug("sessionId", "idType", "id", "In validateDocuments method with docTypeMap " + validDocsMap
+					+ " preRegistrationId " + preRegistrationId);
+			log.debug("sessionId", "idType", "id", "In validateDocuments method with typeCode " + typeCode
+					+ " and catCode " + catCode + " preRegistrationId " + preRegistrationId);
+			if (validDocsMap.get(catCode).contains(typeCode)) {
+				log.debug("sessionId", "idType", "id",
+						"inside validateDocuments inside second if preRegistrationId " + preRegistrationId);
 				return true;
 			} else {
+				log.debug("sessionId", "idType", "id",
+						"inside validateDocuments inside else preRegistrationId " + preRegistrationId);
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_017.toString(),
-						ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
+						ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage() + "   " + validDocsMap + "  catcode " + catCode
+								+ " typeCode  ",
+						null);
 			}
 		} else {
+			log.debug("sessionId", "idType", "id",
+					"inside validateDocuments inside second else  preRegistrationId " + preRegistrationId);
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_018.toString(),
-					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
+					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage() + "   " + validDocsMap + "  langCode " + langCode,
+					null);
 		}
+
 	}
 
 	public Map<String, String> getDocumentTypeNameByTypeCode(String langCode, String catCode) {
@@ -368,5 +350,53 @@ public class ValidationUtil {
 			return false;
 		}
 		return true;
+	}
+
+	public void getAllDocCategoriesAndTypes(String langcode, HttpHeaders headers) {
+		try {
+			log.debug("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes preRegistrationId ");
+			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.masterdataUri).buildAndExpand(langcode)
+					.toUriString();
+			HttpEntity entity = new HttpEntity<>(headers);
+			log.info("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes with url "+uri );
+			
+			@SuppressWarnings("unchecked")
+			
+			ResponseEntity<ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>>> response = restTemplate
+					.exchange(uri, HttpMethod.GET, entity,
+							new ParameterizedTypeReference<ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>>>() {
+							});
+
+			if (Objects.isNull(response.getBody().getErrors()) || response.getBody().getErrors().isEmpty()) {
+				log.debug("sessionId", "idType", "id", "inside getAllDocCategoriesAndTypes inside if preRegistrationId ");
+				ArrayList<LinkedHashMap<String, Object>> resp = response.getBody().getResponse()
+						.get(DOCUMENTCATEGORIES);
+				ArrayList<Object> typeList = new ArrayList<>();
+				validDocsMap = new HashSetValuedHashMap<>();
+				IntStream.range(0, resp.size()).filter(index -> (Boolean) resp.get(index).get(IS_ACTIVE))
+						.forEach(index -> {
+							typeList.clear();
+							ArrayList<LinkedHashMap<String, Object>> intResponse = (ArrayList<LinkedHashMap<String, Object>>) resp
+									.get(index).get(DOC_TYPES);
+							IntStream.range(0, intResponse.size())
+									.filter(secIndex -> (Boolean) intResponse.get(secIndex).get(IS_ACTIVE))
+									.forEach(secIndex -> validDocsMap.put(String.valueOf(resp.get(index).get(CODE)),
+											String.valueOf(intResponse.get(secIndex).get(CODE))));
+						});
+				System.out.println();
+				log.info("sessionId", "idType", "id", " validDocsMap " + validDocsMap);
+			} else {
+				log.debug("sessionId", "idType", "id", "inside getAllDocCategories inside else  preRegistrationId ");
+				log.debug("sessionId", "idType", "id", " cat code" + response.getBody().getErrors().toString());
+				throw new MasterDataNotAvailableException(response.getBody().getErrors().get(0).getErrorCode(),
+						response.getBody().getErrors().get(0).getMessage());
+			}
+		} catch (RestClientException e) {
+			log.debug("sessionId", "idType", "id", "inside getAllDocCategories inside catch preRegistrationId ");
+			log.debug("sessionId", "idType", "id", "---- " + ExceptionUtils.getStackTrace(e));
+			log.error("sessionId", "idType", "id", "---- docCatMap " + validDocsMap + ExceptionUtils.getStackTrace(e));
+			throw new MasterDataNotAvailableException(ErrorCodes.PRG_CORE_REQ_022.toString(),
+					ErrorMessages.MASTERDATA_SERVICE_CALL_FAIL.toString(), e.getCause());
+		}
 	}
 }

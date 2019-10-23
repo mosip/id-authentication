@@ -5,9 +5,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_B
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,8 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +40,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.security.AuthenticationService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -723,6 +720,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * Clear finger print DTO.
 	 */
 	public void clearFingerPrintDTO() {
+		
+		BioServiceImpl.clearCaptures(RegistrationConstants.LEFT_SLAP);
+		BioServiceImpl.clearCaptures(RegistrationConstants.RIGHT_SLAP);
+		BioServiceImpl.clearCaptures(RegistrationConstants.TWO_THUMBS);
+		
 		initializeCaptureCount();
 		removeFingerPrint(RegistrationConstants.FINGERPRINT_SLAB_LEFT, leftHandPalmImageview, leftSlapQualityScore,
 				RegistrationConstants.LEFTPALM_IMG_PATH, leftSlapAttempt);
@@ -1157,6 +1159,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		if (detailsDTO.isCaptured()) {
+			
+			streamer.setStreamImageToImageView();
+			
 			int retries=0;
 			if(!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));

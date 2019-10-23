@@ -21,15 +21,12 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
@@ -278,25 +275,6 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * This method updates registration center by Admin.
-	 * 
-	 * @param reqRegistrationCenterDto
-	 *            the request DTO for updating registration center.
-	 * @return the response i.e. the id of the registration center updated.
-	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@ResponseFilter
-	@PutMapping("/registrationcenters")
-	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegCenterPutReqDto> reqRegistrationCenterDto) {
-
-		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
-		return responseWrapper;
-	}
-
-	/**
 	 * Api to search the registration center based on the search input
 	 * 
 	 * @param request
@@ -341,11 +319,30 @@ public class RegistrationCenterController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
-	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenter(
-			@RequestBody RegistarionCenterReqDto<RegCenterPostReqDto> reqRegistrationCenterDto) {
-		ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+	public ResponseWrapper<RegistrationCenterExtnDto> createRegistrationCenter(
+			@RequestBody @Valid RequestWrapper<RegCenterPostReqDto> reqRegistrationCenterDto) {
+		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * This method updates registration center by Admin.
+	 * 
+	 * @param reqRegistrationCenterDto
+	 *            the request DTO for updating registration center.
+	 * @return the response i.e. the id of the registration center updated.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters")
+	public ResponseWrapper<RegistrationCenterExtnDto> updateRegistrationCenterAdmin(
+			@RequestBody @Valid RequestWrapper<RegCenterPutReqDto> reqRegistrationCenterDto) {
+
+		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 

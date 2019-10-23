@@ -30,7 +30,7 @@ public interface DeviceHistoryRepository extends BaseRepository<DeviceHistory, S
 	 * @return List Device History Details fetched from database
 	 */
 
-	@Query(value = "Select 	d.eff_dtimes, d.id,d.cr_by, d.cr_dtimes, d.del_dtimes, d.is_active, d.is_deleted, d.upd_by, d.upd_dtimes, d.ip_address, d.lang_code, d.mac_address, d.dspec_id, d.name,  d.serial_num, d.validity_end_dtimes from master.device_master_h d where d.id = ?1 and d.lang_code = ?2 and d.eff_dtimes <= ?3 and ( d.is_deleted = false or d.is_deleted is null) order by d.eff_dtimes desc limit 1", nativeQuery = true)
+	@Query(value = "Select 	d.eff_dtimes, d.id,d.cr_by, d.cr_dtimes, d.del_dtimes, d.is_active, d.is_deleted, d.upd_by, d.upd_dtimes, d.ip_address, d.lang_code, d.mac_address, d.dspec_id, d.name,  d.serial_num, d.validity_end_dtimes, d.zone_code from master.device_master_h d where d.id = ?1 and d.lang_code = ?2 and d.eff_dtimes <= ?3 and ( d.is_deleted = false or d.is_deleted is null) order by d.eff_dtimes desc limit 1", nativeQuery = true)
 	List<DeviceHistory> findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 			String id, String langCode, LocalDateTime effectDtimes);
 }

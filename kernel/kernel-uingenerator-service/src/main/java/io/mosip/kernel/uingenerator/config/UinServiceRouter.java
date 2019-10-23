@@ -94,7 +94,8 @@ public class UinServiceRouter {
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
-		router.get(path).handler(routingContext -> getRouter(vertx, routingContext));
+		boolean isSignEnable=environment.getProperty(UinGeneratorConstant.SIGNING_ENABLE, boolean.class,false);
+		router.get(path).handler(routingContext -> getRouter(vertx, routingContext,isSignEnable));
 
 		router.route().handler(BodyHandler.create());
 		if (!profile.equalsIgnoreCase("test")) {
@@ -120,19 +121,20 @@ public class UinServiceRouter {
 				future -> healthCheckHandler.verticleHealthHandler(future, vertx));
 	}
 
-	private void getRouter(Vertx vertx, RoutingContext routingContext) {
-
+	private void getRouter(Vertx vertx, RoutingContext routingContext, boolean isSignEnable) {
 		String resWrpJsonString = null;
 		String signedData = null;
 
 		try {
 			UinResponseDto uin = new UinResponseDto();
 			uin = uinGeneratorService.getUin();
+		
 			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
 			String timestamp = DateUtils.getUTCCurrentDateTimeString();
 			reswrp.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
+			if(isSignEnable) {
 			String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
 			if (!profile.equalsIgnoreCase("test")) {
 				resWrpJsonString = objectMapper.writeValueAsString(reswrp);
@@ -140,8 +142,10 @@ public class UinServiceRouter {
 				SignatureResponse cryptoManagerResponseDto = signatureUtil.sign(resWrpJsonString, timestamp);
 				signedData = cryptoManagerResponseDto.getData();
 			}
-			routingContext.response().putHeader("response-signature", signedData)
-					.end(objectMapper.writeValueAsString(reswrp));
+			routingContext.response().putHeader("response-signature", signedData);
+			}
+			routingContext.response().end(objectMapper.writeValueAsString(reswrp));
+			
 		} catch (UinNotFoundException e) {
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());

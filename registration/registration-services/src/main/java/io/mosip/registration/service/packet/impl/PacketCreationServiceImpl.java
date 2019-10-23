@@ -131,7 +131,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		try {
 
 			validateContexts();
-			validateRegistrationDTO(registrationDTO);
+			validateRegistrationDTO(registrationDTO); 
 			
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
@@ -586,10 +586,10 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 
 			validateRegistrationMetaData(registrationDTO.getRegistrationMetaDataDTO());
 
-			boolean isFingerprintOrIrisCaptureEnabled = isDeviceEnabled(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
-					|| isDeviceEnabled(RegistrationConstants.IRIS_DISABLE_FLAG);
+			boolean isFingerprintOrIrisCaptureEnabled = isEnabled(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					|| isEnabled(RegistrationConstants.IRIS_DISABLE_FLAG);
 
-			boolean isFaceCaptureEnabled = isDeviceEnabled(RegistrationConstants.FACE_DISABLE_FLAG);
+			boolean isFaceCaptureEnabled = isEnabled(RegistrationConstants.FACE_DISABLE_FLAG);
 			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
 
 			if (isFingerprintOrIrisCaptureEnabled || isFaceCaptureEnabled) {
@@ -687,13 +687,15 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		validateFace(isFaceCaptureEnabled, applicantBiometrics, authenticationBiometrics,
 				hasApplicantBiometricException, hasAuthenticationBiometricException);
 
-		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED,
-				hasApplicantBiometricException || hasAuthenticationBiometricException);
 		biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED,
 				isBiometricCaptured(registration.getBiometricDTO().getOperatorBiometricDTO()));
-		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_BIOMETRICS_CAPTURED,
-				isBiometricCaptured(registration.getBiometricDTO().getSupervisorBiometricDTO()));
-
+		
+		if (isEnabled(RegistrationConstants.SUPERVISOR_AUTH_CONFIG)) {
+			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED,
+					hasApplicantBiometricException || hasAuthenticationBiometricException);
+			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_BIOMETRICS_CAPTURED,
+					isBiometricCaptured(registration.getBiometricDTO().getSupervisorBiometricDTO()));
+		}
 		return biometricsCapturedFlags;
 	}
 
@@ -737,7 +739,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		return isBiometricCaptured;
 	}
 
-	private boolean isDeviceEnabled(String key) {
+	private boolean isEnabled(String key) {
 		return String.valueOf(ApplicationContext.map().get(key)).equalsIgnoreCase(RegistrationConstants.ENABLE);
 	}
 

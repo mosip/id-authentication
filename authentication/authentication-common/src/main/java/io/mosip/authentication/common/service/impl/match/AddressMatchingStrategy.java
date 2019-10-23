@@ -20,16 +20,15 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			Object demoNormalizerObject=  props.get("demoNormalizer");
 			Object langObject=props.get("langCode");
+			String refInfoName = (String) reqInfo;
+			String entityInfoName = (String) entityInfo;
 			if(demoNormalizerObject instanceof  DemoNormalizer && langObject instanceof String) {
 				DemoNormalizer demoNormalizer=(DemoNormalizer)demoNormalizerObject;
 			    String langCode=(String)langObject;
-				String refInfoName = demoNormalizer.normalizeAddress((String) reqInfo,langCode);
-				String entityInfoName = demoNormalizer.normalizeAddress((String) entityInfo,langCode);
-				return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
+				refInfoName = demoNormalizer.normalizeAddress(refInfoName,langCode);
+				entityInfoName = demoNormalizer.normalizeAddress(entityInfoName,langCode);
 			}
-			else
-				return 0;
-			
+			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}

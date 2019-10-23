@@ -5,9 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import java.util.zip.ZipEntry;
@@ -17,7 +14,6 @@ import java.util.zip.ZipOutputStream;
 import io.mosip.kernel.core.exception.DataFormatException;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.util.constant.ZipUtilConstants;
 
 /**

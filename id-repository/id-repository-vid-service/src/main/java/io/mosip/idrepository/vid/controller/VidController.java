@@ -231,7 +231,7 @@ public class VidController {
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, DEACTIVATE_VID, e.getMessage());
-			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, DEACTIVATE);
 		}
 
 	}
@@ -260,7 +260,7 @@ public class VidController {
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, DEACTIVATE_VID, e.getMessage());
-			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, REACTIVATE);
 		}
 
 	}

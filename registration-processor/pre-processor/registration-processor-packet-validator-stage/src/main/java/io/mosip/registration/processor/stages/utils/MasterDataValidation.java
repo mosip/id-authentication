@@ -104,6 +104,8 @@ public class MasterDataValidation {
 			demographicIdentity = getDemographicJson(jsonString);
 
 			String[] attributes = env.getProperty(ATTRIBUTES).split(",");
+			if (attributes.length == 0)
+				isValid = true;
 			List<String> list = new ArrayList<>(Arrays.asList(attributes));
 
 			Iterator<String> it = list.iterator();

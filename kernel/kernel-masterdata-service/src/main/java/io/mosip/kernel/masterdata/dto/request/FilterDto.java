@@ -18,8 +18,8 @@ public class FilterDto {
 	private String columnName;
 
 	@NotNull
-	@FilterColumn(columns = { FilterColumnEnum.ALL, FilterColumnEnum.UNIQUE })
+	@FilterColumn(columns = { FilterColumnEnum.ALL, FilterColumnEnum.UNIQUE, FilterColumnEnum.EMPTY })
 	private String type;
-	
+
 	private String text;
 }

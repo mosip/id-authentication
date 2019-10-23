@@ -4,14 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
-import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
-import io.mosip.registration.processor.status.exception.RegStatusAppException;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,20 +13,26 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
-import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
 import io.mosip.registration.processor.printing.api.dto.PrintResponse;
+import io.mosip.registration.processor.status.exception.RegStatusAppException;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
 /**
  * The Class PrintExceptionHandler.
@@ -63,29 +61,32 @@ public class PrintExceptionHandler {
 	/**
 	 * Reg print app exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the response entity
 	 */
 	@ExceptionHandler(RegPrintAppException.class)
 	public ResponseEntity<PrintResponse> regPrintAppException(RegPrintAppException e) {
 		return buildPrintApiExceptionResponse((Exception) e);
 	}
-	
+
 	/**
 	 * Reg print app exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the response entity
 	 */
 	@ExceptionHandler(PDFGeneratorException.class)
 	public ResponseEntity<PrintResponse> pdfgeneratorException(PDFGeneratorException e) {
 		return buildPrintApiExceptionResponse((Exception) e);
 	}
-	
+
 	/**
 	 * Reg print app exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 * @return the response entity
 	 */
 	@ExceptionHandler(TemplateProcessingFailureException.class)
@@ -99,48 +100,52 @@ public class PrintExceptionHandler {
 	}
 
 	@ExceptionHandler(JsonMappingException.class)
-	public ResponseEntity<PrintResponse> badRequest(JsonMappingException ex){
-		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION, ex);
+	public ResponseEntity<PrintResponse> badRequest(JsonMappingException ex) {
+		RegStatusAppException reg1 = new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION,
+				ex);
 		return buildPrintApiExceptionResponse(reg1);
 	}
 
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<PrintResponse> badRequest(InvalidFormatException ex){
-		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
+	public ResponseEntity<PrintResponse> badRequest(InvalidFormatException ex) {
+		RegStatusAppException reg1 = new RegStatusAppException(
+				PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 				String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), "idType"));
 		return buildPrintApiExceptionResponse(reg1);
 	}
 
 	@ExceptionHandler(JsonParseException.class)
 	public ResponseEntity<PrintResponse> badRequest(JsonParseException ex) {
-		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION, ex);
+		RegStatusAppException reg1 = new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION,
+				ex);
 		return buildPrintApiExceptionResponse(reg1);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<PrintResponse> badRequest(MethodArgumentNotValidException ex) {
-		return buildPrintApiExceptionResponse((Exception)ex);
+		return buildPrintApiExceptionResponse((Exception) ex);
 	}
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<PrintResponse> dataExceptionHandler(final DataIntegrityViolationException e) {
-		return buildPrintApiExceptionResponse((Exception)e);
+		return buildPrintApiExceptionResponse((Exception) e);
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<PrintResponse> accessDenied(AccessDeniedException e) {
-		return buildPrintApiExceptionResponse((Exception)e);
+		return buildPrintApiExceptionResponse((Exception) e);
 	}
 
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<PrintResponse> invalidToken(InvalidTokenException e) {
-		return buildPrintApiExceptionResponse((Exception)e);
+		return buildPrintApiExceptionResponse((Exception) e);
 	}
 
 	/**
 	 * Builds the reg status exception response.
 	 *
-	 * @param ex the ex
+	 * @param ex
+	 *            the ex
 	 * @return the response entity
 	 */
 	private ResponseEntity<PrintResponse> buildPrintApiExceptionResponse(Exception ex) {

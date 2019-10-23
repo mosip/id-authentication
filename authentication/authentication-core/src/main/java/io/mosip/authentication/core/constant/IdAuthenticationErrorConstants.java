@@ -6,6 +6,8 @@ package io.mosip.authentication.core.constant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.indauth.dto.IdType;
+
 /**
  * List of all IDA error codes and its respective error messages.
  * 
@@ -24,6 +26,7 @@ public enum IdAuthenticationErrorConstants {
 	BLOCKED_OTP_VALIDATE("IDA-OTA-007", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-008", "OTP Notification Channel not provided"),
 	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
+	OTP_AUTH_IDTYPE_MISMATCH("IDA-OTA-010", "Input Identity Type does not match Identity Type of OTP Request"),
 	
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
@@ -149,11 +152,32 @@ public enum IdAuthenticationErrorConstants {
 	 * @return the errorMessage
 	 */
 	public String getErrorMessage() {
-		return errorMessage;
+		return replaceIdTypeStrWithAlias(errorMessage);
 	}
 
 	public String getActionMessage() {
-		return actionMessage;
+		return replaceIdTypeStrWithAlias(actionMessage);
+	}
+	
+	/**
+	 * Replace the occurrences of ID Type to its alias if available.
+	 * @param str the string to check 
+	 * @return the string which has replacements with alias
+	 */
+	private String replaceIdTypeStrWithAlias(String str) {
+		String s = str;
+		if (str != null) {
+			for (IdType idType : IdType.values()) {
+				Optional<String> alias = idType.getAlias();
+				if (alias.isPresent()) {
+					String type = idType.getType();
+					if (str.contains(type)) {
+						s = s.replace(type, alias.get());
+					}
+				}
+			}
+		}
+		return s;
 	}
 
 	public static Optional<String> getActionMessageForErrorCode(String errorCode) {

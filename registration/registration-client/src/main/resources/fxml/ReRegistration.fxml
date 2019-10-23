@@ -31,7 +31,7 @@
                <children>
                   <HBox alignment="BASELINE_LEFT" spacing="3.0" GridPane.columnIndex="1">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromReRegistration" styleClass="homeButton" text="%home" />
                         <Label styleClass="headerLabel" text="%/reRegistration" />
                      </children>
                   </HBox>

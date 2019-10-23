@@ -85,7 +85,7 @@ public class SyncUploadEncryptionServiceImpl
 	@Value("${registration.processor.rid.machineidsubstring}")
 	private int machineIdLength;
 	/** The gson. */
-	Gson gson = new GsonBuilder().create();
+	Gson gson = new GsonBuilder().serializeNulls().create();
 
 	@Autowired
 	private Environment env;

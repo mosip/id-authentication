@@ -50,12 +50,6 @@ public class KeymanagerController {
 	 */
 	@Autowired
 	KeymanagerService keymanagerService;
-	
-/*	*//**
-	 * Instance of simpleAES
-	 *//*
-	@Autowired
-	SimpleAES simpleAES*/;
 
 	/**
 	 * Request mapping to get Public Key

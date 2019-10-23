@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -49,12 +50,13 @@ public interface LocationService {
 
 	/**
 	 * 
-	 * @param locationRequestDto
+	 * @param locationDto
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(
-			List<LocationDto> locationRequestDto);
+	public ResponseWrapper<Location> createLocation(
+			LocationCreateDto locationDto);
+
 
 	/**
 	 * 

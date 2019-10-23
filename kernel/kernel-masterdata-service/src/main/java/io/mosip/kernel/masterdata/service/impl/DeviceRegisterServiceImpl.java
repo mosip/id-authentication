@@ -128,7 +128,7 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 		regResponseDto.setDeviceCode(request.getDevice().getDeviceCode());
 		regResponseDto.setStatus("success");
 		responseDto.setResponse(regResponseDto);
-		return null;
+		return responseDto;
 	}
 
 }

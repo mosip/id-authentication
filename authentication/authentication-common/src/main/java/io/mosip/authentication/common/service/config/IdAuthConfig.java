@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.PostConstruct;
+
 import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -43,6 +46,11 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	/** The interceptor. */
 	@Autowired
 	private Interceptor interceptor;
+	
+	@PostConstruct
+	public void initialize() {
+		IdType.initializeAliases(environment);
+	}
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig#jpaProperties()

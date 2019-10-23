@@ -46,9 +46,9 @@ public class HolidayDto {
 	@Size(min = 0, max = 128)
 	private String holidayDesc;
 
-	@Size(min = 1, max = 3)
-	@ValidLangCode
-	@NotBlank
+	//@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
+	//@NotBlank
 	private String langCode;
 
 	@NotNull

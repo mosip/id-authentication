@@ -293,6 +293,8 @@ public class SchedulerUtil extends BaseController {
 			Stage alertStage=(Stage)SessionContext.map().get("alertStage");
 			alertStage.close();
 		}
+		//Clear the Registration Data
+		clearRegistrationData();
 		// to clear the session object
 		SessionContext.destroySession();
 		// load login screen

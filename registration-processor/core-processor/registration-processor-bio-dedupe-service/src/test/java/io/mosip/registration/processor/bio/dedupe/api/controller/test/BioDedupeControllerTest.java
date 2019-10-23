@@ -4,11 +4,9 @@
 package io.mosip.registration.processor.bio.dedupe.api.controller.test;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import javax.servlet.http.Cookie;
 
-import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +31,7 @@ import io.mosip.registration.processor.bio.dedupe.api.config.BioDedupeConfigTest
 import io.mosip.registration.processor.bio.dedupe.api.controller.BioDedupeController;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 
 /**
  * @author M1022006
@@ -63,19 +62,21 @@ public class BioDedupeControllerTest {
 
 	String regId;
 
-	byte[] file;
+	byte[] cbeffFile;
 
 	@Before
 	public void setUp() {
 		ReflectionTestUtils.setField(bioDedupeController, "isEnabled", true);
+
 		regId = "1234";
-		file = regId.getBytes();
-		Mockito.when(bioDedupeService.getFileByRegId(anyString())).thenReturn(file);
+		cbeffFile = regId.getBytes();
+
 		Mockito.doNothing().when(tokenValidator).validate(any(), any());
 	}
 
 	@Test
 	public void getFileSuccessTest() throws Exception {
+		Mockito.when(bioDedupeService.getFileByAbisRefId("1234")).thenReturn(cbeffFile);
 		Mockito.when(digitalSignatureUtility.getDigitalSignature(any())).thenReturn("abc");
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.get("/biometricfile/1234").cookie(new Cookie("Authorization", "token"))

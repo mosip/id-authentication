@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -24,6 +26,7 @@ import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
@@ -60,6 +63,7 @@ public class MasterDataFilterHelper {
 	private static final String FILTER_VALUE_UNIQUE = "unique";
 	private static final String FILTER_VALUE_ALL = "all";
 	private static final String WILD_CARD_CHARACTER = "%";
+	private static final String FILTER_VALUE_EMPTY = "";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -75,6 +79,7 @@ public class MasterDataFilterHelper {
 	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto) {
 		String columnName = filterDto.getColumnName();
 		String columnType = filterDto.getType();
+		List<Predicate> predicates = new ArrayList<>();
 		if (columnName.equals(MAP_STATUS_COLUMN_NAME)
 				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
 			return (List<T>) valuesForMapStatusColumn();
@@ -90,25 +95,30 @@ public class MasterDataFilterHelper {
 
 		Predicate langCodePredicate = criteriaBuilder.equal(rootType.get(LANGCODE_COLUMN_NAME),
 				filterValueDto.getLanguageCode());
+		if (!filterValueDto.getLanguageCode().equals("all")) {
+			predicates.add(langCodePredicate);
+		}
 		Predicate caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
 				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
 						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
-
+		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			predicates.add(caseSensitivePredicate);
+		}
 		criteriaQueryByType.select(rootType.get(columnName));
-
+		buildOptionalFilter(criteriaBuilder, rootType, filterValueDto.getOptionalFilters(), predicates);
 		columnTypeValidator(rootType, columnName);
 
-		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
-			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
-		}
+		Predicate filterPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+		criteriaQueryByType.where(filterPredicate);
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
-		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
-				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+		// check if column type is boolean then return true/false
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class) && (columnType.equals(FILTER_VALUE_UNIQUE)
+				|| columnType.equals(FILTER_VALUE_ALL) || columnType.equals(FILTER_VALUE_EMPTY))) {
 			return (List<T>) valuesForStatusColumn();
 		}
 
-		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
+		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)) {
 			criteriaQueryByType.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
 			criteriaQueryByType.distinct(false);
@@ -139,17 +149,21 @@ public class MasterDataFilterHelper {
 
 		columnTypeValidator(rootType, columnName);
 
-		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+		if (filterValueDto.getLanguageCode().equals("all") && !(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			criteriaQueryByType.where(criteriaBuilder.and(caseSensitivePredicate));
+		} else if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
 			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
 		}
 		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
-		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
-				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+		// if column type is Boolean then add value as true or false
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class) && (columnType.equals(FILTER_VALUE_UNIQUE)
+				|| columnType.equals(FILTER_VALUE_ALL) || columnType.equals(FILTER_VALUE_EMPTY))) {
 			return valuesForStatusColumnCode();
 		}
 
-		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
+		// if column type is other than Boolean
+		if (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_EMPTY)) {
 			criteriaQueryByType.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
 			criteriaQueryByType.distinct(false);
@@ -189,5 +203,27 @@ public class MasterDataFilterHelper {
 		filterDataList.add("Assigned");
 		filterDataList.add("Unassigned");
 		return filterDataList;
+	}
+
+	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root,
+			final List<SearchFilter> optionalFilters, List<Predicate> predicates) {
+		if (optionalFilters != null && !optionalFilters.isEmpty()) {
+			List<Predicate> optionalPredicates = optionalFilters.stream().map(i -> buildFilters(builder, root, i))
+					.filter(Objects::nonNull).collect(Collectors.toList());
+			if (!optionalPredicates.isEmpty()) {
+				Predicate orPredicate = builder
+						.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
+				predicates.add(orPredicate);
+			}
+		}
+	}
+
+	private <E> Predicate buildFilters(CriteriaBuilder builder, Root<E> root, SearchFilter filter) {
+		String columnName = filter.getColumnName();
+		String value = filter.getValue();
+
+		return builder.equal(root.get(columnName), value);
+		
+
 	}
 }

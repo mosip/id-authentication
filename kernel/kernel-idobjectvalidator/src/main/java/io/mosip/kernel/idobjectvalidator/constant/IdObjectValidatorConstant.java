@@ -21,6 +21,7 @@ public enum IdObjectValidatorConstant {
 	DOB_FORMAT("uuuu/MM/dd"),
 	INVALID_ATTRIBUTE("Invalid attribute"),
 	ROOT_PATH("identity"),
+	IDENTITY_ARRAY_VALUE_FIELD("value"),
 	IDENTITY_REFERENCE_IDENTITY_NUMBER_PATH("identity.referenceIdentityNumber"),
 	IDENTITY_DOB_PATH("identity.dateOfBirth"),
 	IDENTITY_LANGUAGE_PATH("identity.*.*.language"),
@@ -44,7 +45,8 @@ public enum IdObjectValidatorConstant {
 	MASTERDATA_LOCATIONS_URI("mosip.kernel.idobjectvalidator.masterdata.locations.rest.uri"),
 	MASTERDATA_LOCATION_HIERARCHY_URI("mosip.kernel.idobjectvalidator.masterdata.locationhierarchy.rest.uri"),
 	APPLICATION_ID("application.id"),
-	FIELD_LIST("mosip.kernel.idobjectvalidator.mandatory-attributes.%s.%s");
+	FIELD_LIST("mosip.kernel.idobjectvalidator.mandatory-attributes.%s.%s"),
+	REFERENCE_VALIDATOR("mosip.kernel.idobjectvalidator.referenceValidator");
 
 	/**
 	 * The property present in Report.

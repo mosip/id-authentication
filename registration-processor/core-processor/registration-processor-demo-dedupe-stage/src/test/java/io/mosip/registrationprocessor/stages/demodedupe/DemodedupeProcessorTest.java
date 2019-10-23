@@ -232,8 +232,10 @@ public class DemodedupeProcessorTest {
 		jsonValue2.setLanguage("eng");
 		jsonValue2.setValue("gender");
 		jsonArray1[0] = jsonValue2;
+		List<JsonValue[]> jsonArrayList = new ArrayList<>();
+		jsonArrayList.add(jsonArray);
 
-		individualDemoDedupe.setName(jsonArray);
+		individualDemoDedupe.setName(jsonArrayList);
 		individualDemoDedupe.setDateOfBirth("dateOfBirth");
 		individualDemoDedupe.setGender(jsonArray1);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();

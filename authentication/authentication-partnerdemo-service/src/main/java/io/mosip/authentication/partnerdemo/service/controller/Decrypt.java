@@ -22,8 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -32,6 +34,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.partnerdemo.service.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -66,6 +69,10 @@ public class Decrypt {
 	@Value("${mosip.kernel.decrypt-url}")
 	private String decryptURL;
 	
+	/** The key splitter. */
+	@Value("${" +IdAuthConfigKeyConstants.KEY_SPLITTER+ "}")
+	private String keySplitter;
+	
 	
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(Decrypt.class);
@@ -81,9 +88,31 @@ public class Decrypt {
 	 * @throws KeyManagementException the key management exception
 	 */
 	@PostMapping(path = "/authRequest/decrypt", produces = MediaType.APPLICATION_JSON_VALUE) 
-	public String decrypt(@RequestBody String data)
+	public String decrypt(@RequestBody String data, 
+			@RequestParam(name="refId",required=false) @Nullable String refId)
 			throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, KeyManagementException {
-		return kernelDecrypt(data);
+		if (refId == null) {
+			refId = appID;
+		}
+		return kernelDecrypt(data, refId);
+	}
+	
+	@PostMapping(path = "/authRequest/decryptSplittedData", produces = MediaType.APPLICATION_JSON_VALUE) 
+	public String decryptSplittedData(@RequestBody SplittedEncryptedData splittedData,
+			@RequestParam(name="refId",required=false) @Nullable String refId)
+			throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, KeyManagementException {
+		String data = combine(splittedData.getRequest(), splittedData.getRequestSessionKey());
+		if (refId == null) {
+			refId = appID;
+		}
+		return kernelDecrypt(data, refId);
+	}
+
+	private String combine(String request, String requestSessionKey) {
+		byte[] encryptedRequest = CryptoUtil.decodeBase64(request);
+		byte[] encryptedSessionKey = CryptoUtil.decodeBase64(requestSessionKey);
+		return CryptoUtil.encodeBase64(
+				CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter));
 	}
 
 	/**
@@ -95,7 +124,7 @@ public class Decrypt {
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String kernelDecrypt(String data)
+	public String kernelDecrypt(String data, String refId)
 			throws KeyManagementException, NoSuchAlgorithmException {
 		Encrypt.turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
@@ -116,7 +145,7 @@ public class Decrypt {
 
 		CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 		cryptomanagerRequestDto.setApplicationId(appID);
-		cryptomanagerRequestDto.setReferenceId(partnerId);
+		cryptomanagerRequestDto.setReferenceId(refId);
 		cryptomanagerRequestDto.setData(data);
 		cryptomanagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 		
@@ -169,5 +198,24 @@ public class Decrypt {
     	request.setRequesttime(DateUtils.getUTCCurrentDateTime());
     	return request;
     }
+	
+	@SuppressWarnings("unused")
+	private static class SplittedEncryptedData {
+		String request;
+		String requestSessionKey;
+		public String getRequest() {
+			return request;
+		}
+		public void setRequest(String request) {
+			this.request = request;
+		}
+		public String getRequestSessionKey() {
+			return requestSessionKey;
+		}
+		public void setRequestSessionKey(String requestSessionKey) {
+			this.requestSessionKey = requestSessionKey;
+		}
+		
+	}
 
 }

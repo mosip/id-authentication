@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-
 /**
  * Request Response Filter class that implements {@link Filter}.
  * 

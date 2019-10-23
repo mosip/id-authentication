@@ -111,5 +111,17 @@ public interface HolidayRepository extends BaseRepository<Holiday, Integer> {
 	@Transactional
 	@Query("UPDATE Holiday  SET isDeleted=true ,deletedDateTime =?1 WHERE holidayName = ?2 AND holidayDate = ?3 AND locationCode = ?4 AND (isDeleted = false OR isDeleted IS NULL)")
 	int deleteHolidays(LocalDateTime deletedTime, String holidayName, LocalDate holidayDate, String locationCode);
+	
+	/**
+	 * Fetch the holiday by id and location code
+	 * 
+	 * @param id
+	 *            id of the holiday
+	 * @param locationCode
+	 *            location code of the holiday
+	 * @return {@link Holiday}
+	 */
+	@Query("FROM Holiday where locationCode = ?1 and (isDeleted = false or isDeleted is null) and isActive = true")
+	List<Holiday> findHolidayByHolidayIdLocationCode(String locationCode);
 
 }

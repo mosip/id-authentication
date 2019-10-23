@@ -19,17 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.crypto.exception.InvalidDataException;
-import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
-import io.mosip.kernel.core.crypto.exception.NullDataException;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class EncryptorTest {
+	
+	private static final String MOCKAAD = "MOCKAAD";
 
 	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptorImpl;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	private KeyPair rsaPair;
 
@@ -53,18 +52,13 @@ public class EncryptorTest {
 	}
 
 	@Test
-	public void testRSAPKS1AsymmetricPrivateEncrypt() {
-		assertThat(encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), data), isA(byte[].class));
-	}
-
-	@Test
-	public void testRSAPKS1AsymmetricPublicEncrypt() {
-		assertThat(encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(), data), isA(byte[].class));
+	public void testAsymmetricPublicEncrypt() {
+		assertThat(cryptoCore.asymmetricEncrypt(rsaPair.getPublic(), data), isA(byte[].class));
 	}
 
 	@Test
 	public void testAESSymmetricEncrypt() throws java.security.NoSuchAlgorithmException {
-		assertThat(encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data), isA(byte[].class));
+		assertThat(cryptoCore.symmetricEncrypt(setSymmetricUp(32, "AES"), data,MOCKAAD.getBytes()), isA(byte[].class));
 	}
 	
 	@Test
@@ -72,27 +66,13 @@ public class EncryptorTest {
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[16];
 		random.nextBytes(keyBytes);
-		assertThat(encryptorImpl.symmetricEncrypt(setSymmetricUp(32, "AES"), data,keyBytes), isA(byte[].class));
+		assertThat(cryptoCore.symmetricEncrypt(setSymmetricUp(32, "AES"), data,keyBytes,MOCKAAD.getBytes()), isA(byte[].class));
 	}
 
-	@Test(expected = InvalidKeyException.class)
-	public void testRSAPKS1AsymmetricInvalidKey() {
-		encryptorImpl.asymmetricPrivateEncrypt(null, data);
-	}
 
-	@Test(expected = NullDataException.class)
-	public void testRSAPKS1AsymmetricNullData() {
-		encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), null);
-	}
-
-	@Test(expected = InvalidDataException.class)
-	public void testRSAPKS1AsymmetricInvalidData() {
-		encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), "".getBytes());
-	}
-
-	@Test(expected = InvalidKeyException.class)
+	@Test(expected = NullPointerException.class)
 	public void testAESSymmetricEncryptInvalidKey() throws java.security.NoSuchAlgorithmException {
-		encryptorImpl.symmetricEncrypt(null, data);
+		cryptoCore.symmetricEncrypt(null, data,MOCKAAD.getBytes());
 	}
 
 }

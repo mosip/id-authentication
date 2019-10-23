@@ -12,6 +12,6 @@ public class AuthtypeStatus {
 
 	String authType;
 	String authSubType;
-	boolean isLocked;
+	Boolean locked;
 
 }

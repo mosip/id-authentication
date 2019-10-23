@@ -6,12 +6,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,6 @@ import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.IdObjectsSchemaValidationOperationMapper;
 import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
-import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -139,7 +139,9 @@ public class PacketValidateProcessor {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	@Autowired
+	@Autowired(required = false)
+	@Qualifier("referenceValidator")
+	@Lazy
 	IdObjectValidator idObjectValidator;
 
 	@Autowired
@@ -423,7 +425,7 @@ public class PacketValidateProcessor {
 			String eventType = packetValidationDto.isTransactionSuccessful() ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			/** Module-Id can be Both Succes/Error code */
+			/** Module-Id can be Both Success/Error code */
 			String moduleId = packetValidationDto.isTransactionSuccessful()
 					? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode()
 					: description.getCode();

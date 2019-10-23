@@ -71,5 +71,8 @@ public class DeviceHistory extends BaseEntity implements Serializable {
 
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
+	
+	@Column(name = "zone_code", length = 36)
+	private String zoneCode;
 
 }

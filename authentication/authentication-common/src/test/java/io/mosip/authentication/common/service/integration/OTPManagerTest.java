@@ -109,7 +109,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
 
 	}
 
@@ -138,7 +138,7 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
@@ -170,7 +170,7 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
@@ -202,7 +202,7 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
@@ -266,7 +266,7 @@ public class OTPManagerTest {
 		valuesMap.put("namePri", "Name in PrimaryLang");
 		valuesMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "123456", valuesMap);
+			otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valuesMap);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorCode(), ex.getErrorCode());
 			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorMessage(), ex.getErrorText());
@@ -444,7 +444,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "123456", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valueMap);
 	}
 
 	@Ignore
@@ -474,7 +474,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "Test123", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -513,7 +513,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "123456", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valueMap);
 	}
 
 	@Test
@@ -667,7 +667,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", "ara");
 		valueMap.put("namePri", "ida-otp-auth");
 		valueMap.put("nameSec", "ida-otp-auth");
-		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -683,7 +683,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "Test123", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

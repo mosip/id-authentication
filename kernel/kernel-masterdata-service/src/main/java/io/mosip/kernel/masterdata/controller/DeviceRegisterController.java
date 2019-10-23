@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,7 @@ public class DeviceRegisterController {
 	 *            the request DTO.
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
+	@PreAuthorize("hasAnyRole('DEVICE_PROVIDER')")
 	@ApiOperation(value = "Register Device")
 	@PostMapping("/register")
 	public ResponseEntity<DeviceRegisterResponseDto> registerDevice(
@@ -54,6 +56,7 @@ public class DeviceRegisterController {
 	 *            the request DTO.
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
+	@PreAuthorize("hasAnyRole('DEVICE_PROVIDER')")
 	@ApiOperation(value = "DeRegister Device")
 	@DeleteMapping("/deregister")
 	public ResponseEntity<DeviceRegisterResponseDto> deRegisterDevice(@RequestBody DeRegisterDeviceRequestDto request) {

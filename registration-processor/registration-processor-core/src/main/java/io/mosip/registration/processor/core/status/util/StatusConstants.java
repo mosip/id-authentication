@@ -91,7 +91,6 @@ public final class StatusConstants {
 	// Message sender stage
 	public static final String MESSAGE_SENDER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MSS-";
 	public static final String MESSAGE_SENDER_NOTIF_SUCCESS_CODE = MESSAGE_SENDER_MODULE + SUCCESS;
-	public static final String MESSAGE_SENDER_EMAIL_FAILED_CODE = MESSAGE_SENDER_MODULE + FAILED;
-	public static final String MESSAGE_SENDER_SMS_FAILED_CODE = MESSAGE_SENDER_MODULE + FAILED;
+	public static final String MESSAGE_SENDER__FAILED_CODE = MESSAGE_SENDER_MODULE + FAILED;
 
 }

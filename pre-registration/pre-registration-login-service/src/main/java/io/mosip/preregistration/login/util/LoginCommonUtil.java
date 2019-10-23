@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
@@ -144,6 +145,7 @@ public class LoginCommonUtil {
 			log.info("sessionId", "idType", "id", "In call to kernel rest service :" + url);
 			response = getRestTemplate().exchange(url, httpMethodType, request, responseClass);
 		} catch (Exception ex) {
+			log.debug("sessionId", "idType", "id", "Kernel rest call exception "+ExceptionUtils.getStackTrace(ex));
 			throw new RestClientException("rest call failed");
 		}
 		return response;
