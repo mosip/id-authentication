@@ -17,6 +17,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
+import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
 import io.mosip.kernel.masterdata.entity.DeviceProvider;
@@ -201,32 +202,36 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 			serviceErrors.add(serviceError);
 		}
 		if (!registeredDevice.getModel().equals(digitalIdDto.getModel())) {
-			ServiceError serviceError= new ServiceError();
-			serviceError.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
 					digitalIdDto.getModel()));
 			serviceErrors.add(serviceError);
 		}
 		if (!registeredDevice.getProviderId().equals(digitalIdDto.getDpId())) {
-			ServiceError serviceError= new ServiceError();
-			serviceError.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
-					digitalIdDto.getDpId()));
+					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
 		if (!registeredDevice.getProviderName().equals(digitalIdDto.getDp())) {
-			ServiceError serviceError= new ServiceError();
-			serviceError.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
 					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
 		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getSerialNo())) {
-			ServiceError serviceError= new ServiceError();
-			serviceError.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
 					digitalIdDto.getSerialNo()));
@@ -239,24 +244,79 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 	}
 
 	@Override
-	public ResponseDto validateDeviceProviderHistory(String deviceCode, String deviceProviderId,
-			String deviceServiceVersion, String timeStamp) {
+	public ResponseDto validateDeviceProviderHistory(ValidateDeviceHistoryDto validateDeviceDto) {
 		ResponseDto responseDto = new ResponseDto();
 		responseDto.setStatus(MasterDataConstant.INVALID);
 		responseDto.setMessage("Device details history is invalid");
-		LocalDateTime effTimes = parseToLocalDateTime(timeStamp);
-		if (isRegisteredDeviceHistory(deviceCode, effTimes)
-				&& isDeviceProviderHistoryPresent(deviceProviderId, effTimes)
-				&& isValidServiceIdFromHistory(deviceServiceVersion, effTimes)
-				&& checkMappingBetweenProviderAndDeviceCodeHistory(deviceCode, deviceProviderId, effTimes)
-				&& checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(deviceCode)) {
-			responseDto.setStatus(MasterDataConstant.VALID);
-			responseDto.setMessage("Device details history validated successfully");
-		}
+		LocalDateTime effTimes = parseToLocalDateTime(validateDeviceDto.getTimeStamp());
+		RegisteredDeviceHistory registeredDeviceHistory=isRegisteredDeviceHistory(validateDeviceDto.getDeviceCode(), effTimes);
+		isDeviceProviderHistoryPresent(validateDeviceDto.getDigitalId().getDpId(), effTimes);
+		isValidServiceVersionFromHistory(validateDeviceDto.getDeviceServiceVersion(), effTimes);
+		/*checkMappingBetweenProviderAndDeviceCodeHistory(validateDeviceDto.getDeviceCode(),
+				validateDeviceDto.getDigitalId().getDp(), effTimes);*/
+		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
+		validateDigitalIdWithRegisteredDeviceHistory(registeredDeviceHistory,validateDeviceDto.getDigitalId());
+		responseDto.setStatus(MasterDataConstant.VALID);
+		responseDto.setMessage("Device details history validated successfully");
+
 		return responseDto;
 	}
 
-	private boolean isValidServiceIdFromHistory(String deviceServiceVersion, LocalDateTime effTimes) {
+	private void validateDigitalIdWithRegisteredDeviceHistory(RegisteredDeviceHistory registeredDevice,
+			DigitalIdDto digitalIdDto) {
+		List<ServiceError> serviceErrors = new ArrayList<>();
+		if (!registeredDevice.getMake().equals(digitalIdDto.getMake())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getMake()));
+			serviceErrors.add(serviceError);
+		}
+		if (!registeredDevice.getModel().equals(digitalIdDto.getModel())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getModel()));
+			serviceErrors.add(serviceError);
+		}
+		if (!registeredDevice.getProviderId().equals(digitalIdDto.getDpId())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getDp()));
+			serviceErrors.add(serviceError);
+		}
+		if (!registeredDevice.getProviderName().equals(digitalIdDto.getDp())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getDp()));
+			serviceErrors.add(serviceError);
+		}
+		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getSerialNo())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getSerialNo()));
+			serviceErrors.add(serviceError);
+		}
+		if (!serviceErrors.isEmpty()) {
+			throw new ValidationException(serviceErrors);
+		}
+		
+	}
+
+	private boolean isValidServiceVersionFromHistory(String deviceServiceVersion, LocalDateTime effTimes) {
 		List<MOSIPDeviceServiceHistory> deviceServiceHistory = null;
 		try {
 			deviceServiceHistory = deviceServiceHistoryRepository
@@ -274,7 +334,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		return true;
 	}
 
-	private boolean isRegisteredDeviceHistory(String deviceCode, LocalDateTime effTimes) {
+	private RegisteredDeviceHistory isRegisteredDeviceHistory(String deviceCode, LocalDateTime effTimes) {
 		RegisteredDeviceHistory registeredDeviceHistory = null;
 		try {
 			registeredDeviceHistory = registeredDeviceHistoryRepository
@@ -293,7 +353,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorMessage());
 		}
-		return true;
+		return registeredDeviceHistory;
 
 	}
 
