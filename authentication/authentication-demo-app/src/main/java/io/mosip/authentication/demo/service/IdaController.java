@@ -333,7 +333,7 @@ public class IdaController {
 			RestTemplate restTemplate = createTemplate();
 			HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
 			ResponseEntity<Map> authResponse = restTemplate.exchange(
-					env.getProperty("ida.bio.url",
+					env.getProperty("ida.auth.url",
 							"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
 					HttpMethod.POST, httpEntity, Map.class);
 			if (authResponse.getStatusCode().is2xxSuccessful()) {
