@@ -244,7 +244,9 @@ public class IdaController {
 		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
 				+ count.getValue()
 				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("iris.deviceId") + "\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
-		return capturebiometrics(requestBody);
+		Map irisData = mapper.readValue(capturebiometrics(requestBody), Map.class);
+		((List) irisData.get("biometrics")).remove(1);
+		return mapper.writeValueAsString(irisData);
 	}
 
 	@SuppressWarnings("rawtypes")
