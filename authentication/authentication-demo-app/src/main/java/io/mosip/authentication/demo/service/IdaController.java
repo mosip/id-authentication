@@ -220,13 +220,14 @@ public class IdaController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(stringBuilder.toString());
 		return stringBuilder.toString();
 	}
 
 	private String captureIris() {
 		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
 				+ count.getValue()
-				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"ceec5f62-77b7-46f3-816b-3e734305a9c8\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"6e7de5df-7ccd-4730-a103-ac776c261436\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 		return capturebiometrics(requestBody);
 	}
 
@@ -280,7 +281,7 @@ public class IdaController {
 		identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
 
 		System.err.println("******* Request before encryption ************ \n\n");
-		System.err.println(requestDTO);
+		System.err.println(identityBlock);
 		EncryptionRequestDto encryptionRequestDto = new EncryptionRequestDto();
 		encryptionRequestDto.setIdentityRequest(identityBlock);
 		EncryptionResponseDto kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
@@ -328,7 +329,6 @@ public class IdaController {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
 		String identityBlock = mapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
 
-		CryptoUtility cryptoUtil = new CryptoUtility();
 		SecretKey secretKey = cryptoUtil.genSecKey();
 
 		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
@@ -427,6 +427,9 @@ public class IdaController {
 				throws CertificateException {
 		}
 	} };
+
+	@Autowired
+	private CryptoUtility cryptoUtil;
 
 	public static void turnOffSslChecking() throws KeyManagementException, java.security.NoSuchAlgorithmException {
 		// Install the all-trusting trust manager

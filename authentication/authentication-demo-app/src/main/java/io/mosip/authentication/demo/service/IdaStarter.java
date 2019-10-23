@@ -7,6 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 
+import io.mosip.authentication.demo.helper.CryptoUtility;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +22,7 @@ import javafx.stage.Stage;
  */
 @SuppressWarnings("restriction")
 @SpringBootApplication
-@Import(CryptoCore.class)
+@Import({CryptoCore.class, CryptoUtility.class})
 public class IdaStarter extends Application {
 
 	private ConfigurableApplicationContext context;
