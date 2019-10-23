@@ -5,7 +5,9 @@ import java.io.IOException;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Import;
 
+import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,6 +21,7 @@ import javafx.stage.Stage;
  */
 @SuppressWarnings("restriction")
 @SpringBootApplication
+@Import(CryptoCore.class)
 public class IdaStarter extends Application {
 
 	private ConfigurableApplicationContext context;
