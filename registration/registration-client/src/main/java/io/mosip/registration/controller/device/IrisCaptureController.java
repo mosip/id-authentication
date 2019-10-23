@@ -514,21 +514,15 @@ public class IrisCaptureController extends BaseController {
 				bioservice.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
 				streamer.stop();
 			} catch (RegBaseCheckedException | IOException runtimeException) {
-				getIrises().add(leftTempIrisDetail);
-				getIrises().add(leftTempIrisDetail);
 				streamer.stop();
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 						ExceptionUtils.getStackTrace(runtimeException)));
 
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
-
-				// generateAlert(RegistrationConstants.ALERT_INFORMATION,
-				// RegistrationUIConstants.getMessageLanguageSpecific(runtimeException.getMessage().substring(0,
-				// 3)
-				// + RegistrationConstants.UNDER_SCORE +
-				// RegistrationConstants.MESSAGE.toUpperCase()));
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.getMessageLanguageSpecific(runtimeException.getMessage().substring(0, 3)
+								+ RegistrationConstants.UNDER_SCORE + RegistrationConstants.MESSAGE.toUpperCase()));
 				return;
 			}
 
