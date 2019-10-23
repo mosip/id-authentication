@@ -485,6 +485,10 @@ public class IrisCaptureController extends BaseController {
 
 	@Override
 	public void scan(Stage popupStage) {
+
+		IrisDetailsDTO leftTempIrisDetail = null;
+		IrisDetailsDTO rightTempIrisDetail = null;
+
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
@@ -495,9 +499,14 @@ public class IrisCaptureController extends BaseController {
 					: RegistrationConstants.RIGHT;
 
 			try {
-				IrisDetailsDTO tempIrisDetail = getIrises().stream()
-						.filter((iris) -> iris.getIrisType().contains(irisType)).findFirst().get();
-				getIrises().remove(tempIrisDetail);
+				leftTempIrisDetail = getIrises().stream()
+						.filter((iris) -> iris.getIrisType().contains(RegistrationConstants.LEFT)).findFirst().get();
+				getIrises().remove(leftTempIrisDetail);
+
+				rightTempIrisDetail = getIrises().stream()
+						.filter((iris) -> iris.getIrisType().contains(RegistrationConstants.RIGHT)).findFirst().get();
+				getIrises().remove(rightTempIrisDetail);
+
 			} catch (Exception exception) {
 			}
 
@@ -505,19 +514,26 @@ public class IrisCaptureController extends BaseController {
 				bioservice.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
 				streamer.stop();
 			} catch (RegBaseCheckedException | IOException runtimeException) {
+				getIrises().add(leftTempIrisDetail);
+				getIrises().add(leftTempIrisDetail);
 				streamer.stop();
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 						ExceptionUtils.getStackTrace(runtimeException)));
-				generateAlert(RegistrationConstants.ALERT_INFORMATION,
-						RegistrationUIConstants.getMessageLanguageSpecific(runtimeException.getMessage().substring(0, 3)
-								+ RegistrationConstants.UNDER_SCORE + RegistrationConstants.MESSAGE.toUpperCase()));
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+
+				// generateAlert(RegistrationConstants.ALERT_INFORMATION,
+				// RegistrationUIConstants.getMessageLanguageSpecific(runtimeException.getMessage().substring(0,
+				// 3)
+				// + RegistrationConstants.UNDER_SCORE +
+				// RegistrationConstants.MESSAGE.toUpperCase()));
 				return;
 			}
 
 			if (irisDetailsDTO.isCaptured()) {
-				
+
 				streamer.setStreamImageToImageView();
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				if (!bioservice.isMdmEnabled()) {
@@ -589,6 +605,16 @@ public class IrisCaptureController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		} finally {
 			selectedIris.requestFocus();
+
+			if (null == getIrises().stream().filter((iris) -> iris.getIrisType().contains(RegistrationConstants.LEFT))
+					.findFirst().get()) {
+				getIrises().add(leftTempIrisDetail);
+			}
+
+			if (null == getIrises().stream().filter((iris) -> iris.getIrisType().contains(RegistrationConstants.RIGHT))
+					.findFirst().get()) {
+				getIrises().add(rightTempIrisDetail);
+			}
 		}
 	}
 
