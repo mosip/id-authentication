@@ -46,12 +46,17 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
-			<version>0.12.16</version>
+			<version>0.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
-			<version>0.12.16</version>
+			<version>0.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>0.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -20,9 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -57,7 +51,6 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -264,7 +257,7 @@ public class IdaController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
-	private void onSendAuthRequest() {
+	private void onSendAuthRequest() throws Exception {
 		responsetextField.setText("");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
@@ -284,34 +277,10 @@ public class IdaController {
 			requestDTO.setOtp(otpValue.getText());
 		}
 		Map<String, Object> identityBlock = mapper.convertValue(requestDTO, Map.class);
-		// if (fingerAuthType.isSelected()) {
-		// try {
-		// Map<String, Object> identityResponse =
-		// mapper.readValue(getFingerprintValue(), Map.class);
-		// List<Map<String, Object>> biometrics = (List<Map<String, Object>>)
-		// identityResponse.get("biometrics");
-		//
-		// // Workaround for bioType missing issue
-		// for (Map<String, Object> bio : biometrics) {
-		// String dataStr = (String) bio.get("data");
-		// Map<String, Object> dataMap =
-		// mapper.readValue(CryptoUtil.decodeBase64(dataStr), Map.class);
-		// dataMap.put("bioType", "FIR");
-		// dataMap.put("bioSubType", "LEFT_THUMB");
-		//
-		// String jsonData = mapper.writeValueAsString(dataMap);
-		// bio.put("data", CryptoUtil.encodeBase64String(jsonData.getBytes()));
-		// }
-		// // System.err.println(biometrics);
-		// // System.err.println(new String(CryptoUtil.decodeBase64((String)
-		// // biometrics.get(0).get("data"))));
-		// identityBlock.replace("biometrics", biometrics);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		// }
+		identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
 
-		System.err.println("******* Request ************ " + identityBlock);
+		System.err.println("******* Request before encryption ************ \n\n");
+		System.err.println(requestDTO);
 		EncryptionRequestDto encryptionRequestDto = new EncryptionRequestDto();
 		encryptionRequestDto.setIdentityRequest(identityBlock);
 		EncryptionResponseDto kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
@@ -329,60 +298,49 @@ public class IdaController {
 		authRequestMap.replace("request", kernelEncrypt.getEncryptedIdentity());
 		authRequestMap.replace("requestSessionKey", kernelEncrypt.getEncryptedSessionKey());
 		authRequestMap.replace("requestHMAC", kernelEncrypt.getRequestHMAC());
-		try {
-			RestTemplate restTemplate = createTemplate();
-			HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
-			ResponseEntity<Map> authResponse = restTemplate.exchange(
-					env.getProperty("ida.auth.url",
-							"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
-					HttpMethod.POST, httpEntity, Map.class);
-			if (authResponse.getStatusCode().is2xxSuccessful()) {
-				boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response"))
-						.get("authStatus");
-				String response = status ? "Success" : "Failure";
-				if (status) {
-					responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
-				} else {
-					responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
-				}
-				responsetextField.setText(response);
+		RestTemplate restTemplate = createTemplate();
+		HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
+		ResponseEntity<Map> authResponse = restTemplate.exchange(
+				env.getProperty("ida.auth.url",
+						"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
+				HttpMethod.POST, httpEntity, Map.class);
+		if (authResponse.getStatusCode().is2xxSuccessful()) {
+			boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response")).get("authStatus");
+			String response = status ? "Success" : "Failure";
+			if (status) {
+				responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
 			} else {
-				responsetextField.setText("Error");
 				responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 			}
-			// System.out.println(identityBlock);
-			System.err.println(authResponse.getBody());
-
-			System.err.println("Auth Request : " + authRequestMap);
-		} catch (KeyManagementException | NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			responsetextField.setText(response);
+		} else {
+			responsetextField.setText("Error");
+			responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 		}
+		System.out.println(identityBlock);
+		System.err.println(authResponse.getBody());
+
+		System.err.println("Auth Request : " + authRequestMap);
 	}
 
-	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal) {
+	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
+			throws Exception {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-		try {
-			String identityBlock = mapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
+		String identityBlock = mapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
 
-			CryptoUtility cryptoUtil = new CryptoUtility();
-			SecretKey secretKey = cryptoUtil.genSecKey();
+		CryptoUtility cryptoUtil = new CryptoUtility();
+		SecretKey secretKey = cryptoUtil.genSecKey();
 
-			byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
-			encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
-			String publicKeyStr = getPublicKey(identityBlock, isInternal);
-			PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
-					.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
-			byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
-			encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
-			byte[] byteArr = cryptoUtil.symmetricEncrypt(
-					HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes(),
-					secretKey);
-			encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
-		} catch (JsonProcessingException | NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
-				| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
-				| KeyManagementException | RestClientException | InvalidKeySpecException e) {
-			e.printStackTrace();
-		}
+		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
+		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
+		String publicKeyStr = getPublicKey(identityBlock, isInternal);
+		PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
+				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
+		byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
+		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
+		byte[] byteArr = cryptoUtil.symmetricEncrypt(
+				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes(), secretKey);
+		encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
 		return encryptionResponseDto;
 	}
 
