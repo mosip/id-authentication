@@ -78,7 +78,7 @@ public class PrintApiController {
 	public ResponseEntity<Object> getFile(@Valid @RequestBody PrintRequest printRequest, @ApiIgnore Errors errors)
 			throws RegPrintAppException {
 
-		validator.validateRequest(printRequest.getRequest(), errors);
+		//validator.validateRequest(printRequest.getRequest(), errors);
 		PrintServiceValidationUtil.validate(errors);
 
 		byte[] pdfbytes = printservice.getDocuments(printRequest.getRequest().getIdtype(),
