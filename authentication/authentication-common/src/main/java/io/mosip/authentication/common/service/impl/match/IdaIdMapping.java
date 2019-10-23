@@ -70,8 +70,8 @@ public enum IdaIdMapping implements IdMapping {
 	
 	//IRIS
 	//BIO - Iris - Single
-	LEFTIRIS("LEFT"),
-	RIGHTIRIS("RIGHT"),
+	LEFTIRIS("Left Iris"),
+	RIGHTIRIS("Right Iris"),
 	//BIO - Iris - Multi or Unknown
 	UNKNOWN_IRIS("UNKNOWN", setOf(RIGHTIRIS, LEFTIRIS)),
 	IRIS("iris", setOf(RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS)),
