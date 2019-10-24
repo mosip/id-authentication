@@ -47,7 +47,7 @@ public class DeviceLangCodeDtypeDto {
 	/**
 	 * Field for language code
 	 */
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 	/**
 	 * Field for is active

@@ -43,7 +43,7 @@ public class ZoneController {
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@GetMapping("/hierarchy/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getZoneHierarchy(
-			@PathVariable("langCode") @ValidLangCode @Valid String langCode) {
+			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
 		ResponseWrapper<List<ZoneExtnDto>> response = new ResponseWrapper<>();
 		response.setResponse(zoneService.getUserZoneHierarchy(langCode));
 		return response;
@@ -59,7 +59,7 @@ public class ZoneController {
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@GetMapping("/leafs/{langCode}")
 	public ResponseWrapper<List<ZoneExtnDto>> getLeafZones(
-			@PathVariable("langCode") @Valid @ValidLangCode String langCode) {
+			@PathVariable("langCode") @ValidLangCode(message = "Language Code is Invalid") String langCode) {
 		ResponseWrapper<List<ZoneExtnDto>> response = new ResponseWrapper<>();
 		response.setResponse(zoneService.getUserLeafZone(langCode));
 		return response;
@@ -67,7 +67,7 @@ public class ZoneController {
 
 	@GetMapping("/zonename")
 	public ResponseWrapper<ZoneNameResponseDto> getZoneNameBasedOnUserIDAndLangCode(
-			@RequestParam("userID") String userID, @RequestParam("langCode") String langCode) {
+			@RequestParam("userID") String userID, @ValidLangCode(message = "Language Code is Invalid") @RequestParam("langCode") String langCode) {
 		ResponseWrapper<ZoneNameResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.getZoneNameBasedOnLangCodeAndUserID(userID, langCode));
 		return responseWrapper;

@@ -26,7 +26,7 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION("KER-MSD-310", "Lunch end Time cannot be Greater Than Center End Time"),
 	REGISTRATION_CENTER_START_END_EXCEPTION("KER-MSD-309", "Center Start Time must be smaller than Center End Time"),
 	REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION("KER-MSD-308", "Center Lunch Start Time must be smaller than Center Lunch End Time"),
-	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-999", "Latitude or Longitude must have minimum 4 digits after decimal"),
+	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-307", "Latitude or Longitude must have minimum 4 digits after decimal"),
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database"),
 	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
 	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s"),
@@ -73,7 +73,7 @@ public enum RegistrationCenterErrorCode {
 	DECOMMISSION_FAILED("KER-MSD-354","Internal Server Error"),
 	INVALID_RCID_LENGTH("KER-MSD-353","Center ID specified for decommission has invalid length"),
 	REG_CENTER_INVALIDE_ZONE("KER-MSD-441", "Admin not authorized to access this Registration Center for this Zone"),
-	DECOMMISSIONED("KER-MSD-442", "Registration center has been already decommissioned or Registration center not found"),
+	DECOMMISSIONED("KER-MSD-042", "Registration center has been already decommissioned or Registration center not found"),
 	HOLIDAY_NOT_FOUND("KER-MSD-440", "HolidayLocationCode Not Found");
 
 

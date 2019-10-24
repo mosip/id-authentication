@@ -32,9 +32,9 @@ public class TitleDto {
 	@NotNull
 	private Boolean isActive;
 
-	@NotBlank
-	@ValidLangCode
-	@Size(min = 1, max = 3)
+	//@NotBlank
+	@ValidLangCode(message = "Language Code is Invalid")
+	//@Size(min = 1, max = 3)
 	private String langCode;
 
 }

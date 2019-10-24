@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
@@ -120,6 +121,6 @@ public class FilterColumnValidator {
 	 * @return true if it neither empty nor null.
 	 */
 	private boolean validateFilterColumnType(String filterType) {
-		return filterType != null;
+		return StringUtils.isNotBlank(filterType);
 	}
 }
