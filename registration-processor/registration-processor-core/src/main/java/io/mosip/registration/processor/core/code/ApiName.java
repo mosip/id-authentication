@@ -203,6 +203,8 @@ public enum ApiName {
 	/** The templates. */
 	TEMPLATES,
 
-	GETUINBYVID;
+	GETUINBYVID,
+
+	DEVICEVALIDATEHISTORY;
 
 }

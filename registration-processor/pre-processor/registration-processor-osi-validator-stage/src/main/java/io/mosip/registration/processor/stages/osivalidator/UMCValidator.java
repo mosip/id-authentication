@@ -1,17 +1,21 @@
 package io.mosip.registration.processor.stages.osivalidator;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -20,14 +24,16 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.DeviceDetails;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceValidateHistoryRequest;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceValidateHistoryResponse;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistartionCenterTimestampResponseDto;
@@ -74,17 +80,21 @@ public class UMCValidator {
 	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
+	@Value("${mosip.kernel.device.validate.history.id}")
+	private String deviceValidateHistoryId;
+
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-
-	private static final String NO_DEVICE_HISTORY_FOUND = "no device history found for device : ";
-
-	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
 	ObjectMapper mapper = new ObjectMapper();
 
 	/** The identity. */
 	Identity identity;
+
+	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
+
+	@Autowired
+	private Environment env;
 
 	/**
 	 * Validate registration center.
@@ -478,16 +488,16 @@ public class UMCValidator {
 	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto,
 			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean isDeviceMappedWithCenter = false;
-		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if (registreredDeviceIds != null && !registreredDeviceIds.isEmpty()) {
-			for (FieldValue fieldValue : registreredDeviceIds) {
-				String deviceId = null;
-				deviceId = fieldValue.getValue();
+		List<DeviceDetails> registreredDevices = identity.getCapturedRegisteredDevices();
+		if (registreredDevices != null && !registreredDevices.isEmpty()) {
+			for (DeviceDetails deviceDetails : registreredDevices) {
+				String deviceCode = null;
+				deviceCode = deviceDetails.getDeviceCode();
 				RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto;
 
 				List<String> pathsegments = new ArrayList<>();
 				pathsegments.add(rcmDto.getRegcntrId());
-				pathsegments.add(deviceId);
+				pathsegments.add(deviceCode);
 				pathsegments.add(rcmDto.getPacketCreationDate());
 
 				ResponseWrapper<?> responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
@@ -501,11 +511,11 @@ public class UMCValidator {
 								+ JsonUtil.objectMapperObjectToJson(registrationCenterDeviceHistoryResponseDto));
 				if (responseWrapper.getErrors() == null) {
 					isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
-							registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(),
+							registrationCenterDeviceHistoryResponseDto, deviceCode, rcmDto.getRegcntrId(),
 							rcmDto.getRegId(), registrationStatusDto);
 					if (!isDeviceMappedWithCenter) {
 						registrationStatusDto.setStatusComment(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getMessage()
-								+ rcmDto.getRegcntrId() + deviceId);
+								+ rcmDto.getRegcntrId() + deviceCode);
 						registrationStatusDto.setSubStatusCode(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getCode());
 						break;
 					}
@@ -573,85 +583,67 @@ public class UMCValidator {
 	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto,
 			InternalRegistrationStatusDto registrationStatusDto)
 			throws JsonProcessingException, IOException, ApisResourceAccessException {
-		boolean isDeviceActive = false;
+		boolean isDeviceValid = false;
 
-		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
-		if (registreredDeviceIds != null && !registreredDeviceIds.isEmpty()) {
-			for (FieldValue fieldValue : registreredDeviceIds) {
-				String deviceId = null;
-				deviceId = fieldValue.getValue();
-				DeviceHistoryResponseDto deviceHistoryResponsedto;
+		List<DeviceDetails> registreredDevices = identity.getCapturedRegisteredDevices();
+		if (registreredDevices != null && !registreredDevices.isEmpty()) {
+			for (DeviceDetails deviceDetails : registreredDevices) {
+				DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
+				deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
+				deviceValidateHistoryRequest.setDeviceServiceVersion(deviceDetails.getDeviceServiceVersion());
+				deviceValidateHistoryRequest.setDigitalId(deviceDetails.getDigitalId());
+				deviceValidateHistoryRequest.setTimeStamp(rcmDto.getPacketCreationDate());
+				RequestWrapper<DeviceValidateHistoryRequest> request = new RequestWrapper<>();
 
-				List<String> pathsegments = new ArrayList<>();
+				request.setRequest(deviceValidateHistoryRequest);
+				request.setId(deviceValidateHistoryId);
+				request.setMetadata(null);
+				request.setVersion("1.0");
+				DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+				LocalDateTime localdatetime = LocalDateTime
+						.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
+				request.setRequesttime(localdatetime);
 
-				pathsegments.add(deviceId);
-				pathsegments.add(primaryLanguagecode);
-				pathsegments.add(rcmDto.getPacketCreationDate());
+				DeviceValidateHistoryResponse deviceValidateResponse;
 
 				ResponseWrapper<?> responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
-						.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", ResponseWrapper.class);
-				deviceHistoryResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
-						DeviceHistoryResponseDto.class);
+						.postApi(ApiName.DEVICEVALIDATEHISTORY, "", "", request, ResponseWrapper.class);
+				deviceValidateResponse = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+						DeviceValidateHistoryResponse.class);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
-						"UMCValidator::isDeviceActive()::CenterUserMachineHistory service ended with response data : "
-								+ JsonUtil.objectMapperObjectToJson(deviceHistoryResponsedto));
-				if (responseWrapper.getErrors() == null) {
-					isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId(),
-							registrationStatusDto);
-					if (!isDeviceActive) {
-						registrationStatusDto.setStatusComment(
-								StatusMessage.OSI_VALIDATION_FAILURE + NO_DEVICE_HISTORY_FOUND + deviceId);
-						break;
+						"UMCValidator::isDeviceActive()::DeviceValidate service ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(deviceValidateResponse));
+				if (responseWrapper.getErrors() == null || responseWrapper.getErrors().isEmpty()) {
+					if (deviceValidateResponse.getStatus().equalsIgnoreCase(VALID)) {
+						isDeviceValid = true;
+					} else {
+						isDeviceValid = false;
+						registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_VALIDATION_FAILED.getMessage());
 
 					}
+
 				} else {
-					isDeviceActive = false;
+					isDeviceValid = false;
 					List<ErrorDTO> error = responseWrapper.getErrors();
 					registrationStatusDto.setStatusComment(error.get(0).getMessage());
-					registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_ID_INACTIVE.getCode());
+					registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_VALIDATION_FAILED.getCode());
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
-							"UMCValidator::isDeviceActive()::CenterUserMachineHistory service ended with response data : "
+							"UMCValidator::isDeviceActive()::DEVICEVALIDATE service ended with error data : "
 									+ error.get(0).getMessage());
+
+				}
+				if (!isDeviceValid) {
 					break;
 				}
 
 			}
 
 		} else {
-			isDeviceActive = true;
+			isDeviceValid = true;
 		}
-		return isDeviceActive;
-	}
-
-	/**
-	 * Validate device response.
-	 *
-	 * @param deviceHistoryResponsedto
-	 *            the device history responsedto
-	 * @param registrationStatusDto
-	 * @return true, if successful
-	 */
-	private boolean validateDeviceResponse(DeviceHistoryResponseDto deviceHistoryResponsedto, String deviceId,
-			String regId, InternalRegistrationStatusDto registrationStatusDto) {
-
-		boolean isDeviceActive = false;
-
-		List<DeviceHistoryDto> dtos = deviceHistoryResponsedto.getDeviceHistoryDetails();
-		if (dtos != null && !dtos.isEmpty()) {
-			DeviceHistoryDto deviceHistoryDto = dtos.get(0);
-			if (deviceHistoryDto.getIsActive()) {
-				isDeviceActive = true;
-			} else {
-				registrationStatusDto.setStatusComment(StatusUtil.DEVICE_ID_INACTIVE.getMessage() + deviceId);
-				registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_ID_INACTIVE.getCode());
-
-			}
-
-		}
-
-		return isDeviceActive;
+		return isDeviceValid;
 	}
 
 	/**

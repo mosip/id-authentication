@@ -20,7 +20,7 @@ public class Identity {
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence1;
 	private List<FieldValueArray> hashSequence2;
-	private List<FieldValue> capturedRegisteredDevices;
+	private List<DeviceDetails> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
 	private List<String> uinUpdatedFields;
@@ -153,7 +153,8 @@ public class Identity {
 	}
 
 	/**
-	 * @param hashSequence2 the hashSequence2 to set
+	 * @param hashSequence2
+	 *            the hashSequence2 to set
 	 */
 	public void setHashSequence2(List<FieldValueArray> hashSequence2) {
 		this.hashSequence2 = hashSequence2;
@@ -162,14 +163,15 @@ public class Identity {
 	/**
 	 * @return the capturedRegisteredDevices
 	 */
-	public List<FieldValue> getCapturedRegisteredDevices() {
+	public List<DeviceDetails> getCapturedRegisteredDevices() {
 		return capturedRegisteredDevices;
 	}
 
 	/**
-	 * @param capturedRegisteredDevices the capturedRegisteredDevices to set
+	 * @param capturedRegisteredDevices
+	 *            the capturedRegisteredDevices to set
 	 */
-	public void setCapturedRegisteredDevices(List<FieldValue> capturedRegisteredDevices) {
+	public void setCapturedRegisteredDevices(List<DeviceDetails> capturedRegisteredDevices) {
 		this.capturedRegisteredDevices = capturedRegisteredDevices;
 	}
 
@@ -181,7 +183,8 @@ public class Identity {
 	}
 
 	/**
-	 * @param capturedNonRegisteredDevices the capturedNonRegisteredDevices to set
+	 * @param capturedNonRegisteredDevices
+	 *            the capturedNonRegisteredDevices to set
 	 */
 	public void setCapturedNonRegisteredDevices(List<FieldValue> capturedNonRegisteredDevices) {
 		this.capturedNonRegisteredDevices = capturedNonRegisteredDevices;
@@ -210,7 +213,8 @@ public class Identity {
 	}
 
 	/**
-	 * @param uinUpdatedFields the uinUpdatedFields to set
+	 * @param uinUpdatedFields
+	 *            the uinUpdatedFields to set
 	 */
 	public void setUinUpdatedFields(List<String> uinUpdatedFields) {
 		this.uinUpdatedFields = uinUpdatedFields;
