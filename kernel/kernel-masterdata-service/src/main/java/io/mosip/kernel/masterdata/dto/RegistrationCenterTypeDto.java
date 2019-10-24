@@ -30,7 +30,7 @@ public class RegistrationCenterTypeDto {
 	/**
 	 * language code of the registration center type.
 	 */
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	@NotBlank
 	@Size(min = 1, max = 3)
 	private String langCode;

@@ -20,9 +20,9 @@ public class BlacklistedWordsDto {
 	@Size(min = 1, max = 128)
 	private String word;
 
-	@ValidLangCode
-	@NotBlank
-	@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
+	//@NotBlank
+	//@Size(min = 1, max = 3)
 	private String langCode;
 
 	@Size(min = 1, max = 256)

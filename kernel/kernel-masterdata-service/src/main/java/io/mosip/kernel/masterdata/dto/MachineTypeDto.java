@@ -29,7 +29,7 @@ public class MachineTypeDto {
 
 	@NotBlank
 	@Size(min = 1, max = 3)
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 

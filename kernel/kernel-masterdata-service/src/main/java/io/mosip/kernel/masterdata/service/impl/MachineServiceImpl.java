@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -44,6 +45,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -377,6 +379,7 @@ public class MachineServiceImpl implements MachineService {
 		boolean isAssigned = true;
 		String typeName = null;
 		String langCode = null;
+		
 		if (dto.getLanguageCode().equals("all")) {
 			langCode = primaryLangCode;
 		} else {
@@ -443,6 +446,7 @@ public class MachineServiceImpl implements MachineService {
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
+		pageUtils.validateSortField(Machine.class, dto.getSort());
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
@@ -748,8 +752,8 @@ public class MachineServiceImpl implements MachineService {
 
 		// machine is not in DB
 		if (renMachines.isEmpty()) {
-			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new RequestException(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
+					String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId));
 		}
 		
 		// check the given device and registration center zones are come under user zone

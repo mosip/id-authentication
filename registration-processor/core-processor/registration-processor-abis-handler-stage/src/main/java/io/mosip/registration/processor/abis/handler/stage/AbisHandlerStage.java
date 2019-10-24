@@ -42,6 +42,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import org.springframework.util.CollectionUtils;
 
 /**
  * The Class AbisHandlerStage.
@@ -208,7 +209,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 	/**
 	 * Creates the identify request.
 	 *
-	 * @param abisApplicationDtoList
+	 * @param abisQueueDetails
 	 *            the abis application dto list
 	 * @param transactionId
 	 *            the transaction id
@@ -291,7 +292,11 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 
 			for (RegDemoDedupeListDto dedupeListDto : regDemoDedupeListDtoList) {
 				ReferenceIdDto dto = new ReferenceIdDto();
-				dto.setReferenceId(dedupeListDto.getMatchedRegId());
+				List<RegBioRefDto> regBioRefDto = packetInfoManager.getBioRefIdByRegId(dedupeListDto.getMatchedRegId());
+				if (!CollectionUtils.isEmpty(regBioRefDto)) {
+					dto.setReferenceId(regBioRefDto.get(0).getBioRefId());
+				}
+
 				referenceIdDtos.add(dto);
 			}
 			AbisIdentifyRequestGalleryDto galleryDto = new AbisIdentifyRequestGalleryDto();
@@ -332,7 +337,7 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 	/**
 	 * Creates the insert request.
 	 *
-	 * @param abisApplicationDtoList
+	 * @param abisQueueDetails
 	 *            the abis application dto list
 	 * @param transactionId
 	 *            the transaction id
