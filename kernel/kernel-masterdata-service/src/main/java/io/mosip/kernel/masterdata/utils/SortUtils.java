@@ -11,7 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
@@ -136,8 +138,10 @@ public class SortUtils {
 		
 	}
 
-	public <T> void validateSortLocationField(Class<T> clazz, List<SearchSort> searchSorts) {
+	public <T> void validateSortLocationField(Class<LocationSearchDto> clazz, Class<Location> class2,List<SearchSort> searchSorts) {
 		List<Field> fields = extractFields(clazz);
+		List<Field> entityFields = extractEntityFields(class2);
+		fields.addAll(entityFields);
 		for (SearchSort searchSort : searchSorts) {
 			findField(fields, searchSort.getSortField());
 			findType(searchSort.getSortType());

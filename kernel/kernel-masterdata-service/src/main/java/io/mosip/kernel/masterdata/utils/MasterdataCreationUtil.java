@@ -5,6 +5,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +33,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -211,7 +213,7 @@ public class MasterdataCreationUtil {
 		return executableQuery.executeUpdate();
 	}
 
-	public <E, T> T updateMasterData(Class<E> entity, T t)
+	public <E extends BaseEntity, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
 		boolean activeDto=false,activePrimary=false,activeSecondary=false;
@@ -248,11 +250,16 @@ public class MasterdataCreationUtil {
 		if (langCode.equals(primaryLang)) {
 			if(activeDto==true)
 			{
+				
 				E secondaryEntity = getResultSet(entity, secondaryLang, id,primaryKeyCol);
 				
 				if(secondaryEntity!=null)
 				{
-					for (Field field : secondaryEntity.getClass().getDeclaredFields()) {
+					List<Field> baseEntityFields =  Arrays.asList(secondaryEntity.getClass().getDeclaredFields());
+					List<Field> superClassEntityFields =  Arrays.asList(secondaryEntity.getClass().getSuperclass().getDeclaredFields());
+					baseEntityFields.addAll(superClassEntityFields);
+					
+					for (Field field : baseEntityFields) {
 						field.setAccessible(true);
 								if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
 									activeSecondary= (boolean) field.get(t);
@@ -260,6 +267,7 @@ public class MasterdataCreationUtil {
 					}
 					if(activeSecondary==true)
 					{
+						System.out.println("Active status "+activeSecondary);
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.TRUE);

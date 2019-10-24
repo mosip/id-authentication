@@ -805,7 +805,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
-		pageUtils.validateSortFieldLocation(LocationSearchDto.class, dto.getSort());
+		pageUtils.validateSortFieldLocation(LocationSearchDto.class,Location.class, dto.getSort());
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
 	}
