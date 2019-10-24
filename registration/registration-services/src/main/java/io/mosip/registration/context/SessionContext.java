@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -27,6 +28,7 @@ import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.security.AuthenticationService;
@@ -296,7 +298,9 @@ public class SessionContext {
 	 */
 	private static boolean validateFingerprint(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException, IOException {
 		BioService bioService = applicationContext.getBean(BioService.class);
-			if(bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto(authenticationValidatorDTO.getUserId()))) {				
+			if(bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto(authenticationValidatorDTO.getUserId(), new RequestDetail("Staging","Registration",RegistrationConstants.FINGERPRINT_SLAB_LEFT, 
+					(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+					"60", Arrays.asList("LF_LITTLE","LF_RING","LF_MIDDLE"))))) {				
 				createSessionContext();
 				SessionContext.authTokenDTO().setLoginMode(loginMethod);
 				validAuthModes.add(loginMethod);
@@ -325,7 +329,9 @@ public class SessionContext {
 	private static boolean validateIris(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateIris(bioService.getIrisAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
+			if(bioService.validateIris(bioService.getIrisAuthenticationDto(authenticationValidatorDTO.getUserId(), new RequestDetail(RegistrationConstants.IRIS_DOUBLE,
+				(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT),
+				2, (String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD), null)))) {
 				createSessionContext();
 				SessionContext.authTokenDTO().setLoginMode(loginMethod);
 				validAuthModes.add(loginMethod);
@@ -357,7 +363,9 @@ public class SessionContext {
 	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
+			if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId(),new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+					(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+					(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.FACE_THRESHOLD), null)))) {
 				createSessionContext();
 				SessionContext.authTokenDTO().setLoginMode(loginMethod);
 				validAuthModes.add(loginMethod);

@@ -38,6 +38,7 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
@@ -266,8 +267,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	
 	/** Thumbs Hand Exceptions */
 	private List<String> thumbsExceptions= new ArrayList<String>();
-
-
+	
+	private List<String> exception;
+	
+	private String requestedScore;
+	
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
 
@@ -843,7 +847,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 		});
 	}
-
+	
 	/**
 	 * Scan.
 	 */
@@ -861,21 +865,26 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						SessionContext.userId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 				String FingerType="";
 				if (selectedPane.getId() == leftHandPalmPane.getId()) {
-					SessionContext.map().put("CAPTURE_EXCEPTION", leftHandExceptions);
+					exception=leftHandExceptions;
 					FingerType=RegistrationConstants.LEFTPALM;
 					imageView=leftHandPalmImageview;
+					requestedScore=getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
 				}else if (selectedPane.getId() == rightHandPalmPane.getId()) {
-					SessionContext.map().put("CAPTURE_EXCEPTION", rightHandExceptions);
+					exception=rightHandExceptions;
 					FingerType=RegistrationConstants.RIGHTPALM;
 					imageView=rightHandPalmImageview;
+					requestedScore=getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
 				}else {
-					SessionContext.map().put("CAPTURE_EXCEPTION", thumbsExceptions);
+					exception=thumbsExceptions;
 					FingerType=RegistrationConstants.THUMBS;
 					imageView=thumbImageview;
+					requestedScore=getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
 				}
 				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
 				if(bioService.isMdmEnabled()) {
-					streamer.startStream(findFingerPrintType(FingerType), scanPopUpViewController.getScanImage(),imageView );
+					streamer.startStream(new RequestDetail(findFingerPrintType(FingerType), 
+							getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1,
+							requestedScore, exception), scanPopUpViewController.getScanImage(),imageView );
 				}
 			}
 
@@ -1145,7 +1154,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		try {
-			bioService.getFingerPrintImageAsDTO(detailsDTO, findFingerPrintType(fingerType));
+			
+			//passing the object with details like type, count, exception, requestedScore, timout, 
+			
+			bioService.getFingerPrintImageAsDTO(detailsDTO, new RequestDetail(findFingerPrintType(fingerType), getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT),1, requestedScore, exception));
 			streamer.stop();
 			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
 		} catch ( RegBaseCheckedException| IOException exception) {

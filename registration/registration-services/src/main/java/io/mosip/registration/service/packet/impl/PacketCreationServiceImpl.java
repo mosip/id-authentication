@@ -12,6 +12,7 @@ import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,15 +71,18 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
+import io.mosip.registration.dto.json.metadata.DigitalId;
 import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
+import io.mosip.registration.dto.json.metadata.RegisteredDevice;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
@@ -552,22 +556,25 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		return fingerSubTypes;
 	}
 
-	private List<FieldValue> getRegisteredDevices() {
-		List<RegDeviceMaster> registeredDevices = machineMappingDAO
-				.getDevicesMappedToRegCenter(ApplicationContext.applicationLanguage());
+	private List<RegisteredDevice> getRegisteredDevices() {
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<>();
-		FieldValue capturedRegisteredDevice;
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<>();
 
-		if (registeredDevices != null) {
-			for (RegDeviceMaster registeredDevice : registeredDevices) {
-				capturedRegisteredDevice = new FieldValue();
-				capturedRegisteredDevice.setLabel(registeredDevice.getRegDeviceSpec().getRegDeviceType().getName());
-				capturedRegisteredDevice.setValue(registeredDevice.getRegMachineSpecId().getId());
-				capturedRegisteredDevices.add(capturedRegisteredDevice);
-			}
-		}
-
+		MosipBioDeviceManager.getDeviceRegistry().forEach((deviceName, device)->{
+			RegisteredDevice registerdDevice = new RegisteredDevice();
+			registerdDevice.setDeviceCode(device.getDeviceId());
+			registerdDevice.setDeviceServiceVersion(device.getSerialVersion());
+			DigitalId digitalId = new DigitalId();
+			digitalId.setSerialNo(device.getDeviceModel());
+			digitalId.setMake(device.getDeviceMake());
+			digitalId.setType(device.getDeviceType());
+			digitalId.setDpId(device.getDeviceProviderName());
+			digitalId.setDpId(device.getDeviceProviderId());
+			digitalId.setDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toString());
+			registerdDevice.setDigitalId(digitalId);
+			capturedRegisteredDevices.add(registerdDevice);
+		});
+		
 		return capturedRegisteredDevices;
 	}
 

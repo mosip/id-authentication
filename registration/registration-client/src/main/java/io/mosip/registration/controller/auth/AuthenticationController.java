@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,6 +27,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.Streamer;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
@@ -38,6 +40,7 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.security.AuthenticationService;
@@ -343,7 +346,9 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					try {
-						if (captureAndValidateFP(fpUserId.getText())) {
+						if (captureAndValidateFP(fpUserId.getText(), new RequestDetail("Staging","Registration",RegistrationConstants.FINGERPRINT_SLAB_LEFT, 
+								(String) getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+								"60", Arrays.asList("LF_LITTLE","LF_RING","LF_MIDDLE")))) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = fpUserId.getText();
 							if (!isEODAuthentication) {
@@ -364,7 +369,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			try {
-				if (captureAndValidateFP(fpUserId.getText())) {
+				if (captureAndValidateFP(fpUserId.getText(), new RequestDetail("", "", 1, "", null))) {
 					userAuthenticationTypeListValidation.remove(0);
 					loadNextScreen();
 				} else {
@@ -426,6 +431,20 @@ public class AuthenticationController extends BaseController implements Initiali
 		}
 	}
 
+	
+	@FXML
+	private ImageView faceImage;
+	
+	@Autowired
+	private Streamer streamer;
+	
+	@FXML
+	private void startStream() {
+		streamer.startStream(new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+				getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null), faceImage, null);
+	}
+	
 	/**
 	 * to validate the face in case of face based authentication
 	 */
@@ -809,8 +828,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @throws IOException
 	 * @throws RegBaseCheckedException
 	 */
-	private boolean captureAndValidateFP(String userId) throws RegBaseCheckedException, IOException {
-		AuthenticationValidatorDTO  authenticationValidatorDTO = bioService.getFingerPrintAuthenticationDto(userId);
+	private boolean captureAndValidateFP(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
+		AuthenticationValidatorDTO  authenticationValidatorDTO = bioService.getFingerPrintAuthenticationDto(userId, requestDetail);
 		List<FingerprintDetailsDTO> fingerPrintDetailsDTOs = authenticationValidatorDTO.getFingerPrintDetails();
 		boolean fpMatchStatus;
 		if (!isEODAuthentication) {
@@ -849,9 +868,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @throws IOException
 	 */
 	private boolean captureAndValidateIris(String userId) throws RegBaseCheckedException, IOException {
-		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getIrisAuthenticationDto(userId);
+		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getIrisAuthenticationDto(userId, new RequestDetail(RegistrationConstants.IRIS_DOUBLE
+				, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2,getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), null));
 		List<IrisDetailsDTO> irisDetailsDTOs = authenticationValidatorDTO.getIrisDetails();
-		IrisDetailsDTO irisDetailsDTO = irisDetailsDTOs.get(0);
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
@@ -864,16 +883,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 			}
 		}
-		
 		boolean irisMatchStatus = bioService.validateIris(authenticationValidatorDTO);
-		
-		if (irisMatchStatus) {
-			if (isSupervisor) {
-				irisDetailsDTO.setIrisImageName("supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
-			} else {
-				irisDetailsDTO.setIrisImageName("officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
-			}
-		}
 		return irisMatchStatus;
 	}
 
@@ -884,7 +894,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
-		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getFaceAuthenticationDto(userId);
+		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getFaceAuthenticationDto(userId, new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+				getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null));
 		FaceDetailsDTO faceDetailsDTO = authenticationValidatorDTO.getFaceDetail();
 		if (!isEODAuthentication) {
 			if (isSupervisor) {

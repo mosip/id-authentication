@@ -70,25 +70,26 @@ public class BioDevice {
 			put("THUMBS", 3);
 			put("FACE", 0);
 			put("DOUBLE", 3);
+			put("SINGLE",0);
 		}
 	};
 
 	private IMosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 
-	public CaptureResponseDto capture() throws RegBaseCheckedException, IOException {
+	public CaptureResponseDto capture(RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.CAPTURE_ENDPOINT;
 
 		CaptureResponseDto captureResponse = null;
 
 		/* build the request object for capture */
-		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder.buildMosipBioCaptureRequestDto(this);
+		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder.buildMosipBioCaptureRequestDto(this,requestDetail);
 		String requestBody = null;
 		ObjectMapper mapper = new ObjectMapper();
 		requestBody = mapper.writeValueAsString(mosipBioCaptureRequestDto);
 		CloseableHttpClient client = HttpClients.createDefault();
 		StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
-		HttpUriRequest request = RequestBuilder.create("RCAPTURE").setUri(url).setEntity(requestEntity).build();
+		HttpUriRequest request = RequestBuilder.create(requestDetail.getMosipProcess().equals("Registration")?"RCAPTURE":"CAPTURE").setUri(url).setEntity(requestEntity).build();
 		CloseableHttpResponse response = client.execute(request);
 		captureResponse = mapper.readValue(EntityUtils.toString(response.getEntity()).getBytes(StandardCharsets.UTF_8),
 				CaptureResponseDto.class);
@@ -116,12 +117,12 @@ public class BioDevice {
 		}
 	}
 
-	public InputStream stream() throws IOException {
-
+	public InputStream stream(RequestDetail requestDetail) throws IOException {
+		
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.STREAM_ENDPOINT;
 
 		/* build the request object for capture */
-		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder.buildMosipBioCaptureRequestDto(this);
+		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder.buildMosipBioCaptureRequestDto(this, requestDetail);
 
 		HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
 		con.setRequestMethod("POST");

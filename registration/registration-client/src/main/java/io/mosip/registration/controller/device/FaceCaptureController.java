@@ -38,13 +38,16 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.service.bio.BioService;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -251,7 +254,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 		if (bioService.isMdmEnabled()) {
 			openWebCam(imageType);
-			streamer.startStream(RegistrationConstants.FACE_FULLFACE, webCameraController.camImageView, null);
+			streamer.startStream(new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+					getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+					getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null), webCameraController.camImageView, null);
 			return;
 		}
 		else if (!webCameraController.isWebcamPluggedIn()) 
@@ -390,7 +395,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 		}
 	}
-
+	
 	/**
 	 * 
 	 * To set the captured image to the imageView in the Applicant Biometrics page
@@ -406,6 +411,13 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		byte[] isoBytes = bioService.getSingleBiometricIsoTemplate(captureResponseDto);
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+		FaceDetailsDTO faceDetail = new FaceDetailsDTO();
+		faceDetail.setFaceISO(isoBytes);
+		authenticationValidatorDTO.setFaceDetail(faceDetail);
+		if(!bioService.validateFace(authenticationValidatorDTO)) {
+
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && capturedImage != null) {
 			
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
@@ -485,6 +497,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantFaceTrackerImg.setVisible(false);
 			exceptionFaceTrackerImg.setVisible(true);
 			saveBiometricDetailsBtn.setDisable(false);
+		}
+		}else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FACE_SCANNING_ERROR);
 		}
 	}
 
