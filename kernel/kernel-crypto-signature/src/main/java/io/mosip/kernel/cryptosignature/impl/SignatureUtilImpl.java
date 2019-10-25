@@ -136,7 +136,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 				throw new SignatureUtilClientException(validationErrorsList);
 			} else {
 				throw new SignatureUtilException(SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorCode(),
-						SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorMessage());
+						SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorMessage(),ex);
 			}
 		}
 		ExceptionHandler.throwExceptionIfExist(responseEntity);
