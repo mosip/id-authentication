@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -106,7 +107,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 
 	@PostConstruct
 	public void init() {
-		cipherRegistry = new HashMap<>();
+		cipherRegistry = new ConcurrentHashMap<>();
 		try {
 			cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
 			cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
@@ -121,6 +122,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		}
 		secureRandom = new SecureRandom();
 	}
+	
 
 	@Override
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] aad) {
