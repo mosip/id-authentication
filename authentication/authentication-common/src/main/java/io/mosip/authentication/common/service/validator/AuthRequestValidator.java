@@ -60,7 +60,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (authRequestDto != null) {
 			if (!errors.hasErrors()) {
 				validateConsentReq(authRequestDto.isConsentObtained(), errors);
-				validateAllowedAuthTypes(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
 				validateReqTime(authRequestDto.getRequestTime(), errors, IdAuthCommonConstants.REQ_TIME);
@@ -69,6 +68,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 			if (!errors.hasErrors()) {
 				validateTxnId(authRequestDto.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
+			}
+			if (!errors.hasErrors()) {
+				validateAllowedAuthTypes(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto.getRequestedAuth(), errors);

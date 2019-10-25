@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -192,29 +193,39 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
-			CbeffDocType type, MatchType matchType) throws IdAuthenticationBusinessException {
+			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
 		Optional<String> identityValue = getIdentityValue("documents." + INDIVIDUAL_BIOMETRICS, null, idEntity)
 				.findAny();
 		if (identityValue.isPresent()) {
-			Map<String, String> bdbBasedOnType;
-			try {
-				bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
-						type.getName(), null);
-			} catch (Exception e) {
-				// TODO Add corresponding error code and message
-				throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
+			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>(); 
+			for (CbeffDocType type : types) {
+				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 			}
-			return bdbBasedOnType.entrySet().stream()
-					.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
-						IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-						identityInfoDTO.setValue(entry.getValue());
-						List<IdentityInfoDTO> idenityList = new ArrayList<>(1);
-						idenityList.add(identityInfoDTO);
-						return new SimpleEntry<>(getNameForCbeffName(entry.getKey(), matchType), idenityList);
-					}));
+			return cbeffValuesForTypes;
+			
 		} else {
 			return Collections.emptyMap();
 		}
+	}
+
+	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type, MatchType matchType,
+			Optional<String> identityValue) throws IdAuthenticationBusinessException {
+		Map<String, String> bdbBasedOnType;
+		try {
+			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
+					type.getName(), null);
+		} catch (Exception e) {
+			// TODO Add corresponding error code and message
+			throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
+		}
+		return bdbBasedOnType.entrySet().stream()
+				.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
+					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+					identityInfoDTO.setValue(entry.getValue());
+					List<IdentityInfoDTO> idenityList = new ArrayList<>(1);
+					idenityList.add(identityInfoDTO);
+					return new SimpleEntry<>(getNameForCbeffName(entry.getKey(), matchType), idenityList);
+				}));
 	}
 
 	/**
@@ -292,6 +303,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return Optional.ofNullable(threshold);
 	}
 
-	
+	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
+		return Stream.of(idMappings)
+			.filter(idmap -> idName.startsWith(idmap.getIdname()))
+			.map(IdMapping::getType)
+			.findFirst();
+	}
+
 
 }

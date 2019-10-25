@@ -88,7 +88,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return the response entity
 	 */
 	@ExceptionHandler(Exception.class)
-	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {ex.printStackTrace();
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
