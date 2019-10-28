@@ -14,8 +14,9 @@ import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -39,7 +40,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 				valueMap.put(BioAuthType.class.getSimpleName(), this);
@@ -64,7 +65,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 				valueMap.put(BioAuthType.class.getSimpleName(), this);
@@ -86,7 +87,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 			}
@@ -114,7 +115,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 			}
@@ -140,7 +141,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
 			}
@@ -167,7 +168,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
 			}
@@ -193,7 +194,7 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.FACE.getIdname(), func);
 			}
@@ -225,9 +226,10 @@ public enum BioAuthType implements AuthType {
 				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher
+				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.MULTI_MODAL_BIOMETRICS.getIdname(), func);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values()); 
 			}
 			return valueMap;
 		}

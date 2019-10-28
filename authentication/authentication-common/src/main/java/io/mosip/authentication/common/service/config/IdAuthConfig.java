@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.config;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.*;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.COMPOSITE_BIO_PROVIDER;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FACE_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FINGERPRINT_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IRIS_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
@@ -8,6 +9,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOS
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 
@@ -70,7 +72,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	 */
 	@Bean("finger")
 	public IBioApi fingerProvider() throws IdAuthenticationAppException {
-		return getBiometricProvider(FINGERPRINT_PROVIDER, "finger");
+		return getBiometricProvider(FINGERPRINT_PROVIDER, "finger", this::isFingerAuthEnabled);
 	}
 
 	/**
@@ -81,12 +83,12 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	 */
 	@Bean("face")
 	public IBioApi faceProvider() throws IdAuthenticationAppException {
-		return getBiometricProvider(FACE_PROVIDER, "face");
+		return getBiometricProvider(FACE_PROVIDER, "face", this::isFaceAuthEnabled);
 	}
 
-	private IBioApi getBiometricProvider(String property, String modalityName) throws IdAuthenticationAppException {
+	private IBioApi getBiometricProvider(String property, String modalityName, Supplier<Boolean> enablementChecker) throws IdAuthenticationAppException {
 		try {
-			if (Objects.nonNull(environment.getProperty(property)) && isFaceAuthEnabled()) {
+			if (Objects.nonNull(environment.getProperty(property)) && enablementChecker.get()) {
 				return (IBioApi) Class.forName(environment.getProperty(property)).newInstance();
 			} else {
 				return null;
@@ -106,12 +108,13 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	 */
 	@Bean("iris")
 	public IBioApi irisProvider() throws IdAuthenticationAppException {
-		return getBiometricProvider(IRIS_PROVIDER, "iris");
+		return getBiometricProvider(IRIS_PROVIDER, "iris", this::isIrisAuthEnabled);
 	}
 	
 	@Bean("composite.biometrics")
 	public IBioApi compositeBiometricProvider() throws IdAuthenticationAppException {
-		return getBiometricProvider(COMPOSITE_BIO_PROVIDER, "CompositBiometrics");
+		return getBiometricProvider(COMPOSITE_BIO_PROVIDER, "CompositBiometrics", 
+					() -> this.isFingerAuthEnabled() || this.isIrisAuthEnabled() || this.isFaceAuthEnabled());
 	}
 
 	/**
