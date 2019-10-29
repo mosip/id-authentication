@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
+import java.util.AbstractMap.SimpleEntry;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -95,8 +96,8 @@ public class BioMatcherUtil {
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"match size >>>" + match.length);
 				Arrays.asList(match).stream().forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA",
-						"matchValue", "internal score Value >>>" + score.getInternalScore()));
-				return Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
+						"matchValue", "scaled score Value >>>" + score.getScaleScore()));
+				return Stream.of(match).mapToDouble(Score::getScaleScore).max().orElse(0);
 			} catch (BiometricException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Biovalue not Matched");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -112,13 +113,14 @@ public class BioMatcherUtil {
 	 *            the info
 	 * @return the bir
 	 */
-	private BIR getBir(Object info, String type) {
+	private BIR getBir(Object info, Entry<SingleType, String> type) {
 		BIRBuilder birBuilder = new BIRBuilder();
 		if (info instanceof String) {
 			RegistryIDType format = new RegistryIDType();
 			format.setOrganization(String.valueOf(CbeffConstant.FORMAT_OWNER));
-			format.setType(type);
-			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder().withFormat(format).build();
+			format.setType(type.getValue());
+			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(type.getKey()))
+					.withFormat(format).build();
 			String reqInfoStr = (String) info;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
 			birBuilder.withBdb(decodedrefInfo);
@@ -147,16 +149,16 @@ public class BioMatcherUtil {
 					"entityBIR size >>>" + entityBIR.length);
 			compositeScore = compositeBiometricApi.compositeMatch(reqBIR, entityBIR, null);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue ",
-					"composite Score >>>" + compositeScore.getInternalScore());
+					"composite Score >>>" + compositeScore.getScaledScore());
 			Arrays.asList(compositeScore.getIndividualScores()).stream()
 					.forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue",
-							"individual score Value >>>" + score.getInternalScore()));
+							"individual score Value >>>" + score.getScaleScore()));
 		} catch (BiometricException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator", "Biovalue not Matched");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 
 		}
-		return compositeScore.getInternalScore();
+		return compositeScore.getScaledScore();
 	}
 
 	/**
@@ -218,10 +220,9 @@ public class BioMatcherUtil {
 
 			for (Map.Entry<String, String> e : reqInfo.entrySet()) {
 				String key = e.getKey();
-				String type = getType(key, idMappings);
 				
-				reqInfoObj[index] = getBir(e.getValue(), type);
-				entityInfoObj[index] = getBir(entityInfo.get(key), type);
+				reqInfoObj[index] = getBir(e.getValue(), getType(key, idMappings));
+				entityInfoObj[index] = getBir(entityInfo.get(key), getType(key, idMappings));
 				index++;
 			}
 		} else {
@@ -238,18 +239,23 @@ public class BioMatcherUtil {
 		return new BIR[][] { reqInfoObj, entityInfoObj };
 	}
 
-	private String getType(String idName, IdMapping[] idMappings) {
+	private Entry<SingleType, String> getType(String idName, IdMapping[] idMappings) {
+		//Note: Finger minutiea type not handled based on the requirement
 		String typeForIdName = idInfoFetcher.getTypeForIdName(idName, idMappings).orElse("");
 		long type = 0L;
+		SingleType singleType = null;
 		if(typeForIdName.equalsIgnoreCase(SingleType.FINGER.value())) {
-			type = CbeffConstant.FORMAT_TYPE_FINGER; 
+			type = CbeffConstant.FORMAT_TYPE_FINGER;
+			singleType = SingleType.FINGER;
 		} else if(typeForIdName.equalsIgnoreCase(SingleType.IRIS.value())) {
-			type = CbeffConstant.FORMAT_TYPE_IRIS; 
+			type = CbeffConstant.FORMAT_TYPE_IRIS;
+			singleType = SingleType.IRIS;
 		} else if(typeForIdName.equalsIgnoreCase(SingleType.FACE.value())) {
-			type = CbeffConstant.FORMAT_TYPE_FACE; 
+			type = CbeffConstant.FORMAT_TYPE_FACE;
+			singleType = SingleType.FACE;
 		}
-		//Note: Finger minutiea type not handled based on the requirement
-		return String.valueOf(type);
+		
+		return new SimpleEntry<>(singleType, String.valueOf(type));
 	}
 
 	/**
