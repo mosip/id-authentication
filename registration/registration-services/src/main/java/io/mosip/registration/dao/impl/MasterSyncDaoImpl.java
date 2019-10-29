@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.ProcessListDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.dto.mastersync.RegisteredDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDeviceDto;
@@ -86,6 +88,7 @@ import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegMachineSpec;
+import io.mosip.registration.entity.RegisteredDevice;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
 import io.mosip.registration.entity.ScreenAuthorization;
@@ -127,6 +130,7 @@ import io.mosip.registration.repositories.MachineTypeRepository;
 import io.mosip.registration.repositories.ProcessListRepository;
 import io.mosip.registration.repositories.ReasonCategoryRepository;
 import io.mosip.registration.repositories.ReasonListRepository;
+import io.mosip.registration.repositories.RegisteredDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
@@ -305,6 +309,11 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync screen auth Repository. */
 	@Autowired
 	private SyncJobDefRepository syncJobDefRepository;
+	
+	/** Object for Registered device Repository. */
+	@Autowired
+	private RegisteredDeviceRepository registeredDeviceRepository;
+
 	/**
 	 * logger for logging
 	 */
@@ -391,6 +400,9 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<ProcessListDto> processLst = masterSyncDto.getProcessList();
 		List<ScreenDetailDto> screenDetailList = masterSyncDto.getScreenDetails();
 		List<SyncJobDefDto> syncJobDefList = masterSyncDto.getSyncJobDefinitions();
+		List<RegisteredDeviceDto> registeredDeviceDetails = masterSyncDto.getRegisteredDevices();
+		
+
 		String sucessResponse = null;
 
 		try {
@@ -603,6 +615,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<SyncJobDef> masterSyncControlList = MetaDataUtils.setCreateMetaData(syncJobDefList, SyncJobDef.class);
 			syncJobDefRepository.saveAll(masterSyncControlList);
+			
+			List<RegisteredDevice> registeredDeviceList = MetaDataUtils.setCreateMetaData(registeredDeviceDetails, RegisteredDevice.class);
+			registeredDeviceRepository.saveAll(registeredDeviceList);
+
 
 			sucessResponse = RegistrationConstants.SUCCESS;
 

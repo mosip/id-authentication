@@ -1,16 +1,10 @@
 package io.mosip.registration.validator;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FACE_FACADE;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_FACADE;
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACADE;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_VALIDATOR;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,12 +27,10 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-import io.mosip.registration.service.bio.BioService;
 
 /**
  * This class will take the Iris details from the DB and validate against the
@@ -142,7 +134,7 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 		}
 		try {
 			scores = ibioApi.match(capturedBir, registeredBir, null);
-			int faceScore = 80;
+			int faceScore = 90;
 			for (Score score : scores) {
 				if (score.getInternalScore() >= faceScore) {
 					flag = true;

@@ -325,10 +325,11 @@ public class SessionContext {
 	 *            - Authentication validator should contain user id
 	 * 
 	 * @return boolean
+	 * @throws IOException 
+	 * @throws RegBaseCheckedException 
 	 */
-	private static boolean validateIris(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+	private static boolean validateIris(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException, IOException {
 		BioService bioService = applicationContext.getBean(BioService.class);
-		try {
 			if(bioService.validateIris(bioService.getIrisAuthenticationDto(authenticationValidatorDTO.getUserId(), new RequestDetail(RegistrationConstants.IRIS_DOUBLE,
 				(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT),
 				2, (String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.IRIS_THRESHOLD), null)))) {
@@ -342,9 +343,7 @@ public class SessionContext {
 				sessionContext = null;
 				return false;
 			}
-		} catch (RegBaseCheckedException | IOException exception) {
-			return false;
-		}
+		
 	}
 	
 	/**
@@ -359,26 +358,26 @@ public class SessionContext {
 	 *            - Authentication validator should contain user id
 	 * 
 	 * @return boolean
+	 * @throws IOException 
+	 * @throws RegBaseCheckedException 
 	 */
-	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) throws RegBaseCheckedException, IOException {
 		BioService bioService = applicationContext.getBean(BioService.class);
-		try {
-			if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId(),new RequestDetail(RegistrationConstants.FACE_FULLFACE,
-					(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
-					(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.FACE_THRESHOLD), null)))) {
-				createSessionContext();
-				SessionContext.authTokenDTO().setLoginMode(loginMethod);
-				validAuthModes.add(loginMethod);
-				createSecurityContext(userDTO);	
-				return true;
-			} else {
-				validAuthModes.remove(loginMethod);
-				sessionContext = null;
-				return false;
-			}
-		} catch (Exception exception) {
-			return false;
-		}
+				if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId(),new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+						(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+						(String) io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.FACE_THRESHOLD), null)))) {
+					createSessionContext();
+					SessionContext.authTokenDTO().setLoginMode(loginMethod);
+					validAuthModes.add(loginMethod);
+					createSecurityContext(userDTO);	
+					return true;
+				} else {
+					validAuthModes.remove(loginMethod);
+					sessionContext = null;
+					return false;
+				}
+			
+		
 	}
 
 	/**

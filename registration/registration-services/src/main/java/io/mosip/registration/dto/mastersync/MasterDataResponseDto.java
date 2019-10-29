@@ -56,6 +56,8 @@ public class MasterDataResponseDto {
 	private List<ProcessListDto> processList;
 	private List<SyncJobDefDto> syncJobDefinitions;
 	private List<ScreenDetailDto> screenDetails;
+	private List<RegisteredDeviceDto> registeredDevices;
+
 
 	/**
 	 * @return the syncJobDefinitions
@@ -614,5 +616,14 @@ public class MasterDataResponseDto {
 	public void setLanguages(List<LanguageDto> languages) {
 		this.languages = languages;
 	}
+	
+	public List<RegisteredDeviceDto> getRegisteredDevices() {
+		return registeredDevices;
+	}
+	
+	public void setRegisteredDevices(List<RegisteredDeviceDto> registeredDeviceDtos) {
+		this.registeredDevices = registeredDeviceDtos;
+	}
+
 
 }

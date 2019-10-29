@@ -137,7 +137,7 @@ public interface BioService {
 	 * @param userId            - the user ID
 	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
 	 */
-	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail);
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
 	/**
 	 * Gets the iris stub image as DTO.
 	 *

@@ -30,6 +30,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dao.impl.RegisteredDeviceDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.dto.BioDevice;
@@ -215,6 +216,9 @@ public class MosipBioDeviceManager {
 		return hostProtocol + "://" + host;
 	}
 
+	@Autowired
+	RegisteredDeviceDAO registeredDeviceDAO;
+	
 	/**
 	 * Triggers the biometric capture based on the device type and returns the
 	 * biometric value from MDM
@@ -229,10 +233,16 @@ public class MosipBioDeviceManager {
 	public CaptureResponseDto scan(RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
 
 		BioDevice bioDevice = findDeviceToScan(requestDetail.getType());
+		
 		if (bioDevice != null) {
-			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+			
+			if(registeredDeviceDAO.getRegisteredDevices(bioDevice.getDeviceId()).size()>0) {
+			
+				LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device found in the device registery");
-			return bioDevice.capture(requestDetail);
+				return bioDevice.capture(requestDetail);
+			}
+			throw new RegBaseCheckedException("101", "");
 		} else {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device not found in the device registery");

@@ -129,7 +129,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			captureResponseDto = mosipBioDeviceManager.authScan(requestDetail);
 			if (captureResponseDto == null)
 				throw new RegBaseCheckedException("202", "Decice is not available");
-			if (captureResponseDto.getError().getErrorCode().matches("202|403|404|409"))
+			if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
 				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
 						captureResponseDto.getError().getErrorInfo());
 			captureResponseData = captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
@@ -250,7 +250,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
 		if (captureResponseDto == null)
 			throw new RegBaseCheckedException("202", "Decice is not available");
-		if (captureResponseDto.getError().getErrorCode().matches("202|403|404|409"))
+		if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
 					captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
@@ -543,6 +543,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.authScan(requestDetail);
+			if (captureResponseDto == null)
+				throw new RegBaseCheckedException("202", "Decice is not available");
+			if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
+				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
+						captureResponseDto.getError().getErrorInfo());
 			capturedByte = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
 			return capturedByte;
 		} else
@@ -570,15 +575,17 @@ public class BioServiceImpl extends BaseService implements BioService {
 		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
 	}
 
-	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail) {
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
 		CaptureResponseDto captureResponseDto=null;
-		try {
 			captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
-		} catch (RegBaseCheckedException | IOException e) {
-			e.printStackTrace();
-		}
+			if (captureResponseDto == null)
+				throw new RegBaseCheckedException("202", "Decice is not available");
+			if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
+				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
+						captureResponseDto.getError().getErrorInfo());
+		
 		byte[] faceBytes = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
 		if (null != faceBytes) {
 			faceDetailsDTO.setFaceISO(faceBytes);
@@ -628,7 +635,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
 		if (captureResponseDto == null)
 			throw new RegBaseCheckedException("202", "Device is not available");
-		if (captureResponseDto.getError().getErrorCode().matches("202|403|404|409"))
+		if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
 					captureResponseDto.getError().getErrorInfo());
 

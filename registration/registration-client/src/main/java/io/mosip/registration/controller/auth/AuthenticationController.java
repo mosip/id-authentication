@@ -145,7 +145,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	private Button faceScanBtn;
 	@FXML
 	private ImageView faceScanImageView;
-	
+
 	@Autowired
 	private PacketHandlerController packetHandlerController;
 
@@ -193,7 +193,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				Components.REG_OS_AUTH, otpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-				"Generate OTP for OTP based Authentication");		
+				"Generate OTP for OTP based Authentication");
 
 		if (!otpUserId.getText().isEmpty()) {
 			// Response obtained from server
@@ -231,7 +231,7 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
-		
+
 		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId(), true)) {
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
@@ -346,9 +346,11 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
 					try {
-						if (captureAndValidateFP(fpUserId.getText(), new RequestDetail("Staging","Registration",RegistrationConstants.FINGERPRINT_SLAB_LEFT, 
-								(String) getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
-								"60", Arrays.asList("LF_LITTLE","LF_RING","LF_MIDDLE")))) {
+						if (captureAndValidateFP(fpUserId.getText(),
+								new RequestDetail("Staging", "Registration",
+										RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+										(String) getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT),
+										1, "60", Arrays.asList("LF_LITTLE", "LF_RING", "LF_MIDDLE")))) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = fpUserId.getText();
 							if (!isEODAuthentication) {
@@ -358,8 +360,8 @@ public class AuthenticationController extends BaseController implements Initiali
 						} else {
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 						}
-					} catch (RegBaseCheckedException | IOException e) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
+					} catch (RegBaseCheckedException | IOException exception) {
+						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
@@ -376,7 +378,9 @@ public class AuthenticationController extends BaseController implements Initiali
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 				}
 			} catch (RegBaseCheckedException | IOException exception) {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)
+								+ RegistrationConstants.UNDER_SCORE + RegistrationConstants.MESSAGE.toUpperCase()));
 			}
 		}
 	}
@@ -409,7 +413,7 @@ public class AuthenticationController extends BaseController implements Initiali
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
 						}
 					} catch (RegBaseCheckedException | IOException exception) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
+						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
@@ -431,22 +435,24 @@ public class AuthenticationController extends BaseController implements Initiali
 		}
 	}
 
-	
 	@FXML
 	private ImageView faceImage;
-	
+
 	@Autowired
 	private Streamer streamer;
-	
+
 	@FXML
 	private void startStream() {
 		streamer.startStream(new RequestDetail(RegistrationConstants.FACE_FULLFACE,
-				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1,
 				getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null), faceImage, null);
 	}
-	
+
 	/**
 	 * to validate the face in case of face based authentication
+	 * 
+	 * @throws IOException
+	 * @throws RegBaseCheckedException
 	 */
 	public void validateFace() {
 
@@ -457,34 +463,40 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Face for Face based Authentication");
-
-		if (isSupervisor) {
-			if (!faceUserId.getText().isEmpty()) {
-				if (fetchUserRole(faceUserId.getText())) {
-					if (captureAndValidateFace(faceUserId.getText())) {
-						userAuthenticationTypeListValidation.remove(0);
-						userNameField = faceUserId.getText();
-						if (!isEODAuthentication) {
-							getOSIData().setSupervisorID(userNameField);
+		try {
+			if (isSupervisor) {
+				if (!faceUserId.getText().isEmpty()) {
+					if (fetchUserRole(faceUserId.getText())) {
+						if (captureAndValidateFace(faceUserId.getText())) {
+							userAuthenticationTypeListValidation.remove(0);
+							userNameField = faceUserId.getText();
+							if (!isEODAuthentication) {
+								getOSIData().setSupervisorID(userNameField);
+							}
+							loadNextScreen();
+						} else {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
 						}
-						loadNextScreen();
 					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+				if (captureAndValidateFace(faceUserId.getText())) {
+					userAuthenticationTypeListValidation.remove(0);
+					loadNextScreen();
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
+				}
 			}
-		} else {
-			if (captureAndValidateFace(faceUserId.getText())) {
-				userAuthenticationTypeListValidation.remove(0);
-				loadNextScreen();
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
-			}
+		} catch (RegBaseCheckedException | IOException exception) {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION,
+					RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)
+							+ RegistrationConstants.UNDER_SCORE + RegistrationConstants.MESSAGE.toUpperCase()));
 		}
+
 	}
 
 	/**
@@ -828,8 +840,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @throws IOException
 	 * @throws RegBaseCheckedException
 	 */
-	private boolean captureAndValidateFP(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
-		AuthenticationValidatorDTO  authenticationValidatorDTO = bioService.getFingerPrintAuthenticationDto(userId, requestDetail);
+	private boolean captureAndValidateFP(String userId, RequestDetail requestDetail)
+			throws RegBaseCheckedException, IOException {
+		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getFingerPrintAuthenticationDto(userId,
+				requestDetail);
 		List<FingerprintDetailsDTO> fingerPrintDetailsDTOs = authenticationValidatorDTO.getFingerPrintDetails();
 		boolean fpMatchStatus;
 		if (!isEODAuthentication) {
@@ -868,8 +882,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @throws IOException
 	 */
 	private boolean captureAndValidateIris(String userId) throws RegBaseCheckedException, IOException {
-		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getIrisAuthenticationDto(userId, new RequestDetail(RegistrationConstants.IRIS_DOUBLE
-				, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2,getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), null));
+		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getIrisAuthenticationDto(userId,
+				new RequestDetail(RegistrationConstants.IRIS_DOUBLE,
+						getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2,
+						getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), null));
 		List<IrisDetailsDTO> irisDetailsDTOs = authenticationValidatorDTO.getIrisDetails();
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
@@ -892,11 +908,14 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * 
 	 * @param userId - username entered in the textfield
 	 * @return true/false after validating face
+	 * @throws IOException
+	 * @throws RegBaseCheckedException
 	 */
-	private boolean captureAndValidateFace(String userId) {
-		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getFaceAuthenticationDto(userId, new RequestDetail(RegistrationConstants.FACE_FULLFACE,
-				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
-				getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null));
+	private boolean captureAndValidateFace(String userId) throws RegBaseCheckedException, IOException {
+		AuthenticationValidatorDTO authenticationValidatorDTO = bioService.getFaceAuthenticationDto(userId,
+				new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+						getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1,
+						getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null));
 		FaceDetailsDTO faceDetailsDTO = authenticationValidatorDTO.getFaceDetail();
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
@@ -971,9 +990,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		setImageOnHover();	
-		
+
+		setImageOnHover();
+
 		irisImageView.setImage(
 				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		int otpExpirySeconds = Integer
