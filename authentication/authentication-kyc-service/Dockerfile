@@ -27,4 +27,16 @@ ADD target/authentication-kyc-service-*.jar authentication-kyc-service.jar
 
 EXPOSE 8091
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "-Dcom.sun.management.jmxremote=true", "-Dcom.sun.management.jmxremote.rmi.port=8190" , "-Dcom.sun.management.jmxremote.port=8190", "-Dcom.sun.management.jmxremote.ssl=false" ,"-Dcom.sun.management.jmxremote.authenticate=false",  "-Dcom.sun.management.jmxremote.local.only=false", "-Djava.rmi.server.hostname=13.71.81.26", "-Dcom.sun.management.jmxremote.local.only=false", "authentication-kyc-service.jar"]
+CMD if [ "$active_profile_env" = "preprod" ]; then \
+    wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
+    apt-get update && apt-get install -y unzip ; \
+    unzip glowroot.zip ; \
+    rm -rf glowroot.zip ; \
+    
+    sed -i 's/<service_name>/authentication-kyc-service/g' glowroot/glowroot.properties ; \
+    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.rmi.port=8190 -Dcom.sun.management.jmxremote.port=8190 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Djava.rmi.server.hostname=13.71.81.26 -Dcom.sun.management.jmxremote.local.only=false authentication-kyc-service.jar ; \
+    else \
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.rmi.port=8190 -Dcom.sun.management.jmxremote.port=8190 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Djava.rmi.server.hostname=13.71.81.26 -Dcom.sun.management.jmxremote.local.only=false authentication-kyc-service.jar ; \
+    fi
+
+#CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "-Dcom.sun.management.jmxremote=true", "-Dcom.sun.management.jmxremote.rmi.port=8190" , "-Dcom.sun.management.jmxremote.port=8190", "-Dcom.sun.management.jmxremote.ssl=false" ,"-Dcom.sun.management.jmxremote.authenticate=false",  "-Dcom.sun.management.jmxremote.local.only=false", "-Djava.rmi.server.hostname=13.71.81.26", "-Dcom.sun.management.jmxremote.local.only=false", "authentication-kyc-service.jar"]
