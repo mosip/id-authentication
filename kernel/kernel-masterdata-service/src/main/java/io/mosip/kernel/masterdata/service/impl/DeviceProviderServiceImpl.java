@@ -239,6 +239,8 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		if (!serviceErrors.isEmpty()) {
 			throw new ValidationException(serviceErrors);
+		}else {
+			serviceErrors=null;
 		}
 
 	}
@@ -312,6 +314,8 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		if (!serviceErrors.isEmpty()) {
 			throw new ValidationException(serviceErrors);
+		}else {
+			serviceErrors=null;
 		}
 		
 	}
@@ -326,7 +330,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 		if (deviceServiceHistory.isEmpty()) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorMessage());
 		}
@@ -345,11 +349,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 
 		if (registeredDeviceHistory == null) {
-			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorMessage());
 		}
 		if (!registeredDeviceHistory.getStatusCode().equalsIgnoreCase(REGISTERED)) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorMessage());
 		}
@@ -368,7 +372,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 		if (deviceProviderHistory == null) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 		}
@@ -381,25 +385,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
-	private boolean checkMappingBetweenProviderAndDeviceCodeHistory(String providerId, String deviceCode,
-			LocalDateTime effDateTime) {
-		RegisteredDeviceHistory registeredDeviceHistory = null;
-		try {
-			registeredDeviceHistory = registeredDeviceHistoryRepository
-					.findRegisteredDeviceHistoryByIdProviderIdAndEffTimes(deviceCode, providerId, effDateTime);
-		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
-		}
-
-		if (registeredDeviceHistory == null) {
-			throw new DataNotFoundException(
-					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode(),
-					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage());
-		}
-
-		return true;
-	}
+	
 
 	/*
 	 * (non-Javadoc)
