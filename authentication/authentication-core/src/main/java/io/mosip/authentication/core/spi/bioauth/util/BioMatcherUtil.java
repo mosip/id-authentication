@@ -54,7 +54,7 @@ public class BioMatcherUtil {
 	private IBioApi irisApi;
 	
 	@Autowired(required = false)
-	@Qualifier("composite.biometrics")
+	@Qualifier("composite")
 	private IBioApi compositeBiometricApi;
 
 	@Autowired

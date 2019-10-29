@@ -111,7 +111,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 		return getBiometricProvider(IRIS_PROVIDER, "iris", this::isIrisAuthEnabled);
 	}
 	
-	@Bean("composite.biometrics")
+	@Bean("composite")
 	public IBioApi compositeBiometricProvider() throws IdAuthenticationAppException {
 		return getBiometricProvider(COMPOSITE_BIO_PROVIDER, "CompositBiometrics", 
 					() -> this.isFingerAuthEnabled() || this.isIrisAuthEnabled() || this.isFaceAuthEnabled());
