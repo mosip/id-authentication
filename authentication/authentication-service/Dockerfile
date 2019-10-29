@@ -39,4 +39,16 @@ RUN rm -rf so-files.zip
 EXPOSE 8090
 RUN ls -la
 RUN ls -la so-files/
-CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "authentication-service.jar"]
+
+CMD if [ "$active_profile_env" = "preprod" ]; then \
+    wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
+    apt-get update && apt-get install -y unzip ; \
+    unzip glowroot.zip ; \
+    rm -rf glowroot.zip ; \
+    
+    sed -i 's/<service_name>/authentication-service/g' glowroot/glowroot.properties ; \
+    java -Dloader.path=/tech5-sdk-v1.5.1.jar /ABISTech5FaceSDKAdapter_v2.jar /t5-finger-iris-mosip-auth-v1.2.jar -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
+    else \
+    java -Dloader.path=/tech5-sdk-v1.5.1.jar /ABISTech5FaceSDKAdapter_v2.jar /t5-finger-iris-mosip-auth-v1.2.jar -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
+    fi
+#CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "authentication-service.jar"]
