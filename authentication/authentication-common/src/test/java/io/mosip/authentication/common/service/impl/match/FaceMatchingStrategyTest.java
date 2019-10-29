@@ -68,7 +68,7 @@ public class FaceMatchingStrategyTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		matchProperties.put(IdaIdMapping.FACE.getIdname(),
-				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 100.00);
+				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double>) (o1, o2, o3) -> 100.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(100, value);
 	}
@@ -84,7 +84,7 @@ public class FaceMatchingStrategyTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		matchProperties.put(IdaIdMapping.FACE.getIdname(),
-				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 0.00);
+				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, String>, Double>) (o1, o2, o3) -> 0.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}

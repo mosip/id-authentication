@@ -151,7 +151,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -199,7 +199,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Left_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -258,7 +258,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Right_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -630,7 +630,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", value1);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo authenticate = bioAuthServiceImpl.authenticate(authRequestDTO, individualId, bioIdentity,
 				"1234567890");
 		assertTrue(authenticate.isStatus());
@@ -727,7 +727,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Left_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -777,7 +777,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -825,7 +825,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -919,7 +919,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -975,7 +975,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -1044,7 +1044,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}

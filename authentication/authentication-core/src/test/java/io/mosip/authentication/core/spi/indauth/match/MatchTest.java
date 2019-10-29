@@ -258,11 +258,6 @@ public class MatchTest {
 				return null;
 			}
 
-			@Override
-			public Optional<String> getTypeForIdName(String idName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
 		};
 		String name = "name";
 		IdMapping[] authTypes = new IdMapping[] { idMapping };

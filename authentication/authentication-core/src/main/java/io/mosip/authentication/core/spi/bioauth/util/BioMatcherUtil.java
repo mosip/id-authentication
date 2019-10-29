@@ -91,7 +91,7 @@ public class BioMatcherUtil {
 			try {
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"entityBIR size >>>" + entityBIR.length);
-				match = getBioSdkInstance(reqInfo.get(CbeffConstant.class.getName())).match(reqBIR.get(), entityBIR, null);
+				match = getBioSdkInstance(reqBIR.get().getBdbInfo().getFormat().getType()).match(reqBIR.get(), entityBIR, null);
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"match size >>>" + match.length);
 				Arrays.asList(match).stream().forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA",

@@ -44,6 +44,7 @@ public enum BioAuthType implements AuthType {
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 				valueMap.put(BioAuthType.class.getSimpleName(), this);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
 			}
 			return valueMap;
 		}
@@ -69,6 +70,7 @@ public enum BioAuthType implements AuthType {
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 				valueMap.put(BioAuthType.class.getSimpleName(), this);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
 			}
 			return valueMap;
 		}
@@ -90,6 +92,7 @@ public enum BioAuthType implements AuthType {
 				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
 			}
 			return valueMap;
 		}
@@ -118,6 +121,7 @@ public enum BioAuthType implements AuthType {
 				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
 			}
 			return valueMap;
 		}
@@ -144,6 +148,7 @@ public enum BioAuthType implements AuthType {
 				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchMultiValue;
 				valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
 			}
 			return valueMap;
 		}
@@ -171,6 +176,7 @@ public enum BioAuthType implements AuthType {
 				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
 			}
 			return valueMap;
 		}
@@ -197,6 +203,7 @@ public enum BioAuthType implements AuthType {
 				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
 						.getBioMatcherUtil()::matchValue;
 				valueMap.put(IdaIdMapping.FACE.getIdname(), func);
+				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values()); 
 			}
 			return valueMap;
 

@@ -65,7 +65,7 @@ public class IrirsMatchingStrategyTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		matchProperties.put(IdaIdMapping.IRIS.getIdname(),
-				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 0.00);
+				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, String>, Double>) (o1, o2, o3) -> 0.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}
