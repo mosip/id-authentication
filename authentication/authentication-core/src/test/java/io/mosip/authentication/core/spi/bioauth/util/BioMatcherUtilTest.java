@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.Before;
@@ -24,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
@@ -31,6 +33,7 @@ import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -68,7 +71,10 @@ public class BioMatcherUtilTest {
 		score.setInternalScore(90);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, Collections.emptyMap());
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(90.0, matchValue));
 	}
 
@@ -81,7 +87,10 @@ public class BioMatcherUtilTest {
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, invalidMap, Collections.emptyMap());
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, invalidMap, properties);
 		assertNotEquals("90.0", matchValue);
 	}
 
@@ -91,7 +100,10 @@ public class BioMatcherUtilTest {
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, Collections.emptyMap());
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(0, matchValue));
 	}
 
@@ -101,7 +113,10 @@ public class BioMatcherUtilTest {
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, Collections.emptyMap());
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		
 		assertEquals(0, (int)matchValue);
 	}

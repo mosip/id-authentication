@@ -24,7 +24,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
-	private static final int FINGERPRINT_COUNT = 2;
+	private static final int FINGERPRINT_COUNT = 10;
 
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
