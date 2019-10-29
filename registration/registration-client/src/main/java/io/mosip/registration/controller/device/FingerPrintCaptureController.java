@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -1118,6 +1119,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		ImageView imageView = fingerImageView;
 		Label qualityScoreLabel = scoreLabel;
+		
+		List<FingerprintDetailsDTO> tempSegmentedFpDetailsDtos = new LinkedList<>();
+		
 		if (fingerprintDetailsDTOs != null) {
 
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
@@ -1130,6 +1134,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 								.getSegmentedFingerprints()) {
 							if (segmentedfpDetailsDTO.getFingerType().replaceAll(RegistrationConstants.SPACE, RegistrationConstants.EMPTY).toUpperCase().equals(path[3].toUpperCase())) {
 								fingerprintDetailsDTO.getSegmentedFingerprints().remove(segmentedfpDetailsDTO);
+								
+								tempSegmentedFpDetailsDtos.add(segmentedfpDetailsDTO);
+								
 								break;
 							}
 						}
@@ -1150,10 +1157,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
 		} catch ( RegBaseCheckedException| IOException exception) {
 			streamer.stop();
+			
+//fingerprintDetailsDTOs.remove(detailsDTO);
+			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
+				if (fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
+					fingerprintDetailsDTO.getSegmentedFingerprints().addAll(tempSegmentedFpDetailsDtos);
+				}
+				
+				}
+			
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
 							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
-			fingerprintDetailsDTOs.remove(detailsDTO);
+			
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
 			return;
 		}
@@ -1586,7 +1602,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					fingerType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
 				}
 			}
-			return fingerprint.getFingerType().contains(fingerType);
+			return fingerprint.getFingerType()!=null ? fingerprint.getFingerType().contains(fingerType) :  false;
 		});
 	}
 
