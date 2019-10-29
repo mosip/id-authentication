@@ -515,6 +515,10 @@ public class IrisCaptureController extends BaseController {
 				streamer.stop();
 			} catch (RegBaseCheckedException | IOException runtimeException) {
 				streamer.stop();
+				
+				getIrises().add(leftTempIrisDetail);
+				getIrises().add(rightTempIrisDetail);
+				
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
@@ -600,15 +604,7 @@ public class IrisCaptureController extends BaseController {
 		} finally {
 			selectedIris.requestFocus();
 
-			if (null == getIrises().stream().filter((iris) -> iris.getIrisType().contains(RegistrationConstants.LEFT))
-					.findFirst().get()) {
-				getIrises().add(leftTempIrisDetail);
-			}
-
-			if (null == getIrises().stream().filter((iris) -> iris.getIrisType().contains(RegistrationConstants.RIGHT))
-					.findFirst().get()) {
-				getIrises().add(rightTempIrisDetail);
-			}
+			
 		}
 	}
 
