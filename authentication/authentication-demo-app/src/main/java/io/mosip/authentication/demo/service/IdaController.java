@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -20,9 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -57,7 +51,6 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -82,6 +75,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 
 /**
  * The Class IdaController.
@@ -143,6 +137,7 @@ public class IdaController {
 
 	@FXML
 	private void initialize() {
+		responsetextField.setText(null);
 		ObservableList<String> idTypeChoices = FXCollections.observableArrayList("UIN", "VID", "USERID");
 		count.setValue("1");
 		idTypebox.setItems(idTypeChoices);
@@ -154,6 +149,7 @@ public class IdaController {
 
 	@FXML
 	private void onFingerPrintAuth() {
+		responsetextField.setText(null);
 		if (fingerAuthType.isSelected()) {
 			bioAnchorPane.setDisable(false);
 		} else {
@@ -167,6 +163,7 @@ public class IdaController {
 
 	@FXML
 	private void onIrisAuth() {
+		responsetextField.setText(null);
 		if (irisAuthType.isSelected()) {
 			bioAnchorPane.setDisable(false);
 		} else {
@@ -179,19 +176,24 @@ public class IdaController {
 
 	@FXML
 	private void onOTPAuth() {
+		responsetextField.setText(null);
 		otpAnchorPane.setDisable(!otpAnchorPane.isDisable());
 	}
 
 	@FXML
 	private void onIdTypeChange() {
+		responsetextField.setText(null);
 	}
 
 	@FXML
 	private void onSubTypeSelection() {
+		responsetextField.setText(null);
 	}
 
 	@FXML
-	private void onCapture() {
+	private void onCapture() throws Exception {
+		responsetextField.setText("capturing...");
+		responsetextField.setFont(Font.font("Times New Roman", javafx.scene.text.FontWeight.EXTRA_BOLD, 20));
 		if (fingerAuthType.isSelected()) {
 			capture = captureFingerprint();
 		} else if (irisAuthType.isSelected()) {
@@ -199,15 +201,15 @@ public class IdaController {
 		}
 	}
 
-	private String captureFingerprint() {
+	private String captureFingerprint() throws Exception {
 		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"FIR\",\"count\":"
 				+ count.getValue()
-				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"bc0b6848-6d45-46d1-a9bd-b334410bf823\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("finger.deviceId") + "\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 
 		return capturebiometrics(requestBody);
 	}
 
-	private String capturebiometrics(String requestBody) {
+	private String capturebiometrics(String requestBody) throws Exception {
 		CloseableHttpClient client = HttpClients.createDefault();
 		StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
 		HttpUriRequest request = RequestBuilder.create("CAPTURE").setUri("http://127.0.0.1:4501/capture")
@@ -227,19 +229,30 @@ public class IdaController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return stringBuilder.toString();
+		String result = stringBuilder.toString();
+		String error = ((Map) mapper.readValue(result, Map.class).get("error")).get("errorCode").toString();
+		if (error.equals("0")) {
+			responsetextField.setText("Capture Success");
+		} else {
+			responsetextField.setText("Capture Failed");
+		}
+		System.out.println(result);
+		return result;
 	}
 
-	private String captureIris() {
+	private String captureIris() throws Exception {
 		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
 				+ count.getValue()
-				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"ceec5f62-77b7-46f3-816b-3e734305a9c8\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
-		return capturebiometrics(requestBody);
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("iris.deviceId") + "\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+		Map irisData = mapper.readValue(capturebiometrics(requestBody), Map.class);
+		((List) irisData.get("biometrics")).remove(1);
+		return mapper.writeValueAsString(irisData);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@FXML
 	private void onRequestOtp() {
+		responsetextField.setText(null);
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		otpRequestDTO.setId("mosip.identity.otp");
 		otpRequestDTO.setIndividualId(idValue.getText());
@@ -264,8 +277,9 @@ public class IdaController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
-	private void onSendAuthRequest() {
-		responsetextField.setText("");
+	private void onSendAuthRequest() throws Exception {
+		responsetextField.setText(null);
+		responsetextField.setText("Preparing Auth Request...");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -284,38 +298,20 @@ public class IdaController {
 			requestDTO.setOtp(otpValue.getText());
 		}
 		Map<String, Object> identityBlock = mapper.convertValue(requestDTO, Map.class);
-		// if (fingerAuthType.isSelected()) {
-		// try {
-		// Map<String, Object> identityResponse =
-		// mapper.readValue(getFingerprintValue(), Map.class);
-		// List<Map<String, Object>> biometrics = (List<Map<String, Object>>)
-		// identityResponse.get("biometrics");
-		//
-		// // Workaround for bioType missing issue
-		// for (Map<String, Object> bio : biometrics) {
-		// String dataStr = (String) bio.get("data");
-		// Map<String, Object> dataMap =
-		// mapper.readValue(CryptoUtil.decodeBase64(dataStr), Map.class);
-		// dataMap.put("bioType", "FIR");
-		// dataMap.put("bioSubType", "LEFT_THUMB");
-		//
-		// String jsonData = mapper.writeValueAsString(dataMap);
-		// bio.put("data", CryptoUtil.encodeBase64String(jsonData.getBytes()));
-		// }
-		// // System.err.println(biometrics);
-		// // System.err.println(new String(CryptoUtil.decodeBase64((String)
-		// // biometrics.get(0).get("data"))));
-		// identityBlock.replace("biometrics", biometrics);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		// }
-
-		System.err.println("******* Request ************ " + identityBlock);
+		identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
+		responsetextField.setText("Encrypting Auth Request...");
+		System.err.println("******* Request before encryption ************ \n\n");
+		System.err.println(identityBlock);
 		EncryptionRequestDto encryptionRequestDto = new EncryptionRequestDto();
 		encryptionRequestDto.setIdentityRequest(identityBlock);
-		EncryptionResponseDto kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
-
+		EncryptionResponseDto kernelEncrypt = null;
+		try {
+			kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
+			responsetextField.setText("Encryption successful...Authenticating");
+		} catch (Exception e) {
+			e.printStackTrace();
+			responsetextField.setText("Encryption of Auth Request Failed");
+		}
 		// Set request block
 		authRequestDTO.setRequest(requestDTO);
 
@@ -329,60 +325,48 @@ public class IdaController {
 		authRequestMap.replace("request", kernelEncrypt.getEncryptedIdentity());
 		authRequestMap.replace("requestSessionKey", kernelEncrypt.getEncryptedSessionKey());
 		authRequestMap.replace("requestHMAC", kernelEncrypt.getRequestHMAC());
-		try {
-			RestTemplate restTemplate = createTemplate();
-			HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
-			ResponseEntity<Map> authResponse = restTemplate.exchange(
-					env.getProperty("ida.auth.url",
-							"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
-					HttpMethod.POST, httpEntity, Map.class);
-			if (authResponse.getStatusCode().is2xxSuccessful()) {
-				boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response"))
-						.get("authStatus");
-				String response = status ? "Success" : "Failure";
-				if (status) {
-					responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
-				} else {
-					responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
-				}
-				responsetextField.setText(response);
+		RestTemplate restTemplate = createTemplate();
+		HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
+		ResponseEntity<Map> authResponse = restTemplate.exchange(
+				env.getProperty("ida.auth.url",
+						"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
+				HttpMethod.POST, httpEntity, Map.class);
+		if (authResponse.getStatusCode().is2xxSuccessful()) {
+			boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response")).get("authStatus");
+			String response = status ? "Authentication Success" : "Authentication Failed";
+			if (status) {
+				responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
 			} else {
-				responsetextField.setText("Error");
 				responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 			}
-			// System.out.println(identityBlock);
-			System.err.println(authResponse.getBody());
-
-			System.err.println("Auth Request : " + authRequestMap);
-		} catch (KeyManagementException | NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			responsetextField.setText(response);
+		} else {
+			responsetextField.setText("Authentication Failed with Error");
+			responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 		}
+		System.out.println(identityBlock);
+		System.err.println(authResponse.getBody());
+
+		System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
 	}
 
-	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal) {
+	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
+			throws Exception {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
-		try {
-			String identityBlock = mapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
+		String identityBlock = mapper.writeValueAsString(encryptionRequestDto.getIdentityRequest());
 
-			CryptoUtility cryptoUtil = new CryptoUtility();
-			SecretKey secretKey = cryptoUtil.genSecKey();
+		SecretKey secretKey = cryptoUtil.genSecKey();
 
-			byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
-			encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
-			String publicKeyStr = getPublicKey(identityBlock, isInternal);
-			PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
-					.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
-			byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
-			encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
-			byte[] byteArr = cryptoUtil.symmetricEncrypt(
-					HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes(),
-					secretKey);
-			encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
-		} catch (JsonProcessingException | NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
-				| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
-				| KeyManagementException | RestClientException | InvalidKeySpecException e) {
-			e.printStackTrace();
-		}
+		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
+		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
+		String publicKeyStr = getPublicKey(identityBlock, isInternal);
+		PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
+				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
+		byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
+		encryptionResponseDto.setEncryptedSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
+		byte[] byteArr = cryptoUtil.symmetricEncrypt(
+				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes(), secretKey);
+		encryptionResponseDto.setRequestHMAC(Base64.encodeBase64URLSafeString(byteArr));
 		return encryptionResponseDto;
 	}
 
@@ -469,6 +453,9 @@ public class IdaController {
 				throws CertificateException {
 		}
 	} };
+
+	@Autowired
+	private CryptoUtility cryptoUtil;
 
 	public static void turnOffSslChecking() throws KeyManagementException, java.security.NoSuchAlgorithmException {
 		// Install the all-trusting trust manager
