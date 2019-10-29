@@ -29,4 +29,4 @@ COPY ./target/registration-processor-registration-status-service-*.jar registrat
 EXPOSE 8083
 EXPOSE 4000
 
-CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","-javaagent:/home/Glowroot/glowroot.jar","registration-processor-registration-status-service.jar"]
+CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","registration-processor-registration-status-service.jar"]
