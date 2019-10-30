@@ -181,84 +181,37 @@ public class OSIValidatorTest {
 	public void setUp() throws Exception {
 		ReflectionTestUtils.setField(osiValidator, "ageLimit", "5");
 		ReflectionTestUtils.setField(osiValidator, "dobFormat", "yyyy/MM/dd");
+		ReflectionTestUtils.setField(osiValidator, "introducerValidation", true);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		String value = "{\r\n" + 
-				"	\"identity\": {\r\n" + 
-				"		\"name\": {\r\n" + 
-				"			\"value\": \"fullName\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"gender\": {\r\n" + 
-				"			\"value\": \"gender\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"dob\": {\r\n" + 
-				"			\"value\": \"dateOfBirth\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianRID\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianRID\"\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianUIN\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianUIN\"\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianName\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianName\"\r\n" + 
-				"		},\r\n" + 
-				"		\"poa\": {\r\n" + 
-				"			\"value\" : \"proofOfAddress\"\r\n" + 
-				"		},\r\n" + 
-				"		\"poi\": {\r\n" + 
-				"			\"value\" : \"proofOfIdentity\"\r\n" + 
-				"		},\r\n" + 
-				"		\"por\": {\r\n" + 
-				"			\"value\" : \"proofOfRelationship\"\r\n" + 
-				"		},\r\n" + 
-				"		\"pob\": {\r\n" + 
-				"			\"value\" : \"proofOfDateOfBirth\"\r\n" + 
-				"		},\r\n" + 
-				"		\"individualBiometrics\": {\r\n" + 
-				"			\"value\" : \"individualBiometrics\"\r\n" + 
-				"		},\r\n" + 
-				"		\"age\": {\r\n" + 
-				"			\"value\" : \"age\"\r\n" + 
-				"		},\r\n" + 
-				"		\"address\": {\r\n" + 
-				"			\"value\" : \"addressLine1,addressLine2,addressLine3\"\r\n" + 
-				"		},\r\n" + 
-				"		\"region\": {\r\n" + 
-				"			\"value\" : \"region\"\r\n" + 
-				"		},\r\n" + 
-				"		\"province\": {\r\n" + 
-				"			\"value\" : \"province\"\r\n" + 
-				"		},\r\n" + 
-				"		\"postalCode\": {\r\n" + 
-				"			\"value\" : \"postalCode\"\r\n" + 
-				"		},\r\n" + 
-				"		\"phone\": {\r\n" + 
-				"			\"value\" : \"phone\"\r\n" + 
-				"		},\r\n" + 
-				"		\"email\": {\r\n" + 
-				"			\"value\" : \"email\"\r\n" + 
-				"		},\r\n" + 
-				"		\"localAdministrativeAuthority\": {\r\n" + 
-				"			\"value\" : \"localAdministrativeAuthority\"\r\n" + 
-				"		},\r\n" + 
-				"		\"idschemaversion\": {\r\n" + 
-				"			\"value\" : \"IDSchemaVersion\"\r\n" + 
-				"		},\r\n" + 
-				"		\"cnienumber\": {\r\n" + 
-				"			\"value\" : \"CNIENumber\"\r\n" + 
-				"		},\r\n" + 
-				"		\"city\": {\r\n" + 
-				"			\"value\" : \"city\"\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianBiometrics\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianBiometrics\"\r\n" + 
-				"		}\r\n" + 
-				"	}\r\n" + 
-				"}";
+		String value = "{\r\n" + "	\"identity\": {\r\n" + "		\"name\": {\r\n"
+				+ "			\"value\": \"fullName\",\r\n" + "			\"isMandatory\" : true\r\n" + "		},\r\n"
+				+ "		\"gender\": {\r\n" + "			\"value\": \"gender\",\r\n"
+				+ "			\"isMandatory\" : true\r\n" + "		},\r\n" + "		\"dob\": {\r\n"
+				+ "			\"value\": \"dateOfBirth\",\r\n" + "			\"isMandatory\" : true\r\n" + "		},\r\n"
+				+ "		\"parentOrGuardianRID\": {\r\n" + "			\"value\" : \"parentOrGuardianRID\"\r\n"
+				+ "		},\r\n" + "		\"parentOrGuardianUIN\": {\r\n"
+				+ "			\"value\" : \"parentOrGuardianUIN\"\r\n" + "		},\r\n"
+				+ "		\"parentOrGuardianName\": {\r\n" + "			\"value\" : \"parentOrGuardianName\"\r\n"
+				+ "		},\r\n" + "		\"poa\": {\r\n" + "			\"value\" : \"proofOfAddress\"\r\n" + "		},\r\n"
+				+ "		\"poi\": {\r\n" + "			\"value\" : \"proofOfIdentity\"\r\n" + "		},\r\n"
+				+ "		\"por\": {\r\n" + "			\"value\" : \"proofOfRelationship\"\r\n" + "		},\r\n"
+				+ "		\"pob\": {\r\n" + "			\"value\" : \"proofOfDateOfBirth\"\r\n" + "		},\r\n"
+				+ "		\"individualBiometrics\": {\r\n" + "			\"value\" : \"individualBiometrics\"\r\n"
+				+ "		},\r\n" + "		\"age\": {\r\n" + "			\"value\" : \"age\"\r\n" + "		},\r\n"
+				+ "		\"address\": {\r\n" + "			\"value\" : \"addressLine1,addressLine2,addressLine3\"\r\n"
+				+ "		},\r\n" + "		\"region\": {\r\n" + "			\"value\" : \"region\"\r\n" + "		},\r\n"
+				+ "		\"province\": {\r\n" + "			\"value\" : \"province\"\r\n" + "		},\r\n"
+				+ "		\"postalCode\": {\r\n" + "			\"value\" : \"postalCode\"\r\n" + "		},\r\n"
+				+ "		\"phone\": {\r\n" + "			\"value\" : \"phone\"\r\n" + "		},\r\n"
+				+ "		\"email\": {\r\n" + "			\"value\" : \"email\"\r\n" + "		},\r\n"
+				+ "		\"localAdministrativeAuthority\": {\r\n"
+				+ "			\"value\" : \"localAdministrativeAuthority\"\r\n" + "		},\r\n"
+				+ "		\"idschemaversion\": {\r\n" + "			\"value\" : \"IDSchemaVersion\"\r\n" + "		},\r\n"
+				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
+				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		},\r\n"
+				+ "		\"parentOrGuardianBiometrics\": {\r\n"
+				+ "			\"value\" : \"parentOrGuardianBiometrics\"\r\n" + "		}\r\n" + "	}\r\n" + "}";
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 		Mockito.doNothing().when(description).setMessage(any());
@@ -290,7 +243,7 @@ public class OSIValidatorTest {
 		responseDTO.setAuthStatus(true);
 		authResponseDTO.setResponse(responseDTO);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-		.thenReturn(authResponseDTO);
+				.thenReturn(authResponseDTO);
 
 		Mockito.when(authUtil.authByIdAuthentication(anyString(), any(), any())).thenReturn(authResponseDTO);
 
@@ -364,13 +317,13 @@ public class OSIValidatorTest {
 		map.put("value", "biometreics");
 
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null)
-		.thenReturn(123456789).thenReturn(map);
+				.thenReturn(123456789).thenReturn(map);
 		regOsiDto.setSupervisorHashedPwd("true");
 		regOsiDto.setOfficerHashedPwd("true");
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
-		.thenReturn(userResponseDto).thenReturn(ridResponseDto1).thenReturn(idResponseDTO)
-		.thenReturn(ridResponseDto1).thenReturn(idResponseDTO);
+				.thenReturn(userResponseDto).thenReturn(ridResponseDto1).thenReturn(idResponseDTO)
+				.thenReturn(ridResponseDto1).thenReturn(idResponseDTO);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(), any())).thenReturn(regOsiDto);
 
 	}
@@ -384,7 +337,7 @@ public class OSIValidatorTest {
 	@Test
 	public void testisValidOSISuccess() throws Exception {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
@@ -399,7 +352,7 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerHashedPwd(null);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(), any())).thenReturn(regOsiDto);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
@@ -414,10 +367,10 @@ public class OSIValidatorTest {
 		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
 		userResponseDto.setResponse(userDetailsResponseDto);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
-		.thenReturn(userResponseDto);
+				.thenReturn(userResponseDto);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 		assertFalse(isValid);
@@ -431,10 +384,10 @@ public class OSIValidatorTest {
 		errors.add(error);
 		userResponseDto.setErrors(errors);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
-		.thenReturn(userResponseDto);
+				.thenReturn(userResponseDto);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 		assertFalse(isValid);
@@ -451,9 +404,9 @@ public class OSIValidatorTest {
 		errors.add(errorDTO);
 		authResponseDTO.setErrors(errors);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-		.thenReturn(authResponseDTO);
+				.thenReturn(authResponseDTO);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
@@ -464,9 +417,9 @@ public class OSIValidatorTest {
 	public void tesApisResourceAccessException() throws Exception {
 		ApisResourceAccessException apisResourceAccessException = new ApisResourceAccessException("bad request");
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
-		.thenThrow(apisResourceAccessException);
+				.thenThrow(apisResourceAccessException);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		osiValidator.isValidOSI("reg1234", registrationStatusDto);
@@ -480,9 +433,9 @@ public class OSIValidatorTest {
 		ApisResourceAccessException apisResourceAccessException = new ApisResourceAccessException("bad request",
 				httpClientErrorException);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
-		.thenThrow(apisResourceAccessException);
+				.thenThrow(apisResourceAccessException);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		osiValidator.isValidOSI("reg1234", registrationStatusDto);
@@ -496,9 +449,9 @@ public class OSIValidatorTest {
 		ApisResourceAccessException apisResourceAccessException = new ApisResourceAccessException("bad request",
 				httpServerErrorException);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
-		.thenThrow(apisResourceAccessException);
+				.thenThrow(apisResourceAccessException);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
-		.thenReturn(identity.getMetaData().get(0).getValue());
+				.thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		osiValidator.isValidOSI("reg1234", registrationStatusDto);
@@ -529,7 +482,7 @@ public class OSIValidatorTest {
 	@Test
 	public void testIntroducerDetailsNull() throws Exception {
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01")
-		.thenReturn(null).thenReturn(null);
+				.thenReturn(null).thenReturn(null);
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 		assertFalse(isValid);
 	}
@@ -568,7 +521,7 @@ public class OSIValidatorTest {
 
 		introducerRegistrationStatusDto.setStatusCode((RegistrationStatusCode.PROCESSING.toString()));
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString()))
-		.thenReturn(introducerRegistrationStatusDto);
+				.thenReturn(introducerRegistrationStatusDto);
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 		assertFalse(isValid);
 	}
@@ -588,7 +541,7 @@ public class OSIValidatorTest {
 	public void testIntroducerUINAndRIDNull() throws Exception {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(null)
-		.thenReturn(null);
+				.thenReturn(null);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 
@@ -609,7 +562,7 @@ public class OSIValidatorTest {
 		Map<String, String> map = new LinkedHashMap<>();
 		map.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(123456)
-		.thenReturn(123456).thenReturn(map).thenReturn(map);
+				.thenReturn(123456).thenReturn(map).thenReturn(map);
 		demoJson.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
 
@@ -629,7 +582,7 @@ public class OSIValidatorTest {
 		Map<String, String> map = new LinkedHashMap<>();
 		map.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(123456)
-		.thenReturn(123456).thenReturn(map).thenReturn(map);
+				.thenReturn(123456).thenReturn(map).thenReturn(map);
 		demoJson.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
 		ErrorDTO errordto = new ErrorDTO();
@@ -652,7 +605,7 @@ public class OSIValidatorTest {
 		Map<String, String> map = new LinkedHashMap<>();
 		map.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(123456)
-		.thenReturn(123456).thenReturn(map).thenReturn(map);
+				.thenReturn(123456).thenReturn(map).thenReturn(map);
 		demoJson.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
 
@@ -662,7 +615,7 @@ public class OSIValidatorTest {
 		responseDTO.setAuthStatus(false);
 		authResponseDTO1.setResponse(responseDTO);
 		Mockito.when(authUtil.authByIdAuthentication(anyString(), any(), any())).thenReturn(authResponseDTO)
-		.thenReturn(authResponseDTO1);
+				.thenReturn(authResponseDTO1);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 
@@ -677,7 +630,7 @@ public class OSIValidatorTest {
 
 		introducerRegistrationStatusDto.setStatusCode((RegistrationStatusCode.PROCESSED.toString()));
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString()))
-		.thenReturn(introducerRegistrationStatusDto);
+				.thenReturn(introducerRegistrationStatusDto);
 
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(12345);// .thenReturn(map);
 

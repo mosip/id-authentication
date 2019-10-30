@@ -766,8 +766,8 @@ public class DeviceServiceImpl implements DeviceService {
 
 		// device is not in DB
 		if (renDevices.isEmpty()) {
-			throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new RequestException(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
+					String.format(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage(), deviceId));
 		}
 
 		// check the given device and registration center zones are come under user zone

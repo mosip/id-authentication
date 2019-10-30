@@ -247,6 +247,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimeStamp);
 		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
+		//
 		syncJobDefDtos = serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
 		screenDetails = serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
 		registeredDevices = serviceHelper.getRegisteredDeviceDetails(regCenterId, lastUpdated, currentTimeStamp);
@@ -265,7 +266,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterUserMachineMappingHistoryList, registrationCenterMachineDeviceHistoryList,
 				registrationCenterDeviceHistoryList, registrationCenterMachineHistoryList, applicantValidDocumentList,
 				individualTypeList, appAuthenticationMethods, appDetails, appRolePriorities, processList,
-				screenAuthorizations, syncJobDefDtos, screenDetails, registeredDevices, deviceProviders, deviceServices,
+				screenAuthorizations, syncJobDefDtos, screenDetails,registeredDevices, deviceProviders, deviceServices,
 				ftps, deviceTypeDPMs, deviceSubTypeDPMs);
 
 		try {

@@ -112,6 +112,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Value("${mosip.kernel.uin.length}")
 	private int uinLength;
 
+	@Value("${mosip.print.uin.header.length}")
+	private int headerLength;
 	/** The Constant UIN_CARD_TEMPLATE. */
 	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
 
@@ -514,7 +516,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			List<String> subtype = new ArrayList<>();
 			byte[] photoByte = util.getImageBytes(value, FACE, subtype);
 			if (photoByte != null) {
-				int headerLength = 46;
 				DataInputStream dis = new DataInputStream(new ByteArrayInputStream(photoByte));
 				int skippedBytes = dis.skipBytes(headerLength);
 				if (skippedBytes != 0) {

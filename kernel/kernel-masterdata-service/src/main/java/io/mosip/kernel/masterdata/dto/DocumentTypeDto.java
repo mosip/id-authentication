@@ -37,9 +37,9 @@ public class DocumentTypeDto {
 	@ApiModelProperty(value = "Application description", required = false, dataType = "java.lang.String")
 	private String description;
 
-	@NotBlank
-	@Size(min = 1, max = 3)
-	@ValidLangCode
+	//@NotBlank
+	//@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String langCode;
 

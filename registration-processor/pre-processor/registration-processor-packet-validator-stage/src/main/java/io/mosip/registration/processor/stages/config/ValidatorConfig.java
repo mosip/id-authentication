@@ -30,14 +30,14 @@ import io.mosip.registration.processor.stages.utils.RestTemplateInterceptor;
 @Configuration
 public class ValidatorConfig {
 
-	private final String IDOBJECT_PROVIDER = "idobject.validator.provider";
-	
+	public static final String IDOBJECT_PROVIDER = "idobject.validator.provider";
+
 	@Autowired
 	private RestApiClient restApiClient;
-	
+
 	@Autowired
 	private Environment env;
-	
+
 	@Bean
 	public PacketValidatorStage getPacketValidatorStage() {
 		return new PacketValidatorStage();
@@ -57,24 +57,24 @@ public class ValidatorConfig {
 	public IdObjectsSchemaValidationOperationMapper getIdObjectsSchemaValidationOperationMapper() {
 		return new IdObjectsSchemaValidationOperationMapper();
 	}
-	
+
 	@Bean
 	public RestApiClient getRestApiClient() {
 		return new RestApiClient();
 	}
- 		
+
 	@Bean
 	public ApplicantTypeDocument getApplicantTypeDocument() {
 		return new ApplicantTypeDocument();
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setInterceptors(Collections.singletonList(new RestTemplateInterceptor(restApiClient)));
 		return restTemplate;
 	}
-	
+
 	@PostConstruct
 	public void validateReferenceValidator() throws ClassNotFoundException {
 		if (StringUtils.isNotBlank(env.getProperty(IDOBJECT_PROVIDER))) {
@@ -87,10 +87,9 @@ public class ValidatorConfig {
 	public IdObjectValidator referenceValidator()
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		if (StringUtils.isNotBlank(env.getProperty(IDOBJECT_PROVIDER))) {
-			return (IdObjectValidator) Class
-					.forName(env.getProperty(IDOBJECT_PROVIDER)).newInstance();
+			return (IdObjectValidator) Class.forName(env.getProperty(IDOBJECT_PROVIDER)).newInstance();
 		} else {
-			
+
 			return new IdObjectValidator() {
 
 				@Override

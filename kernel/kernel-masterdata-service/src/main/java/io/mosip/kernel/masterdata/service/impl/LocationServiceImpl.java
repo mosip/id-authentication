@@ -335,11 +335,21 @@ public class LocationServiceImpl implements LocationService {
 //					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
 //		}
 
-		if(!request.getCode().equals(languageUtils.getPrimaryLanguage()))
+//		if(!request.getLangCode().equals(languageUtils.getPrimaryLanguage()))
+//		{
+//			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
+//					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
+//							languageUtils.getPrimaryLanguage()));
+//		}
+		if(StringUtils.isNotBlank(request.getParentLocCode()))
 		{
-			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
-					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
-							languageUtils.getPrimaryLanguage()));
+			
+			List<Location> locationList = locationRepository.findByCode(request.getParentLocCode());
+			if(CollectionUtils.isEmpty(locationList))
+			{
+				throw new RequestException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
+						LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
+			}
 		}
 //		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
 //		if (levels.size() > 1) {
@@ -750,7 +760,7 @@ public class LocationServiceImpl implements LocationService {
 		String active = null;
 		boolean isActive=true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
-		pageUtils.validateSortField(Location.class, dto.getSort());
+		
 		if(!CollectionUtils.isEmpty(dto.getFilters()))
 		{
 			Optional<SearchFilter> isActiveFilter = dto.getFilters().stream().filter(a->a.getColumnName().equals(MasterDataConstant.IS_ACTIVE)).findFirst();
@@ -795,6 +805,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
+		pageUtils.validateSortFieldLocation(LocationSearchDto.class, dto.getSort());
 		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
 	}
