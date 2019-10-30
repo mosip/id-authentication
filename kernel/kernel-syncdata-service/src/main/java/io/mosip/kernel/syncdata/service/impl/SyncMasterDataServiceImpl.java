@@ -250,12 +250,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		//
 		syncJobDefDtos = serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
 		screenDetails = serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
-		/*registeredDevices = serviceHelper.getRegisteredDeviceDetails(regCenterId, lastUpdated, currentTimeStamp);
+		registeredDevices = serviceHelper.getRegisteredDeviceDetails(regCenterId, lastUpdated, currentTimeStamp);
 		deviceProviders = serviceHelper.getDeviceProviderDetails(lastUpdated, currentTimeStamp);
 		deviceServices = serviceHelper.getDeviceServiceDetails(lastUpdated, currentTimeStamp);
 		ftps = serviceHelper.getFPDetails(lastUpdated, currentTimeStamp);
 		deviceTypeDPMs = serviceHelper.getDeviceTypeDetails(lastUpdated, currentTimeStamp);
-		deviceSubTypeDPMs = serviceHelper.getDeviceSubTypeDetails(lastUpdated, currentTimeStamp);*/
+		deviceSubTypeDPMs = serviceHelper.getDeviceSubTypeDetails(lastUpdated, currentTimeStamp);
 		CompletableFuture<Void> future = CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes,
 				registrationCenters, templates, templateFileFormats, reasonCategory, reasonList, holidays,
 				blacklistedWords, biometricTypes, biometricAttributes, titles, languages, devices, documentCategories,
