@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,8 +26,8 @@ public interface MOSIPDeviceServiceHistoryRepository extends BaseRepository<MOSI
 	 *            the id
 	 * @return the device service
 	 */
-	@Query(value = "(select * from mosip_device_service_h dsh where id = ?1 and eff_dtimes<= ?2 and (is_deleted is null or is_deleted =false) ORDER BY eff_dtimes DESC) LIMIT 1", nativeQuery = true)
-	MOSIPDeviceServiceHistory findByIdAndIsActiveIsTrueAndByEffectiveTimes(String id, LocalDateTime effiveTimes);
+	@Query(value = "(select * from mosip_device_service_h dsh where sw_version = ?1 and eff_dtimes<= ?2 and (is_deleted is null or is_deleted =false) ORDER BY eff_dtimes DESC) LIMIT 1", nativeQuery = true)
+	List<MOSIPDeviceServiceHistory> findByIdAndIsActiveIsTrueAndByEffectiveTimes(String swVersion, LocalDateTime effiveTimes);
 
 	@Query(value = "(select * from mosip_device_service_h dsh where id = ?1 and dprovider_id=?2 and eff_dtimes<= ?3 and (is_deleted is null or is_deleted =false) ORDER BY eff_dtimes DESC) LIMIT 1", nativeQuery = true)
 	MOSIPDeviceServiceHistory findByIdAndDProviderId(String id, String deviceProviderId, LocalDateTime effTimes);

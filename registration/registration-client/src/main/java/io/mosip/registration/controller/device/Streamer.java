@@ -36,6 +36,31 @@ public class Streamer {
 	private Thread streamer_thread = null;
 	
 	public byte[] imageBytes=null;
+	
+	
+	//Last streaming image
+	private static Image streamImage;
+	
+	//Image View, which UI need to be shown
+	private static ImageView imageView;
+
+
+
+	//Set Streaming image
+	public void setStreamImage(Image streamImage) {
+		this.streamImage = streamImage;
+	}
+	
+	
+	//Set ImageView
+	public static void setImageView(ImageView imageView) {
+		Streamer.imageView = imageView;
+	}
+	
+	//Set Streaming image to ImageView
+	public void setStreamImageToImageView() {
+		imageView.setImage(streamImage);
+	}
 
 	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
 		streamer_thread = new Thread(new Runnable() {
@@ -70,7 +95,10 @@ public class Streamer {
 						Image img = new Image(imageStream);
 						streamImage.setImage(img);	
 						if (null != scanImage) {
-							scanImage.setImage(img);
+							//scanImage.setImage(img);
+							
+							setImageView(scanImage);
+							setStreamImage(img);
 						}
 					} catch (IOException e) {
 					}
