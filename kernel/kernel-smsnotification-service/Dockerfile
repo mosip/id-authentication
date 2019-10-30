@@ -27,5 +27,17 @@ COPY ./target/kernel-smsnotification-service-*.jar kernel-smsnotification-servic
 
 EXPOSE 8084
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","kernel-smsnotification-service.jar"]
+CMD if [ "$active_profile_env" = "preprod" ]; then \
+    wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
+    apt-get update && apt-get install -y unzip ; \
+    unzip glowroot.zip ; \
+    rm -rf glowroot.zip ; \
+    
+    sed -i 's/<service_name>/kernel-smsnotification-service/g' glowroot/glowroot.properties ; \
+    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" kernel-smsnotification-service.jar ; \
+    else \
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" kernel-smsnotification-service.jar ; \
+    fi
+
+#CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","kernel-smsnotification-service.jar"]
 
