@@ -11,7 +11,7 @@ public enum VIDGeneratorErrorCode {
 	/**
 	 * VID_NOT_FOUND
 	 */
-	VID_NOT_FOUND("KER-VIG-001", "VID could not be found"),
+	VID_NOT_AVAILABLE("KER-VID-001", "VID not available for allocation"),
 	/**
 	 * VID_STATUS_NOT_FOUND
 	 */
