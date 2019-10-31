@@ -175,4 +175,6 @@ public final class VIDGeneratorConstant {
 	 * The enable signing property key
 	 */
 	public static final String SIGNING_ENABLE = "mosip.kernel.vid.response-signing-enable";
+	
+	public static final String VIDEXPIRY = "videxpiry";
 }

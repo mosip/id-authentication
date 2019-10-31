@@ -35,10 +35,10 @@ public class VidExpiryVerticle extends AbstractVerticle {
 
 	public void schedulerResult(AsyncResult<String> result) {
 		if (result.succeeded()) {
-			LOGGER.info("scheduler verticle deployment successfull");
+			LOGGER.debug("scheduler verticle deployment successfull");
 			cronScheduling(vertx);
 		} else if (result.failed()) {
-			LOGGER.info("scheduler verticle deployment failed with cause ",result.cause());
+			LOGGER.error("scheduler verticle deployment failed with cause ",result.cause());
 		}
 	}
 
@@ -76,9 +76,9 @@ public class VidExpiryVerticle extends AbstractVerticle {
 						.put(VidSchedulerConstants.DESCRIPTION, timer),
 				res -> {
 					if (res.succeeded()) {
-						LOGGER.info("VIDRevokerschedular started");
+						LOGGER.debug("VIDRevokerschedular started");
 					} else if (res.failed()) {
-						LOGGER.info("VIDRevokerschedular failed with cause {}", res.cause());
+						LOGGER.error("VIDRevokerschedular failed with cause ", res.cause());
 						vertx.close();
 					}
 				});
