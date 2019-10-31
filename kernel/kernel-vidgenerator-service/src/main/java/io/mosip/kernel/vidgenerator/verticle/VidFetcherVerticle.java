@@ -5,6 +5,7 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.vidgenerator.constant.EventType;
+import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
 import io.mosip.kernel.vidgenerator.router.VidFetcherRouter;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -57,17 +58,20 @@ public class VidFetcherVerticle extends AbstractVerticle {
 		// Parent router so that global options can be applied to it in future
 		Router parentRouter = Router.router(vertx);
 		// giving the context path to parent router
-		parentRouter.route("/vidgenerator").consumes("application/json").produces("application/json");
+		parentRouter.route(environment.getProperty(VIDGeneratorConstant.SERVER_SERVLET_PATH))
+				.consumes(VIDGeneratorConstant.APPLICATION_JSON).produces(VIDGeneratorConstant.APPLICATION_JSON);
 
 		// mount all the routers to parent router
-		parentRouter.mountSubRouter("/vid", vidFetcherRouter.createRouter(vertx));
+		parentRouter.mountSubRouter(VIDGeneratorConstant.VVID, vidFetcherRouter.createRouter(vertx));
 
 		httpServer.requestHandler(parentRouter);
-		httpServer.listen(8080, result -> {
+		httpServer.listen(Integer.parseInt(environment.getProperty(VIDGeneratorConstant.SERVER_PORT)), result -> {
 			if (result.succeeded()) {
+				LOGGER.debug("vid fetcher verticle deployed");
 				vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
 				future.complete();
-			} else {
+			} else if(result.failed()) {
+				LOGGER.error("vid fetcher verticle deployment failed with cause ",result.cause());
 				future.fail(result.cause());
 			}
 		});

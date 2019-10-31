@@ -34,11 +34,6 @@ public class VidFetcherRouter {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
-	/**
-	 * Field for environment
-	 */
-	@Autowired
-	private Environment environment;
 	
 	@Autowired
 	private VidService vidService;
@@ -59,7 +54,7 @@ public class VidFetcherRouter {
 			vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
 			ResponseWrapper<VidFetchResponseDto> reswrp = new ResponseWrapper<>();
 			vertx.executeBlocking(blockingCodeHandler -> {
-				String expiryDateString =routingContext.request().getParam("videxpiry");
+				String expiryDateString =routingContext.request().getParam(VIDEXPIRY);
 				LocalDateTime expiryTime=null;
 				if(expiryDateString != null) {
 	            if(expiryDateString.trim().isEmpty()) {
