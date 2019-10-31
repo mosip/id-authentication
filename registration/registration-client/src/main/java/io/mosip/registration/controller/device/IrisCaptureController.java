@@ -501,6 +501,7 @@ public class IrisCaptureController extends BaseController {
 			try {
 				leftTempIrisDetail = getIrises().stream()
 						.filter((iris) -> iris.getIrisType().contains(RegistrationConstants.LEFT)).findFirst().get();
+				
 				getIrises().remove(leftTempIrisDetail);
 
 				rightTempIrisDetail = getIrises().stream()
@@ -532,11 +533,19 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisDetailsDTO.isCaptured()) {
 
-				streamer.setStreamImageToImageView();
+				
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				if (!bioservice.isMdmEnabled()) {
+					
+					if(irisType.contains(RegistrationConstants.LEFT) && rightTempIrisDetail!=null) {
+						getIrises().add(rightTempIrisDetail);
+					} else if(leftTempIrisDetail!=null){
+						getIrises().add(leftTempIrisDetail);
+					}
 					scanPopUpViewController.getScanImage()
 							.setImage(convertBytesToImage(irisDetailsDTO.getIrises().get(0).getIris()));
+				} else {
+					streamer.setStreamImageToImageView();
 				}
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 				irisDetailsDTO.getIrises().forEach((iris) -> {
