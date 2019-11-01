@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
@@ -31,6 +32,7 @@ public class DeviceProviderManagementController {
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@PostMapping("/validate")
+	@ResponseFilter
 	public ResponseWrapper<ResponseDto> validateDeviceProvider(
 			@RequestBody @Valid RequestWrapper<ValidateDeviceDto> request) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -42,6 +44,7 @@ public class DeviceProviderManagementController {
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@PostMapping("/validate/history")
+	@ResponseFilter
 	public ResponseWrapper<ResponseDto> validateDeviceProviderHistory(@RequestBody @Valid RequestWrapper<ValidateDeviceHistoryDto> request) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceProviderService.validateDeviceProviderHistory(request.getRequest()));
