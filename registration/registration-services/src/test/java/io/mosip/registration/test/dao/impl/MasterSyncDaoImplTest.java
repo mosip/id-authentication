@@ -24,6 +24,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import io.mosip.kernel.core.util.DateUtils;
@@ -58,6 +59,7 @@ import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.ProcessListDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.dto.mastersync.RegisteredDeviceMasterDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDeviceDto;
@@ -94,6 +96,7 @@ import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
+import io.mosip.registration.entity.RegisteredDeviceMaster;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
 import io.mosip.registration.entity.RegistrationCommonFields;
@@ -125,10 +128,12 @@ import io.mosip.registration.repositories.BiometricTypeRepository;
 import io.mosip.registration.repositories.BlacklistedWordsRepository;
 import io.mosip.registration.repositories.CenterMachineRepository;
 import io.mosip.registration.repositories.DeviceMasterRepository;
+import io.mosip.registration.repositories.DeviceProviderRepository;
 import io.mosip.registration.repositories.DeviceSpecificationRepository;
 import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 import io.mosip.registration.repositories.DocumentTypeRepository;
+import io.mosip.registration.repositories.FoundationalTrustProviderRepository;
 import io.mosip.registration.repositories.GenderRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
 import io.mosip.registration.repositories.IndividualTypeRepository;
@@ -137,9 +142,13 @@ import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.MachineSpecificationRepository;
 import io.mosip.registration.repositories.MachineTypeRepository;
+import io.mosip.registration.repositories.MosipDeviceServiceRepository;
 import io.mosip.registration.repositories.ProcessListRepository;
 import io.mosip.registration.repositories.ReasonCategoryRepository;
 import io.mosip.registration.repositories.ReasonListRepository;
+import io.mosip.registration.repositories.RegisteredDeviceRepository;
+import io.mosip.registration.repositories.RegisteredDeviceTypeRepository;
+import io.mosip.registration.repositories.RegisteredSubDeviceTypeRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
@@ -276,6 +285,25 @@ public class MasterSyncDaoImplTest {
 	/** Object for Sync screen auth Repository. */
 	@Mock
 	private SyncJobDefRepository syncJobDefRepository;
+	
+	@Mock
+	private RegisteredDeviceRepository registeredDeviceRepository;
+	
+	@Mock
+	private RegisteredDeviceTypeRepository registeredDeviceTypeRepository;
+	
+	@Mock
+	private RegisteredSubDeviceTypeRepository registeredSubDeviceTypeRepository;
+	
+	@Mock
+	private MosipDeviceServiceRepository mosipDeviceServiceRepository;
+	
+	@Mock
+	private FoundationalTrustProviderRepository foundationalTrustProviderRepository;
+	
+	@Mock
+	private DeviceProviderRepository deviceProviderRepository;
+
 
 	@Mock
 	private MasterSyncDao masterSyncDao;
@@ -449,20 +477,20 @@ public class MasterSyncDaoImplTest {
 		regCntr.setLangCode("eng");
 		regCntr.setAddressLine2("chennai");
 		regCntr.setAddressLine3("TN");
-		regCntr.setCenterEndTime(LocalTime.now().toString());
-		regCntr.setCenterStartTime(LocalTime.now().toString());
+		regCntr.setCenterEndTime("15:34:03");
+		regCntr.setCenterStartTime("15:34:03");
 		regCntr.setCenterTypeCode("reg");
 		regCntr.setContactPerson("admin");
 		regCntr.setContactPhone("999999999");
 		regCntr.setHolidayLocationCode("Happy New Year");
 		regCntr.setLatitude("87.3123");
 		regCntr.setLongitude("8.3232");
-		regCntr.setLunchStartTime(LocalTime.now().toString());
-		regCntr.setLunchEndTime(LocalTime.now().toString());
+		regCntr.setLunchStartTime("15:34:03");
+		regCntr.setLunchEndTime("15:34:03");
 		regCntr.setName("Registartion");
 		regCntr.setNumberOfKiosks(Short.MIN_VALUE);
 		regCntr.setNumberOfStations(Short.MIN_VALUE);
-		regCntr.setPerKioskProcessTime(LocalTime.now().toString());
+		regCntr.setPerKioskProcessTime("15:34:03");
 		regCntr.setWorkingHours("8h");
 		regCenter.add(regCntr);
 		masterSyncDto.setRegistrationCenter(regCenter);
@@ -926,9 +954,6 @@ public class MasterSyncDaoImplTest {
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
-
-		Mockito.when(MetaDataUtils.setCreateMetaData(blacklistedWordsList, BlacklistedWords.class))
-				.thenReturn(baseEnity);
 
 		masterSyncDaoImpl.save(masterSyncDto);
 

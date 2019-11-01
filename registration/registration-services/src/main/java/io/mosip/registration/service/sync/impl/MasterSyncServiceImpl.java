@@ -6,6 +6,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -200,6 +202,8 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 
 				String jsonString = new ObjectMapper().writeValueAsString(
 						masterSyncResponse.get(RegistrationConstants.RESPONSE));
+				
+			//	String jsonString = new String(Files.readAllBytes(Paths.get("C:\\Users\\M1047962\\git\\mosip-platform-mt\\registration\\registration-client\\logs\\test.txt")));
 
 				// Mapping json object to respective dto's
 				MasterDataResponseDto masterSyncDto = gson.fromJson(jsonString, MasterDataResponseDto.class);
