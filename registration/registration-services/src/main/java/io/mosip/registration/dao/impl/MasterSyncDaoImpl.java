@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +30,12 @@ import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BiometricTypeDto;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DeviceDto;
+import io.mosip.registration.dto.mastersync.DeviceProviderDto;
 import io.mosip.registration.dto.mastersync.DeviceSpecificationDto;
 import io.mosip.registration.dto.mastersync.DeviceTypeDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.DocumentTypeDto;
+import io.mosip.registration.dto.mastersync.FoundationalTrustProviderDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.IdTypeDto;
 import io.mosip.registration.dto.mastersync.LanguageDto;
@@ -43,10 +44,13 @@ import io.mosip.registration.dto.mastersync.MachineDto;
 import io.mosip.registration.dto.mastersync.MachineSpecificationDto;
 import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.dto.mastersync.MosipDeviceServiceDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.ProcessListDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
-import io.mosip.registration.dto.mastersync.RegisteredDeviceDto;
+import io.mosip.registration.dto.mastersync.RegisteredDeviceMasterDto;
+import io.mosip.registration.dto.mastersync.RegisteredDeviceTypeDto;
+import io.mosip.registration.dto.mastersync.RegisteredSubDeviceTypeDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDeviceDto;
@@ -69,8 +73,10 @@ import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BiometricType;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.CenterMachine;
+import io.mosip.registration.entity.DeviceProvider;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.DocumentType;
+import io.mosip.registration.entity.FoundationalTrustProvider;
 import io.mosip.registration.entity.Gender;
 import io.mosip.registration.entity.IdType;
 import io.mosip.registration.entity.IndividualType;
@@ -78,6 +84,7 @@ import io.mosip.registration.entity.Language;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.MachineType;
+import io.mosip.registration.entity.MosipDeviceService;
 import io.mosip.registration.entity.ProcessList;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
@@ -88,7 +95,9 @@ import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegMachineSpec;
-import io.mosip.registration.entity.RegisteredDevice;
+import io.mosip.registration.entity.RegisteredDeviceMaster;
+import io.mosip.registration.entity.RegisteredDeviceType;
+import io.mosip.registration.entity.RegisteredSubDeviceType;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterType;
 import io.mosip.registration.entity.ScreenAuthorization;
@@ -115,10 +124,12 @@ import io.mosip.registration.repositories.BiometricTypeRepository;
 import io.mosip.registration.repositories.BlacklistedWordsRepository;
 import io.mosip.registration.repositories.CenterMachineRepository;
 import io.mosip.registration.repositories.DeviceMasterRepository;
+import io.mosip.registration.repositories.DeviceProviderRepository;
 import io.mosip.registration.repositories.DeviceSpecificationRepository;
 import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 import io.mosip.registration.repositories.DocumentTypeRepository;
+import io.mosip.registration.repositories.FoundationalTrustProviderRepository;
 import io.mosip.registration.repositories.GenderRepository;
 import io.mosip.registration.repositories.IdTypeRepository;
 import io.mosip.registration.repositories.IndividualTypeRepository;
@@ -127,10 +138,13 @@ import io.mosip.registration.repositories.LocationRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.MachineSpecificationRepository;
 import io.mosip.registration.repositories.MachineTypeRepository;
+import io.mosip.registration.repositories.MosipDeviceServiceRepository;
 import io.mosip.registration.repositories.ProcessListRepository;
 import io.mosip.registration.repositories.ReasonCategoryRepository;
 import io.mosip.registration.repositories.ReasonListRepository;
 import io.mosip.registration.repositories.RegisteredDeviceRepository;
+import io.mosip.registration.repositories.RegisteredDeviceTypeRepository;
+import io.mosip.registration.repositories.RegisteredSubDeviceTypeRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
@@ -314,6 +328,26 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private RegisteredDeviceRepository registeredDeviceRepository;
 
+	@Autowired
+	private RegisteredDeviceTypeRepository registeredDeviceTypeRepository;
+	
+	@Autowired
+	private RegisteredSubDeviceTypeRepository registeredSubDeviceTypeRepository;
+	
+	@Autowired
+	private MosipDeviceServiceRepository mosipDeviceServiceRepository;
+	
+	@Autowired
+	private FoundationalTrustProviderRepository foundationalTrustProviderRepository;
+	
+	@Autowired
+	private DeviceProviderRepository deviceProviderRepository;
+
+
+
+
+
+
 	/**
 	 * logger for logging
 	 */
@@ -400,7 +434,14 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<ProcessListDto> processLst = masterSyncDto.getProcessList();
 		List<ScreenDetailDto> screenDetailList = masterSyncDto.getScreenDetails();
 		List<SyncJobDefDto> syncJobDefList = masterSyncDto.getSyncJobDefinitions();
-		List<RegisteredDeviceDto> registeredDeviceDetails = masterSyncDto.getRegisteredDevices();
+		List<RegisteredDeviceMasterDto> registeredDeviceDetails = masterSyncDto.getRegisteredDevices();
+		List<RegisteredDeviceTypeDto> registeredDeviceTypes = masterSyncDto.getRegisteredDeviceTypes();
+		List<RegisteredSubDeviceTypeDto> registeredSubDeviceTypes = masterSyncDto.getDeviceSubTypeDPMs();
+		List<MosipDeviceServiceDto> mosipDeviceServices = masterSyncDto.getDeviceServices();
+		List<FoundationalTrustProviderDto> foundationalTrustProviders = masterSyncDto.getFunctionalTrustProviders();
+		List<DeviceProviderDto> deviceProviders = masterSyncDto.getDeviceProviders();
+
+
 		
 
 		String sucessResponse = null;
@@ -616,10 +657,24 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<SyncJobDef> masterSyncControlList = MetaDataUtils.setCreateMetaData(syncJobDefList, SyncJobDef.class);
 			syncJobDefRepository.saveAll(masterSyncControlList);
 			
-			List<RegisteredDevice> registeredDeviceList = MetaDataUtils.setCreateMetaData(registeredDeviceDetails, RegisteredDevice.class);
+			List<RegisteredDeviceMaster> registeredDeviceList = MetaDataUtils.setCreateMetaData(registeredDeviceDetails, RegisteredDeviceMaster.class);
 			registeredDeviceRepository.saveAll(registeredDeviceList);
-
-
+			
+			List<RegisteredDeviceType> registeredDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredDeviceTypes, RegisteredDeviceType.class);
+			registeredDeviceTypeRepository.saveAll(registeredDeviceTypeList);
+			
+			List<RegisteredSubDeviceType> registeredSubDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredSubDeviceTypes, RegisteredSubDeviceType.class);
+			registeredSubDeviceTypeRepository.saveAll(registeredSubDeviceTypeList);
+			
+//			List<MosipDeviceService> mosipDeviceServiceList = MetaDataUtils.setCreateMetaData(mosipDeviceServices, MosipDeviceService.class);
+//			mosipDeviceServiceRepository.saveAll(mosipDeviceServiceList);
+			
+			List<FoundationalTrustProvider> foundationalTrustProviderList = MetaDataUtils.setCreateMetaData(foundationalTrustProviders, FoundationalTrustProvider.class);
+			foundationalTrustProviderRepository.saveAll(foundationalTrustProviderList);
+			
+			List<DeviceProvider> deviceProviderList = MetaDataUtils.setCreateMetaData(deviceProviders, DeviceProvider.class);
+			deviceProviderRepository.saveAll(deviceProviderList);
+			
 			sucessResponse = RegistrationConstants.SUCCESS;
 
 		} catch (Exception runtimeException) {

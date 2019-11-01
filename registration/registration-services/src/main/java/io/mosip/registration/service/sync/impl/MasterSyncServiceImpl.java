@@ -23,6 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -177,6 +178,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		String resoponse = RegistrationConstants.EMPTY;
 
 		ObjectMapper objectMapper = new ObjectMapper();
+		Gson gson = new Gson();
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
@@ -200,7 +202,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 						masterSyncResponse.get(RegistrationConstants.RESPONSE));
 
 				// Mapping json object to respective dto's
-				MasterDataResponseDto masterSyncDto = objectMapper.readValue(jsonString, MasterDataResponseDto.class);
+				MasterDataResponseDto masterSyncDto = gson.fromJson(jsonString, MasterDataResponseDto.class);
 
 				resoponse = masterSyncDao.save(masterSyncDto);
 

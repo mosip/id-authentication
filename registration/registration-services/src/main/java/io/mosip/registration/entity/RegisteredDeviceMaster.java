@@ -13,17 +13,17 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "registered_device_master", schema = "reg")
-public class RegisteredDevice extends RegistrationCommonFields {
+public class RegisteredDeviceMaster extends RegistrationCommonFields {
 
 	@Id
 	@Column(name="code",length=36,nullable=false)
 	private String code	;
 	
 	@Column(name="dtype_code",length=36,nullable=false)
-	private String deviceTypeCode;
+	private String dTypeCode;
 	
 	@Column(name="dstype_code",length=36,nullable=false)
-	private String deviceSubTypeCode;
+	private String dsTypeCode;
 	
 	@Column(name="status_code",length=64)
 	private String statusCode;
@@ -71,11 +71,11 @@ public class RegisteredDevice extends RegistrationCommonFields {
 	private Blob foundationalTrustCertificate;
 	
 	@Column(name="dprovider_signature",length=512)
-	private String deviceProviderSignature;
+	private String dproviderSignature;
 
 	@Column(name="is_deleted")
 	private boolean isDeleted;
 
 	@Column(name="del_dtimes")
-	private Timestamp deletedDateTimes;
+	private Timestamp delDTimes;
 }
