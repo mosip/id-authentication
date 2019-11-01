@@ -139,8 +139,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
 
 				}
-				//FIXME commented for testing, uncomment it
-				//validateBioDataInRequest(request);
+				validateBioDataInRequest(request);
 				decipherBioData(request);
 				requestBody.replace(REQUEST, request);
 			}

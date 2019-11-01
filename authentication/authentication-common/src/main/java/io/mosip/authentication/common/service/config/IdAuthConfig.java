@@ -89,7 +89,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	private IBioApi getBiometricProvider(String property, String modalityName, Supplier<Boolean> enablementChecker) throws IdAuthenticationAppException {
 		try {
 			if (Objects.nonNull(environment.getProperty(property)) && enablementChecker.get()) {
-				return (IBioApi) Class.forName("io.mosip.kernel.bioapi.impl.BioApiImpl").newInstance();
+				return (IBioApi) Class.forName(environment.getProperty(property)).newInstance();
 			} else {
 				return null;
 			}
