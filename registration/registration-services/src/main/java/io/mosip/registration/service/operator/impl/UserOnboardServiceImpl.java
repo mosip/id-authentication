@@ -5,17 +5,20 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.stream.IntStream;
 
 import javax.crypto.SecretKey;
 
@@ -23,6 +26,8 @@ import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -30,6 +35,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -103,24 +110,30 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 			biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO().forEach(bio -> {
 
 				bio.getSegmentedFingerprints().forEach(finger -> {
-					LinkedHashMap<String, Object> data1 = new LinkedHashMap<>();
+					LinkedHashMap<String, Object> dataBlockFinger = new LinkedHashMap<>();
 					Map<String, Object> data = new HashMap<>();
 					data.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
-					data.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
-					data.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
+					// data.put(RegistrationConstants.TRANSACTION_ID,
+					// RegistrationConstants.TRANSACTION_ID_VALUE);
+					// data.put(RegistrationConstants.DEVICE_PROVIDER_ID,
+					// RegistrationConstants.ON_BOARD_COGENT);
 					data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FINGER_ID);
-					data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
-							RegistrationConstants.userOnBoardBioFlag.get(finger.getFingerType()));
-					data.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
-							CryptoUtil.encodeBase64(finger.getFingerPrintISOImage()));
+//					data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
+//							RegistrationConstants.userOnBoardBioFlag.get(finger.getFingerType()));
+					data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
+					SplittedEncryptedData responseMap = getSessionKey(data, finger.getFingerPrintISOImage());
+					data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, responseMap.getEncryptedData());
 					try {
-						data1.put(RegistrationConstants.ON_BOARD_BIO_DATA,
+						dataBlockFinger.put(RegistrationConstants.ON_BOARD_BIO_DATA,
 								CryptoUtil.encodeBase64(new ObjectMapper().writeValueAsString(data).getBytes()));
 					} catch (IOException exIoException) {
 						LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 								ExceptionUtils.getStackTrace(exIoException));
 					}
-					listOfBiometric.add(data1);
+					dataBlockFinger.put("hash", "");
+					dataBlockFinger.put("sessionKey", responseMap.getEncryptedSessionKey());
+					dataBlockFinger.put("signature", "");
+					listOfBiometric.add(dataBlockFinger);
 
 				});
 				requestMap.put(RegistrationConstants.ON_BOARD_BIOMETRICS, listOfBiometric);
@@ -128,48 +141,71 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 
 			biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO().forEach(iris -> {
 
-				LinkedHashMap<String, Object> data1 = new LinkedHashMap<>();
+				LinkedHashMap<String, Object> dataBlockIris = new LinkedHashMap<>();
 				Map<String, Object> data = new HashMap<>();
 				data.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
-				data.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
-				data.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
+				// data.put(RegistrationConstants.TRANSACTION_ID,
+				// RegistrationConstants.TRANSACTION_ID_VALUE);
+				// data.put(RegistrationConstants.DEVICE_PROVIDER_ID,
+				// RegistrationConstants.ON_BOARD_COGENT);
 				data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_IRIS_ID);
-				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
-						RegistrationConstants.userOnBoardBioFlag.get(iris.getIrisImageName()));
-				data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, CryptoUtil.encodeBase64(iris.getIrisIso()));
+				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
+//				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
+//						RegistrationConstants.userOnBoardBioFlag.get(iris.getIrisImageName()));
+				SplittedEncryptedData responseMap=getSessionKey(data,iris.getIrisIso());
+				data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, responseMap.getEncryptedData());
 				try {
-					data1.put(RegistrationConstants.ON_BOARD_BIO_DATA,
+					dataBlockIris.put(RegistrationConstants.ON_BOARD_BIO_DATA,
 							CryptoUtil.encodeBase64(new ObjectMapper().writeValueAsString(data).getBytes()));
 				} catch (IOException exIoException) {
 					LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							ExceptionUtils.getStackTrace(exIoException));
 				}
-				listOfBiometric.add(data1);
+				dataBlockIris.put("hash", "");
+				dataBlockIris.put("sessionKey",responseMap.getEncryptedSessionKey());
+				dataBlockIris.put("signature", "");
+				listOfBiometric.add(dataBlockIris);
 
 			});
 
 			requestMap.put(RegistrationConstants.ON_BOARD_BIOMETRICS, listOfBiometric);
 
 			LinkedHashMap<String, Object> biometricMap = new LinkedHashMap<>();
-			Map<String, Object> requestDataMap = new HashMap<>();
-			requestDataMap.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
-			requestDataMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
-			requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
-			requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE_ID);
-			requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, RegistrationConstants.ON_BOARD_FACE);
+			Map<String, Object> data = new HashMap<>();
+			data.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
+			// requestDataMap.put(RegistrationConstants.TRANSACTION_ID,
+			// RegistrationConstants.TRANSACTION_ID_VALUE);
+			// requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID,
+			// RegistrationConstants.ON_BOARD_COGENT);
+			data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE_ID);
+			data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, RegistrationConstants.ON_BOARD_FACE);
+			SplittedEncryptedData responseMap=getSessionKey(data,biometricDTO.getOperatorBiometricDTO().getFace().getFaceISO());
+			data.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
+					responseMap.getEncryptedData());
 
 			try {
-				requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
-						CryptoUtil.encodeBase64(IOUtils.resourceToByteArray((RegistrationConstants.FACE_ISO))));
-
+				
 				biometricMap.put(RegistrationConstants.ON_BOARD_BIO_DATA,
-						CryptoUtil.encodeBase64(new ObjectMapper().writeValueAsString(requestDataMap).getBytes()));
+						CryptoUtil.encodeBase64(new ObjectMapper().writeValueAsString(data).getBytes()));
 			} catch (IOException exIoException) {
 				LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 						ExceptionUtils.getStackTrace(exIoException));
 				setErrorResponse(responseDTO, RegistrationConstants.USER_ON_BOARDING_EXCEPTION, null);
 			}
+			
+			biometricMap.put("hash", "");
+			biometricMap.put("sessionKey", responseMap.getEncryptedSessionKey());
+			biometricMap.put("signature", "");
+			
 			listOfBiometric.add(biometricMap);
+
+			try {
+				LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+						JsonUtils.javaObjectToJsonString(listOfBiometric));
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			requestMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
 			requestMap.put(RegistrationConstants.ON_BOARD_BIOMETRICS, listOfBiometric);
@@ -425,5 +461,104 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		return responseDTO;
 
 	}
+	
+	private SplittedEncryptedData getSessionKey(Map<String, Object> requestMap, byte[] data) {
+		SplittedEncryptedData splittedData=null;
+		Map<String, Object> mapRequest = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String timestamp = (String) requestMap.get(RegistrationConstants.ON_BOARD_TIME_STAMP);
+		String aad = CryptoUtil.encodeBase64String(timestamp.substring(timestamp.length() - 12).getBytes());
+		String salt = CryptoUtil.encodeBase64String(timestamp.substring(timestamp.length() - 16).getBytes());
+		map.put("aad", aad);
+		map.put("applicationId", "IDA");
+		map.put("data", CryptoUtil.encodeBase64(data));
+		map.put("referenceId", "INTRENAL");
+		map.put("salt", salt);
+		map.put("timeStamp", DateUtils.getUTCCurrentDateTimeString());
+		mapRequest.put("request",map);
+		mapRequest.put("requesttime", DateUtils.getUTCCurrentDateTimeString());
+		try {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> responseResult = (Map<String, Object>) serviceDelegateUtil
+					.post(RegistrationConstants.SESSION_KEY_URL, mapRequest, RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			LinkedHashMap<String,Object> splitData=(LinkedHashMap<String, Object>) responseResult.get("response");
+			 splittedData=splitEncryptedData((String) splitData.get("data"));
+			
+		} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
+				| RegBaseCheckedException e) {
+			e.printStackTrace();
+		}
 
+		return splittedData;
+
+	}
+	
+
+	public SplittedEncryptedData splitEncryptedData(String data) {
+		byte[] dataBytes = CryptoUtil.decodeBase64(data);
+		byte[][] splits = splitAtFirstOccurance(dataBytes, String.valueOf(ApplicationContext.map().get("mosip.kernel.data-key-splitter")).getBytes());
+		return new SplittedEncryptedData(CryptoUtil.encodeBase64(splits[0]), CryptoUtil.encodeBase64(splits[1]));
+	} 
+	
+	
+
+	
+	private static byte[][] splitAtFirstOccurance(byte[] strBytes, byte[] sepBytes) {
+		int index = findIndex(strBytes, sepBytes);
+		if (index >= 0) {
+			byte[] bytes1 = new byte[index];
+			byte[] bytes2 = new byte[strBytes.length - (bytes1.length + sepBytes.length)];
+			System.arraycopy(strBytes, 0, bytes1, 0, bytes1.length);
+			System.arraycopy(strBytes, (bytes1.length + sepBytes.length), bytes2, 0, bytes2.length);
+			return new byte[][] { bytes1, bytes2 };
+		} else {
+			return new byte[][] { strBytes, new byte[0] };
+		}
+	}
+	
+	private static int findIndex(byte arr[], byte[] subarr) {
+		int len = arr.length;
+		int subArrayLen = subarr.length;
+		return IntStream.range(0, len).filter(currentIndex -> {
+			if ((currentIndex + subArrayLen) <= len) {
+				byte[] sArray = new byte[subArrayLen];
+				System.arraycopy(arr, currentIndex, sArray, 0, subArrayLen);
+				return Arrays.equals(sArray, subarr);
+			}
+			return false;
+		}).findFirst() // first occurence
+				.orElse(-1); // No element found
+	}
+
+
+
+
+	public static class SplittedEncryptedData {
+		private String encryptedSessionKey;
+		private String encryptedData;
+		
+		public SplittedEncryptedData() {
+			super();
+		}
+		
+		public SplittedEncryptedData(String encryptedSessionKey,String encryptedData) {
+			super();
+			this.encryptedData = encryptedData;
+			this.encryptedSessionKey = encryptedSessionKey;
+		}
+		
+		
+		public String getEncryptedData() {
+			return encryptedData;
+		}
+		public void setEncryptedData(String encryptedData) {
+			this.encryptedData = encryptedData;
+		}
+		public String getEncryptedSessionKey() {
+			return encryptedSessionKey;
+		}
+		public void setEncryptedSessionKey(String encryptedSessionKey) {
+			this.encryptedSessionKey = encryptedSessionKey;
+		}
+	}
 }

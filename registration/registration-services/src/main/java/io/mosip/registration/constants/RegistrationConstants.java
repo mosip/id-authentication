@@ -1475,7 +1475,7 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_AUTH_STATUS = "authStatus";
 	public static final String ON_BOARD_FACE_ID = "FID";
 	public static final String ON_BOARD_IRIS_ID = "IIR";
-	public static final String ON_BOARD_FINGER_ID = "FMR";
+	public static final String ON_BOARD_FINGER_ID = "FIR";
 	public static final String ON_BOARD_COGENT = "cogent";
 	public static final String AGE_IDENTITY = "identity";
 	public static final String DATE_OF_BIRTH = "dateOfBirth";
@@ -1555,4 +1555,6 @@ public class RegistrationConstants {
 	public static final List<String> TWO_THUMBS = Arrays.asList("Left Thumb", "Right Thumb");
 	
 	public static final List<String> TWO_IRIS = Arrays.asList("Left Iris", "Right Iris");
+	
+	public static final String SESSION_KEY_URL = "session_key";
 }
