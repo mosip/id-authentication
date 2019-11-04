@@ -236,13 +236,13 @@ public class MosipBioDeviceManager {
 		
 		if (bioDevice != null) {
 			
-			if(registeredDeviceDAO.getRegisteredDevices(bioDevice.getDeviceId()).size()>0) {
+//			if(registeredDeviceDAO.getRegisteredDevices(bioDevice.getDeviceId()).size()>0) {
 			
 				LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device found in the device registery");
 				return bioDevice.capture(requestDetail);
-			}
-			throw new RegBaseCheckedException("101", "");
+//			}
+//			throw new RegBaseCheckedException("101", "");
 		} else {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device not found in the device registery");

@@ -9,6 +9,13 @@ import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
 
+/**
+ * This Entity Class contains the details for Device provider
+ * from master sync
+ * 
+ * @author Taleev.Aalam
+ * @version 1.0
+ */
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "device_provider", schema = "reg")

@@ -9,6 +9,14 @@ import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
 
+/**
+ * This Entity Class contains the registered device types coming
+ * from master sync
+ * 
+ * @author Taleev.Aalam
+ * @version 1.0
+ */
+
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "reg_device_type", schema = "reg")

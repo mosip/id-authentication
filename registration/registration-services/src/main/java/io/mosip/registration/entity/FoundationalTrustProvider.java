@@ -9,6 +9,14 @@ import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
 
+/**
+ * This Entity Class contains the functional trust provider details
+ * from master sync
+ * 
+ * @author Taleev.Aalam
+ * @version 1.0
+ */
+
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "foundational_trust_provider", schema = "reg")

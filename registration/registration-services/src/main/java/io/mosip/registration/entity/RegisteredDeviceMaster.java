@@ -10,6 +10,15 @@ import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
 
+/**
+ * This Entity Class contains the registered devices coming
+ * from master sync
+ * 
+ * @author Taleev.Aalam
+ * @version 1.0
+ */
+
+
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "registered_device_master", schema = "reg")

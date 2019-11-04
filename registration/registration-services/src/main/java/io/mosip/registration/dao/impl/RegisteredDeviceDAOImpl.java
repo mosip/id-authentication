@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +20,24 @@ public class RegisteredDeviceDAOImpl implements RegisteredDeviceDAO {
 	/** instance of {@link RegisteredDeviceRepository} */
 	@Autowired
 	private RegisteredDeviceRepository registeredDeviceRepository;
+	
 	/** instance of {@link Logger} */
 	private static final Logger LOGGER = AppConfig.getLogger(RegisteredDeviceDAOImpl.class);
 
 	@Override
 	public List<RegisteredDeviceMaster> getRegisteredDevices() {
-		// TODO Auto-generated method stub
+		LOGGER.info("REGISTRATION-PACKET_DEVICE_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"fetching all the registered devices");
+
 		return registeredDeviceRepository.findAll();
 	}
 
 	@Override
 	public List<RegisteredDeviceMaster> getRegisteredDevices(String deviceCode) {
-		// TODO Auto-generated method stub
+		
+		LOGGER.info("REGISTRATION-PACKET_DEVICE_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"fetching the device with device code : "+ deviceCode);
+
 		return registeredDeviceRepository.findAllByIsActiveTrueAndDeviceId(deviceCode);
 	}
 

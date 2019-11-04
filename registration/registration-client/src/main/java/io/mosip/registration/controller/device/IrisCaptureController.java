@@ -150,6 +150,9 @@ public class IrisCaptureController extends BaseController {
 	
 	@Autowired
 	Streamer streamer;
+	
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -625,9 +628,6 @@ public class IrisCaptureController extends BaseController {
 			
 		}
 	}
-
-	@Autowired
-	private AuthenticationService authenticationService;
 	
 	private boolean validateIrisLocalDedup(List<IrisDetailsDTO> irises) {
 
