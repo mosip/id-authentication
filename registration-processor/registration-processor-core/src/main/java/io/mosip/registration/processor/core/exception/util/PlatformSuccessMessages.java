@@ -66,7 +66,15 @@ public enum PlatformSuccessMessages {
 
 	RPR_LINK_RID_FOR_LOST_PACKET_SUCCESS(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "004", "UIN Generator  Success"),
 
-	RPR_QUALITY_CHECK_SUCCESS(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "000", "Quality check  Success");
+	RPR_QUALITY_CHECK_SUCCESS(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "000", "Quality check  Success"),
+
+	RPR_PRINT_STAGE_SENT_QUEUE_SUCCESS(PlatformConstants.RPR_PRINTING_MODULE + "000",
+			"Pdf added to the mosip queue for printing"),
+
+	RPR_PRINT_STAGE_SUCCESS(PlatformConstants.RPR_PRINTING_MODULE + "001", "Print and Post Completed"),
+
+	RPR_MESSAGE_SENDER_STAGE_SUCCESS(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
+			"Message Sender Stage success");
 
 	/** The success message. */
 	private final String successMessage;

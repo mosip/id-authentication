@@ -32,5 +32,9 @@ public enum ModuleName {
 
 	EXTERNAL,
 
-	UIN_GENERATOR;
+	UIN_GENERATOR,
+
+	PRINT_STAGE,
+
+	MESSAGE_SENDER;
 }

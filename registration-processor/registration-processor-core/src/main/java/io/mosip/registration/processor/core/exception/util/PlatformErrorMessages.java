@@ -560,6 +560,22 @@ public enum PlatformErrorMessages {
 	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
 			"The Configuration and Language code not found"),
 
+	RPR_NOTIFICATION_FAILED_FOR_LOST(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "004",
+			"Unable to Send Notification - UIN was not found for the Lost Packet"),
+
+	RPR_TEMPLATE_CONFIGURATION_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "005",
+			"Template configuration and language not found"),
+
+	RPR_MESSAGE_SENDER_STAGE_FAILED(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "006",
+			"Message Sender Stage failed"),
+
+	RPR_EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "007",
+			"Email ID or Phone or Template or Notification Type is Missing"),
+
+	RPR_MESSAGE_SENDER_EMAIL_FAILED(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "008", "Email Failed"),
+
+	RPR_MESSAGE_SENDER_SMS_FAILED(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "009", "SMS failed"),
+
 	/** The rpr pum packet not found exception. */
 	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "001",
 			"Packet Not Found in Packet Store"),
@@ -793,6 +809,13 @@ public enum PlatformErrorMessages {
 
 	/** The missing input parameter. */
 	RPR_PRT_INVALID_INPUT_PARAMETER(PlatformConstants.RPR_PRINTING_MODULE + "019", "Invalid Input Parameter - %s"),
+
+	/** The missing input parameter. */
+	RPR_PRT_PDF_NOT_ADDED(PlatformConstants.RPR_PRINTING_MODULE + "020",
+			"Pdf was not added to queue due to queue failure"),
+
+	/** The missing input parameter. */
+	RPR_PRT_RESEND_UIN_CARD(PlatformConstants.RPR_PRINTING_MODULE + "021", "Re-Send uin card for printing"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),
