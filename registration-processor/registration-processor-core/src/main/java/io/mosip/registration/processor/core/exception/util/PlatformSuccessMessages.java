@@ -74,7 +74,12 @@ public enum PlatformSuccessMessages {
 	RPR_PRINT_STAGE_SUCCESS(PlatformConstants.RPR_PRINTING_MODULE + "001", "Print and Post Completed"),
 
 	RPR_MESSAGE_SENDER_STAGE_SUCCESS(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
-			"Message Sender Stage success");
+			"Message Sender Stage success"),
+
+	RPR_ABIS_HANDLER_STAGE_SUCCESS(PlatformConstants.RPR_ABIS_HANDLER + "000", "ABIS hanlder stage success"),
+
+	RPR_ABIS_MIDDLEWARE_STAGE_SUCCESS(PlatformConstants.RPR_ABIS_MIDDLEWARE + "000",
+			"Abis insertRequests sucessfully sent to Queue");
 
 	/** The success message. */
 	private final String successMessage;

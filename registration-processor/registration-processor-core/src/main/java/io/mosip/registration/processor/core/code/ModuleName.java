@@ -36,5 +36,7 @@ public enum ModuleName {
 
 	PRINT_STAGE,
 
-	MESSAGE_SENDER;
+	MESSAGE_SENDER,
+
+	ABIS_HANDLER;
 }

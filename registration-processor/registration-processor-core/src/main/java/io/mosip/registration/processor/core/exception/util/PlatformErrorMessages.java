@@ -392,6 +392,7 @@ public enum PlatformErrorMessages {
 	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006", "Unable to Find ABIS Batch ID"),
 
 	ABIS_QUEUE_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "007", "Unable to Connect with ABIS Queue"),
+
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio Dedupe Failed"),
@@ -952,7 +953,16 @@ public enum PlatformErrorMessages {
 			"globalMessages not found for input langCode"),
 
 	RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
-			"reg Based checked exception");
+			"reg Based checked exception"),
+
+	RPR_DETAILS_NOT_FOUND(PlatformConstants.RPR_ABIS_HANDLER + "001", "Abis Queue details not found"),
+
+	RPR_NO_RECORD_FOUND(PlatformConstants.RPR_ABIS_HANDLER + "002",
+			"Potential Match Records are Not Found for Demo Dedupe Potential Match"),
+
+	RPR_ERROR_IN_ABIS_HANDLER_IDENTIFY_REQUEST(PlatformConstants.RPR_ABIS_HANDLER + "004",
+			"Internal Error occured in Abis Handler identify request");
+
 	/** The error message. */
 	private final String errorMessage;
 
