@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -32,6 +31,8 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * 
@@ -114,13 +115,15 @@ public class BioMatcherUtil {
 	 *            the info
 	 * @return the bir
 	 */
-	private BIR getBir(Object info, Entry<SingleType, String> type) {
+	private BIR getBir(Object info, BioInfo type) {
 		BIRBuilder birBuilder = new BIRBuilder();
 		if (info instanceof String) {
 			RegistryIDType format = new RegistryIDType();
 			format.setOrganization(String.valueOf(CbeffConstant.FORMAT_OWNER));
-			format.setType(type.getValue());
-			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(type.getKey()))
+			format.setType(type.getType());
+			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder()
+					.withType(Collections.singletonList(type.getSingleType()))
+					.withSubtype(Arrays.asList(type.getSubTypes()))
 					.withFormat(format).build();
 			String reqInfoStr = (String) info;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
@@ -150,10 +153,15 @@ public class BioMatcherUtil {
 					"entityBIR size >>>" + entityBIR.length);
 			compositeScore = compositeBiometricApi.compositeMatch(reqBIR, entityBIR, null);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue ",
-					"composite Score >>>" + compositeScore.getScaledScore());
+					"composite Scaled Score >>>" + compositeScore.getScaledScore());
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue ",
+					"composite Internal Score >>>" + compositeScore.getInternalScore());
 			Arrays.asList(compositeScore.getIndividualScores()).stream()
 					.forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue",
-							"individual score Value >>>" + score.getScaleScore()));
+							"individual scale score Value >>>" + score.getScaleScore()));
+			Arrays.asList(compositeScore.getIndividualScores()).stream()
+					.forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchCompositeValue",
+							"individual Internal score Value >>>" + score.getInternalScore()));
 		} catch (BiometricException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator", "Biovalue not Matched");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -240,7 +248,7 @@ public class BioMatcherUtil {
 		return new BIR[][] { reqInfoObj, entityInfoObj };
 	}
 
-	private Entry<SingleType, String> getType(String idName, IdMapping[] idMappings) {
+	private BioInfo getType(String idName, IdMapping[] idMappings) {
 		//Note: Finger minutiea type not handled based on the requirement
 		String typeForIdName = idInfoFetcher.getTypeForIdName(idName, idMappings).orElse("");
 		long type = 0L;
@@ -255,8 +263,10 @@ public class BioMatcherUtil {
 			type = CbeffConstant.FORMAT_TYPE_FACE;
 			singleType = SingleType.FACE;
 		}
-		
-		return new SimpleEntry<>(singleType, String.valueOf(type));
+		String[] subTypes = Arrays.stream(idName.split(" "))
+				.filter(str -> !str.isEmpty())
+				.toArray(s -> new String[s]);
+		return new BioInfo(String.valueOf(type), singleType, subTypes);
 	}
 
 	/**
@@ -283,6 +293,14 @@ public class BioMatcherUtil {
 					"requested single type not found : " + type);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
+	}
+	
+	@Data
+	@AllArgsConstructor
+	private static class BioInfo {
+		private String type;
+		private SingleType singleType;
+		private String[] subTypes;
 	}
 	
 }
