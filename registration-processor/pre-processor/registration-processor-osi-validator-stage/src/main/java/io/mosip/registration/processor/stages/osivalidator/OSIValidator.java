@@ -29,7 +29,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.BioTypeException;
-import io.mosip.registration.processor.core.exception.IntroducerValidationException;
+import io.mosip.registration.processor.core.exception.ParentOnHoldException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -152,12 +152,12 @@ public class OSIValidator {
 	 * @throws NumberFormatException
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws PacketDecryptionFailureException
-	 * @throws IntroducerValidationException 
+	 * @throws ParentOnHoldException 
 	 */
 	public boolean isValidOSI(String registrationId, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException,
-			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IntroducerValidationException {
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, ParentOnHoldException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
@@ -435,13 +435,13 @@ public class OSIValidator {
 	 * @throws BiometricException
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws PacketDecryptionFailureException
-	 * @throws IntroducerValidationException 
+	 * @throws ParentOnHoldException 
 	 */
 	private boolean isValidIntroducer(String registrationId, JSONObject demographicIdentity,
 			RegistrationProcessorIdentity regProcessorIdentityJson, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			ParserConfigurationException, SAXException, BiometricException, BioTypeException,
-			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IntroducerValidationException {
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, ParentOnHoldException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
@@ -475,7 +475,7 @@ public class OSIValidator {
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET);
-					throw new IntroducerValidationException(StatusUtil.UIN_RID_NOT_FOUND.getCode(),StatusUtil.UIN_RID_NOT_FOUND.getMessage());
+					throw new ParentOnHoldException(StatusUtil.UIN_RID_NOT_FOUND.getCode(),StatusUtil.UIN_RID_NOT_FOUND.getMessage());
 				}
 
 				if (introducerUIN == null
@@ -493,7 +493,7 @@ public class OSIValidator {
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								StatusMessage.PARENT_UIN_NOT_AVAIALBLE);
-						throw new IntroducerValidationException(StatusUtil.PARENT_UIN_NOT_FOUND.getCode(),StatusUtil.PARENT_UIN_NOT_FOUND.getMessage());
+						throw new ParentOnHoldException(StatusUtil.PARENT_UIN_NOT_FOUND.getCode(),StatusUtil.PARENT_UIN_NOT_FOUND.getMessage());
 					}
 
 				}
@@ -515,10 +515,10 @@ public class OSIValidator {
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
-						throw new IntroducerValidationException(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getCode(),StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getMessage());
+						throw new ParentOnHoldException(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getCode(),StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getMessage());
 					}
 				} else {
-					throw new IntroducerValidationException(StatusUtil.PARENT_UIN_NOT_FOUND.getCode(),StatusUtil.PARENT_UIN_NOT_FOUND.getMessage());
+					throw new ParentOnHoldException(StatusUtil.PARENT_UIN_NOT_FOUND.getCode(),StatusUtil.PARENT_UIN_NOT_FOUND.getMessage());
 				}
 			}
 

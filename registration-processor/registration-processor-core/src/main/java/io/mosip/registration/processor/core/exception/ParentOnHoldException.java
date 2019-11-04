@@ -2,7 +2,7 @@ package io.mosip.registration.processor.core.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 
-public class IntroducerValidationException extends BaseCheckedException {
+public class ParentOnHoldException extends BaseCheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -10,7 +10,7 @@ public class IntroducerValidationException extends BaseCheckedException {
 	/**
 	 * Instantiates a new IntroducerValidationException .
 	 */
-	public IntroducerValidationException() {
+	public ParentOnHoldException() {
 		super();
 	}
 
@@ -18,7 +18,7 @@ public class IntroducerValidationException extends BaseCheckedException {
 	 * 
 	 * @param message
 	 */
-	public IntroducerValidationException(String code,String message) {
+	public ParentOnHoldException(String code,String message) {
 		super(code, message);
 	}
 
