@@ -1125,7 +1125,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		if (fingerprintDetailsDTOs != null) {
 
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-				if (fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
+				if (fingerprintDetailsDTO.getFingerType() !=null && fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
 					detailsDTO = fingerprintDetailsDTO;
 
 					for (String segmentedFingerPath : segmentedFingersPath) {
@@ -1176,13 +1176,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (detailsDTO.isCaptured()) {
 			
-			streamer.setStreamImageToImageView();
 			
 			int retries=0;
 			if(!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			}else {
+				streamer.setStreamImageToImageView();
+				
 				detailsDTO.setFingerPrint(streamer.imageBytes);
 			}
 			if(detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {

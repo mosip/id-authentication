@@ -247,14 +247,15 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				lastUpdated, currentTimeStamp);
 		registrationCenterMachineHistoryList = serviceHelper.getRegistrationCenterMachineHistoryDetails(regCenterId,
 				lastUpdated, currentTimeStamp);
+		//
 		syncJobDefDtos = serviceHelper.getSyncJobDefDetails(lastUpdated, currentTimeStamp);
 		screenDetails = serviceHelper.getScreenDetails(lastUpdated, currentTimeStamp);
-		//registeredDevices = serviceHelper.getRegisteredDeviceDetails(regCenterId, lastUpdated, currentTimeStamp);
-		//deviceProviders = serviceHelper.getDeviceProviderDetails(lastUpdated, currentTimeStamp);
-		//deviceServices = serviceHelper.getDeviceServiceDetails(lastUpdated, currentTimeStamp);
-		//ftps = serviceHelper.getFPDetails(lastUpdated, currentTimeStamp);
-		//deviceTypeDPMs = serviceHelper.getDeviceTypeDetails(lastUpdated, currentTimeStamp);
-		//deviceSubTypeDPMs = serviceHelper.getDeviceSubTypeDetails(lastUpdated, currentTimeStamp);
+		registeredDevices = serviceHelper.getRegisteredDeviceDetails(regCenterId, lastUpdated, currentTimeStamp);
+		deviceProviders = serviceHelper.getDeviceProviderDetails(lastUpdated, currentTimeStamp);
+		deviceServices = serviceHelper.getDeviceServiceDetails(lastUpdated, currentTimeStamp);
+		ftps = serviceHelper.getFPDetails(lastUpdated, currentTimeStamp);
+		deviceTypeDPMs = serviceHelper.getDeviceTypeDetails(lastUpdated, currentTimeStamp);
+		deviceSubTypeDPMs = serviceHelper.getDeviceSubTypeDetails(lastUpdated, currentTimeStamp);
 		CompletableFuture<Void> future = CompletableFuture.allOf(machineDetails, applications, registrationCenterTypes,
 				registrationCenters, templates, templateFileFormats, reasonCategory, reasonList, holidays,
 				blacklistedWords, biometricTypes, biometricAttributes, titles, languages, devices, documentCategories,
@@ -265,7 +266,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterUserMachineMappingHistoryList, registrationCenterMachineDeviceHistoryList,
 				registrationCenterDeviceHistoryList, registrationCenterMachineHistoryList, applicantValidDocumentList,
 				individualTypeList, appAuthenticationMethods, appDetails, appRolePriorities, processList,
-				screenAuthorizations, syncJobDefDtos, screenDetails);
+				screenAuthorizations, syncJobDefDtos, screenDetails,registeredDevices, deviceProviders, deviceServices,
+				ftps, deviceTypeDPMs, deviceSubTypeDPMs);
 
 		try {
 			future.join();
@@ -316,12 +318,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setScreenAuthorizations(screenAuthorizations.get());
 		response.setSyncJobDefinitions(syncJobDefDtos.get());
 		response.setScreenDetails(screenDetails.get());
-//		response.setRegisteredDevices(registeredDevices.get());
-//		response.setDeviceProviders(deviceProviders.get());
-//		response.setDeviceServices(deviceServices.get());
-//		response.setDeviceTypeDPMs(deviceTypeDPMs.get());
-//		response.setDeviceSubTypeDPMs(deviceSubTypeDPMs.get());
-//		response.setFunctionalTrustProviders(ftps.get());
+		response.setRegisteredDevices(registeredDevices.get());
+		response.setDeviceProviders(deviceProviders.get());
+		response.setDeviceServices(deviceServices.get());
+		response.setDeviceTypeDPMs(deviceTypeDPMs.get());
+		response.setDeviceSubTypeDPMs(deviceSubTypeDPMs.get());
+		response.setFunctionalTrustProviders(ftps.get());
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
