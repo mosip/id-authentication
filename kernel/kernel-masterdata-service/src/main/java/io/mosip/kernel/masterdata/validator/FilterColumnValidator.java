@@ -66,11 +66,6 @@ public class FilterColumnValidator {
 		try {
 			if (validateFilterColumnType(filter.getType())) {
 				Field field = target.getDeclaredField(TYPE_FIELD);
-				if (!containsFilterColumn(field, filter.getType())) {
-					errors.add(new ServiceError(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
-							String.format(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage(),
-									filter.getType())));
-				}
 				Field[] childFields = entity.getDeclaredFields();
 				Field[] superFields = entity.getSuperclass().getDeclaredFields();
 				List<Field> fieldList = new ArrayList<>();
@@ -83,6 +78,11 @@ public class FilterColumnValidator {
 					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorCode(),
 							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorMessage(),
 									filter.getColumnName())));
+				}
+				if (!containsFilterColumn(field, filter.getType())) {
+					errors.add(new ServiceError(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
+							String.format(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage(),
+									filter.getType())));
 				}
 			} else {
 				errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
