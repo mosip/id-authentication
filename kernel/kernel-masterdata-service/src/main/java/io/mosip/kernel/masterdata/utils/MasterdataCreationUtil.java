@@ -6,8 +6,11 @@ package io.mosip.kernel.masterdata.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
@@ -255,15 +258,24 @@ public class MasterdataCreationUtil {
 				
 				if(secondaryEntity!=null)
 				{
-					List<Field> baseEntityFields =  Arrays.asList(secondaryEntity.getClass().getDeclaredFields());
-					List<Field> superClassEntityFields =  Arrays.asList(secondaryEntity.getClass().getSuperclass().getDeclaredFields());
-					baseEntityFields.addAll(superClassEntityFields);
-					
-					for (Field field : baseEntityFields) {
+					try
+					{
+					Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
+					Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
+					List<Field> fieldList = new ArrayList<>();
+					fieldList.addAll(Arrays.asList(childFields));	
+					if (superFields != null)
+						fieldList.addAll(Arrays.asList(superFields));
+					for (Field field : fieldList) {
 						field.setAccessible(true);
 								if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
-									activeSecondary= (boolean) field.get(t);
+									activeSecondary= (boolean) field.get(secondaryEntity);
 						}
+					}
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
 					}
 					if(activeSecondary==true)
 					{
