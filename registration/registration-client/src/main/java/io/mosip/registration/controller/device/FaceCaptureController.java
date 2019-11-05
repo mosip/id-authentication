@@ -416,7 +416,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		FaceDetailsDTO faceDetail = new FaceDetailsDTO();
 		faceDetail.setFaceISO(isoBytes);
 		authenticationValidatorDTO.setFaceDetail(faceDetail);
-		if(!bioService.validateFace(authenticationValidatorDTO)) {
+		if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) || !bioService.validateFace(authenticationValidatorDTO)) {
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && capturedImage != null) {
 			
@@ -499,7 +499,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			saveBiometricDetailsBtn.setDisable(false);
 		}
 		}else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FACE_SCANNING_ERROR);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FACE_DUPLICATE_ERROR);
 		}
 	}
 

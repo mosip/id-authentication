@@ -631,6 +631,9 @@ public class IrisCaptureController extends BaseController {
 	
 	private boolean validateIrisLocalDedup(List<IrisDetailsDTO> irises) {
 
+		if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
+			return true;
+		
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 			authenticationValidatorDTO.setIrisDetails(irises);
