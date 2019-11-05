@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
@@ -62,8 +63,10 @@ public enum IdaIdMapping implements IdMapping {
 	RIGHTRING(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.RING_FINGER.value()), SingleType.FINGER.value()),
 	RIGHTTHUMB(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()), SingleType.FINGER.value()),
 	//BIO - Finger - Multi or Unknown
-	UNKNOWN_FINGER(concatNames(unknown(), SingleType.FINGER.value()), setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, 
-			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB), SingleType.FINGER.value()) {
+	UNKNOWN_FINGER(
+			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
+					SingleType.FINGER.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
+			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB,			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB), SingleType.FINGER.value()) {
 		@Override
 		public String getSubType() {
 			return unknown();
@@ -78,7 +81,10 @@ public enum IdaIdMapping implements IdMapping {
 	LEFTIRIS(concatNames(SingleAnySubtypeType.LEFT.value(), SingleType.IRIS.value()), SingleType.IRIS.value()),
 	RIGHTIRIS(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleType.IRIS.value()), SingleType.IRIS.value()),
 	//BIO - Iris - Multi or Unknown
-	UNKNOWN_IRIS(concatNames(unknown(), SingleType.IRIS.value()), setOf(RIGHTIRIS, LEFTIRIS), SingleType.IRIS.value()) {
+	UNKNOWN_IRIS(
+			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
+					SingleType.IRIS.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
+			setOf(RIGHTIRIS, LEFTIRIS), SingleType.IRIS.value()) {
 		@Override
 		public String getSubType() {
 			return unknown();
@@ -90,7 +96,10 @@ public enum IdaIdMapping implements IdMapping {
 	//BIO - Face - Single
 	FACE( SingleType.FACE.value(), SingleType.FACE.value()),
 	//BIO - Face - Unknown
-	UNKNOWN_FACE(concatNames(unknown(), SingleType.FACE.value()), setOf(FACE), SingleType.FACE.value()) {
+	UNKNOWN_FACE(
+			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
+					SingleType.FACE.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
+			setOf(FACE), SingleType.FACE.value()) {
 		@Override
 		public String getSubType() {
 			return unknown();
@@ -104,7 +113,6 @@ public enum IdaIdMapping implements IdMapping {
 
 
 // @formatter:on
-	public static final String UNKNOWN = "UNKNOWN";
 
 	private String idname;
 
@@ -149,7 +157,7 @@ public enum IdaIdMapping implements IdMapping {
 	}
 	
 	private static String unknown() {
-		return UNKNOWN;
+		return IdAuthCommonConstants.UNKNOWN_BIO;
 	}
 
 	public Set<IdMapping> getSubIdMappings() {
