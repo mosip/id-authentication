@@ -433,7 +433,6 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	 * @param blockSize blocksize of current cipher
 	 * @return generated IV
 	 */
-	@Synchronized
 	private byte[] generateIV(int blockSize) {
 		byte[] byteIV = new byte[blockSize];
 		secureRandom.nextBytes(byteIV);
