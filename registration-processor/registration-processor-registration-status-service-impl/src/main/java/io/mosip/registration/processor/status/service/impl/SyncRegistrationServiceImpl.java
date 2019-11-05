@@ -20,15 +20,16 @@ import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -109,7 +110,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		List<SyncResponseDto> synchResponseList = new ArrayList<>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::sync()::entry");
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		boolean isTransactionSuccessful = false;
 		try {
 			for (SyncRegistrationDto registrationDto : resgistrationDtos) {
@@ -121,6 +122,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "");
 		} catch (DataAccessLayerException e) {
+			description.setMessage(PlatformErrorMessages.RPR_RGS_DATA_ACCESS_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_RGS_DATA_ACCESS_EXCEPTION.getCode());
 			description.setMessage("DataAccessLayerException while syncing Registartion Id's" + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -133,12 +136,20 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 						: EventName.ADD.toString();
 				eventType = EventType.BUSINESS.toString();
 			} else {
+				description.setMessage(PlatformErrorMessages.RPR_RGS_REGISTRATION_SYNC_SERVICE_FAILED.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_RGS_REGISTRATION_SYNC_SERVICE_FAILED.getCode());
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful
+					? PlatformSuccessMessages.RPR_SYNC_REGISTRATION_SERVICE_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.SYNC_REGISTRATION_SERVICE.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, AuditLogConstant.MULTIPLE_ID.toString());
+
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::sync()::exit");
@@ -252,15 +263,15 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			return true;
 		} else if (SyncTypeDto.LOST.getValue().equals(value)) {
 			return true;
-		}else if (SyncTypeDto.ACTIVATED.getValue().equals(value)) {
+		} else if (SyncTypeDto.ACTIVATED.getValue().equals(value)) {
 			return true;
 		} else if (SyncTypeDto.DEACTIVATED.getValue().equals(value)) {
 			return true;
-		}  else if (SyncTypeDto.RES_UPDATE.getValue().equals(value)) {
+		} else if (SyncTypeDto.RES_UPDATE.getValue().equals(value)) {
 			return true;
-		}  else if (SyncTypeDto.RES_REPRINT.getValue().equals(value)) {
+		} else if (SyncTypeDto.RES_REPRINT.getValue().equals(value)) {
 			return true;
-		}  else {
+		} else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 			syncResponseFailureDto.setRegistrationId(registrationDto.getRegistrationId());
 
@@ -408,7 +419,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 		syncRegistrationEntity.setCreatedBy(CREATED_BY);
 		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
-		if (syncRegistrationEntity.getIsDeleted()!=null && syncRegistrationEntity.getIsDeleted()) {
+		if (syncRegistrationEntity.getIsDeleted() != null && syncRegistrationEntity.getIsDeleted()) {
 			syncRegistrationEntity.setDeletedDateTime(LocalDateTime.now());
 		} else {
 			syncRegistrationEntity.setDeletedDateTime(null);
@@ -420,9 +431,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Override
 	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(Object encryptedSyncMetaInfo, String referenceId,
 			String timeStamp, List<SyncResponseDto> syncResponseList) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::entry");
-		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::entry");
+
 		RegistrationSyncRequestDTO registrationSyncRequestDTO = null;
 		try {
 			String decryptedSyncMetaData = decryptor.decrypt(encryptedSyncMetaInfo, referenceId, timeStamp);
@@ -459,9 +470,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode());
 			syncResponseList.add(syncResponseFailureDto);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::exit");
-		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::exit");
+
 		return registrationSyncRequestDTO;
 	}
 }

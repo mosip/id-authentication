@@ -25,17 +25,19 @@ public enum SaltGeneratorConstant {
 	/** The end seq. */
 	END_SEQ("mosip.kernel.salt-generator.end-sequence"),
 	
+	DATASOURCE_ALIAS("mosip.kernel.salt-generator.db.key-alias"),
+	
 	/** The datasource url. */
-	DATASOURCE_URL("mosip.kernel.salt-generator.db.url"),
+	DATASOURCE_URL("%s.url"),
 	
 	/** The datasource username. */
-	DATASOURCE_USERNAME("mosip.kernel.salt-generator.db.username"),
+	DATASOURCE_USERNAME("%s.username"),
 	
 	/** The datasource password. */
-	DATASOURCE_PASSWORD("mosip.kernel.salt-generator.db.password"),
+	DATASOURCE_PASSWORD("%s.password"),
 	
 	/** The datasource driverclassname. */
-	DATASOURCE_DRIVERCLASSNAME("mosip.kernel.salt-generator.db.driverClassName");
+	DATASOURCE_DRIVERCLASSNAME("%s.driverClassName");
 
 	/** The value. */
 	private String value;

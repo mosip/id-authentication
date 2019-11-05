@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
@@ -69,9 +72,9 @@ public class DeviceRegisterController {
 	
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
-	@PutMapping("/update/status/{statuscode}/{devicecode}")
-	public ResponseEntity<ResponseDto> deRegisterDevice(@PathVariable(value="devicecode") String deviceCode,
-			@PathVariable(value="statuscode") String statusCode) {
+	@PutMapping("/update/status")
+	public ResponseEntity<ResponseDto> deRegisterDevice(@NotBlank @RequestParam(value="devicecode",required=true) String deviceCode,
+			@NotBlank @RequestParam(value="statuscode",required=true) String statusCode) {
 		return new ResponseEntity<>(deviceRegisterService.updateStatus(deviceCode, statusCode), HttpStatus.OK);
 	}
 }
