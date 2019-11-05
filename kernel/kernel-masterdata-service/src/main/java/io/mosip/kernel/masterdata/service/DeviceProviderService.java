@@ -1,24 +1,35 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
-
+import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
+import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
 
 /**
  * 
- * @author Srinivas
+ * @author Srinivasan
  * @author Megha Tanga
  *
  */
 
 public interface DeviceProviderService {
 
-	ResponseDto validateDeviceProviders(String deviceCode, String deviceProviderId, String deviceServiceId,
-			String deviceServiceVersion);
+	/**
+	 * Validate device providers.
+	 *
+	 * @param validateDeviceDto the validate device dto
+	 * @return {@link ResponseDto}
+	 */
+	ResponseDto validateDeviceProviders(ValidateDeviceDto validateDeviceDto);
 
-	ResponseDto validateDeviceProviderHistory(String deviceCode, String deviceProviderId, String deviceServiceId,
-			String deviceServiceVersion, String timeStamp);
+	/**
+	 * Validate device provider history.
+	 *
+	 * @param validateDeviceDto the validate device dto
+	 * @return {@link ResponseDto} the response dto
+	 */
+	ResponseDto validateDeviceProviderHistory(ValidateDeviceHistoryDto validateDeviceDto);
 
 	/**
 	 * Method to create Device Provider

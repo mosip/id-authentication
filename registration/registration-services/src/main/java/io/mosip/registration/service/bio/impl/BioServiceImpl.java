@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -22,9 +23,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -78,6 +76,25 @@ public class BioServiceImpl extends BaseService implements BioService {
 	private static final Logger LOGGER = AppConfig.getLogger(BioServiceImpl.class);
 
 	private byte[] isoImage;
+	
+	private static HashMap<String, CaptureResponsBioDataDto> bestCaptures = new HashMap<>();
+
+	public static HashMap<String, CaptureResponsBioDataDto> getBestCaptures() {
+		return bestCaptures;
+	}
+
+	public static void clearCaptures(List<String> captures) {
+
+		captures.forEach(key -> bestCaptures.remove(key));
+
+	}
+	
+	public static void clearAllCaptures() {
+
+		bestCaptures.clear();
+
+	}
+
 
 	/**
 	 * Returns Authentication validator Dto that will be passed
@@ -247,6 +264,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 		mosipBioDeviceDataResponses.forEach(captured -> {
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
+			
+			//Get Best Capture
+			captureRespoonse = getBestCapture(captureRespoonse);
+			
 			fingerPrintDetail.setFingerPrintISOImage(Base64.getDecoder().decode(captureRespoonse.getBioExtract()));
 			fingerPrintDetail.setFingerType(captureRespoonse.getBioSubType());
 			fingerPrintDetail.setFingerPrint(captureRespoonse.getBioValue());
@@ -616,6 +637,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 		mosipBioDeviceDataResponses.forEach(captured -> {
 			IrisDetailsDTO irisDetails = new IrisDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
+			
+			//Get Best Capture
+			captureRespoonse = getBestCapture(captureRespoonse);
+			
 			irisDetails.setIrisIso((Base64.getDecoder().decode(captureRespoonse.getBioExtract())));
 			irisDetails.setIrisImageName(captureRespoonse.getBioSubType());
 			irisDetails.setIris((captureRespoonse.getBioValue()));
@@ -817,6 +842,32 @@ public class BioServiceImpl extends BaseService implements BioService {
 				"Stubbing face details for user registration");
 
 		return userFaceDetails.stream().anyMatch(face -> Arrays.equals(faceDetail.getFace(), face.getBioIsoImage()));
+	}
+
+	private CaptureResponsBioDataDto getBestCapture(CaptureResponsBioDataDto captureResponsBioDataDto) {
+
+		// Get Stored Capture of bio type
+		CaptureResponsBioDataDto responsBioDataDtoStored = bestCaptures.get(captureResponsBioDataDto.getBioSubType());
+
+		if (responsBioDataDtoStored != null) {
+			int qualityScore = Integer.parseInt(captureResponsBioDataDto.getQualityScore());
+
+			int qualityScoreStored = Integer.parseInt(responsBioDataDtoStored.getQualityScore());
+
+			// If Better capture found, store it
+			if (qualityScoreStored < qualityScore) {
+
+				bestCaptures.put(captureResponsBioDataDto.getBioSubType(), captureResponsBioDataDto);
+
+			}
+		} else {
+
+			// If Not stored, store it
+			bestCaptures.put(captureResponsBioDataDto.getBioSubType(), captureResponsBioDataDto);
+
+		}
+
+		return bestCaptures.get(captureResponsBioDataDto.getBioSubType());
 	}
 
 }

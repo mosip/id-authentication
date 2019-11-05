@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -96,7 +97,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	@Value("${mosip.kernel.crypto.hash-iteration:100000}")
 	private int iterations;
 
-	private Map<String, Cipher> cipherRegistry;
+	//private Map<String, Cipher> cipherRegistry;
 
 	private SecureRandom secureRandom;
 
@@ -106,27 +107,35 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 
 	@PostConstruct
 	public void init() {
-		cipherRegistry = new HashMap<>();
+		//cipherRegistry = new ConcurrentHashMap<>();
 		try {
-			cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
-			cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
-			cipherRegistry.put(RSA_ECB_NO_PADDING, Cipher.getInstance(RSA_ECB_NO_PADDING));
+			//cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
+			//cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
+			//cipherRegistry.put(RSA_ECB_NO_PADDING, Cipher.getInstance(RSA_ECB_NO_PADDING));
 			secretKeyFactory = SecretKeyFactory.getInstance(passwordAlgorithm);
 			signature = Signature.getInstance(signAlgorithm);
 		
-		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+		} catch (java.security.NoSuchAlgorithmException e) {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
 		}
 		secureRandom = new SecureRandom();
 	}
+	
 
 	@Override
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data, byte[] aad) {
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
-		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance(symmetricAlgorithm);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 		byte[] output = null;
 		byte[] randomIV = generateIV(cipher.getBlockSize());
 		try {
@@ -158,7 +167,14 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		if (iv == null) {
 			symmetricEncrypt(key, data, aad);
 		}
-		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance(symmetricAlgorithm);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, iv);
@@ -181,7 +197,14 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	public byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] aad) {
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
-		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance(symmetricAlgorithm);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 		byte[] output = null;
 		try {
 			byte[] randomIV = Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length);
@@ -214,7 +237,14 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		if (iv == null) {
 			symmetricDecrypt(key, data, aad);
 		}
-		Cipher cipher = cipherRegistry.get(symmetricAlgorithm);
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance(symmetricAlgorithm);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), AES);
 			GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLength, iv);
@@ -237,7 +267,14 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	public byte[] asymmetricEncrypt(PublicKey key, byte[] data) {
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
-		Cipher cipher = cipherRegistry.get(asymmetricAlgorithm);
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance(asymmetricAlgorithm);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 		final OAEPParameterSpec oaepParams = new OAEPParameterSpec(HASH_ALGO, MGF1, MGF1ParameterSpec.SHA256,
 				PSpecified.DEFAULT);
 		try {
@@ -257,7 +294,14 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	public byte[] asymmetricDecrypt(PrivateKey key, byte[] data) {
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
-		Cipher cipher = cipherRegistry.get(RSA_ECB_NO_PADDING);
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance(RSA_ECB_NO_PADDING);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
+		}
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, key);
 		} catch (java.security.InvalidKeyException e) {
