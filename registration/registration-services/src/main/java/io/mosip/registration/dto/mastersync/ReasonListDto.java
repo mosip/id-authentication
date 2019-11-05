@@ -20,8 +20,6 @@ public class ReasonListDto extends MasterSyncBaseDto {
 
 	private Boolean isActive;
 
-	private boolean isDeleted;
-
 	/**
 	 * @return the code
 	 */
@@ -104,20 +102,6 @@ public class ReasonListDto extends MasterSyncBaseDto {
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
-	}
-
-	/**
-	 * @return the isDeleted
-	 */
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
-	/**
-	 * @param isDeleted the isDeleted to set
-	 */
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 
 }
