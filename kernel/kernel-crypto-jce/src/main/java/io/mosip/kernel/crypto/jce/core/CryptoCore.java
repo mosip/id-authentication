@@ -8,10 +8,7 @@ import java.security.Signature;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
@@ -40,6 +37,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.util.CryptoUtils;
+import lombok.Synchronized;
 
 /**
  * This class provided <b> Basic and Core Cryptographic functionalities </b>.
@@ -108,7 +106,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	@PostConstruct
 	public void init() {
 		//cipherRegistry = new ConcurrentHashMap<>();
-		try {
+		/*try {
 			//cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
 			//cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
 			//cipherRegistry.put(RSA_ECB_NO_PADDING, Cipher.getInstance(RSA_ECB_NO_PADDING));
@@ -119,7 +117,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
-		}
+		}*/
 		secureRandom = new SecureRandom();
 	}
 	
@@ -359,10 +357,16 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		PBEKeySpec pbeKeySpec = new PBEKeySpec(convertedData, salt, iterations, symmetricKeyLength);
 		SecretKey key;
 		try {
+			secretKeyFactory = SecretKeyFactory.getInstance(passwordAlgorithm);
 			key = secretKeyFactory.generateSecret(pbeKeySpec);
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidParamSpecException(
 					SecurityExceptionCodeConstant.MOSIP_INVALID_PARAM_SPEC_EXCEPTION.getErrorCode(), e.getMessage(), e);
+		}
+		catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
 		}
 		return DatatypeConverter.printHexBinary(key.getEncoded());
 	}
@@ -372,6 +376,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		Objects.requireNonNull(privateKey, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
 		try {
+			signature = Signature.getInstance(signAlgorithm);
 			signature.initSign(privateKey);
 			signature.update(data);
 			return CryptoUtil.encodeBase64String(signature.sign());
@@ -381,6 +386,10 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		} catch (java.security.SignatureException e) {
 			throw new SignatureException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
+		} catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
 		}
 	}
 
@@ -393,6 +402,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		Objects.requireNonNull(publicKey, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
 		try {
+			signature = Signature.getInstance(signAlgorithm);
 			signature.initVerify(publicKey);
 			signature.update(data);
 			return signature.verify(CryptoUtil.decodeBase64(sign));
@@ -402,6 +412,11 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		} catch (java.security.SignatureException e) {
 			throw new SignatureException(SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
+		}
+		catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
 		}
 
 	}
@@ -418,6 +433,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	 * @param blockSize blocksize of current cipher
 	 * @return generated IV
 	 */
+	@Synchronized
 	private byte[] generateIV(int blockSize) {
 		byte[] byteIV = new byte[blockSize];
 		secureRandom.nextBytes(byteIV);
