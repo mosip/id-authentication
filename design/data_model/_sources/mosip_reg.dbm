@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="10,180" last-zoom="0.3"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,47" last-zoom="0.2"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -903,7 +903,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="individual_type">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3000" y="820"/>
+	<position x="3620" y="840"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -942,7 +942,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="key_store">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3680" y="540"/>
+	<position x="3640" y="540"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2076,7 +2076,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sync_control">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2800" y="1160"/>
+	<position x="2820" y="1480"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2127,7 +2127,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sync_job_def">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="3200" y="1180"/>
+	<position x="3540" y="1520"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2186,7 +2186,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sync_transaction">
 	<schema name="reg"/>
 	<role name="sysadmin"/>
-	<position x="2960" y="1560"/>
+	<position x="3360" y="1820"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -2837,6 +2837,342 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_exceptional_hol" type="pk-constr" table="reg.reg_exceptional_holiday">
 		<columns names="regcntr_id,hol_date" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_device_sub_type">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="1440" y="840"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="dtyp_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="descr">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_rdstyp_code" type="pk-constr" table="reg.reg_device_sub_type">
+		<columns names="code" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_rdstyp" type="uq-constr" table="reg.reg_device_sub_type">
+		<columns names="dtyp_code,name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_device_type">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="1780" y="840"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="descr">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_rdtyp_code" type="pk-constr" table="reg.reg_device_type">
+		<columns names="code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="mosip_device_service">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="2760" y="880"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sw_binary_hash" not-null="true">
+		<type name="bytea" length="64"/>
+	</column>
+	<column name="sw_version" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="dprovider_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="dtype_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="dstype_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="make" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="model" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="sw_cr_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="sw_expiry_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_mds_id" type="pk-constr" table="reg.mosip_device_service">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_mds" type="uq-constr" table="reg.mosip_device_service">
+		<columns names="sw_version,dprovider_id,dtype_code,dstype_code,make,model" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="foundational_trust_provider">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="2100" y="860"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="address">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="email">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="contact_number">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="certificate_alias">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_ftprd_id" type="pk-constr" table="reg.foundational_trust_provider">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="device_provider">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="2420" y="860"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="vendor_name" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="address">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="email">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="contact_number">
+		<type name="character varying" length="16"/>
+	</column>
+	<column name="certificate_alias">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_devprd_id" type="pk-constr" table="reg.device_provider">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="registered_device_master">
+	<schema name="reg"/>
+	<role name="sysadmin"/>
+	<position x="3140" y="880"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="dtype_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="dstype_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="device_id" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="device_sub_id">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="digital_id" not-null="true">
+		<type name="character varying" length="1024"/>
+	</column>
+	<column name="serial_number" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="provider_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="provider_name">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="purpose" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="firmware">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="make" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="model" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="expiry_date">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="certification_level">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="foundational_trust_provider_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="foundational_trust_signature">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="foundational_trust_certificate">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="dprovider_signature">
+		<type name="character varying" length="512"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_regdevicem_code" type="pk-constr" table="reg.registered_device_master">
+		<columns names="code" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_regdevm_id" type="uq-constr" table="reg.registered_device_master">
+		<columns names="serial_number,provider_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 

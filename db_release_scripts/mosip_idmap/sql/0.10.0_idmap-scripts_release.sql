@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------------------------------
 -- Database Name: mosip_idamap
--- Release Version 	: 1.0
+-- Release Version 	: 0.10.0
 -- Purpose    		: Database Alter scripts for the release for ID Map DB.       
 -- Create By   		: Sadanandegowda
 -- Created Date		: 23-Sep-2019

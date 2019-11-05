@@ -1,3 +1,15 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: Release DB deployment
+### -- Deploy Module 	: MOSIP ALL
+### -- Purpose    		: To deploy MOSIP Database alter scripts for the release, Scripts deploy changes for all the databases.       
+### -- Create By   		: Sadanandegowda
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
+### -- -----------------------------------------------------------------------------------------------------------
+
 #! bin/bash
 echo "`date` : You logged on to DB deplyment server as : `whoami`"
 echo "`date` : MOSIP Database objects deployment for the release started.... Release Number : $1"

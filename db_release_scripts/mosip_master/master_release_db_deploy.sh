@@ -1,3 +1,15 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: Master Release DB deploy
+### -- Deploy Module 	: MOSIP Master
+### -- Purpose    		: To deploy Master Database alter scripts for the release.       
+### -- Create By   		: Sadanandegowda
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
+### -- -----------------------------------------------------------------------------------------------------------
+
 #########Properties file #############
 set -e
 properties_file="$1"

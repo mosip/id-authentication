@@ -1,3 +1,15 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: Regprc Release DB deploy
+### -- Deploy Module 	: MOSIP Regprc
+### -- Purpose    		: To deploy Regprc Database alter scripts for the release.       
+### -- Create By   		: Sadanandegowda
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
+### -- -----------------------------------------------------------------------------------------------------------
+
 #########Properties file #############
 set -e
 properties_file="$1"

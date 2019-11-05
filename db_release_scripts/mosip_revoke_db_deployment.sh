@@ -1,3 +1,15 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: Revoke DB deploy
+### -- Deploy Module 	: MOSIP ALL
+### -- Purpose    		: To revoke MOSIP Database alter scripts for the release, Scripts revoke changes for all the databases.      
+### -- Create By   		: Sadanandegowda
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
+### -- -----------------------------------------------------------------------------------------------------------
+
 #! bin/bash
 echo "`date` : You logged on to DB deplyment server as : `whoami`"
 echo "`date` : MOSIP Database objects release deployment revoke started.... Release Number : $1"
