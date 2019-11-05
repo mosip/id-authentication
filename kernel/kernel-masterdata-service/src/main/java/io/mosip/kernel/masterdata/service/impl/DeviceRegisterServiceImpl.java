@@ -34,7 +34,7 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Service class to register and de register Device.
  * 

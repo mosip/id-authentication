@@ -45,6 +45,9 @@ public class RegisteredDevice extends BaseEntity {
 
 	@Column(name = "device_sub_id")
 	private String deviceSubId;
+	
+	@Column(name="digital_id")
+	private String digitalId;
 
 	@Column(name = "serial_number")
 	private String serialNumber;
