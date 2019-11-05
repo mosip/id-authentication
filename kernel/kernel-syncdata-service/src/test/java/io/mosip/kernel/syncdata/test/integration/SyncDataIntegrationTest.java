@@ -678,6 +678,7 @@ public class SyncDataIntegrationTest {
 		registeredDevice = new RegisteredDevice();
 		registeredDevice.setDeviceId("10001");
 		registeredDevice.setStatusCode("Registered");
+		registeredDevice.setExpiryDate(LocalDateTime.now());
 
 		deviceTypeDPM = new DeviceTypeDPM();
 		deviceTypeDPM.setCode("1111");
