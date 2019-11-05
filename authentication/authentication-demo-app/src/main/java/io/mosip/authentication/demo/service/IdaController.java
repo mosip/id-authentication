@@ -108,6 +108,9 @@ public class IdaController {
 
 	@FXML
 	private CheckBox irisAuthType;
+	
+	@FXML
+	private CheckBox faceAuthType;
 
 	@FXML
 	private CheckBox otpAuthType;
@@ -156,6 +159,7 @@ public class IdaController {
 			bioAnchorPane.setDisable(true);
 		}
 		irisAuthType.setSelected(false);
+		faceAuthType.setSelected(false);
 		ObservableList<String> fingerCountChoices = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7",
 				"8", "9", "10");
 		count.setItems(fingerCountChoices);
@@ -170,8 +174,23 @@ public class IdaController {
 			bioAnchorPane.setDisable(true);
 		}
 		fingerAuthType.setSelected(false);
+		faceAuthType.setSelected(false);
 		ObservableList<String> irisCountChoices = FXCollections.observableArrayList("1", "2");
 		count.setItems(irisCountChoices);
+	}
+	
+	@FXML
+	private void onFaceAuth() {
+		responsetextField.setText(null);
+		if (faceAuthType.isSelected()) {
+			bioAnchorPane.setDisable(false);
+		} else {
+			bioAnchorPane.setDisable(true);
+		}
+		fingerAuthType.setSelected(false);
+		irisAuthType.setSelected(false);
+		ObservableList<String> faceCountChoices = FXCollections.observableArrayList("1");
+		count.setItems(faceCountChoices);
 	}
 
 	@FXML
@@ -198,6 +217,8 @@ public class IdaController {
 			capture = captureFingerprint();
 		} else if (irisAuthType.isSelected()) {
 			capture = captureIris();
+		} else  if (faceAuthType.isSelected()) {
+			capture = captureFace();
 		}
 	}
 
@@ -207,6 +228,22 @@ public class IdaController {
 				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("finger.deviceId") + "\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 
 		return capturebiometrics(requestBody);
+	}
+	
+	private String captureIris() throws Exception {
+		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
+				+ count.getValue()
+				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("iris.deviceId") + "\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+		Map irisData = mapper.readValue(capturebiometrics(requestBody), Map.class);
+		((List) irisData.get("biometrics")).remove(1);
+		return mapper.writeValueAsString(irisData);
+	}
+	
+	private String captureFace() throws Exception {
+		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":40000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"FACE\",\"count\":"
+				+ count.getValue()
+				+ ",\"exception\":[],\"requestedScore\":0,\"deviceId\":\"" + env.getProperty("face.deviceId") + "\",\"deviceSubId\":0,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
+		return mapper.writeValueAsString(mapper.readValue(capturebiometrics(requestBody), Map.class));
 	}
 
 	private String capturebiometrics(String requestBody) throws Exception {
@@ -238,15 +275,6 @@ public class IdaController {
 		}
 		System.out.println(result);
 		return result;
-	}
-
-	private String captureIris() throws Exception {
-		String requestBody = "{\"env\":\"Staging\",\"mosipProcess\":\"Auth\",\"version\":\"1.0\",\"timeout\":10000,\"captureTime\":\"0001-01-01T00:00:00\",\"transactionId\":\"1234567890\",\"bio\":[{\"type\":\"IIR\",\"count\":"
-				+ count.getValue()
-				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("iris.deviceId") + "\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
-		Map irisData = mapper.readValue(capturebiometrics(requestBody), Map.class);
-		((List) irisData.get("biometrics")).remove(1);
-		return mapper.writeValueAsString(irisData);
 	}
 
 	@SuppressWarnings("rawtypes")
