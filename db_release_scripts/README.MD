@@ -43,7 +43,7 @@
 
 * **mosip_revoke_db_deployment.sh:**  DB revoke deployment script for all database deployment.
 
-**Note:** SQL script files name under sql folder are appended with release version numbers( like **1.0**_master-scripts_release.sql), Same version number has to be passed as argument while executing release/revoke shell scripts. Ex. **$sh mosip_release_db_deployment.sh 1.0**
+**Note:** SQL script files name under sql folder are appended with release version numbers( like **0.10.0**_master-scripts_release.sql), Same version number has to be passed as argument while executing release/revoke shell scripts. Ex. **$sh mosip_release_db_deployment.sh 0.10.0**
 
 **Note :** No need of shell script update unless it is really causing any problem or any further implementation is being introduced.
 
@@ -75,11 +75,11 @@ Once completed with sourcing the database release files, Follow the DB release d
 
 **ALTER_SCRIPT_FLAG=** Flag variable which contains value as 0 or 1 for any Alter scripts existance for the particular DB. if flag=0 then no alterscripts else flag=1.
 
-**ALTER_SCRIPT_FILENAME=** Alter scripts sql filename, This file is kept under sql directory, ex: <schema>-scripts_release.sql.
+**ALTER_SCRIPT_FILENAME=** Alter scripts sql filename, This file is kept under sql directory, ex: <release_version_number>_<schema_name>-scripts_release.sql.
 
 **REVOKE_SCRIPT_FLAG=** Flag variable which contains value as 0 or 1 for any revoke scripts existance for the particular DB. if flag=0 then no revokescripts else flag=1.
 
-**REVOKE_SCRIPT_FILENAME=** Revoke scripts sql filename, This file is kept under sql directory, ex: <schema>-scripts_revoke.sql.
+**REVOKE_SCRIPT_FILENAME=** Revoke scripts sql filename, This file is kept under sql directory, ex: <release_version_number>_<schema_name>-scripts_revoke.sql.
 
 **Note - Make sure, There is a single empty line at end of the .properties files content and No spaces in beggining and end of the parameter values**
 
