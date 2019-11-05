@@ -55,7 +55,7 @@ public class KeyManager {
 	private String appId;
 
 	/** The partner id. */
-	@Value("${" + IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID + "}")
+	@Value("${" + IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID + "}")
 	private String partnerId;
 
 	/** The key splitter. */

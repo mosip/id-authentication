@@ -70,9 +70,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant HASH_INPUT_PARAM. */
 	private static final String HASH_INPUT_PARAM = REQUEST + "/" + BIO_VALUE + "/" + HASH;
 
-	/** The Constant REFID_IDA_FIR. */
-	private static final String REFID_IDA_FIR = "IDA-FIR";
-
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "sessionKey";
 
@@ -192,13 +189,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] aadLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
 			String combinedData = combineDataForDecryption(String.valueOf(bioValue), String.valueOf(sessionKey));
-			String decryptedData = keyManager.kernelDecrypt(combinedData, env.getProperty(IdAuthConfigKeyConstants.CRYPTO_FIR_REF_ID, REFID_IDA_FIR), aad, salt);
+			String decryptedData = keyManager.kernelDecrypt(combinedData, getBioRefId(), aad, salt);
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
 			return map;
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	protected String getBioRefId() {
+		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_BIO_REFERENCE_ID);
 	}
 
 	/**
@@ -235,7 +236,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the string
 	 */
 	protected String fetchReferenceId() {
-		return env.getProperty(IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID);
+		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID);
 	}
 
 	/*
