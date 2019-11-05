@@ -79,7 +79,16 @@ public enum PlatformSuccessMessages {
 	RPR_ABIS_HANDLER_STAGE_SUCCESS(PlatformConstants.RPR_ABIS_HANDLER + "000", "ABIS hanlder stage success"),
 
 	RPR_ABIS_MIDDLEWARE_STAGE_SUCCESS(PlatformConstants.RPR_ABIS_MIDDLEWARE + "000",
-			"Abis insertRequests sucessfully sent to Queue");
+			"Abis insertRequests sucessfully sent to Queue"),
+
+	RPR_MANUAL_VERIFICATION_APPROVED(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "000",
+			"Manual verification approved"),
+
+	RPR_DECRYPTION_SUCCESS(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "000", "Decryption success"),
+
+	RPR_PRINT_SERVICE_SUCCESS(PlatformConstants.RPR_PRINTING_MODULE + "002", "Pdf generated and sent to print stage"),
+
+	RPR_SYNC_REGISTRATION_SERVICE_SUCCESS(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "000", "SYNC successfull");
 
 	/** The success message. */
 	private final String successMessage;

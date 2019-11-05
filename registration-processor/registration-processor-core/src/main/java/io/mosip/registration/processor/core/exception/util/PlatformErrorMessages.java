@@ -167,6 +167,10 @@ public enum PlatformErrorMessages {
 	/** The rpr rgs decryption failed. */
 	RPR_RGS_DECRYPTION_FAILED(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "028", "Request Decryption Failed"),
 
+	RPR_RGS_REGISTRATION_SYNC_SERVICE_FAILED(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "029", "SYNC Failed"),
+
+	RPR_RGS_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "030",
+			"DataAccessLayerException while syncing Registartion Id's"),
 	/** The rpr pis registration table not accessible. */
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
@@ -456,15 +460,22 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pdj packet not available. */
 	// packet decryption job Exception error code and message
-	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001", "Packet not available"),
+	RPR_PDS_PACKET_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "001", "Packet not available"),
 
 	/** The rpr pdj file path not accessible. */
-	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002",
+	RPR_PDS_FILE_PATH_NOT_ACCESSIBLE(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "002",
 			"The File path set by the System is not accessible"),
 
 	/** The rpr pdj packet decryption failure. */
-	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003",
+	RPR_PDS_PACKET_DECRYPTION_FAILURE(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "003",
 			"The Decryption for the Packet has failed"),
+
+	/** The rpr pdj packet decryption failure. */
+	RPR_PDS_IO_EXCEPTION(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "004",
+			"Exception while reading packet inputStream"),
+
+	RPR_PDS_DATE_TIME_EXCEPTION(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "005",
+			"Error while parsing packet timestamp"),
 
 	/** The rpr rct unknown resource exception. */
 	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformConstants.RPR_REST_CLIENT_MODULE + "001", "Unknown resource provided"),
@@ -536,6 +547,12 @@ public enum PlatformErrorMessages {
 
 	RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "016",
 			"Reg Id should not be null or empty"),
+
+	RPR_MANUAL_VERIFICATION_REJECTED(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "021",
+			"Manual verification rejected"),
+
+	RPR_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "022",
+			"TablenotAccessibleException in Manual verification"),
 
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
@@ -817,6 +834,10 @@ public enum PlatformErrorMessages {
 
 	/** The missing input parameter. */
 	RPR_PRT_RESEND_UIN_CARD(PlatformConstants.RPR_PRINTING_MODULE + "021", "Re-Send uin card for printing"),
+
+	RPR_PRT_QR_CODE_GENERATION_ERROR(PlatformConstants.RPR_PRINTING_MODULE + "022", "Error while QR Code Generation"),
+
+	RPR_PRT_VID_CREATION_ERROR(PlatformConstants.RPR_PRINTING_MODULE + "023", "Error while creating VID"),
 
 	/** The rpr rgs registration connector not accessible. */
 	RPR_RGS_REGISTRATION_CONNECTOR_NOT_ACCESSIBLE("", "Registration connector stage is not accessible "),

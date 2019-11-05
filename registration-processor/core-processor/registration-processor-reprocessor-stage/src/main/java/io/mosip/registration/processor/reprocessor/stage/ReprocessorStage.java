@@ -224,7 +224,8 @@ public class ReprocessorStage extends MosipVerticleAPIManager {
 					dtolist.forEach(dto -> {
 						this.registrationId = dto.getRegistrationId();
 						if (reprocessCount.equals(dto.getReProcessRetryCount())) {
-							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS_FAILED.toString());
+							dto.setLatestTransactionStatusCode(
+									RegistrationTransactionStatusCode.REPROCESS_FAILED.toString());
 							dto.setLatestTransactionTypeCode(
 									RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
 							dto.setStatusComment(StatusUtil.RE_PROCESS_FAILED.getMessage());
@@ -234,6 +235,7 @@ public class ReprocessorStage extends MosipVerticleAPIManager {
 							object.setIsValid(false);
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
 							description.setMessage(PlatformSuccessMessages.RPR_RE_PROCESS_FAILED.getMessage());
+							description.setCode(PlatformSuccessMessages.RPR_RE_PROCESS_FAILED.getCode());
 
 						} else {
 							object.setRid(registrationId);
@@ -260,7 +262,7 @@ public class ReprocessorStage extends MosipVerticleAPIManager {
 							dto.setStatusComment(StatusUtil.RE_PROCESS_COMPLETED.getMessage());
 							dto.setSubStatusCode(StatusUtil.RE_PROCESS_COMPLETED.getCode());
 							description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
-
+							description.setCode(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getCode());
 						}
 						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description.getMessage());
