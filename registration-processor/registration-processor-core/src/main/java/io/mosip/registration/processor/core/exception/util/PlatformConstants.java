@@ -49,7 +49,7 @@ public final class PlatformConstants {
 	public static final String RPR_PACKET_SCANNER_JOB_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PSS-";
 
 	/** The Constant RPR_PACKET_DECRYPTION_JOB_MODULE. */
-	public static final String RPR_PACKET_DECRYPTION_JOB_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PDS-";
+	public static final String RPR_PACKET_DECRYPTION_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PDS-";
 
 	/** The Constant RPR_MANUAL_VERIFICATION_MODULE. */
 	public static final String RPR_MANUAL_VERIFICATION_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MVS-";
@@ -98,8 +98,11 @@ public final class PlatformConstants {
 	public static final String ABIS = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
 
 	public static final String RPR_ABIS_MIDDLEWARE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-MIDDLEWARE-";
-	
+
 	public static final String REGISTRATION_TRANSACTIONS_SERVICE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RTS-";
+
+	public static final String RPR_ABIS_HANDLER = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-HANDLER-";
+
 	/**
 	 * Instantiates a new RPR platform error codes.
 	 */

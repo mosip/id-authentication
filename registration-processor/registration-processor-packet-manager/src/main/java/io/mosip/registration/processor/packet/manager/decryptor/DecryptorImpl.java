@@ -23,10 +23,14 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.http.RequestWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.CryptomanagerRequestDto;
@@ -87,7 +91,7 @@ public class DecryptorImpl implements Decryptor {
 			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
-		String description = "";
+		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "Decryptor::decrypt()::entry");
 		try {
@@ -133,28 +137,35 @@ public class DecryptorImpl implements Decryptor {
 				ServiceError error = response.getErrors().get(0);
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, DECRYPTION_FAILURE);
-				description = DECRYPTION_FAILURE + registrationId + "::" + DATE_TIME_EXCEPTION;
+				description.setMessage(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 				throw new PacketDecryptionFailureException(error.getErrorCode(), error.getMessage());
 			}
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(response.getResponse().getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
 			isTransactionSuccessful = true;
-			description = DECRYPTION_SUCCESS + "for RegistrationId" + registrationId;
+			description.setMessage(PlatformSuccessMessages.RPR_DECRYPTION_SUCCESS.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_DECRYPTION_SUCCESS.getCode());
+
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Decryptor::decrypt()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
+					registrationId, description.getMessage());
 		} catch (IOException e) {
-			description = IO_EXCEPTION + registrationId;
+			description.setMessage(PlatformErrorMessages.RPR_PDS_IO_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PDS_IO_EXCEPTION.getCode());
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
+					registrationId, description.getMessage());
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					IO_EXCEPTION, e);
 		} catch (DateTimeParseException e) {
-			description = DATE_TIME_EXCEPTION + registrationId;
+			description.setMessage(PlatformErrorMessages.RPR_PDS_DATE_TIME_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PDS_DATE_TIME_EXCEPTION.getCode());
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
+					registrationId, description.getMessage());
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					DATE_TIME_EXCEPTION);
@@ -163,23 +174,29 @@ public class DecryptorImpl implements Decryptor {
 					registrationId, "Internal Error occurred ");
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				description = DECRYPTION_FAILURE + registrationId + "::"
-						+ httpClientException.getResponseBodyAsString();
+
+				description.setMessage(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage()
+						+ httpClientException.getResponseBodyAsString());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
+
 				throw new PacketDecryptionFailureException(
 						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 								.getErrorCode(),
 						httpClientException.getResponseBodyAsString());
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				description = DECRYPTION_FAILURE + registrationId + "::"
-						+ httpServerException.getResponseBodyAsString();
+				description.setMessage(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage()
+						+ httpServerException.getResponseBodyAsString());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 
 				throw new PacketDecryptionFailureException(
 						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 								.getErrorCode(),
 						httpServerException.getResponseBodyAsString());
 			} else {
-				description = DECRYPTION_FAILURE + registrationId + "::" + e.getMessage();
+				description.setMessage(
+						PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage() + e.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 
 				throw e;
 			}
@@ -194,8 +211,12 @@ public class DecryptorImpl implements Decryptor {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
-					ApiName.DMZAUDIT);
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_DECRYPTION_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.DECRYPTOR.toString();
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, registrationId);
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, DECRYPTION_SUCCESS);
