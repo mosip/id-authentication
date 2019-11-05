@@ -235,7 +235,9 @@ public class IdaController {
 				+ count.getValue()
 				+ ",\"exception\":[],\"requestedScore\":60,\"deviceId\":\"" + env.getProperty("iris.deviceId") + "\",\"deviceSubId\":3,\"previousHash\":\"\"}],\"customOpts\":[{\"Name\":\"name1\",\"Value\":\"value1\"}]}";
 		Map irisData = mapper.readValue(capturebiometrics(requestBody), Map.class);
-		((List) irisData.get("biometrics")).remove(1);
+		if (count.getValue().equals("1")) {
+			((List) irisData.get("biometrics")).remove(1);
+		}
 		return mapper.writeValueAsString(irisData);
 	}
 	
