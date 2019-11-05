@@ -176,7 +176,7 @@
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-keymanager-service</module>
 
-		<module>kernel-salt-generator</module>
+		<!--<module>kernel-salt-generator</module>-->
 	</modules>
 
 	<dependencies>
