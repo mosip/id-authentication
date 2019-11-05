@@ -22,6 +22,7 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -305,7 +306,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
 		return Stream.of(idMappings)
-			.filter(idmap -> idName.startsWith(idmap.getIdname()))
+			.filter(idmap -> {
+				String thisId = idName.replaceAll("\\d", "");
+				String thatId = idmap.getIdname().replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, "");
+				return thisId.equalsIgnoreCase(thatId);
+			})
 			.map(IdMapping::getType)
 			.findFirst();
 	}
