@@ -23,6 +23,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthTokenDTO;
@@ -121,7 +122,7 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.IRIS)).build())
 				.build();
 		BIR[] registeredBir = new BIR[userIrisDetails.size()];
-
+		ApplicationContext.map().remove("IDENTY_SDK");
 		Score[] scores = null;
 		boolean flag = false;
 		int i = 0;
@@ -144,6 +145,8 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					String.format("Exception while validating the iris with bio api: %s caused by %s",
 							exception.getMessage(), exception.getCause()));
+			ApplicationContext.map().put("IDENTY_SDK", "FAILED");
+			return false;
 
 		}
 		return flag;

@@ -26,6 +26,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthTokenDTO;
@@ -86,6 +87,13 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		return validateFpWithBioApi(capturedFingerPrintDto, userFingerprintDetails);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.bio.BioService#validateFpWithBioApi(io.mosip.
+	 * registration.dto.biometric.FingerprintDetailsDTO, java.util.List)
+	 */
 	private boolean validateFpWithBioApi(FingerprintDetailsDTO capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
 
@@ -94,6 +102,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		Score[] scores = null;
 		boolean flag = false;
 		int i = 0;
+		ApplicationContext.map().remove("IDENTY_SDK");
 		for (UserBiometric userBiometric : userFingerprintDetails) {
 			registeredBir[i] = new BIRBuilder().withBdb(userBiometric.getBioIsoImage()).withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FINGER)).build()).build();
 			i++;
@@ -110,8 +119,8 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"Exception while validating the finger print with bio api: %s caused by %s",
 					exception.getMessage(), exception.getCause()));
+			ApplicationContext.map().put("IDENTY_SDK", "FAILED");
 			return false;
-
 		}
 		return flag;
 		
@@ -129,7 +138,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		Boolean isMatchFound = false;
 		for (FingerprintDetailsDTO fingerprintDetailsDTO : capturedFingerPrintDetails) {
 			isMatchFound = validateFpWithBioApi(fingerprintDetailsDTO,
-					userDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
+					userDetailDAO.getAllActiveUsers("FingerPrint "+ fingerprintDetailsDTO.getFingerType()));
 			if (isMatchFound) {
 				SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
 				break;

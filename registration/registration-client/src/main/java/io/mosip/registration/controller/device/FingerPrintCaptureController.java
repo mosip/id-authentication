@@ -1495,8 +1495,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs,
 			boolean isValid, List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			if (!validateFingerprint(segmentedFingerprintDetailsDTOs)) {
-				isValid = true;
+			if (validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+					isValid = true;
 			} else {
 				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
 						.get(RegistrationConstants.DUPLICATE_FINGER);
@@ -1727,6 +1727,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");
-		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		boolean isValid =  !authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		if(getValueFromApplicationContext("IDENTY_SDK").equals("FAILED")) {
+			isValid = false;
+		}
+		return isValid;
+
 	}
 }

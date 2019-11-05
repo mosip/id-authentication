@@ -587,7 +587,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 			authenticationValidatorDTO.setIrisDetails(irises);
 			authenticationValidatorDTO.setAuthValidationType("single");
-			return !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			boolean isValid = !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			if(getValueFromApplicationContext("IDENTY_SDK").equals("FAILED")) {
+				isValid = false;
+			}
+			return isValid;
+
 	}
 
 
@@ -1119,7 +1124,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");
-		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		boolean isValid =  authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		if(getValueFromApplicationContext("IDENTY_SDK").equals("FAILED")) {
+			isValid = false;
+		}
+		return isValid;
+
 	}
 
 }

@@ -51,6 +51,10 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 
 	@Autowired
 	private UserDetailDAO userDetailDAO;
+	
+	@Autowired
+	@Qualifier("face")	
+	IBioApi ibioApi;
 
 	/*
 	 * (non-Javadoc)
@@ -106,10 +110,14 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 
 	}
 
-	@Autowired
-	@Qualifier("face")	
-	IBioApi ibioApi;
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.bio.BioService#validateFaceAgainstDb(io.mosip.
+	 * registration.dto.biometric.FaceDetailsDTO, java.util.List)
+	 */
 	private boolean validateFaceAgainstDb(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails) {
 
 		LOGGER.info(LOG_REG_FACE_FACADE, APPLICATION_NAME, APPLICATION_ID,
@@ -118,15 +126,12 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 		
 		BIR capturedBir = new BIRBuilder().withBdb(faceDetail.getFaceISO()).withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FACE)).build()).build();
 		BIR[] registeredBir = new BIR[userFaceDetails.size()];
+		ApplicationContext.map().remove("IDENTY_SDK");
 		Score[] scores = null;
 		boolean flag = false;
 		int i = 0;
 		for (UserBiometric userBiometric : userFaceDetails) {
-			try {
 			registeredBir[i] = new BIRBuilder().withBdb(userBiometric.getBioIsoImage()).withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FACE)).build()).build();
-			}catch(Exception e) {
-				return false;
-			}
 			i++;
 		}
 		try {
@@ -141,6 +146,8 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"Exception while validating the face with bio api: %s caused by %s",
 					exception.getMessage(), exception.getCause()));
+			ApplicationContext.map().put("IDENTY_SDK", "FAILED");
+			return false;
 
 		}
 		return flag;

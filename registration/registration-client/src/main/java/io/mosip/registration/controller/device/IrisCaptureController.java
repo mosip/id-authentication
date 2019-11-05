@@ -638,7 +638,11 @@ public class IrisCaptureController extends BaseController {
 			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 			authenticationValidatorDTO.setIrisDetails(irises);
 			authenticationValidatorDTO.setAuthValidationType("multiple");
-			return !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			boolean isValid =  !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			if(getValueFromApplicationContext("IDENTY_SDK").equals("FAILED")) {
+				isValid = false;
+			}
+			return isValid;
 	}
 
 	/**
