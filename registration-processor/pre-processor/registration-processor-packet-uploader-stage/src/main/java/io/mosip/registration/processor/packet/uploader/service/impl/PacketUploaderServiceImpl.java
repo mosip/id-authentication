@@ -19,10 +19,10 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
@@ -31,6 +31,7 @@ import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.JschConnectionException;
 import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
@@ -43,7 +44,6 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
-import io.mosip.registration.processor.packet.uploader.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -200,8 +200,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 								dto.setLatestTransactionStatusCode(
 										RegistrationTransactionStatusCode.SUCCESS.toString());
 								isTransactionSuccessful = true;
-								description.setMessage(
-										"Packet uploaded to DFS successfully for registrationId " + registrationId);
+								description.setMessage(PlatformSuccessMessages.RPR_PUM_PACKET_UPLOADER.getMessage());
 								regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 										description.getMessage());
@@ -210,7 +209,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 						} else {
 
 							messageDTO.setInternalError(Boolean.TRUE);
-							description.setMessage("Failure in uploading the packet to Packet Store" + registrationId);
+							description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_UPLOAD_FAILURE.getMessage());
+							description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_UPLOAD_FAILURE.getCode());
 							dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 									.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 							dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
@@ -232,13 +232,16 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				dto.setStatusComment(StatusUtil.PACKET_NOT_FOUND_LANDING_ZIONE.getMessage());
 				dto.setSubStatusCode(StatusUtil.PACKET_NOT_FOUND_LANDING_ZIONE.getCode());
 				dto.setUpdatedBy(USER);
+				description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_UPLOAD_FAILURE.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_UPLOAD_FAILURE.getCode());
 
 			}
 
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			dto.setStatusComment(
+					trimExpMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
@@ -246,73 +249,83 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					registrationId, PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name()
 							+ ExceptionUtils.getStackTrace(e));
 
-			description.setMessage("Registration status TablenotAccessibleException for registrationId "
-					+ registrationId + "::" + e.getMessage());
+			description.setMessage(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode());
 
 		} catch (PacketNotFoundException ex) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_NOT_FOUND_EXCEPTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.PACKET_NOT_FOUND_PACKET_STORE.getMessage() + ex.getMessage()));
+			dto.setStatusComment(trimExpMessage
+					.trimExceptionMessage(StatusUtil.PACKET_NOT_FOUND_PACKET_STORE.getMessage() + ex.getMessage()));
 			dto.setSubStatusCode(StatusUtil.PACKET_NOT_FOUND_PACKET_STORE.getCode());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.name() + ExceptionUtils.getStackTrace(ex));
-			description.setMessage(
-					"Packet not found in DFS for registrationId " + registrationId + "::" + ex.getMessage());
+			description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getCode());
 		} catch (FSAdapterException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
+			dto.setStatusComment(
+					trimExpMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + ExceptionUtils.getStackTrace(e));
+					registrationId,
+					PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + ExceptionUtils.getStackTrace(e));
 
-			description.setMessage("DFS not accessible for registrationId " + registrationId + "::" + e.getMessage());
+			description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.getCode());
 		} catch (JschConnectionException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.JSCH_CONNECTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.JSCH_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
+			dto.setStatusComment(trimExpMessage
+					.trimExceptionMessage(StatusUtil.JSCH_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.JSCH_EXCEPTION_OCCURED.getCode());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.name() + ExceptionUtils.getStackTrace(e));
+					registrationId,
+					PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.name() + ExceptionUtils.getStackTrace(e));
 
-			description.setMessage(
-					"The JSCH connection failed for registrationId " + registrationId + "::" + e.getMessage());
+			description.setMessage(PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.getCode());
 		} catch (SftpFileOperationException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.SFTP_FILE_OPERATION_EXCEPTION.getMessage() + e.getMessage()));
+			dto.setStatusComment(trimExpMessage
+					.trimExceptionMessage(StatusUtil.SFTP_FILE_OPERATION_EXCEPTION.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.IO_EXCEPTION.getCode());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + ExceptionUtils.getStackTrace(e));
+					registrationId,
+					PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + ExceptionUtils.getStackTrace(e));
 
-			description.setMessage("The Sftp operation failed during file processing for registrationId "
-					+ registrationId + "::" + e.getMessage());
+			description.setMessage(PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.getCode());
 		} catch (IOException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + e.getMessage()));
+			dto.setStatusComment(
+					trimExpMessage.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.IO_EXCEPTION.getCode());
 			messageDTO.setIsValid(false);
 			messageDTO.setInternalError(true);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + ExceptionUtils.getStackTrace(e));
-			description.setMessage("Virus scan decryption path not found for registrationId " + registrationId + "::"
-					+ e.getMessage());
+			description.setMessage(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode());
 
 		} catch (Exception e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
+			dto.setStatusComment(trimExpMessage
+					.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
@@ -320,8 +333,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					registrationId,
 					PlatformErrorMessages.PACKET_UPLOAD_FAILED.name() + ExceptionUtils.getStackTrace(e));
 			messageDTO.setInternalError(Boolean.TRUE);
-			description.setMessage("Internal error occured while processing for registrationId " + registrationId + "::"
-					+ e.getMessage());
+			description.setMessage(PlatformErrorMessages.PACKET_UPLOAD_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.PACKET_UPLOAD_FAILED.getCode());
+
 		} finally {
 			registrationStatusService.updateRegistrationStatus(dto);
 			String eventId = "";
@@ -333,8 +347,12 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PUM_PACKET_UPLOADER.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.PACKET_UPLOAD.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					registrationId, ApiName.AUDIT);
+					moduleId, moduleName, registrationId);
 
 		}
 
@@ -358,8 +376,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		try {
 			isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
-				description.setMessage("Packet virus scan failed  in packet Uploader for registrationId ::"
-						+ registrationId + PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage());
+				description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getCode());
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
 				dto.setStatusComment(StatusUtil.VIRUS_SCANNER_FAILED_UPLOADER.getMessage());
 				dto.setSubStatusCode(StatusUtil.VIRUS_SCANNER_FAILED_UPLOADER.getCode());
@@ -371,14 +389,17 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			}
 		} catch (VirusScannerException e) {
 
-			description.setMessage("Virus scanner service failed ::" + registrationId);
+			description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getCode());
 			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getMessage()+e.getMessage()));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(
+					StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
 			dto.setSubStatusCode(StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getCode());
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage()+ExceptionUtils.getStackTrace(e));
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
 
 		}
 		return isInputFileClean;
@@ -404,8 +425,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		String hashSequence = HMACUtils.digestAsPlainText(dataByte);
 		String packetHashSequence = regEntity.getPacketHashValue();
 		if (!(MessageDigest.isEqual(packetHashSequence.getBytes(), hashSequence.getBytes()))) {
-			description.setMessage(
-					"The Registration Packet HashSequence is not equal as synced packet HashSequence" + registrationId);
+			description.setMessage(PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getCode());
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
@@ -461,7 +482,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					object.setRid(registrationId);
 
 					isTransactionSuccessful = true;
-					description.setMessage(" packet sent to DFS for registrationId " + registrationId);
+					description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
+					description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getCode());
+
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
@@ -475,7 +498,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					object.setInternalError(true);
 					object.setIsValid(false);
 					object.setRid(registrationId);
-					description.setMessage(" packet upload failed during cleanup for registrationId " + registrationId);
+					description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_DELETION_FAILED.getMessage());
+					description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_DELETION_FAILED.getCode());
+
 				}
 
 			} else {
@@ -489,7 +514,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				object.setInternalError(true);
 				object.setIsValid(false);
 				object.setRid(registrationId);
-				description.setMessage(" packet upload failed during archival for registrationId " + registrationId);
+				description.setMessage(PlatformErrorMessages.RPR_PUM_PACKET_ARCHIVAL_FAILED.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PUM_PACKET_ARCHIVAL_FAILED.getCode());
 
 			}
 

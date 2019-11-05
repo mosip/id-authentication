@@ -15,7 +15,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
@@ -30,6 +29,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.ParentOnHoldException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -89,10 +89,6 @@ public class OSIValidator {
 	/** The rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> restClientService;
-
-	/** The env. */
-	@Autowired
-	private Environment env;
 
 	/** The osi utils. */
 	@Autowired
@@ -156,11 +152,12 @@ public class OSIValidator {
 	 * @throws NumberFormatException
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws PacketDecryptionFailureException
+	 * @throws ParentOnHoldException 
 	 */
 	public boolean isValidOSI(String registrationId, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException,
-			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, ParentOnHoldException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
@@ -215,7 +212,6 @@ public class OSIValidator {
 			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean wasOfficerActiveDuringPCT = false;
 		boolean wasSupervisorActiveDuringPCT = false;
-		String statusMessage = "";
 		if (officerId != null && !officerId.isEmpty()) {
 			UserResponseDto officerResponse = isUserActive(officerId, creationDate, registrationStatusDto);
 			if (officerResponse.getErrors() == null) {
@@ -439,12 +435,13 @@ public class OSIValidator {
 	 * @throws BiometricException
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws PacketDecryptionFailureException
+	 * @throws ParentOnHoldException 
 	 */
 	private boolean isValidIntroducer(String registrationId, JSONObject demographicIdentity,
 			RegistrationProcessorIdentity regProcessorIdentityJson, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			ParserConfigurationException, SAXException, BiometricException, BioTypeException,
-			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, ParentOnHoldException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
@@ -478,7 +475,7 @@ public class OSIValidator {
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET);
-					return false;
+					throw new ParentOnHoldException(StatusUtil.UIN_RID_NOT_FOUND.getCode(),StatusUtil.UIN_RID_NOT_FOUND.getMessage());
 				}
 
 				if (introducerUIN == null
@@ -496,7 +493,7 @@ public class OSIValidator {
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								StatusMessage.PARENT_UIN_NOT_AVAIALBLE);
-						return false;
+						throw new ParentOnHoldException(StatusUtil.PARENT_UIN_NOT_FOUND.getCode(),StatusUtil.PARENT_UIN_NOT_FOUND.getMessage());
 					}
 
 				}
@@ -518,10 +515,10 @@ public class OSIValidator {
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
-						return false;
+						throw new ParentOnHoldException(StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getCode(),StatusUtil.PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND.getMessage());
 					}
 				} else {
-					return false;
+					throw new ParentOnHoldException(StatusUtil.PARENT_UIN_NOT_FOUND.getCode(),StatusUtil.PARENT_UIN_NOT_FOUND.getMessage());
 				}
 			}
 
