@@ -313,7 +313,7 @@ public class IdaController {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(fingerAuthType.isSelected() || irisAuthType.isSelected());
+		authTypeDTO.setBio(fingerAuthType.isSelected() || irisAuthType.isSelected() || faceAuthType.isSelected());
 		authTypeDTO.setOtp(otpAuthType.isSelected());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		// set Individual Id
@@ -374,10 +374,13 @@ public class IdaController {
 			responsetextField.setText("Authentication Failed with Error");
 			responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 		}
-		System.out.println(identityBlock);
-		System.err.println(authResponse.getBody());
+
 
 		System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
+		System.out.println(identityBlock);
+		
+		System.err.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
+		System.err.println(authResponse.getBody());
 	}
 
 	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
@@ -408,7 +411,7 @@ public class IdaController {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId("IDA");
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
-		String publicKeyId = "PARTNER";
+		String publicKeyId = env.getProperty("publicKeyId", "PARTNER");
 		request.setReferenceId(publicKeyId);
 		String utcTime = DateUtils.getUTCCurrentDateTimeString();
 		request.setTimeStamp(utcTime);
