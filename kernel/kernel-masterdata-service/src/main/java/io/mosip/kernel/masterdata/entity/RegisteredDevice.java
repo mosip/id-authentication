@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -28,61 +31,84 @@ import lombok.NoArgsConstructor;
 public class RegisteredDevice extends BaseEntity {
 
 	@Id
-	@Column(name = "code")
+	@Column(name = "code", length=36)
 	private String code;
 
-	@Column(name = "dtype_code")
-	private String dTypeCode;
+	@Column(name = "dtype_code", length=36)
+	private String deviceTypeCode;
 
-	@Column(name = "dstype_code")
-	private String dsTypeCode;
+	@Column(name = "dstype_code", length=36)
+	private String devicesTypeCode;
 
-	@Column(name = "status_code")
+	@Column(name = "status_code", length=64)
 	private String statusCode;
 
-	@Column(name = "device_id")
+	@Column(name = "device_id", length=256)
 	private String deviceId;
 
 	@Column(name = "device_sub_id")
 	private String deviceSubId;
-
-	@Column(name = "serial_number")
-	private String serialNumber;
-
-	@Column(name = "provider_id")
-	private String providerId;
-
-	@Column(name = "provider_name")
-	private String providerName;
-
-	@Column(name = "purpose")
+	
+	@Column(name = "purpose", length=64)
 	private String purpose;
 
-	@Column(name = "firmware")
+	@Column(name = "firmware", length=128)
 	private String firmware;
+	
+	
+	//json inner class
+	@Column(name = "digital_id", length=1024)
+	private String digitalId;
 
-	@Column(name = "make")
+	//inner class
+	@Column(name = "serial_number", unique=true, length=64)
+	private String serialNumber;
+
+	//inner class
+	@Column(name = "provider_id", unique=true, length=36)
+	private String providerId;
+
+	//inner class
+	@Column(name = "provider_name", length=128)
+	private String providerName;
+
+	//inner class
+	@Column(name = "make", length=36)
 	private String make;
 
-	@Column(name = "model")
+	//inner class
+	@Column(name = "model", length=36)
 	private String model;
 
 	@Column(name = "expiry_date")
 	private LocalDateTime expiryDate;
 
-	@Column(name = "certification_level")
+	@Column(name = "certification_level", length=3)
 	private String certificationLevel;
 
-	@Column(name = "foundational_trust_provider_id")
+	@Column(name = "foundational_trust_provider_id", length=36)
 	private String foundationalTPId;
 
-	@Column(name = "foundational_trust_signature")
+	@Column(name = "foundational_trust_signature", length=512)
 	private String foundationalTrustSignature;
 
 	@Column(name = "foundational_trust_certificate")
-	private String foundationalTrustCertificate;
+	private byte[] foundationalTrustCertificate;
 
-	@Column(name = "dprovider_signature")
-	private byte[] dProviderSignature;
+	@Column(name = "dprovider_signature", length=512)
+	private String deviceProviderSignature;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "provider_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private DeviceProvider deviceProvider;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dtype_code", referencedColumnName = "code", insertable = false, updatable = false)
+	private RegistrationDeviceType registrationDeviceType;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dstype_code", referencedColumnName = "code", insertable = false, updatable = false)
+	private RegistrationDeviceSubType registrationDeviceSubType;
 
 }

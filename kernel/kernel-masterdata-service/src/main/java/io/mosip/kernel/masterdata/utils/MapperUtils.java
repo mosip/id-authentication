@@ -13,10 +13,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -24,11 +30,13 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
+import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
@@ -43,6 +51,9 @@ import io.mosip.kernel.masterdata.entity.ReasonCategory;
 @Component
 @SuppressWarnings("unchecked")
 public class MapperUtils {
+	
+	/*@Autowired
+	private ObjectMapper mapper;*/
 
 	private MapperUtils() {
 		super();
@@ -559,6 +570,39 @@ public class MapperUtils {
 
 		});
 		return deviceLangCodeDtypeDtoList;
+	}
+	
+	public static RegisteredDevice mapRegisteredDeviceDto(RegisteredDevicePostReqDto dto, String digitalIdJson) {
+		
+		//String digitalIdJson = mapper.writeValueAsString(dto.getDigitalIdDto());
+		RegisteredDevice entity = new RegisteredDevice();
+		entity.setCode(dto.getCode());
+		entity.setDeviceTypeCode(dto.getDeviceTypeCode());
+        entity.setDevicesTypeCode(dto.getDevicesTypeCode());
+        entity.setStatusCode(dto.getStatusCode());
+        entity.setDeviceId(dto.getDeviceId());
+		entity.setDeviceSubId(dto.getDeviceSubId());
+		
+
+		entity.setDigitalId(digitalIdJson);
+		entity.setSerialNumber(dto.getDigitalIdDto().getSerialNumber());
+        entity.setProviderId(dto.getDigitalIdDto().getProviderId());
+        entity.setProviderName(dto.getDigitalIdDto().getProviderName());
+        entity.setMake(dto.getDigitalIdDto().getMake());
+        entity.setModel(dto.getDigitalIdDto().getModel());
+        
+       
+		entity.setPurpose(dto.getPurpose());
+        entity.setFirmware(dto.getFirmware());
+		entity.setExpiryDate(dto.getExpiryDate());
+		entity.setCertificationLevel(dto.getCertificationLevel());
+        entity.setFoundationalTPId(dto.getFoundationalTPId());
+        entity.setFoundationalTrustSignature(dto.getFoundationalTrustSignature());
+        entity.setFoundationalTrustCertificate(dto.getFoundationalTrustCertificate());      
+        entity.setDeviceProviderSignature(dto.getDeviceProviderSignature());
+		
+		return entity;
+		
 	}
 
 }

@@ -10,6 +10,7 @@ import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 /**
  * The Interface RegisteredDeviceRepository.
  * @author Srinivasan
+ * @author Megha Tanga
  */
 @Repository
 public interface RegisteredDeviceRepository extends BaseRepository<RegisteredDevice, String> {

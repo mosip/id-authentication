@@ -97,11 +97,11 @@ public class DeviceProviderManagementIntegrationTest {
 		validateDeviceDto.setDeviceCode("10001");
 		validateDeviceDto.setDeviceServiceVersion("0.1v");
 		DigitalIdDto digitalIdDto = new DigitalIdDto();
-		digitalIdDto.setDpId("1111");
-		digitalIdDto.setDp("INTEL");
+		digitalIdDto.setProviderId("1111");
+		digitalIdDto.setProviderName("INTEL");
 		digitalIdDto.setMake("make-updated");
 		digitalIdDto.setModel("model-updated");
-		digitalIdDto.setSerialNo("GV3434343M");
+		digitalIdDto.setSerialNumber("GV3434343M");
 		validateDeviceDto.setDigitalId(digitalIdDto);
 
 		requestWrapper = new RequestWrapper<>();

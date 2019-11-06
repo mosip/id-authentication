@@ -12,15 +12,26 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
 @Data
 public class DigitalIdDto {
 
 	/** The serial no. */
 	@NotBlank
-	private String serialNo;
+	private String serialNumber;
+	
+	
+	/** The Device Provider Name. */
+	@NotBlank
+	private String providerName;
+	
 
+	/** The Device Provider id. */
+	@NotBlank
+	private String providerId;
+	
+	
 	/** The make. */
 	@NotBlank
 	private String make;
@@ -29,17 +40,12 @@ public class DigitalIdDto {
 	@NotBlank
 	private String model;
 
-	/** The type. */
-
+	/** The type.
+	 * (can only be “Fingerprint”, “Slab Fingerprint”, “Iris Monocular”, “Iris Binocular”, “Face”)
+	 */
 	private String type;
 
-	/** The dp. */
-	@NotBlank
-	private String dp;
-
-	/** The dp id. */
-	@NotBlank
-	private String dpId;
+	
 
 	/** The date time. */
 
