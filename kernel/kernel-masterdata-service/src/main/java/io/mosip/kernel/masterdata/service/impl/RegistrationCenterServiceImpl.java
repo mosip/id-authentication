@@ -813,7 +813,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		boolean flag = true;
 		// fetching locations
 		locations = serviceHelper.fetchLocations(dto.getLanguageCode());
-		pageUtils.validateSortField(RegistrationCenter.class, dto.getSort());
+		pageUtils.validateSortField(RegistrationCenterSearchDto.class,RegistrationCenter.class,dto.getSort());
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
