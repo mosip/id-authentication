@@ -7,6 +7,7 @@ import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.vidgenerator.constant.EventType;
 import io.mosip.kernel.vidgenerator.constant.VidLifecycleStatus;
 import io.mosip.kernel.vidgenerator.entity.VidEntity;
+import io.mosip.kernel.vidgenerator.exception.VidGeneratorServiceException;
 import io.mosip.kernel.vidgenerator.generator.VidWriter;
 import io.mosip.kernel.vidgenerator.utils.MetaDataUtil;
 import io.vertx.core.AbstractVerticle;
@@ -42,7 +43,9 @@ public class VidPopulatorVerticle extends AbstractVerticle {
 	@Override
 	public void start(Future<Void> startFuture) throws Exception {
 	vertx.eventBus().consumer(EventType.GENERATEPOOL, handler -> {
-		LOGGER.info("Persisting {} vids in pool",vidToGenerate);
+		long noOfFreeVids = Long.parseLong(handler.body().toString());
+		long noOfVidsToGenerate = vidToGenerate-noOfFreeVids;
+		LOGGER.info("Persisting {} vids in pool",noOfVidsToGenerate);
 		long count=0;
 		while(count<vidToGenerate) {
 			String vid = vidGenerator.generateId();
@@ -53,7 +56,7 @@ public class VidPopulatorVerticle extends AbstractVerticle {
 			vidWriter.persistVids(entity);
 			count++;
 		}
-		vertx.eventBus().publish(EventType.RESETLOCK,EventType.RESETLOCK);
+		handler.reply("pool population successfull");
 		
 		LOGGER.info("No of vids persisted are {}",count);
 	});

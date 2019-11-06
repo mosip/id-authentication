@@ -1,8 +1,11 @@
 package io.mosip.kernel.vidgenerator.config;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.BeanInstantiationException;
@@ -20,6 +23,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -40,6 +44,7 @@ import io.mosip.kernel.vidgenerator.constant.HibernatePersistenceConstant;
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.vidgenerator.repository" })
 @ComponentScan(basePackages = { "io.mosip.kernel.vidgenerator.*","io.mosip.kernel.idgenerator.vid.*","io.mosip.kernel.crypto.*","io.mosip.kernel.auth.adapter.*"})
+@EnableTransactionManagement
 public class HibernateDaoConfig implements EnvironmentAware {
 
 	/**
@@ -118,8 +123,10 @@ public class HibernateDaoConfig implements EnvironmentAware {
 	 */
 	@Bean
 	@Autowired
-	public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-		return new JpaTransactionManager(entityManagerFactory.getObject());
+	public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager(entityManagerFactory);
+		jpaTransactionManager.setDataSource(dataSource());
+		return jpaTransactionManager;
 	}
 
 	public Map<String, Object> jpaProperties() {
