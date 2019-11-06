@@ -62,6 +62,10 @@ public class PageUtils {
 	public <T> void validateSortFieldLocation(Class<LocationSearchDto> class1, Class<Location> class2,List<SearchSort> list) {
 		sortUtils.validateSortLocationField(class1, class2,list);
 	}
+	
+	public <T extends BaseEntity,E> void validateSortField(Class<E> class1, Class<T> class2,List<SearchSort> list) {
+		sortUtils.validateSortField(class1, class2,list);
+	}
 
 	public <D> PageResponseDto<D> sortPage(List<D> content, List<SearchSort> sort, Pagination page) {
 		PageResponseDto<D> pageResponse = new PageResponseDto<>();

@@ -147,6 +147,16 @@ public class SortUtils {
 			findType(searchSort.getSortType());
 		}
 	}
+	
+	public <T extends BaseEntity,E> void validateSortField(Class<E> clazz, Class<T> class2,List<SearchSort> searchSorts) {
+		List<Field> fields = extractFields(clazz);
+		List<Field> entityFields = extractEntityFields(class2);
+		fields.addAll(entityFields);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+			findType(searchSort.getSortType());
+		}
+	}
 
 	private<T> List<Field> extractFields(Class<T> clazz) {
 		List<Field> fields = new ArrayList<>();
