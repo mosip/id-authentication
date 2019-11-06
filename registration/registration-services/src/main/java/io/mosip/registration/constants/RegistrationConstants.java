@@ -1557,4 +1557,12 @@ public class RegistrationConstants {
 	public static final List<String> TWO_IRIS = Arrays.asList("Left Iris", "Right Iris");
 	
 	public static final String SESSION_KEY_URL = "session_key";
+	public static final String AUTH_HASH = "hash";
+	public static final String SESSION_KEY="sessionKey";
+	public static final String SIGNATURE = "signature";
+	public static final String ADD = "aad";
+	public static final String SALT = "salt";
+	public static final String REQ_TIME="requesttime";
+	public static final String AP_ID="applicationId";
+	public static final String AP_IDA="IDA";
 }
