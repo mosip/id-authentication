@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_regprc
--- Release Version 	: 0.10.0
--- Purpose    		: Database Alter scripts for the release for Registration Processor DB.       
+-- Database Name: mosip_idamap
+-- Release Version 	: 0.10.1
+-- Purpose    		: Database Alter scripts for the release for ID Map DB.       
 -- Create By   		: Sadanandegowda
 -- Created Date		: 23-Sep-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 
-\c mosip_regprc sysadmin
+\c mosip_idmap sysadmin
