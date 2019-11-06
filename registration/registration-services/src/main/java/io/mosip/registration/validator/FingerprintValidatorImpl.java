@@ -122,6 +122,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 			ApplicationContext.map().put("IDENTY_SDK", "FAILED");
 			return false;
 		}
+		
 		return flag;
 		
 	
