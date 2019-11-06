@@ -7,7 +7,6 @@ import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.vidgenerator.constant.EventType;
 import io.mosip.kernel.vidgenerator.constant.VidLifecycleStatus;
 import io.mosip.kernel.vidgenerator.entity.VidEntity;
-import io.mosip.kernel.vidgenerator.exception.VidGeneratorServiceException;
 import io.mosip.kernel.vidgenerator.generator.VidWriter;
 import io.mosip.kernel.vidgenerator.utils.MetaDataUtil;
 import io.vertx.core.AbstractVerticle;
