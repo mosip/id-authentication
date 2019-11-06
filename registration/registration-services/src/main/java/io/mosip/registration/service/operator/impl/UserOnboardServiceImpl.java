@@ -197,7 +197,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 			// RegistrationConstants.TRANSACTION_ID_VALUE);
 			// requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID,
 			// RegistrationConstants.ON_BOARD_COGENT);
-			data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE_ID);
+			data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE);
 			data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, RegistrationConstants.ON_BOARD_FACE);
 			SplittedEncryptedData responseMap = getSessionKey(data,
 					biometricDTO.getOperatorBiometricDTO().getFace().getFaceISO());
@@ -398,22 +398,24 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 			BiometricDTO biometricDTO, Map<String, String> requestParamMap) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-					(String) ApplicationContext.map().get(RegistrationConstants.USER_ON_BOARD_IDA_AUTH))) {
-				PublicKeyResponse<String> publicKeyResponse = null;
+			if (true) {
+				LinkedHashMap<String, Object> publicKeyResponse = null;
 
-				publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil.get(
+				publicKeyResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil.get(
 						RegistrationConstants.PUBLIC_KEY_IDA_REST, requestParamMap, false,
 						RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 				LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Getting Public Key.....");
 
-				if (null != publicKeyResponse && !publicKeyResponse.getResponse().isEmpty()
-						&& publicKeyResponse.getResponse().size() > 0) {
+				if (null != publicKeyResponse && publicKeyResponse.size() > 0
+						&& null != publicKeyResponse.get(RegistrationConstants.RESPONSE)) {
+
+					LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeyResponse
+							.get(RegistrationConstants.RESPONSE);
 
 					// Getting Public Key
-					PublicKey publicKey = PublicKeyGenerationUtil.generatePublicKey(publicKeyResponse.getResponse()
-							.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
+					PublicKey publicKey = PublicKeyGenerationUtil
+							.generatePublicKey(responseMap.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
 
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Getting Symmetric Key.....");
 					// Symmetric key alias session key
@@ -490,12 +492,12 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		Map<String, Object> mapRequest = new HashMap<String, Object>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		String timestamp = (String) requestMap.get(RegistrationConstants.ON_BOARD_TIME_STAMP);
-		String aad = CryptoUtil.encodeBase64String(timestamp.substring(timestamp.length() - 12).getBytes());
-		String salt = CryptoUtil.encodeBase64String(timestamp.substring(timestamp.length() - 16).getBytes());
+		String aad = CryptoUtil.encodeBase64String(timestamp.substring(timestamp.length() - 16).getBytes());
+		String salt = CryptoUtil.encodeBase64String(timestamp.substring(timestamp.length() - 12).getBytes());
 		map.put("aad", aad);
 		map.put("applicationId", "IDA");
 		map.put("data", CryptoUtil.encodeBase64(data));
-		map.put("referenceId", "INTRENAL");
+		map.put("referenceId", "INTERNAL");
 		map.put("salt", salt);
 		map.put("timeStamp", DateUtils.getUTCCurrentDateTimeString());
 		mapRequest.put("request", map);
