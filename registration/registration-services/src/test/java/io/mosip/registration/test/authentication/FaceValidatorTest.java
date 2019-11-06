@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,6 +22,7 @@ import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
@@ -42,7 +45,6 @@ public class FaceValidatorTest {
 	
 	@Mock
 	IBioApi ibioApi;
-
 	
 	private AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 
@@ -51,7 +53,9 @@ public class FaceValidatorTest {
 		authenticationValidatorDTO.setUserId("mosip");
 		
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-
+		
+		Map<String, Object> appMap = new HashMap<>();
+		ApplicationContext.getInstance().setApplicationMap(appMap);
 		byte[] bytes = new byte[100];
 		Arrays.fill(bytes, (byte) 1);
 
