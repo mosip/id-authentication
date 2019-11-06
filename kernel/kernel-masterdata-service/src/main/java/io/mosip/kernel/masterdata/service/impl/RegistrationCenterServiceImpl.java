@@ -1205,7 +1205,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						false);
 				// registrationCenterValidator.mapBaseDtoEntity(updRegistrationCenterEntity,
 				// regCenterPutReqDto);
-
+				updRegistrationCenterEntity.setIsActive(regCenterPutReqDto.getIsActive());
 				updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
 
 				// creating registration center history

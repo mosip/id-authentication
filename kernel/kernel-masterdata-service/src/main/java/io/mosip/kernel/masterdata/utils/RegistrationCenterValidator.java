@@ -397,7 +397,7 @@ public class RegistrationCenterValidator {
 			List<ServiceError> errors) {
 		// validation to check the RegCenter Lunch Start Time is greater than RegCenter
 		// Lunch End Time
-		if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+		if (registrationCenterDto.getLunchStartTime()!=null && registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
 					String.format(
@@ -405,7 +405,7 @@ public class RegistrationCenterValidator {
 							registrationCenterDto.getLunchEndTime())));
 
 		}
-		if (registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+		if (registrationCenterDto.getLunchEndTime()!=null && registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
 					String.format(
@@ -413,7 +413,7 @@ public class RegistrationCenterValidator {
 							registrationCenterDto.getLunchEndTime())));
 
 		}
-		if(registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime()))
+		if(registrationCenterDto.getLunchStartTime()!=null && registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime()))
 		{
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),

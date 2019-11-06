@@ -1,4 +1,4 @@
-package io.mosip.kernel.idgenerator.vid.test;
+/*package io.mosip.kernel.idgenerator.vid.test;
 
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertEquals;
@@ -30,13 +30,13 @@ import io.mosip.kernel.idgenerator.vid.exception.VidException;
 import io.mosip.kernel.idgenerator.vid.repository.VidSeedRepository;
 import io.mosip.kernel.idgenerator.vid.repository.VidSequenceRepository;
 
-/**
+*//**
  * Test class for vid generator.
  * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = VidGeneratorBootApplication.class)
 public class VidGeneratorTest {
@@ -61,7 +61,7 @@ public class VidGeneratorTest {
 
 	@MockBean
 	private VidSequenceRepository sequenceRepository;
-	
+
 	@MockBean
 	private RestTemplate restTemplate;
 
@@ -135,3 +135,4 @@ public class VidGeneratorTest {
 	}
 
 }
+*/

@@ -22,10 +22,14 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -86,7 +90,7 @@ public class Decryptor {
 			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		String decryptedData = null;
 		boolean isTransactionSuccessful = false;
-		String description = "";
+		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"Decryptor::decrypt()::entry");
 		try {
@@ -122,6 +126,8 @@ public class Decryptor {
 				byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 				decryptedData = new String(decryptedPacket);
 			} else {
+				description.setMessage(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", IO_EXCEPTION);
 				throw new PacketDecryptionFailureException(response.getErrors().get(0).getErrorCode(),
@@ -129,15 +135,18 @@ public class Decryptor {
 			}
 
 			isTransactionSuccessful = true;
-			description = DECRYPTION_SUCCESS;
+			description.setMessage(PlatformSuccessMessages.RPR_DECRYPTION_SUCCESS.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_DECRYPTION_SUCCESS.getCode());
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "Decryptor::decrypt()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", description);
+					"", description.getMessage());
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", IO_EXCEPTION);
-			description = DECRYPTION_FAILURE + "" + "::" + "Error Converting encrypted packet inputStream to string";
+			description.setMessage(PlatformErrorMessages.RPR_PDS_IO_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PDS_IO_EXCEPTION.getCode());
+
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					IO_EXCEPTION);
@@ -146,21 +155,27 @@ public class Decryptor {
 					"", "Internal Error occurred " + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				description = DECRYPTION_FAILURE + "" + "::" + httpClientException.getResponseBodyAsString();
+				description.setMessage(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage()
+						+ httpClientException.getResponseBodyAsString());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 				throw new PacketDecryptionFailureException(
 						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 								.getErrorCode(),
 						httpClientException.getResponseBodyAsString());
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				description = DECRYPTION_FAILURE + "" + "::" + httpServerException.getResponseBodyAsString();
+				description.setMessage(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage()
+						+ httpServerException.getResponseBodyAsString());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 
 				throw new PacketDecryptionFailureException(
 						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 								.getErrorCode(),
 						httpServerException.getResponseBodyAsString());
 			} else {
-				description = DECRYPTION_FAILURE + "" + "::" + e.getMessage();
+				description.setMessage(
+						PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getMessage() + e.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_PDS_PACKET_DECRYPTION_FAILURE.getCode());
 
 				throw e;
 			}
@@ -175,8 +190,12 @@ public class Decryptor {
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, "",
-					ApiName.DMZAUDIT);
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_DECRYPTION_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.DECRYPTOR.toString();
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, "");
 		}
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				DECRYPTION_SUCCESS);
