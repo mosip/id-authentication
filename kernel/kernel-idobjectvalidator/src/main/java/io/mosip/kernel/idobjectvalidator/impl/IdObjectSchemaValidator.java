@@ -11,11 +11,11 @@ import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorP
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.APPLICATION_ID;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.ERROR;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.FIELD_LIST;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_ARRAY_VALUE_FIELD;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.INSTANCE;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.PATH_SEPERATOR;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.POINTER;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.ROOT_PATH;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_ARRAY_VALUE_FIELD;
 
 import java.io.IOException;
 import java.net.URL;
@@ -153,18 +153,17 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				report.forEach(processingMessage -> {
 					if (processingMessage.getLogLevel().toString().equals(ERROR.getValue())) {
 						JsonNode processingMessageAsJson = processingMessage.asJson();
-						if (processingMessageAsJson.has(INSTANCE.getValue())
-								&& processingMessageAsJson.get(INSTANCE.getValue()).has(POINTER.getValue())) {
-							if (processingMessageAsJson.has(UNWANTED)
-									&& !processingMessageAsJson.get(UNWANTED).isNull()) {
-								errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
-										buildErrorMessage(processingMessageAsJson, INVALID_INPUT_PARAMETER.getMessage(),
-												UNWANTED)));
-							} else if (processingMessageAsJson.has(MISSING)
+						if (processingMessageAsJson.hasNonNull(INSTANCE.getValue())
+								&& processingMessageAsJson.get(INSTANCE.getValue()).hasNonNull(POINTER.getValue())) {
+							if (processingMessageAsJson.has(MISSING)
 									&& !processingMessageAsJson.get(MISSING).isNull()) {
 								errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
 										buildErrorMessage(processingMessageAsJson, MISSING_INPUT_PARAMETER.getMessage(),
 												MISSING)));
+							} else {
+								errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
+										buildErrorMessage(processingMessageAsJson, INVALID_INPUT_PARAMETER.getMessage(),
+												UNWANTED)));
 							}
 						}
 					}
@@ -293,12 +292,13 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 * @return the string
 	 */
 	private String buildErrorMessage(JsonNode processingMessageAsJson, String messageBody, String field) {
-		return String.format(messageBody,
-				StringUtils.strip(
-						processingMessageAsJson.get(INSTANCE.getValue()).get(POINTER.getValue()).asText()
-								+ PATH_SEPERATOR.getValue()
-								+ StringUtils.removeAll(processingMessageAsJson.get(field).toString(), "[\\[\"\\]]"),
-						"/"));
+		return String.format(messageBody, StringUtils.strip(processingMessageAsJson.get(INSTANCE.getValue())
+				.get(POINTER.getValue()).asText()
+				+ (processingMessageAsJson.hasNonNull(field)
+						? PATH_SEPERATOR.getValue()
+								+ StringUtils.removeAll(processingMessageAsJson.get(field).toString(), "[\\[\"\\]]")
+						: ""),
+				"/"));
 	}
 
 	/**

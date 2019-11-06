@@ -73,7 +73,7 @@ public class AESEncryptionServiceTest {
 
 		when(keyGenerator.getSymmetricKey()).thenReturn(sessionKey);
 		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),null))
+		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),Mockito.eq(null)))
 				.thenReturn("encrypted".getBytes());
 
 		byte[] dataToEncrypt = "original data".getBytes();
@@ -94,7 +94,7 @@ public class AESEncryptionServiceTest {
 	public void invalidKeyExpTest() throws RegBaseCheckedException, NoSuchAlgorithmException {
 		SecretKey sessionKey = new SecretKeySpec(new byte[] {22}, "AES");
 		when(this.keyGenerator.getSymmetricKey()).thenReturn(sessionKey);
-		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),null))
+		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),Mockito.eq(null)))
 		.thenThrow(MosipInvalidKeyException.class);
 		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
 
@@ -109,7 +109,7 @@ public class AESEncryptionServiceTest {
 
 		when(keyGenerator.getSymmetricKey()).thenReturn(sessionKey);
 		when(rsaEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(),null))
+		when(cryptoCore.symmetricEncrypt(Mockito.any(SecretKey.class), Mockito.anyString().getBytes(), Mockito.eq(null)))
 		.thenThrow(MosipInvalidDataException.class);
 
 		aesEncryptionServiceImpl.encrypt("dataToEncrypt".getBytes());

@@ -266,7 +266,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				registrationCenterUserMachineMappingHistoryList, registrationCenterMachineDeviceHistoryList,
 				registrationCenterDeviceHistoryList, registrationCenterMachineHistoryList, applicantValidDocumentList,
 				individualTypeList, appAuthenticationMethods, appDetails, appRolePriorities, processList,
-				screenAuthorizations, syncJobDefDtos, screenDetails, registeredDevices, deviceProviders, deviceServices,
+				screenAuthorizations, syncJobDefDtos, screenDetails,registeredDevices, deviceProviders, deviceServices,
 				ftps, deviceTypeDPMs, deviceSubTypeDPMs);
 
 		try {

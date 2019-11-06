@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
@@ -119,7 +120,10 @@ public enum BioMatchType implements MatchType {
 			setOf(CompositeIrisMatchingStrategy.PARTIAL)),
 
 	FACE(IdaIdMapping.FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null),
-	FACE_UNKNOWN(IdaIdMapping.UNKNOWN_FACE, CbeffDocType.FACE, null, null, setOf(FaceMatchingStrategy.PARTIAL));
+	FACE_UNKNOWN(IdaIdMapping.UNKNOWN_FACE, CbeffDocType.FACE, null, null, setOf(FaceMatchingStrategy.PARTIAL)),
+	
+	MULTI_MODAL(IdaIdMapping.MULTI_MODAL_BIOMETRICS, CbeffDocType.values(), null, null, setOf(MultiModalBiometricsMatchingStrategy.PARTIAL));
+
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
@@ -131,7 +135,7 @@ public enum BioMatchType implements MatchType {
 	private IdMapping idMapping;
 
 	/** The cbeff doc type. */
-	private CbeffDocType cbeffDocType;
+	private CbeffDocType[] cbeffDocTypes;
 
 	/** The sub type. */
 	private SingleAnySubtypeType subType;
@@ -150,6 +154,14 @@ public enum BioMatchType implements MatchType {
 	 */
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype) {
+		this(idMapping,new CbeffDocType[] {cbeffDocType}, subType, singleAnySubtype,allowedMatchingStrategy);
+	}
+	
+	private BioMatchType(IdMapping idMapping, CbeffDocType[] cbeffDocType, SingleAnySubtypeType subType,
+			SingleAnySubtypeType singleAnySubtype, Set<MatchingStrategy> allowedMatchingStrategy) {
+		// This constructor should only called for Composite Match types, not by
+		// individual/unknown match types. This is because here we get id info based on
+		// sub-idmappings if available
 		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
 		Set<IdMapping> subIdMappings = idMapping.getSubIdMappings();
 		if (subIdMappings.isEmpty()) {
@@ -171,7 +183,9 @@ public enum BioMatchType implements MatchType {
 
 	private BioMatchType(IdMapping idMapping, CbeffDocType cbeffDocType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleAnySubtype, Set<MatchingStrategy> allowedMatchingStrategy) {
-		this(idMapping, allowedMatchingStrategy, cbeffDocType, subType, singleAnySubtype, null);
+		// This constructor is called for UNKNOWN match types only. Make sure its id
+		// info function only calls by self instead of its sub-idmappings
+		this(idMapping, allowedMatchingStrategy, new CbeffDocType[] { cbeffDocType }, subType, singleAnySubtype, null);
 		this.identityInfoFunction = requestDto -> getIdInfoFromBioIdInfo(requestDto.getBiometrics());
 	}
 
@@ -185,11 +199,11 @@ public enum BioMatchType implements MatchType {
 	 * @param singleAnySubtype        the single any subtype
 	 * @param identityInfoFunction    the identity info function
 	 */
-	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
+	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType[] cbeffDocTypes,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype,
 			Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction) {
 		this.idMapping = idMapping;
-		this.cbeffDocType = cbeffDocType;
+		this.cbeffDocTypes = cbeffDocTypes;
 		this.subType = subType;
 		this.singleAnySubtype = singleAnySubtype;
 		this.identityInfoFunction = requestDto -> identityInfoFunction.apply(requestDto.getDemographics());
@@ -207,14 +221,15 @@ public enum BioMatchType implements MatchType {
 		return biometrics.stream().filter(bioId -> {
 			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
 			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
-				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getIdname());
+				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getSubType());
 			}
 			return false;
 		}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue)
 				.map(value -> Arrays.asList(new IdentityInfoDTO(null, value))).collect(Collectors.toMap(value -> {
 					String idname = idMapping.getIdname();
-					if (idname.startsWith("UNKNOWN")) {
-						idname += count.incrementAndGet();
+					if (idname.contains(IdAuthCommonConstants.UNKNOWN_BIO)) {
+						int countVal = count.incrementAndGet();
+						idname = idname.replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, String.valueOf(countVal));
 					}
 					return idname;
 				}, value -> value));
@@ -242,9 +257,10 @@ public enum BioMatchType implements MatchType {
 	 */
 
 	public BioMatchType[] getMatchTypesForSubIdMappings(Set<IdMapping> subIdMappings) {
+		List<CbeffDocType> cbeffDocTypes = Arrays.asList(this.getCbeffDocTypes());
 		return Arrays.stream(BioMatchType.values())
 				.filter(bioMatchType -> subIdMappings.contains(bioMatchType.getIdMapping()))
-				.filter(bioMatchType -> bioMatchType.getCbeffDocType() == this.getCbeffDocType())
+				.filter(bioMatchType -> cbeffDocTypes.containsAll(Arrays.asList(bioMatchType.getCbeffDocTypes())))
 				.toArray(size -> new BioMatchType[size]);
 	}
 
@@ -307,7 +323,7 @@ public enum BioMatchType implements MatchType {
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
 			IdInfoFetcher idinfoFetcher) throws IdAuthenticationBusinessException {
-		return idinfoFetcher.getCbeffValues(idEntity, cbeffDocType, this);
+		return idinfoFetcher.getCbeffValues(idEntity, cbeffDocTypes, this);
 	}
 
 	/**
@@ -316,8 +332,8 @@ public enum BioMatchType implements MatchType {
 	 * @return the cbeff doc type
 	 */
 
-	public CbeffDocType getCbeffDocType() {
-		return cbeffDocType;
+	public CbeffDocType[] getCbeffDocTypes() {
+		return cbeffDocTypes;
 	}
 
 	/**

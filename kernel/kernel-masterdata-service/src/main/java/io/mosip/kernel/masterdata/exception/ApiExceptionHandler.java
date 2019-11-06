@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 
 import org.apache.tomcat.util.buf.StringUtils;
 import org.json.JSONException;
@@ -26,8 +27,8 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -92,17 +93,65 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-					x.getField() + ": " + x.getDefaultMessage());
+			ServiceError error = null;
+			if(x!=null && x.getDefaultMessage().contains("Language Code is Invalid"))
+			{
+				error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						x.getDefaultMessage());
+			}
+			else
+			{
+				error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						x.getField() + ": " + x.getDefaultMessage());
+			}
+			
 			errorResponse.getErrors().add(error);
 		});
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler( ConstraintViolationException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> constraintVoilationException(
+			final HttpServletRequest httpServletRequest, final ConstraintViolationException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		ServiceError error = null;
+			if(e.getMessage()!=null && e.getMessage().contains("Language Code is Invalid"))
+			{
+				error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						"Language Code is Invalid");
+			}
+			else
+			{
+				error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						e.getMessage());
+			}
+			
+			errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
-		if(e.getCause() instanceof MismatchedInputException)
+		if(e.getCause() instanceof InvalidFormatException)
+		{
+			JsonMappingException jme = (JsonMappingException) e.getCause();
+			 List<JsonMappingException.Reference> references = jme.getPath();
+			    List<String> ret = new LinkedList<>();
+			    if (references != null) {
+			      for (JsonMappingException.Reference reference : references) {
+			    	  if(!reference.getFieldName().equals("request"))
+			    		  ret.add(reference.getFieldName());
+			      }
+			    }	
+			    String exField = StringUtils.join(ret);
+			    ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+				ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						"Invalid Format in field : "+exField);
+				errorResponse.getErrors().add(error);
+				return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+		}
+		else if(e.getCause() instanceof MismatchedInputException)
 		{
 			ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
 			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),

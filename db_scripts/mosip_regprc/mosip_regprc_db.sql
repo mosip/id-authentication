@@ -4,7 +4,8 @@ CREATE DATABASE mosip_regprc
 	LC_COLLATE = 'en_US.UTF-8'
 	LC_CTYPE = 'en_US.UTF-8'
 	TABLESPACE = pg_default
-	OWNER = sysadmin;
+	OWNER = sysadmin
+	TEMPLATE  = template0;
 -- ddl-end --
 COMMENT ON DATABASE mosip_regprc IS 'The data related to Registration process flows and transaction will be maintained in this database. This database also maintains data that is needed to perform deduplication.';
 -- ddl-end --

@@ -21,7 +21,7 @@ public class FilterValueDto {
 	@Valid
 	private List<FilterDto> filters;
 	// @NotBlank
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String languageCode;
 
 	private List<SearchFilter> optionalFilters;

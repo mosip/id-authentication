@@ -1,7 +1,5 @@
 package io.mosip.registration.dto.mastersync;
 
-import java.time.LocalDate;
-
 /**
  * 
  * @author Sreekar Chukka
@@ -12,7 +10,7 @@ public class HolidayDto extends MasterSyncBaseDto {
 
 	private int holidayId;
 	
-	private LocalDate holidayDate;
+	private String holidayDate;
 	
 	private String holidayDay;
 	
@@ -74,14 +72,14 @@ public class HolidayDto extends MasterSyncBaseDto {
 	/**
 	 * @return the holidayDate
 	 */
-	public LocalDate getHolidayDate() {
+	public String getHolidayDate() {
 		return holidayDate;
 	}
 
 	/**
 	 * @param holidayDate the holidayDate to set
 	 */
-	public void setHolidayDate(LocalDate holidayDate) {
+	public void setHolidayDate(String holidayDate) {
 		this.holidayDate = holidayDate;
 	}
 

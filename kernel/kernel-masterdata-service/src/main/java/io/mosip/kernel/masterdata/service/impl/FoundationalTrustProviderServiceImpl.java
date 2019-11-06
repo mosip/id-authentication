@@ -75,6 +75,7 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 	@Transactional
 	public ResponseWrapper<FoundationalTrustProviderResDto> updateFoundationalTrustProvider(
 			FoundationalTrustProviderPutDto foundationalTrustProviderPutDto) {
+		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
 		FoundationalTrustProvider updateFoundationalTrustProvider = new FoundationalTrustProvider();
 		FoundationalTrustProviderResDto foundationalTrustProviderResDto = new FoundationalTrustProviderResDto();
 		updateFoundationalTrustProvider = foundationalTrustProviderRepository.findById(FoundationalTrustProvider.class, foundationalTrustProviderPutDto.getId());
@@ -92,11 +93,10 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 			foundationalTrustProviderHistory.setIsActive(foundationalTrustProviderPutDto.isActive());
 			foundationalTrustProviderHistory.setCreatedDateTime(updateFoundationalTrustProvider.getUpdatedDateTime());
 			foundationalTrustProviderRepositoryHistory.create(foundationalTrustProviderHistory);
+			foundationalTrustProviderResDto =  MetaDataUtils.setCreateMetaData(updateFoundationalTrustProvider, FoundationalTrustProviderResDto.class);
+			response.setResponse(foundationalTrustProviderResDto);
+			response.setResponsetime(LocalDateTime.now());
 		}
-		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
-		foundationalTrustProviderResDto =  MetaDataUtils.setCreateMetaData(updateFoundationalTrustProvider, FoundationalTrustProviderResDto.class);
-		response.setResponse(foundationalTrustProviderResDto);
-		response.setResponsetime(LocalDateTime.now());
 		return response;
 	}
 

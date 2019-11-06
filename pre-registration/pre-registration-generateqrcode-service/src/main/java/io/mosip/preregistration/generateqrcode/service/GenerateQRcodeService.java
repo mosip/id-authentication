@@ -71,7 +71,7 @@ public class GenerateQRcodeService {
 	 * @param data
 	 * @return
 	 */
-	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<JSONObject> data) {
+	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<String> data) {
 		byte[] qrCode = null;
 		
 		
@@ -97,7 +97,7 @@ public class GenerateQRcodeService {
 						ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
 			}else if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(data),requiredRequestMap)) {
 				
-			qrCode = qrCodeGenerator.generateQrCode(data.getRequest().toString(),QrVersion.valueOf(qrversion));
+			qrCode = qrCodeGenerator.generateQrCode(data.getRequest(),QrVersion.valueOf(qrversion));
 			responsedto = new QRCodeResponseDTO();
 			responsedto.setQrcode(qrCode);
 			}

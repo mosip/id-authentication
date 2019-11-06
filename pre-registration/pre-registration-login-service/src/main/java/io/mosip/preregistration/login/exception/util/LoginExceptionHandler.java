@@ -6,11 +6,15 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -63,6 +67,13 @@ public class LoginExceptionHandler {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	/**  The Environment. */
+	@Autowired
+	protected  Environment env;
+	
+	/** The id. */
+	@Resource
+	protected Map<String, String> id;
 
 	@ExceptionHandler(SendOtpFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> sendOtpException(final SendOtpFailedException e){
@@ -81,7 +92,13 @@ public class LoginExceptionHandler {
 	
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e){
-		return GenericUtil.errorResponse(e, e.getMainResponseDto());
+	
+		MainResponseDTO<?> errorRes = e.getMainResponseDto();
+		errorRes.setId(id.get("sendotp"));
+		errorRes.setVersion(env.getProperty("version"));
+		errorRes.setErrors(e.getExptionList());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	} 
 	
 	@ExceptionHandler(LoginServiceException.class)

@@ -1,36 +1,40 @@
 -- -------------------------------------------------------------------------------------------------
 -- Database Name: mosip_master
 -- Table Name 	: master.registered_device_master_h
--- Purpose    	: Registered Device Master History : History- Contains list of registered devices and details,  like fingerprint scanner, iris scanner, scanner etc used at registration centers, authentication services, eKYC...etc. Table is created temporarily and will be relooked in to this for re-design of the solution later.
+-- Purpose    	: Registered Device History : History of changes of any MOSIP device registration will be stored in history table to track any chnages for future validations.
 --           
--- Create By   	: Nasir Khan / Sadanandegowda
--- Created Date	: 30-Jul-2019
+-- Create By   	: Sadanandegowda
+-- Created Date	: 04-Oct-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 -- 
 -- ------------------------------------------------------------------------------------------
+
 -- object: master.registered_device_master_h | type: TABLE --
 -- DROP TABLE IF EXISTS master.registered_device_master_h CASCADE;
 CREATE TABLE master.registered_device_master_h(
 	code character varying(36) NOT NULL,
-	type character varying(64),
-	subtype character varying(64),
-	status_code character varying(36),
-	device_id character varying(36) NOT NULL,
-	device_sub_id character varying(1024),
+	dtype_code character varying(36) NOT NULL,
+	dstype_code character varying(36) NOT NULL,
+	status_code character varying(64),
+	device_id character varying(256) NOT NULL,
+	device_sub_id character varying(256),
+	digital_id character varying(1024) NOT NULL,
+	serial_number character varying(64) NOT NULL,
 	provider_id character varying(36) NOT NULL,
 	provider_name character varying(128),
-	mosip_process character varying(64) NOT NULL,
+	purpose character varying(64) NOT NULL,
 	firmware character varying(128),
 	make character varying(36),
 	model character varying(36),
 	expiry_date timestamp,
-	certification bytea,
+	certification_level character varying(3),
 	foundational_trust_provider_id character varying(36),
 	foundational_trust_signature character varying(512),
 	foundational_trust_certificate bytea,
-	dpsignature character varying(512),
+	dprovider_signature character varying(512),
+	is_active boolean NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
@@ -42,25 +46,29 @@ CREATE TABLE master.registered_device_master_h(
 
 );
 -- ddl-end --
-COMMENT ON TABLE master.registered_device_master_h IS 'Registered Device Master History : History- Contains list of registered devices and details,  like fingerprint scanner, iris scanner, scanner etc used at registration centers, authentication services, eKYC...etc. Table is created temporarily and will be relooked in to this for re-design of the solution later.';
+COMMENT ON TABLE master.registered_device_master_h IS 'Registered Device History : History of changes of any MOSIP device registration will be stored in history table to track any chnages for future validations.';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.code IS 'Device ID : Unique ID generated / assigned for device';
+COMMENT ON COLUMN master.registered_device_master_h.code IS 'Registred Device Code : Unique ID generated / assigned for device which is registred in MOSIP system for the purpose';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.type IS 'Type: Types of devices used for registration processes, authentication, eKYC..etc. for ex., printer, scanner, etc';
+COMMENT ON COLUMN master.registered_device_master_h.dtype_code IS 'Device Type Code: Code of the device type, Referenced from master.reg_device_type.code';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.subtype IS 'Sub Type: Sub types of devices used for registration processes, authentication, eKYC..etc. for ex., thumb finger print, palm print scanner, Iris scanner, etc';
+COMMENT ON COLUMN master.registered_device_master_h.dstype_code IS 'Device Sub Type Code: Code of the device sub type, Referenced from master.reg_device_sub_type.code';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.status_code IS ' Status Code : Status of the registered devices';
+COMMENT ON COLUMN master.registered_device_master_h.status_code IS 'Status Code : Status of the registered devices, The status code can be Registered, De-Registered or Retired/Revoked.';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.device_id IS 'Device ID: Unique ID of the device by the provider, This ID can be serial number device';
+COMMENT ON COLUMN master.registered_device_master_h.device_id IS 'Device ID: Device ID is the unigue id provided by device provider for each device';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.device_sub_id IS 'Device Sub ID: Sub ID of the devices, Each device will have an array of sub IDs';
+COMMENT ON COLUMN master.registered_device_master_h.device_sub_id IS 'Device Sub ID: Sub ID of the devices, Each device can have an array of sub IDs.';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.provider_id IS 'Provider ID: ID of the device provider';
+COMMENT ON COLUMN master.registered_device_master_h.digital_id IS 'Digital ID: Digital ID received as a Json value containing below values like Serial number of the device, make , model, type, provider details..etc';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.provider_name IS 'Provider Name: Name of the device provider';
+COMMENT ON COLUMN master.registered_device_master_h.serial_number IS 'Serial Number : Serial number of the device, This will be the Unique ID of the device by the provider';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.mosip_process IS 'MOSIP process where there devices will be used for. ex. Registrations, Authentication, eKYC...etc';
+COMMENT ON COLUMN master.registered_device_master_h.provider_id IS 'Device Provider ID: ID of the device provider, Referenced from master.device_provider.id';
+-- ddl-end --
+COMMENT ON COLUMN master.registered_device_master_h.provider_name IS 'Device Provider Name : Name of the device provider, This also available in master.device_provider entity';
+-- ddl-end --
+COMMENT ON COLUMN master.registered_device_master_h.purpose IS 'Purpose : Purpose of these devices in the MOSIP system. ex. Registrations, Authentication, eKYC...etc';
 -- ddl-end --
 COMMENT ON COLUMN master.registered_device_master_h.firmware IS 'Firmware: Firmware used in devices';
 -- ddl-end --
@@ -68,15 +76,17 @@ COMMENT ON COLUMN master.registered_device_master_h.make IS 'Make: Make of the d
 -- ddl-end --
 COMMENT ON COLUMN master.registered_device_master_h.expiry_date IS 'Expiry Date: expiry date of the device';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.certification IS 'Certification: Device certification';
+COMMENT ON COLUMN master.registered_device_master_h.certification_level IS 'Certification Level: Certification level for the device, This can be L0 or L1 devices';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.foundational_trust_provider_id IS 'Foundational Trust Provider ID: Foundational trust provider ID';
+COMMENT ON COLUMN master.registered_device_master_h.foundational_trust_provider_id IS 'Foundational Trust Provider ID: Foundational trust provider ID, This will be soft referenced from master.foundational_trust_provider.id. Required only for L1 devices.';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.foundational_trust_signature IS 'Foundational Trust Signature: Signature of the foundational trust';
+COMMENT ON COLUMN master.registered_device_master_h.foundational_trust_signature IS 'Foundational Trust Signature: Signature of the foundational trust which is asigned to the device';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.foundational_trust_certificate IS 'Foundational Trust Certificate: Certificate of the foundational trust';
+COMMENT ON COLUMN master.registered_device_master_h.foundational_trust_certificate IS 'Foundational Trust Certificate: Certificate of the foundational trust  which is assigned to the device';
 -- ddl-end --
-COMMENT ON COLUMN master.registered_device_master_h.dpsignature IS 'DP Signation: DP Signature';
+COMMENT ON COLUMN master.registered_device_master_h.dprovider_signature IS 'Device Provider Sugnature: Signature of the device provider, Provided by device provider for each device with date and time stamp';
+-- ddl-end --
+COMMENT ON COLUMN master.registered_device_master_h.is_active IS 'IS_Active : Flag to mark whether the record is Active or In-active';
 -- ddl-end --
 COMMENT ON COLUMN master.registered_device_master_h.cr_by IS 'Created By : ID or name of the user who create / insert record';
 -- ddl-end --
