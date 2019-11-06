@@ -175,7 +175,7 @@
 		<module>kernel-signature-service</module>
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-keymanager-service</module>
-
+                <module>kernel-vidgenerator-service</module>
 		<!--<module>kernel-salt-generator</module>-->
 	</modules>
 
