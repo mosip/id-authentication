@@ -1,7 +1,5 @@
 package io.mosip.kernel.vidgenerator.config;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-
 import java.util.HashMap;
 import java.util.Map;
 

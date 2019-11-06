@@ -3,10 +3,6 @@ package io.mosip.kernel.vidgenerator.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -31,7 +27,6 @@ public class VidServiceImpl implements VidService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VidServiceImpl.class);
 
-	
 	@Value("${mosip.kernel.vid.time-to-renew-after-expiry}")
 	private long timeToRenewAfterExpiry;
 
@@ -139,12 +134,17 @@ public class VidServiceImpl implements VidService {
 
 	@Override
 	public void saveVID(VidEntity vid) {
-		
+
 		try {
-			this.vidRepository.saveAndFlush(vid);
+			if (!this.vidRepository.existsById(vid.getVid())) {
+				this.vidRepository.saveAndFlush(vid);
+			}
 		} catch (DataAccessException exception) {
-			
+
 			LOGGER.error(ExceptionUtils.parseException(exception));
-		} 
+		} catch (Exception exception) {
+
+			LOGGER.error(ExceptionUtils.parseException(exception));
+		}
 	}
 }
