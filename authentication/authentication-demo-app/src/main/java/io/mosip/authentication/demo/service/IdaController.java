@@ -300,6 +300,7 @@ public class IdaController {
 							"https://ext-int.mosip.io/idauthentication/v1/otp/1873299273/735899345"),
 					HttpMethod.POST, httpEntity, Map.class);
 			System.err.println(response);
+			responsetextField.setText("OTP sent");
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -313,8 +314,8 @@ public class IdaController {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(fingerAuthType.isSelected() || irisAuthType.isSelected());
-		authTypeDTO.setOtp(otpAuthType.isSelected());
+		authTypeDTO.setBio(isBioAuthType());
+		authTypeDTO.setOtp(isOtpAuthType());
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		// set Individual Id
 		authRequestDTO.setIndividualId(idValue.getText());
@@ -324,11 +325,14 @@ public class IdaController {
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setTimestamp(getUTCCurrentDateTimeString());
 
-		if (otpAuthType.isSelected()) {
+		if (isOtpAuthType()) {
 			requestDTO.setOtp(otpValue.getText());
 		}
+		
 		Map<String, Object> identityBlock = mapper.convertValue(requestDTO, Map.class);
-		identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
+		if (isBioAuthType()) {
+			identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
+		}
 		responsetextField.setText("Encrypting Auth Request...");
 		System.err.println("******* Request before encryption ************ \n\n");
 		System.err.println(identityBlock);
@@ -348,7 +352,7 @@ public class IdaController {
 		authRequestDTO.setTransactionID(getTransactionID());
 		authRequestDTO.setRequestTime(getUTCCurrentDateTimeString());
 		authRequestDTO.setConsentObtained(true);
-		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setId(getAuthRequestId());
 		authRequestDTO.setVersion("1.0");
 
 		Map<String, Object> authRequestMap = mapper.convertValue(authRequestDTO, Map.class);
@@ -357,9 +361,8 @@ public class IdaController {
 		authRequestMap.replace("requestHMAC", kernelEncrypt.getRequestHMAC());
 		RestTemplate restTemplate = createTemplate();
 		HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
-		ResponseEntity<Map> authResponse = restTemplate.exchange(
-				env.getProperty("ida.auth.url",
-						"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345"),
+		String url = getUrl();
+		ResponseEntity<Map> authResponse = restTemplate.exchange(url,
 				HttpMethod.POST, httpEntity, Map.class);
 		if (authResponse.getStatusCode().is2xxSuccessful()) {
 			boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response")).get("authStatus");
@@ -374,10 +377,30 @@ public class IdaController {
 			responsetextField.setText("Authentication Failed with Error");
 			responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 		}
-		System.out.println(identityBlock);
-		System.err.println(authResponse.getBody());
+
 
 		System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
+		System.out.println(identityBlock);
+		
+		System.err.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
+		System.err.println(authResponse.getBody());
+	}
+
+	private String getAuthRequestId() {
+		return env.getProperty("authRequestId", "mosip.identity.auth");
+	}
+
+	private boolean isOtpAuthType() {
+		return otpAuthType.isSelected();
+	}
+
+	private String getUrl() {
+		return env.getProperty("ida.auth.url",
+				"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345");
+	}
+
+	private boolean isBioAuthType() {
+		return fingerAuthType.isSelected() || irisAuthType.isSelected() || faceAuthType.isSelected();
 	}
 
 	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
@@ -408,7 +431,7 @@ public class IdaController {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId("IDA");
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
-		String publicKeyId = "PARTNER";
+		String publicKeyId = env.getProperty("publicKeyId", "PARTNER");
 		request.setReferenceId(publicKeyId);
 		String utcTime = DateUtils.getUTCCurrentDateTimeString();
 		request.setTimeStamp(utcTime);
