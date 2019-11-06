@@ -701,6 +701,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(userId.getText());
+		authenticationValidatorDTO.setAuthValidationType("single");
 
 		try {
 			if (SessionContext.create(userDTO, RegistrationConstants.IRIS, false, false, authenticationValidatorDTO)) {
