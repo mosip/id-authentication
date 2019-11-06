@@ -352,7 +352,7 @@ public class IdaController {
 		authRequestDTO.setTransactionID(getTransactionID());
 		authRequestDTO.setRequestTime(getUTCCurrentDateTimeString());
 		authRequestDTO.setConsentObtained(true);
-		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setId(getAuthRequestId());
 		authRequestDTO.setVersion("1.0");
 
 		Map<String, Object> authRequestMap = mapper.convertValue(authRequestDTO, Map.class);
@@ -384,6 +384,10 @@ public class IdaController {
 		
 		System.err.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
 		System.err.println(authResponse.getBody());
+	}
+
+	private String getAuthRequestId() {
+		return env.getProperty("authRequestId", "mosip.identity.auth");
 	}
 
 	private boolean isOtpAuthType() {
