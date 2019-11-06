@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.util.FileUtils;
@@ -35,6 +36,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -78,7 +80,6 @@ public class VinGeneratorVertxApplication {
 			InputStream out = templateManager.merge(is, map);
 			String merged = IOUtils.toString(out, StandardCharsets.UTF_8.name());
 			FileUtils.writeStringToFile(swaggerJsonnFile, merged, StandardCharsets.UTF_8.name());
-
 		} catch (Exception e) {
 			LOGGER.warn(e.getMessage());
 		}
@@ -154,8 +155,22 @@ public class VinGeneratorVertxApplication {
 		Verticle[] eventLoopVerticles = { new VidFetcherVerticle(context)};
 		Verticle[] workerVerticles = {new VidPoolCheckerVerticle(context),new VidPopulatorVerticle(context),new VidExpiryVerticle(context)};
 		Stream.of(workerVerticles).forEach(verticle -> deploy(verticle, workerOptions, vertx));
-		vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
-		Stream.of(eventLoopVerticles).forEach(verticle -> deploy(verticle, eventLoopOptions, vertx));
+		Environment environment = context.getBean(Environment.class);
+		DeliveryOptions deliveryOptions = new DeliveryOptions();
+		deliveryOptions.setSendTimeout(environment.getProperty("mosip.kernel.vid.pool-population-timeout",Long.class));
+		long start =System.currentTimeMillis();
+		LOGGER.info("Service will be started after pooling vids..");
+		vertx.eventBus().send(EventType.INITPOOL, EventType.CHECKPOOL, deliveryOptions,replyHandler -> {
+			if(replyHandler.succeeded()) {
+				LOGGER.info("population of pool is done starting fetcher verticle");
+				Stream.of(eventLoopVerticles).forEach(verticle -> deploy(verticle, eventLoopOptions, vertx));		
+			    LOGGER.info("Starting vidgenerator service... ");
+			    LOGGER.info("service took {} ms to pool and start",(System.currentTimeMillis()-start));
+			}else if(replyHandler.failed()) {
+				LOGGER.error("population of pool failed with cause ",replyHandler.cause());
+			}
+		});
+		
 	}
 
 	private static void deploy(Verticle verticle, DeploymentOptions opts, Vertx vertx) {
