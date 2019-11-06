@@ -34,8 +34,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -224,15 +222,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 				faceData.put(RegistrationConstants.SIGNATURE, "");
 				listOfBiometric.add(faceData);
 
-				try {
-					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-							JsonUtils.javaObjectToJsonString(listOfBiometric));
-				} catch (JsonProcessingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				requestMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
+				//requestMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
 				requestMap.put(RegistrationConstants.ON_BOARD_BIOMETRICS, listOfBiometric);
 				requestMap.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 
@@ -400,7 +390,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 			BiometricDTO biometricDTO, Map<String, String> requestParamMap) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
-			if (true) {
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+					(String) ApplicationContext.map().get(RegistrationConstants.USER_ON_BOARD_IDA_AUTH))) {
 				LinkedHashMap<String, Object> publicKeyResponse = null;
 
 				publicKeyResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil.get(
@@ -497,7 +488,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 	 * @return the session key
 	 */
 	@SuppressWarnings("unchecked")
-	private SplittedEncryptedData getSessionKey(Map<String, Object> requestMap, byte[] data) {
+	private synchronized SplittedEncryptedData getSessionKey(Map<String, Object> requestMap, byte[] data) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		SplittedEncryptedData splittedData = null;
 		Map<String, Object> mapRequest = new HashMap<String, Object>();
