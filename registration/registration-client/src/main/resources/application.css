@@ -423,12 +423,36 @@
     -fx-font-size: 10.0px;
     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
+
+.loginSubmitStyle1{
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 50.0px;
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+    -fx-text-fill: black;
+    -fx-font-size: 10.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+
 .loginSubmitStyle:hover {
 	-fx-background-color:#E63A74;
 	-fx-border-color: #E63A74;
 	-fx-text-fill: #FFFFFF;
 }
 .loginSubmitStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+
+.loginSubmitStyle1:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.loginSubmitStyle1:pressed {
 	-fx-background-color:#B32D5A;
 	-fx-border-color: #B32D5A;
 	-fx-text-fill: #FFFFFF;
