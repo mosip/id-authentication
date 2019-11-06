@@ -254,7 +254,7 @@ public class Encrypt {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
-		String publicKeyId = isInternal ? env.getProperty("internal.reference.id") : env.getProperty("cryptomanager.partner.id");
+		String publicKeyId = isInternal ? env.getProperty("internal.reference.id") : env.getProperty(IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID);
 		request.setReferenceId(publicKeyId );
 		String utcTime = DateUtils.getUTCCurrentDateTimeString();
 		request.setTimeStamp(utcTime);
