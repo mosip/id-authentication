@@ -450,7 +450,7 @@ public class DeviceServiceImpl implements DeviceService {
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
-		pageUtils.validateSortField(Device.class, sort);
+		pageUtils.validateSortField(DeviceSearchDto.class,Device.class, sort);
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
 		if (filterValidator.validate(DeviceSearchDto.class, dto.getFilters())) {
