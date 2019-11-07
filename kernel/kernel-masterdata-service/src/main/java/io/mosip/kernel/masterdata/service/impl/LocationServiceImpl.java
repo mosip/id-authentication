@@ -27,6 +27,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
@@ -73,7 +74,6 @@ import io.mosip.kernel.masterdata.utils.UBtree;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -344,34 +344,13 @@ public class LocationServiceImpl implements LocationService {
 		locationId.setCode(locationDto.getCode());
 		locationId.setLangCode(locationDto.getLangCode());
 		try {
-			/*List<Location> locations = locationRepository.findAllNonDeleted();
-			Location locationEntity = MapperUtils.map(locationDto, Location.class);
-			locations = locationUtils.getDescedants(locations, locationEntity);
-			locations.remove(locationEntity);
-			if (locations.stream().anyMatch(location -> location.getName().equals(locationDto.getName()))) {
-				throw new RequestException("errorCode", "errorMessage");
-			}*/
-
 			masterDataCreateUtil.updateMasterData(Location.class, locationDto);
 			Location location = MetaDataUtils.setUpdateMetaData(locationDto, new Location(), true);
-			if (location == null) {
-				throw new RequestException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-			/*
-			 * if (!locationDto.getIsActive() && findIsActiveInHierarchy(location)) { throw
-			 * new RequestException(LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.
-			 * getErrorCode(),
-			 * LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorMessage()); }
-			 */
-
 			MapperUtils.map(location, postLocationCodeResponseDto);
 
-		} catch (DataAccessException | DataAccessLayerException ex) {
+		}catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
-		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		return postLocationCodeResponseDto;
