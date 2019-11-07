@@ -23,6 +23,11 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "Registered Device", description = "Registered Device resource")
 public class RegisteredDeviceExtnDto extends BaseDto{
 	
+	@NotBlank
+	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "dTypeCode", required = true, dataType = "java.lang.String")
+	private String code;
+	
 	/**
 	 * Field for deviceTypeCode
 	 */

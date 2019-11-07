@@ -1,4 +1,6 @@
-package io.mosip.kernel.masterdata.dto.request.registereddevice;
+package io.mosip.kernel.masterdata.validator.registereddevice;
+
+
 /**
  * Filter field value
  * 
@@ -21,3 +23,4 @@ public enum StatusCodeValue {
 		return type;
 	}
 }
+

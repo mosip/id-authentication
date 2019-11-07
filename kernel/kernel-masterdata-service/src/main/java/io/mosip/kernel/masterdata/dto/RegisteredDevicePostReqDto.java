@@ -7,8 +7,9 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.mosip.kernel.masterdata.dto.request.registereddevice.StatusCodeColumn;
-import io.mosip.kernel.masterdata.dto.request.registereddevice.StatusCodeValue;
+import io.mosip.kernel.masterdata.validator.registereddevice.ValidCertificateLevel;
+import io.mosip.kernel.masterdata.validator.registereddevice.ValidPurpose;
+import io.mosip.kernel.masterdata.validator.registereddevice.ValidStatusCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,7 +47,8 @@ public class RegisteredDevicePostReqDto {
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "statusCode", required = true, dataType = "java.lang.String")
-	@StatusCodeColumn(columns = { StatusCodeValue.REGISTERED, StatusCodeValue.RETIRED, StatusCodeValue.REVOKED })
+	//@StatusCodeColumn(columns = { StatusCodeValue.REGISTERED, StatusCodeValue.RETIRED, StatusCodeValue.REVOKED })
+	@ValidStatusCode(message = "Status Code is Invalid")
 	private String statusCode;
 	
 
@@ -73,6 +75,7 @@ public class RegisteredDevicePostReqDto {
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "purpose", required = true, dataType = "java.lang.String")
+	@ValidPurpose(message= "Purpose value is inValide")
 	private String purpose;
 
 	/**
@@ -117,6 +120,7 @@ public class RegisteredDevicePostReqDto {
 	@NotBlank
 	@Size(min = 0, max = 3)
 	@ApiModelProperty(value = "certificationLevel", required = true, dataType = "java.lang.String")
+	@ValidCertificateLevel(message = "Certification Level is inValid")
 	private String certificationLevel;
 
 	/**
