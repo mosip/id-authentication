@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
 import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
+import io.swagger.annotations.Api;
 
 /**
  * Controller to handle api request for the zones
@@ -28,6 +29,7 @@ import io.mosip.kernel.masterdata.validator.ValidLangCode;
 @RestController
 @RequestMapping("/zones")
 @Validated
+@Api(tags = { "Zone" })
 public class ZoneController {
 
 	@Autowired
