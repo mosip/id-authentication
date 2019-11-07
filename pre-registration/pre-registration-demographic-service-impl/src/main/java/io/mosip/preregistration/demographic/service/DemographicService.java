@@ -37,6 +37,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
@@ -58,9 +59,6 @@ import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
-import io.mosip.preregistration.core.service.intf.BookingServiceIntf;
-import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
-import io.mosip.preregistration.core.service.intf.DocumentServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -85,6 +83,7 @@ import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsExc
 import io.mosip.preregistration.demographic.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.demographic.repository.DemographicRepository;
 import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
+import io.mosip.preregistration.document.service.DocumentServiceIntf;
 
 /**
  * This class provides the service implementation for Demographic

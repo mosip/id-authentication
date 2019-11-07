@@ -88,7 +88,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
-			<artifactId>pre-registration-document-service-impl</artifactId>
+			<artifactId>pre-registration-demographic-service-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

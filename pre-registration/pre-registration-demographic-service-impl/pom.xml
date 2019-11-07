@@ -62,5 +62,25 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-fsadapter-hdfs</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-virusscanner-clamav</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-prid</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 	</dependencies>
 </project>

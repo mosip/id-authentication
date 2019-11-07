@@ -85,7 +85,6 @@ import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
-import io.mosip.preregistration.core.service.intf.DemographicServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -108,6 +107,7 @@ import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsExc
 import io.mosip.preregistration.demographic.exception.RestCallException;
 import io.mosip.preregistration.demographic.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.demographic.repository.DemographicRepository;
+import io.mosip.preregistration.demographic.service.DemographicServiceIntf;
 import io.mosip.preregistration.demographic.service.util.DemographicServiceUtil;
 
 /**

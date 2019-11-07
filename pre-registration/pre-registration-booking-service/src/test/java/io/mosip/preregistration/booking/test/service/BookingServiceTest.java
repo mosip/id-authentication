@@ -72,6 +72,7 @@ import io.mosip.preregistration.booking.serviceimpl.repository.BookingAvailabili
 import io.mosip.preregistration.booking.serviceimpl.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.serviceimpl.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.serviceimpl.service.BookingService;
+import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.booking.serviceimpl.service.util.BookingServiceUtil;
 import io.mosip.preregistration.booking.test.BookingApplicationTest;
 import io.mosip.preregistration.core.code.AuditLogVariables;
@@ -92,7 +93,6 @@ import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
 import io.mosip.preregistration.core.exception.AppointmentReBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
-import io.mosip.preregistration.core.service.intf.BookingServiceIntf;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 

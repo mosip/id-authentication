@@ -448,10 +448,10 @@ public class DemographicServiceUtil {
 			String configProfile = env.getProperty("spring.profiles.active");
 			String configAppName = env.getProperty("spring.cloud.config.name");
 			StringBuilder uriBuilder = new StringBuilder();
-			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
-					.append(configLabel + "/").append(filename);
-			// uriBuilder.append(
-			// "http://104.211.212.28:51000/preregistration/dev/0.12.0/PreRegistrationIdentitiyMapping.json");
+			//uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+			//		.append(configLabel + "/").append(filename);
+			 uriBuilder.append(
+			 "http://104.211.212.28:51000/preregistration/dev/master/PreRegistrationIdentitiyMapping.json");
 			log.info("sessionId", "idType", "id", " URL in demographic service util of getJson " + uriBuilder);
 			return restTemplate.getForObject(uriBuilder.toString(), String.class);
 		} catch (Exception ex) {

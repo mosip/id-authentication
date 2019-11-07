@@ -91,9 +91,7 @@
 		<module>pre-registration-demographic-service</module>
 		<module>pre-registration-demographic-service-impl</module>
 		<module>pre-registration-document-service</module>
-		<module>pre-registration-document-service-impl</module>
 		<module>pre-registration-booking-service</module>
-		<module>pre-registration-booking-service-impl</module>
 		<module>pre-registration-datasync-service</module>
 		<module>pre-registration-batchjob</module>
 		<module>pre-registration-translitration-service</module>
