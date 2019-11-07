@@ -46,7 +46,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  * @author M1046368 Arun Bose S
 */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 public class KeyManagerTest {
 

@@ -1,5 +1,6 @@
 package io.mosip.kernel.saltgenerator.config;
 
+import static io.mosip.kernel.saltgenerator.constant.SaltGeneratorConstant.DATASOURCE_ALIAS;
 import static io.mosip.kernel.saltgenerator.constant.SaltGeneratorConstant.DATASOURCE_DRIVERCLASSNAME;
 import static io.mosip.kernel.saltgenerator.constant.SaltGeneratorConstant.DATASOURCE_PASSWORD;
 import static io.mosip.kernel.saltgenerator.constant.SaltGeneratorConstant.DATASOURCE_URL;
@@ -94,15 +95,12 @@ public class SaltGeneratorConfig {
 	@Bean
 	@Primary
 	public DataSource dataSource() {
+		String alias = env.getProperty(DATASOURCE_ALIAS.getValue());
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl(env.getProperty(env.getProperty(DATASOURCE_URL.getValue()),
-				env.getProperty(DATASOURCE_URL.getValue())));
-		dataSource.setUsername(env.getProperty(env.getProperty(DATASOURCE_USERNAME.getValue()),
-				env.getProperty(DATASOURCE_USERNAME.getValue())));
-		dataSource.setPassword(env.getProperty(env.getProperty(DATASOURCE_PASSWORD.getValue()),
-				env.getProperty(DATASOURCE_PASSWORD.getValue())));
-		dataSource.setDriverClassName(env.getProperty(env.getProperty(DATASOURCE_DRIVERCLASSNAME.getValue()),
-				env.getProperty(DATASOURCE_DRIVERCLASSNAME.getValue())));
+		dataSource.setUrl(env.getProperty(String.format(DATASOURCE_URL.getValue(), alias)));
+		dataSource.setUsername(env.getProperty(String.format(DATASOURCE_USERNAME.getValue(), alias)));
+		dataSource.setPassword(env.getProperty(String.format(DATASOURCE_PASSWORD.getValue(), alias)));
+		dataSource.setDriverClassName(env.getProperty(String.format(DATASOURCE_DRIVERCLASSNAME.getValue(), alias)));
 		return dataSource;
 	}
 	

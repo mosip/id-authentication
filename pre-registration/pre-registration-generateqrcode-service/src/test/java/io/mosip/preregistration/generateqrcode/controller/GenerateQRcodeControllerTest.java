@@ -58,7 +58,7 @@ public class GenerateQRcodeControllerTest {
 	private NotificationDTO notificationDTO;
 
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
-	MainRequestDTO<JSONObject> requestdata=new MainRequestDTO<>();
+	MainRequestDTO<String> requestdata=new MainRequestDTO<>();
 
 	@Before
 	public void setUp() {

@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,6 @@ import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailed
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -68,7 +66,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	@Autowired
 	private IdObjectValidator idObjectSchemaValidator;
-	
+
 	@Autowired
 	private Environment environment;
 
@@ -84,7 +82,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException, IdObjectValidationFailedException, IdObjectIOException, JsonParseException, JsonMappingException, IOException {
+	public byte[] create(final RegistrationDTO registrationDTO)
+			throws RegBaseCheckedException, IdObjectValidationFailedException, IdObjectIOException, JsonParseException,
+			JsonMappingException, IOException {
 		String rid = registrationDTO.getRegistrationId();
 		try {
 
@@ -99,9 +99,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			ObjectMapper mapper=new ObjectMapper();
-			JSONObject idObject=mapper.readValue(idJsonAsString, JSONObject.class);
-			idObjectSchemaValidator.validateIdObject(idObject,IdObjectValidatorSupportedOperations.UPDATE_UIN);
+			ObjectMapper mapper = new ObjectMapper();
+			JSONObject idObject = mapper.readValue(idJsonAsString, JSONObject.class);
+			idObjectSchemaValidator.validateIdObject(idObject, IdObjectValidatorSupportedOperations.UPDATE_UIN);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
@@ -123,7 +123,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					.setCreatedBy("Packet_Generator").setDescription("Packet uploaded successfully")
 					.setEventId("RPR_405").setEventName("packet uploaded").setEventType("USER").setHostIp(hostIP)
 					.setHostName(hostName).setId(rid).setIdType("REGISTRATION_ID").setModuleId("REG - MOD - 119")
-					.setModuleName("Packet Generator").setSessionUserId("mosip").setSessionUserName("Registration");
+					.setModuleName("REQUEST_HANDLER_SERVICE").setSessionUserId("mosip")
+					.setSessionUserName("Registration");
 			AuditDTO auditDto = auditRequestBuilder.build();
 
 			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,

@@ -5,8 +5,12 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
@@ -32,6 +36,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -155,7 +160,17 @@ public class MasterdataCreationUtil {
 		}
 		if (langCode.equals(secondaryLang)) {
 			
+			if(StringUtils.isBlank(id))
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
+			if(primaryEntity==null)
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			if (primaryEntity != null) {
 				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
 					field.setAccessible(true);
@@ -211,7 +226,7 @@ public class MasterdataCreationUtil {
 		return executableQuery.executeUpdate();
 	}
 
-	public <E, T> T updateMasterData(Class<E> entity, T t)
+	public <E extends BaseEntity, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
 		boolean activeDto=false,activePrimary=false,activeSecondary=false;
@@ -246,23 +261,42 @@ public class MasterdataCreationUtil {
 		}
 		
 		if (langCode.equals(primaryLang)) {
+			E secondaryEntity = getResultSet(entity, secondaryLang, id,primaryKeyCol);
 			if(activeDto==true)
-			{
-				E secondaryEntity = getResultSet(entity, secondaryLang, id,primaryKeyCol);
-				
+			{	
 				if(secondaryEntity!=null)
 				{
-					for (Field field : secondaryEntity.getClass().getDeclaredFields()) {
+					try
+					{
+					Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
+					Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
+					List<Field> fieldList = new ArrayList<>();
+					fieldList.addAll(Arrays.asList(childFields));	
+					if (superFields != null)
+						fieldList.addAll(Arrays.asList(superFields));
+					for (Field field : fieldList) {
 						field.setAccessible(true);
 								if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
-									activeSecondary= (boolean) field.get(t);
+									activeSecondary= (boolean) field.get(secondaryEntity);
 						}
+					}
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
 					}
 					if(activeSecondary==true)
 					{
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.TRUE);
+					}
+					else if(activeDto==true && activeSecondary==false)
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.TRUE);
+						updatePrimaryToTrue(secondaryEntity.getClass(),id,primaryKeyCol,true);
 					}
 					else
 					{
@@ -277,6 +311,7 @@ public class MasterdataCreationUtil {
 					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 					isActive.setAccessible(true);
 					isActive.set(t, Boolean.FALSE);
+					
 				}
 				
 			}
@@ -285,6 +320,10 @@ public class MasterdataCreationUtil {
 				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 				isActive.setAccessible(true);
 				isActive.set(t, Boolean.FALSE);
+				if(secondaryEntity!=null)
+				{
+				updatePrimaryToTrue(secondaryEntity.getClass(),id,primaryKeyCol,false);
+				}
 			}
 			return t;
 		}
