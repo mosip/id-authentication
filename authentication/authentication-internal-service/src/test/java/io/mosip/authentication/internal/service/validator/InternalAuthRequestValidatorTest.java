@@ -331,7 +331,7 @@ public class InternalAuthRequestValidatorTest {
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("LEFT_THUMB");
+		dataDTO.setBioSubType("Left Thumb");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -341,7 +341,7 @@ public class InternalAuthRequestValidatorTest {
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO irisData = new DataDTO();
 		irisData.setBioValue("iris img");
-		irisData.setBioSubType("LEFT");
+		irisData.setBioSubType("Left Iris");
 		irisData.setBioType("IIR");
 		irisData.setDeviceProviderID("provider001");
 		irisData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -350,7 +350,7 @@ public class InternalAuthRequestValidatorTest {
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO faceData = new DataDTO();
 		faceData.setBioValue("face img");
-		faceData.setBioType("FID");
+		faceData.setBioType("FACE");
 		faceData.setBioSubType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))

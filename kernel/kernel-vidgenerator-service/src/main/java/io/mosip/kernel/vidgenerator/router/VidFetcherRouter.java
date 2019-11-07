@@ -1,24 +1,34 @@
 package io.mosip.kernel.vidgenerator.router;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.vidgenerator.constant.EventType;
+import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
+import io.mosip.kernel.vidgenerator.constant.VIDGeneratorErrorCode;
 import io.mosip.kernel.vidgenerator.dto.VidFetchResponseDto;
+import io.mosip.kernel.vidgenerator.exception.VidGeneratorServiceException;
 import io.mosip.kernel.vidgenerator.service.VidService;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * Router for vertx server
@@ -29,15 +39,14 @@ import io.vertx.ext.web.Router;
  */
 @Component
 public class VidFetcherRouter {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(VidFetcherRouter.class);
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-	
-	
+
 	@Autowired
 	private VidService vidService;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -54,57 +63,83 @@ public class VidFetcherRouter {
 			vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
 			ResponseWrapper<VidFetchResponseDto> reswrp = new ResponseWrapper<>();
 			vertx.executeBlocking(blockingCodeHandler -> {
-				String expiryDateString =routingContext.request().getParam(VIDEXPIRY);
-				LocalDateTime expiryTime=null;
-				if(expiryDateString != null) {
-	            if(expiryDateString.trim().isEmpty()) {
-	            	//exception
-	            }
-				DateTimeFormatter dateTimeFormatter= DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN);
-				expiryTime = LocalDateTime.parse(expiryDateString,dateTimeFormatter);
+				String expiryDateString = routingContext.request().getParam(VIDGeneratorConstant.VIDEXPIRY);
+				LocalDateTime expiryTime = null;
+				if (expiryDateString != null) {
+					if (expiryDateString.trim().isEmpty()) {
+						ServiceError error = new ServiceError(
+								VIDGeneratorErrorCode.VID_EXPIRY_DATE_EMPTY.getErrorCode(),
+								VIDGeneratorErrorCode.VID_EXPIRY_DATE_EMPTY.getErrorMessage());
+						setError(routingContext, error,blockingCodeHandler);
+					}
+					DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN);
+					try {
+					expiryTime = LocalDateTime.parse(expiryDateString, dateTimeFormatter);
+					}catch(DateTimeParseException exception) {
+						ServiceError error = new ServiceError(
+								VIDGeneratorErrorCode.VID_EXPIRY_DATE_PATTERN_INVALID.getErrorCode(),
+								VIDGeneratorErrorCode.VID_EXPIRY_DATE_PATTERN_INVALID.getErrorMessage());
+						setError(routingContext, error,blockingCodeHandler);
+					}
+					if (expiryTime.isBefore(DateUtils.getUTCCurrentDateTime())) {
+						ServiceError error = new ServiceError(
+								VIDGeneratorErrorCode.VID_EXPIRY_DATE_INVALID.getErrorCode(),
+								VIDGeneratorErrorCode.VID_EXPIRY_DATE_INVALID.getErrorMessage());
+						setError(routingContext, error,blockingCodeHandler);
+					}
 				}
-				VidFetchResponseDto vidFetchResponseDto=vidService.fetchVid(expiryTime);
+				VidFetchResponseDto vidFetchResponseDto = null;
+				try {
+					vidFetchResponseDto = vidService.fetchVid(expiryTime);
+				} catch (VidGeneratorServiceException exception) {
+					ServiceError error = new ServiceError(exception.getErrorCode(), exception.getMessage());
+					setError(routingContext, error,blockingCodeHandler);
+				}
 				String timestamp = DateUtils.getUTCCurrentDateTimeString();
 				reswrp.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 				reswrp.setResponse(vidFetchResponseDto);
 				reswrp.setErrors(null);
 				blockingCodeHandler.complete();
 			}, resultHandler -> {
-	         try {
-				routingContext.response().end(objectMapper.writeValueAsString(reswrp));
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				if(resultHandler.succeeded()) {
+				try {
+					routingContext.response().end(objectMapper.writeValueAsString(reswrp));
+				} catch (JsonProcessingException exception) {
+					ExceptionUtils.logRootCause(exception);
+					ServiceError error = new ServiceError(VIDGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+							exception.getMessage());
+					setError(routingContext, error,null);
+				}}
 			});
 		});
-    
+
 		return router;
 	}
-/*
-	private void configureHealthCheckEndpoint(Vertx vertx, Router router, final String servletPath) {
-		UinServiceHealthCheckerhandler healthCheckHandler = new UinServiceHealthCheckerhandler(vertx, null,
-				objectMapper, environment);
-		router.get(servletPath + UinGeneratorConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
-		healthCheckHandler.register("db", healthCheckHandler::databaseHealthChecker);
-		healthCheckHandler.register("diskspace", healthCheckHandler::dispSpaceHealthChecker);
-		healthCheckHandler.register("uingeneratorverticle",
-				future -> healthCheckHandler.verticleHealthHandler(future, vertx));
-	}*/
 
-
-	/*
-	 * private void setError(RoutingContext routingContext, ServiceError error,
-	 * RequestWrapper<UinEntity> reqwrp) { ResponseWrapper<ServiceError>
-	 * errorResponse = new ResponseWrapper<>();
-	 * errorResponse.getErrors().add(error); errorResponse.setId(reqwrp.getId());
-	 * errorResponse.setVersion(reqwrp.getVersion()); try {
-	 * routingContext.response().putHeader("content-type",
-	 * UinGeneratorConstant.APPLICATION_JSON)
-	 * .setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse)); }
-	 * catch (JsonProcessingException e1) {
-	 * 
-	 * } }
-	 */
+	private void setError(RoutingContext routingContext, ServiceError error, Future<Object> blockingCodeHandler) {
+		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
+		errorResponse.getErrors().add(error);
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode;
+		if (routingContext.getBodyAsJson() != null) {
+			try {
+				reqNode = objectMapper.readTree(routingContext.getBodyAsJson().toString());
+				errorResponse.setId(reqNode.path("id").asText());
+				errorResponse.setVersion(reqNode.path("version").asText());
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage());
+			}
+		}
+		try {
+			routingContext.response().setStatusCode(200).end(objectMapper.writeValueAsString(errorResponse));
+		} catch (JsonProcessingException e) {
+			LOGGER.error(e.getMessage());
+		}
+		
+		LOGGER.error(error.getMessage());
+		if(blockingCodeHandler != null) {
+			blockingCodeHandler.fail(error.getMessage());
+		}
+	}
 
 }

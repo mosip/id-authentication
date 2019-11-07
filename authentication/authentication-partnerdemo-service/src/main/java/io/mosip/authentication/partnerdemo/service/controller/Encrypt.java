@@ -56,6 +56,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.partnerdemo.service.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.partnerdemo.service.dto.EncryptionRequestDto;
@@ -90,10 +91,9 @@ public class Encrypt {
 	private ObjectMapper objMapper;
 
 	/** KeySplitter. */
-
-	@Value("${mosip.kernel.data-key-splitter}")
+	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
-
+	
 	/** The encrypt URL. */
 	@Value("${mosip.kernel.publicKey-url}")
 	private String publicKeyURL;
@@ -101,6 +101,10 @@ public class Encrypt {
 	/** The app ID. */
 	@Value("${application.id}")
 	private String appID;
+	
+	@Autowired
+	private CryptoUtility cryptoUtil;
+
 	
 	
 	/** The logger. */
@@ -171,6 +175,7 @@ public class Encrypt {
 		return encryptionResponseDto;
 	}
 	
+
 	@PostMapping(path = "/splitEncryptedData", produces = MediaType.APPLICATION_JSON_VALUE) 
 	public SplittedEncryptedData splitEncryptedData(@RequestBody String data) {
 		byte[] dataBytes = CryptoUtil.decodeBase64(data);
@@ -212,8 +217,7 @@ public class Encrypt {
 			return false;
 		}).findFirst() // first occurence
 				.orElse(-1); // No element found
-	} 	
-
+	}
 	
 	/**
 	 * Gets the encrypted value.
@@ -250,7 +254,7 @@ public class Encrypt {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
-		String publicKeyId = isInternal ? env.getProperty("internal.reference.id") : env.getProperty("cryptomanager.partner.id");
+		String publicKeyId = isInternal ? env.getProperty("internal.reference.id") : env.getProperty(IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID);
 		request.setReferenceId(publicKeyId );
 		String utcTime = DateUtils.getUTCCurrentDateTimeString();
 		request.setTimeStamp(utcTime);
@@ -320,9 +324,6 @@ public class Encrypt {
 				throws CertificateException {
 			}
 	} };
-
-	@Autowired
-	private CryptoUtility cryptoUtil;
 
 	/**
 	 * Turns off the ssl checking.
