@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.integration;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -51,10 +52,10 @@ public class LocationControllerIntegrationTest {
 
 	@Before
 	public void setup() {
-		location1 = new Location("", "LOCATION NAME", (short) 3, "City", "XYZ", "fra", null);
+		location1 = new Location("MDDR", "LOCATION NAME", (short) 3, "City", "XYZ", "fra", null);
 		location2 = new Location("", "LOCATION NAME", (short) 3, "City", "XYZ", "ara", null);
 		location3 = new Location("", "LOCATION NAME", (short) 3, "City", "XYZ", "eng", null);
-		dto1 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "eng", false);
+		dto1 = new LocationDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng", false);
 		dto2 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
 		dto3 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "fra", false);
 		request = new RequestWrapper<>();
@@ -84,6 +85,17 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void updateActiveLocationSuccess() throws Exception {
+		location1.setIsActive(true);
+		dto1.setIsActive(true);
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
 
