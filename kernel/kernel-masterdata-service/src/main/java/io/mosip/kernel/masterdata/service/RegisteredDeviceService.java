@@ -9,7 +9,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
  *
  */
 public interface RegisteredDeviceService {
-	
+
 	/**
 	 * Method to create Registered Device Provider
 	 * 

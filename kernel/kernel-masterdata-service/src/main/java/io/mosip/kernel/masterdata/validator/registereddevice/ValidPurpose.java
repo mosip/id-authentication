@@ -12,13 +12,13 @@ import javax.validation.Payload;
 /**
  * Annotation that validates the Purpose Column value.
  * 
- * @author Megha Tanga 
+ * @author Megha Tanga
  * @since 1.0
  *
  */
 @Documented
 @Constraint(validatedBy = PurposeValidator.class)
-@Target(ElementType.FIELD )
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPurpose {
 	String message() default "Purpose value not supported";
@@ -28,4 +28,3 @@ public @interface ValidPurpose {
 	Class<? extends Payload>[] payload() default {};
 
 }
-

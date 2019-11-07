@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.validator.registereddevice;
 
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,17 +12,15 @@ import javax.validation.Payload;
 /**
  * Annotation that validates the StatucCode Column value.
  * 
- * @author Megha Tanga 
+ * @author Megha Tanga
  * @since 1.0
  *
  */
 @Documented
 @Constraint(validatedBy = StatusCodeValidator.class)
-@Target(ElementType.FIELD )
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidStatusCode {
-	//public StatusCodeValue[] columns();
-	
 	String message() default "Status code not supported";
 
 	Class<?>[] groups() default {};
@@ -31,4 +28,3 @@ public @interface ValidStatusCode {
 	Class<? extends Payload>[] payload() default {};
 
 }
-

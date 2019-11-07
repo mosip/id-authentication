@@ -17,12 +17,12 @@ import lombok.Data;
 @Data
 @ApiModel(value = "Device", description = "Device Detail resource")
 public class RegisteredDevicePostReqDto {
-	
+
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
-	
+
 	/**
 	 * Field for deviceTypeCode
 	 */
@@ -38,19 +38,16 @@ public class RegisteredDevicePostReqDto {
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "dsTypeCode", required = true, dataType = "java.lang.String")
 	private String devicesTypeCode;
-	
-	
+
 	/**
-	 * Field for Status Code
-	 * Status should only have standard values - “Registered”, “Retired”, “Revoked”
+	 * Field for Status Code Status should only have standard values - “Registered”,
+	 * “Retired”, “Revoked”
 	 */
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "statusCode", required = true, dataType = "java.lang.String")
-	//@StatusCodeColumn(columns = { StatusCodeValue.REGISTERED, StatusCodeValue.RETIRED, StatusCodeValue.REVOKED })
 	@ValidStatusCode(message = "Status Code is Invalid")
 	private String statusCode;
-	
 
 	/**
 	 * Field for device name
@@ -63,19 +60,19 @@ public class RegisteredDevicePostReqDto {
 	/**
 	 * Field for device name
 	 */
-	
+
 	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "deviceSubId", required = true, dataType = "java.lang.String")
 	private String deviceSubId;
-	
+
 	/**
-	 * Field for device name
-	 * Purpose level should only accept two values, “Registration” or “Auth”.
+	 * Field for device name Purpose level should only accept two values,
+	 * “Registration” or “Auth”.
 	 */
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "purpose", required = true, dataType = "java.lang.String")
-	@ValidPurpose(message= "Purpose value is inValide")
+	@ValidPurpose(message = "Purpose value is inValide")
 	private String purpose;
 
 	/**
@@ -85,37 +82,45 @@ public class RegisteredDevicePostReqDto {
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "firmware", required = true, dataType = "java.lang.String")
 	private String firmware;
-	
-	
-	/**
-	 * Field for device name
-	 */
-/*	@NotBlank
-	@Size(min=1, max=64)
-	@ApiModelProperty(value = "serialNumber", required = true, dataType = "java.lang.String")
-	private String serialNumber;*/
-	
-	/*@NotBlank
-	@Size(min=1, max=36)
-	@ApiModelProperty(value = "serialNumber", required = true, dataType = "java.lang.String")
-	private String providerId;
 
-	@NotBlank
-	@Size(min=1, max=128)
-	@ApiModelProperty(value = "serialNumber", required = true, dataType = "java.lang.String")
-	private String providerName;*/
-	
-	
 	/**
 	 * Field for device name
 	 */
-	
+	/*
+	 * @NotBlank
+	 * 
+	 * @Size(min=1, max=64)
+	 * 
+	 * @ApiModelProperty(value = "serialNumber", required = true, dataType =
+	 * "java.lang.String") private String serialNumber;
+	 */
+
+	/*
+	 * @NotBlank
+	 * 
+	 * @Size(min=1, max=36)
+	 * 
+	 * @ApiModelProperty(value = "serialNumber", required = true, dataType =
+	 * "java.lang.String") private String providerId;
+	 * 
+	 * @NotBlank
+	 * 
+	 * @Size(min=1, max=128)
+	 * 
+	 * @ApiModelProperty(value = "serialNumber", required = true, dataType =
+	 * "java.lang.String") private String providerName;
+	 */
+
+	/**
+	 * Field for device name
+	 */
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime expiryDate;
 
 	/**
-	 * Field for device name
-	 * Certificate level should only accept two values. “L0” or “L1”
+	 * Field for device name Certificate level should only accept two values. “L0”
+	 * or “L1”
 	 */
 	@NotBlank
 	@Size(min = 0, max = 3)
@@ -126,7 +131,7 @@ public class RegisteredDevicePostReqDto {
 	/**
 	 * Field for device name
 	 */
-	
+
 	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "foundationalTPId", required = true, dataType = "java.lang.String")
 	private String foundationalTPId;
@@ -134,7 +139,7 @@ public class RegisteredDevicePostReqDto {
 	/**
 	 * Field for device name
 	 */
-	
+
 	@Size(min = 0, max = 512)
 	@ApiModelProperty(value = "foundationalTrustSignature", required = true, dataType = "java.lang.String")
 	private String foundationalTrustSignature;
@@ -142,8 +147,7 @@ public class RegisteredDevicePostReqDto {
 	/**
 	 * Field for device name
 	 */
-	
-	
+
 	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.String")
 	private byte[] foundationalTrustCertificate;
 
@@ -154,7 +158,6 @@ public class RegisteredDevicePostReqDto {
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "dProviderSignature", required = true, dataType = "java.lang.String")
 	private String deviceProviderSignature;
-	
 
 	private DigitalIdDto digitalIdDto;
 

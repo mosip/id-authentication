@@ -12,15 +12,15 @@ import javax.validation.Payload;
 /**
  * Annotation that validates the Certificate Level value.
  * 
- * @author Megha Tanga 
+ * @author Megha Tanga
  * @since 1.0
  *
  */
 @Documented
 @Constraint(validatedBy = CertificateLevelValidator.class)
-@Target(ElementType.FIELD )
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidCertificateLevel {	
+public @interface ValidCertificateLevel {
 	String message() default "Certificate Level not supported";
 
 	Class<?>[] groups() default {};
@@ -28,4 +28,3 @@ public @interface ValidCertificateLevel {
 	Class<? extends Payload>[] payload() default {};
 
 }
-

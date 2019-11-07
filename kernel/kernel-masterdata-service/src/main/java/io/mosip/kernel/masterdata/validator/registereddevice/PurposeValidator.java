@@ -11,8 +11,8 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import lombok.Data;
 
 /**
- * To validate Status codes as per ISO:639-3 standard during creation and
- * updation of RegisteredDevice API
+ * To validate Purpose as per ISO:639-3 standard during creation and updation of
+ * RegisteredDevice API
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -21,9 +21,9 @@ import lombok.Data;
 public class PurposeValidator implements ConstraintValidator<ValidPurpose, String> {
 
 	private static final String REGISTRATION = "Registration";
-	private static final String AUTH = "Auth";	
+	private static final String AUTH = "Auth";
 
-	private static final String PURPOSEARR[] = {REGISTRATION, AUTH};
+	private static final String PURPOSEARR[] = { REGISTRATION, AUTH };
 
 	/*
 	 * (non-Javadoc)
@@ -45,8 +45,7 @@ public class PurposeValidator implements ConstraintValidator<ValidPurpose, Strin
 				}
 			} catch (RestClientException e) {
 				throw new RequestException(RegisteredDeviceErrorCode.PURPOSEVALIDATION_EXCEPTION.getErrorCode(),
-						RegisteredDeviceErrorCode.PURPOSEVALIDATION_EXCEPTION.getErrorMessage() + " "
-								+ e.getMessage());
+						RegisteredDeviceErrorCode.PURPOSEVALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
 			}
 			return false;
 		}

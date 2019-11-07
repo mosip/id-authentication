@@ -11,7 +11,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import lombok.Data;
 
 /**
- * To validate Status codes as per ISO:639-3 standard during creation and
+ * To validate Certificate Level as per ISO:639-3 standard during creation and
  * updation of RegisteredDevice API
  * 
  * @author Megha Tanga
@@ -22,9 +22,8 @@ public class CertificateLevelValidator implements ConstraintValidator<ValidCerti
 
 	private static final String L0 = "L0";
 	private static final String L1 = "L1";
-	
 
-	private static final String CERTIFICATELEVELARR[] = {L0, L1};
+	private static final String CERTIFICATELEVELARR[] = { L0, L1 };
 
 	/*
 	 * (non-Javadoc)
@@ -34,7 +33,7 @@ public class CertificateLevelValidator implements ConstraintValidator<ValidCerti
 	 */
 	@Override
 	public boolean isValid(String certificationLevel, ConstraintValidatorContext context) {
-		if (EmptyCheckUtils.isNullEmpty(certificationLevel) || certificationLevel.trim().length() > 3 ) {
+		if (EmptyCheckUtils.isNullEmpty(certificationLevel) || certificationLevel.trim().length() > 3) {
 			return false;
 		} else {
 			try {
@@ -45,7 +44,8 @@ public class CertificateLevelValidator implements ConstraintValidator<ValidCerti
 					}
 				}
 			} catch (RestClientException e) {
-				throw new RequestException(RegisteredDeviceErrorCode.CERTIFICATION_LEVEL_VALIDATION_EXCEPTION.getErrorCode(),
+				throw new RequestException(
+						RegisteredDeviceErrorCode.CERTIFICATION_LEVEL_VALIDATION_EXCEPTION.getErrorCode(),
 						RegisteredDeviceErrorCode.CERTIFICATION_LEVEL_VALIDATION_EXCEPTION.getErrorMessage() + " "
 								+ e.getMessage());
 			}
