@@ -103,8 +103,8 @@ public class VinGeneratorVertxApplication {
 	 * for running the application.
 	 */
 	private static void loadPropertiesFromConfigServer() {
+		Vertx vertx = Vertx.vertx();
 		try {
-			Vertx vertx = Vertx.vertx();
 			List<ConfigStoreOptions> configStores = new ArrayList<>();
 			List<String> configUrls = ConfigUrlsBuilder.getURLs();
 			configUrls.forEach(url -> configStores
@@ -137,6 +137,7 @@ public class VinGeneratorVertxApplication {
 			});
 		} catch (Exception exception) {
 			LOGGER.warn(exception.getMessage() + "\n");
+			vertx.close();
 			startApplication();
 		}
 	}
