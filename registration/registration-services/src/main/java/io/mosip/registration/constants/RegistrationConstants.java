@@ -750,6 +750,8 @@ public class RegistrationConstants {
 	public static final List<String> PACKET_UPLOAD_STATUS = Arrays.asList("SYNCED", "EXPORTED", "RESEND", "E");
 
 	public static final String PACKET_UPLOAD = "packet_upload";
+	public static final String DUPLICATE = "Duplicate";
+	public static final String FOUND = "Found";
 	public static final String PACKET_DUPLICATE = "duplicate";
 	public static final String PACKET_UPLOAD_SNO = "slno";
 	public static final String PACKET_UPLOAD_DATE = "createdTime";

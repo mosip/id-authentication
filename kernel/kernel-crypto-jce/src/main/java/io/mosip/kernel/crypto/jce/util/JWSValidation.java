@@ -75,13 +75,10 @@ public class JWSValidation implements JwsSpec<String, String, X509Certificate,Pr
             X509Certificate certificate = certificateChainHeaderValue.get(0);
 			certificate.checkValidity();
 			publicKey = certificate.getPublicKey();
-			certificate.verify(publicKey);
-			jws.setKey(publicKey);
-
+			//certificate.verify(publicKey);
 			jws.setKey(publicKey);
 			return jws.verifySignature();
-		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
-				| SignatureException | JoseException e) {
+		} catch (CertificateException | JoseException e) {
 			e.printStackTrace();
 		}
 		return false;

@@ -561,7 +561,7 @@
 					</rowConstraints>
 				</GridPane>
 
-				<GridPane fx:id="faceBasedLogin" visible="false">
+				<GridPane fx:id="faceBasedLogin" visible="true">
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
@@ -650,7 +650,7 @@
                                           <TextField fx:id="faceUserId" promptText="%username" styleClass="authenticationStyle" />
                                           <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="4">
                                              <children>
-                                                <Button fx:id="faceStreamButton" mnemonicParsing="false" onAction="#startStream" styleClass="scanButton" text="Stream">
+                                                <Button fx:id="faceStreamButton" mnemonicParsing="false" onAction="#startStream" styleClass="scanButton" text="%stream">
                                                    <graphic>
                                                       <ImageView fx:id="faceStreamImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>

@@ -353,6 +353,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				faceCaptureController.clearExceptionImage();
+				irisCaptureController.clearIrisData();
 				if (newValue && !irisList.contains(irisImage.getId())) {
 					irisList.add(irisImage.getId());
 					showExceptionList();
