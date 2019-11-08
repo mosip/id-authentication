@@ -230,12 +230,12 @@ public class LocationServiceImpl implements LocationService {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
-		/*List<Location> parentLocList = locationRepository.findLocationHierarchyByCodeAndLanguageCode(dto.getParentLocCode(),dto.getLangCode());
+		List<Location> parentLocList = locationRepository.findLocationHierarchyByCodeAndLanguageCode(dto.getParentLocCode(),dto.getLangCode());
 		if(CollectionUtils.isEmpty(parentLocList))
 		{
 			throw new MasterDataServiceException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
 					LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
-		}*/
+		}
 		// Validation name already exists
 		if (dto != null) {
 			List<Location> list = locationRepository.findByNameAndLevelLangCode(dto.getName(), dto.getHierarchyLevel(),
