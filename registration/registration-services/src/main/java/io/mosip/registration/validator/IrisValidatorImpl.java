@@ -135,9 +135,9 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 		}
 		try {
 			scores = ibioApi.match(capturedBir, registeredBir, null);
-			int faceScore = 90;
+			int reqScore = 60;
 			for (Score score : scores) {
-				if (score.getInternalScore() >= faceScore) {
+				if (score.getScaleScore() >= reqScore) {
 					flag = true;
 				}
 			}
