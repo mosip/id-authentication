@@ -1513,18 +1513,18 @@ public class RegistrationConstants {
 	public static final Map<String, String> userOnBoardBioFlag = new HashMap<String, String>() {
 
 		{
-			put("leftIndex", "Left Index");
-			put("leftLittle", "Left Little");
-			put("leftMiddle", "Left Middle");
-			put("leftRing", "Left Ring");
-			put("leftThumb", "Left Thumb");
-			put("rightIndex", "Right Index");
-			put("rightLittle", "Right Little");
-			put("rightMiddle", "Right Middle");
-			put("rightRing", "Right Ring");
-			put("rightThumb", "Right Thumb");
-			put("LeftEye.png", "Left Iris");
-			put("RightEye.png", "Right Iris");
+			put("Left Index", "Left IndexFinger");
+			put("Left Little", "Left LittleFinger");
+			put("Left Middle", "Left MiddleFinger");
+			put("Left Ring", "Left RingFinger");
+			put("Left Thumb", "Left Thumb");
+			put("Right Index", "Right IndexFinger");
+			put("Right Little", "Right LittleFinger");
+			put("Right Middle", "Right MiddleFinger");
+			put("Right Ring", "Right RingFinger");
+			put("Right Thumb", "Right Thumb");
+			put("Left Iris", "Left Iris");
+			put("Right Iris", "Right Iris");
 
 		}
 
