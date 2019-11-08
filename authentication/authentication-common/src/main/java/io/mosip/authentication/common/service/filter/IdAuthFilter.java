@@ -179,7 +179,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			Map<String, Object> map = (Map<String, Object>) obj;
 			Map<String, Object> data = mapper
-					.readValue(Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64((String) map.get(DATA)) : null,
+					.readValue(Objects.nonNull(map.get(DATA)) ? verifyJwsAndGetPayload((String) map.get(DATA)) : null,
 							Map.class);
 			Object bioValue = data.get(BIO_VALUE);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
@@ -384,16 +384,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 	
 	/**
-	 * Throw invalid input parameter.
-	 *
-	 * @param inputParam the input param
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private void throwInvalidInputParameter(String inputParam) throws IdAuthenticationAppException {
-		throwError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, inputParam);
-	}
-
-	/**
 	 * Gets the string value.
 	 *
 	 * @param biometricData the biometric data
@@ -414,7 +404,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * lang.String, byte[])
 	 */
 	@Override
-	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
+	protected boolean validateRequestSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 
