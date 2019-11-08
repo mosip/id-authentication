@@ -583,7 +583,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			abisResponseEntity.setCrDtimes(abisResponseDto.getCrDtimes());
 		}
 		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
-		abisResponseEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		abisResponseEntity.setUpdDtimes(abisResponseDto.getUpdDtimes());
 		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
 
 		return abisResponseEntity;

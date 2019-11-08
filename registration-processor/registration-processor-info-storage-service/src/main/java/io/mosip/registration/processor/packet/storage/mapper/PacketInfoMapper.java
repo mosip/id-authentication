@@ -423,7 +423,7 @@ public class PacketInfoMapper {
 		entity.setDelDtimes(abisResDto.getDelDtimes());
 		entity.setIsDeleted(abisResDto.getIsDeleted());
 		entity.setLangCode(abisResDto.getLangCode());
-		entity.setRespDtimes(abisResDto.getRespDtimes());
+		entity.setRespDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setRespText(abisResDto.getRespText());
 		entity.setStatusCode(abisResDto.getStatusCode());
 		entity.setStatusComment(abisResDto.getStatusComment());
@@ -483,6 +483,7 @@ public class PacketInfoMapper {
 		entity.setScore(abisResponseDetDto.getScore());
 		entity.setUpdBy(abisResponseDetDto.getUpdBy());
 		entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+
 		return entity;
 
 	}
