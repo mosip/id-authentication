@@ -75,10 +75,15 @@ public class FilterColumnValidator {
 				Optional<Field> renField = fieldList.stream()
 						.filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName())).findFirst();
 				if (!renField.isPresent()) {
-					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorCode(),
-							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorMessage(),
+					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(),
 									filter.getColumnName())));
 				}
+//				if (!renField.isPresent()) {
+//					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorCode(),
+//							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST_FILTER.getErrorMessage(),
+//									filter.getColumnName())));
+//				}
 				if (!containsFilterColumn(field, filter.getType())) {
 					errors.add(new ServiceError(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							String.format(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage(),
