@@ -160,7 +160,7 @@ public class VinGeneratorVertxApplication {
 		deliveryOptions.setSendTimeout(environment.getProperty("mosip.kernel.vid.pool-population-timeout",Long.class));
 		long start =System.currentTimeMillis();
 		LOGGER.info("Service will be started after pooling vids..");
-		vertx.eventBus().send(EventType.INITPOOL, EventType.CHECKPOOL, deliveryOptions,replyHandler -> {
+		vertx.eventBus().send(EventType.INITPOOL, EventType.INITPOOL, deliveryOptions,replyHandler -> {
 			if(replyHandler.succeeded()) {
 				LOGGER.info("population of pool is done starting fetcher verticle");
 				Stream.of(eventLoopVerticles).forEach(verticle -> deploy(verticle, eventLoopOptions, vertx));		
