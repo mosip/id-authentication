@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -102,6 +104,7 @@ public class RegistrationStatusServiceImpl
 		try {
 			String transactionId = generateId();
 			registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
+			registrationStatusDto.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
@@ -158,7 +161,7 @@ public class RegistrationStatusServiceImpl
 		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 				latestTransactionId, registrationStatusDto.getLatestTransactionTypeCode(),
 				"updated registration status record", registrationStatusDto.getLatestTransactionStatusCode(),
-				registrationStatusDto.getStatusComment(),registrationStatusDto.getSubStatusCode());
+				registrationStatusDto.getStatusComment(), registrationStatusDto.getSubStatusCode());
 		transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 		transactionDto.setReferenceIdType("updated registration record");
 		transcationStatusService.addRegistrationTransaction(transactionDto);
@@ -167,6 +170,7 @@ public class RegistrationStatusServiceImpl
 		try {
 			InternalRegistrationStatusDto dto = getRegistrationStatus(registrationStatusDto.getRegistrationId());
 			if (dto != null) {
+				dto.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 				registrationStatusDao.save(entity);
 				isTransactionSuccessful = true;
@@ -376,18 +380,28 @@ public class RegistrationStatusServiceImpl
 		registrationStatusEntity.setLatestRegistrationTransactionId(dto.getLatestRegistrationTransactionId());
 		registrationStatusEntity.setIsActive(dto.isActive());
 		registrationStatusEntity.setCreatedBy(dto.getCreatedBy());
-		registrationStatusEntity.setCreateDateTime(dto.getCreateDateTime());
+		if (dto.getCreateDateTime() == null) {
+			registrationStatusEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			registrationStatusEntity.setCreateDateTime(dto.getCreateDateTime());
+		}
 		registrationStatusEntity.setUpdatedBy(dto.getUpdatedBy());
 		registrationStatusEntity.setUpdateDateTime(dto.getUpdateDateTime());
 		registrationStatusEntity.setIsDeleted(dto.isDeleted());
-		registrationStatusEntity.setDeletedDateTime(dto.getDeletedDateTime());
+
+		if (registrationStatusEntity.isDeleted() != null && registrationStatusEntity.isDeleted()) {
+			registrationStatusEntity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			registrationStatusEntity.setDeletedDateTime(null);
+		}
+		registrationStatusEntity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		registrationStatusEntity.setRetryCount(dto.getRetryCount());
 		registrationStatusEntity.setApplicantType(dto.getApplicantType());
 		registrationStatusEntity.setRegProcessRetryCount(dto.getReProcessRetryCount());
 		registrationStatusEntity.setLatestTransactionStatusCode(dto.getLatestTransactionStatusCode());
 		registrationStatusEntity.setLatestTransactionTypeCode(dto.getLatestTransactionTypeCode());
 		registrationStatusEntity.setRegistrationStageName(dto.getRegistrationStageName());
-		registrationStatusEntity.setUpdateDateTime(dto.getUpdateDateTime());
+
 		return registrationStatusEntity;
 	}
 

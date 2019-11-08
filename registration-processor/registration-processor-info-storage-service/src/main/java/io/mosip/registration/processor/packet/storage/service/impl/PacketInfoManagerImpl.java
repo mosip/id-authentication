@@ -1,15 +1,21 @@
 package io.mosip.registration.processor.packet.storage.service.impl;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -150,7 +156,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
 
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		List<ApplicantInfoDto> applicantInfoDtoList = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), qcUserId,
 				"PacketInfoManagerImpl::getPacketsforQCUser()::entry");
@@ -164,7 +170,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-		description.setMessage( "DataAccessLayerException while fetching QcUser packet Info" + "::" + e.getMessage());
+			description
+					.setMessage("DataAccessLayerException while fetching QcUser packet Info" + "::" + e.getMessage());
 
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
@@ -209,7 +216,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-            String[] names  = regProcessorIdentityJson.getIdentity().getName().getValue().split(",");
+			String[] names = regProcessorIdentityJson.getIdentity().getName().getValue().split(",");
 			List<JsonValue[]> jsonValueList = new ArrayList<>();
 			for (String name : names) {
 				JsonValue[] nameArray = JsonUtil.getJsonValues(demographicIdentity, name);
@@ -262,9 +269,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *
 	 * @param demographicJsonBytes
 	 *            the demographic json bytes
-	 * @param description 
+	 * @param description
 	 */
-	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId, LogDescription description) {
+	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId,
+			LogDescription description) {
 
 		String getJsonStringFromBytes = new String(demographicJsonBytes);
 		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
@@ -295,7 +303,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
-		
 
 	}
 
@@ -312,10 +319,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData,
 			String registrationId) {
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveIndividualDemographicDedupeUpdatePacket()::entry");
-		
+
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
 					.converDemographicDedupeDtoToEntity(demographicData, registrationId);
@@ -330,7 +337,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			description.setMessage("DataAccessLayerException while saving Individual Demographic Dedupe data " + "::"
 					+ e.getMessage());
 
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
+			throw new UnableToInsertData(
+					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -358,7 +366,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveDemographicInfoJson(byte[] bytes, String registrationId, List<FieldValue> metaData) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveDemographicInfoJson()::entry");
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (bytes == null)
@@ -379,7 +387,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			description.setMessage("DataAccessLayerException while saving Demographic Json" + "::" + e.getMessage());
 
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
+			throw new UnableToInsertData(
+					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -419,8 +428,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,
 			DedupeSourceName sourceName) {
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
-		
+		LogDescription description = new LogDescription();
+
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 					registrationId, "PacketInfoManagerImpl::saveManualAdjudicationData()::entry");
@@ -447,6 +456,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
+				manualVerificationEntity.setCrDtimes(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+				manualVerificationEntity.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
 				manualVerificationEntity.setTrnTypCode(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
@@ -454,13 +465,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			}
 
 		} catch (DataAccessLayerException e) {
-			description.setMessage("DataAccessLayerException while saving Manual Adjudication data for rid" + registrationId
-					+ "::" + e.getMessage());
+			description.setMessage("DataAccessLayerException while saving Manual Adjudication data for rid"
+					+ registrationId + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
+			throw new UnableToInsertData(
+					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -511,15 +523,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		String regisId = "";
 		try {
-		
+
 			if (regAbisRefDto != null) {
 				regisId = regAbisRefDto.getReg_id();
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 						regisId, "PacketInfoManagerImpl::saveAbisRef()::entry");
-			
+
 				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
 				regAbisRefRepository.save(regAbisRefEntity);
 				isTransactionSuccessful = true;
@@ -542,10 +554,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regisId,
 				"PacketInfoManagerImpl::saveAbisRef()::exit");
-	
+
 	}
 
 	/*
@@ -693,10 +705,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveBioRef(RegBioRefDto regBioRefDto) {
-		LogDescription description=new LogDescription();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "PacketInfoManagerImpl::saveBioRef()::entry");
-	
+		LogDescription description = new LogDescription();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PacketInfoManagerImpl::saveBioRef()::entry");
+
 		try {
 			RegBioRefEntity regBioRefEntity = PacketInfoMapper.convertBioRefDtoToEntity(regBioRefDto);
 			regBioRefRepository.save(regBioRefEntity);
@@ -705,12 +717,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regBioRefDto.getRegId(), e);
+			throw new UnableToInsertData(
+					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regBioRefDto.getRegId(), e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "PacketInfoManagerImpl::saveBioRef()::exit");
-	
-		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PacketInfoManagerImpl::saveBioRef()::exit");
+
 	}
 
 	/*
@@ -723,11 +735,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveAbisRequest(AbisRequestDto abisRequestDto) {
-		LogDescription description=new LogDescription();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "PacketInfoManagerImpl::saveAbisRequest()::entry");
-	
-		
+		LogDescription description = new LogDescription();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PacketInfoManagerImpl::saveAbisRequest()::entry");
+
 		try {
 			AbisRequestEntity abisRequestEntity = PacketInfoMapper.convertAbisRequestDtoToEntity(abisRequestDto);
 			regAbisRequestRepository.save(abisRequestEntity);
@@ -736,11 +747,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + abisRequestDto.getId(), e);
+			throw new UnableToInsertData(
+					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + abisRequestDto.getId(), e);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "PacketInfoManagerImpl::saveAbisRequest()::exit");
-	
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PacketInfoManagerImpl::saveAbisRequest()::exit");
+
 	}
 
 	/*
@@ -768,9 +780,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
-		
-		String regId="";
+		LogDescription description = new LogDescription();
+
+		String regId = "";
 		try {
 
 			if (regDemoDedupeListDto != null) {
@@ -786,8 +798,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			}
 		} catch (DataAccessLayerException e) {
-			description.setMessage("DataAccessLayerException while saving Demo dedupe potential match data" + "::"
-					+ e.getMessage());
+			description.setMessage(
+					"DataAccessLayerException while saving Demo dedupe potential match data" + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -898,8 +910,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveRegLostUinDet(String regId, String latestRegId) {
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
-		
+		LogDescription description = new LogDescription();
+
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 					"PacketInfoManagerImpl::saveRegLostUinDetData()::entry");
@@ -910,6 +922,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			regLostUinDetEntity.setId(regLostUinDetPKEntity);
 			regLostUinDetEntity.setLatestRegId(latestRegId);
 			regLostUinDetEntity.setCrBy("SYSTEM");
+			regLostUinDetEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+			regLostUinDetEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 			regLostUinDetEntity.setIsDeleted(false);
 
 			regLostUinDetRepository.save(regLostUinDetEntity);

@@ -62,7 +62,6 @@ public class TransactionEntity extends BaseRegistrationEntity {
 
 	/** The update date time. */
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime deleteDateTime;
 
 	/** The created by. */
@@ -71,7 +70,6 @@ public class TransactionEntity extends BaseRegistrationEntity {
 
 	/** The create date time. */
 	@Column(name = "cr_dtimes")
-	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
 	/** The updated by. */
@@ -80,7 +78,6 @@ public class TransactionEntity extends BaseRegistrationEntity {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updateDateTime;
 
 	/**
