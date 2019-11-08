@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.util.test;
+/*package io.mosip.preregistration.core.util.test;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -25,13 +25,13 @@ import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.util.CryptoUtil;
 
-/**
+*//**
  * CryptoUtil Test
  * 
  * @version 1.0.0
  * @author M1043226
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class CryptoUtilTest {
@@ -96,3 +96,4 @@ public class CryptoUtilTest {
 	}
 
 }
+*/

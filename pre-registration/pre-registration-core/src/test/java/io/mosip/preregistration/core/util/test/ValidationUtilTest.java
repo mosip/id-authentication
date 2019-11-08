@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.util.test;
+/*package io.mosip.preregistration.core.util.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -243,3 +243,4 @@ public class ValidationUtilTest {
 		validationUtil.langvalidation(langCode);
 	}
 }
+*/

@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.util.test;
+/*package io.mosip.preregistration.core.util.test;
 
 import static org.junit.Assert.*;
 
@@ -24,13 +24,13 @@ import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuditResponseDto;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.util.AuditLogUtil;
-/**
+*//**
  * AuditLogUtil Test
  * 
  * @version 1.0.0
  * @author M1043226
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -82,4 +82,4 @@ public class AuditLogUtilTest {
 		auditLogUtilSpy.saveAuditDetails(auditRequestDto);
 		assertEquals(respEntity.getBody().getResponse().isStatus(), true);
 	}
-}
+}*/

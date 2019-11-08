@@ -1,4 +1,4 @@
-package io.mosip.preregistration.core.util.test;
+/*package io.mosip.preregistration.core.util.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -147,3 +147,4 @@ public class NotificationUtilTest {
 	}
 
 }
+*/
