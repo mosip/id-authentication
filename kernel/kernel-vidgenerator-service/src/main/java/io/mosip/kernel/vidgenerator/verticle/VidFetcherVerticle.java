@@ -33,7 +33,7 @@ public class VidFetcherVerticle extends AbstractVerticle {
 	 */
 	private VidFetcherRouter vidFetcherRouter;
 
-	private AuthHandler authHandler;
+	//private AuthHandler authHandler;
 
 	/**
 	 * Initialize beans
@@ -41,7 +41,7 @@ public class VidFetcherVerticle extends AbstractVerticle {
 	 * @param context context
 	 */
 	public VidFetcherVerticle(final ApplicationContext context) {
-		authHandler = (AuthHandler) context.getBean("authHandler");
+		//authHandler = (AuthHandler) context.getBean("authHandler");
 		vidFetcherRouter = (VidFetcherRouter) context.getBean("vidFetcherRouter");
 		environment = context.getEnvironment();
 	}
