@@ -37,6 +37,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sync.MasterSyncService;
@@ -183,6 +184,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private List<String> leftSlapexceptionList = new ArrayList<String>();
 	private List<String> rightSlapexceptionList = new ArrayList<String>();
 	private List<String> thumbsexceptionList = new ArrayList<String>();
+	
+	private List<String> fingerException;
 
 	public ImageView getBiometricImage() {
 		return biometricImage;
@@ -324,24 +327,25 @@ public class GuardianBiometricsController extends BaseController implements Init
 			String headerText = "";
 			String bioType = "";
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
-				SessionContext.map().put("CAPTURE_EXCEPTION", rightSlapexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
 				bioType = RegistrationConstants.FINGERPRINT_SLAB_RIGHT;
+				fingerException=rightSlapexceptionList;
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
-				SessionContext.map().put("CAPTURE_EXCEPTION", leftSlapexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
 				bioType = RegistrationConstants.FINGERPRINT_SLAB_LEFT;
+				fingerException=leftSlapexceptionList;
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
 				SessionContext.map().put("CAPTURE_EXCEPTION", thumbsexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
 				bioType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
+				fingerException=thumbsexceptionList;
 			} else if (biometricType.getText().contains(RegistrationConstants.IRIS_LOWERCASE)) {
 				headerText = RegistrationUIConstants.IRIS_SCAN;
 				bioType = "IRIS_DOUBLE";
 			}
 			scanPopUpViewController.init(this, headerText);
 			if (bioService.isMdmEnabled())
-				streamer.startStream(bioType, scanPopUpViewController.getScanImage(), biometricImage);
+				streamer.startStream(new RequestDetail(bioType, "", 1, "", fingerException), scanPopUpViewController.getScanImage(), biometricImage);
 		}
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -525,7 +529,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		try {
 			detailsDTO = new IrisDetailsDTO();
-			bioService.getIrisImageAsDTO(detailsDTO, irisType);
+			bioService.getIrisImageAsDTO(detailsDTO, new RequestDetail(irisType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2, String.valueOf(thresholdValue), null));
 		} catch (RegBaseCheckedException | IOException runtimeException) {
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
@@ -562,11 +566,32 @@ public class GuardianBiometricsController extends BaseController implements Init
 				irisDetailsDTOs.add(iris);
 			});
 			popupStage.close();
+			if(validateIrisLocalDedup(detailsDTO.getIrises())){
+				continueBtn.setDisable(true);
+			}else {
+				continueBtn.setDisable(true);
+				duplicateCheckLbl.setText("Duplicate" + " " + (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
+
+			}
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		}
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Iris scanning is completed");
+
+	}
+
+	private boolean validateIrisLocalDedup(List<IrisDetailsDTO> irises) {
+
+			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+			authenticationValidatorDTO.setIrisDetails(irises);
+			authenticationValidatorDTO.setAuthValidationType("single");
+			boolean isValid = !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			if(null !=getValueFromApplicationContext("IDENTY_SDK")) {
+				isValid = false;
+			}
+			return isValid;
 
 	}
 
@@ -624,7 +649,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 
 		try {
-			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+			bioService.getFingerPrintImageAsDTO(detailsDTO, new RequestDetail(fingerType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, String.valueOf(thresholdValue), fingerException));
 			streamer.stop();
 			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
 		} catch (Exception exception) {
@@ -1099,7 +1124,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");
-		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		boolean isValid =  authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		if(null != getValueFromApplicationContext("IDENTY_SDK")) {
+			isValid = false;
+		}
+		return isValid;
+
 	}
 
 }

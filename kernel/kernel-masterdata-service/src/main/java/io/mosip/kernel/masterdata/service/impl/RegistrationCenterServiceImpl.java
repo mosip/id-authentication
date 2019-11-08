@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -56,7 +55,6 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
-import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -738,67 +736,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * createRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
-	 * RegistrationCenterDto)
-	 */
-
-	private void validateRegCenterUpdateReq(List<RegCenterPutReqDto> reqRegistarionCenterReqDto,
-			Set<String> inputLangCodeSet, List<String> inputIdList, List<String> idLangList) {
-		List<Zone> zones = zoneUtils.getUserZones();
-		List<String> zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
-
-		for (RegCenterPutReqDto registrationCenterDto : reqRegistarionCenterReqDto) {
-			String latitude = registrationCenterDto.getLatitude();
-			String longitude = registrationCenterDto.getLongitude();
-
-			// validation to check entered zoneCode is mapped with eligible user or not and
-			// is valid zoneCode
-			if (!zoneIds.contains(registrationCenterDto.getZoneCode())) {
-				throw new RequestException(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
-						RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage());
-
-			}
-
-			// validation to check the format of latitude and longitude
-			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
-					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
-			}
-
-			// validation to check the RegCenter Start Time is greater than
-			// RegCenter End
-			// Time
-			else if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
-
-			}
-
-			// validation to check the RegCenter Lunch Start Time is greater
-			// than RegCenter
-			// Lunch End Time
-			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
-
-			}
-
-			inputLangCodeSet.add(registrationCenterDto.getLangCode());
-			// inputIdList.add(registrationCenterDto.getId());
-			// idLangList.add(registrationCenterDto.getLangCode() +
-			// registrationCenterDto.getId());
-
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request. SearchDto)
 	 */
 	@Override
@@ -813,7 +750,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		boolean flag = true;
 		// fetching locations
 		locations = serviceHelper.fetchLocations(dto.getLanguageCode());
-		pageUtils.validateSortField(RegistrationCenter.class, dto.getSort());
+		pageUtils.validateSortField(RegistrationCenterSearchDto.class,RegistrationCenter.class,dto.getSort());
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
@@ -1096,7 +1033,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter updRegistrationCenterEntity = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
-		String uniqueId = "";
 		List<ServiceError> errors = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		// List<RegCenterPutReqDto> notUpdRegistrationCenterList = new
@@ -1205,7 +1141,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						false);
 				// registrationCenterValidator.mapBaseDtoEntity(updRegistrationCenterEntity,
 				// regCenterPutReqDto);
-
+				updRegistrationCenterEntity.setIsActive(regCenterPutReqDto.getIsActive());
 				updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
 
 				// creating registration center history

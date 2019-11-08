@@ -168,8 +168,8 @@ public class RegistrationConstants {
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
-	public static final String FINGER_PRINT_SINGLE = "single";
-	public static final String FINGER_PRINT_MULTIPLE = "multiple";
+	public static final String SINGLE = "single";
+	public static final String MULTIPLE = "multiple";
 	public static final String OTP_VALIDATION_SUCCESS = "success";
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
@@ -716,6 +716,8 @@ public class RegistrationConstants {
 
 	// Acknowledgement Form
 	public static final String ACKNOWLEDGEMENT_FORM_TITLE = "Registration Acknowledgement";
+	public static final String REGISTRATION = "Registration";
+	
 
 	// logos for new registration
 	public static final String DEMOGRAPHIC_DETAILS_LOGO = "file:src/main/resources/images/Pre-Registration.png";
@@ -748,6 +750,8 @@ public class RegistrationConstants {
 	public static final List<String> PACKET_UPLOAD_STATUS = Arrays.asList("SYNCED", "EXPORTED", "RESEND", "E");
 
 	public static final String PACKET_UPLOAD = "packet_upload";
+	public static final String DUPLICATE = "Duplicate";
+	public static final String FOUND = "Found";
 	public static final String PACKET_DUPLICATE = "duplicate";
 	public static final String PACKET_UPLOAD_SNO = "slno";
 	public static final String PACKET_UPLOAD_DATE = "createdTime";
@@ -985,6 +989,7 @@ public class RegistrationConstants {
 
 	// Iris & Fingerprint Capture for Individual Registration
 	public static final String IRIS_THRESHOLD = "mosip.registration.iris_threshold";
+	public static final String FACE_THRESHOLD = "mosip.facequalitythreshold";
 	public static final String IMAGE_FORMAT_KEY = "imageFormat";
 	public static final String IMAGE_BYTE_ARRAY_KEY = "imageBytes";
 	public static final String IMAGE_BYTE_ISO = "byteIso";
@@ -1006,6 +1011,7 @@ public class RegistrationConstants {
 	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
 	public static final String ISO_FILE = "ISOTemplate.iso";
 	public static final String DUPLICATE_FINGER = "DuplicateFinger";
+	public static final String DUPLICATE_IRIS = "DuplicateIris";
 	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
 	public static final String LEFTHAND_SLAP_FINGERPRINT_PATH = "/fingerprints/leftSlap.jpg";
 	public static final String FACE_ISO = "/images/face.iso";

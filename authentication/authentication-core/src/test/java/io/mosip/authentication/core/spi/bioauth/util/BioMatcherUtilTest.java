@@ -3,8 +3,10 @@ package io.mosip.authentication.core.spi.bioauth.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.Before;
@@ -22,6 +24,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
@@ -29,10 +33,11 @@ import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,  })
 public class BioMatcherUtilTest {
 
 	@InjectMocks
@@ -42,15 +47,20 @@ public class BioMatcherUtilTest {
 	private BioApiImpl bioApiImpl;
 	
 	@Mock
-	IBioApi fingerApi;
+	IBioApi bioApi;
+	
+	@Mock
+	private IdInfoFetcher idInfoFetcher;
 
 	Map<String, String> valueMap = new HashMap<>();
 	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(bioMatcherUtil, "fingerApi", fingerApi);
-		ReflectionTestUtils.setField(bioMatcherUtil, "faceApi", bioApiImpl);
-		ReflectionTestUtils.setField(bioMatcherUtil, "irisApi", bioApiImpl);
+		ReflectionTestUtils.setField(bioMatcherUtil, "fingerApi", bioApi);
+		ReflectionTestUtils.setField(bioMatcherUtil, "faceApi", bioApi);
+		ReflectionTestUtils.setField(bioMatcherUtil, "irisApi", bioApi);
+		ReflectionTestUtils.setField(bioMatcherUtil, "compositeBiometricApi", bioApi);
+		ReflectionTestUtils.setField(bioMatcherUtil, "idInfoFetcher", idInfoFetcher);
 		valueMap.put(CbeffConstant.class.getName(), String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER));
 	}
 
@@ -58,10 +68,13 @@ public class BioMatcherUtilTest {
 	public void TestmatchValue() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
 		Score score = new Score();
-		score.setInternalScore(90);
+		score.setScaleScore(90);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
-		Mockito.when(fingerApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(90.0, matchValue));
 	}
 
@@ -73,8 +86,11 @@ public class BioMatcherUtilTest {
 		Score score = new Score();
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
-		Mockito.when(fingerApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, invalidMap);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, invalidMap, properties);
 		assertNotEquals("90.0", matchValue);
 	}
 
@@ -83,8 +99,11 @@ public class BioMatcherUtilTest {
 		Score score = new Score();
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
-		Mockito.when(fingerApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(0, matchValue));
 	}
 
@@ -93,8 +112,11 @@ public class BioMatcherUtilTest {
 		Score score = new Score();
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
-		Mockito.when(fingerApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
-		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		
 		assertEquals(0, (int)matchValue);
 	}
@@ -108,10 +130,10 @@ public class BioMatcherUtilTest {
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		CompositeScore compScore = new CompositeScore();
-		compScore.setInternalScore(90);
+		compScore.setScaledScore(90);
 		compScore.setIndividualScores(scores);
-		Mockito.when(fingerApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
-		double matchMultiValue = bioMatcherUtil.matchMultiValue(valueMap, valueMap);
+		Mockito.when(bioApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
+		double matchMultiValue = bioMatcherUtil.matchMultiValue(valueMap, valueMap, Collections.emptyMap());
 		assertEquals(0, Double.compare(90.0, matchMultiValue));
 	}
 
@@ -128,8 +150,8 @@ public class BioMatcherUtilTest {
 		CompositeScore compScore = new CompositeScore();
 		compScore.setInternalScore(0);
 		compScore.setIndividualScores(scores);
-		Mockito.when(fingerApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
-		double matchMultiValue = bioMatcherUtil.matchMultiValue(reqInfo, entityInfo);
+		Mockito.when(bioApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
+		double matchMultiValue = bioMatcherUtil.matchMultiValue(reqInfo, entityInfo, Collections.emptyMap());
 		assertNotEquals("90.0", matchMultiValue);
 	}
 
@@ -146,8 +168,8 @@ public class BioMatcherUtilTest {
 		CompositeScore compScore = new CompositeScore();
 		compScore.setInternalScore(0);
 		compScore.setIndividualScores(scores);
-		Mockito.when(fingerApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
-		double matchMultiValue = bioMatcherUtil.matchMultiValue(reqInfo, entityInfo);
+		Mockito.when(bioApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
+		double matchMultiValue = bioMatcherUtil.matchMultiValue(reqInfo, entityInfo, Collections.emptyMap());
 		assertNotEquals("90.0", matchMultiValue);
 
 	}

@@ -34,6 +34,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.Initialization;
+import io.mosip.registration.controller.device.Streamer;
 import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -43,6 +44,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.login.LoginService;
@@ -65,6 +67,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -620,6 +623,18 @@ public class LoginController extends BaseController implements Initializable {
 
 		}
 	}
+	
+	@FXML
+	private ImageView faceImage;
+	
+	@Autowired
+	Streamer streamer;
+	
+	public void streamFace() {
+		streamer.startStream(new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+				getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null), faceImage, null);
+	}
 
 	/**
 	 * Validate User through username and fingerprint
@@ -686,6 +701,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(userId.getText());
+		authenticationValidatorDTO.setAuthValidationType("single");
 
 		try {
 			if (SessionContext.create(userDTO, RegistrationConstants.IRIS, false, false, authenticationValidatorDTO)) {

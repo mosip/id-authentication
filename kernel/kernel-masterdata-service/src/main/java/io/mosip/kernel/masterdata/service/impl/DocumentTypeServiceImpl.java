@@ -72,6 +72,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
+
 	@Autowired
 	FilterColumnValidator filterColumnValidator;
 
@@ -151,12 +152,24 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			DocumentType documentType = documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(),
 					documentTypeDto.getLangCode());
 			if (documentType != null) {
+
+				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
+					throw new RequestException(
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
+				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
+						&& (documentType.getIsActive() == Boolean.FALSE)) {
+					throw new RequestException(
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
+				}
+
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, false);
+				documentTypeRepository.update(documentType);
 			} else {
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			documentTypeRepository.update(documentType);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),

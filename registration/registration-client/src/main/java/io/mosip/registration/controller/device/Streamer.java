@@ -4,19 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.SocketTimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
-import io.mosip.registration.service.bio.BioService;
-import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
 
 @Component
 public class Streamer {
@@ -62,7 +59,7 @@ public class Streamer {
 		imageView.setImage(streamImage);
 	}
 
-	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
+	public void startStream(RequestDetail requestDetail, ImageView streamImage, ImageView scanImage) {
 		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
@@ -74,7 +71,7 @@ public class Streamer {
 						urlStream=null;
 					}
 					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.STREAMING_PREP_MESSAGE);
-					urlStream = mosipBioDeviceManager.stream(bioType);
+					urlStream = mosipBioDeviceManager.stream(requestDetail);
 					if(urlStream==null) {
 						scanPopUpViewController.enableCloseButton();
 						scanPopUpViewController.setScanningMsg(RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"));

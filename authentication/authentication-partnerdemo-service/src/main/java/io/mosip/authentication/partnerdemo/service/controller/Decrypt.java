@@ -62,7 +62,7 @@ public class Decrypt {
 	private String appID;
 	
 	/** The app ID. */
-	@Value("${cryptomanager.partner.id}")
+	@Value("${" + IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID + "}")
 	private String partnerId;
 	
 	/** The encrypt URL. */

@@ -23,12 +23,18 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant IDV_ID. */
 	public static final String IDV_ID = "individualId";
-
+	
 	public static final String REQUEST = "request";
+	
+	public static final String HASH = "hash";
+	
+	public static final String UTF_8 = "utf-8";
 
 	public static final String REQUESTEDAUTH = "requestedAuth";
 
 	public static final String UNKNOWN_BIO = "UNKNOWN";
+	
+	public static final String UNKNOWN_COUNT_PLACEHOLDER = "%s";
 
 	public static final String TRANSACTION_ID = "transactionID";
 

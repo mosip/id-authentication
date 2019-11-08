@@ -121,7 +121,7 @@ public class FingerprintValidatorTest {
 		score2.setInternalScore(30);
 		score[0] = score2;
 		when(bioApiImpl.match(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(score);
-		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
+		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class FingerprintValidatorTest {
 		score2.setInternalScore(30);
 		score[0] = score2;
 		when(bioApiImpl.match(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(score);
-		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
+		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
 	}
 
 	@Test

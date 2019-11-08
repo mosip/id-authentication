@@ -25,7 +25,7 @@ public interface JwsSpec<R, D, C, P> {
 	 * @param pKey
 	 * @return signed string
 	 */
-	R jwsSign(D payload, P pKey);
+	R jwsSign(D payload, P pKey,C cert);
 	
 	/**
 	 * This method verifies signature.
@@ -34,6 +34,6 @@ public interface JwsSpec<R, D, C, P> {
 	 * @param cert
 	 * @return boolean
 	 */
-	boolean verifySignature(D sign,C cert);
+	boolean verifySignature(D sign);
 
 }

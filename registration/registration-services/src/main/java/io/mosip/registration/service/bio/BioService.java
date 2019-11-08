@@ -10,6 +10,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
+import io.mosip.registration.mdm.dto.RequestDetail;
 
 /**
  * This class {@code BioService} handles all the biometric captures and
@@ -33,7 +34,7 @@ public interface BioService {
 	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
 	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
-	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validates FingerPrint after getting the scanned data for the particular given
@@ -63,7 +64,7 @@ public interface BioService {
 	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
 	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
-	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validates Iris after getting the scanned data for the given user ID
@@ -93,7 +94,7 @@ public interface BioService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType) throws RegBaseCheckedException, IOException;
+	void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * checks if the MDM service is enabled
@@ -136,7 +137,7 @@ public interface BioService {
 	 * @param userId            - the user ID
 	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
 	 */
-	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId);
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
 	/**
 	 * Gets the iris stub image as DTO.
 	 *
@@ -147,7 +148,7 @@ public interface BioService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException, IOException;
+	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validate the Input Finger with the finger that is fetched from the Database.
@@ -162,37 +163,11 @@ public interface BioService {
 	boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO, List<UserBiometric> userFingerprintDetails);
 
 	/**
-	 * Validate captured Iris data with the stored db values
-	 * 
-	 * @param irisDetailsDTO
-	 *            the {@link IrisDetailsDTO} to be validated
-	 * @param userIrisDetails
-	 *            the list of {@link IrisDetailsDTO} available in database
-	 * 
-	 * @return boolean the validation result. <code>true</code> if match is found,
-	 *         else <code>false</code>
-	 */
-	boolean validateIrisAgainstDb(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails);
-
-	/**
-	 * Validate the captured Face data with the stored db values
-	 * 
-	 * @param faceDetail
-	 *            details of the captured face
-	 * @param userFaceDetails
-	 *            details of the user face from db
-	 * 
-	 * @return boolean the validation result. <code>true</code> if match is found,
-	 *         else <code>false</code>
-	 */
-	boolean validateFaceAgainstDb(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails);
-
-	/**
 	 * Captures the face
 	 * 
 	 * @return CaptureResponseDto
 	 */
-	CaptureResponseDto captureFace();
+	CaptureResponseDto captureFace(RequestDetail requestDetail);
 
 	/**
 	 * Returns single biometric bio value

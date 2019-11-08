@@ -26,7 +26,7 @@ public class Identity {
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence1;
 	private List<FieldValueArray> hashSequence2;
-	private List<FieldValue> capturedRegisteredDevices;
+	private List<RegisteredDevice> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
 	private List<ValuesDTO> printingName;
