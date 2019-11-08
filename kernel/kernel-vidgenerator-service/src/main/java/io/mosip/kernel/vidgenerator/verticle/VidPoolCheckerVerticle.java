@@ -76,10 +76,12 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 	              }else if(replyHandler.failed()) {
 	            	  locked.set(false);
 	            	  LOGGER.error("population failed with cause ",replyHandler.cause());
+	            	  handler.fail(100, replyHandler.cause().getMessage());
 	              }
 				});
 			} else {
 				LOGGER.info("population canceled vid has enought threshold....");
+				LOGGER.info("reply address {}",handler.replyAddress());
 				handler.reply("population has enought threshold");
 			}
 		});
