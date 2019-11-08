@@ -63,7 +63,10 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 		initPoolConsumer.handler(handler ->{
 			long noOfFreeVids = vidService.fetchVidCount(VidLifecycleStatus.AVAILABLE);
 			LOGGER.info("no of vid free present are {}", noOfFreeVids);
-			if (noOfFreeVids < threshold &&  !locked.get()) {
+			LOGGER.info("value of threshold is {} and lock is {}",threshold,locked.get());
+			boolean isEligibleForPool = noOfFreeVids < threshold &&  !locked.get();
+			LOGGER.info("is eligible for pool {}",isEligibleForPool);
+			if (isEligibleForPool) {
 				locked.set(true);
 				eventBus.send(EventType.GENERATEPOOL, noOfFreeVids,deliveryOptions,replyHandler -> {
 	              if(replyHandler.succeeded()) {
