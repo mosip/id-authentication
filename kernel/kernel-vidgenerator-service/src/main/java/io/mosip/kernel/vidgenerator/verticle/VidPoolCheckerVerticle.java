@@ -76,8 +76,8 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 	              }
 				});
 			} else {
+				LOGGER.debug("population canceled vid has enought threshold....");
 				handler.reply("population has enought threshold");
-				LOGGER.debug("locked generation");
 			}
 		});
 	}
