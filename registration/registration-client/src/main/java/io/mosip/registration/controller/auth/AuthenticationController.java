@@ -371,7 +371,10 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			try {
-				if (captureAndValidateFP(fpUserId.getText(), new RequestDetail("", "", 1, "", null))) {
+				if (captureAndValidateFP(fpUserId.getText(), new RequestDetail("Staging", "Registration",
+						RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+						(String) getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT),
+						1, "60", Arrays.asList("LF_LITTLE", "LF_RING", "LF_MIDDLE")))) {
 					userAuthenticationTypeListValidation.remove(0);
 					loadNextScreen();
 				} else {
@@ -443,6 +446,7 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@FXML
 	private void startStream() {
+		faceImage.setImage(null);
 		streamer.startStream(new RequestDetail(RegistrationConstants.FACE_FULLFACE,
 				getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1,
 				getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null), faceImage, null);
