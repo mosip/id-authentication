@@ -360,8 +360,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			eventId = EventId.RPR_402.toString();
 		} else {
 			// first time sync registration
-			registrationDto.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+
 			syncRegistration = convertDtoToEntity(registrationDto);
+			syncRegistration.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 			syncRegistration.setId(RegistrationUtility.generateId());
 			syncRegistrationDao.save(syncRegistration);
 			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
