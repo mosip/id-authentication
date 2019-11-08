@@ -40,13 +40,12 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 		MessageConsumer<String> checkPoolConsumer = eventBus.consumer(EventType.CHECKPOOL);
 		DeliveryOptions deliveryOptions = new DeliveryOptions();
 		deliveryOptions.setSendTimeout(environment.getProperty("mosip.kernel.vid.pool-population-timeout",Long.class));
-		System.out.println("sendtimeout = "+deliveryOptions.getSendTimeout());
 		checkPoolConsumer.handler(handler ->{
 			long noOfFreeVids = vidService.fetchVidCount(VidLifecycleStatus.AVAILABLE);
 			LOGGER.info("no of vid free present are {}", noOfFreeVids);
 			if (noOfFreeVids < threshold &&  !locked.get()) {
 				locked.set(true);
-				eventBus.send(EventType.GENERATEPOOL, noOfFreeVids/10,deliveryOptions,replyHandler -> {
+				eventBus.send(EventType.GENERATEPOOL,noOfFreeVids,deliveryOptions,replyHandler -> {
 	              if(replyHandler.succeeded()) {
 	            	  locked.set(false);
 	            	  LOGGER.info("population of pool done");
@@ -66,7 +65,7 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 			LOGGER.info("no of vid free present are {}", noOfFreeVids);
 			if (noOfFreeVids < threshold &&  !locked.get()) {
 				locked.set(true);
-				eventBus.send(EventType.GENERATEPOOL, noOfFreeVids/10,deliveryOptions,replyHandler -> {
+				eventBus.send(EventType.GENERATEPOOL, noOfFreeVids,deliveryOptions,replyHandler -> {
 	              if(replyHandler.succeeded()) {
 	            	  locked.set(false);
 	            	  handler.reply("population of init pool done");

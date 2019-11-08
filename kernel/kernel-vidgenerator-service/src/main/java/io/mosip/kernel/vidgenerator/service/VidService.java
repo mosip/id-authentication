@@ -13,6 +13,6 @@ public interface VidService {
 
 	void expireAndRenew();
 
-	void saveVID(VidEntity vid);
+	boolean saveVID(VidEntity vid);
 
 }
