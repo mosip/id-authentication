@@ -6,11 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -27,11 +24,9 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
-import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -58,7 +53,6 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -264,73 +258,6 @@ public class LocationServiceImpl implements LocationService {
 		return response;
 	}
 
-	/**
-	 * Method to perform the basic request validation
-	 * 
-	 * @param request
-	 *            request to be validated
-	 * @param errors
-	 *            list of service errors
-	 * @param locations
-	 *            adding validation location to this list
-	 */
-	private void requestValidation(LocationDto dto, List<ServiceError> errors) {
-			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
-				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
-				if (!validations.isEmpty()) {
-					validations.forEach(
-							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
-					throw new ValidationException(errors);
-				} 
-			} else if (dto.getLangCode() != null && languageUtils.getSecondaryLanguages().contains(dto.getLangCode())) {
-				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
-				if (!validations.isEmpty()) {
-					validations.forEach(
-							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
-				} 
-			} else {
-				errors.add(new ServiceError(LocationErrorCode.INVALID_LANG_CODE.getErrorCode(),
-						String.format(LocationErrorCode.INVALID_LANG_CODE.getErrorMessage(), dto.getLangCode())));
-			}
-	}
-
-	/**
-	 * Method to perform the business validation for the location
-	 * 
-	 * @param request
-	 *            list of location to be validated
-	 */
-	private void dataValidation(LocationCreateDto request) {
-//		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
-//		if (ids.size() > 1) {
-//			throw new RequestException(LocationErrorCode.DIFFERENT_LOC_CODE.getErrorCode(),
-//					LocationErrorCode.DIFFERENT_LOC_CODE.getErrorMessage());
-//		}
-
-//		if(!request.getLangCode().equals(languageUtils.getPrimaryLanguage()))
-//		{
-//			throw new RequestException(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorCode(),
-//					String.format(LocationErrorCode.DATA_IN_PRIMARY_LANG_MISSING.getErrorMessage(),
-//							languageUtils.getPrimaryLanguage()));
-//		}
-		if(StringUtils.isNotBlank(request.getParentLocCode()))
-		{
-			
-			List<Location> locationList = locationRepository.findByCode(request.getParentLocCode());
-			if(CollectionUtils.isEmpty(locationList))
-			{
-				throw new RequestException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
-						LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
-			}
-		}
-//		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
-//		if (levels.size() > 1) {
-//			throw new RequestException(LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorCode(),
-//					LocationErrorCode.INVALID_DIFF_HIERARCY_LEVEL.getErrorMessage());
-//		}
-	}
 
 	/**
 	 * {@inheritDoc}
