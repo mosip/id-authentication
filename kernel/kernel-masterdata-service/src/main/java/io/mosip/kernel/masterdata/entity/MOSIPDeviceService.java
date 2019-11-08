@@ -68,7 +68,7 @@ public class MOSIPDeviceService extends BaseEntity {
 	/** The sw expiry time. */
 	@Column(name = "sw_expiry_dtimes")
 	private LocalDateTime swExpiryDateTime;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "dprovider_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private DeviceProvider deviceProvider;

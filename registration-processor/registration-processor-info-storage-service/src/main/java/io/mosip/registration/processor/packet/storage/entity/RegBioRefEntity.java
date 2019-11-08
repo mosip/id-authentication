@@ -1,16 +1,11 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "reg_bio_ref", schema = "regprc")
@@ -24,11 +19,9 @@ public class RegBioRefEntity extends BasePacketEntity<RegBioRefPKEntity> impleme
 	private String crBy = "SYSTEM";
 
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	@Column(name = "is_active")
@@ -41,7 +34,6 @@ public class RegBioRefEntity extends BasePacketEntity<RegBioRefPKEntity> impleme
 	private String updBy = "MOSIP_SYSTEM";
 
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
 	public RegBioRefEntity() {

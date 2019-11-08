@@ -55,7 +55,6 @@ public class MOSIPDeviceServiceDto {
 	@ApiModelProperty(value = "model", required = true, dataType = "java.lang.String")
 	private String model;
 
-
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime swCreateDateTime;
 
@@ -65,5 +64,9 @@ public class MOSIPDeviceServiceDto {
 	@NotNull
 	@ApiModelProperty(value = "softBinaryHash", required = true, dataType = "java.lang.Byte")
 	private byte[] swBinaryHash;
+	
+	@ApiModelProperty(value = "isActive", dataType = "java.lang.Boolean")
+	private boolean isActive;
+	
 
 }

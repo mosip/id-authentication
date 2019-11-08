@@ -6,7 +6,10 @@ public enum MOSIPDeviceServiceErrorCode {
 	REG_DEVICE_SUB_TYPE_NOT_FOUND("ADM-DPM-041", "Reg Device Sub Type Code not found in the list of Reg Device Sub Types"),
 	DEVICE_PROVIDER_NOT_FOUND("ADM-DPM-039", "Device Provider Id not found in the list of Device Providers"),
 	MDS_EXIST("ADM-DPM-021","%s MOSIP-Device-Service already exist"),
-	MDS_INSERTION_EXCEPTION("ADM-DPM-022","Error occurred while storing MDS Details");
+	MDS_INSERTION_EXCEPTION("ADM-DPM-022","Error occurred while storing MDS Details"),
+	MDS_PARAMETER_MISSING("ADM-DPM-023", "Mandatory input parameter is missing"),
+	MDS_DB_UPDATION_ERROR("ADM-DPM-024", "Error occurred while updating MDS Details");
+	
 
 	private final String errorCode;
 	private final String errorMessage;

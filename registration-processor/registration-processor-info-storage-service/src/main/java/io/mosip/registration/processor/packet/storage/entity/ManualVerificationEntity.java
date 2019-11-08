@@ -8,10 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
-
-import io.mosip.registration.processor.core.code.DedupeSourceName;
-
 /**
  * The persistent class for the reg_manual_verification database table.
  *
@@ -22,7 +18,7 @@ import io.mosip.registration.processor.core.code.DedupeSourceName;
 @Entity
 @Table(name = "reg_manual_verification", schema = "regprc")
 public class ManualVerificationEntity extends BasePacketEntity<ManualVerificationPKEntity> implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +28,6 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 
 	/** The cr dtimes. */
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
 	private Timestamp crDtimes;
 
 	/** The del dtimes. */
@@ -78,17 +73,16 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/** The upd dtimes. */
 	@Column(name = "upd_dtimes")
 	private Timestamp updDtimes;
-	
+
 	/** The dedupe source name. */
 	@Column(name = "trntyp_code")
 	private String trnTypCode;
-	
+
 	/**
 	 * Gets the source name.
 	 *
 	 * @return the source name.
 	 */
-	
 
 	public String getTrnTypCode() {
 		return trnTypCode;
@@ -117,7 +111,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy            the crBy to set
+	 * @param crBy
+	 *            the crBy to set
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
@@ -135,10 +130,11 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimes            the crDtimes to set
+	 * @param crDtimes
+	 *            the crDtimes to set
 	 */
 	public void setCrDtimes(Timestamp crDtimes) {
-		this.crDtimes =new Timestamp(crDtimes.getTime());
+		this.crDtimes = new Timestamp(crDtimes.getTime());
 	}
 
 	/**
@@ -153,7 +149,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the del dtimes.
 	 *
-	 * @param delDtimes            the delDtimes to set
+	 * @param delDtimes
+	 *            the delDtimes to set
 	 */
 	public void setDelDtimes(Timestamp delDtimes) {
 		this.delDtimes = new Timestamp(delDtimes.getTime());
@@ -171,7 +168,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the checks if is active.
 	 *
-	 * @param isActive            the isActive to set
+	 * @param isActive
+	 *            the isActive to set
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
@@ -189,7 +187,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted            the isDeleted to set
+	 * @param isDeleted
+	 *            the isDeleted to set
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -207,7 +206,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the lang code.
 	 *
-	 * @param langCode            the langCode to set
+	 * @param langCode
+	 *            the langCode to set
 	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
@@ -225,7 +225,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the matched score.
 	 *
-	 * @param matchedScore            the matchedScore to set
+	 * @param matchedScore
+	 *            the matchedScore to set
 	 */
 	public void setMatchedScore(BigDecimal matchedScore) {
 		this.matchedScore = matchedScore;
@@ -243,7 +244,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the mv usr id.
 	 *
-	 * @param mvUsrId            the mvUsrId to set
+	 * @param mvUsrId
+	 *            the mvUsrId to set
 	 */
 	public void setMvUsrId(String mvUsrId) {
 		this.mvUsrId = mvUsrId;
@@ -261,7 +263,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the reason code.
 	 *
-	 * @param reasonCode            the reasonCode to set
+	 * @param reasonCode
+	 *            the reasonCode to set
 	 */
 	public void setReasonCode(String reasonCode) {
 		this.reasonCode = reasonCode;
@@ -279,7 +282,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the status code.
 	 *
-	 * @param statusCode            the statusCode to set
+	 * @param statusCode
+	 *            the statusCode to set
 	 */
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
@@ -297,7 +301,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the status comment.
 	 *
-	 * @param statusComment            the statusComment to set
+	 * @param statusComment
+	 *            the statusComment to set
 	 */
 	public void setStatusComment(String statusComment) {
 		this.statusComment = statusComment;
@@ -315,7 +320,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy            the updBy to set
+	 * @param updBy
+	 *            the updBy to set
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
@@ -333,7 +339,8 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	/**
 	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimes            the updDtimes to set
+	 * @param updDtimes
+	 *            the updDtimes to set
 	 */
 	public void setUpdDtimes(Timestamp updDtimes) {
 		this.updDtimes = new Timestamp(updDtimes.getTime());

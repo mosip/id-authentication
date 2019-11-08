@@ -3,6 +3,8 @@ package io.mosip.registration.processor.status.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +29,7 @@ import io.mosip.registration.processor.status.exception.TransactionsUnavailableE
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
-
-/**	
+/**
  * The Class TransactionServiceImpl.
  */
 @Service
@@ -36,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(TransactionServiceImpl.class);
-	
+
 	/** The transaction repositary. */
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
@@ -84,6 +85,8 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 		transcationEntity.setRemarks(dto.getRemarks());
 		transcationEntity.setStatusComment(dto.getStatusComment());
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
+		transcationEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		transcationEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		transcationEntity.setLangCode("eng");
 		transcationEntity.setReferenceId(dto.getReferenceId());
 		transcationEntity.setReferenceIdType(dto.getReferenceIdType());
@@ -117,8 +120,9 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			throws TransactionsUnavailableException, RegTransactionAppException {
 
 		String supportedLanguage = environment.getProperty(supportedLanguageKey);
-		List<String> supportedLanguages = supportedLanguage != null ? Arrays.asList(supportedLanguage.split(",")) : new ArrayList<>();
-		if(!supportedLanguages.contains(langCode)) {
+		List<String> supportedLanguages = supportedLanguage != null ? Arrays.asList(supportedLanguage.split(","))
+				: new ArrayList<>();
+		if (!supportedLanguages.contains(langCode)) {
 			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_RTS_INVALID_REQUEST.getMessage() + " - langCode");
 		}
