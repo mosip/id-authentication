@@ -118,9 +118,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 						// data.put(RegistrationConstants.DEVICE_PROVIDER_ID,
 						// RegistrationConstants.ON_BOARD_COGENT);
 						data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FINGER_ID);
-//					data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
-//							RegistrationConstants.userOnBoardBioFlag.get(finger.getFingerType()));
-						data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
+					    data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
+							RegistrationConstants.userOnBoardBioFlag.get(finger.getFingerType()));
 						SplittedEncryptedData responseMap = getSessionKey(data, finger.getFingerPrintISOImage());
 						data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, responseMap.getEncryptedData());
 						String dataBlockJsonString = RegistrationConstants.EMPTY;
@@ -159,9 +158,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 					// data.put(RegistrationConstants.DEVICE_PROVIDER_ID,
 					// RegistrationConstants.ON_BOARD_COGENT);
 					data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_IRIS_ID);
-					data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
-//				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
-//						RegistrationConstants.userOnBoardBioFlag.get(iris.getIrisImageName()));
+				    data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
+						RegistrationConstants.userOnBoardBioFlag.get(iris.getIrisImageName()));
 					SplittedEncryptedData responseMap = getSessionKey(data, iris.getIrisIso());
 					data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, responseMap.getEncryptedData());
 
