@@ -158,7 +158,8 @@ public class PacketInfoMapper {
 
 			applicantDemographicPKEntity.setRegId(regId);
 			applicantDemographicPKEntity.setLangCode(languageArray[i]);
-
+			entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+			entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);

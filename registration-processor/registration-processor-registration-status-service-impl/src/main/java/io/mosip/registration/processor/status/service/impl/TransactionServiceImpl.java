@@ -86,6 +86,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 		transcationEntity.setStatusComment(dto.getStatusComment());
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
 		transcationEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		transcationEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		transcationEntity.setLangCode("eng");
 		transcationEntity.setReferenceId(dto.getReferenceId());
 		transcationEntity.setReferenceIdType(dto.getReferenceIdType());

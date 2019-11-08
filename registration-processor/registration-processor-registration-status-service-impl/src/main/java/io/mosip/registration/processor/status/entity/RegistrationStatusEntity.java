@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.UpdateTimestamp;
-
 /**
  * The Class RegistrationStatusEntity.
  */
@@ -86,7 +84,6 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 
 	/** The latest transaction times. */
 	@Column(name = "latest_trn_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime latestTransactionTimes;
 
 	/** The registration stage name. */

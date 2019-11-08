@@ -386,7 +386,7 @@ public class RegistrationStatusServiceImpl
 			registrationStatusEntity.setCreateDateTime(dto.getCreateDateTime());
 		}
 		registrationStatusEntity.setUpdatedBy(dto.getUpdatedBy());
-		registrationStatusEntity.setUpdateDateTime(dto.getUpdateDateTime());
+		registrationStatusEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		registrationStatusEntity.setIsDeleted(dto.isDeleted());
 
 		if (registrationStatusEntity.isDeleted() != null && registrationStatusEntity.isDeleted()) {
@@ -394,14 +394,14 @@ public class RegistrationStatusServiceImpl
 		} else {
 			registrationStatusEntity.setDeletedDateTime(null);
 		}
-		registrationStatusEntity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+
 		registrationStatusEntity.setRetryCount(dto.getRetryCount());
 		registrationStatusEntity.setApplicantType(dto.getApplicantType());
 		registrationStatusEntity.setRegProcessRetryCount(dto.getReProcessRetryCount());
 		registrationStatusEntity.setLatestTransactionStatusCode(dto.getLatestTransactionStatusCode());
 		registrationStatusEntity.setLatestTransactionTypeCode(dto.getLatestTransactionTypeCode());
 		registrationStatusEntity.setRegistrationStageName(dto.getRegistrationStageName());
-
+		registrationStatusEntity.setLatestTransactionTimes(LocalDateTime.now(ZoneId.of("UTC")));
 		return registrationStatusEntity;
 	}
 
