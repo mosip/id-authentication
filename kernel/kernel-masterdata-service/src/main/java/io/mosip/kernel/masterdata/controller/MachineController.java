@@ -277,4 +277,51 @@ public class MachineController {
 		responseWrapper.setResponse(machineService.decommissionMachine(machineId));
 		return responseWrapper;
 	}
+	
+	/**
+	 * Post API to insert a new row of Machine data
+	 * 
+	 * @param machine
+	 *            input from user Machine DTO
+	 * 
+	 * @return Responding with Machine which is inserted successfully
+	 *         {@link ResponseEntity}
+	 */
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PostMapping("/machines")
+	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
+	public ResponseWrapper<MachineExtnDto> createMachine(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machine) {
+		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.createMachine(machine.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * This method updates Machine by Admin.
+	 * 
+	 * @param machineCenterDto
+	 *            the request DTO for updating machine.
+	 * @return the response i.e. the updated machine.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/machines")
+	@ApiOperation(value = "Service to upadte Machine", notes = "Update Machine Detail and return updated Machine")
+	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully updated"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
+	public ResponseWrapper<MachineExtnDto> updateMachienAdmin(
+			@RequestBody @Valid RequestWrapper<MachinePutReqDto> machineCenterDto) {
+
+		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				machineService.updateMachine(machineCenterDto.getRequest()));
+		return responseWrapper;
+	}
 }

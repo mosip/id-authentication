@@ -7,8 +7,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -204,38 +206,25 @@ public class PrintServiceImplTest {
 		Mockito.when(uinCardGenerator.generateUinCard(any(), any(), any())).thenReturn(outputStream);
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-
-		String value = "{\r\n" + "	\"identity\": {\r\n" + "		\"name\": {\r\n"
-				+ "			\"value\": \"fullName\",\r\n" + "			\"weight\": 20\r\n" + "		},\r\n"
-				+ "		\"gender\": {\r\n" + "			\"value\": \"gender\",\r\n" + "			\"weight\": 20\r\n"
-				+ "		},\r\n" + "		\"dob\": {\r\n" + "			\"value\": \"dateOfBirth\",\r\n"
-				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"pheoniticName\": {\r\n"
-				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"poa\": {\r\n"
-				+ "			\"value\" : \"proofOfAddress\"\r\n" + "		},\r\n" + "		\"poi\": {\r\n"
-				+ "			\"value\" : \"proofOfIdentity\"\r\n" + "		},\r\n" + "		\"por\": {\r\n"
-				+ "			\"value\" : \"proofOfRelationship\"\r\n" + "		},\r\n" + "		\"pob\": {\r\n"
-				+ "			\"value\" : \"proofOfDateOfBirth\"\r\n" + "		},\r\n"
-				+ "		\"individualBiometrics\": {\r\n" + "			\"value\" : \"individualBiometrics\"\r\n"
-				+ "		},\r\n" + "		\"age\": {\r\n" + "			\"value\" : \"age\"\r\n" + "		},\r\n"
-				+ "		\"addressLine1\": {\r\n" + "			\"value\" : \"addressLine1\"\r\n" + "		},\r\n"
-				+ "		\"addressLine2\": {\r\n" + "			\"value\" : \"addressLine2\"\r\n" + "		},\r\n"
-				+ "		\"addressLine3\": {\r\n" + "			\"value\" : \"addressLine3\"\r\n" + "		},\r\n"
-				+ "		\"region\": {\r\n" + "			\"value\" : \"region\"\r\n" + "		},\r\n"
-				+ "		\"province\": {\r\n" + "			\"value\" : \"province\"\r\n" + "		},\r\n"
-				+ "		\"postalCode\": {\r\n" + "			\"value\" : \"postalCode\"\r\n" + "		},\r\n"
-				+ "		\"phone\": {\r\n" + "			\"value\" : \"phone\"\r\n" + "		},\r\n"
-				+ "		\"email\": {\r\n" + "			\"value\" : \"email\"\r\n" + "		},\r\n"
-				+ "		\"localAdministrativeAuthority\": {\r\n"
-				+ "			\"value\" : \"localAdministrativeAuthority\"\r\n" + "		},\r\n"
-				+ "		\"idschemaversion\": {\r\n" + "			\"value\" : \"IDSchemaVersion\"\r\n" + "		},\r\n"
-				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
-				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
-
 		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", any(), any()).thenReturn(value);
-
 		byte[] qrcode = "QRCODE GENERATED".getBytes();
 		Mockito.when(qrCodeGenerator.generateQrCode(any(), any())).thenReturn(qrcode);
+		ClassLoader classLoader = getClass().getClassLoader();
+		File printTextFile = new File(classLoader.getResource("printTextFileJson.json").getFile());
+		File mappingFile = new File(classLoader.getResource("RegistrationProcessorIdentity.json").getFile());
+		String mappingFileJson = FileUtils.readFileToString(mappingFile, StandardCharsets.UTF_8);
+		String printTextFileJson = FileUtils.readFileToString(printTextFile, StandardCharsets.UTF_8);
+		//PowerMockito.when(Utilities.class, "getJson", "", any()).thenReturn(value);
+		PowerMockito.when(utility.getConfigServerFileStorageURL()).thenReturn("configUrl");
+		PowerMockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("mappingJson");
+		PowerMockito.when(utility.getRegistrationProcessorPrintTextFile()).thenReturn("printFile");
+
+		PowerMockito.when(Utilities.class, "getJson", utility.getConfigServerFileStorageURL(),
+				utility.getRegistrationProcessorPrintTextFile()).thenReturn(printTextFileJson);
+		PowerMockito.when(Utilities.class, "getJson", utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson()).thenReturn(mappingFileJson);
+
+		
 	}
 
 	@Test
@@ -398,7 +387,7 @@ public class PrintServiceImplTest {
 	}
 
 	@Test
-	public void testQrCodeNotSet() throws QrcodeGenerationException, IOException {
+	public void testQrCodeNotSet() throws Exception {
 		Mockito.when(qrCodeGenerator.generateQrCode(any(), any())).thenReturn(null);
 
 		String uin = "2046958192";

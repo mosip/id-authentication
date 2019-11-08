@@ -64,7 +64,7 @@ public class GenerateQRcodeServiceTest {
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
-	MainRequestDTO<JSONObject> qrcodedto = new MainRequestDTO<>();
+	MainRequestDTO<String> qrcodedto = new MainRequestDTO<>();
 
 	@Before
 	public void beforeSet() throws ParseException, JsonProcessingException, org.json.simple.parser.ParseException {
@@ -81,11 +81,8 @@ public class GenerateQRcodeServiceTest {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
 		mapper.setTimeZone(TimeZone.getDefault());
-		String jsonString = mapper.writeValueAsString(notificationDTO);
-		JSONParser parser = new JSONParser();
-		JSONObject jsonObj = (JSONObject) parser.parse(jsonString);
-		
-		qrcodedto.setRequest(jsonObj);
+		String jsonString = mapper.writeValueAsString(notificationDTO);		
+		qrcodedto.setRequest(jsonString);
 		qrcodedto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);

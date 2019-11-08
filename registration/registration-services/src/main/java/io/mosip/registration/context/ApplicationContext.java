@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
@@ -140,7 +141,16 @@ public class ApplicationContext {
 			LOGGER.error("Application Context", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 		}
-
+		
+		String languageSupport = (String) applicationMap.get(RegistrationConstants.LANGUAGE_SUPPORT);
+		if (StringUtils.isNotBlank(languageSupport)) {
+			languageSupport = languageSupport.toLowerCase();
+			applicationLanguge = applicationLanguge.toLowerCase();
+			localLanguage = localLanguage.toLowerCase();
+			applicationLanguge = languageSupport.contains(applicationLanguge) ? applicationLanguge : "eng";
+			localLanguage = languageSupport.contains(localLanguage) ? localLanguage : "eng";
+		}
+		
 		Locale applicationLanguageLocale = new Locale(
 				applicationLanguge != null ? applicationLanguge.substring(0, 2) : "");
 		Locale secondaryLanguageLocale = new Locale(localLanguage != null ? localLanguage.substring(0, 2) : "");

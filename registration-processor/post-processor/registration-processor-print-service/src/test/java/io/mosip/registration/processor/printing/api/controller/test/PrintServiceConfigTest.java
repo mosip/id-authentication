@@ -20,8 +20,7 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {
-		"io.mosip.registration.processor.printing.api.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				PrintServiceBeanConfig.class, RestConfigBean.class }))
+		"io.mosip.registration.processor.printing.api.*" })
 public class PrintServiceConfigTest {
 
 	@MockBean
@@ -29,9 +28,6 @@ public class PrintServiceConfigTest {
 
 	@MockBean
 	public ConnectionUtils connectionUtil;
-
-	@MockBean
-	public TokenValidator tokenValidator;
 
 	@MockBean
 	public RidValidator<?> ridValidator;

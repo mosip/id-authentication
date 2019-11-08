@@ -1,10 +1,11 @@
 DROP DATABASE IF EXISTS mosip_ida;
 CREATE DATABASE mosip_ida
 	ENCODING = 'UTF8'
--- 	LC_COLLATE = 'en_US.UTF-8'
---	LC_CTYPE = 'en_US.UTF-8'
+	LC_COLLATE = 'en_US.UTF-8'
+	LC_CTYPE = 'en_US.UTF-8'
 	TABLESPACE = pg_default
-	OWNER = sysadmin;
+	OWNER = sysadmin
+	TEMPLATE  = template0;
 -- ddl-end --
 COMMENT ON DATABASE mosip_ida IS 'ID Authorization related requests, transactions and mapping related data like virtual ids, tokens, etc. will be stored in this database';
 -- ddl-end --

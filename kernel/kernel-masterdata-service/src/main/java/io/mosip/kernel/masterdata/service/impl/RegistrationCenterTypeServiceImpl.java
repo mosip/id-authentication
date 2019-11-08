@@ -82,6 +82,9 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
+	
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -249,6 +252,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		PageResponseDto<RegistrationCenterTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<RegistrationCenterTypeExtnDto> registrationCenterTypes = null;
 		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(RegistrationCenterType.class, dto.getSort());
 			Page<RegistrationCenterType> page = masterdataSearchHelper.searchMasterdata(RegistrationCenterType.class,
 					dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {

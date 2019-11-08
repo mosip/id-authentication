@@ -203,7 +203,7 @@ public class IdMappingValidationTest {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("bio-FID");
+		allowedAuthtype.add("bio-FACE");
 		allowedAuthtype.add("bio-FIR");
 		allowedAuthtype.add("bio-IIR");
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors,
@@ -301,7 +301,7 @@ public class IdMappingValidationTest {
 		BioIdentityInfoDTO fingerValue1 = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
 		dataDTO1.setBioValue("finger");
-		dataDTO1.setBioSubType("LEFT_THUMB");
+		dataDTO1.setBioSubType("Left Thumb");
 		dataDTO1.setBioType("FIR");
 		dataDTO1.setDeviceProviderID("test01");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -309,7 +309,7 @@ public class IdMappingValidationTest {
 		fingerValue1.setData(dataDTO1);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("LEFT");
+		dataDTO.setBioSubType("Left Iris");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -318,7 +318,7 @@ public class IdMappingValidationTest {
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFace = new DataDTO();
 		dataDTOFace.setBioValue("face img");
-		dataDTOFace.setBioType("FID");
+		dataDTOFace.setBioType("FACE");
 		dataDTOFace.setBioSubType("FACE");
 		dataDTOFace.setDeviceProviderID("provider001");
 		dataDTOFace.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))

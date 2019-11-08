@@ -46,6 +46,10 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 	private int minimumIdle;
 	@Value("${iam.datastore.commonname:morocco}")
 	private String commonname;
+	@Value("${ldap.admin.dn:uid=admin,ou=system}")
+	private String adminDN;
+	@Value("${ldap.admin.password:secret}")
+	private String adminPassword;
 
 	UserStoreFactoryImpl() {
 
@@ -80,6 +84,8 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 				dataBaseConfig.setPassword(mosipEnvironment.getPassword(ds));
 				dataBaseConfig.setDriverName(mosipEnvironment.getDriverName(ds));
 				dataBaseConfig.setCommonName(commonname);
+				dataBaseConfig.setAdminDN(adminDN);
+				dataBaseConfig.setAdminPassword(adminPassword);
 				dataBaseConfig.setSchemas(ds);
 				if (ds.contains(AuthConstant.LDAP)) {
 					DataStore idatastore = new LdapDataStore(dataBaseConfig);

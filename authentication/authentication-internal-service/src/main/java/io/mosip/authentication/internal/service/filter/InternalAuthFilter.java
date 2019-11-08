@@ -33,5 +33,10 @@ public class InternalAuthFilter extends IdAuthFilter {
 	protected String fetchReferenceId() {
 		return env.getProperty(IdAuthConfigKeyConstants.INTERNAL_REFERENCE_ID);
 	}
+	
+	@Override
+	protected String getBioRefId() {
+		return env.getProperty(IdAuthConfigKeyConstants.INTERNAL_BIO_REFERENCE_ID);
+	}
 
 }

@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -152,10 +151,10 @@ public class TransactionServiceTest {
 		entities.add(transcationEntity);
 		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
 		.thenReturn(entities);
-		Mockito.when(environment.getProperty( any())).thenReturn("en").thenReturn("fr")
-		.thenReturn("ar").thenReturn("globalMessages_en.properties");
+		Mockito.when(environment.getProperty( any())).thenReturn("eng").thenReturn("fra")
+		.thenReturn("ara").thenReturn("globalMessages_eng.properties");
 		
-		List<RegistrationTransactionDto> dtolist = transactionService.getTransactionByRegId("1221", "en");
+		List<RegistrationTransactionDto> dtolist = transactionService.getTransactionByRegId("1221", "eng");
 
 		assertEquals(dtolist.get(0).getStatusComment(), "Packet has reached Packet Receiver");
 	}

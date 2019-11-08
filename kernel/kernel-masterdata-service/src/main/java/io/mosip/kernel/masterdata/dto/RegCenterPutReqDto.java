@@ -27,11 +27,11 @@ public class RegCenterPutReqDto
 	private String id;
 
 	@NotBlank
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
 	private String name;
 
 	@NotBlank
-	@Size(min = 1, max = 256)
+	@Size(min = 0, max = 256)
 	private String addressLine1;
 
 	@Size(min = 0, max = 256)
@@ -40,7 +40,7 @@ public class RegCenterPutReqDto
 	@Size(min = 0, max = 256)
 	private String addressLine3;
 
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	private Short numberOfKiosks;
@@ -52,30 +52,30 @@ public class RegCenterPutReqDto
 	private Boolean isActive;
 	
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	private String centerTypeCode;
 
 	@NotBlank
-	@Size(min = 1, max = 32)
+	@Size(min = 0, max = 32)
 	private String latitude;
 
 	@NotBlank
-	@Size(min = 1, max = 32)
+	@Size(min = 0, max = 32)
 	private String longitude;
 
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	private String locationCode;
 
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	private String holidayLocationCode;
 
 	@Size(min = 0, max = 16)
 	private String contactPhone;
 
 	@NotBlank
-	@Size(min = 1, max = 32)
+	@Size(min = 0, max = 32)
 	private String workingHours;
 
 	@NotNull
@@ -100,5 +100,7 @@ public class RegCenterPutReqDto
 	private String timeZone;
 
 	@NotNull
-	@Size(min = 1, max = 36)
-	private String zoneCode;}
+	@Size(min = 0, max = 36)
+	private String zoneCode;
+	
+}

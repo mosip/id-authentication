@@ -326,7 +326,7 @@ public class NotificationService {
 		getDemographicDetails(dto);
 		if (!dto.getIsBatch()) {
 			BookingRegistrationDTO bookingDTO = getAppointmentDetailsRestService(dto.getPreRegistrationId());
-			String time = LocalTime.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
+			String time = LocalTime.parse(bookingDTO.getSlotFromTime(), DateTimeFormatter.ofPattern("HH:mm"))
 					.format(DateTimeFormatter.ofPattern("hh:mm a"));
 			log.info("sessionId", "idType", "id", "In notificationDtoValidation with bookingDTO "+bookingDTO);
 			if (dto.getAppointmentDate() != null && !dto.getAppointmentDate().trim().equals("")) {

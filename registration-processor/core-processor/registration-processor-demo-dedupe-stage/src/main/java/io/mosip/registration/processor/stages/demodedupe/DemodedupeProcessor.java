@@ -3,6 +3,7 @@ package io.mosip.registration.processor.stages.demodedupe;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -42,6 +43,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -221,10 +223,16 @@ public class DemodedupeProcessor {
 							PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 					throw new IdRepoAppException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 				}
-				demoDedupeData.setName(demographicData.getName() == null
-						? JsonUtil.getJsonValues(jsonObject,
-								regProcessorIdentityJson.getIdentity().getName().getValue())
-						: demographicData.getName());
+				List<JsonValue[]> jsonValueList = new ArrayList<>();
+				if (demographicData.getName() == null || demographicData.getName().isEmpty()) {
+					Arrays.stream(regProcessorIdentityJson.getIdentity().getName().getValue().split(","))
+							.forEach(name -> {
+								JsonValue[] nameArray = JsonUtil.getJsonValues(jsonObject, name);
+								if (nameArray != null)
+									jsonValueList.add(nameArray);
+							});
+				}
+				demoDedupeData.setName(jsonValueList.isEmpty() ? null : jsonValueList);
 				demoDedupeData.setDateOfBirth(demographicData.getDateOfBirth() == null
 						? JsonUtil.getJSONValue(jsonObject, regProcessorIdentityJson.getIdentity().getDob().getValue())
 						: demographicData.getDateOfBirth());

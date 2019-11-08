@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.config;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.COMPOSITE_BIO_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FACE_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FINGERPRINT_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IRIS_PROVIDER;
@@ -8,6 +9,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOS
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 
@@ -70,17 +72,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	 */
 	@Bean("finger")
 	public IBioApi fingerProvider() throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(environment.getProperty(FINGERPRINT_PROVIDER)) && isFingerAuthEnabled()) {
-				return (IBioApi) Class.forName(environment.getProperty(FINGERPRINT_PROVIDER)).newInstance();
-			} else {
-				return null;
-			}
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", "fingerProvider",
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationAppException("", "Unable to load fingerprint provider", e);
-		}
+		return getBiometricProvider(FINGERPRINT_PROVIDER, "finger", this::isFingerAuthEnabled);
 	}
 
 	/**
@@ -91,16 +83,20 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	 */
 	@Bean("face")
 	public IBioApi faceProvider() throws IdAuthenticationAppException {
+		return getBiometricProvider(FACE_PROVIDER, "face", this::isFaceAuthEnabled);
+	}
+
+	private IBioApi getBiometricProvider(String property, String modalityName, Supplier<Boolean> enablementChecker) throws IdAuthenticationAppException {
 		try {
-			if (Objects.nonNull(environment.getProperty(FACE_PROVIDER)) && isFaceAuthEnabled()) {
-				return (IBioApi) Class.forName(environment.getProperty(FACE_PROVIDER)).newInstance();
+			if (Objects.nonNull(environment.getProperty(property)) && enablementChecker.get()) {
+				return (IBioApi) Class.forName(environment.getProperty(property)).newInstance();
 			} else {
 				return null;
 			}
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", "faceProvider",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", modalityName + "Provider",
 					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationAppException("", "Unable to load face provider", e);
+			throw new IdAuthenticationAppException("", "Unable to load " + modalityName + " provider", e);
 		}
 	}
 	
@@ -112,17 +108,13 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	 */
 	@Bean("iris")
 	public IBioApi irisProvider() throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(environment.getProperty(IRIS_PROVIDER)) && isIrisAuthEnabled()) {
-				return (IBioApi) Class.forName(environment.getProperty(IRIS_PROVIDER)).newInstance();
-			} else {
-				return null;
-			}
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", "irisProvider",
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationAppException("", "Unable to load iris provider", e);
-		}
+		return getBiometricProvider(IRIS_PROVIDER, "iris", this::isIrisAuthEnabled);
+	}
+	
+	@Bean("composite")
+	public IBioApi compositeBiometricProvider() throws IdAuthenticationAppException {
+		return getBiometricProvider(COMPOSITE_BIO_PROVIDER, "CompositBiometrics", 
+					() -> this.isFingerAuthEnabled() || this.isIrisAuthEnabled() || this.isFaceAuthEnabled());
 	}
 
 	/**

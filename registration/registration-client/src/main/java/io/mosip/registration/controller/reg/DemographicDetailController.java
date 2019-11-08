@@ -1247,6 +1247,10 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
 			boolean hasToBeTransliterated = true;
+			if (ApplicationContext.getInstance().getApplicationLanguage()
+					.equals(ApplicationContext.getInstance().getApplicationLanguage())) {
+				hasToBeTransliterated = false;
+			}
 
 			fxUtils.validateOnFocusOut(parentFlowPane, fullName, validation, fullNameLocalLanguage,
 					hasToBeTransliterated);
@@ -1259,19 +1263,19 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(parentFlowPane, parentName, validation, parentNameLocalLanguage,
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, parentRegId, validation, parentRegIdLocalLanguage,
-					!hasToBeTransliterated);
+					false);
 			fxUtils.validateOnFocusOut(parentFlowPane, parentUinId, validation, parentUinIdLocalLanguage,
-					!hasToBeTransliterated);
+					false);
 
 			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage,
-					!hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, ageField, validation, ageFieldLocalLanguage, !hasToBeTransliterated);
+					false);
+			fxUtils.validateOnType(parentFlowPane, ageField, validation, ageFieldLocalLanguage, false);
 			fxUtils.validateOnFocusOut(parentFlowPane, postalCode, validation, postalCodeLocalLanguage,
-					!hasToBeTransliterated);
+					false);
 			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage,
-					!hasToBeTransliterated);
+					false);
 			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage,
-					!hasToBeTransliterated);
+					false);
 
 			fxUtils.focusedAction(parentFlowPane, dd);
 			fxUtils.focusedAction(parentFlowPane, mm);

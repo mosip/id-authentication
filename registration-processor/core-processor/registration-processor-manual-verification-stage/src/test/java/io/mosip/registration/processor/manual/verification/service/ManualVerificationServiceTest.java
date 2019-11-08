@@ -393,13 +393,4 @@ public class ManualVerificationServiceTest {
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO, stageName);
 	}
 
-	@Test
-	public void getApplicantPacketInfoSuccess() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
-		ClassLoader classLoader = getClass().getClassLoader();
-		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
-		InputStream idJsonStream = new FileInputStream(idJsonFile);
-		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(idJsonStream);
-		manualAdjudicationService.getApplicantPacketInfo("Id");
-	}
-
 }

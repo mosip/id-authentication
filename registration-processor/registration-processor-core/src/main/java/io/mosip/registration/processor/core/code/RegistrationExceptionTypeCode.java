@@ -246,7 +246,9 @@ public enum RegistrationExceptionTypeCode {
 	/** The password otp failure. */
 	PASSWORD_OTP_FAILURE,
 
-	/**  The biometric exception. */
-	BIOMETRIC_EXCEPTION
+	/** The biometric exception. */
+	BIOMETRIC_EXCEPTION,
+
+	BIOMETRIC_TYPE_EXCEPTION
 
 }

@@ -181,7 +181,6 @@ public class ManualVerificationStageTest{
 		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.packetinfo");
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		PacketMetaInfo info=new PacketMetaInfo();
-		Mockito.when(manualAdjudicationService.getApplicantPacketInfo(any())).thenReturn(info);
 		manualverificationstage.processPacketInfo(ctx);
 	}
 	private FileUpload setFileUpload() {

@@ -12,6 +12,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum DeviceErrorCode {
 	DEVICE_FETCH_EXCEPTION("KER-MSD-009", "Error occured while fetching Devices"),
 	DEVICE_NOT_FOUND_EXCEPTION("KER-MSD-010", "Device not Found"),
+	DEVICE_NOT_EXISTS_EXCEPTION("KER-MSD-042", "Device ID %s does not exist"),
 	DEVICE_INSERT_EXCEPTION("KER-MSD-069", "Error occurred while inserting Device details"),
 	DEVICE_UPDATE_EXCEPTION("KER-MSD-083", "Error while updating"),
 	DEVICE_DELETE_EXCEPTION("KER-MSD-084", "Error while deleting"),
@@ -27,7 +28,9 @@ public enum DeviceErrorCode {
 			"Error occurred while fetching a Device details mapped with the given Registration Center"),
 	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Device Not Found"),
 	DEVICE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the Device "),
-	DEVICE_ERROR("KER-MSD-XXX", "Device Error");
+	MAPPED_TO_REGCENTER("KER-MSD-438","Device cannot be Decommissioned as it is assigned to a Registration Center"),
+	DEVICE_ERROR("KER-MSD-XXX", "Device Error"),
+	INVALIDE_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone");
 
 	private final String errorCode;
 	private final String errorMessage;

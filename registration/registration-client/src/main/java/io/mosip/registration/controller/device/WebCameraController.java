@@ -23,6 +23,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.IMosipWebcamService;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.service.bio.BioService;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -136,7 +137,9 @@ public class WebCameraController extends BaseController implements Initializable
 		CaptureResponseDto captureResponseDto =null;
 		if (bioService.isMdmEnabled()) {
 
-			captureResponseDto = bioService.captureFace();
+			captureResponseDto = bioService.captureFace(new RequestDetail(RegistrationConstants.FACE_FULLFACE,
+					getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, 
+					getValueFromApplicationContext(RegistrationConstants.FACE_THRESHOLD), null));
 			if (null != captureResponseDto && null!=captureResponseDto.getMosipBioDeviceDataResponses()) {
 				try {
 					capturedImage = ImageIO.read(new ByteArrayInputStream(bioService.getSingleBioValue(captureResponseDto)));

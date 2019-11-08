@@ -39,7 +39,6 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registrationprocessor.externalstage.entity.MessageRequestDTO;
-import io.mosip.registrationprocessor.externalstage.utils.StatusMessage;
 
 /**
  * External stage verticle class
@@ -119,7 +118,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		
+
 		TrimExceptionMessage trimExceptionMsg = new TrimExceptionMessage();
 
 		boolean isTransactionSuccessful = false;
@@ -177,7 +176,8 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description.getMessage());
 		} catch (ApisResourceAccessException e) {
-			registrationStatusDto.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED + e.getMessage()));
+			registrationStatusDto.setStatusComment(
+					trimExceptionMsg.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED + e.getMessage()));
 			registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -199,8 +199,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setRetryCount(retryCount);
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			if (isTransactionSuccessful)
+			if (isTransactionSuccessful) {
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage());
+				description.setCode(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode());
+			}
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();

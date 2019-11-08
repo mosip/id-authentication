@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
-import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.util.PrintServiceRequestValidator;
@@ -41,10 +40,6 @@ public class PrintApiController {
 	/** The printservice. */
 	@Autowired
 	private PrintService<Map<String, byte[]>> printservice;
-
-	/** Token validator class. */
-	@Autowired
-	TokenValidator tokenValidator;
 
 	/** The validator. */
 	@Autowired

@@ -59,9 +59,9 @@ public class TemplateDto {
 	@ApiModelProperty(value = "Template file format code", required = true, dataType = "java.lang.String")
 	private String templateTypeCode;
 
-	@NotBlank
-	@Size(min = 1, max = 3)
-	@ValidLangCode
+	//@NotBlank
+	//@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;
 

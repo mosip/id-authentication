@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
@@ -59,7 +59,7 @@ public class EncryptorUtil {
 
 	/** The encryptor. */
 	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> encryptor;
 
 	/** The Constant RSA. */
 	public static final String RSA = "RSA";
@@ -161,7 +161,7 @@ public class EncryptorUtil {
 			// Generate AES Session Key
 			final SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 			// Encrypt the Data using AES
-			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
+			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt, null);
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), refId, creationTime);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -225,7 +225,7 @@ public class EncryptorUtil {
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
 
-		return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
+		return encryptor.asymmetricEncrypt(publicKey, sessionKey);
 
 	}
 

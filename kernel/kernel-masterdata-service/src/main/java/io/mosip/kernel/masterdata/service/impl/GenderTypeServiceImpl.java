@@ -28,8 +28,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
-import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -59,7 +57,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 	@Autowired
 	FilterTypeValidator filterTypeValidator;
-	
+
 	@Autowired
 	FilterColumnValidator filterColumnValidator;
 
@@ -69,6 +67,8 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
 
+	@Autowired
+	private PageUtils pageUtils;
 
 	@Autowired
 	GenderTypeRepository genderTypeRepository;
@@ -273,6 +273,7 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		PageResponseDto<GenderExtnDto> pageDto = new PageResponseDto<>();
 		List<GenderExtnDto> genderTypeExtns = null;
 		if (filterTypeValidator.validate(GenderExtnDto.class, request.getFilters())) {
+			pageUtils.validateSortField(Gender.class, request.getSort());
 			Page<Gender> page = masterDataSearchHelper.searchMasterdata(Gender.class, request, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
@@ -288,10 +289,9 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		ColumnValue columnValue;
-		if (filterColumnValidator.validate(FilterDto.class, request.getFilters(),Gender.class)) {
+		if (filterColumnValidator.validate(FilterDto.class, request.getFilters(), Gender.class)) {
 			for (FilterDto filterDto : request.getFilters()) {
-				List<String> filterValues = masterDataFilterHelper.filterValues(Gender.class, filterDto,
-						request);
+				List<String> filterValues = masterDataFilterHelper.filterValues(Gender.class, filterDto, request);
 				for (String filterValue : filterValues) {
 					if (filterValue != null) {
 						columnValue = new ColumnValue();
