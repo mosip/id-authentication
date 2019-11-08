@@ -28,12 +28,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.demographic.code.RequestCodes;
-import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
-import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
-import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
-import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
-import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -43,6 +37,12 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
+import io.mosip.preregistration.demographic.code.RequestCodes;
+import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
+import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
+import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
+import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
+import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
 import io.mosip.preregistration.demographic.exception.OperationNotAllowedException;
 import io.mosip.preregistration.demographic.exception.system.DateParseException;
 import io.mosip.preregistration.demographic.exception.system.JsonParseException;
@@ -128,23 +128,16 @@ public class DemographicServiceUtil {
 	 *            pass the demographicEntity
 	 * @return createDTO with the values
 	 */
-	public DemographicCreateResponseDTO setterForCreatePreRegistration(DemographicEntity demographicEntity) {
+	public DemographicCreateResponseDTO setterForCreatePreRegistration(DemographicEntity demographicEntity, JSONObject requestJson) {
 		log.info("sessionId", "idType", "id", "In setterForCreateDTO method of pre-registration service util");
 		JSONParser jsonParser = new JSONParser();
 		DemographicCreateResponseDTO createDto = new DemographicCreateResponseDTO();
 		try {
 			createDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
-			createDto.setDemographicDetails((JSONObject) jsonParser.parse(new String(cryptoUtil
-					.decrypt(demographicEntity.getApplicantDetailJson(), demographicEntity.getEncryptedDateTime()))));
+			createDto.setDemographicDetails(requestJson);
 			createDto.setStatusCode(demographicEntity.getStatusCode());
 			createDto.setLangCode(demographicEntity.getLangCode());
 			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
-		} catch (ParseException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In setterForCreateDTO method of pre-registration service- " + ex.getMessage());
-			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.getCode(),
-					ErrorMessages.JSON_PARSING_FAILED.getMessage(), ex.getCause());
 		} catch (EncryptionFailedException ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",

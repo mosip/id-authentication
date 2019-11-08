@@ -294,8 +294,8 @@ public class DemographicService implements DemographicServiceIntf {
 				validationUtil.langvalidation(demographicRequest.getLangCode());
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
-						IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+			//	jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
+			//			IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				log.info("sessionId", "idType", "id",
@@ -306,7 +306,7 @@ public class DemographicService implements DemographicServiceIntf {
 				DemographicEntity demographicEntity = demographicRepository
 						.save(serviceUtil.prepareDemographicEntityForCreate(demographicRequest,
 								StatusCodes.PENDING_APPOINTMENT.getCode(), authUserDetails().getUserId(), preId));
-				DemographicCreateResponseDTO res = serviceUtil.setterForCreatePreRegistration(demographicEntity);
+				DemographicCreateResponseDTO res = serviceUtil.setterForCreatePreRegistration(demographicEntity,demographicRequest.getDemographicDetails());
 
 				mainResponseDTO.setResponse(res);
 
