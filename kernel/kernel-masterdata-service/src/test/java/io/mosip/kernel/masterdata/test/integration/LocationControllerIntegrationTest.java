@@ -89,7 +89,7 @@ public class LocationControllerIntegrationTest {
 	}
 	
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void updateActiveLocationSuccess() throws Exception {
 		location1.setIsActive(true);
 		dto1.setIsActive(true);
