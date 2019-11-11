@@ -13,7 +13,7 @@ public class DigitalId {
 	private String model;
 	private String type;
 	private String dpId;
-	private String dateTime;
 	private String dp;
+	private String dateTime;
 
 }
