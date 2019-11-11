@@ -85,6 +85,7 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 				LOGGER.info("reply address {}",initPoolHandler.replyAddress());
 				LOGGER.info("eventBus {}",eventBus);
 				initPoolHandler.reply("population has enought threshold");
+				LOGGER.info("reply sent to sender");
 			}
 		});
 	}
