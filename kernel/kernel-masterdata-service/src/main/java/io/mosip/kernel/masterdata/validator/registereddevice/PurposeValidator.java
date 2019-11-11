@@ -39,7 +39,7 @@ public class PurposeValidator implements ConstraintValidator<ValidPurpose, Strin
 			try {
 
 				for (String string : PURPOSEARR) {
-					if (statusCode.equalsIgnoreCase(string) || statusCode.equals("all")) {
+					if (statusCode.equalsIgnoreCase(string)) {
 						return true;
 					}
 				}

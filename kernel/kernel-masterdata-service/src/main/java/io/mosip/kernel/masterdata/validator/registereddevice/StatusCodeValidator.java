@@ -40,7 +40,7 @@ public class StatusCodeValidator implements ConstraintValidator<ValidStatusCode,
 			try {
 
 				for (String string : STATUSARR) {
-					if (statusCode.equalsIgnoreCase(string) || statusCode.equals("all")) {
+					if (statusCode.equalsIgnoreCase(string)) {
 						return true;
 					}
 				}

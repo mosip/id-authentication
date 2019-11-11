@@ -18,7 +18,6 @@ import io.mosip.kernel.masterdata.dto.DigitalIdDto;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceProvider;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -27,10 +26,17 @@ import io.mosip.kernel.masterdata.repository.DeviceProviderRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationDeviceSubTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationDeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.RegisteredDeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+/**
+ * Service Class for Create RegisteredDevice
+ * @author Megha Tanga
+ *
+ */
 
 @Service
 public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
@@ -48,11 +54,24 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	DeviceProviderRepository deviceProviderRepository;
 
 	@Autowired
+	RegistrationDeviceTypeRepository registrationDeviceTypeRepository;
+
+	@Autowired
+	RegistrationDeviceSubTypeRepository registrationDeviceSubTypeRepository;
+
+	@Autowired
 	ObjectMapper mapper;
 
 	@Autowired
 	DeviceRepository deviceRepository;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegisteredDeviceService#
+	 * createRegisteredDevice(io.mosip.kernel.masterdata.dto.
+	 * RegisteredDevicePostReqDto)
+	 */
 	@Transactional
 	@Override
 	public RegisteredDeviceExtnDto createRegisteredDevice(RegisteredDevicePostReqDto dto) {
@@ -65,11 +84,25 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 
 		try {
 
-			if (deviceProviderRepository.findById(DeviceProvider.class,
+			if (deviceProviderRepository.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
 					dto.getDigitalIdDto().getProviderId()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 						String.format(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage(),
 								dto.getDigitalIdDto().getProviderId()));
+			}
+
+			if (registrationDeviceTypeRepository
+					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceTypeCode()) == null) {
+				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_TYPE_NOT_EXIST.getErrorCode(),
+						String.format(RegisteredDeviceErrorCode.DEVICE_TYPE_NOT_EXIST.getErrorMessage(),
+								dto.getDeviceTypeCode()));
+			}
+
+			if (registrationDeviceSubTypeRepository
+					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceSTypeCode()) == null) {
+				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_SUB_TYPE_NOT_EXIST.getErrorCode(),
+						String.format(RegisteredDeviceErrorCode.DEVICE_SUB_TYPE_NOT_EXIST.getErrorMessage(),
+								dto.getDeviceSTypeCode()));
 			}
 
 			digitalIdJson = mapper.writeValueAsString(dto.getDigitalIdDto());

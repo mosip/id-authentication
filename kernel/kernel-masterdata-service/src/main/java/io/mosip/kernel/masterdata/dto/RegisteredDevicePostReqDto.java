@@ -37,7 +37,7 @@ public class RegisteredDevicePostReqDto {
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "dsTypeCode", required = true, dataType = "java.lang.String")
-	private String devicesTypeCode;
+	private String deviceSTypeCode;
 
 	/**
 	 * Field for Status Code Status should only have standard values - “Registered”,
