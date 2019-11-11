@@ -88,7 +88,7 @@ public class DocumentService implements DocumentServiceIntf {
 	 */
 	@Value("${mosip.preregistration.document.upload.id}")
 	private String uploadId;
-	
+
 	/**
 	 * Reference for ${mosip.preregistration.document.scan} from property file
 	 */
@@ -132,7 +132,7 @@ public class DocumentService implements DocumentServiceIntf {
 	 */
 	@Value("${version}")
 	private String ver;
-	
+
 	/**
 	 * primaryLang
 	 */
@@ -168,7 +168,7 @@ public class DocumentService implements DocumentServiceIntf {
 
 	@Autowired
 	ValidationUtil validationUtil;
-	
+
 	@Autowired
 	private AuthTokenUtil tokenUtil;
 
@@ -183,9 +183,9 @@ public class DocumentService implements DocumentServiceIntf {
 	 */
 	@PostConstruct
 	public void setup() {
-		HttpHeaders headers= tokenUtil.getTokenHeader();
+		HttpHeaders headers = tokenUtil.getTokenHeader();
 		requiredRequestMap.put("version", ver);
-		validationUtil.getAllDocCategoriesAndTypes(primaryLang,headers);
+		validationUtil.getAllDocCategoriesAndTypes(primaryLang, headers);
 	}
 
 	public AuthUserDetails authUserDetails() {
@@ -202,33 +202,37 @@ public class DocumentService implements DocumentServiceIntf {
 	 *            pass document json
 	 * @return ResponseDTO
 	 */
+	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
 			String preRegistrationId) {
-		log.info("sessionId", "idType", "id","In service" );
-		log.info("sessionId", "idType", "id", "In uploadDocument method of document service with document string "+documentJsonString);
+		log.info("sessionId", "idType", "id", "In service");
+		log.info("sessionId", "idType", "id",
+				"In uploadDocument method of document service with document string " + documentJsonString);
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
 		boolean isUploadSuccess = false;
 		responseDto.setId(uploadId);
 		responseDto.setVersion(ver);
 		try {
-			log.info("sessionId", "idType", "id","calling serviceUtil.createUploadDto  preRegistrationId"+preRegistrationId);
+			log.info("sessionId", "idType", "id",
+					"calling serviceUtil.createUploadDto  preRegistrationId" + preRegistrationId);
 			docReqDto = serviceUtil.createUploadDto(documentJsonString, preRegistrationId);
 			responseDto.setId(docReqDto.getId());
 			responseDto.setVersion(docReqDto.getVersion());
 			requiredRequestMap.put("id", uploadId);
 			if (ValidationUtil.requestValidator(prepareRequestParamMap(docReqDto), requiredRequestMap)) {
-				if(scanDocument) {
+				if (scanDocument) {
 					serviceUtil.isVirusScanSuccess(file);
 				}
-				if (serviceUtil.fileSizeCheck(file.getSize())
-						&& serviceUtil.fileExtensionCheck(file)) {
+				if (serviceUtil.fileSizeCheck(file.getSize()) && serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
 					validationUtil.langvalidation(docReqDto.getRequest().getLangCode());
-					log.info("sessionId", "idType", "id","calling validationUtil.validateDocuments preRegistrationId"+preRegistrationId);
+					log.info("sessionId", "idType", "id",
+							"calling validationUtil.validateDocuments preRegistrationId" + preRegistrationId);
 					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
-							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode(),preRegistrationId);
+							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode(),
+							preRegistrationId);
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
 					responseDto.setResponse(docResponseDtos);
 				}
@@ -276,7 +280,7 @@ public class DocumentService implements DocumentServiceIntf {
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
 			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
-					preRegistrationId,getentity);
+					preRegistrationId, getentity);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -311,8 +315,12 @@ public class DocumentService implements DocumentServiceIntf {
 		return docResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#copyDocument(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.preregistration.document.service.DocumentServiceIntf#copyDocument(
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -406,8 +414,11 @@ public class DocumentService implements DocumentServiceIntf {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#getAllDocumentForPreId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#
+	 * getAllDocumentForPreId(java.lang.String)
 	 */
 	@Override
 	public MainResponseDTO<DocumentsMetaData> getAllDocumentForPreId(String preId) {
@@ -420,8 +431,7 @@ public class DocumentService implements DocumentServiceIntf {
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap) &&
-				serviceUtil.getPreRegInfoRestService(preId)){
+			if (ValidationUtil.requstParamValidator(requestParamMap) && serviceUtil.getPreRegInfoRestService(preId)) {
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(createDocumentResponse(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -457,8 +467,11 @@ public class DocumentService implements DocumentServiceIntf {
 		return responseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#getDocumentForDocId(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#
+	 * getDocumentForDocId(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public MainResponseDTO<DocumentDTO> getDocumentForDocId(String docId, String preId) {
@@ -553,8 +566,12 @@ public class DocumentService implements DocumentServiceIntf {
 		return documentsMetaData;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#deleteDocument(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.preregistration.document.service.DocumentServiceIntf#deleteDocument(
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -619,8 +636,11 @@ public class DocumentService implements DocumentServiceIntf {
 		return delResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#deleteAllByPreId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.document.service.DocumentServiceIntf#
+	 * deleteAllByPreId(java.lang.String)
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)

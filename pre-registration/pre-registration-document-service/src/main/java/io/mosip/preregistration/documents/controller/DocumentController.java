@@ -29,8 +29,8 @@ import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.document.service.DocumentService;
 import io.mosip.preregistration.document.dto.DocumentResponseDTO;
+import io.mosip.preregistration.document.service.DocumentServiceIntf;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -53,7 +53,7 @@ public class DocumentController {
 	 * Autowired reference for {@link #DocumentUploadService}
 	 */
 	@Autowired
-	private DocumentService documentUploadService;
+	private DocumentServiceIntf documentUploadService;
 
 	/**
 	 * Logger configuration for DocumentController

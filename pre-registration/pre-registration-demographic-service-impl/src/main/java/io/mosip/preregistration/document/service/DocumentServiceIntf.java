@@ -1,6 +1,7 @@
 package io.mosip.preregistration.document.service;
 
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.preregistration.core.common.dto.DocumentDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
@@ -8,7 +9,21 @@ import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.document.dto.DocumentResponseDTO;
 
+@Service
 public interface DocumentServiceIntf {
+
+	/**
+	 * This method is used to upload the document by accepting the JsonString and
+	 * MultipartFile
+	 * 
+	 * @param file
+	 *            pass the file
+	 * @param documentJsonString
+	 *            pass document json
+	 * @return ResponseDTO
+	 */
+	public MainResponseDTO<DocumentResponseDTO> uploadDocument(MultipartFile file, String documentJsonString,
+			String preRegistrationId);
 
 	/**
 	 * This method is used to copy the document from source preId to destination

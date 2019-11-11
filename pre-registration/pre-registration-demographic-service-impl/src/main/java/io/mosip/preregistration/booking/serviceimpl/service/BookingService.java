@@ -166,6 +166,7 @@ public class BookingService implements BookingServiceIntf {
 	 * 
 	 * @return ResponseDto<String>
 	 */
+	@Override
 	public MainResponseDTO<String> addAvailability() {
 		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
 		MainResponseDTO<String> response = new MainResponseDTO<>();

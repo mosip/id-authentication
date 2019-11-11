@@ -21,6 +21,8 @@ import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 
 @Service
 public interface BookingServiceIntf {
+	
+	public MainResponseDTO<String> addAvailability();
 
 	/**
 	 * 
