@@ -83,6 +83,7 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 			} else {
 				LOGGER.info("population canceled vid has enought threshold....");
 				LOGGER.info("reply address {}",initPoolHandler.replyAddress());
+				LOGGER.info("eventBus {}",eventBus);
 				initPoolHandler.reply("population has enought threshold");
 			}
 		});
