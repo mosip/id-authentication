@@ -55,7 +55,8 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 	              }
 				});
 			} else {
-				LOGGER.debug("locked generation");
+				LOGGER.info("event type is send {} eventBus{}",handler.isSend(),eventBus);
+				LOGGER.info("locked generation");
 			}
 		}) ;
 		
