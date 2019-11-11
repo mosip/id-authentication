@@ -180,10 +180,7 @@ public class MasterdataCreationUtil {
 					updatePrimaryToTrue(primaryEntity.getClass(), id, primaryKeyCol, false);
 				}
 				return t;
-			} else {
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-						"Cannot create data in secondary language as data does not exist in primary language");
-			}
+			} 
 		}
 		// return null;
 		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),

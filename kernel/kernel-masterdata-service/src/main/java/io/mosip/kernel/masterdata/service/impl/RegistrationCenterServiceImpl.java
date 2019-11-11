@@ -764,6 +764,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							.collect(Collectors.toList());
 					locationFilter.addAll(serviceHelper.buildLocationSearchFilter(leaves));
 				}
+				else
+				{
+					flag= false;
+				}
 				removeList.add(filter);
 			}
 			/*
@@ -786,7 +790,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
+		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters()) && flag) {
 			// searching registration center
 			pageDto = serviceHelper.searchCenter(dto, locationFilter, zoneFilter, zones, locations);
 		}

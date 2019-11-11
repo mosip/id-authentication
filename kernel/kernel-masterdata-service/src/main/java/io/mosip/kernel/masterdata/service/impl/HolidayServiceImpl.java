@@ -399,7 +399,7 @@ public class HolidayServiceImpl implements HolidayService {
 	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Holiday.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<?> filterValues = masterDataFilterHelper.filterValues(Holiday.class, filterDto, filterValueDto);
 				filterValues.forEach(filterValue -> {
