@@ -156,14 +156,14 @@ public class VinGeneratorVertxApplication {
 		LOGGER.info("Service will be started after pooling vids..");
 		EventBus eventBus=vertx.eventBus();
 		LOGGER.info("eventBus deployer {}",eventBus);
+		// just for checking will implement callback
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		long start =System.currentTimeMillis();
-		eventBus.publish(EventType.INITPOOL, start);
+		eventBus.publish(EventType.INITPOOL, EventType.INITPOOL);
 		
 		
 		

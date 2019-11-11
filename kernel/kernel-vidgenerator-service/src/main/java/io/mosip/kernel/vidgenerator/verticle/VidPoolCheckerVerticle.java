@@ -1,5 +1,7 @@
 package io.mosip.kernel.vidgenerator.verticle;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.testSecurityContext;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.context.ApplicationContext;
@@ -67,6 +69,7 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 
 		MessageConsumer<String> initPoolConsumer = eventBus.consumer(EventType.INITPOOL);
 		initPoolConsumer.handler(initPoolHandler -> {
+			long start =System.currentTimeMillis();
 			long noOfFreeVids = vidService.fetchVidCount(VidLifecycleStatus.AVAILABLE);
 			LOGGER.info("no of vid free present are {}", noOfFreeVids);
 			LOGGER.info("value of threshold is {} and lock is {}", threshold, locked.get());
@@ -77,7 +80,7 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 				eventBus.send(EventType.GENERATEPOOL, noOfFreeVids, deliveryOptions, replyHandler -> {
 					if (replyHandler.succeeded()) {
 						locked.set(false);
-						deployHttpVerticle(Long.parseLong(initPoolHandler.body()));
+						deployHttpVerticle(start);
 						LOGGER.info("population of init pool done");
 					} else if (replyHandler.failed()) {
 						locked.set(false);
@@ -86,7 +89,7 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 					}
 				});
 			} else {
-				deployHttpVerticle(Long.parseLong(initPoolHandler.body()));
+				deployHttpVerticle(start);
 			}
 		});
 	}
