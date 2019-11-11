@@ -144,6 +144,7 @@ public class VinGeneratorVertxApplication {
 
 	/**
 	 * This method sets the Application Context, deploys the verticles.
+	 * @throws InterruptedException 
 	 */
 	private static void startApplication() {
 		ApplicationContext context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
@@ -152,11 +153,19 @@ public class VinGeneratorVertxApplication {
 		Vertx vertx = Vertx.vertx(options);
 		Verticle[] workerVerticles = {new VidPoolCheckerVerticle(context),new VidPopulatorVerticle(context),new VidExpiryVerticle(context)};
 		Stream.of(workerVerticles).forEach(verticle -> deploy(verticle, workerOptions, vertx));
-		long start =System.currentTimeMillis();
 		LOGGER.info("Service will be started after pooling vids..");
 		EventBus eventBus=vertx.eventBus();
 		LOGGER.info("eventBus deployer {}",eventBus);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		long start =System.currentTimeMillis();
 		eventBus.publish(EventType.INITPOOL, start);
+		
+		
 		
 	}
 
@@ -166,6 +175,7 @@ public class VinGeneratorVertxApplication {
 				LOGGER.info("Failed to deploy verticle " + verticle.getClass().getSimpleName()+" "+res.cause());
 			} else if(res.succeeded()) {
 				LOGGER.info("Deployed verticle " + verticle.getClass().getSimpleName());
+			
 			}
 		});
 	}
