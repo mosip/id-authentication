@@ -265,9 +265,10 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
 			/** Module-Id can be Both Success/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_ABIS_HANDLER_STAGE_SUCCESS.getCode()
+			String moduleId = isTransactionSuccessful
+					? PlatformSuccessMessages.RPR_ABIS_MIDDLEWARE_STAGE_SUCCESS.getCode()
 					: description.getCode();
-			String moduleName = ModuleName.ABIS_HANDLER.toString();
+			String moduleName = ModuleName.ABIS_MIDDLEWARE.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);

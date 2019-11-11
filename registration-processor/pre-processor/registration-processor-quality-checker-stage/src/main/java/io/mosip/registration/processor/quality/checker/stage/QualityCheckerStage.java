@@ -370,7 +370,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 
 			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_QUALITY_CHECK_SUCCESS.getCode()
 					: description.getCode();
-			String moduleName = ModuleName.DEMO_DEDUPE.toString();
+			String moduleName = ModuleName.QUALITY_CHECK.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, regId);

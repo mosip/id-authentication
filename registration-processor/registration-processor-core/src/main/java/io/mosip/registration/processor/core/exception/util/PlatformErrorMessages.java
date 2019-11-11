@@ -982,7 +982,11 @@ public enum PlatformErrorMessages {
 			"Potential Match Records are Not Found for Demo Dedupe Potential Match"),
 
 	RPR_ERROR_IN_ABIS_HANDLER_IDENTIFY_REQUEST(PlatformConstants.RPR_ABIS_HANDLER + "004",
-			"Internal Error occured in Abis Handler identify request");
+			"Internal Error occured in Abis Handler identify request"),
+
+	RPR_DEMO_SENDING_FOR_MANUAL(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "001",
+			"ABIS response Details found. Hence sending to manual adjudication");
+	;
 
 	/** The error message. */
 	private final String errorMessage;

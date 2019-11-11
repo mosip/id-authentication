@@ -457,6 +457,8 @@ public class DemodedupeProcessor {
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						DemoDedupeConstants.NO_DUPLICATES_FOUND);
 				isTransactionSuccessful = true;
+				description.setCode(PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode());
+				description.setMessage(PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getMessage());
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				registrationStatusDto
@@ -468,6 +470,8 @@ public class DemodedupeProcessor {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						DemoDedupeConstants.SENDING_FOR_MANUAL);
+				description.setCode(PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getCode());
+				description.setMessage(PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getMessage());
 			}
 		}
 
