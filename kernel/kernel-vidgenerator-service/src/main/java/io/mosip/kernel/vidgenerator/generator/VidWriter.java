@@ -19,7 +19,7 @@ public class VidWriter {
 	@Autowired
 	private VidService vidService;
 
-	public void persistVids(VidEntity vid) {
-			this.vidService.saveVID(vid);
+	public boolean persistVids(VidEntity vid) {
+			return this.vidService.saveVID(vid);
 	}
 }

@@ -144,7 +144,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The duplicate check label. */
 	@FXML
-	private Label duplicateCheckLbl;
+	public Label duplicateCheckLbl;
 
 	/** The fp progress. */
 	@FXML
@@ -1728,7 +1728,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");
 		boolean isValid =  !authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
-		if(getValueFromApplicationContext("IDENTY_SDK").equals("FAILED")) {
+		if(null != getValueFromApplicationContext("IDENTY_SDK")) {
 			isValid = false;
 		}
 		return isValid;

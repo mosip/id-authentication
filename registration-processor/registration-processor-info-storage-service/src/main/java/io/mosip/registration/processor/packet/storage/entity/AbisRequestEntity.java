@@ -3,15 +3,10 @@ package io.mosip.registration.processor.packet.storage.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * The persistent class for the abis_request database table.
@@ -32,11 +27,9 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	private String crBy;
 
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	@Column(name = "is_deleted")
@@ -54,7 +47,6 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	@Column(name = "req_text")
 	private byte[] reqText;
 
-	@UpdateTimestamp
 	@Column(name = "request_dtimes")
 	private LocalDateTime requestDtimes;
 
@@ -71,7 +63,6 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	private String updBy;
 
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
 	public AbisRequestEntity() {
@@ -151,15 +142,15 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	}
 
 	public byte[] getReqText() {
-		if(reqText!=null) {
-		return Arrays.copyOf(reqText, reqText.length);
-		}else {
+		if (reqText != null) {
+			return Arrays.copyOf(reqText, reqText.length);
+		} else {
 			return null;
 		}
 	}
 
 	public void setReqText(byte[] reqText) {
-		this.reqText = reqText!=null?reqText:null;
+		this.reqText = reqText != null ? reqText : null;
 	}
 
 	public LocalDateTime getRequestDtimes() {
@@ -209,6 +200,5 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	public void setUpdDtimes(LocalDateTime updDtimes) {
 		this.updDtimes = updDtimes;
 	}
-
 
 }

@@ -59,6 +59,7 @@ public class VidFetcherRouter {
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
 		router.get().handler(routingContext -> {
+			LOGGER.info("publishing event to CHECKPOOL");
 			// send a publish event to vid pool checker
 			vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
 			ResponseWrapper<VidFetchResponseDto> reswrp = new ResponseWrapper<>();

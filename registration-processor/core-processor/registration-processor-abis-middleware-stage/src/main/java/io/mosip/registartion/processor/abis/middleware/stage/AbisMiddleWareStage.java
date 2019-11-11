@@ -1,6 +1,8 @@
 package io.mosip.registartion.processor.abis.middleware.stage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -544,6 +546,11 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisReqEntity.setAbisAppCode(abisRequestDto.getAbisAppCode());
 		abisReqEntity.setBioRefId(abisRequestDto.getBioRefId());
 		abisReqEntity.setCrBy(abisRequestDto.getCrBy());
+		if (abisRequestDto.getCrDtimes() == null) {
+			abisReqEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			abisReqEntity.setCrDtimes(abisRequestDto.getCrDtimes());
+		}
 		abisReqEntity.setIsDeleted(false);
 		abisReqEntity.setLangCode(abisRequestDto.getLangCode());
 		abisReqEntity.setRefRegtrnId(abisRequestDto.getRefRegtrnId());
@@ -554,7 +561,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisReqEntity.setStatusCode(abisRequestDto.getStatusCode());
 		abisReqEntity.setStatusComment(abisRequestDto.getStatusComment());
 		abisReqEntity.setUpdBy(abisRequestDto.getUpdBy());
-
+		abisReqEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		return abisReqEntity;
 
 	}
@@ -570,7 +577,13 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisResponseEntity.setStatusComment(abisResponseDto.getStatusComment());
 		abisResponseEntity.setLangCode(abisResponseDto.getLangCode());
 		abisResponseEntity.setCrBy(abisResponseDto.getCrBy());
+		if (abisResponseDto.getCrDtimes() == null) {
+			abisResponseEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			abisResponseEntity.setCrDtimes(abisResponseDto.getCrDtimes());
+		}
 		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
+		abisResponseEntity.setUpdDtimes(abisResponseDto.getUpdDtimes());
 		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
 
 		return abisResponseEntity;
@@ -612,6 +625,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisResponseDto.setLangCode("eng");
 		abisResponseDto.setCrBy(SYSTEM);
 		abisResponseDto.setUpdBy(SYSTEM);
+		abisResponseDto.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		abisResponseDto.setIsDeleted(false);
 		abisResponseDto.setAbisRequest(abisCommonResponseDto.getRequestId());
 		abisResponseRepositary.save(convertAbisResponseDtoToAbisResponseEntity(abisResponseDto));
@@ -637,6 +651,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				abisResponseDetEntity.setCrBy(SYSTEM);
 				abisResponseDetEntity.setUpdBy(SYSTEM);
 				abisResponseDetEntity.setIsDeleted(false);
+				abisResponseDetEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+				abisResponseDetEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 				abisResponseDetailRepositary.save(abisResponseDetEntity);
 			}
 		}
