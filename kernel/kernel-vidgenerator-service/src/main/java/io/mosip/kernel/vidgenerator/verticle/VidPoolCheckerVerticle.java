@@ -61,29 +61,25 @@ public class VidPoolCheckerVerticle extends AbstractVerticle {
 		
 		MessageConsumer<String> initPoolConsumer = eventBus.consumer(EventType.INITPOOL);
 		initPoolConsumer.handler(handler ->{
-			long noOfFreeVids = vidService.fetchVidCount(VidLifecycleStatus.AVAILABLE);
-			LOGGER.info("no of vid free present are {}", noOfFreeVids);
-			LOGGER.info("value of threshold is {} and lock is {}",threshold,locked.get());
-			boolean isEligibleForPool = noOfFreeVids < threshold &&  !locked.get();
-			LOGGER.info("is eligible for pool {}",isEligibleForPool);
-			if (isEligibleForPool) {
-				locked.set(true);
-				eventBus.send(EventType.GENERATEPOOL, noOfFreeVids,deliveryOptions,replyHandler -> {
-	              if(replyHandler.succeeded()) {
-	            	  locked.set(false);
-	            	  handler.reply("population of init pool done");
-	            	  LOGGER.info("population of init pool done");
-	              }else if(replyHandler.failed()) {
-	            	  locked.set(false);
-	            	  LOGGER.error("population failed with cause ",replyHandler.cause());
-	            	  handler.fail(100, replyHandler.cause().getMessage());
-	              }
-				});
-			} else {
-				LOGGER.info("population canceled vid has enought threshold....");
-				LOGGER.info("reply address {}",handler.replyAddress());
-				handler.reply("population has enought threshold");
-			}
+			/*
+			 * long noOfFreeVids = vidService.fetchVidCount(VidLifecycleStatus.AVAILABLE);
+			 * LOGGER.info("no of vid free present are {}", noOfFreeVids);
+			 * LOGGER.info("value of threshold is {} and lock is {}",threshold,locked.get())
+			 * ; boolean isEligibleForPool = noOfFreeVids < threshold && !locked.get();
+			 * LOGGER.info("is eligible for pool {}",isEligibleForPool); if
+			 * (isEligibleForPool) { locked.set(true); eventBus.send(EventType.GENERATEPOOL,
+			 * noOfFreeVids,deliveryOptions,replyHandler -> { if(replyHandler.succeeded()) {
+			 * locked.set(false); handler.reply("population of init pool done");
+			 * LOGGER.info("population of init pool done"); }else if(replyHandler.failed())
+			 * { locked.set(false);
+			 * LOGGER.error("population failed with cause ",replyHandler.cause());
+			 * handler.fail(100, replyHandler.cause().getMessage()); } }); } else {
+			 * LOGGER.info("population canceled vid has enought threshold....");
+			 * LOGGER.info("reply address {}",handler.replyAddress());
+			 * handler.reply("population has enought threshold"); }
+			 */
+			LOGGER.info("ebentBus pool populator {}",eventBus);
+			handler.reply("reply");
 		});
 	}
 }

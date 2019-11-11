@@ -37,6 +37,7 @@ import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -161,7 +162,9 @@ public class VinGeneratorVertxApplication {
 		deliveryOptions.setSendTimeout(environment.getProperty("mosip.kernel.vid.pool-population-timeout",Long.class));
 		long start =System.currentTimeMillis();
 		LOGGER.info("Service will be started after pooling vids..");
-		vertx.eventBus().send(EventType.INITPOOL, EventType.INITPOOL, deliveryOptions,replyHandler -> {
+		EventBus eventBus=vertx.eventBus();
+		LOGGER.info("eventBus deployer {}",eventBus);
+		eventBus.send(EventType.INITPOOL, EventType.INITPOOL, deliveryOptions,replyHandler -> {
 			if(replyHandler.succeeded()) {
 				LOGGER.info("population of pool is done starting fetcher verticle");
 				Stream.of(eventLoopVerticles).forEach(verticle -> deploy(verticle, eventLoopOptions, vertx));		
