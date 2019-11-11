@@ -5,9 +5,14 @@ import java.security.PublicKey;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -43,6 +48,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	
 	@Autowired
 	private JWSValidation jwsValidation;
+	
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		super.init(filterConfig);
+		WebApplicationContext context = WebApplicationContextUtils
+				.getRequiredWebApplicationContext(filterConfig.getServletContext());
+		jwsValidation = context.getBean(JWSValidation.class);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -84,10 +97,8 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		}
 	}
 	
-	protected byte[] verifyJwsAndGetPayload(String jwsSignature) throws IdAuthenticationAppException {
-		if(verifySignature(jwsSignature)) {
-			return CryptoUtil.decodeBase64(getPayloadFromJwsSingature(jwsSignature));
-		} else {
+	protected void verifyJwsData(String jwsSignature) throws IdAuthenticationAppException {
+		if(!verifySignature(jwsSignature)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 		}
