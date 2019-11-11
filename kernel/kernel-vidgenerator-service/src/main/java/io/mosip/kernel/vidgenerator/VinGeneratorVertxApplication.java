@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -30,7 +29,9 @@ import io.mosip.kernel.vidgenerator.verticle.VidPopulatorVerticle;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -140,43 +141,45 @@ public class VinGeneratorVertxApplication {
 		}
 	}
 
-	
-
 	/**
 	 * This method sets the Application Context, deploys the verticles.
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	private static void startApplication() {
 		ApplicationContext context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		VertxOptions options = new VertxOptions();
 		DeploymentOptions workerOptions = new DeploymentOptions().setWorker(true);
 		Vertx vertx = Vertx.vertx(options);
-		Verticle[] workerVerticles = {new VidPoolCheckerVerticle(context),new VidPopulatorVerticle(context),new VidExpiryVerticle(context)};
-		Stream.of(workerVerticles).forEach(verticle -> deploy(verticle, workerOptions, vertx));
-		LOGGER.info("Service will be started after pooling vids..");
-		EventBus eventBus=vertx.eventBus();
-		LOGGER.info("eventBus deployer {}",eventBus);
-		// just for checking will implement callback
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		eventBus.publish(EventType.INITPOOL, EventType.INITPOOL);
-		
-		
-		
-	}
-
-	private static void deploy(Verticle verticle, DeploymentOptions opts, Vertx vertx) {
-		vertx.deployVerticle(verticle, opts, res -> {
-			if (res.failed()) {
-				LOGGER.info("Failed to deploy verticle " + verticle.getClass().getSimpleName()+" "+res.cause());
-			} else if(res.succeeded()) {
-				LOGGER.info("Deployed verticle " + verticle.getClass().getSimpleName());
-			
+		CompositeFuture compositeFuture = CompositeFuture.all(
+				deploy(new VidPoolCheckerVerticle(context), workerOptions, vertx),
+				deploy(new VidPopulatorVerticle(context), workerOptions, vertx),
+				deploy(new VidExpiryVerticle(context), workerOptions, vertx));
+		compositeFuture.setHandler(handler -> {
+			if (handler.succeeded()) {
+				LOGGER.info("Service will be started after pooling vids..");
+				EventBus eventBus = vertx.eventBus();
+				LOGGER.info("eventBus deployer {}", eventBus);
+				eventBus.publish(EventType.INITPOOL, EventType.INITPOOL);
+			} else if (handler.failed()) {
+				LOGGER.error("init poool generation aborted due to {}", handler.cause().getMessage());
 			}
 		});
+	}
+
+	private static Future<Void> deploy(Verticle verticle, DeploymentOptions opts, Vertx vertx) {
+		Future<Void> done = Future.future();
+
+		vertx.deployVerticle(verticle, opts, res -> {
+			if (res.failed()) {
+				LOGGER.info("Failed to deploy verticle " + verticle.getClass().getSimpleName() + " " + res.cause());
+				done.fail(res.cause());
+			} else {
+				LOGGER.info("Deployed verticle " + verticle.getClass().getSimpleName());
+				done.complete();
+			}
+		});
+
+		return done;
 	}
 }
