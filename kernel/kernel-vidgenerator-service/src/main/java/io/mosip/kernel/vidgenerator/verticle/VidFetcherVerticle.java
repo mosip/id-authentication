@@ -3,7 +3,6 @@ package io.mosip.kernel.vidgenerator.verticle;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
-import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.vidgenerator.constant.EventType;
 import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
 import io.mosip.kernel.vidgenerator.router.VidFetcherRouter;

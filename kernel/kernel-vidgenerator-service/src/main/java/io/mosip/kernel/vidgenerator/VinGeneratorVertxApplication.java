@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.util.FileUtils;
@@ -26,7 +25,6 @@ import io.mosip.kernel.vidgenerator.config.HibernateDaoConfig;
 import io.mosip.kernel.vidgenerator.constant.EventType;
 import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
 import io.mosip.kernel.vidgenerator.verticle.VidExpiryVerticle;
-import io.mosip.kernel.vidgenerator.verticle.VidFetcherVerticle;
 import io.mosip.kernel.vidgenerator.verticle.VidPoolCheckerVerticle;
 import io.mosip.kernel.vidgenerator.verticle.VidPopulatorVerticle;
 import io.vertx.config.ConfigRetriever;
@@ -36,7 +34,6 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -152,28 +149,14 @@ public class VinGeneratorVertxApplication {
 		ApplicationContext context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		VertxOptions options = new VertxOptions();
 		DeploymentOptions workerOptions = new DeploymentOptions().setWorker(true);
-		DeploymentOptions eventLoopOptions = new DeploymentOptions();
 		Vertx vertx = Vertx.vertx(options);
-		Verticle[] eventLoopVerticles = { new VidFetcherVerticle(context)};
 		Verticle[] workerVerticles = {new VidPoolCheckerVerticle(context),new VidPopulatorVerticle(context),new VidExpiryVerticle(context)};
 		Stream.of(workerVerticles).forEach(verticle -> deploy(verticle, workerOptions, vertx));
-		Environment environment = context.getBean(Environment.class);
-		DeliveryOptions deliveryOptions = new DeliveryOptions();
-		deliveryOptions.setSendTimeout(environment.getProperty("mosip.kernel.vid.pool-population-timeout",Long.class));
 		long start =System.currentTimeMillis();
 		LOGGER.info("Service will be started after pooling vids..");
 		EventBus eventBus=vertx.eventBus();
 		LOGGER.info("eventBus deployer {}",eventBus);
-		eventBus.send(EventType.INITPOOL, EventType.INITPOOL, deliveryOptions,replyHandler -> {
-			if(replyHandler.succeeded()) {
-				LOGGER.info("population of pool is done starting fetcher verticle");
-				Stream.of(eventLoopVerticles).forEach(verticle -> deploy(verticle, eventLoopOptions, vertx));		
-			    LOGGER.info("Starting vidgenerator service... ");
-			    LOGGER.info("service took {} ms to pool and start",(System.currentTimeMillis()-start));
-			}else if(replyHandler.failed()) {
-				LOGGER.error("population of pool failed with cause ",replyHandler.cause());
-			}
-		});
+		eventBus.publish(EventType.INITPOOL, start);
 		
 	}
 
