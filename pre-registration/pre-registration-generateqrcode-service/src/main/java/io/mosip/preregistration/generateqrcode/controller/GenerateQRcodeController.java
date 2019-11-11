@@ -41,7 +41,7 @@ public class GenerateQRcodeController {
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path="/generate" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody MainRequestDTO<JSONObject> data) {
+	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody MainRequestDTO<String> data) {
 		log.info("sessionId", "idType", "id",
 				"In generateQRCode controller for generateQRCode generation with request " + data);
 		return  new ResponseEntity<>(service.generateQRCode(data),HttpStatus.OK);

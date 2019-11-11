@@ -71,7 +71,7 @@ public class GenerateQRcodeService {
 	 * @param data
 	 * @return
 	 */
-	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<JSONObject> data) {
+	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<String> data) {
 		byte[] qrCode = null;
 		
 		
