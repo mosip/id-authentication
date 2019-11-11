@@ -27,7 +27,7 @@ import io.mosip.registration.processor.core.exception.PacketDecryptionFailureExc
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.DeviceDetails;
+import io.mosip.registration.processor.core.packet.dto.RegisteredDevice;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -488,9 +488,9 @@ public class UMCValidator {
 	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto,
 			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean isDeviceMappedWithCenter = false;
-		List<DeviceDetails> registreredDevices = identity.getCapturedRegisteredDevices();
+		List<RegisteredDevice> registreredDevices = identity.getCapturedRegisteredDevices();
 		if (registreredDevices != null && !registreredDevices.isEmpty()) {
-			for (DeviceDetails deviceDetails : registreredDevices) {
+			for (RegisteredDevice deviceDetails : registreredDevices) {
 				String deviceCode = null;
 				deviceCode = deviceDetails.getDeviceCode();
 				RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto;
@@ -585,9 +585,9 @@ public class UMCValidator {
 			throws JsonProcessingException, IOException, ApisResourceAccessException {
 		boolean isDeviceValid = false;
 
-		List<DeviceDetails> registreredDevices = identity.getCapturedRegisteredDevices();
+		List<RegisteredDevice> registreredDevices = identity.getCapturedRegisteredDevices();
 		if (registreredDevices != null && !registreredDevices.isEmpty()) {
-			for (DeviceDetails deviceDetails : registreredDevices) {
+			for (RegisteredDevice deviceDetails : registreredDevices) {
 				DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
 				deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
 				deviceValidateHistoryRequest.setDeviceServiceVersion(deviceDetails.getDeviceServiceVersion());

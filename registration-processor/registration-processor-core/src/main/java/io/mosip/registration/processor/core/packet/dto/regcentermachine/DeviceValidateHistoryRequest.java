@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.packet.dto.regcentermachine;
 
-import io.mosip.registration.processor.core.packet.dto.DigitalIdDto;
+import io.mosip.registration.processor.core.packet.dto.DigitalId;
 import lombok.Data;
 
 /**
@@ -12,7 +12,7 @@ public class DeviceValidateHistoryRequest {
 	private String deviceCode;
 
 	/** The digital id. */
-	private DigitalIdDto digitalId;
+	private DigitalId digitalId;
 
 	/** The device service version. */
 	private String deviceServiceVersion;

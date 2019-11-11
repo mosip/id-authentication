@@ -33,7 +33,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
-import io.mosip.registration.processor.core.packet.dto.DeviceDetails;
+import io.mosip.registration.processor.core.packet.dto.RegisteredDevice;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -194,8 +194,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails deviceDetails = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
 		deviceDetails.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(deviceDetails);
@@ -973,8 +973,8 @@ public class UMCValidatorTest {
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails deviceDetails = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
 		deviceDetails.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(deviceDetails);
@@ -1153,8 +1153,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails fv1 = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice fv1 = new RegisteredDevice();
 		fv1.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(fv1);
@@ -1267,8 +1267,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails fv1 = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice fv1 = new RegisteredDevice();
 		fv1.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(fv1);
@@ -1407,8 +1407,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails deviceDetails = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
 		deviceDetails.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(deviceDetails);
@@ -1594,8 +1594,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails deviceDetails = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
 		deviceDetails.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(deviceDetails);
@@ -1790,8 +1790,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails deviceDetails = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
 		deviceDetails.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(deviceDetails);
@@ -1987,8 +1987,8 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<DeviceDetails> capturedRegisteredDevices = new ArrayList<DeviceDetails>();
-		DeviceDetails deviceDetails = new DeviceDetails();
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
 		deviceDetails.setDeviceCode("3000111");
 
 		capturedRegisteredDevices.add(deviceDetails);

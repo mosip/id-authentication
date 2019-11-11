@@ -20,7 +20,7 @@ public class Identity {
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence1;
 	private List<FieldValueArray> hashSequence2;
-	private List<DeviceDetails> capturedRegisteredDevices;
+	private List<RegisteredDevice> capturedRegisteredDevices;
 	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
 	private List<String> uinUpdatedFields;
@@ -163,7 +163,7 @@ public class Identity {
 	/**
 	 * @return the capturedRegisteredDevices
 	 */
-	public List<DeviceDetails> getCapturedRegisteredDevices() {
+	public List<RegisteredDevice> getCapturedRegisteredDevices() {
 		return capturedRegisteredDevices;
 	}
 
@@ -171,7 +171,7 @@ public class Identity {
 	 * @param capturedRegisteredDevices
 	 *            the capturedRegisteredDevices to set
 	 */
-	public void setCapturedRegisteredDevices(List<DeviceDetails> capturedRegisteredDevices) {
+	public void setCapturedRegisteredDevices(List<RegisteredDevice> capturedRegisteredDevices) {
 		this.capturedRegisteredDevices = capturedRegisteredDevices;
 	}
 
