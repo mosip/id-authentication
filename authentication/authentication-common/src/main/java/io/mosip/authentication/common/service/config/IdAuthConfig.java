@@ -31,6 +31,7 @@ import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+
 /**
  * Class for defining configurations for the service.
  * 
@@ -39,6 +40,7 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  */
 public abstract class IdAuthConfig extends HibernateDaoConfig{
 	
+	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthConfig.class);
 
 	/** The environment. */
@@ -49,6 +51,12 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	@Autowired
 	private Interceptor interceptor;
 	
+	/** The bio api. */
+	private IBioApi bioApi;
+	
+	/**
+	 * Initialize.
+	 */
 	@PostConstruct
 	public void initialize() {
 		IdType.initializeAliases(environment);
@@ -85,20 +93,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 	public IBioApi faceProvider() throws IdAuthenticationAppException {
 		return getBiometricProvider(FACE_PROVIDER, "face", this::isFaceAuthEnabled);
 	}
-
-	private IBioApi getBiometricProvider(String property, String modalityName, Supplier<Boolean> enablementChecker) throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(environment.getProperty(property)) && enablementChecker.get()) {
-				return (IBioApi) Class.forName(environment.getProperty(property)).newInstance();
-			} else {
-				return null;
-			}
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", modalityName + "Provider",
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationAppException("", "Unable to load " + modalityName + " provider", e);
-		}
-	}
 	
 	/**
 	 * Iris provider.
@@ -111,10 +105,44 @@ public abstract class IdAuthConfig extends HibernateDaoConfig{
 		return getBiometricProvider(IRIS_PROVIDER, "iris", this::isIrisAuthEnabled);
 	}
 	
+	/**
+	 * Composite biometric provider.
+	 *
+	 * @return the i bio api
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@Bean("composite")
 	public IBioApi compositeBiometricProvider() throws IdAuthenticationAppException {
 		return getBiometricProvider(COMPOSITE_BIO_PROVIDER, "CompositBiometrics", 
 					() -> this.isFingerAuthEnabled() || this.isIrisAuthEnabled() || this.isFaceAuthEnabled());
+	}
+
+	/**
+	 * Gets the biometric provider.
+	 *
+	 * @param property the property
+	 * @param modalityName the modality name
+	 * @param enablementChecker the enablement checker
+	 * @return the biometric provider
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private IBioApi getBiometricProvider(String property, String modalityName, Supplier<Boolean> enablementChecker)
+			throws IdAuthenticationAppException {
+		try {
+			if (Objects.nonNull(bioApi)
+					&& bioApi.getClass().getName().contentEquals(environment.getProperty(property))) {
+				return bioApi;
+			} else if (Objects.nonNull(environment.getProperty(property)) && enablementChecker.get()) {
+				bioApi = (IBioApi) Class.forName(environment.getProperty(property)).newInstance();
+				return bioApi;
+			} else {
+				return null;
+			}
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", modalityName + "Provider",
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationAppException("", "Unable to load " + modalityName + " provider", e);
+		}
 	}
 
 	/**
