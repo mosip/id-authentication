@@ -1481,7 +1481,7 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_AUTH_STATUS = "authStatus";
 	public static final String ON_BOARD_FACE_ID = "FID";
 	public static final String ON_BOARD_IRIS_ID = "IIR";
-	public static final String ON_BOARD_FINGER_ID = "FMR";
+	public static final String ON_BOARD_FINGER_ID = "FIR";
 	public static final String ON_BOARD_COGENT = "cogent";
 	public static final String AGE_IDENTITY = "identity";
 	public static final String DATE_OF_BIRTH = "dateOfBirth";
@@ -1519,18 +1519,18 @@ public class RegistrationConstants {
 	public static final Map<String, String> userOnBoardBioFlag = new HashMap<String, String>() {
 
 		{
-			put("leftIndex", "LEFT_INDEX");
-			put("leftLittle", "LEFT_LITTLE");
-			put("leftMiddle", "LEFT_MIDDLE");
-			put("leftRing", "LEFT_RING");
-			put("leftThumb", "LEFT_THUMB");
-			put("rightIndex", "RIGHT_INDEX");
-			put("rightLittle", "RIGHT_LITTLE");
-			put("rightMiddle", "RIGHT_MIDDLE");
-			put("rightRing", "RIGHT_RING");
-			put("rightThumb", "RIGHT_THUMB");
-			put("LeftEye.png", "LEFT");
-			put("RightEye.png", "RIGHT");
+			put("Left Index", "Left IndexFinger");
+			put("Left Little", "Left LittleFinger");
+			put("Left Middle", "Left MiddleFinger");
+			put("Left Ring", "Left RingFinger");
+			put("Left Thumb", "Left Thumb");
+			put("Right Index", "Right IndexFinger");
+			put("Right Little", "Right LittleFinger");
+			put("Right Middle", "Right MiddleFinger");
+			put("Right Ring", "Right RingFinger");
+			put("Right Thumb", "Right Thumb");
+			put("Left Iris", "Left Iris");
+			put("Right Iris", "Right Iris");
 
 		}
 
@@ -1561,4 +1561,14 @@ public class RegistrationConstants {
 	public static final List<String> TWO_THUMBS = Arrays.asList("Left Thumb", "Right Thumb");
 	
 	public static final List<String> TWO_IRIS = Arrays.asList("Left Iris", "Right Iris");
+	
+	public static final String SESSION_KEY_URL = "session_key";
+	public static final String AUTH_HASH = "hash";
+	public static final String SESSION_KEY="sessionKey";
+	public static final String SIGNATURE = "signature";
+	public static final String ADD = "aad";
+	public static final String SALT = "salt";
+	public static final String REQ_TIME="requesttime";
+	public static final String AP_ID="applicationId";
+	public static final String AP_IDA="IDA";
 }
