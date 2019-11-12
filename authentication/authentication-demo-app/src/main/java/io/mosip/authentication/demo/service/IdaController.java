@@ -81,7 +81,6 @@ import javafx.scene.text.Font;
  * 
  * @author Sanjay Murali
  */
-@SuppressWarnings("restriction")
 @Component
 public class IdaController {
 
@@ -175,24 +174,28 @@ public class IdaController {
 
 	@FXML
 	private void onFingerPrintAuth() {
+		updateBioCapture();
+	}
+
+	private void updateBioCapture() {
+		capture = null;
+		previousHash = null;
 		updateBioPane();
 		updateSendButton();
 	}
 
 	@FXML
 	private void onIrisAuth() {
-		updateBioPane();
-		updateSendButton();
+		updateBioCapture();
 	}
 	
 	@FXML
 	private void onFaceAuth() {
-		updateBioPane();
-		updateSendButton();
+		updateBioCapture();
 	}
 	
 	private void updateSendButton() {
-		if(idValue.getText().trim().isEmpty()) {
+		if(idValue.getText() == null || idValue.getText().trim().isEmpty()) {
 			sendAuthRequest.setDisable(true);
 			return;
 		}
@@ -245,13 +248,14 @@ public class IdaController {
 
 	@FXML
 	private void onCapture() throws Exception {
-		responsetextField.setText("capturing...");
 		responsetextField.setFont(Font.font("Times New Roman", javafx.scene.text.FontWeight.EXTRA_BOLD, 20));
 		if (fingerAuthType.isSelected()) {
 			capture = captureFingerprint();
-		} else if (irisAuthType.isSelected()) {
+		} 
+		if (irisAuthType.isSelected()) {
 			capture = captureIris();
-		} else  if (faceAuthType.isSelected()) {
+		} 
+		if (faceAuthType.isSelected()) {
 			capture = captureFace();
 		}
 		
@@ -259,6 +263,9 @@ public class IdaController {
 	}
 
 	private String captureFingerprint() throws Exception {
+		responsetextField.setText("Capturing Fingerprint...");
+		responsetextField.setStyle("-fx-text-fill: black; -fx-font-size: 20px; -fx-font-weight: bold");
+
 		String requestBody = "{\n" + 
 				"	\"env\": \"Staging\",\n" + 
 				"	\"purpose\": \"Auth\",\n" + 
@@ -268,10 +275,10 @@ public class IdaController {
 				"	\"transactionId\": \"1234567890\",\n" + 
 				"	\"bio\": [{\n" + 
 				"		\"type\": \"FIR\",\n" + 
-				"		\"count\": " + getCount() + ",\n" + 
+				"		\"count\": " + getFingerCount() + ",\n" + 
 				"		\"requestedScore\": 60,\n" + 
 				"		\"deviceId\": \"" + env.getProperty("finger.deviceId") + "\",\n" + 
-				"		\"deviceSubId\": " + getDeviceSubId() + ",\n" + 
+				"		\"deviceSubId\": " + getFingerDeviceSubId() + ",\n" + 
 				"		\"previousHash\": \"" + getPreviousHash() + "\"\n" + 
 				"	}],\n" + 
 				"	\"customOpts\": [{\n" + 
@@ -281,26 +288,29 @@ public class IdaController {
 				"}";
 		return capturebiometrics(requestBody);
 	}
-
-	private String getDeviceSubId() {
-		if(fingerAuthType.isSelected()) {
-			return "0";
-		} else if (irisAuthType.isSelected()) {
-			if(irisCount.getSelectionModel().getSelectedIndex() == 0) {
-				return String.valueOf(1);
-			} else if(irisCount.getSelectionModel().getSelectedIndex() == 1) {
-				return String.valueOf(2);
-			} else {
-				return String.valueOf(3);
-			}
-		}  else if (faceAuthType.isSelected()) {
-			return "0";
+	
+	private String getFingerDeviceSubId() {
+		return "0";
+	}
+	
+	private String getIrisDeviceSubId() {
+		if(irisCount.getSelectionModel().getSelectedIndex() == 0) {
+			return String.valueOf(1);
+		} else if(irisCount.getSelectionModel().getSelectedIndex() == 1) {
+			return String.valueOf(2);
 		} else {
-			return "";
+			return String.valueOf(3);
 		}
+	}
+
+	private String getFaceDeviceSubId() {
+		return "0";
 	}
 	
 	private String captureIris() throws Exception {
+		responsetextField.setText("Capturing Iris...");
+		responsetextField.setStyle("-fx-text-fill: black; -fx-font-size: 20px; -fx-font-weight: bold");
+
 		String requestBody = "{\n" + 
 				"	\"env\": \"Staging\",\n" + 
 				"	\"purpose\": \"Auth\",\n" + 
@@ -310,10 +320,10 @@ public class IdaController {
 				"	\"transactionId\": \"1234567890\",\n" + 
 				"	\"bio\": [{\n" + 
 				"		\"type\": \"IIR\",\n" + 
-				"		\"count\": " + getCount() + ",\n" + 
+				"		\"count\": " + getIrisCount() + ",\n" + 
 				"		\"requestedScore\": 60,\n" + 
 				"		\"deviceId\": \"" + env.getProperty("iris.deviceId") + "\",\n" + 
-				"		\"deviceSubId\": " + getDeviceSubId() + ",\n" + 
+				"		\"deviceSubId\": " + getIrisDeviceSubId() + ",\n" + 
 				"		\"previousHash\": \"" + getPreviousHash() + "\"\n" + 
 				"	}],\n" + 
 				"	\"customOpts\": [{\n" + 
@@ -325,6 +335,9 @@ public class IdaController {
 	}
 	
 	private String captureFace() throws Exception {
+		responsetextField.setText("Capturing Face...");
+		responsetextField.setStyle("-fx-text-fill: black; -fx-font-size: 20px; -fx-font-weight: bold");
+
 		String requestBody = "{\n" + 
 				"	\"env\": \"Staging\",\n" + 
 				"	\"purpose\": \"Auth\",\n" + 
@@ -334,10 +347,10 @@ public class IdaController {
 				"	\"transactionId\": \"1234567890\",\n" + 
 				"	\"bio\": [{\n" + 
 				"		\"type\": \"FACE\",\n" + 
-				"		\"count\": " + getCount() + ",\n" + 
+				"		\"count\": " + getFaceCount() + ",\n" + 
 				"		\"requestedScore\": 0,\n" + 
 				"		\"deviceId\": \"" + env.getProperty("face.deviceId") + "\",\n" + 
-				"		\"deviceSubId\": " + getDeviceSubId() + ",\n" + 
+				"		\"deviceSubId\": " + getFaceDeviceSubId() + ",\n" + 
 				"		\"previousHash\": \"" + getPreviousHash() + "\"\n" + 
 				"	}],\n" + 
 				"	\"customOpts\": [{\n" + 
@@ -352,17 +365,21 @@ public class IdaController {
 		return previousHash == null ? "" : previousHash;
 	}
 
-	private String getCount() {
-		if(fingerAuthType.isSelected()) {
-			return fingerCount.getValue() == null ? String.valueOf(1) : fingerCount.getValue();
-		} else if(irisAuthType.isSelected()) {
-			return String.valueOf(irisCount.getSelectionModel().getSelectedIndex() + 1);
-		} else {
-			return String.valueOf(1);
-		}
+	private String getFingerCount() {
+		return fingerCount.getValue() == null ? String.valueOf(1) : fingerCount.getValue();
+	}
+	
+	private String getIrisCount() {
+		return String.valueOf(irisCount.getSelectionModel().getSelectedIndex() + 1);
+	}
+	
+	private String getFaceCount() {
+		return String.valueOf(1);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private String capturebiometrics(String requestBody) throws Exception {
+		System.out.println("Capture request:\n" + requestBody);
 		CloseableHttpClient client = HttpClients.createDefault();
 		StringEntity requestEntity = new StringEntity(requestBody, ContentType.APPLICATION_JSON);
 		HttpUriRequest request = RequestBuilder.create("CAPTURE").setUri("http://127.0.0.1:4501/capture")
@@ -424,7 +441,7 @@ public class IdaController {
 			HttpEntity<OtpRequestDTO> httpEntity = new HttpEntity<>(otpRequestDTO);
 			ResponseEntity<Map> response = restTemplate.exchange(
 					env.getProperty("ida.otp.url",
-							"https://ext-int.mosip.io/idauthentication/v1/otp/1873299273/735899345"),
+							getBaseUrl() + "/idauthentication/v1/otp/1873299273/735899345"),
 					HttpMethod.POST, httpEntity, Map.class);
 			System.err.println(response);
 			
@@ -448,10 +465,15 @@ public class IdaController {
 		}
 	}
 
+	private String getBaseUrl() {
+		return env.getProperty("base.url", "https://qa.mosip.io");
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
 	private void onSendAuthRequest() throws Exception {
 		responsetextField.setText(null);
+		responsetextField.setStyle("-fx-text-fill: black; -fx-font-size: 20px; -fx-font-weight: bold");
 		responsetextField.setText("Preparing Auth Request...");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		// Set Auth Type
@@ -483,11 +505,13 @@ public class IdaController {
 		EncryptionResponseDto kernelEncrypt = null;
 		try {
 			kernelEncrypt = kernelEncrypt(encryptionRequestDto, false);
-			responsetextField.setText("Encryption successful...Authenticating");
 		} catch (Exception e) {
 			e.printStackTrace();
 			responsetextField.setText("Encryption of Auth Request Failed");
+			return;
 		}
+
+		responsetextField.setText("Authenticating...");
 		// Set request block
 		authRequestDTO.setRequest(requestDTO);
 
@@ -504,28 +528,36 @@ public class IdaController {
 		RestTemplate restTemplate = createTemplate();
 		HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
 		String url = getUrl();
-		ResponseEntity<Map> authResponse = restTemplate.exchange(url,
-				HttpMethod.POST, httpEntity, Map.class);
-		if (authResponse.getStatusCode().is2xxSuccessful()) {
-			boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response")).get("authStatus");
-			String response = status ? "Authentication Success" : "Authentication Failed";
-			if (status) {
-				responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
+		System.out.println("Auth URL: " + url);
+		
+		try {
+			ResponseEntity<Map> authResponse = restTemplate.exchange(url,
+					HttpMethod.POST, httpEntity, Map.class);
+			if (authResponse.getStatusCode().is2xxSuccessful()) {
+				boolean status = (boolean) ((Map<String, Object>) authResponse.getBody().get("response")).get("authStatus");
+				String response = status ? "Authentication Success" : "Authentication Failed";
+				if (status) {
+					responsetextField.setStyle("-fx-text-fill: green; -fx-font-size: 20px; -fx-font-weight: bold");
+				} else {
+					responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
+				}
+				responsetextField.setText(response);
 			} else {
+				responsetextField.setText("Authentication Failed with Error");
 				responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 			}
-			responsetextField.setText(response);
-		} else {
+
+
+			System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
+			System.out.println(identityBlock);
+			
+			System.err.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
+			System.err.println(authResponse.getBody());
+		} catch (Exception e) {
+			e.printStackTrace();
 			responsetextField.setText("Authentication Failed with Error");
 			responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 		}
-
-
-		System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
-		System.out.println(identityBlock);
-		
-		System.err.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
-		System.err.println(authResponse.getBody());
 	}
 
 	private String getAuthRequestId() {
@@ -538,7 +570,7 @@ public class IdaController {
 
 	private String getUrl() {
 		return env.getProperty("ida.auth.url",
-				"http://52.172.53.239:8090/idauthentication/v1/auth/1873299273/735899345");
+				getBaseUrl() + "/idauthentication/v1/auth/1873299273/735899345");
 	}
 
 	private boolean isBioAuthType() {
@@ -581,7 +613,7 @@ public class IdaController {
 		uriParams.put("appId", "IDA");
 		UriComponentsBuilder builder = UriComponentsBuilder
 				.fromUriString(
-						env.getProperty("ida.publickey.url", "https://ext-int.mosip.io/v1/keymanager/publickey/IDA"))
+						env.getProperty("ida.publickey.url", getBaseUrl() + "/v1/keymanager/publickey/IDA"))
 				.queryParam("timeStamp", DateUtils.getUTCCurrentDateTimeString())
 				.queryParam("referenceId", publicKeyId);
 		ResponseEntity<Map> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET, null, Map.class);
@@ -618,7 +650,7 @@ public class IdaController {
 		request.setRequest(requestBody);
 		ClientResponse response = WebClient
 				.create(env.getProperty("ida.authmanager.url",
-						"https://ext-int.mosip.io/v1/authmanager/authenticate/clientidsecretkey"))
+						getBaseUrl() + "/v1/authmanager/authenticate/clientidsecretkey"))
 				.post().syncBody(request).exchange().block();
 		List<ResponseCookie> list = response.cookies().get("Authorization");
 		if (list != null && !list.isEmpty()) {
@@ -671,19 +703,21 @@ public class IdaController {
 	private void onReset() {
 		fingerCount.getSelectionModel().select(0);
 		irisCount.getSelectionModel().select(0);
-		idValue.setText(null);
+		idValue.setText("");
 		fingerAuthType.setSelected(false);
 		irisAuthType.setSelected(false);
 		faceAuthType.setSelected(false);
 		otpAuthType.setSelected(false);
 		idTypebox.setValue("UIN");
-		otpValue.setText(null);
+		otpValue.setText("");
 		otpAnchorPane.setDisable(true);
 		bioAnchorPane.setDisable(true);
-		responsetextField.setText(null);
+		responsetextField.setText("");
 		sendAuthRequest.setDisable(false);
 		capture = null;
 		previousHash = null;
+		updateBioPane();
+		updateSendButton();
 	}
 
 	@FXML 
