@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -227,6 +228,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
 				validateBioType(bioData, errors, allowedAuthType);
 				validateBioData(bioData, errors);
+				validateDeviceDetails(bioData, errors);
 				validateCount(authRequestDTO, errors, bioData);
 			}
 		}
@@ -249,7 +251,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private void validateBioData(List<DataDTO> bioData, Errors errors) {
 		List<DataDTO> filterdBioData = bioData.stream()
-				.filter(dataDto -> dataDto.getBioValue() == null || dataDto.getBioValue().trim().isEmpty())
+				.filter(dataDto -> dataDto.getBioValue() == null || dataDto.getBioValue().isEmpty())
 				.collect(Collectors.toList());
 		filterdBioData.forEach(bioInfo -> {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -259,6 +261,75 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		});
 
+	}
+	
+	private void validateDeviceDetails(List<DataDTO> bioData, Errors errors) {
+		IntStream.range(0, bioData.size()).forEach(index -> {
+			if (StringUtils.isEmpty(bioData.get(index).getDeviceCode())) {
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "request/biometrics/" + index + "/deviceCode" },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			}
+			if (StringUtils.isEmpty(bioData.get(index).getDeviceServiceVersion())) {
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "request/biometrics/" + index + "/deviceServiceVersion" },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			}
+			if (Objects.isNull(bioData.get(index).getDigitalId())) {
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "request/biometrics/" + index + "/digitalId" },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			} else {
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getSerialNo())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/serialNo" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getMake())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/make" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getModel())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/model" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getType())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/type" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDeviceProvider())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/deviceProvider" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDeviceProviderId())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/deviceProviderId" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDateTime())) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "request/biometrics/" + index + "/digitalId/dateTime" },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				} else {
+					super.validateReqTime(bioData.get(index).getDigitalId().getDateTime(), errors,
+							"request/biometrics/" + index + "/digitalId/dateTime");
+				}
+			}
+		});
 	}
 
 	/**

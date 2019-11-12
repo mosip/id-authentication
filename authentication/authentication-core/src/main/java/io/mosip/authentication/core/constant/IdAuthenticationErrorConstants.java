@@ -73,6 +73,7 @@ public enum IdAuthenticationErrorConstants {
 	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
 	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
 	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
+	INVALID_MDS("IDA-BIA-012", "MDS verification failed"),
 	INVALID_HASH("IDA-BIA-014", "Hash Validation Failed"),
 	INVALID_SIGNATURE("IDA-BIA-015", "Signature Validation Failed"),
 
