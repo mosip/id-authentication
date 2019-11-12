@@ -94,10 +94,11 @@ public class IdaController {
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	ComboBox<String> fingerCount;
+	@FXML
+	ComboBox<String> irisCount;
 
 	@FXML
-	ComboBox<String> count;
+	ComboBox<String> fingerCount;
 
 	@FXML
 	private TextField idValue;
@@ -134,60 +135,97 @@ public class IdaController {
 
 	@FXML
 	private Button requestOtp;
+	
+	@FXML
+	private Button sendAuthRequest;
 
 	private String capture;
+	
+	private String previousHash;
 
 	@FXML
 	private void initialize() {
 		responsetextField.setText(null);
+		
 		ObservableList<String> idTypeChoices = FXCollections.observableArrayList("UIN", "VID", "USERID");
-		count.setValue("1");
+		ObservableList<String> fingerCountChoices = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10");
+		fingerCount.setItems(fingerCountChoices);
+		fingerCount.getSelectionModel().select(0);
+		
+		ObservableList<String> irisCountChoices = FXCollections.observableArrayList("Left Iris", "Right Iris", "Both Iris");
+		irisCount.setItems(irisCountChoices);
+		irisCount.getSelectionModel().select(0);
+		
 		idTypebox.setItems(idTypeChoices);
 		idTypebox.setValue("UIN");
 		otpAnchorPane.setDisable(true);
 		bioAnchorPane.setDisable(true);
 		responsetextField.setDisable(true);
+		sendAuthRequest.setDisable(true);
+		
+		idValue.textProperty().addListener((observable, oldValue, newValue) -> {
+			updateSendButton();
+		});
+		
+		otpValue.textProperty().addListener((observable, oldValue, newValue) -> {
+			updateSendButton();
+		});
 	}
 
 	@FXML
 	private void onFingerPrintAuth() {
-		responsetextField.setText(null);
-		if (fingerAuthType.isSelected()) {
-			bioAnchorPane.setDisable(false);
-		} else {
-			bioAnchorPane.setDisable(true);
-		}
-		ObservableList<String> fingerCountChoices = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7",
-				"8", "9", "10");
-		count.setItems(fingerCountChoices);
-		count.setValue("1");
+		updateBioPane();
+		updateSendButton();
 	}
 
 	@FXML
 	private void onIrisAuth() {
-		responsetextField.setText(null);
-		if (irisAuthType.isSelected()) {
-			bioAnchorPane.setDisable(false);
-		} else {
-			bioAnchorPane.setDisable(true);
-		}
-		ObservableList<String> irisCountChoices = FXCollections.observableArrayList("Left Iris", "Right Iris", "Both Iris");
-		count.setItems(irisCountChoices);
-		count.getSelectionModel().select(0);
+		updateBioPane();
+		updateSendButton();
 	}
 	
 	@FXML
 	private void onFaceAuth() {
-		responsetextField.setText(null);
-		if (faceAuthType.isSelected()) {
+		updateBioPane();
+		updateSendButton();
+	}
+	
+	private void updateSendButton() {
+		if(idValue.getText().trim().isEmpty()) {
+			sendAuthRequest.setDisable(true);
+			return;
+		}
+		
+		if(otpAuthType.isSelected()) {
+			if(otpValue.getText().trim().isEmpty()) {
+				sendAuthRequest.setDisable(true);
+				return;
+			}
+		}
+		
+		if(isBioAuthType()) {
+			if(capture == null) {
+				sendAuthRequest.setDisable(true);
+				return;
+			}
+		}
+		
+		sendAuthRequest.setDisable(!(isBioAuthType() || otpAuthType.isSelected()));
+		
+		
+	}
+
+	private void updateBioPane() {
+		if (isBioAuthType()) {
 			bioAnchorPane.setDisable(false);
 		} else {
 			bioAnchorPane.setDisable(true);
 		}
-		ObservableList<String> faceCountChoices = FXCollections.observableArrayList("1");
-		count.setItems(faceCountChoices);
-		count.setValue("1");
+		irisCount.setDisable(!irisAuthType.isSelected());
+		fingerCount.setDisable(!fingerAuthType.isSelected());
 	}
+	
 
 	@FXML
 	private void onOTPAuth() {
@@ -216,6 +254,8 @@ public class IdaController {
 		} else  if (faceAuthType.isSelected()) {
 			capture = captureFace();
 		}
+		
+		updateSendButton();
 	}
 
 	private String captureFingerprint() throws Exception {
@@ -232,7 +272,7 @@ public class IdaController {
 				"		\"requestedScore\": 60,\n" + 
 				"		\"deviceId\": \"" + env.getProperty("finger.deviceId") + "\",\n" + 
 				"		\"deviceSubId\": " + getDeviceSubId() + ",\n" + 
-				"		\"previousHash\": \"\"\n" + 
+				"		\"previousHash\": \"" + getPreviousHash() + "\"\n" + 
 				"	}],\n" + 
 				"	\"customOpts\": [{\n" + 
 				"		\"Name\": \"name1\",\n" + 
@@ -246,9 +286,9 @@ public class IdaController {
 		if(fingerAuthType.isSelected()) {
 			return "0";
 		} else if (irisAuthType.isSelected()) {
-			if(count.getSelectionModel().getSelectedIndex() == 0) {
+			if(irisCount.getSelectionModel().getSelectedIndex() == 0) {
 				return String.valueOf(1);
-			} else if(count.getSelectionModel().getSelectedIndex() == 1) {
+			} else if(irisCount.getSelectionModel().getSelectedIndex() == 1) {
 				return String.valueOf(2);
 			} else {
 				return String.valueOf(3);
@@ -274,7 +314,7 @@ public class IdaController {
 				"		\"requestedScore\": 60,\n" + 
 				"		\"deviceId\": \"" + env.getProperty("iris.deviceId") + "\",\n" + 
 				"		\"deviceSubId\": " + getDeviceSubId() + ",\n" + 
-				"		\"previousHash\": \"\"\n" + 
+				"		\"previousHash\": \"" + getPreviousHash() + "\"\n" + 
 				"	}],\n" + 
 				"	\"customOpts\": [{\n" + 
 				"		\"Name\": \"name1\",\n" + 
@@ -298,7 +338,7 @@ public class IdaController {
 				"		\"requestedScore\": 0,\n" + 
 				"		\"deviceId\": \"" + env.getProperty("face.deviceId") + "\",\n" + 
 				"		\"deviceSubId\": " + getDeviceSubId() + ",\n" + 
-				"		\"previousHash\": \"\"\n" + 
+				"		\"previousHash\": \"" + getPreviousHash() + "\"\n" + 
 				"	}],\n" + 
 				"	\"customOpts\": [{\n" + 
 				"		\"Name\": \"name1\",\n" + 
@@ -308,11 +348,17 @@ public class IdaController {
 		return capturebiometrics(requestBody);
 	}
 
+	private String getPreviousHash() {
+		return previousHash == null ? "" : previousHash;
+	}
+
 	private String getCount() {
-		if(irisAuthType.isSelected()) {
-			return String.valueOf(count.getSelectionModel().getSelectedIndex() + 1);
+		if(fingerAuthType.isSelected()) {
+			return fingerCount.getValue() == null ? String.valueOf(1) : fingerCount.getValue();
+		} else if(irisAuthType.isSelected()) {
+			return String.valueOf(irisCount.getSelectionModel().getSelectedIndex() + 1);
 		} else {
-			return count.getValue() == null ? String.valueOf(1) : count.getValue();
+			return String.valueOf(1);
 		}
 	}
 
@@ -349,6 +395,7 @@ public class IdaController {
 				String dataJws = (String) b.get("data");
 				Map dataMap = objectMapper.readValue(CryptoUtil.decodeBase64(dataJws.split("\\.")[1]), Map.class);
 				System.out.println((i+1) + " Bio-type: " + dataMap.get("bioType") + " Bio-sub-type: " +  dataMap.get("bioSubType"));
+				previousHash = (String) b.get("hash");
 			}
 		} else {
 			responsetextField.setText("Capture Failed");
@@ -622,15 +669,25 @@ public class IdaController {
 
 	@FXML
 	private void onReset() {
-		count.setValue("1");
+		fingerCount.getSelectionModel().select(0);
+		irisCount.getSelectionModel().select(0);
 		idValue.setText(null);
 		fingerAuthType.setSelected(false);
 		irisAuthType.setSelected(false);
+		faceAuthType.setSelected(false);
 		otpAuthType.setSelected(false);
 		idTypebox.setValue("UIN");
 		otpValue.setText(null);
 		otpAnchorPane.setDisable(true);
 		bioAnchorPane.setDisable(true);
 		responsetextField.setText(null);
+		sendAuthRequest.setDisable(false);
+		capture = null;
+		previousHash = null;
+	}
+
+	@FXML 
+	private void onOtpValueUpdate() {
+		updateSendButton();
 	}
 }
