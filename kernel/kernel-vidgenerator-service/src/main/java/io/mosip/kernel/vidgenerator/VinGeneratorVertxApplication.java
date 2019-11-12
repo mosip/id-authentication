@@ -87,13 +87,6 @@ public class VinGeneratorVertxApplication {
 	
 	@PostConstruct
 	private static  void initPool() {
-		// temporary will be removed later
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		LOGGER.info("Service will be started after pooling vids..");
 		EventBus eventBus=vertx.eventBus();
 		LOGGER.info("eventBus deployer {}",eventBus);
@@ -109,7 +102,6 @@ public class VinGeneratorVertxApplication {
 		System.setProperty("vertx.logger-delegate-factory-class-name", SLF4JLogDelegateFactory.class.getName());
 		LOGGER = LoggerFactory.getLogger(VinGeneratorVertxApplication.class);
 		loadPropertiesFromConfigServer();
-        initPool();
 	}
 
 	/**
@@ -171,6 +163,7 @@ public class VinGeneratorVertxApplication {
 		vertx = Vertx.vertx(options);
 		Verticle[] workerVerticles = {new VidPoolCheckerVerticle(context),new VidPopulatorVerticle(context),new VidExpiryVerticle(context)};
 		Stream.of(workerVerticles).forEach(verticle -> deploy(verticle, workerOptions, vertx));		
+	    vertx.setTimer(1000, handler -> initPool());
 	}
 
 	private static void deploy(Verticle verticle, DeploymentOptions opts, Vertx vertx) {
