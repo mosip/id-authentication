@@ -397,6 +397,8 @@ public enum PlatformErrorMessages {
 
 	ABIS_QUEUE_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "007", "Unable to Connect with ABIS Queue"),
 
+	SYSTEM_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "008", "Internal error occured"),
+
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio Dedupe Failed"),
@@ -596,7 +598,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pum packet not found exception. */
 	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "001",
-			"Packet Not Found in Packet Store"),
+			"Packet not copied from LANDING ZONE FOLDER DURING ARCHIVAL "),
 
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "002",

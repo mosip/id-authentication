@@ -397,7 +397,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		}
 
 		finally {
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful
+					? PlatformSuccessMessages.RPR_MANUAL_VERIFICATION_APPROVED.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.MANUAL_VERIFICATION.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 
 			String eventId = "";
 			String eventName = "";
@@ -408,11 +413,6 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			/** Module-Id can be Both Success/Error code */
-			String moduleId = isTransactionSuccessful
-					? PlatformSuccessMessages.RPR_MANUAL_VERIFICATION_APPROVED.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.MANUAL_VERIFICATION.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 

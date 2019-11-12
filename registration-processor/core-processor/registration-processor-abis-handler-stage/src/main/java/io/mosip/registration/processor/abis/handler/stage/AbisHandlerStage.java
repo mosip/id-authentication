@@ -188,7 +188,9 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 			}
 			registrationStatusDto.setStatusComment(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			String moduleId = description.getCode();
+			String moduleName = ModuleName.ABIS_HANDLER.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();

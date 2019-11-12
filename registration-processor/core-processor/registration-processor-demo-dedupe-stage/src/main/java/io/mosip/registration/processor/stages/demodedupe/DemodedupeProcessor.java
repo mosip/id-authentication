@@ -294,7 +294,12 @@ public class DemodedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} finally {
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			/** Module-Id can be Both Succes/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode()
+					: description.getCode();
+
+			String moduleName = ModuleName.DEMO_DEDUPE.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 			try {
 				if (isMatchFound) {
 					saveDuplicateDtoList(duplicateDtos, registrationStatusDto, object);
@@ -306,8 +311,9 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setStatusComment(trimExceptionMessage
 						.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 				registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				description.setMessage(DemoDedupeConstants.NO_DATA_IN_DEMO);
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
+
 				regProcLogger.error(DemoDedupeConstants.NO_DATA_IN_DEMO, "", "", ExceptionUtils.getStackTrace(e));
 				object.setIsValid(Boolean.FALSE);
 				object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
@@ -324,10 +330,6 @@ public class DemodedupeProcessor {
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
-			/** Module-Id can be Both Succes/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.DEMO_DEDUPE.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 

@@ -257,7 +257,9 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				} else if (transactionTypeCode.equalsIgnoreCase(BIOGRAPHIC_VERIFICATION)) {
 					internalRegDto.setRegistrationStageName("BioDedupeStage");
 				}
-				registrationStatusService.updateRegistrationStatus(internalRegDto);
+				String moduleId = description.getCode();
+				String moduleName = ModuleName.ABIS_MIDDLEWARE.toString();
+				registrationStatusService.updateRegistrationStatus(internalRegDto, moduleId, moduleName);
 			}
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -335,6 +337,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		String registrationId = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisMiddlewareStage::consumerListener()::entry");
+		String moduleId = "";
+		String moduleName = ModuleName.ABIS_MIDDLEWARE.toString();
 
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 
@@ -382,7 +386,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 					internalRegStatusDto.setStatusComment(
 							StatusUtil.INSERT_RESPONSE_FAILED.getMessage() + abisCommonRequestDto.getId());
 					internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
-					registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
+					moduleId = PlatformErrorMessages.SYSTEM_EXCEPTION_OCCURED.getCode();
+					registrationStatusService.updateRegistrationStatus(internalRegStatusDto, moduleId, moduleName);
 				}
 			}
 			// check if identify response,then if all identify requests are processed send
@@ -401,7 +406,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 					internalRegStatusDto.setStatusComment(
 							StatusUtil.IDENTIFY_RESPONSE_FAILED.getMessage() + abisCommonRequestDto.getId());
 					internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
-					registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
+					moduleId = PlatformErrorMessages.SYSTEM_EXCEPTION_OCCURED.getCode();
+					registrationStatusService.updateRegistrationStatus(internalRegStatusDto, moduleId, moduleName);
 				}
 				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
 				if (abisIdentifyResponseDto.getCandidateList() != null) {
@@ -432,7 +438,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				internalRegStatusDto.setStatusComment(trimExceptionMessage
 						.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + e.getMessage()));
 				internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
-				registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
+				moduleId = PlatformErrorMessages.SYSTEM_EXCEPTION_OCCURED.getCode();
+				registrationStatusService.updateRegistrationStatus(internalRegStatusDto, moduleId, moduleName);
 			}
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
@@ -445,7 +452,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				internalRegStatusDto.setStatusComment(trimExceptionMessage
 						.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 				internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
-				registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
+				moduleId = PlatformErrorMessages.SYSTEM_EXCEPTION_OCCURED.getCode();
+				registrationStatusService.updateRegistrationStatus(internalRegStatusDto, moduleId, moduleName);
 			}
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
