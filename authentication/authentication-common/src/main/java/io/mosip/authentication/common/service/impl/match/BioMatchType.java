@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
@@ -226,8 +227,9 @@ public enum BioMatchType implements MatchType {
 		}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue)
 				.map(value -> Arrays.asList(new IdentityInfoDTO(null, value))).collect(Collectors.toMap(value -> {
 					String idname = idMapping.getIdname();
-					if (idname.contains(IdaIdMapping.UNKNOWN)) {
-						idname += count.incrementAndGet();
+					if (idname.contains(IdAuthCommonConstants.UNKNOWN_BIO)) {
+						int countVal = count.incrementAndGet();
+						idname = idname.replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, String.valueOf(countVal));
 					}
 					return idname;
 				}, value -> value));

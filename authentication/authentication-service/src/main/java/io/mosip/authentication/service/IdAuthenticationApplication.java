@@ -37,6 +37,7 @@ import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
@@ -62,7 +63,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, IdObjectPatternValidator.class,
 		BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
-		IdAuthTransactionManager.class, RestRequestFactory.class, RestHelperImpl.class,AuthtypeStatusImpl.class})
+		IdAuthTransactionManager.class, RestRequestFactory.class, RestHelperImpl.class,AuthtypeStatusImpl.class,
+		JWSValidation.class})
 @ComponentScan({ "io.mosip.authentication.service.*" })
 public class IdAuthenticationApplication {
 

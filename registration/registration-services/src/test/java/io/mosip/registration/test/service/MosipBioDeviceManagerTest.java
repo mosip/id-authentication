@@ -39,6 +39,7 @@ import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.CaptureResponsBioDataDto;
 import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -269,7 +270,7 @@ public class MosipBioDeviceManagerTest {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
-		mosipBioDeviceManager.scan("deviceType");
+		mosipBioDeviceManager.scan(new RequestDetail("deviceType", "", 1, "", null));
 	}
 
 

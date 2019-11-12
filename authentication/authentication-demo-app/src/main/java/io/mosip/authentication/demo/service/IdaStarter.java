@@ -40,6 +40,7 @@ public class IdaStarter extends Application {
 
 		loader.setControllerFactory(context::getBean);
 		root = loader.load(this.getClass().getClassLoader().getResourceAsStream("fxml/idaFXML.fxml"));
+		context.close();
 	}
 
 	@Override

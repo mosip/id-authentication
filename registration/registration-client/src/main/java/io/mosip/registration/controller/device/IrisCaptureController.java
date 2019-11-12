@@ -26,14 +26,17 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
+import io.mosip.registration.service.security.AuthenticationService;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -144,6 +147,12 @@ public class IrisCaptureController extends BaseController {
 
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
+	
+	@Autowired
+	Streamer streamer;
+	
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -435,8 +444,6 @@ public class IrisCaptureController extends BaseController {
 	 * This method displays the Biometric Scan pop-up window. This method will be
 	 * invoked when Scan button is clicked.
 	 */
-	@Autowired
-	Streamer streamer;
 
 	@FXML
 	private void scan() {
@@ -461,10 +468,11 @@ public class IrisCaptureController extends BaseController {
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 				scanPopUpViewController.init(this, RegistrationUIConstants.IRIS_SCAN);
-				SessionContext.map().put("CAPTURE_EXCEPTION", irisException);
 
 				if (bioservice.isMdmEnabled()) {
-					streamer.startStream("IRIS_DOUBLE", scanPopUpViewController.getScanImage(), irisClickedImage);
+					streamer.startStream(new RequestDetail(RegistrationConstants.IRIS_DOUBLE,
+							getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2,
+							getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), irisException), scanPopUpViewController.getScanImage(), irisClickedImage);
 				}
 			}
 			// Disable the scan button
@@ -501,6 +509,7 @@ public class IrisCaptureController extends BaseController {
 			try {
 				leftTempIrisDetail = getIrises().stream()
 						.filter((iris) -> iris.getIrisType().contains(RegistrationConstants.LEFT)).findFirst().get();
+				
 				getIrises().remove(leftTempIrisDetail);
 
 				rightTempIrisDetail = getIrises().stream()
@@ -511,7 +520,10 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			try {
-				bioservice.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
+				bioservice.getIrisImageAsDTO(irisDetailsDTO, new RequestDetail(
+						irisType.concat(RegistrationConstants.EYE),
+						getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2, 
+						getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), irisException));
 				streamer.stop();
 			} catch (RegBaseCheckedException | IOException runtimeException) {
 				streamer.stop();
@@ -532,11 +544,19 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisDetailsDTO.isCaptured()) {
 
-				streamer.setStreamImageToImageView();
+				
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				if (!bioservice.isMdmEnabled()) {
+					
+					if(irisType.contains(RegistrationConstants.LEFT) && rightTempIrisDetail!=null) {
+						getIrises().add(rightTempIrisDetail);
+					} else if(leftTempIrisDetail!=null){
+						getIrises().add(leftTempIrisDetail);
+					}
 					scanPopUpViewController.getScanImage()
 							.setImage(convertBytesToImage(irisDetailsDTO.getIrises().get(0).getIris()));
+				} else {
+					streamer.setStreamImageToImageView();
 				}
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 				irisDetailsDTO.getIrises().forEach((iris) -> {
@@ -581,12 +601,13 @@ public class IrisCaptureController extends BaseController {
 					}
 					getIrises().add(iris);
 					popupStage.close();
-					if (validateIris() && validateIrisLocalDedup()) {
-						continueBtn.setDisable(false);
-					} else {
-						continueBtn.setDisable(true);
-					}
 				});
+				if (validateIris() && validateIrisLocalDedup(getIrises())) {
+					continueBtn.setDisable(false);
+				}else {
+					continueBtn.setDisable(true);
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.DUPLICATE+" "+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS)+" "+RegistrationConstants.FOUND);
+				}
 
 			} else {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
@@ -607,11 +628,21 @@ public class IrisCaptureController extends BaseController {
 			
 		}
 	}
+	
+	private boolean validateIrisLocalDedup(List<IrisDetailsDTO> irises) {
 
-	private boolean validateIrisLocalDedup() {
-		// TODO: Implement Local Dedup for Iris -- Should exculde for Onboard
-		// User
-		return true;
+		if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
+			return true;
+		
+			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+			authenticationValidatorDTO.setIrisDetails(irises);
+			authenticationValidatorDTO.setAuthValidationType("multiple");
+			boolean isValid =  !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			if(null != getValueFromApplicationContext("IDENTY_SDK")) {
+				isValid = false;
+			}
+			return isValid;
 	}
 
 	/**
@@ -921,7 +952,7 @@ public class IrisCaptureController extends BaseController {
 
 	private void singleBiometricCaptureCheck() {
 
-		if (!(validateIris() && validateIrisLocalDedup())) {
+		if (!(validateIris() && validateIrisLocalDedup(getIrises()))) {
 			continueBtn.setDisable(true);
 		}
 

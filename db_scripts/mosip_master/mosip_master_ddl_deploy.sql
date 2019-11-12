@@ -74,6 +74,14 @@
 \ir ddl/master-zone_user.sql
 \ir ddl/master-zone_user_h.sql
 
+\ir ddl/master-reg_device_type.sql
+\ir ddl/master-reg_device_sub_type.sql
+\ir ddl/master-mosip_device_service.sql
+\ir ddl/master-mosip_device_service_h.sql
+\ir ddl/master-device_provider.sql
+\ir ddl/master-device_provider_h.sql
+\ir ddl/master-foundational_trust_provider.sql
+\ir ddl/master-foundational_trust_provider_h.sql
 \ir ddl/master-registered_device_master.sql
 \ir ddl/master-registered_device_master_h.sql
 

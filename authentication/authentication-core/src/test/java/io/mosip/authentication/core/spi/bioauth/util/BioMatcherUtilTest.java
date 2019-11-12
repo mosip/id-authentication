@@ -68,7 +68,7 @@ public class BioMatcherUtilTest {
 	public void TestmatchValue() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
 		Score score = new Score();
-		score.setInternalScore(90);
+		score.setScaleScore(90);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
 		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
@@ -130,7 +130,7 @@ public class BioMatcherUtilTest {
 		score.setInternalScore(0);
 		Score[] scores = Stream.of(score).toArray(Score[]::new);
 		CompositeScore compScore = new CompositeScore();
-		compScore.setInternalScore(90);
+		compScore.setScaledScore(90);
 		compScore.setIndividualScores(scores);
 		Mockito.when(bioApi.compositeMatch(Mockito.any(BIR[].class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(compScore);
 		double matchMultiValue = bioMatcherUtil.matchMultiValue(valueMap, valueMap, Collections.emptyMap());

@@ -28,18 +28,6 @@ public class DefaultInternalFilter extends IdAuthFilter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.authentication.common.service.filter.IdAuthFilter#validateSignature(
-	 * java.lang.String, byte[])
-	 */
-	@Override
-	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#
 	 * checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
 	 */
