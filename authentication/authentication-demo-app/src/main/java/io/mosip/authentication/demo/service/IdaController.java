@@ -557,8 +557,8 @@ public class IdaController {
 			identityBlock.put("biometrics", mapper.readValue(capture, Map.class).get("biometrics"));
 		}
 		responsetextField.setText("Encrypting Auth Request...");
-		System.err.println("******* Request before encryption ************ \n\n");
-		System.err.println(identityBlock);
+		System.out.println("******* Request before encryption ************ \n\n");
+		System.out.println(mapper.writeValueAsString(identityBlock));
 		EncryptionRequestDto encryptionRequestDto = new EncryptionRequestDto();
 		encryptionRequestDto.setIdentityRequest(identityBlock);
 		EncryptionResponseDto kernelEncrypt = null;
@@ -588,8 +588,7 @@ public class IdaController {
 		HttpEntity<Map> httpEntity = new HttpEntity<>(authRequestMap);
 		String url = getUrl();
 		System.out.println("Auth URL: " + url);
-		System.err.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
-		System.out.println(identityBlock);
+		System.out.println("Auth Request : \n" + new ObjectMapper().writeValueAsString(authRequestMap));
 		try {
 			ResponseEntity<Map> authResponse = restTemplate.exchange(url,
 					HttpMethod.POST, httpEntity, Map.class);
@@ -607,8 +606,8 @@ public class IdaController {
 				responsetextField.setStyle("-fx-text-fill: red; -fx-font-size: 20px; -fx-font-weight: bold");
 			}
 
-			System.err.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
-			System.err.println(authResponse.getBody());
+			System.out.println("Auth Response : \n" + new ObjectMapper().writeValueAsString(authResponse));
+			System.out.println(authResponse.getBody());
 		} catch (Exception e) {
 			e.printStackTrace();
 			responsetextField.setText("Authentication Failed with Error");
