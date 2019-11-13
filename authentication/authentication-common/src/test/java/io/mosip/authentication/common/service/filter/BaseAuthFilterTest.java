@@ -39,10 +39,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, JWSValidation.class })
 public class BaseAuthFilterTest {
 
 	private final class ServletInputStreamExtension extends ServletInputStream {
@@ -101,12 +102,17 @@ public class BaseAuthFilterTest {
 
 	@Mock
 	BaseAuthFilter ba = mock(BaseAuthFilter.class);
+	
+	@Autowired
+	private JWSValidation jwsValidation;
+	
 
 	@Before
 	public void setup() {
 		ReflectionTestUtils.setField(baseAuthFilter, "env", env);
 		ReflectionTestUtils.setField(baseAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseAuthFilter, "keyManager", keyManager);
+		ReflectionTestUtils.setField(baseAuthFilter, "jwsValidation", jwsValidation);
 	}
 
 	@Test
