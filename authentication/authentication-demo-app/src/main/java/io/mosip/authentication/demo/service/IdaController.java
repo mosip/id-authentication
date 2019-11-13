@@ -266,14 +266,26 @@ public class IdaController {
 		
 		if (faceAuthType.isSelected()) {
 			faceCapture = captureFace();
+			if(!faceCapture.contains("\"biometrics\"")) {
+				updateSendButton();
+				return;
+			}
 		}
 		
 		if (fingerAuthType.isSelected()) {
 			fingerCapture = captureFingerprint();
+			if(!fingerCapture.contains("\"biometrics\"")) {
+				updateSendButton();
+				return;
+			}
 		}
 		
 		if (irisAuthType.isSelected()) {
 			irisCapture = captureIris();
+			if(!irisCapture.contains("\"biometrics\"")) {
+				updateSendButton();
+				return;
+			}
 		} 
 		
 		capture = combineCaptures(fingerCapture, irisCapture, faceCapture);
