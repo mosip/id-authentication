@@ -1762,7 +1762,7 @@ public class MasterDataServiceTest {
 	 *                }
 	 * 
 	 **/
-	@Test(expected = RequestException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void updateLocationDetailsIsActiveTest() {
 
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy2);
