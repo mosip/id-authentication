@@ -157,6 +157,8 @@ public class DemodedupeProcessor {
 
 		boolean isTransactionSuccessful = false;
 
+		String moduleName = ModuleName.DEMO_DEDUPE.toString();
+		String moduleId = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
 
@@ -176,7 +178,7 @@ public class DemodedupeProcessor {
 							+ DemoDedupeConstants.FILE_SEPARATOR + PacketFiles.ID.name());
 					bytesArray = IOUtils.toByteArray(demographicInfoStream);
 					packetInfoManager.saveDemographicInfoJson(bytesArray, registrationId,
-							packetMetaInfo.getIdentity().getMetaData());
+							packetMetaInfo.getIdentity().getMetaData(), moduleId, moduleName);
 
 					if (env.getProperty(DEMODEDUPEENABLE).trim().equalsIgnoreCase(TRUE)) {
 						duplicateDtos = performDemoDedupe(registrationStatusDto, object, description);
@@ -240,7 +242,8 @@ public class DemodedupeProcessor {
 						? JsonUtil.getJsonValues(jsonObject,
 								regProcessorIdentityJson.getIdentity().getGender().getValue())
 						: demographicData.getGender());
-				packetInfoManager.saveIndividualDemographicDedupeUpdatePacket(demoDedupeData, registrationId);
+				packetInfoManager.saveIndividualDemographicDedupeUpdatePacket(demoDedupeData, registrationId, moduleId,
+						moduleName);
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -294,11 +297,9 @@ public class DemodedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} finally {
-			/** Module-Id can be Both Succes/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode()
+			moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode()
 					: description.getCode();
 
-			String moduleName = ModuleName.DEMO_DEDUPE.toString();
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 			try {
 				if (isMatchFound) {
@@ -468,12 +469,13 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 				registrationStatusDto.setStatusComment(StatusUtil.POTENTIAL_MATCH_FOUND_IN_ABIS.getMessage());
 				registrationStatusDto.setSubStatusCode(StatusUtil.POTENTIAL_MATCH_FOUND_IN_ABIS.getCode());
+				description.setCode(PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getCode());
+				description.setMessage(PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getMessage());
 				saveManualAdjudicationData(registrationStatusDto);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						DemoDedupeConstants.SENDING_FOR_MANUAL);
-				description.setCode(PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getCode());
-				description.setMessage(PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getMessage());
+
 			}
 		}
 
@@ -493,6 +495,10 @@ public class DemodedupeProcessor {
 			InternalRegistrationStatusDto registrationStatusDto, MessageDTO object) {
 		boolean isDataSaved = false;
 		int numberOfProcessedPackets = 0;
+
+		String moduleId = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
+
+		String moduleName = ModuleName.DEMO_DEDUPE.toString();
 		for (DemographicInfoDto demographicInfoDto : duplicateDtos) {
 			InternalRegistrationStatusDto potentialMatchRegistrationDto = registrationStatusService
 					.getRegistrationStatus(demographicInfoDto.getRegId());
@@ -514,7 +520,7 @@ public class DemodedupeProcessor {
 				regDemoDedupeListDto.setRegtrnId(latestTransactionId);
 				regDemoDedupeListDto.setIsDeleted(Boolean.FALSE);
 				regDemoDedupeListDto.setCrBy(DemoDedupeConstants.CREATED_BY);
-				packetInfoManager.saveDemoDedupePotentialData(regDemoDedupeListDto);
+				packetInfoManager.saveDemoDedupePotentialData(regDemoDedupeListDto, moduleId, moduleName);
 				isDataSaved = true;
 				numberOfProcessedPackets++;
 			} else {
@@ -547,8 +553,10 @@ public class DemodedupeProcessor {
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				SyncTypeDto.NEW.toString());
 		if (!matchedRegIds.isEmpty()) {
+			String moduleId = PlatformErrorMessages.RPR_DEMO_SENDING_FOR_MANUAL.getCode();
+			String moduleName = ModuleName.DEMO_DEDUPE.toString();
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
-					DedupeSourceName.DEMO);
+					DedupeSourceName.DEMO, moduleId, moduleName);
 		} else {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(), DemoDedupeConstants.NO_MATCH_FOUND);

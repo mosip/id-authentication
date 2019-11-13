@@ -44,11 +44,14 @@ public enum PlatformSuccessMessages {
 
 	// Bio-De-dupe Success messages
 	/** The Constant PACKET_BIODEDUPE_SUCCESS. */
-	RPR_BIO_DEDUPE_SUCCESS(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "000", "Packet biodedupe successful"),
+	RPR_BIO_DEDUPE_SUCCESS(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "000", "Packet biodedupe successful"),
 
 	/** The Constant PACKET_BIOMETRIC_POTENTIAL_MATCH. */
-	RPR_BIO_METRIC_POTENTIAL_MATCH(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "000",
+	RPR_BIO_METRIC_POTENTIAL_MATCH(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "000",
 			"Potential match found while processing bio dedupe"),
+
+	RPR_BIO_LOST_PACKET_UNIQUE_MATCH_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "001",
+			"Unique Match was Found for the Biometrics Received"),
 
 	RPR_RE_PROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "000", "Reprocessor Success"),
 

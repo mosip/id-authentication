@@ -190,8 +190,8 @@ public class BioDedupeProcessorTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn("1233445566".getBytes("UTF-16"));
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn(ERROR);
-		Mockito.doNothing().when(packetInfoManager).saveManualAdjudicationData(any(), any(), any());
-		Mockito.doNothing().when(packetInfoManager).saveRegLostUinDet(any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveManualAdjudicationData(any(), any(), any(), any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveRegLostUinDet(any(), any(), any(), any());
 
 		Identity identity = new Identity();
 		regProcessorIdentityJson.setIdentity(identity);

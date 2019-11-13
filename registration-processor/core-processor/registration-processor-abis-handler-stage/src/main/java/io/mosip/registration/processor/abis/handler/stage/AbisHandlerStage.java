@@ -262,7 +262,10 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 			abisRequestDto.setCrBy(AbisHandlerStageConstant.USER);
 			abisRequestDto.setUpdBy(null);
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
-			packetInfoManager.saveAbisRequest(abisRequestDto);
+
+			String moduleId = PlatformSuccessMessages.RPR_ABIS_HANDLER_STAGE_SUCCESS.getCode();
+			String moduleName = ModuleName.ABIS_HANDLER.toString();
+			packetInfoManager.saveAbisRequest(abisRequestDto, moduleId, moduleName);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisHandlerStage::createIdentifyRequest()::exit");
@@ -352,7 +355,9 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 		regBioRefDto.setIsDeleted(Boolean.FALSE);
 		regBioRefDto.setRegId(regId);
 		regBioRefDto.setUpdBy(null);
-		packetInfoManager.saveBioRef(regBioRefDto);
+		String moduleId = PlatformSuccessMessages.RPR_ABIS_HANDLER_STAGE_SUCCESS.getCode();
+		String moduleName = ModuleName.ABIS_HANDLER.toString();
+		packetInfoManager.saveBioRef(regBioRefDto, moduleId, moduleName);
 	}
 
 	/**
@@ -400,12 +405,14 @@ public class AbisHandlerStage extends MosipVerticleAPIManager {
 			abisRequestDto.setCrBy(AbisHandlerStageConstant.USER);
 			abisRequestDto.setUpdBy(null);
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
+			String moduleId = PlatformSuccessMessages.RPR_ABIS_HANDLER_STAGE_SUCCESS.getCode();
+			String moduleName = ModuleName.ABIS_HANDLER.toString();
 			if (abisProcessedInsertAppCodeList != null && abisProcessedInsertAppCodeList.contains(appCode)) {
 				abisRequestDto.setStatusCode(AbisStatusCode.ALREADY_PROCESSED.toString());
-				packetInfoManager.saveAbisRequest(abisRequestDto);
+				packetInfoManager.saveAbisRequest(abisRequestDto, moduleId, moduleName);
 			} else {
 				abisRequestDto.setStatusCode(AbisStatusCode.IN_PROGRESS.toString());
-				packetInfoManager.saveAbisRequest(abisRequestDto);
+				packetInfoManager.saveAbisRequest(abisRequestDto, moduleId, moduleName);
 			}
 
 		}

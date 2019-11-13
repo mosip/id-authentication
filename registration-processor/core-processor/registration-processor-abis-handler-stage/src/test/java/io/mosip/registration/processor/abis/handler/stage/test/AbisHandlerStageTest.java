@@ -131,8 +131,8 @@ public class AbisHandlerStageTest {
 
 		Mockito.when(packetInfoManager.getBioRefIdByRegId(any())).thenReturn(bioRefDtos);
 
-		Mockito.doNothing().when(packetInfoManager).saveBioRef(any());
-		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any());
+		Mockito.doNothing().when(packetInfoManager).saveBioRef(any(), any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any(), any(), any());
 
 		RegDemoDedupeListDto regDemoDedupeListDto = new RegDemoDedupeListDto();
 		regDemoDedupeListDto.setMatchedRegId("10003100030001520190422074511");
@@ -160,8 +160,8 @@ public class AbisHandlerStageTest {
 		bioRefDtos.add(regBioRefDto);
 		Mockito.when(packetInfoManager.getBioRefIdByRegId(any())).thenReturn(bioRefDtos);
 
-		Mockito.doNothing().when(packetInfoManager).saveBioRef(any());
-		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any());
+		Mockito.doNothing().when(packetInfoManager).saveBioRef(any(), any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any(), any(), any());
 
 		RegDemoDedupeListDto regDemoDedupeListDto = new RegDemoDedupeListDto();
 		regDemoDedupeListDto.setMatchedRegId("10003100030001520190422074511");
@@ -216,8 +216,8 @@ public class AbisHandlerStageTest {
 
 		Mockito.when(packetInfoManager.getBioRefIdByRegId(any())).thenReturn(bioRefDtos);
 
-		Mockito.doNothing().when(packetInfoManager).saveBioRef(any());
-		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any());
+		Mockito.doNothing().when(packetInfoManager).saveBioRef(any(), any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any(), any(), any());
 
 		Mockito.when(packetInfoManager.getDemoListByTransactionId(any())).thenReturn(regDemoDedupeListDtoList);
 
@@ -242,7 +242,7 @@ public class AbisHandlerStageTest {
 		bioRefDtos.add(bioRefDto);
 		Mockito.when(packetInfoManager.getBioRefIdByRegId(any())).thenReturn(bioRefDtos);
 
-		Mockito.doNothing().when(packetInfoManager).saveBioRef(any());
+		Mockito.doNothing().when(packetInfoManager).saveBioRef(any(), any(), any());
 
 		AbisRequestDto abisRequestDto = new AbisRequestDto();
 		abisRequestDto.setAbisAppCode("ABIS1");
@@ -250,7 +250,7 @@ public class AbisHandlerStageTest {
 		abisRequestDtoList.add(abisRequestDto);
 		Mockito.when(packetInfoManager.getAbisRequestsByBioRefId(any())).thenReturn(abisRequestDtoList);
 
-		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any());
+		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any(), any(), any());
 
 		Mockito.when(packetInfoManager.getDemoListByTransactionId(any())).thenReturn(regDemoDedupeListDtoList);
 

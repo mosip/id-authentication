@@ -374,6 +374,9 @@ public enum PlatformErrorMessages {
 	REGISTRATION_ID_NOT_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "002",
 			"RegistrationId not found for given bio ref Id"),
 
+	RPR_BIO_LOST_PACKET_MULTIPLE_MATCH_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "003",
+			"Multiple Match was Found for the Biometrics Received"),
+
 	/** The abis reference id not found. */
 	// stages - Abis Middleware
 	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001", "Unable to Find ABIS Reference ID"),
