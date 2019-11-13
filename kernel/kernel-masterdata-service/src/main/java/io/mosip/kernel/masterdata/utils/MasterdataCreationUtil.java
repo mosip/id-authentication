@@ -5,6 +5,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -243,7 +244,7 @@ public class MasterdataCreationUtil {
 			E primaryEntity = getResultSet(entity, primaryLang, id, primaryKeyCol);
 			E secondaryEntity = getResultSet(entity, secondaryLang, id, primaryKeyCol);
 			if (activeDto == true) {
-				if (secondaryEntity != null && primaryEntity!=null) {
+				if (secondaryEntity != null) {
 					try {
 						Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
 						Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
@@ -257,6 +258,9 @@ public class MasterdataCreationUtil {
 								activeSecondary = (boolean) field.get(secondaryEntity);
 							}
 						}
+					}catch(Exception e)
+					{
+						e.printStackTrace();
 					}
 					if(activeSecondary==true)
 					{
