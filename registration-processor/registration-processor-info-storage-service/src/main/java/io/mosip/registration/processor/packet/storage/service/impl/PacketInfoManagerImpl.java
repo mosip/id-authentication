@@ -1,6 +1,9 @@
 package io.mosip.registration.processor.packet.storage.service.impl;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -454,6 +457,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
 				manualVerificationEntity.setCrBy("SYSTEM");
+				manualVerificationEntity.setCrDtimes(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+				manualVerificationEntity.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
 				manualVerificationEntity.setTrnTypCode(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
@@ -948,6 +953,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			regLostUinDetEntity.setId(regLostUinDetPKEntity);
 			regLostUinDetEntity.setLatestRegId(latestRegId);
 			regLostUinDetEntity.setCrBy("SYSTEM");
+			regLostUinDetEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+			regLostUinDetEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 			regLostUinDetEntity.setIsDeleted(false);
 
 			regLostUinDetRepository.save(regLostUinDetEntity);

@@ -7,9 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 /**
  * The Class RegAbisRefEntity.
  */
@@ -34,7 +31,6 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 
 	/** The cr dtimes. */
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
 	/** The updated by. */
@@ -43,7 +39,6 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 
 	/** The cr dtimes. */
 	@Column(name = "upd_dtimes", nullable = false, updatable = false)
-	@CreationTimestamp
 	private LocalDateTime updateDtimes;
 
 	/** The is deleted. */
@@ -52,7 +47,6 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 
 	/** The del dtimes. */
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	/**

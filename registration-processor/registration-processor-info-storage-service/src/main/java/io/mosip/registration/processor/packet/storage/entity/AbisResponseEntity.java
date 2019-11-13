@@ -2,14 +2,10 @@ package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * The persistent class for the abis_response database table.
@@ -24,11 +20,10 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	private String crBy;
 
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
+
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	@Column(name = "is_deleted")
@@ -38,7 +33,6 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	private String langCode;
 
 	@Column(name = "resp_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime respDtimes;
 
 	@Column(name = "resp_text")
@@ -54,13 +48,10 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	private String updBy;
 
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
 	@Column(name = "abis_req_id")
 	private String abisRequest;
-
-	
 
 	public AbisResponseEntity() {
 	}
@@ -118,9 +109,9 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	}
 
 	public void setRespText(byte[] respText) {
-		this.respText = respText!=null?respText:null;
+		this.respText = respText != null ? respText : null;
 	}
-	
+
 	public String getStatusCode() {
 		return this.statusCode;
 	}

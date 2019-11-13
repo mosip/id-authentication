@@ -44,6 +44,6 @@ public class VidEntity extends BaseEntity {
 	/**
 	 * The field createdtimes
 	 */
-	@Column(name = "vid_expiry")
+	@Column(name = "expiry_dtimes")
 	private LocalDateTime vidExpiry;
 }

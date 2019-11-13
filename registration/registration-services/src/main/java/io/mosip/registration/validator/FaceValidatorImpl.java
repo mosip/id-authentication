@@ -136,9 +136,9 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 		}
 		try {
 			scores = ibioApi.match(capturedBir, registeredBir, null);
-			int faceScore = 80;
+			int reqScore = 80;
 			for (Score score : scores) {
-				if (score.getInternalScore() >= faceScore) {
+				if (score.getScaleScore() >= reqScore) {
 					flag = true;
 				}
 			}

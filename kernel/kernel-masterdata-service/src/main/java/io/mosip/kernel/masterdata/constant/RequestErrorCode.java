@@ -12,7 +12,8 @@ public enum RequestErrorCode {
 	REQUEST_DATA_NOT_VALID("KER-MSD-999", "Invalid request input"),
 	REQUEST_INVALID_COLUMN("KER-MSD-319", "Invalid request input"),
 	REQUEST_INVALID_SEC_LANG_ID("KER-MSD-999", "Invalid id passed for Secondary language"),
-	INTERNAL_SERVER_ERROR("KER-MSD-500", "Internal server error");
+	INTERNAL_SERVER_ERROR("KER-MSD-500", "Internal server error"),
+	ALREADY_ACTIVE_OR_INACTIVE("KER-MSD-998","Already activated or deactivated");
 
 	private final String errorCode;
 	private final String errorMessage;

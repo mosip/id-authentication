@@ -23,6 +23,7 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -109,9 +110,9 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		}
 		try {
 			scores = ibioApi.match(capturedBir,registeredBir, null);
-			int faceScore = 80;
+			int reqScore = 80;
 			for (Score score : scores) {
-				if (score.getInternalScore() >= faceScore) {
+				if (score.getScaleScore() >= reqScore) {
 					flag = true;
 				}
 			}

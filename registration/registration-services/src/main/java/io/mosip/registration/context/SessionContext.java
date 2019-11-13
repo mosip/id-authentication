@@ -396,7 +396,6 @@ public class SessionContext {
 	 * Creating Security Context
 	 */
 	private static void createSecurityContext(UserDTO userDTO) {
-		
 		if(null != authModes && null != validAuthModes && authModes.containsAll(validAuthModes)) {
 			userContext = sessionContext.new UserContext();
 			if (userDTO != null) {
