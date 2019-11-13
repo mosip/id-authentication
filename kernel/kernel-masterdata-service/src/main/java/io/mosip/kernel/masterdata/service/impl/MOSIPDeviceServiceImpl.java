@@ -31,6 +31,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
+	private static final String UPDATION_SUCCESSFUL = "MDS Details updated successfully";
 	@Autowired
 	MOSIPDeviceServiceRepository mosipDeviceServiceRepository;
 
@@ -92,6 +93,42 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 		}
 		return MapperUtils.map(crtMosipDeviceService, MOSIPDeviceServiceExtDto.class);
 
+	}
+
+	@Override
+	@Transactional
+	public String updateMOSIPDeviceService(MOSIPDeviceServiceDto dto) {
+		try {
+			MOSIPDeviceService crtMosipDeviceService = null;
+			MOSIPDeviceService entity = null;
+			if(dto.getDeviceProviderId() == null || dto.getId() == null || dto.getMake() == null || dto.getModel() == null
+					|| dto.getRegDeviceSubCode() == null || dto.getRegDeviceTypeCode() == null || dto.getSwBinaryHash() == null 
+					|| dto.getSwCreateDateTime() == null || dto.getSwExpiryDateTime() == null || dto.getSwVersion() == null) {
+				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorCode(),
+						MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorMessage());
+			}	 
+			if(deviceProviderRepository.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceProviderId()) == null) {
+				throw new RequestException(MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
+						MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
+			}
+			entity = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceService.class);
+			entity.setIsActive(dto.isActive());
+			crtMosipDeviceService = mosipDeviceServiceRepository.update(entity);
+
+			MOSIPDeviceServiceHistory entityHistory = new MOSIPDeviceServiceHistory();
+			MapperUtils.map(crtMosipDeviceService, entityHistory);
+			MapperUtils.setBaseFieldValue(crtMosipDeviceService, entityHistory);
+			entityHistory.setEffectDateTime(crtMosipDeviceService.getCreatedDateTime());
+			entityHistory.setCreatedDateTime(crtMosipDeviceService.getCreatedDateTime());
+			mosipDeviceServiceHistoryRepository.create(entityHistory);
+			
+			
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorCode(),
+					MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(exception));
+		}
+		return UPDATION_SUCCESSFUL;
 	}
 
 }

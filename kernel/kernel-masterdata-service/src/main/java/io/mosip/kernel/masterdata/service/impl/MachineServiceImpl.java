@@ -446,7 +446,7 @@ public class MachineServiceImpl implements MachineService {
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
-		pageUtils.validateSortField(Machine.class, dto.getSort());
+		pageUtils.validateSortField(MachineSearchDto.class,Machine.class, dto.getSort());
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();

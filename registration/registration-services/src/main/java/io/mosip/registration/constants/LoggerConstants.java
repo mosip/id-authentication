@@ -44,6 +44,7 @@ public class LoggerConstants {
 	private static final String RE_REGISTER_PKT = APP_NAME + "RE_REGISTER_PACKET - ";
 	private static final String REGISTER_PKT = APP_NAME + "PACKET_APPROVAL - ";
 	private static final String ALERT_GENERATION = APP_NAME + "ALERT_CONTROLLER - ";
+	private static final String DEVICE = APP_NAME + "DEVICE - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -188,6 +189,9 @@ public class LoggerConstants {
 	public static final String LOG_GET_REGISTER_PKT = REGISTER_PKT + "GET";
 	public static final String LOG_UPADTE_REGISTER_PKT = REGISTER_PKT + "UPDATE_STATUS";
 	public static final String LOG_ALERT_GENERATION = ALERT_GENERATION + "ALERT_GENERATION";
+	
+
+	public static final String STREAMER = ALERT_GENERATION + "STREAMER";
 
 	
 }

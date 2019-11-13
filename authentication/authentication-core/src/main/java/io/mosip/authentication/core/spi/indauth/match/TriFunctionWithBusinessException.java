@@ -12,7 +12,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * @author Dinesh Karuppiah.T
  */
 @FunctionalInterface
-public interface BiFunctionWithBusinessException<T, U, R> {
+public interface TriFunctionWithBusinessException<T, U, V, R> {
 
 	/**
 	 * Applies this function to the given arguments.
@@ -22,6 +22,6 @@ public interface BiFunctionWithBusinessException<T, U, R> {
 	 * @return the function result
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	R apply(T t, U u) throws IdAuthenticationBusinessException;
+	R apply(T t, U u, V v) throws IdAuthenticationBusinessException;
 
 }

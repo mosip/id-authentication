@@ -13,18 +13,22 @@ public enum VIDGeneratorErrorCode {
 	 */
 	VID_NOT_AVAILABLE("KER-VID-001", "VID not available for allocation"),
 	/**
-	 * VID_STATUS_NOT_FOUND
+	 * VID_NOT_ISSUED
 	 */
-	VID_STATUS_NOT_FOUND("KER-VIG-003", "Given VID status not found"),
+	VID_EXPIRY_DATE_EMPTY("KER-VID-002", "Vid expiry date is empty"),
 	/**
 	 * VID_NOT_ISSUED
 	 */
-	VID_NOT_ISSUED("KER-VIG-004", "Given VID is not in ISSUED status"),
+	VID_EXPIRY_DATE_INVALID("KER-VID-003", "Vid expiry date is before current utc time"),
+	/**
+	 * VID_NOT_ISSUED
+	 */
+	VID_EXPIRY_DATE_PATTERN_INVALID("KER-VID-004", "Vid expiry date pattern is invalid, should be in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern"),
 	/**
 	 * INTERNAL_SERVER_ERROR
 	 */
-	INTERNAL_SERVER_ERROR("KER-VIG-005", "Internal Server Error"),
-	CONFIG_SERVER_FETCH_FAILED("KER-VIG-006", "Error in retrieving from config server");
+	INTERNAL_SERVER_ERROR("KER-VID-005", "Internal Server Error"),
+	CONFIG_SERVER_FETCH_FAILED("KER-VID-006", "Error in retrieving from config server");
 
 	/**
 	 * The error code

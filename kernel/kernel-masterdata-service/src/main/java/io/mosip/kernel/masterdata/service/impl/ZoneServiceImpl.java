@@ -89,7 +89,7 @@ public class ZoneServiceImpl implements ZoneService {
 				throw new DataNotFoundException(ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorCode(),
 						ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorMessage());
 			}
-			zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneUser.getZoneCode(), zoneUser.getLangCode());
+			zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneUser.getZoneCode(), langCode);
 			if (zone == null) {
 				throw new DataNotFoundException(ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorCode(),
 						ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorMessage());

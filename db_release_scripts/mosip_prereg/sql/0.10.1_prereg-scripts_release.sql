@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_audit
--- Release Version 	: 0.10.0
--- Purpose    		: Database Alter scripts for the release for Audit DB.       
+-- Database Name: mosip_prereg
+-- Release Version 	: 0.10.1
+-- Purpose    		: Database Alter scripts for the release for Pre Registration DB.       
 -- Create By   		: Sadanandegowda
--- Created Date		: 06-Sep-2019
+-- Created Date		: 23-Sep-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 
-\c mosip_audit sysadmin
+\c mosip_prereg sysadmin

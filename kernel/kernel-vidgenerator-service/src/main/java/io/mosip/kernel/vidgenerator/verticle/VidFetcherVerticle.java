@@ -3,7 +3,6 @@ package io.mosip.kernel.vidgenerator.verticle;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
-import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.vidgenerator.constant.EventType;
 import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
 import io.mosip.kernel.vidgenerator.router.VidFetcherRouter;
@@ -33,7 +32,7 @@ public class VidFetcherVerticle extends AbstractVerticle {
 	 */
 	private VidFetcherRouter vidFetcherRouter;
 
-	private AuthHandler authHandler;
+	//private AuthHandler authHandler;
 
 	/**
 	 * Initialize beans
@@ -41,7 +40,7 @@ public class VidFetcherVerticle extends AbstractVerticle {
 	 * @param context context
 	 */
 	public VidFetcherVerticle(final ApplicationContext context) {
-		authHandler = (AuthHandler) context.getBean("authHandler");
+		//authHandler = (AuthHandler) context.getBean("authHandler");
 		vidFetcherRouter = (VidFetcherRouter) context.getBean("vidFetcherRouter");
 		environment = context.getEnvironment();
 	}
@@ -57,12 +56,14 @@ public class VidFetcherVerticle extends AbstractVerticle {
 
 		// Parent router so that global options can be applied to it in future
 		Router parentRouter = Router.router(vertx);
-		// giving the context path to parent router
-		parentRouter.route(environment.getProperty(VIDGeneratorConstant.SERVER_SERVLET_PATH))
-				.consumes(VIDGeneratorConstant.APPLICATION_JSON).produces(VIDGeneratorConstant.APPLICATION_JSON);
+		// giving the root to parent router
+		parentRouter.route().consumes(VIDGeneratorConstant.APPLICATION_JSON)
+				.produces(VIDGeneratorConstant.APPLICATION_JSON);
 
 		// mount all the routers to parent router
-		parentRouter.mountSubRouter(VIDGeneratorConstant.VVID, vidFetcherRouter.createRouter(vertx));
+		parentRouter.mountSubRouter(
+				environment.getProperty(VIDGeneratorConstant.SERVER_SERVLET_PATH) + VIDGeneratorConstant.VVID,
+				vidFetcherRouter.createRouter(vertx));
 
 		httpServer.requestHandler(parentRouter);
 		httpServer.listen(Integer.parseInt(environment.getProperty(VIDGeneratorConstant.SERVER_PORT)), result -> {
@@ -70,8 +71,8 @@ public class VidFetcherVerticle extends AbstractVerticle {
 				LOGGER.debug("vid fetcher verticle deployed");
 				vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
 				future.complete();
-			} else if(result.failed()) {
-				LOGGER.error("vid fetcher verticle deployment failed with cause ",result.cause());
+			} else if (result.failed()) {
+				LOGGER.error("vid fetcher verticle deployment failed with cause ", result.cause());
 				future.fail(result.cause());
 			}
 		});

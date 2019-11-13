@@ -121,6 +121,10 @@ public interface AuthType {
 	public default String getType() {
 		return getAuthTypeImpl().getType();
 	}
+	
+	public default String[] getTypes() {
+		return new String[] {getType()};
+	}
 
 	/**
 	 * Checks if is auth type info available.

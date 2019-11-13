@@ -9,7 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.authentication.demo.service.IdaController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.authentication.demo.service.IdaController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -48,11 +48,12 @@
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                            <children>
-                              <GridPane prefHeight="26.0" prefWidth="486.0">
+                              <GridPane prefHeight="26.0" prefWidth="500.0">
                                 <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+	                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+	                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -60,7 +61,9 @@
                                  <children>
                                     <Label text="Authentication Type" />
                                     <CheckBox fx:id="fingerAuthType" mnemonicParsing="false" onAction="#onFingerPrintAuth" text="Finger Print" GridPane.columnIndex="1" />
-                                    <CheckBox fx:id="otpAuthType" mnemonicParsing="false" onAction="#onOTPAuth" text="OTP" GridPane.columnIndex="2" />
+                                    <CheckBox fx:id="irisAuthType" mnemonicParsing="false" onAction="#onIrisAuth" text="Iris" GridPane.columnIndex="2" />
+                                    <CheckBox fx:id="faceAuthType" mnemonicParsing="false" onAction="#onFaceAuth" text="Face" GridPane.columnIndex="3" />
+                                    <CheckBox fx:id="otpAuthType" mnemonicParsing="false" onAction="#onOTPAuth" text="OTP" GridPane.columnIndex="4" />
                                  </children>
                               </GridPane>
                            </children>
@@ -111,12 +114,12 @@
                               <Insets />
                            </GridPane.margin>
                         </AnchorPane>
-                        <AnchorPane fx:id="fingerPrintAnchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;">
+                        <AnchorPane fx:id="bioAnchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;">
                            <children>
-                              <Label layoutX="14.0" layoutY="1.0" text="Finger Auth" />
-                              <Button fx:id="captureFinger" layoutX="45.0" layoutY="39.0" mnemonicParsing="false" onAction="#onCaptureFingerPrint" text="Capture FingerPrint" />
-                              <Label ellipsisString="" layoutX="14.0" layoutY="88.0" prefHeight="39.0" prefWidth="131.0" text="Finger Sub Type" />
-                              <ComboBox fx:id="fingerSubType" layoutX="145.0" layoutY="88.0" onAction="#onSubTypeSelection" prefWidth="150.0" />
+                              <Label layoutX="14.0" layoutY="1.0" text="Bio Auth" />
+                              <Button fx:id="capture" layoutX="45.0" layoutY="39.0" mnemonicParsing="false" onAction="#onCapture" text="Capture" />
+                              <Label ellipsisString="" layoutX="14.0" layoutY="88.0" prefHeight="39.0" prefWidth="131.0" text="Count" />
+                              <ComboBox fx:id="count" layoutX="130.0" layoutY="88.0" onAction="#onSubTypeSelection" prefWidth="150.0" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -130,7 +133,7 @@
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                      <children>
                         <Label layoutX="18.0" layoutY="1.0" text="Response" />
-                        <TextField fx:id="responsetextField" layoutX="56.0" layoutY="27.0" prefHeight="39.0" prefWidth="425.0" />
+                        <TextField fx:id="responsetextField" layoutX="56.0" layoutY="27.0" prefHeight="39.0" prefWidth="500.0" />
                      </children>
                   </AnchorPane>
                </children>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.DeviceProviderManagementErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -36,7 +37,7 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository
 import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
-import io.mosip.kernel.masterdata.service.DeviceProviderService;
+
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -49,7 +50,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
-public class DeviceProviderServiceImpl implements DeviceProviderService {
+public class DeviceProviderServiceImpl implements DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -468,5 +469,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		return MapperUtils.map(updtDeviceProvider, DeviceProviderExtnDto.class);
 	}
+
+	
 
 }

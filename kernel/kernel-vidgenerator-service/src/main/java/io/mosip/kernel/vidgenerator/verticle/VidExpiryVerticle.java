@@ -38,7 +38,7 @@ public class VidExpiryVerticle extends AbstractVerticle {
 			LOGGER.debug("scheduler verticle deployment successfull");
 			cronScheduling(vertx);
 		} else if (result.failed()) {
-			LOGGER.error("scheduler verticle deployment failed with cause ",result.cause());
+			LOGGER.error("scheduler verticle deployment failed with cause ", result.cause());
 		}
 	}
 
@@ -51,13 +51,11 @@ public class VidExpiryVerticle extends AbstractVerticle {
 	private void cronScheduling(Vertx vertx) {
 
 		EventBus eventBus = vertx.eventBus();
-		
+
 		MessageConsumer<JsonObject> consumer = eventBus.consumer(VidSchedulerConstants.NAME_VALUE);
-		consumer.handler (
-		    message -> {
-		        vidService.expireAndRenew();
-		      }
-		);
+		
+		// handle chime event
+		consumer.handler(message -> vidService.expireAndRenew());
 
 		JsonObject timer = new JsonObject()
 				.put(VidSchedulerConstants.TYPE, environment.getProperty(VidSchedulerConstants.TYPE_VALUE))

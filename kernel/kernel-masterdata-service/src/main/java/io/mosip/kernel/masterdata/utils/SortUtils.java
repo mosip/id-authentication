@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
@@ -135,10 +136,28 @@ public class SortUtils {
 			throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorCode(),
 					MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorMessage());
 		}
-		
+		else if(OrderEnum.asc.name().equalsIgnoreCase(sortType) || OrderEnum.desc.name().equalsIgnoreCase(sortType))
+		{
+			return ;
+		}
+		else
+		{
+			throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_TYPE.getErrorCode(), String
+					.format(MasterdataSearchErrorCode.INVALID_SORT_TYPE.getErrorMessage(), sortType));
+		}
 	}
 
 	public <T> void validateSortLocationField(Class<LocationSearchDto> clazz, Class<Location> class2,List<SearchSort> searchSorts) {
+		List<Field> fields = extractFields(clazz);
+		List<Field> entityFields = extractEntityFields(class2);
+		fields.addAll(entityFields);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+			findType(searchSort.getSortType());
+		}
+	}
+	
+	public <T extends BaseEntity,E> void validateSortField(Class<E> clazz, Class<T> class2,List<SearchSort> searchSorts) {
 		List<Field> fields = extractFields(clazz);
 		List<Field> entityFields = extractEntityFields(class2);
 		fields.addAll(entityFields);
