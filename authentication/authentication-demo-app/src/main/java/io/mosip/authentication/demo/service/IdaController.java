@@ -264,15 +264,17 @@ public class IdaController {
 		String irisCapture = null;
 		String faceCapture = null;
 		
-		if (fingerAuthType.isSelected()) {
-			fingerCapture = captureFingerprint();
-		} 
-		if (irisAuthType.isSelected()) {
-			irisCapture = captureIris();
-		} 
 		if (faceAuthType.isSelected()) {
 			faceCapture = captureFace();
 		}
+		
+		if (fingerAuthType.isSelected()) {
+			fingerCapture = captureFingerprint();
+		}
+		
+		if (irisAuthType.isSelected()) {
+			irisCapture = captureIris();
+		} 
 		
 		capture = combineCaptures(fingerCapture, irisCapture, faceCapture);
 		
