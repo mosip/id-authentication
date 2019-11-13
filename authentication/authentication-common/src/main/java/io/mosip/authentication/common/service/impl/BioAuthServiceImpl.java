@@ -118,42 +118,36 @@ public class BioAuthServiceImpl implements BioAuthService {
 					restHelper.requestSync(restBuilder.buildRequest(RestServicesConstants.DEVICE_VERIFICATION_SERVICE,
 							requestWrapper, ResponseWrapper.class));
 				} catch (RestServiceException e) {
-					if (e.getResponseBodyAsString().isPresent()) {
-						try {
-							ResponseWrapper response = mapper.readValue(e.getResponseBodyAsString().get(),
-									ResponseWrapper.class);
-							response.getErrors().forEach(error -> {
-								if (((ServiceError) error).getErrorCode().equals("ADM-DPM-001")
-										|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-002")) {
-									throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_DEVICEID);
-								} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-003")
-										|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-004")) {
-									throw new IdAuthUncheckedException(
-											IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-											String.format(
-													IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
-															.getErrorMessage(),
-													"request/biometrics/" + index + "/digitalId/deviceProvider"));
+					if (e.getResponseBody().isPresent()) {
+						ResponseWrapper response = (ResponseWrapper) e.getResponseBody().get();
+						response.getErrors().forEach(error -> {
+							if (((ServiceError) error).getErrorCode().equals("ADM-DPM-001")
+									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-002")) {
+								throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_DEVICEID);
+							} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-003")
+									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-004")) {
+								throw new IdAuthUncheckedException(
+										IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(
+												IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
+														.getErrorMessage(),
+												"request/biometrics/" + index + "/digitalId/deviceProvider"));
 
-								} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-005")
-										|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-006")) {
-									throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_MDS);
-								} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-007")
-										|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-008")) {
-									throw new IdAuthUncheckedException(
-											IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-											String.format(
-													IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
-															.getErrorMessage(),
-													"request/biometrics/" + index + "/deviceServiceVersion"));
-								} else {
-									throw new IdAuthUncheckedException(
-											IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-								}
-							});
-						} catch (IOException ex) {
-							throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
-						}
+							} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-005")
+									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-006")) {
+								throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_MDS);
+							} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-007")
+									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-008")) {
+								throw new IdAuthUncheckedException(
+										IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(
+												IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
+														.getErrorMessage(),
+												"request/biometrics/" + index + "/deviceServiceVersion"));
+							} else {
+								throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+							}
+						});
 					} else {
 						throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 					}
