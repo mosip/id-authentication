@@ -243,7 +243,7 @@ public class MasterdataCreationUtil {
 			E primaryEntity = getResultSet(entity, primaryLang, id, primaryKeyCol);
 			E secondaryEntity = getResultSet(entity, secondaryLang, id, primaryKeyCol);
 			if (activeDto == true) {
-				if (secondaryEntity != null && primaryEntity!=null) {
+				if (secondaryEntity != null) {
 					try {
 						Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
 						Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
