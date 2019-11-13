@@ -26,22 +26,22 @@ public class InternalAuthConfig extends IdAuthConfig {
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isFingerAuthEnabled()
 	 */
 	protected boolean isFingerAuthEnabled() {
-		return (environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigKey())
-				|| environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigKey()));
+		return (environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigNameValue())
+				|| environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue()));
 	}
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isFaceAuthEnabled()
 	 */
 	protected boolean isFaceAuthEnabled() {
-		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigKey());
+		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigNameValue());
 	}
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isIrisAuthEnabled()
 	 */
 	protected boolean isIrisAuthEnabled() {
-		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigKey());
+		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
 
 }

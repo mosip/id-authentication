@@ -14,21 +14,21 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "registered_device_master", schema = "master")
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper=true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeviceRegister {
+public class DeviceRegister extends BaseEntity {
 
 	@Id
 	@Column(name = "code")
 	private String deviceCode;
 
-	@Column(name = "type")
-	private String type;
+	@Column(name = "dtype_code")
+	private String dTypeCode;
 
-	@Column(name = "subtype")
-	private String subType;
+	@Column(name = "dstype_code")
+	private String dSubTypeCode;
 
 	@Column(name = "status_code")
 	private String statusCode;
@@ -38,6 +38,9 @@ public class DeviceRegister {
 
 	@Column(name = "device_sub_id")
 	private String deviceSubId;
+	
+	@Column(name="digital_id")
+	private String digitalId;
 
 	@Column(name = "provider_id")
 	private String deviceProviderId;
@@ -45,8 +48,8 @@ public class DeviceRegister {
 	@Column(name = "provider_name")
 	private String deviceProviderName;
 
-	@Column(name = "mosip_process")
-	private String mosipProcess;
+	@Column(name = "purpose")
+	private String purpose;
 
 	@Column(name = "firmware")
 	private String firmware;
@@ -60,8 +63,8 @@ public class DeviceRegister {
 	@Column(name = "expiry_date")
 	private LocalDateTime deviceExpiry;
 
-	@Column(name = "certification")
-	private byte[] certification;
+	@Column(name = "certification_level")
+	private String certificationLevel;
 
 	@Column(name = "foundational_trust_provider_iD")
 	private String foundationalTrustProviderID;
@@ -72,24 +75,10 @@ public class DeviceRegister {
 	@Column(name = "foundational_trust_certificate")
 	private byte[] foundationTrustCertificate;
 
-	@Column(name = "dpsignature")
+	@Column(name = "dprovider_signature")
 	private String dpSignature;
+	
+	@Column(name="serial_number",nullable=false)
+	private String serialNumber;
 
-	@Column(name = "cr_by", nullable = false, length = 256)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdDateTime;
-
-	@Column(name = "upd_by", length = 256)
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedDateTime;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedDateTime;
 }

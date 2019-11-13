@@ -483,8 +483,8 @@ public class SoftwareInstallationHandler {
 							|| (!jar.getName().contains(mosip)) && folder.equals(binFolder)
 							|| localManifestAttributes == null
 							|| !localManifestAttributes.containsKey(jar.getName()))) {
-
-				deletableJars.add(jar);
+				if(!jar.getName().contains("identy"))
+					deletableJars.add(jar);
 
 			}
 		}

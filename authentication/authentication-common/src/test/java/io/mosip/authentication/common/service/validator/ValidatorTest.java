@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -310,6 +311,8 @@ public class ValidatorTest {
 	public void validateAllowedAuthTypes() {
 		MockEnvironment mockEnv = new MockEnvironment();
 		mockEnv.setProperty("auth.types.allowed", "demo,otp");
+		mockEnv.setProperty("datetime.pattern","yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		mockEnv.setProperty("authrequest.received-time-allowed.minutes", "30");
 		ReflectionTestUtils.setField(authRequestValidator, "env", mockEnv);
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -506,7 +509,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
 		errors.getAllErrors().stream().forEach(err -> assertTrue(
-				Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType - XYZ for bioType FID"))));
+				Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType - XYZ for bioType FACE"))));
 	}
 
 	@Test
@@ -516,7 +519,7 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
-		dataDTO.setBioType("FID");
+		dataDTO.setBioType("FACE");
 		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
@@ -571,7 +574,7 @@ public class ValidatorTest {
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("LEFT_INDEX");
+		dataDTO.setBioSubType("Left IndexFinger");
 		dataDTO.setBioValue(
 				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -589,6 +592,10 @@ public class ValidatorTest {
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-002")));
 	}
 
+	/**
+	 * Since validation to more than 2 finger count is removed ignoring this test
+	 */
+	@Ignore
 	@Test
 	public void validateBioMetadataDetails_validateFingerRequestExceedingCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFinger();
@@ -597,7 +604,7 @@ public class ValidatorTest {
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("RIGHT_INDEX");
+		dataDTO.setBioSubType("Right IndexFinger");
 		dataDTO.setBioValue(
 				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -607,6 +614,7 @@ public class ValidatorTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
+		
 		DataDTO dataDTO1 = new DataDTO();// DataDTO
 		dataDTO1.setBioType("FMR");
 		dataDTO1.setBioSubType("UNKNOWN");
@@ -619,10 +627,12 @@ public class ValidatorTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO1.setData(dataDTO1);
 		biometrics.add(bioIdentityInfoDTO1);
+		
 		requestDto.setBiometrics(biometrics);
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-003")));
 	}
@@ -635,7 +645,7 @@ public class ValidatorTest {
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("IIR");
-		dataDTO.setBioSubType("RIGHT");
+		dataDTO.setBioSubType("Right Iris");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -661,7 +671,7 @@ public class ValidatorTest {
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("IIR");
-		dataDTO.setBioSubType("RIGHT");
+		dataDTO.setBioSubType("Right Iris");
 		dataDTO.setBioValue(
 				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -673,7 +683,7 @@ public class ValidatorTest {
 		biometrics.add(bioIdentityInfoDTO);
 		DataDTO dataDTO1 = new DataDTO();// DataDTO
 		dataDTO1.setBioType("IIR");
-		dataDTO1.setBioSubType("LEFT");
+		dataDTO1.setBioSubType("Left Iris");
 		dataDTO1.setBioValue(
 				"ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO1.setDeviceProviderID("cogent");
@@ -726,7 +736,7 @@ public class ValidatorTest {
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
-		dataDTO.setBioType("FID");
+		dataDTO.setBioType("FACE");
 		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
@@ -760,7 +770,7 @@ public class ValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("LEFT_INDEX");
+		dataDTO.setBioSubType("Left IndexFinger");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -793,7 +803,7 @@ public class ValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("IIR");
-		dataDTO.setBioSubType("LEFT");
+		dataDTO.setBioSubType("Left Iris");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");

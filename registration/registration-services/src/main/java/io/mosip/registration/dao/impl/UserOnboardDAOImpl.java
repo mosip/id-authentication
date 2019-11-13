@@ -128,7 +128,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				biometricId.setBioAttributeCode(iries.getIrisImageName());
 				biometricId.setBioTypeCode(RegistrationConstants.IRS);
 				biometricId.setUsrId(SessionContext.userContext().getUserId());
-				bioMetrics.setBioIsoImage(iries.getIris());
+				bioMetrics.setBioIsoImage(iries.getIrisIso());
 				bioMetrics.setNumberOfRetry(iries.getNumOfIrisRetry());
 				bioMetrics.setUserBiometricId(biometricId);
 				Double qualitySocre = iries.getQualityScore();
@@ -147,9 +147,9 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			UserBiometricId biometricId = new UserBiometricId();
 
 			biometricId.setBioAttributeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-			biometricId.setBioTypeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+			biometricId.setBioTypeCode(RegistrationConstants.FACE);
 			biometricId.setUsrId(SessionContext.userContext().getUserId());
-			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFace().getFace());
+			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFace().getFaceISO());
 			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFace().getNumOfRetries());
 			bioMetrics.setUserBiometricId(biometricId);
 			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFace().getQualityScore();

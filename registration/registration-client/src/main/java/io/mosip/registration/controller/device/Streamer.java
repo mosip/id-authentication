@@ -4,19 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.SocketTimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
-import io.mosip.registration.service.bio.BioService;
-import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
 
 @Component
 public class Streamer {
@@ -36,8 +33,33 @@ public class Streamer {
 	private Thread streamer_thread = null;
 	
 	public byte[] imageBytes=null;
+	
+	
+	//Last streaming image
+	private static Image streamImage;
+	
+	//Image View, which UI need to be shown
+	private static ImageView imageView;
 
-	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
+
+
+	//Set Streaming image
+	public void setStreamImage(Image streamImage) {
+		this.streamImage = streamImage;
+	}
+	
+	
+	//Set ImageView
+	public static void setImageView(ImageView imageView) {
+		Streamer.imageView = imageView;
+	}
+	
+	//Set Streaming image to ImageView
+	public void setStreamImageToImageView() {
+		imageView.setImage(streamImage);
+	}
+
+	public void startStream(RequestDetail requestDetail, ImageView streamImage, ImageView scanImage) {
 		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
@@ -49,7 +71,7 @@ public class Streamer {
 						urlStream=null;
 					}
 					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.STREAMING_PREP_MESSAGE);
-					urlStream = mosipBioDeviceManager.stream(bioType);
+					urlStream = mosipBioDeviceManager.stream(requestDetail);
 					if(urlStream==null) {
 						scanPopUpViewController.enableCloseButton();
 						scanPopUpViewController.setScanningMsg(RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"));
@@ -70,7 +92,10 @@ public class Streamer {
 						Image img = new Image(imageStream);
 						streamImage.setImage(img);	
 						if (null != scanImage) {
-							scanImage.setImage(img);
+							//scanImage.setImage(img);
+							
+							setImageView(scanImage);
+							setStreamImage(img);
 						}
 					} catch (IOException e) {
 					}

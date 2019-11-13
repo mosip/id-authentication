@@ -1,10 +1,11 @@
 DROP DATABASE IF EXISTS mosip_idmap;
 CREATE DATABASE mosip_idmap 
 	ENCODING = 'UTF8' 
---	LC_COLLATE = 'en_US.UTF-8' 
---	LC_CTYPE = 'en_US.UTF-8' 
+	LC_COLLATE = 'en_US.UTF-8' 
+	LC_CTYPE = 'en_US.UTF-8' 
 	TABLESPACE = pg_default 
-	OWNER = sysadmin;
+	OWNER = sysadmin
+	TEMPLATE  = template0;
 
 -- ddl-end --
 COMMENT ON DATABASE mosip_idmap IS 'idmap related entities and its data is stored in this database';

@@ -41,12 +41,14 @@ public class RegisteredDeviceDto extends BaseDto {
 	private String purpose;
 
 	private String firmware;
+	
+	private String digitalId;
 
 	private String make;
 
 	private String model;
 
-	private LocalDateTime expiryDate;
+	private String expiryDate;
 
 	private String certificationLevel;
 

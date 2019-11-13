@@ -273,7 +273,7 @@ public class BaseAuthRequestValidatorTest {
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("LEFT_THUMB");
+		dataDTO.setBioSubType("Left Thumb");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -282,7 +282,7 @@ public class BaseAuthRequestValidatorTest {
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
 		dataDTO1.setBioValue("iris img");
-		dataDTO1.setBioSubType("LEFT");
+		dataDTO1.setBioSubType("Left Iris");
 		dataDTO1.setBioType("IIR");
 		dataDTO1.setDeviceProviderID("provider001");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -291,7 +291,7 @@ public class BaseAuthRequestValidatorTest {
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO2 = new DataDTO();
 		dataDTO2.setBioValue("face img");
-		dataDTO2.setBioType("FID");
+		dataDTO2.setBioType("FACE");
 		dataDTO2.setBioSubType("Face");
 		dataDTO2.setDeviceProviderID("provider001");
 		dataDTO2.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -310,7 +310,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("bio-FID");
+		allowedAuthtype.add("bio-FACE");
 		allowedAuthtype.add("bio-FIR");
 		allowedAuthtype.add("bio-IIR");
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
@@ -515,7 +515,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO faceData = new DataDTO();
 		faceData.setBioValue("face img");
 		faceData.setBioSubType("face");
-		faceData.setBioType("FID");
+		faceData.setBioType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceValue.setData(faceData);
 
@@ -523,7 +523,7 @@ public class BaseAuthRequestValidatorTest {
 
 		faceData.setBioValue("face img");
 		faceData.setBioSubType("face");
-		faceData.setBioType("FID");
+		faceData.setBioType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceValue1.setData(faceData);
 		List<BioIdentityInfoDTO> faceIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();

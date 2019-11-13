@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCo
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.ParentOnHoldException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.LogDescription;
@@ -225,6 +226,20 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 					description.getMessage() + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
+		}catch(ParentOnHoldException e) {
+			registrationStatusDto.setStatusCode(registrationStatusDto.getStatusCode());
+			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(registrationStatusDto.getStatusComment()));
+			registrationStatusDto.setSubStatusCode(registrationStatusDto.getSubStatusCode());
+			registrationStatusDto.setLatestTransactionStatusCode(			registrationStatusMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
+			description.setCode(PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode());
+			description.setMessage(PlatformErrorMessages.OSI_VALIDATION_FAILED.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), description.getCode(), registrationId,
+					description.getMessage() + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
+			object.setIsValid(Boolean.FALSE);
+			
+			
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage
