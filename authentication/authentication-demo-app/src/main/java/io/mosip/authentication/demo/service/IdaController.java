@@ -72,7 +72,10 @@ import io.mosip.kernel.core.util.HMACUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -756,6 +759,20 @@ public class IdaController {
 
 	@FXML
 	private void onReset() {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Confirm Reset");
+		alert.setContentText("Are you sure to reset?");
+		ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+		ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+		alert.getButtonTypes().setAll(okButton, noButton);
+		alert.showAndWait().ifPresent(type -> {
+		        if (type.getButtonData().equals(ButtonType.YES.getButtonData())) {
+		    		reset();
+		        }
+		});
+	}
+
+	private void reset() {
 		fingerCount.getSelectionModel().select(0);
 		irisCount.getSelectionModel().select(0);
 		idValue.setText("");
