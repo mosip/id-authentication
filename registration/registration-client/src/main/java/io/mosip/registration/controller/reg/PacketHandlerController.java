@@ -466,6 +466,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
 							getScene(createRoot).setRoot(createRoot);
+							
+							SessionContext.setAutoLogout(false);
 						}
 					}
 
@@ -543,6 +545,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							} else {
 								getScene(createRoot).setRoot(createRoot);
 								demographicDetailController.lostUIN();
+								
+								SessionContext.setAutoLogout(false);
 							}
 						}
 					} catch (IOException ioException) {
@@ -685,6 +689,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				getScene(uploadRoot);
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
+				//Enable Auto-Logout
+				SessionContext.setAutoLogout(true);
+				
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -741,6 +752,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 							} else {
 								getScene(root);
+								
+								SessionContext.setAutoLogout(false);
 							}
 						}
 					}
