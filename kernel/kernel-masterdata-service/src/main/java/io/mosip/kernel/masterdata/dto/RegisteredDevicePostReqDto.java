@@ -2,12 +2,15 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidCertificateLevel;
+import io.mosip.kernel.masterdata.validator.registereddevice.ValidFoundational;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidPurpose;
 import io.mosip.kernel.masterdata.validator.registereddevice.ValidStatusCode;
 import io.swagger.annotations.ApiModel;
@@ -16,19 +19,16 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "Device", description = "Device Detail resource")
+@ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId", "foundationalTrustSignature",
+		"foundationalTrustCertificate" })
 public class RegisteredDevicePostReqDto {
-
-	@NotBlank
-	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
-	private String code;
 
 	/**
 	 * Field for deviceTypeCode
 	 */
 	@NotBlank
 	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "dTypeCode", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String deviceTypeCode;
 
 	/**
@@ -36,7 +36,7 @@ public class RegisteredDevicePostReqDto {
 	 */
 	@NotBlank
 	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "dsTypeCode", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "deviceSTypeCode", required = true, dataType = "java.lang.String")
 	private String deviceSTypeCode;
 
 	/**
@@ -46,7 +46,7 @@ public class RegisteredDevicePostReqDto {
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "statusCode", required = true, dataType = "java.lang.String")
-	@ValidStatusCode(message = "Status Code is Invalid")
+	@ValidStatusCode(message = "Invalid Status received")
 	private String statusCode;
 
 	/**
@@ -61,7 +61,7 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 
-	@Size(min = 0, max = 64)
+	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "deviceSubId", required = true, dataType = "java.lang.String")
 	private String deviceSubId;
 
@@ -72,49 +72,20 @@ public class RegisteredDevicePostReqDto {
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "purpose", required = true, dataType = "java.lang.String")
-	@ValidPurpose(message = "Purpose value is inValide")
+	@ValidPurpose(message = "Invalid Purpose received")
 	private String purpose;
 
 	/**
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 128)
 	@ApiModelProperty(value = "firmware", required = true, dataType = "java.lang.String")
 	private String firmware;
-
+	
 	/**
 	 * Field for device name
 	 */
-	/*
-	 * @NotBlank
-	 * 
-	 * @Size(min=1, max=64)
-	 * 
-	 * @ApiModelProperty(value = "serialNumber", required = true, dataType =
-	 * "java.lang.String") private String serialNumber;
-	 */
-
-	/*
-	 * @NotBlank
-	 * 
-	 * @Size(min=1, max=36)
-	 * 
-	 * @ApiModelProperty(value = "serialNumber", required = true, dataType =
-	 * "java.lang.String") private String providerId;
-	 * 
-	 * @NotBlank
-	 * 
-	 * @Size(min=1, max=128)
-	 * 
-	 * @ApiModelProperty(value = "serialNumber", required = true, dataType =
-	 * "java.lang.String") private String providerName;
-	 */
-
-	/**
-	 * Field for device name
-	 */
-
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime expiryDate;
 
@@ -123,9 +94,9 @@ public class RegisteredDevicePostReqDto {
 	 * or “L1”
 	 */
 	@NotBlank
-	@Size(min = 0, max = 3)
+	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "certificationLevel", required = true, dataType = "java.lang.String")
-	@ValidCertificateLevel(message = "Certification Level is inValid")
+	@ValidCertificateLevel(message = "Invalid Certification level received")
 	private String certificationLevel;
 
 	/**
@@ -148,17 +119,19 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 
-	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.byte")
 	private byte[] foundationalTrustCertificate;
 
 	/**
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 512)
 	@ApiModelProperty(value = "dProviderSignature", required = true, dataType = "java.lang.String")
 	private String deviceProviderSignature;
-
+	
+	@NotNull
+	@Valid
 	private DigitalIdDto digitalIdDto;
 
 }

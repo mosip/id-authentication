@@ -13,16 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -574,9 +568,7 @@ public class MapperUtils {
 	
 	public static RegisteredDevice mapRegisteredDeviceDto(RegisteredDevicePostReqDto dto, String digitalIdJson) {
 		
-		//String digitalIdJson = mapper.writeValueAsString(dto.getDigitalIdDto());
 		RegisteredDevice entity = new RegisteredDevice();
-		entity.setCode(dto.getCode());
 		entity.setDeviceTypeCode(dto.getDeviceTypeCode());
         entity.setDevicesTypeCode(dto.getDeviceSTypeCode());
         entity.setStatusCode(dto.getStatusCode());
@@ -584,8 +576,8 @@ public class MapperUtils {
 		entity.setDeviceSubId(dto.getDeviceSubId());
 		
 
-		entity.setDigitalId(digitalIdJson);
-		entity.setSerialNumber(dto.getDigitalIdDto().getSerialNumber());
+		entity.setDigitalId(digitalIdJson);        
+        entity.setSerialNumber(dto.getDigitalIdDto().getSerialNumber());
         entity.setProviderId(dto.getDigitalIdDto().getProviderId());
         entity.setProviderName(dto.getDigitalIdDto().getProviderName());
         entity.setMake(dto.getDigitalIdDto().getMake());

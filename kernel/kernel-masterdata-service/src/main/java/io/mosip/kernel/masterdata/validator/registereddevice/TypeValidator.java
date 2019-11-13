@@ -7,6 +7,7 @@ import org.springframework.web.client.RestClientException;
 
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.RegisteredDeviceErrorCode;
+import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import lombok.Data;
 
@@ -19,14 +20,6 @@ import lombok.Data;
  */
 @Data
 public class TypeValidator implements ConstraintValidator<ValidType, String> {
-
-	private static final String FINGERPRINT = "Fingerprint";
-	private static final String SLAB_FINGERPRINT = "Slab Fingerprint";
-	private static final String IRIS_MONOCULAR = "Iris Monocular";
-	private static final String IRIS_BINOCULAR = "Iris Binocular";
-	private static final String FACE = "Face";
-
-	private static final String TYPEARR[] = { FINGERPRINT, SLAB_FINGERPRINT, IRIS_MONOCULAR, IRIS_BINOCULAR, FACE };
 
 	/*
 	 * (non-Javadoc)
@@ -41,7 +34,7 @@ public class TypeValidator implements ConstraintValidator<ValidType, String> {
 		} else {
 			try {
 
-				for (String string : TYPEARR) {
+				for (String string : RegisteredDeviceConstant.TYPEARR) {
 					if (type.equalsIgnoreCase(string)) {
 						return true;
 					}

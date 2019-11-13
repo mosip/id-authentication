@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.validator.registereddevice;
 
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,15 +17,18 @@ import javax.validation.Payload;
  *
  */
 @Documented
-@Constraint(validatedBy = StatusCodeValidator.class)
-@Target(ElementType.FIELD)
+@Constraint(validatedBy = FoundationalValidator.class)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidFoundationalTPId {
-	String message() default " Required only if certification level received is L1";
+public @interface ValidFoundational {
+	String message() default "If certification level received is L1 then FoundationalTPId OR FoundationalTrustSignature OR FoundationalTrustCertificate should not be null or empty";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
 
-}
+	String baseField();
 
+	String[] matchField();
+
+}

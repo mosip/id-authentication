@@ -18,7 +18,7 @@ import javax.validation.Payload;
  */
 @Documented
 @Constraint(validatedBy = TypeValidator.class)
-@Target(ElementType.FIELD)
+@Target({ ElementType.FIELD, ElementType.TYPE_USE, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidType {
 	String message() default "Type not supported";
@@ -26,5 +26,9 @@ public @interface ValidType {
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+	
+	/*String baseField(); 
+	
+	String matchField();*/
 
 }

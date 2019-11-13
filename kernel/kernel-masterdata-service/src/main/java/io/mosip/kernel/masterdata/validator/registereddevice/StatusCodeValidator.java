@@ -19,12 +19,13 @@ import lombok.Data;
  */
 @Data
 public class StatusCodeValidator implements ConstraintValidator<ValidStatusCode, String> {
+	
 
-	private static final String REGISTERED = "registered";
+	/*private static final String REGISTERED = "registered";
 	private static final String RETIRED = "retired";
-	private static final String REVOKED = "revoked";
+	private static final String REVOKED = "revoked";*/
 
-	private static final String STATUSARR[] = { REGISTERED, RETIRED, REVOKED };
+	/*private static final String STATUSARR[] = { RegisteredDeviceConstant.REGISTERED, RegisteredDeviceConstant.RETIRED, RegisteredDeviceConstant.REVOKED }*/;
 
 	/*
 	 * (non-Javadoc)
@@ -39,7 +40,7 @@ public class StatusCodeValidator implements ConstraintValidator<ValidStatusCode,
 		} else {
 			try {
 
-				for (String string : STATUSARR) {
+				for (String string : RegisteredDeviceConstant.STATUSARR) {
 					if (statusCode.equalsIgnoreCase(string)) {
 						return true;
 					}

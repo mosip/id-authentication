@@ -25,23 +25,23 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	
 	@NotBlank
 	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "dTypeCode", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 	
 	/**
 	 * Field for deviceTypeCode
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
-	@ApiModelProperty(value = "dTypeCode", required = true, dataType = "java.lang.String")
+	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String deviceTypeCode;
 
 	/**
 	 * Field for deviceSubTypeCode
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
-	@ApiModelProperty(value = "dsTypeCode", required = true, dataType = "java.lang.String")
+	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "devicesTypeCode", required = true, dataType = "java.lang.String")
 	private String devicesTypeCode;
 	
 	
@@ -58,7 +58,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 256)
 	@ApiModelProperty(value = "deviceId", required = true, dataType = "java.lang.String")
 	private String deviceId;
 
@@ -66,7 +66,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Field for device name
 	 */
 	
-	@Size(min = 0, max = 64)
+	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "deviceSubId", required = true, dataType = "java.lang.String")
 	private String deviceSubId;
 	/**
@@ -82,7 +82,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 128)
 	@ApiModelProperty(value = "firmware", required = true, dataType = "java.lang.String")
 	private String firmware;
 
@@ -98,7 +98,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Certificate level should only accept two values. “L0” or “L1”
 	 */
 	@NotBlank
-	@Size(min = 0, max = 64)
+	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "certificationLevel", required = true, dataType = "java.lang.String")
 	private String certificationLevel;
 
@@ -106,7 +106,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Field for device name
 	 */
 	
-	@Size(min = 0, max = 64)
+	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "foundationalTPId", required = true, dataType = "java.lang.String")
 	private String foundationalTPId;
 
@@ -114,15 +114,13 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Field for device name
 	 */
 	
-	@Size(min = 0, max = 64)
+	@Size(min = 0, max = 512)
 	@ApiModelProperty(value = "foundationalTrustSignature", required = true, dataType = "java.lang.String")
 	private String foundationalTrustSignature;
 
 	/**
 	 * Field for device name
 	 */
-	
-	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.String")
 	private byte[] foundationalTrustCertificate;
 
@@ -130,7 +128,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 1, max = 512)
 	@ApiModelProperty(value = "dProviderSignature", required = true, dataType = "java.lang.String")
 	private String deviceProviderSignature;
 	

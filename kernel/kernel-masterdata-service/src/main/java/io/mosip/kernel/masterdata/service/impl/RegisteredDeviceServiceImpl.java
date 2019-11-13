@@ -32,17 +32,17 @@ import io.mosip.kernel.masterdata.service.RegisteredDeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.validator.registereddevice.RegisteredDeviceConstant;
+
 /**
  * Service Class for Create RegisteredDevice
+ * 
  * @author Megha Tanga
  *
  */
 
 @Service
 public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
-
-	private static final String REGISTRATION = "Registration";
-	private static final String AUTH = "Auth";
 
 	@Autowired
 	RegisteredDeviceRepository registeredDeviceRepository;
@@ -83,12 +83,10 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		String digitalIdJson;
 
 		try {
-
-			if (deviceProviderRepository.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-					dto.getDigitalIdDto().getProviderId()) == null) {
+			if (deviceProviderRepository.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
+					dto.getDigitalIdDto().getProviderId(), dto.getDigitalIdDto().getProviderName()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
-						String.format(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage(),
-								dto.getDigitalIdDto().getProviderId()));
+						RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 			}
 
 			if (registrationDeviceTypeRepository
@@ -145,9 +143,10 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 					String.format(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorMessage(),
 							dto.getDigitalIdDto().getSerialNumber()));
 		} else {
-			if (dto.getPurpose().equalsIgnoreCase(REGISTRATION)) {
+			if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.REGISTRATION)) {
+				// copy Device id as code
 				code = device.get(0).getId();
-			} else if (dto.getPurpose().equalsIgnoreCase(AUTH)) {
+			} else if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.AUTH)) {
 				// should be uniquely randomly generated
 				code = UUID.randomUUID().toString();
 			}

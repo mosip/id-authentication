@@ -8,13 +8,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
+ * Innner Json for DigitalId
  * 
  * @author Srinivasan
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
-//@AllArgsConstructor
-//@NoArgsConstructor
 @Data
 public class DigitalIdDto {
 
@@ -51,17 +51,11 @@ public class DigitalIdDto {
 	@ApiModelProperty(value = "mpdel", required = true, dataType = "java.lang.String")
 	private String model;
 
-	/** The type.
-	 * (can only be “Fingerprint”, “Slab Fingerprint”, “Iris Monocular”, “Iris Binocular”, “Face”)
-	 */
-	
+	/** type */
 	@ApiModelProperty(value = "type", dataType = "java.lang.String")
 	@ValidType(message = "Type Value is Invalid")
 	private String type;
 
-	
-
 	/** The date time. */
-
 	private String dateTime;
 }

@@ -19,12 +19,6 @@ import lombok.Data;
  */
 @Data
 public class CertificateLevelValidator implements ConstraintValidator<ValidCertificateLevel, String> {
-
-	private static final String L0 = "L0";
-	private static final String L1 = "L1";
-
-	private static final String CERTIFICATELEVELARR[] = { L0, L1 };
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,7 +32,7 @@ public class CertificateLevelValidator implements ConstraintValidator<ValidCerti
 		} else {
 			try {
 
-				for (String string : CERTIFICATELEVELARR) {
+				for (String string : RegisteredDeviceConstant.CERTIFICATELEVELARR) {
 					if (certificationLevel.equals(string)) {
 						return true;
 					}

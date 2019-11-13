@@ -46,7 +46,7 @@ public class RegisteredDevice extends BaseEntity {
 	@Column(name = "device_id", length=256)
 	private String deviceId;
 
-	@Column(name = "device_sub_id")
+	@Column(name = "device_sub_id", length=256)
 	private String deviceSubId;
 	
 	@Column(name = "purpose", length=64)

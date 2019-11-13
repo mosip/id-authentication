@@ -20,10 +20,10 @@ import lombok.Data;
 @Data
 public class PurposeValidator implements ConstraintValidator<ValidPurpose, String> {
 
-	private static final String REGISTRATION = "Registration";
-	private static final String AUTH = "Auth";
+	/*private static final String REGISTRATION = "Registration";
+	private static final String AUTH = "Auth";*/
 
-	private static final String PURPOSEARR[] = { REGISTRATION, AUTH };
+	//private static final String PURPOSEARR[] = { RegisteredDeviceConstant.REGISTRATION, RegisteredDeviceConstant.AUTH };
 
 	/*
 	 * (non-Javadoc)
@@ -38,14 +38,14 @@ public class PurposeValidator implements ConstraintValidator<ValidPurpose, Strin
 		} else {
 			try {
 
-				for (String string : PURPOSEARR) {
+				for (String string : RegisteredDeviceConstant.PURPOSEARR) {
 					if (statusCode.equalsIgnoreCase(string)) {
 						return true;
 					}
 				}
 			} catch (RestClientException e) {
-				throw new RequestException(RegisteredDeviceErrorCode.PURPOSEVALIDATION_EXCEPTION.getErrorCode(),
-						RegisteredDeviceErrorCode.PURPOSEVALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
+				throw new RequestException(RegisteredDeviceErrorCode.PURPOSE_VALIDATION_EXCEPTION.getErrorCode(),
+						RegisteredDeviceErrorCode.PURPOSE_VALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
 			}
 			return false;
 		}
