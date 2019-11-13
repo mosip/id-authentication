@@ -268,6 +268,7 @@ public class MasterdataCreationUtil {
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.FALSE);
+						updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, false);
 					}
 					
 				}
