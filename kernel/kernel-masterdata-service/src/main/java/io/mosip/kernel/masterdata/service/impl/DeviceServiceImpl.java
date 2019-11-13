@@ -260,7 +260,7 @@ public class DeviceServiceImpl implements DeviceService {
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 
