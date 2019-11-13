@@ -1,6 +1,6 @@
 package io.mosip.registration.dto.mastersync;
 
-import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Sreekar Chukka
@@ -8,6 +8,7 @@ import java.time.LocalTime;
  *
  */
 
+@JsonIgnoreProperties
 public class RegistrationCenterDto extends MasterSyncBaseDto {
 
 	private String id;
@@ -40,19 +41,19 @@ public class RegistrationCenterDto extends MasterSyncBaseDto {
 
 	private Short numberOfKiosks;
 
-	private LocalTime perKioskProcessTime;
+	private String perKioskProcessTime;
 
-	private LocalTime centerStartTime;
+	private String centerStartTime;
 
-	private LocalTime centerEndTime;
+	private String centerEndTime;
 
 	private String timeZone;
 
 	private String contactPerson;
 
-	private LocalTime lunchStartTime;
+	private String lunchStartTime;
 
-	private LocalTime lunchEndTime;
+	private String lunchEndTime;
 
 	private Boolean isActive;
 
@@ -269,42 +270,42 @@ public class RegistrationCenterDto extends MasterSyncBaseDto {
 	/**
 	 * @return the perKioskProcessTime
 	 */
-	public LocalTime getPerKioskProcessTime() {
+	public String getPerKioskProcessTime() {
 		return perKioskProcessTime;
 	}
 
 	/**
 	 * @param perKioskProcessTime the perKioskProcessTime to set
 	 */
-	public void setPerKioskProcessTime(LocalTime perKioskProcessTime) {
+	public void setPerKioskProcessTime(String perKioskProcessTime) {
 		this.perKioskProcessTime = perKioskProcessTime;
 	}
 
 	/**
 	 * @return the centerStartTime
 	 */
-	public LocalTime getCenterStartTime() {
+	public String getCenterStartTime() {
 		return centerStartTime;
 	}
 
 	/**
 	 * @param centerStartTime the centerStartTime to set
 	 */
-	public void setCenterStartTime(LocalTime centerStartTime) {
+	public void setCenterStartTime(String centerStartTime) {
 		this.centerStartTime = centerStartTime;
 	}
 
 	/**
 	 * @return the centerEndTime
 	 */
-	public LocalTime getCenterEndTime() {
+	public String getCenterEndTime() {
 		return centerEndTime;
 	}
 
 	/**
 	 * @param centerEndTime the centerEndTime to set
 	 */
-	public void setCenterEndTime(LocalTime centerEndTime) {
+	public void setCenterEndTime(String centerEndTime) {
 		this.centerEndTime = centerEndTime;
 	}
 
@@ -339,28 +340,28 @@ public class RegistrationCenterDto extends MasterSyncBaseDto {
 	/**
 	 * @return the lunchStartTime
 	 */
-	public LocalTime getLunchStartTime() {
+	public String getLunchStartTime() {
 		return lunchStartTime;
 	}
 
 	/**
 	 * @param lunchStartTime the lunchStartTime to set
 	 */
-	public void setLunchStartTime(LocalTime lunchStartTime) {
+	public void setLunchStartTime(String lunchStartTime) {
 		this.lunchStartTime = lunchStartTime;
 	}
 
 	/**
 	 * @return the lunchEndTime
 	 */
-	public LocalTime getLunchEndTime() {
+	public String getLunchEndTime() {
 		return lunchEndTime;
 	}
 
 	/**
 	 * @param lunchEndTime the lunchEndTime to set
 	 */
-	public void setLunchEndTime(LocalTime lunchEndTime) {
+	public void setLunchEndTime(String lunchEndTime) {
 		this.lunchEndTime = lunchEndTime;
 	}
 

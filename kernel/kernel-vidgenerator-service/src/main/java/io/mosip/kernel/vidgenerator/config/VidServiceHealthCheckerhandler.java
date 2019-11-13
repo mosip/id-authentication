@@ -18,8 +18,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.vidgenerator.constant.HibernatePersistenceConstant;
-import io.mosip.kernel.vidgenerator.constant.VIDHealthConstants;
 import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
+import io.mosip.kernel.vidgenerator.constant.VIDHealthConstants;
 import io.netty.handler.codec.http.HttpResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;

@@ -5,8 +5,6 @@ FROM openjdk:8
 
 COPY ./target/kernel-vidgenerator-service-*.jar kernel-vidgenerator-service.jar
 
-COPY ./swagger-ui swagger-ui
+EXPOSE 8099
 
-EXPOSE 8080
-
-CMD ["java","-jar","kernel-uingenerator-service.jar"]
+CMD ["java","-jar","kernel-vidgenerator-service.jar"]

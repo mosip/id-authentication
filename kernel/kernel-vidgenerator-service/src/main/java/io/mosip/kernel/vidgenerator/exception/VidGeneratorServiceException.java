@@ -28,4 +28,8 @@ public class VidGeneratorServiceException extends BaseUncheckedException {
 	public VidGeneratorServiceException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
+	
+	public VidGeneratorServiceException(String errorCode, String errorMessage,Throwable cause) {
+		super(errorCode, errorMessage,cause);
+	}
 }

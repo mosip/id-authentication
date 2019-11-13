@@ -1,13 +1,10 @@
 package io.mosip.kernel.vidgenerator.generator;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.vidgenerator.entity.VidEntity;
-import io.mosip.kernel.vidgenerator.repository.VidRepository;
+import io.mosip.kernel.vidgenerator.service.VidService;
 
 /**
  * This class have functionality to persists the list of vids in database
@@ -19,12 +16,10 @@ import io.mosip.kernel.vidgenerator.repository.VidRepository;
 @Component
 public class VidWriter {
 
-
 	@Autowired
-	private VidRepository vidRepository;
-	
+	private VidService vidService;
 
-	public void persistVids(VidEntity vid) {
-		this.vidRepository.saveAndFlush(vid);
+	public boolean persistVids(VidEntity vid) {
+			return this.vidService.saveVID(vid);
 	}
 }

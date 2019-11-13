@@ -8,7 +8,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.SocketTimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,12 +19,10 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
-import io.mosip.registration.service.bio.BioService;
-import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
 
 @Component
 public class Streamer {
@@ -69,15 +66,16 @@ public class Streamer {
 		imageView.setImage(streamImage);
 	}
 
-	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
 
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread initiation started for : " + bioType);
+	public void startStream(RequestDetail requestDetail, ImageView streamImage, ImageView scanImage) {
+  
+  LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread initiation started for : " + requestDetail.getType());
 
 		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
 
-				LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread started for : " + bioType);
+				LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread started for : " + requestDetail.getType());
 
 				scanPopUpViewController.disableCloseButton();
 				isRunning = true;
@@ -89,10 +87,10 @@ public class Streamer {
 
 					setPopViewControllerMessage(true, RegistrationUIConstants.STREAMING_PREP_MESSAGE, false);
 
-					urlStream = mosipBioDeviceManager.stream(bioType);
+					urlStream = mosipBioDeviceManager.stream(requestDetail);
 					if (urlStream == null) {
 
-						LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "URL Stream was null for : " + bioType);
+						LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "URL Stream was null for : " + requestDetail.getType());
 
 						setPopViewControllerMessage(true,
 								RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
@@ -109,10 +107,10 @@ public class Streamer {
 					try {
 
 						// Refreshing Device info, for checking of new connection
-						mosipBioDeviceManager.refreshBioDeviceByDeviceType(bioType);
+						mosipBioDeviceManager.refreshBioDeviceByDeviceType(requestDetail.getType());
 
 						// Start stream with new device
-						urlStream = mosipBioDeviceManager.stream(bioType);
+						urlStream = mosipBioDeviceManager.stream(requestDetail);
 						if (urlStream == null) {
 
 							LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,

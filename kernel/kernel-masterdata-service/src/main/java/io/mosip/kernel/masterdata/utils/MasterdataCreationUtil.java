@@ -28,10 +28,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -121,15 +121,17 @@ public class MasterdataCreationUtil {
 			{
 				Field idColumn = dtoClass.getDeclaredField(CODE_COLUMN_NAME);
 				idColumn.setAccessible(true);
-				primaryId =  generateId();
-				E primary = getResultSet(entity, primaryLang, primaryId,primaryKeyCol);
-				if(primary!=null)
-				{
-					idColumn.set(t, primaryId);
-				}
-				else
-				{
-					idColumn.set(t, generateId());
+				if(!entity.equals(DeviceType.class)) {
+					primaryId =  generateId();
+					E primary = getResultSet(entity, primaryLang, primaryId,primaryKeyCol);
+					if(primary!=null)
+					{
+						idColumn.set(t, primaryId);
+					}
+					else
+					{
+						idColumn.set(t, generateId());
+					}
 				}
 				
 			}
@@ -179,10 +181,7 @@ public class MasterdataCreationUtil {
 					updatePrimaryToTrue(primaryEntity.getClass(),id,primaryKeyCol,false);
 				}
 				return t;
-			} else {
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-						"Cannot create data in secondary language as data does not exist in primary language");
-			}
+			} 
 		}
 		//return null;
 		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
@@ -289,17 +288,8 @@ public class MasterdataCreationUtil {
 			return t;
 		}
 		if (langCode.equals(secondaryLang)) {
-			if(StringUtils.isBlank(id))
-			{
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
-						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
-			}
+			
 			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
-			if(primaryEntity==null)
-			{
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
-						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
-			}
 			if (primaryEntity != null) {
 				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
 					field.setAccessible(true);

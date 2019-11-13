@@ -1,6 +1,8 @@
 package io.mosip.registartion.processor.abis.middleware.stage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,12 +30,15 @@ import io.mosip.registration.processor.core.code.AbisStatusCode;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisCommonResponseDto;
@@ -184,7 +189,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		object.setIsValid(false);
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
-		String description = "";
+		LogDescription description = new LogDescription();
 		String registrationId = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "AbisMiddlewareStage::process()::entry");
@@ -219,13 +224,16 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			object.setIsValid(true);
 			object.setInternalError(false);
 			isTransactionSuccessful = true;
-			description = "Abis insertRequests sucessfully sent to Queue";
+			description.setMessage(PlatformSuccessMessages.RPR_ABIS_MIDDLEWARE_STAGE_SUCCESS.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_ABIS_MIDDLEWARE_STAGE_SUCCESS.getCode());
+
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
 		} catch (RegistrationProcessorCheckedException e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
-			description = e.getMessage();
+			description.setMessage(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage());
+			description.setCode(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			internalRegDto.setStatusComment(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
@@ -235,7 +243,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		} catch (Exception e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
-			description = e.getMessage();
+			description.setMessage(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage());
+			description.setCode(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			internalRegDto.setStatusComment(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
@@ -257,11 +266,13 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
-			String moduleId = isTransactionSuccessful ? "Abis-MiddleWare Success" : "";
-			String moduleName = "Abis-MiddleWare";
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_ABIS_HANDLER_STAGE_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.ABIS_HANDLER.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
-					moduleName, registrationId);
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, registrationId);
 		}
 
 		return object;
@@ -535,6 +546,11 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisReqEntity.setAbisAppCode(abisRequestDto.getAbisAppCode());
 		abisReqEntity.setBioRefId(abisRequestDto.getBioRefId());
 		abisReqEntity.setCrBy(abisRequestDto.getCrBy());
+		if (abisRequestDto.getCrDtimes() == null) {
+			abisReqEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			abisReqEntity.setCrDtimes(abisRequestDto.getCrDtimes());
+		}
 		abisReqEntity.setIsDeleted(false);
 		abisReqEntity.setLangCode(abisRequestDto.getLangCode());
 		abisReqEntity.setRefRegtrnId(abisRequestDto.getRefRegtrnId());
@@ -545,7 +561,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisReqEntity.setStatusCode(abisRequestDto.getStatusCode());
 		abisReqEntity.setStatusComment(abisRequestDto.getStatusComment());
 		abisReqEntity.setUpdBy(abisRequestDto.getUpdBy());
-
+		abisReqEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		return abisReqEntity;
 
 	}
@@ -561,7 +577,13 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisResponseEntity.setStatusComment(abisResponseDto.getStatusComment());
 		abisResponseEntity.setLangCode(abisResponseDto.getLangCode());
 		abisResponseEntity.setCrBy(abisResponseDto.getCrBy());
+		if (abisResponseDto.getCrDtimes() == null) {
+			abisResponseEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			abisResponseEntity.setCrDtimes(abisResponseDto.getCrDtimes());
+		}
 		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
+		abisResponseEntity.setUpdDtimes(abisResponseDto.getUpdDtimes());
 		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
 
 		return abisResponseEntity;
@@ -603,6 +625,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisResponseDto.setLangCode("eng");
 		abisResponseDto.setCrBy(SYSTEM);
 		abisResponseDto.setUpdBy(SYSTEM);
+		abisResponseDto.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		abisResponseDto.setIsDeleted(false);
 		abisResponseDto.setAbisRequest(abisCommonResponseDto.getRequestId());
 		abisResponseRepositary.save(convertAbisResponseDtoToAbisResponseEntity(abisResponseDto));
@@ -628,6 +651,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				abisResponseDetEntity.setCrBy(SYSTEM);
 				abisResponseDetEntity.setUpdBy(SYSTEM);
 				abisResponseDetEntity.setIsDeleted(false);
+				abisResponseDetEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+				abisResponseDetEntity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 				abisResponseDetailRepositary.save(abisResponseDetEntity);
 			}
 		}

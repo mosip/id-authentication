@@ -36,16 +36,21 @@ public class JWSValidation implements JwsSpec<String, String, X509Certificate,Pr
 
 	/**
 	 * 
-	 * @param key
+	 * @param pKey
+	 * @param certificate
 	 * @param payload
 	 * @return signature
 	 * @throws JoseException
 	 */
 	@Override
-	public String jwsSign(String payload, PrivateKey pKey) {
+	public String jwsSign(String payload, PrivateKey pKey, X509Certificate certificate) {
 		try {
 			JsonWebSignature jws = new JsonWebSignature();
-			jws.setPayload(HMACUtils.digestAsPlainText(HMACUtils.generateHash(payload.getBytes())));
+			List<X509Certificate> certList= new ArrayList<>();
+			certList.add(certificate);
+			X509Certificate[] certArray=certList.toArray(new X509Certificate[]{});
+			jws.setCertificateChainHeaderValue(certArray); 
+			jws.setPayload(payload);
 			jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
 			jws.setKey(pKey);
 			jws.setDoKeyValidation(false);
@@ -58,23 +63,22 @@ public class JWSValidation implements JwsSpec<String, String, X509Certificate,Pr
 
 	/**
 	 * 
-	 * @param key
 	 * @param sign
 	 * @return boolean
 	 */
 	@Override
-	public boolean verifySignature(String sign, X509Certificate certificate) {
-		JsonWebSignature jws = new JsonWebSignature();
+	public boolean verifySignature(String sign) {
 		try {
+			JsonWebSignature jws = new JsonWebSignature();
+			jws.setCompactSerialization(sign);
+			List<X509Certificate> certificateChainHeaderValue = jws.getCertificateChainHeaderValue();
+            X509Certificate certificate = certificateChainHeaderValue.get(0);
 			certificate.checkValidity();
 			publicKey = certificate.getPublicKey();
-			certificate.verify(publicKey);
-			jws.setKey(publicKey);
-			jws.setCompactSerialization(sign);
+			//certificate.verify(publicKey);
 			jws.setKey(publicKey);
 			return jws.verifySignature();
-		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
-				| SignatureException | JoseException e) {
+		} catch (CertificateException | JoseException e) {
 			e.printStackTrace();
 		}
 		return false;

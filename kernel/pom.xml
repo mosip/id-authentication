@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1</version>
 	</parent>
 
 
@@ -118,7 +118,7 @@
 
 
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Utils.java,**/*Validator.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Utils.java,**/*Validator.java,**/*Helper.java,**/vidgenerator/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
@@ -175,8 +175,8 @@
 		<module>kernel-signature-service</module>
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-keymanager-service</module>
-
-		<module>kernel-salt-generator</module>
+                <module>kernel-vidgenerator-service</module>
+		<!--<module>kernel-salt-generator</module>-->
 	</modules>
 
 	<dependencies>
@@ -200,6 +200,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
+					    <skipTests>false</skipTests>
 						<skip>false</skip>
 						<useFile>false</useFile>
 					</configuration>
