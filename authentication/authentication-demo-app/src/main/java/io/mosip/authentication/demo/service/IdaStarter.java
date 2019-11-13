@@ -20,7 +20,6 @@ import javafx.stage.Stage;
  * 
  * @author Sanjay Murali
  */
-@SuppressWarnings("restriction")
 @SpringBootApplication
 @Import({CryptoCore.class, CryptoUtility.class})
 public class IdaStarter extends Application {
@@ -50,7 +49,7 @@ public class IdaStarter extends Application {
 		// Set the Scene to the Stage
 		stage.setScene(scene);
 		// Set the Title to the Stage
-		stage.setTitle("IDA");
+		stage.setTitle("ID-Authentication");
 		// Display the Stage
 		stage.show();
 	}
