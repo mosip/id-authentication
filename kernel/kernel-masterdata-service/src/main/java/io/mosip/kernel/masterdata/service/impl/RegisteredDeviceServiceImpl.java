@@ -136,22 +136,20 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	// value
 	private String generateCodeValue(RegisteredDevicePostReqDto dto) {
 		String code = "";
-		List<Device> device = deviceRepository.findDeviceBySerialNumberAndIsDeletedFalseorIsDeletedIsNullNoIsActive(
-				dto.getDigitalIdDto().getSerialNumber());
-		if (device.isEmpty()) {
-			throw new RequestException(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorCode(),
-					String.format(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorMessage(),
-							dto.getDigitalIdDto().getSerialNumber()));
-		} else {
 			if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.REGISTRATION)) {
+				List<Device> device = deviceRepository.findDeviceBySerialNumberAndIsDeletedFalseorIsDeletedIsNullNoIsActive(
+						dto.getDigitalIdDto().getSerialNumber());
+				if (device.isEmpty()) {
+					throw new RequestException(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorCode(),
+							String.format(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorMessage(),
+									dto.getDigitalIdDto().getSerialNumber()));
+				}
 				// copy Device id as code
 				code = device.get(0).getId();
 			} else if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.AUTH)) {
 				// should be uniquely randomly generated
 				code = UUID.randomUUID().toString();
 			}
-		}
-
 		return code;
 	}
 
