@@ -187,13 +187,8 @@ public class MasterdataCreationUtil {
 		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
 				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
-	
-	private String getCodeFromName(String name) {
-		return RandomStringUtils.random(name.length(), name);
-	}
-	
-	private String generateId()
-	{
+
+	private String generateId() {
 		return UUID.randomUUID().toString();
 	}
 	
@@ -245,16 +240,22 @@ public class MasterdataCreationUtil {
 		}
 		
 		if (langCode.equals(primaryLang)) {
-			if(activeDto==true)
-			{
-				E secondaryEntity = getResultSet(entity, secondaryLang, id,primaryKeyCol);
-				
-				if(secondaryEntity!=null)
-				{
-					for (Field field : secondaryEntity.getClass().getDeclaredFields()) {
-						field.setAccessible(true);
-								if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
-									activeSecondary= (boolean) field.get(t);
+			E primaryEntity = getResultSet(entity, primaryLang, id, primaryKeyCol);
+			E secondaryEntity = getResultSet(entity, secondaryLang, id, primaryKeyCol);
+			if (activeDto == true) {
+				if (secondaryEntity != null && primaryEntity!=null) {
+					try {
+						Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
+						Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
+						List<Field> fieldList = new ArrayList<>();
+						fieldList.addAll(Arrays.asList(childFields));
+						if (superFields != null)
+							fieldList.addAll(Arrays.asList(superFields));
+						for (Field field : fieldList) {
+							field.setAccessible(true);
+							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+								activeSecondary = (boolean) field.get(secondaryEntity);
+							}
 						}
 					}
 					if(activeSecondary==true)
