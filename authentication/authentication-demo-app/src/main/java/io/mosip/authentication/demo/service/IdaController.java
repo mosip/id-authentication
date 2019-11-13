@@ -12,13 +12,13 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.crypto.SecretKey;
 import javax.net.ssl.HttpsURLConnection;
@@ -260,42 +260,46 @@ public class IdaController {
 	private void onCapture() throws Exception {
 		responsetextField.setFont(Font.font("Times New Roman", javafx.scene.text.FontWeight.EXTRA_BOLD, 20));
 		previousHash = null;
-		String fingerCapture = null;
-		String irisCapture = null;
-		String faceCapture = null;
+		List<String> bioCaptures = new ArrayList<>();
 		
+		String faceCapture;
 		if (faceAuthType.isSelected()) {
 			faceCapture = captureFace();
 			if(!faceCapture.contains("\"biometrics\"")) {
 				updateSendButton();
 				return;
 			}
+			bioCaptures.add(faceCapture);
 		}
 		
+		String fingerCapture;
 		if (fingerAuthType.isSelected()) {
 			fingerCapture = captureFingerprint();
 			if(!fingerCapture.contains("\"biometrics\"")) {
 				updateSendButton();
 				return;
 			}
+			bioCaptures.add(fingerCapture);
 		}
 		
+		String irisCapture;
 		if (irisAuthType.isSelected()) {
 			irisCapture = captureIris();
 			if(!irisCapture.contains("\"biometrics\"")) {
 				updateSendButton();
 				return;
 			}
+			bioCaptures.add(irisCapture);
 		} 
 		
-		capture = combineCaptures(fingerCapture, irisCapture, faceCapture);
+		capture = combineCaptures(bioCaptures);
 		
 		updateSendButton();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private String combineCaptures(String fingerCapture, String irisCapture, String faceCapture) {
-		List<String> captures = Stream.of(fingerCapture, irisCapture, faceCapture)
+	private String combineCaptures(List<String> bioCaptures) {
+		List<String> captures = bioCaptures.stream()
 				.filter(obj -> obj != null)
 				.filter(str -> str.contains("\"biometrics\""))
 				.collect(Collectors.toList());
