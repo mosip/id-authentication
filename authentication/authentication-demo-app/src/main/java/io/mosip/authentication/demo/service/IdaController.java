@@ -332,7 +332,7 @@ public class IdaController {
 				"	\"env\": \"Staging\",\n" + 
 				"	\"purpose\": \"Auth\",\n" + 
 				"	\"specVersion\": \"0.9.2\",\n" + 
-				"	\"timeout\": 10000,\n" + 
+				"	\"timeout\": " + env.getProperty("fingerprint.capture.timeout", "10000") + ",\n" + 
 				"	\"captureTime\": \"0001-01-01T00:00:00\",\n" + 
 				"	\"transactionId\": \"1234567890\",\n" + 
 				"	\"bio\": [{\n" + 
@@ -377,7 +377,7 @@ public class IdaController {
 				"	\"env\": \"Staging\",\n" + 
 				"	\"purpose\": \"Auth\",\n" + 
 				"	\"specVersion\": \"0.9.2\",\n" + 
-				"	\"timeout\": 10000,\n" + 
+				"	\"timeout\": " + env.getProperty("iris.capture.timeout", "10000") + ",\n" + 
 				"	\"captureTime\": \"0001-01-01T00:00:00\",\n" + 
 				"	\"transactionId\": \"1234567890\",\n" + 
 				"	\"bio\": [{\n" + 
@@ -404,7 +404,7 @@ public class IdaController {
 				"	\"env\": \"Staging\",\n" + 
 				"	\"purpose\": \"Auth\",\n" + 
 				"	\"specVersion\": \"0.9.2\",\n" + 
-				"	\"timeout\": 30000,\n" + 
+				"	\"timeout\": " + env.getProperty("face.capture.timeout", "30000") + ",\n" + 
 				"	\"captureTime\": \"0001-01-01T00:00:00\",\n" + 
 				"	\"transactionId\": \"1234567890\",\n" + 
 				"	\"bio\": [{\n" + 
