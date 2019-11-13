@@ -114,7 +114,7 @@ public class Streamer {
 						if (urlStream == null) {
 
 							LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
-									"URL Stream was null for : " + bioType);
+									"URL Stream was null for : " + requestDetail.getType());
 
 							setPopViewControllerMessage(true,
 									RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
@@ -170,7 +170,7 @@ public class Streamer {
 
 		streamer_thread.start();
 
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread initiated completed for : " + bioType);
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread initiated completed for : " + requestDetail.getType());
 
 	}
 
