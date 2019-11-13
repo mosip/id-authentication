@@ -187,10 +187,6 @@ public class MasterdataCreationUtil {
 				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(), langCode));
 	}
 
-	private String getCodeFromName(String name) {
-		return RandomStringUtils.random(name.length(), name);
-	}
-
 	private String generateId() {
 		return UUID.randomUUID().toString();
 	}
@@ -245,9 +241,10 @@ public class MasterdataCreationUtil {
 		}
 
 		if (langCode.equals(primaryLang)) {
+			E primaryEntity = getResultSet(entity, primaryLang, id, primaryKeyCol);
 			E secondaryEntity = getResultSet(entity, secondaryLang, id, primaryKeyCol);
 			if (activeDto == true) {
-				if (secondaryEntity != null) {
+				if (secondaryEntity != null && primaryEntity!=null) {
 					try {
 						Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
 						Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
