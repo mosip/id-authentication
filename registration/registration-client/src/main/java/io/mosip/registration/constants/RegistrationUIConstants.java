@@ -152,6 +152,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
 	public static final String STREAMING_PREP_MESSAGE = bundle.getString("STREAMING_PREP_MESSAGE");
 	public static final String STREAMING_INIT_MESSAGE = bundle.getString("STREAMING_INIT_MESSAGE");
+	public static final String STREAMING_CLOSED_MESSAGE = bundle.getString("STREAMING_CLOSED_MESSAGE");
 	public static final String CAPTURING = bundle.getString("CAPTURING");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
