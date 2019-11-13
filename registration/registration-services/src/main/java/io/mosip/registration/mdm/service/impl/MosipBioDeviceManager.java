@@ -368,7 +368,7 @@ public class MosipBioDeviceManager {
 	public InputStream stream(RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
 
   	LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Stream starting for : "+deviceType);
+				"Stream starting for : "+requestDetail.getType());
 		BioDevice bioDevice = null;
 		bioDevice = findDeviceToScan(requestDetail.getType());
 		if (bioDevice != null)
