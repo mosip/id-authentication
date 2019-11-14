@@ -241,7 +241,6 @@ public class MasterdataCreationUtil {
 		}
 		
 		if (langCode.equals(primaryLang)) {
-			E primaryEntity = getResultSet(entity, primaryLang, id, primaryKeyCol);
 			E secondaryEntity = getResultSet(entity, secondaryLang, id, primaryKeyCol);
 			if (activeDto == true) {
 				if (secondaryEntity != null) {
@@ -268,6 +267,13 @@ public class MasterdataCreationUtil {
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.TRUE);
 					}
+					else if(activeDto==true && activeSecondary==false)
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.TRUE);
+						updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, true);
+					}
 					else
 					{
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
@@ -290,6 +296,9 @@ public class MasterdataCreationUtil {
 				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 				isActive.setAccessible(true);
 				isActive.set(t, Boolean.FALSE);
+        if (secondaryEntity != null) {
+					updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, false);
+				}
 			}
 			return t;
 		}
