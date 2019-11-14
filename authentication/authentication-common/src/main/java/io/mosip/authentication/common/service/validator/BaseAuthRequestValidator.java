@@ -264,7 +264,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 	
 	private void validateDeviceDetails(List<DataDTO> bioData, Errors errors) {
-		IntStream.range(0, bioData.size()).forEach(index -> {
+		IntStream.range(0, bioData.size() - 1).forEach(index -> {
 			if (StringUtils.isEmpty(bioData.get(index).getDeviceCode())) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),

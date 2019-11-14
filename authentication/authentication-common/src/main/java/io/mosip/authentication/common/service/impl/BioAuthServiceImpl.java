@@ -1,14 +1,11 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
@@ -73,9 +70,6 @@ public class BioAuthServiceImpl implements BioAuthService {
 
 	@Autowired
 	private RestRequestFactory restBuilder;
-
-	@Autowired
-	private ObjectMapper mapper;
 
 	/**
 	 * Validate Bio Auth details based on Bio auth request and Biometric Identity
