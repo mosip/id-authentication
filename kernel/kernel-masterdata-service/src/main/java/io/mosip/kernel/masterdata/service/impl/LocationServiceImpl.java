@@ -896,13 +896,19 @@ public class LocationServiceImpl implements LocationService {
 			for (FilterDto filter : filterValueDto.getFilters()) {
 				String columnName = filter.getColumnName();
 				String type = filter.getType();
+				if(EmptyCheckUtils.isNullEmpty(type))
+				{
+					throw new RequestException(ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
+							ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorMessage());
+				}
 				if (!type.equals(FilterColumnEnum.UNIQUE.toString()) && !type.equals(FilterColumnEnum.ALL.toString())) {
 					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
 				}
 				if (!hierarchyNames.contains(columnName) && !columnName.equals(MasterDataConstant.IS_ACTIVE)) {
-					throw new RequestException(ValidationErrorCode.INVALID_COLUMN_NAME.getErrorCode(),
-							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
+					throw new RequestException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(),
+									filter.getColumnName()));
 				}
 				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
 					if (filter.getColumnName().equals(MasterDataConstant.IS_ACTIVE)) {
