@@ -217,11 +217,6 @@ public class KycFilterTest {
 	}
 
 	@Test
-	public void testSign() throws IdAuthenticationAppException {
-		assertEquals(true, kycAuthFilter.validateSignature("something", "something".getBytes()));
-	}
-
-	@Test
 	public void testValidEncipherRequest2()
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException,
 			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
