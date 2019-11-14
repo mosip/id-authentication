@@ -116,16 +116,18 @@ public class SchedulerUtil extends BaseController {
 
 					Platform.runLater(() -> {
 
-						long endTime = System.currentTimeMillis();
+						if (SessionContext.isAutoLogoutAllowed()) {
+							long endTime = System.currentTimeMillis();
 
-						if (((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut)
-								&& isShowing == false) {
-							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task reminder alert is called at interval of seconds "
-											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
-							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT,
-									APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-							alert();
+							if (((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut)
+									&& isShowing == false) {
+								LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
+										"The time task reminder alert is called at interval of seconds "
+												+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
+								auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT,
+										APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+								alert();
+							}
 						}
 					});
 				}
@@ -271,7 +273,7 @@ public class SchedulerUtil extends BaseController {
 		stage.close();
 		// to stop scheduler
 		stopScheduler();
-		
+
 		// close webcam window, if open.
 		if (webCameraController.getWebCameraStage() != null && webCameraController.getWebCameraStage().isShowing()) {
 			webCameraController.getWebCameraStage().close();
@@ -285,15 +287,15 @@ public class SchedulerUtil extends BaseController {
 		if (packetUploadController.getStage() != null && packetUploadController.getStage().isShowing()) {
 			packetUploadController.getStage().close();
 		}
-		if (SessionContext.map() != null && SessionContext.map().get("alert")!=null) {
-			Alert alret=(Alert)SessionContext.map().get("alert");
+		if (SessionContext.map() != null && SessionContext.map().get("alert") != null) {
+			Alert alret = (Alert) SessionContext.map().get("alert");
 			alret.close();
 		}
-		if (SessionContext.map() != null && SessionContext.map().get("alertStage")!=null) {
-			Stage alertStage=(Stage)SessionContext.map().get("alertStage");
+		if (SessionContext.map() != null && SessionContext.map().get("alertStage") != null) {
+			Stage alertStage = (Stage) SessionContext.map().get("alertStage");
 			alertStage.close();
 		}
-		//Clear the Registration Data
+		// Clear the Registration Data
 		clearRegistrationData();
 		// to clear the session object
 		SessionContext.destroySession();
