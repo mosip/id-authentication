@@ -178,9 +178,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private Map<String, Object> decipherBioData(Object obj) throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> map = (Map<String, Object>) obj;
-			Map<String, Object> data = mapper
-					.readValue(Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64((String) map.get(DATA)) : null,
-							Map.class);
+			byte[] decodedData = Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA))) : new byte[0];
+			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 			Object bioValue = data.get(BIO_VALUE);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
@@ -289,11 +288,31 @@ public class IdAuthFilter extends BaseAuthFilter {
 			String previousHash =  digest(getHash(""));
 			
 			for (Map<String, Object> biometricData : biometricsList) {
-				previousHash = validateHash(biometricData, previousHash);
+				Optional<String> dataOpt = getStringValue(biometricData, DATA);
+				
+				if(!dataOpt.isPresent()) {
+					throwMissingInputParameter(BIO_DATA_INPUT_PARAM);
+				}
+				
+				Optional<String> hashOpt = getStringValue(biometricData, HASH);
+				
+				if(!hashOpt.isPresent()) {
+					throwMissingInputParameter(HASH_INPUT_PARAM);
+				}
+				
+				String dataFieldValue = dataOpt.get();
+				String data = extractBioData(dataFieldValue);
+				
+				previousHash = validateHash(data, hashOpt.get(), previousHash);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	protected String extractBioData(String dataFieldValue) throws IdAuthenticationAppException {
+		verifyJwsData(dataFieldValue);
+		return getPayloadFromJwsSingature(dataFieldValue);
 	}
 
 	private String digest(byte[] hash) {
@@ -330,20 +349,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws UnsupportedEncodingException 
 	 */
-	private String validateHash(Map<String, Object> biometricData, String previousHash) throws IdAuthenticationAppException, UnsupportedEncodingException {
-		Optional<String> hashOpt = getStringValue(biometricData, HASH);
-		Optional<String> dataOpt = getStringValue(biometricData, DATA);
+	private String validateHash(String data, String inputHashDigest, String previousHash) throws IdAuthenticationAppException, UnsupportedEncodingException {
+	
 		
-		if(!hashOpt.isPresent()) {
-			throwMissingInputParameter(HASH_INPUT_PARAM);
-		}
-		
-		if(!dataOpt.isPresent()) {
-			throwMissingInputParameter(BIO_DATA_INPUT_PARAM);
-		}
-		
-		String inputHashDigest = hashOpt.get();
-		String currentHash =digest(getHash(CryptoUtil.decodeBase64(dataOpt.get())));
+		String currentHash =digest(getHash(CryptoUtil.decodeBase64(data)));
 		String concatenatedHash = previousHash + currentHash;
 		byte[] finalHash = getHash(concatenatedHash);
 		String finalHashDigest = digest(finalHash);
@@ -384,16 +393,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 	
 	/**
-	 * Throw invalid input parameter.
-	 *
-	 * @param inputParam the input param
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private void throwInvalidInputParameter(String inputParam) throws IdAuthenticationAppException {
-		throwError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, inputParam);
-	}
-
-	/**
 	 * Gets the string value.
 	 *
 	 * @param biometricData the biometric data
@@ -414,7 +413,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * lang.String, byte[])
 	 */
 	@Override
-	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
+	protected boolean validateRequestSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 

@@ -178,7 +178,7 @@ public class IdAuthFilterTest {
 	 */
 	@Test
 	public void testSign() throws IdAuthenticationAppException {
-		assertEquals(true, filter.validateSignature("something", "something".getBytes()));
+		assertEquals(true, filter.validateRequestSignature("something", "something".getBytes()));
 	}
 
 	/**

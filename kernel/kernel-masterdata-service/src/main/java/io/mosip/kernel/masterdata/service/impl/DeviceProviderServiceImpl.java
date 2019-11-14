@@ -81,7 +81,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		isDeviceProviderPresent(validateDeviceDto.getDigitalId().getDpId());
 		isValidServiceSoftwareVersion(validateDeviceDto.getDeviceServiceVersion());
 		checkMappingBetweenProviderAndService(validateDeviceDto.getDigitalId().getDpId(),
-				validateDeviceDto.getDeviceServiceVersion());
+				validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDigitalId());
 		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
 		validateDeviceCodeAndDigitalId(validateDeviceDto.getDeviceCode(), validateDeviceDto.getDigitalId());
 		responseDto.setStatus(MasterDataConstant.VALID);
@@ -146,10 +146,10 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		return true;
 	}
 
-	private boolean checkMappingBetweenProviderAndService(String providerId, String swServiceVersion) {
+	private boolean checkMappingBetweenProviderAndService(String providerId, String swServiceVersion, DigitalIdDto digitalIdDto) {
 		MOSIPDeviceService deviceService = null;
 		try {
-			deviceService = deviceServiceRepository.findByDeviceProviderIdAndSwVersion(providerId, swServiceVersion);
+			deviceService = deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(providerId, swServiceVersion,digitalIdDto.getMake(),digitalIdDto.getModel());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
