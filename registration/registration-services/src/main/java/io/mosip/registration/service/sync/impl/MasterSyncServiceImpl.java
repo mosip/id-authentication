@@ -207,7 +207,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 				MasterDataResponseDto masterSyncDto = gson.fromJson(jsonString, MasterDataResponseDto.class);
 
 				resoponse = masterSyncDao.save(masterSyncDto);
-
+				
 				if (resoponse.equals(RegistrationConstants.SUCCESS)) {
 
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
