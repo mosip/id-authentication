@@ -1,5 +1,18 @@
 package io.mosip.authentication.common.service.impl;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_DOES_NOT_EXIST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_PROVIDER_INACTIVE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_PROVIDER_NOT_EXIST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_REVOKED_OR_RETIRED;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MDS_DOES_NOT_EXIST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MDS_INACTIVE_STATE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SOFTWARE_VERSION_IS_NOT_A_MATCH;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.SERVER_ERROR;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.UNABLE_TO_PROCESS;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -15,7 +28,6 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.DigitalIdDTO;
 import io.mosip.authentication.core.dto.ValidateDeviceDTO;
@@ -37,9 +49,8 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
- * 
- * Bio-service to implement Biometric Authentication
- * 
+ * Bio-service to implement Biometric Authentication.
+ *
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
  */
@@ -47,39 +58,42 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 @Service
 public class BioAuthServiceImpl implements BioAuthService {
 
-	/**
-	 * Id Info helper
-	 */
+	/** Id Info helper. */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
-	/**
-	 * Match Input Builder
-	 */
+	/** Match Input Builder. */
 	@Autowired
 	private MatchInputBuilder matchInputBuilder;
 
-	/**
-	 * The Ida Mapping Config
-	 */
+	/** The Ida Mapping Config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
+	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
 
+	/** The rest builder. */
 	@Autowired
 	private RestRequestFactory restBuilder;
 
 	/**
 	 * Validate Bio Auth details based on Bio auth request and Biometric Identity
-	 * values
+	 * values.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param uin the uin
+	 * @param bioIdentity the bio identity
+	 * @param partnerId the partner id
+	 * @return the auth status info
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Override
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
 			Map<String, List<IdentityInfoDTO>> bioIdentity, String partnerId) throws IdAuthenticationBusinessException {
 		if (bioIdentity == null || bioIdentity.isEmpty()) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+			throw new IdAuthenticationBusinessException(SERVER_ERROR);
 		} else {
 			verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -93,11 +107,18 @@ public class BioAuthServiceImpl implements BioAuthService {
 
 	}
 
+	/**
+	 * Verify biometric device.
+	 *
+	 * @param bioRequest the bio request
+	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private boolean verifyBiometricDevice(List<BioIdentityInfoDTO> bioRequest)
 			throws IdAuthenticationBusinessException {
 		try {
-			IntStream.range(0, bioRequest.size()).forEach(index -> {
+			IntStream.range(0, bioRequest.size() - 1).forEach(index -> {
 				try {
 					DataDTO data = bioRequest.get(index).getData();
 					ValidateDeviceDTO request = new ValidateDeviceDTO();
@@ -115,38 +136,39 @@ public class BioAuthServiceImpl implements BioAuthService {
 					if (e.getResponseBody().isPresent()) {
 						ResponseWrapper response = (ResponseWrapper) e.getResponseBody().get();
 						response.getErrors().forEach(error -> {
-							if (((ServiceError) error).getErrorCode().equals("ADM-DPM-001")
-									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-002")) {
-								throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_DEVICEID);
-							} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-003")
-									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-004")) {
-								throw new IdAuthUncheckedException(
-										IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(
-												IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
-														.getErrorMessage(),
-												"request/biometrics/" + index + "/digitalId/deviceProvider"));
-
-							} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-005")
-									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-006")) {
-								throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_MDS);
-							} else if (((ServiceError) error).getErrorCode().equals("ADM-DPM-007")
-									|| ((ServiceError) error).getErrorCode().equals("ADM-DPM-008")) {
-								throw new IdAuthUncheckedException(
-										IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(
-												IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
-														.getErrorMessage(),
-												"request/biometrics/" + index + "/deviceServiceVersion"));
+							if (((ServiceError) error).getErrorCode().equals(DEVICE_DOES_NOT_EXIST)
+									|| ((ServiceError) error).getErrorCode().equals(DEVICE_REVOKED_OR_RETIRED)) {
+								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+												String.format(BIO_PATH, index, "deviceCode")));
+							} else if (((ServiceError) error).getErrorCode().equals(DEVICE_PROVIDER_NOT_EXIST)
+									|| ((ServiceError) error).getErrorCode().equals(DEVICE_PROVIDER_INACTIVE)) {
+								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+												String.format(BIO_PATH, index, "digitalId/deviceProvider")));
+							} else if (((ServiceError) error).getErrorCode().equals(MDS_DOES_NOT_EXIST)
+									|| ((ServiceError) error).getErrorCode().equals(MDS_INACTIVE_STATE)) {
+								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+												String.format(BIO_PATH, index, "digitalId/deviceServiceID")));
+							} else if (((ServiceError) error).getErrorCode().equals(SOFTWARE_VERSION_IS_NOT_A_MATCH)) {
+								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+												String.format(BIO_PATH, index, "deviceServiceVersion")));
+							} else if (((ServiceError) error).getErrorCode()
+									.equals(PROVIDER_AND_DEVICE_CODE_NOT_MAPPED)) {
+								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+												String.format(BIO_PATH, index, "digitalId/deviceProviderId")));
 							} else {
-								throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+								throw new IdAuthUncheckedException(UNABLE_TO_PROCESS);
 							}
 						});
 					} else {
-						throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+						throw new IdAuthUncheckedException(UNABLE_TO_PROCESS);
 					}
 				} catch (IDDataValidationException e) {
-					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+					throw new IdAuthUncheckedException(UNABLE_TO_PROCESS, e);
 				}
 			});
 		} catch (IdAuthUncheckedException e) {
@@ -156,15 +178,25 @@ public class BioAuthServiceImpl implements BioAuthService {
 	}
 
 	/**
-	 * Constucts Match inputs based on Matched Bio Authtype and Bio Match type
-	 * 
-	 * @param authRequestDTO
-	 * @return
+	 * Constucts Match inputs based on Matched Bio Authtype and Bio Match type.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
 		return matchInputBuilder.buildMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values());
 	}
 
+	/**
+	 * Gets the match output.
+	 *
+	 * @param listMatchInputs the list match inputs
+	 * @param authRequestDTO the auth request DTO
+	 * @param demoEntity the demo entity
+	 * @param partnerId the partner id
+	 * @return the match output
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> demoEntity, String partnerId) throws IdAuthenticationBusinessException {
 		return idInfoHelper.matchIdentityData(authRequestDTO, demoEntity, listMatchInputs, partnerId);
