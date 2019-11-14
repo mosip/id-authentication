@@ -986,25 +986,31 @@ public class LocationServiceImpl implements LocationService {
 	 * @return hierarchy level
 	 */
 	public String getHierarchyLevel(String columnName) {
+		String level = null;
 		if (columnName != null) {
 			switch (columnName) {
 			case MasterDataConstant.POSTAL_CODE:
-				return "5";
+				level = "5";
 			case MasterDataConstant.ZONE:
 			case "Zone":
-				return "4";
+				level = "4";
 			case MasterDataConstant.CITY:
-				return "3";
+				level = "3";
 			case MasterDataConstant.PROVINCE:
-				return "2";
+				level = "2";
 			case MasterDataConstant.REGION:
-				return "1";
+				level = "1";
 
 			default:
-				return "0";
+				level = "0";
 			}
 		}
-		return "0";
+		if("0".equals(level))
+		{
+			throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+					MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
+		}
+		return level;
 	}
 
 }
