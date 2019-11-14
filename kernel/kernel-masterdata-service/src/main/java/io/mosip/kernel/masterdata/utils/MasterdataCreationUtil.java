@@ -265,12 +265,16 @@ public class MasterdataCreationUtil {
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.TRUE);
-					} else if (activeDto == true && activeSecondary == false) {
+					}
+					else if(activeDto==true && activeSecondary==false)
+					{
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.TRUE);
 						updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, true);
-					} else {
+					}
+					else
+					{
 						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 						isActive.setAccessible(true);
 						isActive.set(t, Boolean.FALSE);
