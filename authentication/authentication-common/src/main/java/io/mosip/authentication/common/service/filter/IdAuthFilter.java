@@ -303,16 +303,19 @@ public class IdAuthFilter extends BaseAuthFilter {
 					throwMissingInputParameter(HASH_INPUT_PARAM);
 				}
 				
-				String jwsData = dataOpt.get();
-				verifyJwsData(jwsData);
-				
-				String data = getPayloadFromJwsSingature(jwsData);
+				String dataFieldValue = dataOpt.get();
+				String data = extractBioData(dataFieldValue);
 				
 				previousHash = validateHash(data, hashOpt.get(), previousHash);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	protected String extractBioData(String dataFieldValue) throws IdAuthenticationAppException {
+		verifyJwsData(dataFieldValue);
+		return getPayloadFromJwsSingature(dataFieldValue);
 	}
 
 	private String digest(byte[] hash) {
