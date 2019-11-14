@@ -53,7 +53,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/** The public key. */
 	protected PublicKey publicKey;
 
-
 	/*
 	 * (non-Javadoc)
 	 * 

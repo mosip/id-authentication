@@ -16,15 +16,15 @@ public class AuthConfig extends IdAuthConfig {
 	protected Environment environment;
 
 	protected boolean isFingerAuthEnabled() {
-		return (environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigKey())
-				|| environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigKey()));
+		return (environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigNameValue())
+				|| environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue()));
 	}
 	
 	protected boolean isFaceAuthEnabled() {
-		return environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigKey());
+		return environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigNameValue());
 	}
 	
 	protected boolean isIrisAuthEnabled() {
-		return environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigKey());
+		return environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
 }

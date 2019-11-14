@@ -56,6 +56,13 @@ run 'ddl/reg-user_pwd.sql';
 run 'ddl/reg-user_role.sql';
 run 'ddl/reg-valid_document.sql';
 
+run 'ddl/reg-reg_device_type.sql';
+run 'ddl/reg-reg_device_sub_type.sql';
+run 'ddl/reg-device_provider.sql';
+run 'ddl/reg-foundational_trust_provider.sql';
+run 'ddl/reg-mosip_device_service.sql';
+run 'ddl/reg-registered_device_master.sql';
+
 run 'ddl/reg-fk.sql';
 
 run 'mosip_reg_dml_deploy.sql';

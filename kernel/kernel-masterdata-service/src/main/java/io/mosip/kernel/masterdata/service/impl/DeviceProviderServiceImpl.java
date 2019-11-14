@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.DeviceProviderManagementErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -36,7 +37,7 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository
 import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
-import io.mosip.kernel.masterdata.service.DeviceProviderService;
+
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -49,7 +50,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
-public class DeviceProviderServiceImpl implements DeviceProviderService {
+public class DeviceProviderServiceImpl implements DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -216,7 +217,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
 			serviceError.setMessage(String.format(
 					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
-					digitalIdDto.getProviderId()));
+					digitalIdDto.getProviderName()));
 			serviceErrors.add(serviceError);
 		}
 		if (!registeredDevice.getProviderName().equals(digitalIdDto.getProviderName())) {
@@ -239,6 +240,8 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		if (!serviceErrors.isEmpty()) {
 			throw new ValidationException(serviceErrors);
+		}else {
+			serviceErrors=null;
 		}
 
 	}
@@ -301,7 +304,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getProviderName()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getSerialNumber())) {
+		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getProviderName())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -312,6 +315,8 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		if (!serviceErrors.isEmpty()) {
 			throw new ValidationException(serviceErrors);
+		}else {
+			serviceErrors=null;
 		}
 		
 	}
@@ -326,7 +331,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 		if (deviceServiceHistory.isEmpty()) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorMessage());
 		}
@@ -345,11 +350,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 
 		if (registeredDeviceHistory == null) {
-			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorMessage());
 		}
 		if (!registeredDeviceHistory.getStatusCode().equalsIgnoreCase(REGISTERED)) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorMessage());
 		}
@@ -368,7 +373,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 		if (deviceProviderHistory == null) {
-			throw new MasterDataServiceException(
+			throw new RequestException(
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 		}
@@ -381,25 +386,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
-	private boolean checkMappingBetweenProviderAndDeviceCodeHistory(String providerId, String deviceCode,
-			LocalDateTime effDateTime) {
-		RegisteredDeviceHistory registeredDeviceHistory = null;
-		try {
-			registeredDeviceHistory = registeredDeviceHistoryRepository
-					.findRegisteredDeviceHistoryByIdProviderIdAndEffTimes(deviceCode, providerId, effDateTime);
-		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
-		}
-
-		if (registeredDeviceHistory == null) {
-			throw new DataNotFoundException(
-					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode(),
-					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage());
-		}
-
-		return true;
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -482,5 +469,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		return MapperUtils.map(updtDeviceProvider, DeviceProviderExtnDto.class);
 	}
+
+	
 
 }

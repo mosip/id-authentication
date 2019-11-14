@@ -4,7 +4,8 @@ CREATE DATABASE mosip_iam
 	LC_COLLATE = 'en_US.UTF-8'
 	LC_CTYPE = 'en_US.UTF-8'
 	TABLESPACE = pg_default
-	OWNER = sysadmin;
+	OWNER = sysadmin
+	TEMPLATE  = template0;
 -- ddl-end --
 COMMENT ON DATABASE mosip_iam IS 'Database to store all Identity and Access management data, look-up data, configuration data, metadata...etc.';
 -- ddl-end --

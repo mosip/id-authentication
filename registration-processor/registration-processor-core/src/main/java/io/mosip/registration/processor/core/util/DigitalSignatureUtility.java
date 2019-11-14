@@ -60,6 +60,14 @@ public class DigitalSignatureUtility {
 
 		try {
 			ResponseWrapper<SignResponseDto> response = (ResponseWrapper) registrationProcessorRestService.postApi(ApiName.DIGITALSIGNATURE, "", "", request, ResponseWrapper.class);
+
+			if (response.getErrors() != null && response.getErrors().size() > 0) {
+				response.getErrors().stream().forEach(r -> {
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+							"DigitalSignatureUtility::getDigitalSignature():: error with error message " + r.getMessage());
+				});
+			}
+
 			SignResponseDto signResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), SignResponseDto.class);
 			
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",

@@ -3,61 +3,44 @@ package io.mosip.kernel.idgenerator.vid.impl;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.idgenerator.vid.constant.VidExceptionConstant;
 import io.mosip.kernel.idgenerator.vid.constant.VidPropertyConstant;
-import io.mosip.kernel.idgenerator.vid.entity.VidSeed;
-import io.mosip.kernel.idgenerator.vid.entity.VidSequence;
-import io.mosip.kernel.idgenerator.vid.exception.VidException;
-import io.mosip.kernel.idgenerator.vid.repository.VidSeedRepository;
-import io.mosip.kernel.idgenerator.vid.repository.VidSequenceRepository;
 import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 
 /**
  * This class generates a Vid.
  * 
- * @author Tapaswini
- * @author Megha Tanga
  * @author Ritesh Sinha
+ * @author Urvil Joshi
+ * @author Megha Tanga
+ * 
  * @since 1.0.0
  *
  */
 @Component
 public class VidGeneratorImpl implements VidGenerator<String> {
 
+	boolean init = true;
+
+	private String randomSeed;
+
+	private String counter;
+
 	@Autowired
 	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
-	/**
-	 * Reference to {@link VidSeedRepository}.
-	 */
-	@Autowired
-	private VidSeedRepository seedRepository;
-
-	/**
-	 * Reference to {@link VidSequenceRepository}.
-	 */
-	@Autowired
-	private VidSequenceRepository sequenceRepository;
 	/**
 	 * Field to hold vidFilterUtils object
 	 */
@@ -70,23 +53,24 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
 
+	@PostConstruct
+	private void init() {
+		randomSeed = RandomStringUtils.random(Integer.parseInt(VidPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+				VidPropertyConstant.ZERO_TO_NINE.getProperty());
+
+		do {
+			counter = RandomStringUtils.random(Integer.parseInt(VidPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
+					VidPropertyConstant.ZERO_TO_NINE.getProperty());
+		} while (counter.charAt(0) == '0');
+	}
+
 	/**
 	 * Generates a Vid
 	 * 
 	 * @return a vid
 	 */
-	@Transactional(isolation = Isolation.READ_COMMITTED)
 	@Override
 	public String generateId() {
-
-		return generateVid();
-	}
-
-	/**
-	 * This method Generates an id and then validate.
-	 */
-
-	private String generateVid() {
 		String generatedVid = generateRandomId();
 		while (!vidFilterUtils.isValidId(generatedVid) || generatedVid.contains(" ")) {
 			generatedVid = generateRandomId();
@@ -101,72 +85,12 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	 * @return the VId with checksum
 	 */
 	private String generateRandomId() {
-
-		String counterSecureRandom = null;
-
-		String randomSeed = null;
 		String vid = null;
-
-		List<VidSeed> listOfSeed = null;
-		VidSequence sequenceEntity = null;
-
-		try {
-			listOfSeed = seedRepository.findAll();
-			sequenceEntity = sequenceRepository.findMaxSequence();
-
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new VidException(VidExceptionConstant.VID_FETCH_EXCEPTION.getErrorCode(),
-					VidExceptionConstant.VID_FETCH_EXCEPTION.getErrorMessage(), e);
-		}
-		try {
-			VidSequence counterEntity = new VidSequence();
-			counterEntity.setCreatedBy("SYSTEM");
-			counterEntity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			counterEntity.setDeletedDateTime(null);
-			counterEntity.setIsDeleted(false);
-
-			if (sequenceEntity == null) {
-				do {
-					counterSecureRandom = RandomStringUtils.random(
-							Integer.parseInt(VidPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
-							VidPropertyConstant.ZERO_TO_NINE.getProperty());
-				} while (counterSecureRandom.charAt(0) == '0');
-				counterEntity.setSequenceNumber(counterSecureRandom);
-			} else {
-				counterSecureRandom = sequenceEntity.getSequenceNumber();
-				counterSecureRandom = new BigInteger(counterSecureRandom).add(BigInteger.ONE).toString();
-				counterEntity.setSequenceNumber(counterSecureRandom);
-			}
-
-			sequenceRepository.saveAndFlush(counterEntity);
-
-			if (listOfSeed.isEmpty()) {
-				randomSeed = RandomStringUtils.random(
-						Integer.parseInt(VidPropertyConstant.RANDOM_NUMBER_SIZE.getProperty()),
-						VidPropertyConstant.ZERO_TO_NINE.getProperty());
-				VidSeed seedEntity = new VidSeed();
-				seedEntity.setCreatedBy("SYSTEM");
-				seedEntity.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				seedEntity.setDeletedDateTime(null);
-				seedEntity.setIsDeleted(false);
-				seedEntity.setSeedNumber(randomSeed);
-				seedRepository.saveAndFlush(seedEntity);
-			} else {
-				randomSeed = listOfSeed.get(0).getSeedNumber();
-			}
-
-		} catch (DataAccessLayerException | DataAccessException e) {
-			if (e.getCause().getClass() == PersistenceException.class) {
-				return generateId();
-			} else {
-				throw new VidException(VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorCode(),
-						VidExceptionConstant.VID_INSERTION_EXCEPTION.getErrorMessage(), e);
-			}
-		}
-
-		SecretKey secretKey = new SecretKeySpec(counterSecureRandom.getBytes(),
+		counter = init ? counter : new BigInteger(counter).add(BigInteger.ONE).toString();
+		init = false;
+		SecretKey secretKey = new SecretKeySpec(counter.getBytes(),
 				VidPropertyConstant.ENCRYPTION_ALGORITHM.getProperty());
-		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, randomSeed.getBytes(),null);
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, randomSeed.getBytes(), null);
 		BigInteger bigInteger = new BigInteger(encryptedData);
 		vid = String.valueOf(bigInteger.abs());
 		vid = vid.substring(0, vidLength - 1);

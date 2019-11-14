@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Mukul Puspam
- * Class for logging description and message code
+ * @author Mukul Puspam Class for logging description and message code
  */
 @Data
 @Getter
@@ -20,15 +19,17 @@ public class LogDescription {
 	 * The message code
 	 */
 	private String code;
+
+	private String statusCode;
 	/**
 	 * The status comment
 	 */
 	private String statusComment;
-	
+
 	private String transactionStatusCode;
-	
+
 	private String subStatusCode;
-	
+
 	@Override
 	public String toString() {
 		return this.getMessage();

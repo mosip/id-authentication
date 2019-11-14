@@ -95,6 +95,7 @@ public class RegistrationUIConstants {
 	public static final String EXCEPTION_PHOTO_CAPTURE_ERROR = bundle.getString("EXCEPTION_PHOTO_CAPTURE_ERROR");
 	public static final String PARENT_FACE_CAPTURE_ERROR = bundle.getString("PARENT_FACE_CAPTURE_ERROR");
 	public static final String FACE_SCANNING_ERROR = bundle.getString("FACE_SCANNING_ERROR");
+	public static final String FACE_DUPLICATE_ERROR = bundle.getString("FACE_SCANNING_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
 	// LOCK ACCOUNT
