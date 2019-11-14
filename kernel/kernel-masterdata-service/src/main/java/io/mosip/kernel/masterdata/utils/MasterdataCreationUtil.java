@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
@@ -158,7 +159,17 @@ public class MasterdataCreationUtil {
 		}
 		if (langCode.equals(secondaryLang)) {
 			
+			if(StringUtils.isBlank(id))
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
+			if(primaryEntity==null)
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			if (primaryEntity != null) {
 				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
 					field.setAccessible(true);
@@ -296,7 +307,7 @@ public class MasterdataCreationUtil {
 				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
 				isActive.setAccessible(true);
 				isActive.set(t, Boolean.FALSE);
-        if (secondaryEntity != null) {
+				if (secondaryEntity != null) {
 					updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, false);
 				}
 			}
@@ -304,7 +315,17 @@ public class MasterdataCreationUtil {
 		}
 		if (langCode.equals(secondaryLang)) {
 			
+			if(StringUtils.isBlank(id))
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
+			if(primaryEntity==null)
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			if (primaryEntity != null) {
 				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
 					field.setAccessible(true);
