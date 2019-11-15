@@ -34,6 +34,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -52,6 +53,7 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	private static final String DIGITAL_ID = "digitalId";
 
 	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
 	private static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
@@ -221,6 +223,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 			
 			Object bioValue = data.get(BIO_VALUE);
+			DigitalId digitalId = Objects.nonNull(data.get(DIGITAL_ID)) ? mapper.readValue(CryptoUtil.decodeBase64((String) data.get(DIGITAL_ID)), DigitalId.class) : null;
+			data.replace(DIGITAL_ID, digitalId);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
 			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));

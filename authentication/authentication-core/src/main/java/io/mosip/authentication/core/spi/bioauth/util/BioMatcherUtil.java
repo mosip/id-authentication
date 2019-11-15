@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;

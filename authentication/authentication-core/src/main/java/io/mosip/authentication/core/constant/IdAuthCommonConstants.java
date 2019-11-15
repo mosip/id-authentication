@@ -100,6 +100,24 @@ public final class IdAuthCommonConstants {
 	public static final String UIN_MODULO_SPLITTER = "_";
 	
 	public static final String DOB_PATTERN = "yyyy/MM/dd";
+	
+	public static final String DEVICE_DOES_NOT_EXIST = "ADM-DPM-001";
+	
+	public static final String DEVICE_REVOKED_OR_RETIRED = "ADM-DPM-002";
+	
+	public static final String DEVICE_PROVIDER_NOT_EXIST = "ADM-DPM-003";
+	
+	public static final String DEVICE_PROVIDER_INACTIVE = "ADM-DPM-004";
+	
+	public static final String MDS_DOES_NOT_EXIST = "ADM-DPM-005";
+	
+	public static final String MDS_INACTIVE_STATE = "ADM-DPM-006";
+	
+	public static final String SOFTWARE_VERSION_IS_NOT_A_MATCH = "ADM-DPM-007";
+	
+	public static final String PROVIDER_AND_DEVICE_CODE_NOT_MAPPED = "ADM-DPM-008";
+	
+	public static final String BIO_PATH = "request/biometrics/%s/%s";
 
 }
 
