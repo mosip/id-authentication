@@ -374,6 +374,9 @@ public enum PlatformErrorMessages {
 	REGISTRATION_ID_NOT_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "002",
 			"RegistrationId not found for given bio ref Id"),
 
+	RPR_BIO_LOST_PACKET_MULTIPLE_MATCH_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "003",
+			"Multiple Match was Found for the Biometrics Received"),
+
 	/** The abis reference id not found. */
 	// stages - Abis Middleware
 	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001", "Unable to Find ABIS Reference ID"),
@@ -396,6 +399,8 @@ public enum PlatformErrorMessages {
 	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006", "Unable to Find ABIS Batch ID"),
 
 	ABIS_QUEUE_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "007", "Unable to Connect with ABIS Queue"),
+
+	SYSTEM_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "008", "Internal error occured"),
 
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
@@ -596,7 +601,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr pum packet not found exception. */
 	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "001",
-			"Packet Not Found in Packet Store"),
+			"Packet not copied from LANDING ZONE FOLDER DURING ARCHIVAL "),
 
 	/** The rpr pum packet deletion info. */
 	RPR_PUM_PACKET_DELETION_INFO(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "002",
@@ -982,7 +987,11 @@ public enum PlatformErrorMessages {
 			"Potential Match Records are Not Found for Demo Dedupe Potential Match"),
 
 	RPR_ERROR_IN_ABIS_HANDLER_IDENTIFY_REQUEST(PlatformConstants.RPR_ABIS_HANDLER + "004",
-			"Internal Error occured in Abis Handler identify request");
+			"Internal Error occured in Abis Handler identify request"),
+
+	RPR_DEMO_SENDING_FOR_MANUAL(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "001",
+			"ABIS response Details found. Hence sending to manual adjudication");
+	;
 
 	/** The error message. */
 	private final String errorMessage;

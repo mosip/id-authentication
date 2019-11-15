@@ -271,8 +271,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the demographic json bytes
 	 * @param description
 	 */
-	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId,
-			LogDescription description) {
+	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId, LogDescription description,
+			String moduleId, String moduleName) {
 
 		String getJsonStringFromBytes = new String(demographicJsonBytes);
 		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
@@ -300,7 +300,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, regId);
 
 		}
 
@@ -317,7 +317,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData,
-			String registrationId) {
+			String registrationId, String moduleId, String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -347,7 +347,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, registrationId);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -363,7 +363,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveDemographicInfoJson(java.io.InputStream, java.util.List)
 	 */
 	@Override
-	public void saveDemographicInfoJson(byte[] bytes, String registrationId, List<FieldValue> metaData) {
+	public void saveDemographicInfoJson(byte[] bytes, String registrationId, List<FieldValue> metaData, String moduleId,
+			String moduleName) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveDemographicInfoJson()::entry");
 		LogDescription description = new LogDescription();
@@ -375,7 +376,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		try {
 
-			saveIndividualDemographicDedupe(bytes, registrationId, description);
+			saveIndividualDemographicDedupe(bytes, registrationId, description, moduleId, moduleName);
 
 			isTransactionSuccessful = true;
 			description.setMessage("Demographic Json saved");
@@ -397,7 +398,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, registrationId);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -426,7 +427,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,
-			DedupeSourceName sourceName) {
+			DedupeSourceName sourceName, String moduleId, String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 
@@ -482,7 +483,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, registrationId);
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -521,7 +522,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveAbisRef(io.mosip.registration.processor.core.packet.dto.RegAbisRefDto)
 	 */
 	@Override
-	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
+	public void saveAbisRef(RegAbisRefDto regAbisRefDto, String moduleId, String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 		String regisId = "";
@@ -551,7 +552,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, AuditLogConstant.NO_ID.toString());
 
 		}
 
@@ -704,7 +705,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveBioRef(io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto)
 	 */
 	@Override
-	public void saveBioRef(RegBioRefDto regBioRefDto) {
+	public void saveBioRef(RegBioRefDto regBioRefDto, String moduleId, String moduleName) {
+		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveBioRef()::entry");
@@ -712,6 +714,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		try {
 			RegBioRefEntity regBioRefEntity = PacketInfoMapper.convertBioRefDtoToEntity(regBioRefDto);
 			regBioRefRepository.save(regBioRefEntity);
+			isTransactionSuccessful = true;
+			description.setMessage("Bio ref data saved successfully");
 		} catch (DataAccessLayerException e) {
 			description.setMessage("DataAccessLayerException while saving ABIS data" + "::" + e.getMessage());
 
@@ -719,7 +723,19 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(
 					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regBioRefDto.getRegId(), e);
+		} finally {
+
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, AuditLogConstant.NO_ID.toString());
+
 		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveBioRef()::exit");
 
@@ -734,7 +750,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * AbisRequestDto)
 	 */
 	@Override
-	public void saveAbisRequest(AbisRequestDto abisRequestDto) {
+	public void saveAbisRequest(AbisRequestDto abisRequestDto, String moduleId, String moduleName) {
+		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveAbisRequest()::entry");
@@ -742,6 +759,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		try {
 			AbisRequestEntity abisRequestEntity = PacketInfoMapper.convertAbisRequestDtoToEntity(abisRequestDto);
 			regAbisRequestRepository.save(abisRequestEntity);
+			isTransactionSuccessful = true;
+			description.setMessage("ABIS  Request data saved successfully");
 		} catch (DataAccessLayerException e) {
 			description.setMessage("DataAccessLayerException while saving ABIS data" + "::" + e.getMessage());
 
@@ -749,6 +768,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(
 					PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + abisRequestDto.getId(), e);
+		} finally {
+
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, AuditLogConstant.NO_ID.toString());
+
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveAbisRequest()::exit");
@@ -778,7 +808,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * abis.RegDemoDedupeListDto)
 	 */
 	@Override
-	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
+	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto, String moduleId,
+			String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 
@@ -813,7 +844,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, AuditLogConstant.NO_ID.toString());
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
@@ -908,7 +939,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	@Override
-	public void saveRegLostUinDet(String regId, String latestRegId) {
+	public void saveRegLostUinDet(String regId, String latestRegId, String moduleId, String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 
@@ -946,7 +977,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+					moduleId, moduleName, AuditLogConstant.NO_ID.toString());
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,

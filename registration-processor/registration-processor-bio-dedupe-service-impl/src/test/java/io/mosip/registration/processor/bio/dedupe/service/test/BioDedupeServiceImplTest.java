@@ -97,7 +97,7 @@ public class BioDedupeServiceImplTest {
 	private ListAppender<ILoggingEvent> listAppender;
 
 	private Logger fooLogger;
-	
+
 	@Mock
 	private RegistrationStatusService registrationStatusService;
 
@@ -109,7 +109,7 @@ public class BioDedupeServiceImplTest {
 	@Before
 	public void setup() throws Exception {
 
-		Mockito.doNothing().when(packetInfoManager).saveAbisRef(any());
+		Mockito.doNothing().when(packetInfoManager).saveAbisRef(any(), any(), any());
 
 		abisInsertResponseDto.setReturnValue(2);
 
@@ -168,7 +168,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test
 	public void insertBiometricsSuccessTest() throws ApisResourceAccessException, IOException {
@@ -187,7 +187,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = ABISInternalError.class)
 	public void insertBiometricsABISInternalErrorFailureTest() throws ApisResourceAccessException, IOException {
@@ -206,7 +206,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = ABISAbortException.class)
 	public void insertBiometricsABISAbortExceptionFailureTest() throws ApisResourceAccessException, IOException {
@@ -225,7 +225,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = UnexceptedError.class)
 	public void insertBiometricsUnexceptedErrorFailureTest() throws ApisResourceAccessException, IOException {
@@ -244,10 +244,11 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = UnableToServeRequestABISException.class)
-	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest() throws ApisResourceAccessException, IOException {
+	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest()
+			throws ApisResourceAccessException, IOException {
 
 		abisInsertResponseDto.setFailureReason(4);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -263,7 +264,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test
 	public void testPerformDedupeSuccess() throws ApisResourceAccessException, IOException {
@@ -296,7 +297,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = ABISInternalError.class)
 	public void testPerformDedupeFailure() throws ApisResourceAccessException, IOException {
@@ -315,7 +316,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = ABISAbortException.class)
 	public void testDedupeAbisAbortException() throws ApisResourceAccessException, IOException {
@@ -334,7 +335,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = UnexceptedError.class)
 	public void testDedupeUnexpectedError() throws ApisResourceAccessException, IOException {
@@ -353,7 +354,7 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test(expected = UnableToServeRequestABISException.class)
 	public void testDedupeUnableToServeRequestABISException() throws ApisResourceAccessException, IOException {
@@ -383,24 +384,24 @@ public class BioDedupeServiceImplTest {
 		byte[] fileData = bioDedupeService.getFileByRegId(registrationId);
 		assertArrayEquals(fileData, data);
 	}
-	
+
 	@Test
 	public void getFileByAbisRefId() throws Exception {
-		//case1 : if regId is invalid(null or empty), 
+		// case1 : if regId is invalid(null or empty),
 		byte[] expected = "1234567890".getBytes();
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(expected);
 
 		byte[] fileData = bioDedupeService.getFileByAbisRefId(registrationId);
-		assertArrayEquals("verfing if byte array returned is null for the given invalid regId ",fileData, null);
-		
-		//case2 : if regId is valid
+		assertArrayEquals("verfing if byte array returned is null for the given invalid regId ", fileData, null);
+
+		// case2 : if regId is valid
 		List<String> regIds = new ArrayList<>();
 		regIds.add("10006100360000320190702102135");
 		Mockito.when(packetInfoManager.getRidByReferenceId(anyString())).thenReturn(regIds);
 		byte[] result = bioDedupeService.getFileByAbisRefId(registrationId);
-		assertArrayEquals("verfing if byte array returned is same as expected ",result, expected);
+		assertArrayEquals("verfing if byte array returned is same as expected ", result, expected);
 	}
 
 	@Test

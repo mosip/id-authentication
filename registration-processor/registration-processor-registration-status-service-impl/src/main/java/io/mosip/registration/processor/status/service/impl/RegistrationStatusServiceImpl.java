@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -95,7 +94,8 @@ public class RegistrationStatusServiceImpl
 	 * addRegistrationStatus(java.lang.Object)
 	 */
 	@Override
-	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
+	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto, String moduleId,
+			String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -134,7 +134,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
+					moduleId, moduleName, registrationStatusDto.getRegistrationId());
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
@@ -150,7 +150,8 @@ public class RegistrationStatusServiceImpl
 	 * updateRegistrationStatus(java.lang.Object)
 	 */
 	@Override
-	public void updateRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
+	public void updateRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto, String moduleId,
+			String moduleName) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::updateRegistrationStatus()::entry");
@@ -187,13 +188,13 @@ public class RegistrationStatusServiceImpl
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
+					moduleId, moduleName, registrationStatusDto.getRegistrationId());
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),

@@ -419,7 +419,12 @@ public class PacketValidateProcessor {
 						: 1;
 				registrationStatusDto.setRetryCount(retryCount);
 			}
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = packetValidationDto.isTransactionSuccessful()
+					? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.PACKET_VALIDATOR.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 			if (packetValidationDto.isTransactionSuccessful())
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage());
 			String eventId = packetValidationDto.isTransactionSuccessful() ? EventId.RPR_402.toString()
@@ -429,11 +434,6 @@ public class PacketValidateProcessor {
 			String eventType = packetValidationDto.isTransactionSuccessful() ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			/** Module-Id can be Both Success/Error code */
-			String moduleId = packetValidationDto.isTransactionSuccessful()
-					? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.PACKET_VALIDATOR.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 		}

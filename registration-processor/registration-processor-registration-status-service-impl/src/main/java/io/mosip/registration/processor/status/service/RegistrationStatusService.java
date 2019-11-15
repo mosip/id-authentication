@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 
 // TODO: Auto-generated Javadoc
@@ -42,7 +40,7 @@ public interface RegistrationStatusService<T, U, D> {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public void addRegistrationStatus(U registrationStatusDto);
+	public void addRegistrationStatus(U registrationStatusDto, String moduleId, String moduleName);
 
 	/**
 	 * Update registration status.
@@ -50,7 +48,7 @@ public interface RegistrationStatusService<T, U, D> {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public void updateRegistrationStatus(U registrationStatusDto);
+	public void updateRegistrationStatus(U registrationStatusDto, String moduleId, String moduleName);
 
 	/**
 	 * Gets the by status.
@@ -64,34 +62,41 @@ public interface RegistrationStatusService<T, U, D> {
 	/**
 	 * Gets the by ids.
 	 *
-	 * @param requestIds the request ids
+	 * @param requestIds
+	 *            the request ids
 	 * @return the list of Registrations for the given ids.
 	 */
 	public List<D> getByIds(List<RegistrationStatusSubRequestDto> requestIds);
-	
+
 	/**
 	 * Gets the un processed packets.
 	 *
-	 * @param fetchSize the fetch size
-	 * @param elapseTime the elapse time
-	 * @param reprocessCount the reprocess count
-	 * @param status the status
+	 * @param fetchSize
+	 *            the fetch size
+	 * @param elapseTime
+	 *            the elapse time
+	 * @param reprocessCount
+	 *            the reprocess count
+	 * @param status
+	 *            the status
 	 * @return the un processed packets
 	 */
-	public List<U> getUnProcessedPackets(Integer fetchSize, long elapseTime,
-			Integer reprocessCount, List<String> status);
-	
+	public List<U> getUnProcessedPackets(Integer fetchSize, long elapseTime, Integer reprocessCount,
+			List<String> status);
+
 	/**
 	 * Gets the un processed packets count.
 	 *
-	 * @param elapseTime the elapse time
-	 * @param reprocessCount the reprocess count
-	 * @param status the status
+	 * @param elapseTime
+	 *            the elapse time
+	 * @param reprocessCount
+	 *            the reprocess count
+	 * @param status
+	 *            the status
 	 * @return the un processed packets count
 	 */
-	public Integer getUnProcessedPacketsCount(long elapseTime,
-			Integer reprocessCount, List<String> status);
-	
+	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status);
+
 	/**
 	 * Check Rid if uin is available
 	 *
