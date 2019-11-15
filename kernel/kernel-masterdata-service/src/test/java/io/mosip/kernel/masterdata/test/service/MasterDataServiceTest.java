@@ -1749,7 +1749,20 @@ public class MasterDataServiceTest {
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}
 
-  @Test(expected = MasterDataServiceException.class)
+	/**
+	 * @Test public void locationHierarchySaveTest() {
+	 *       Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenReturn(locationHierarchy);
+	 *       locationHierarchyService.createLocationHierarchy(requestLocationDto.getRequest());
+	 *       }
+	 * 
+	 * @Test(expected = MasterDataServiceException.class) public void
+	 *                locationHierarchySaveNegativeTest() {
+	 *                Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
+	 *                locationHierarchyService.createLocationHierarchy(requestLocationDto.getRequest());
+	 *                }
+	 * 
+	 **/
+	@Test(expected = MasterDataServiceException.class)
 	public void updateLocationDetailsIsActiveTest() {
 
 		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy2);
