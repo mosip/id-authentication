@@ -88,10 +88,10 @@ public enum StatusUtil {
 																	"Center-Device Mapping was InActive during Packet Creation - "), DEVICE_NOT_FOUND_MASTER_DB(
 																			StatusConstants.OSI_VALIDAOR_MODULE_FAILED
 																					+ "009",
-																			"Device Not Found in Master DB - "), DEVICE_ID_INACTIVE(
+																			"Device Not Found in Master DB - "), DEVICE_VALIDATION_FAILED(
 																					StatusConstants.OSI_VALIDAOR_MODULE_FAILED
 																							+ "010",
-																					"Device ID was InActive during Packet Creation - "), PACKET_CREATION_WORKING_HOURS(
+																					"Device Validation Failed"), PACKET_CREATION_WORKING_HOURS(
 																							StatusConstants.OSI_VALIDAOR_MODULE_FAILED
 																									+ "011",
 																							"Packet was Not Created during Working Hours - "), REGISTRATION_CENTER_TIMESTAMP_FAILURE(
