@@ -122,16 +122,28 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setMake("make-updated");
 		registeredDevice.setModel("model-updated");
 		registeredDevice.setSerialNumber("GV3434343M");
+		
+		registeredDevice.setDeviceTypeCode("Face");
+		registeredDevice.setDevicesTypeCode("Slab");
+		registeredDevice.setStatusCode("registered");
+		registeredDevice.setDeviceSubId("1234");
+		registeredDevice.setPurpose("Auth");
+		registeredDevice.setFirmware("firmware");
+		registeredDevice.setCertificationLevel("L0");
+		registeredDevice.setFoundationalTPId("foundationalTPId");
+		registeredDevice.setFoundationalTrustSignature("foundationalTrustSignature");
+		registeredDevice.setDeviceProviderSignature("sign");
 
 		validateDeviceDto = new ValidateDeviceDto();
 		validateDeviceDto.setDeviceCode("10001");
 		validateDeviceDto.setDeviceServiceVersion("0.1v");
 		DigitalIdDto digitalIdDto = new DigitalIdDto();
-		digitalIdDto.setDpId("1111");
-		digitalIdDto.setDp("INTEL");
+		digitalIdDto.setProviderId("1111");
+		digitalIdDto.setProviderName("INTEL");
 		digitalIdDto.setMake("make-updated");
 		digitalIdDto.setModel("model-updated");
-		digitalIdDto.setSerialNo("GV3434343M");
+		digitalIdDto.setSerialNumber("BS563Q2230890");
+		digitalIdDto.setType("face");
 		validateDeviceDto.setDigitalId(digitalIdDto);
 
 		validateDeviceHistoryDto = new ValidateDeviceHistoryDto();

@@ -32,10 +32,10 @@ public class RegisteredDeviceHistory extends BaseEntity {
 	private String code;
 
 	@Column(name = "dtype_code")
-	private String dTypeCode;
+	private String deviceTypeCode;
 
 	@Column(name = "dstype_code")
-	private String dsTypeCode;
+	private String devicesTypeCode;
 
 	@Column(name = "status_code")
 	private String statusCode;
@@ -80,12 +80,16 @@ public class RegisteredDeviceHistory extends BaseEntity {
 	private String foundationalTrustSignature;
 
 	@Column(name = "foundational_trust_certificate")
-	private String foundationalTrustCertificate;
+	private byte[] foundationalTrustCertificate;
 
 	@Column(name = "dprovider_signature")
-	private byte[] dProviderSignature;
-	
+	private String dProviderSignature;
+
 	@Column(name = "eff_dtimes")
 	private LocalDateTime effectivetimes;
+
+	// json inner class
+	@Column(name = "digital_id", length = 1024)
+	private String digitalId;
 
 }
