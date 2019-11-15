@@ -24,14 +24,13 @@ public interface RegisteredDeviceRepository extends BaseRepository<RegisteredDev
 	 */
 	RegisteredDevice findByCodeAndIsActiveIsTrue(String deviceCode);
 
+	
 	/**
-	 * Find by code and provider id.
+	 * Find by code and dp id.
 	 *
-	 * @param deviceCode
-	 *            the device code
-	 * @param providerId
-	 *            the provider id
+	 * @param deviceCode the device code
+	 * @param providerId the provider id
 	 * @return the registered device
 	 */
-	RegisteredDevice findByCodeAndProviderId(String deviceCode, String providerId);
+	RegisteredDevice findByCodeAndDpId(String deviceCode, String providerId);
 }

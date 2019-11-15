@@ -23,7 +23,7 @@ public class DeviceSubTypeDPMDto extends BaseDto {
 
 	/** The dtype code. */
 
-	private String dtypCode;
+	private String dtypeCode;
 
 	/** The name. */
 
