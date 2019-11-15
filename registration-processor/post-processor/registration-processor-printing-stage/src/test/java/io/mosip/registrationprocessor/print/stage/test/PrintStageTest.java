@@ -214,7 +214,7 @@ public class PrintStageTest {
 
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(), any(), any());
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());

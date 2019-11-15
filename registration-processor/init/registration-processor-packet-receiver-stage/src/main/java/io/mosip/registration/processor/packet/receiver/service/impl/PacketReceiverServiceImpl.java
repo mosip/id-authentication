@@ -269,7 +269,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setIsActive(true);
 		dto.setCreatedBy(USER);
 		dto.setIsDeleted(false);
-		registrationStatusService.addRegistrationStatus(dto);
+		/** Module-Id can be Both Success/Error code */
+		String moduleId = PlatformSuccessMessages.PACKET_RECEIVER_VALIDATION_SUCCESS.getCode();
+		String moduleName = ModuleName.PACKET_RECEIVER.toString();
+		registrationStatusService.addRegistrationStatus(dto, moduleId, moduleName);
 		storageFlag = true;
 		description
 				.setMessage(PacketReceiverConstant.PACKET_SUCCESS_UPLOADED_IN_PACKET_RECIVER + dto.getRegistrationId());
@@ -536,8 +539,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, ExceptionUtils.getStackTrace(e));
 
 		} finally {
-
-			registrationStatusService.updateRegistrationStatus(dto);
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.PACKET_RECEIVER.toString();
+			registrationStatusService.updateRegistrationStatus(dto, moduleId, moduleName);
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
@@ -546,10 +552,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			/** Module-Id can be Both Success/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.PACKET_RECEIVER.toString();
+
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 

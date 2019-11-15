@@ -27,7 +27,7 @@ public class RegisteredSubDeviceType extends RegistrationCommonFields {
 	private String code;
 	
 	@Column(name="dtyp_code",length=36,nullable=false)
-	private String dtypCode;
+	private String dtypeCode;
 	
 	@Column(name="name",length=64,nullable=false)
 	private String name;

@@ -337,7 +337,11 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			description.setCode(PlatformErrorMessages.PACKET_UPLOAD_FAILED.getCode());
 
 		} finally {
-			registrationStatusService.updateRegistrationStatus(dto);
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PUM_PACKET_UPLOADER.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.PACKET_UPLOAD.toString();
+			registrationStatusService.updateRegistrationStatus(dto, moduleId, moduleName);
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
@@ -347,10 +351,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			/** Module-Id can be Both Success/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PUM_PACKET_UPLOADER.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.PACKET_UPLOAD.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class RegisteredSubDeviceTypeDto extends MasterSyncBaseDto {
 
 	private String code;
-	private String dtypCode;
+	private String dtypeCode;
 	private String name;
 	private String descr;
 	private Boolean isActive;

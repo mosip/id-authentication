@@ -345,7 +345,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}
 			scanPopUpViewController.init(this, headerText);
 			if (bioService.isMdmEnabled())
-				streamer.startStream(new RequestDetail(bioType, "", 1, "", fingerException), scanPopUpViewController.getScanImage(), biometricImage);
+				streamer.startStream(new RequestDetail(bioType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, "40", fingerException), scanPopUpViewController.getScanImage(), biometricImage);
 		}
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -367,22 +367,22 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				scanFingers(RegistrationConstants.FINGERPRINT_SLAB_RIGHT,
-						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Double.parseDouble(
+						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Integer.parseInt(
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				scanFingers(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
-						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
+						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, popupStage, Integer.parseInt(
 								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
 				scanFingers(RegistrationConstants.FINGERPRINT_SLAB_THUMBS,
-						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
+						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, popupStage, Integer.parseInt(
 								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_IRIS)) {
 				scanIris(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE), popupStage,
-						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
+						Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_IRIS)) {
 				scanIris(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE), popupStage,
-						Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
+						Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 			}
 
 		} catch (RuntimeException runtimeException) {
@@ -512,7 +512,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	 * @param thresholdValue threshold value
 	 *
 	 */
-	private void scanIris(String irisType, Stage popupStage, Double thresholdValue) throws RegBaseCheckedException {
+	private void scanIris(String irisType, Stage popupStage, int thresholdValue) throws RegBaseCheckedException {
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
@@ -554,7 +554,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 				setCapturedValues(iris.getQualityScore(), retries, thresholdValue);
 				iris.setNumOfIrisRetry(retries);
 
-				if (validateIrisQulaity(iris, thresholdValue)) {
+				if (validateIrisQulaity(iris, new Double(thresholdValue))) {
 					if(retries==Integer
 								.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
 						scanBtn.setDisable(true);
@@ -604,7 +604,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	 * @param popupStage           stage
 	 * @param thresholdValue       threshold value
 	 */
-	private void scanFingers(String fingerType, String[] segmentedFingersPath, Stage popupStage, Double thresholdValue)
+	private void scanFingers(String fingerType, String[] segmentedFingersPath, Stage popupStage, int thresholdValue)
 			throws RegBaseCheckedException {
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -684,7 +684,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			popupStage.close();
 
-			if (validateFingerPrintQulaity(detailsDTO, thresholdValue)
+			if (validateFingerPrintQulaity(detailsDTO, new Double(thresholdValue))
 					&& fingerdeduplicationCheck(fingerprintDetailsDTOs)) {
 				continueBtn.setDisable(false);
 				if (retries == Integer

@@ -3,12 +3,8 @@ package io.mosip.kernel.syncdata.utils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -1720,7 +1716,7 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<DeviceServiceDto>> getDeviceServiceDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
 		List<DeviceService> deviceServices = null;
-		List<DeviceServiceDto> deviceServiceDtos = null;
+		List<DeviceServiceDto> deviceServiceDtos = new ArrayList<>();
 		try {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1732,7 +1728,13 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.DEVICE_SERVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceServices != null && !deviceServices.isEmpty()) {
-			deviceServiceDtos = MapperUtils.mapAll(deviceServices, DeviceServiceDto.class);
+			deviceServices.stream().forEach(deviceService ->{
+				DeviceServiceDto deviceServiceDto= new DeviceServiceDto();
+				deviceServiceDto.setSwBinaryHash(CryptoUtil.encodeBase64(deviceService.getSwBinaryHash()));
+				MapperUtils.map(deviceService, deviceServiceDto);
+				deviceServiceDtos.add(deviceServiceDto);
+			});
+			//deviceServiceDtos = MapperUtils.mapAll(deviceServices, DeviceServiceDto.class);
 		}
 		return CompletableFuture.completedFuture(deviceServiceDtos);
 	}
@@ -1756,6 +1758,7 @@ public class SyncMasterDataServiceHelper {
 			registeredDevices.stream().forEach(regDevice -> {
 				RegisteredDeviceDto registeredDeviceDto=new RegisteredDeviceDto();
 				registeredDeviceDto.setExpiryDate(DateUtils.toISOString(regDevice.getExpiryDate()));
+				registeredDeviceDto.setDProviderSignature(CryptoUtil.encodeBase64(regDevice.getDProviderSignature()));
 				MapperUtils.map(regDevice, registeredDeviceDto);
 				registeredDeviceDtos.add(registeredDeviceDto);
 			});

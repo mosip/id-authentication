@@ -39,7 +39,7 @@ public class MosipDeviceService extends RegistrationCommonFields {
 	private String dProviderId;
 	
 	@Column(name="dtype_code",length=36, nullable=false)
-	private String dTypeCode;
+	private String dtypeCode;
 	
 	@Column(name="dstype_code",length=36, nullable=false)
 	private String dsTypeCode;

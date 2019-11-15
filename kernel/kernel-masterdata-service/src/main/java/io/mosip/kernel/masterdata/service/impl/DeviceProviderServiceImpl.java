@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.DeviceProviderManagementErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
@@ -36,7 +37,7 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository
 import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
-import io.mosip.kernel.masterdata.service.DeviceProviderService;
+
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -49,7 +50,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
-public class DeviceProviderServiceImpl implements DeviceProviderService {
+public class DeviceProviderServiceImpl implements DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -80,7 +81,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		isDeviceProviderPresent(validateDeviceDto.getDigitalId().getDpId());
 		isValidServiceSoftwareVersion(validateDeviceDto.getDeviceServiceVersion());
 		checkMappingBetweenProviderAndService(validateDeviceDto.getDigitalId().getDpId(),
-				validateDeviceDto.getDeviceServiceVersion());
+				validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDigitalId());
 		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
 		validateDeviceCodeAndDigitalId(validateDeviceDto.getDeviceCode(), validateDeviceDto.getDigitalId());
 		responseDto.setStatus(MasterDataConstant.VALID);
@@ -145,10 +146,10 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		return true;
 	}
 
-	private boolean checkMappingBetweenProviderAndService(String providerId, String swServiceVersion) {
+	private boolean checkMappingBetweenProviderAndService(String providerId, String swServiceVersion, DigitalIdDto digitalIdDto) {
 		MOSIPDeviceService deviceService = null;
 		try {
-			deviceService = deviceServiceRepository.findByDeviceProviderIdAndSwVersion(providerId, swServiceVersion);
+			deviceService = deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(providerId, swServiceVersion,digitalIdDto.getMake(),digitalIdDto.getModel());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
@@ -210,7 +211,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getModel()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getProviderId().equals(digitalIdDto.getDpId())) {
+		if (!registeredDevice.getDpId().equals(digitalIdDto.getDpId())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -219,7 +220,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getProviderName().equals(digitalIdDto.getDp())) {
+		if (!registeredDevice.getDp().equals(digitalIdDto.getDpId())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -228,7 +229,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getSerialNo())) {
+		if (!registeredDevice.getSerialNo().equals(digitalIdDto.getSerialNo())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -285,7 +286,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getModel()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getProviderId().equals(digitalIdDto.getDpId())) {
+		if (!registeredDevice.getDpId().equals(digitalIdDto.getDpId())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -294,7 +295,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getProviderName().equals(digitalIdDto.getDp())) {
+		if (!registeredDevice.getDp().equals(digitalIdDto.getDp())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -303,7 +304,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getSerialNumber().equals(digitalIdDto.getSerialNo())) {
+		if (!registeredDevice.getSerialNo().equals(digitalIdDto.getDp())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -468,5 +469,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService {
 		}
 		return MapperUtils.map(updtDeviceProvider, DeviceProviderExtnDto.class);
 	}
+
+	
 
 }

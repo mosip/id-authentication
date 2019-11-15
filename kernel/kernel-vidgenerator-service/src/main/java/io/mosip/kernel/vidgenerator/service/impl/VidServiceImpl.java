@@ -133,18 +133,22 @@ public class VidServiceImpl implements VidService {
 	}
 
 	@Override
-	public void saveVID(VidEntity vid) {
+	public boolean saveVID(VidEntity vid) {
 
-		try {
-			if (!this.vidRepository.existsById(vid.getVid())) {
+		if (!this.vidRepository.existsById(vid.getVid())) {
+			try {
 				this.vidRepository.saveAndFlush(vid);
+			} catch (DataAccessException exception) {
+				LOGGER.error(ExceptionUtils.parseException(exception));
+				return false;
+			} catch (Exception exception) {
+				LOGGER.error(ExceptionUtils.parseException(exception));
+				return false;
 			}
-		} catch (DataAccessException exception) {
-
-			LOGGER.error(ExceptionUtils.parseException(exception));
-		} catch (Exception exception) {
-
-			LOGGER.error(ExceptionUtils.parseException(exception));
+			return true;
+		} else {
+			return false;
 		}
+
 	}
 }

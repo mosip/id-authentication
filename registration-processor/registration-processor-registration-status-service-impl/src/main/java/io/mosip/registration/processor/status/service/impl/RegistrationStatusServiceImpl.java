@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -93,7 +94,8 @@ public class RegistrationStatusServiceImpl
 	 * addRegistrationStatus(java.lang.Object)
 	 */
 	@Override
-	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
+	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto, String moduleId,
+			String moduleName) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -102,6 +104,7 @@ public class RegistrationStatusServiceImpl
 		try {
 			String transactionId = generateId();
 			registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
+			registrationStatusDto.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
@@ -131,7 +134,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
+					moduleId, moduleName, registrationStatusDto.getRegistrationId());
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
@@ -147,7 +150,8 @@ public class RegistrationStatusServiceImpl
 	 * updateRegistrationStatus(java.lang.Object)
 	 */
 	@Override
-	public void updateRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
+	public void updateRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto, String moduleId,
+			String moduleName) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::updateRegistrationStatus()::entry");
@@ -158,7 +162,7 @@ public class RegistrationStatusServiceImpl
 		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 				latestTransactionId, registrationStatusDto.getLatestTransactionTypeCode(),
 				"updated registration status record", registrationStatusDto.getLatestTransactionStatusCode(),
-				registrationStatusDto.getStatusComment(),registrationStatusDto.getSubStatusCode());
+				registrationStatusDto.getStatusComment(), registrationStatusDto.getSubStatusCode());
 		transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 		transactionDto.setReferenceIdType("updated registration record");
 		transcationStatusService.addRegistrationTransaction(transactionDto);
@@ -167,6 +171,7 @@ public class RegistrationStatusServiceImpl
 		try {
 			InternalRegistrationStatusDto dto = getRegistrationStatus(registrationStatusDto.getRegistrationId());
 			if (dto != null) {
+				dto.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 				registrationStatusDao.save(entity);
 				isTransactionSuccessful = true;
@@ -183,13 +188,13 @@ public class RegistrationStatusServiceImpl
 		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					registrationStatusDto.getRegistrationId(), ApiName.AUDIT);
+					moduleId, moduleName, registrationStatusDto.getRegistrationId());
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
@@ -376,18 +381,28 @@ public class RegistrationStatusServiceImpl
 		registrationStatusEntity.setLatestRegistrationTransactionId(dto.getLatestRegistrationTransactionId());
 		registrationStatusEntity.setIsActive(dto.isActive());
 		registrationStatusEntity.setCreatedBy(dto.getCreatedBy());
-		registrationStatusEntity.setCreateDateTime(dto.getCreateDateTime());
+		if (dto.getCreateDateTime() == null) {
+			registrationStatusEntity.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			registrationStatusEntity.setCreateDateTime(dto.getCreateDateTime());
+		}
 		registrationStatusEntity.setUpdatedBy(dto.getUpdatedBy());
-		registrationStatusEntity.setUpdateDateTime(dto.getUpdateDateTime());
+		registrationStatusEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		registrationStatusEntity.setIsDeleted(dto.isDeleted());
-		registrationStatusEntity.setDeletedDateTime(dto.getDeletedDateTime());
+
+		if (registrationStatusEntity.isDeleted() != null && registrationStatusEntity.isDeleted()) {
+			registrationStatusEntity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			registrationStatusEntity.setDeletedDateTime(null);
+		}
+
 		registrationStatusEntity.setRetryCount(dto.getRetryCount());
 		registrationStatusEntity.setApplicantType(dto.getApplicantType());
 		registrationStatusEntity.setRegProcessRetryCount(dto.getReProcessRetryCount());
 		registrationStatusEntity.setLatestTransactionStatusCode(dto.getLatestTransactionStatusCode());
 		registrationStatusEntity.setLatestTransactionTypeCode(dto.getLatestTransactionTypeCode());
 		registrationStatusEntity.setRegistrationStageName(dto.getRegistrationStageName());
-		registrationStatusEntity.setUpdateDateTime(dto.getUpdateDateTime());
+		registrationStatusEntity.setLatestTransactionTimes(LocalDateTime.now(ZoneId.of("UTC")));
 		return registrationStatusEntity;
 	}
 

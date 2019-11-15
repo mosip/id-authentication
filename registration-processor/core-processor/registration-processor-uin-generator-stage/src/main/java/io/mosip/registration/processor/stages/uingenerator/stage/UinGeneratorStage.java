@@ -348,17 +348,17 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusCode(description.getStatusCode());
 			if (description.getSubStatusCode() != null)
 				registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
-
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			String moduleId = isTransactionSuccessful
+					? PlatformSuccessMessages.RPR_UIN_GENERATOR_STAGE_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.UIN_GENERATOR.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			String moduleId = isTransactionSuccessful
-					? PlatformSuccessMessages.RPR_UIN_GENERATOR_STAGE_SUCCESS.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.UIN_GENERATOR.toString();
+
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 

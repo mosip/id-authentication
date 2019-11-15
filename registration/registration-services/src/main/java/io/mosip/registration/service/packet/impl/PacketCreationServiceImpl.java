@@ -561,7 +561,6 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<>();
 
 		MosipBioDeviceManager.getDeviceRegistry().forEach((deviceName, device) -> {
-			if (registeredDeviceDAO.getRegisteredDevices(device.getDeviceId()).size() > 0) {
 				RegisteredDevice registerdDevice = new RegisteredDevice();
 				registerdDevice.setDeviceCode(device.getDeviceId());
 				registerdDevice.setDeviceServiceVersion(device.getSerialVersion());
@@ -569,12 +568,12 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 				digitalId.setSerialNo(device.getDeviceModel());
 				digitalId.setMake(device.getDeviceMake());
 				digitalId.setType(device.getDeviceType());
-				digitalId.setDpId(device.getDeviceProviderName());
+				digitalId.setModel(device.getDeviceModel());
+				digitalId.setDp(device.getDeviceProviderName());
 				digitalId.setDpId(device.getDeviceProviderId());
 				digitalId.setDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toString());
 				registerdDevice.setDigitalId(digitalId);
 				capturedRegisteredDevices.add(registerdDevice);
-			}
 		});
 
 		return capturedRegisteredDevices;
