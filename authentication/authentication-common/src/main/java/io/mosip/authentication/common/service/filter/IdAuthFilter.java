@@ -52,6 +52,7 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+
 	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
 	private static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
 
@@ -63,15 +64,25 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	/** The Constant BIO_VALUE. */
 	private static final String BIO_VALUE = "bioValue";
-
-	/** The Constant BIO_DATA_INPUT_PARAM. */
-	private static final String BIO_DATA_INPUT_PARAM = REQUEST + "/" + BIO_VALUE + "/" + DATA;
-
-	/** The Constant HASH_INPUT_PARAM. */
-	private static final String HASH_INPUT_PARAM = REQUEST + "/" + BIO_VALUE + "/" + HASH;
-
+	
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "sessionKey";
+	
+	private static final String REQUEST_BIOMETRICS_PARAM = REQUEST + "/" + BIOMETRICS;
+
+	/** The Constant BIO_DATA_INPUT_PARAM. */
+	private static final String BIO_DATA_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + DATA;
+	
+	private static final String BIO_SESSIONKEY_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + SESSION_KEY;
+
+	/** The Constant HASH_INPUT_PARAM. */
+	private static final String HASH_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + HASH;
+	
+	private static final String BIO_VALUE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_VALUE;
+	
+	private static final String BIO_TIMESTAMP_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + TIMESTAMP;
+
+	
 
 	/** The Constant EKYC. */
 	private static final String EKYC = "ekyc";
@@ -119,12 +130,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-
-			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				requestBody.replace(IdAuthCommonConstants.REQUEST,
-						decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+			if (null == requestBody.get(REQUEST)) {
+				throwMissingInputParameter(REQUEST);
+			} else {
+				requestBody.replace(REQUEST,
+						decode((String) requestBody.get(REQUEST)));
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
-				if (null != requestBody.get(REQUEST_HMAC)) {
+				if (null == requestBody.get(REQUEST_HMAC)) {
+					throwMissingInputParameter(REQUEST_HMAC);
+				} else {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
 					String reqHMAC = keyManager
@@ -136,8 +150,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
 
 				}
-				validateBioDataInRequest(request);
-				decipherBioData(request);
+				//If biometrics is present validate and decipher it.
+				if(request.get(BIOMETRICS) != null) {
+					validateBioDataInRequest(request);
+					decipherBioData(request);
+				}
+				
+				
 				requestBody.replace(REQUEST, request);
 			}
 			return requestBody;
@@ -158,9 +177,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (Objects.nonNull(biometrics) && biometrics instanceof List) {
 			List<Object> bioIdentity = (List<Object>) biometrics;
 			List<Object> bioIdentityInfo = new ArrayList<>();
-			for (Object obj : bioIdentity) {
+			for (int i = 0; i < bioIdentity.size(); i++) {
+				Object obj = bioIdentity.get(i);
 				if (obj instanceof Map) {
-					bioIdentityInfo.add(decipherBioData(obj));
+					bioIdentityInfo.add(decipherBioData(obj, i));
 				}
 			}
 			request.replace(BIOMETRICS, bioIdentityInfo);
@@ -171,15 +191,35 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * Decipher bio data.
 	 *
 	 * @param obj the obj
+	 * @param index 
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherBioData(Object obj) throws IdAuthenticationAppException {
+	private Map<String, Object> decipherBioData(Object obj, int index) throws IdAuthenticationAppException {
+		
+		Map<String, Object> map = (Map<String, Object>) obj;
+
+		if(!getStringValue(map, DATA).isPresent()) {
+			throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, index));
+		}
+		
+		if(!getStringValue(map, SESSION_KEY).isPresent()) {
+			throwMissingInputParameter(String.format(BIO_SESSIONKEY_INPUT_PARAM, index));
+		}
+		
 		try {
-			Map<String, Object> map = (Map<String, Object>) obj;
 			byte[] decodedData = Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA))) : new byte[0];
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
+			
+			if(!getStringValue(data, BIO_VALUE).isPresent()) {
+				throwMissingInputParameter(String.format(BIO_VALUE_INPUT_PARAM, index));
+			}
+			
+			if(!getStringValue(data, TIMESTAMP).isPresent()) {
+				throwMissingInputParameter(String.format(BIO_TIMESTAMP_INPUT_PARAM, index));
+			}
+			
 			Object bioValue = data.get(BIO_VALUE);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
@@ -269,12 +309,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@SuppressWarnings("unchecked")
 	private void validateBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		List<Map<String, Object>> biometricsList = Optional.ofNullable(requestBody.get(BIOMETRICS))
-				.filter(obj -> obj instanceof List)
-				.map(obj -> (List<Map<String, Object>>) obj)
+				.filter(obj -> obj instanceof List).map(obj -> (List<Map<String, Object>>) obj)
 				.orElse(Collections.emptyList());
-		
+
 		validateBioData(biometricsList);
-		
 	}
 
 	/**
@@ -287,17 +325,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 		try {
 			String previousHash =  digest(getHash(""));
 			
-			for (Map<String, Object> biometricData : biometricsList) {
+			for (int i = 0; i < biometricsList.size(); i++) {
+				Map<String, Object> biometricData = biometricsList.get(i);
 				Optional<String> dataOpt = getStringValue(biometricData, DATA);
 				
 				if(!dataOpt.isPresent()) {
-					throwMissingInputParameter(BIO_DATA_INPUT_PARAM);
+					throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, i));
 				}
 				
 				Optional<String> hashOpt = getStringValue(biometricData, HASH);
 				
 				if(!hashOpt.isPresent()) {
-					throwMissingInputParameter(HASH_INPUT_PARAM);
+					throwMissingInputParameter(String.format(HASH_INPUT_PARAM, i));
 				}
 				
 				String dataFieldValue = dataOpt.get();
@@ -395,12 +434,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Gets the string value.
 	 *
-	 * @param biometricData the biometric data
+	 * @param map the biometric data
 	 * @param fieldName the field name
 	 * @return the string value
 	 */
-	private Optional<String> getStringValue(Map<String, Object> biometricData, String fieldName) {
-		return Optional.ofNullable(biometricData.get(fieldName))
+	private Optional<String> getStringValue(Map<String, Object> map, String fieldName) {
+		return Optional.ofNullable(map.get(fieldName))
 				.filter(obj -> obj instanceof String)
 				.map(obj -> (String) obj);
 	}
@@ -602,7 +641,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException, IOException {
 
 		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
-				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get("biometrics"))
+				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
 				.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
 		List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<BioIdentityInfoDTO>>() {
@@ -685,7 +724,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
 					AuthTypeDTO.class);
 			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
-					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get("biometrics"))
+					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
 					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {

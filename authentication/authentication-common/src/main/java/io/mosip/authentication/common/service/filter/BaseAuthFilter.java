@@ -106,7 +106,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	protected String getPayloadFromJwsSingature(String jws) {
 		String[] split = jws.split("\\.");
-		if(split.length > 2) {
+		if(split.length >= 2) {
 			return split[1];
 		}
 		return jws;
