@@ -33,5 +33,5 @@ public interface RegisteredDeviceRepository extends BaseRepository<RegisteredDev
 	 *            the provider id
 	 * @return the registered device
 	 */
-	RegisteredDevice findByCodeAndProviderId(String deviceCode, String providerId);
+	RegisteredDevice findByCodeAndDpId(String deviceCode, String dpId);
 }
