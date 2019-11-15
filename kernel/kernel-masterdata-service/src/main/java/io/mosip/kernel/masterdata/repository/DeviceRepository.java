@@ -175,5 +175,17 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	@Modifying
 	@Transactional
 	int decommissionDevice(String id, String deCommissionedBy, LocalDateTime deCommissionedDateTime);
+	
+	/**
+	 * This method trigger query to fetch the Machine detail for the given id code.
+	 * 
+	 * @param id
+	 *            machine Id provided by user
+	 * 
+	 * @return MachineDetail fetched from database
+	 */
+
+	@Query("FROM Device d where d.serialNum = ?1 and (d.isDeleted is null or d.isDeleted = false)")
+	List<Device> findDeviceBySerialNumberAndIsDeletedFalseorIsDeletedIsNullNoIsActive(String serialNum);
 
 }
