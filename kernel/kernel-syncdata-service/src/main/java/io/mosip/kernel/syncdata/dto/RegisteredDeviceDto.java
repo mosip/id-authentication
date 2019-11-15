@@ -58,5 +58,5 @@ public class RegisteredDeviceDto extends BaseDto {
 
 	private String foundationalTrustCertificate;
 
-	private byte[] dProviderSignature;
+	private String dProviderSignature;
 }

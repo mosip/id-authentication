@@ -28,7 +28,7 @@ public class DeviceServiceDto extends BaseDto {
 
 	/** The sw binary hash. */
 
-	private byte[] swBinaryHash;
+	private String swBinaryHash;
 
 	/** The sw version. */
 
