@@ -118,6 +118,75 @@ public final class IdAuthCommonConstants {
 	public static final String PROVIDER_AND_DEVICE_CODE_NOT_MAPPED = "ADM-DPM-008";
 	
 	public static final String BIO_PATH = "request/biometrics/%s/%s";
+	
+	public static final String DIGITAL_ID = "digitalId";
+
+	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
+	public static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
+
+	/** The Constant DEFAULT_SALT_LAST_BYTES_NUM. */
+	public static final int DEFAULT_SALT_LAST_BYTES_NUM = 12;
+
+	/** The Constant TIMESTAMP. */
+	public static final String TIMESTAMP = "timestamp";
+
+	/** The Constant BIO_VALUE. */
+	public static final String BIO_VALUE = "bioValue";
+	
+	/** The Constant BIO_TYPE. */
+	public static final String BIO_TYPE = "bioType";
+	
+	/** The Constant SESSION_KEY. */
+	public static final String SESSION_KEY = "sessionKey";
+	
+	public static final String REQUEST_BIOMETRICS_PARAM = REQUEST + "/" + BIOMETRICS;
+
+	/** The Constant BIO_DATA_INPUT_PARAM. */
+	public static final String BIO_DATA_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + DATA;
+	
+	public static final String BIO_SESSIONKEY_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + SESSION_KEY;
+
+	/** The Constant HASH_INPUT_PARAM. */
+	public static final String HASH_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + HASH;
+	
+	public static final String BIO_VALUE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_VALUE;
+	
+	public static final String BIO_TIMESTAMP_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + TIMESTAMP;
+	
+	public static final String BIO_DIGITALID_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + DIGITAL_ID;
+	
+	public static final String BIO_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_TYPE;
+
+
+	/** The Constant EKYC. */
+	public static final String EKYC = "ekyc";
+
+	/** The Constant REQUEST_HMAC. */
+	public static final String REQUEST_HMAC = "requestHMAC";
+
+	/** The Constant MISPLICENSE_KEY. */
+	public static final String MISPLICENSE_KEY = "misplicenseKey";
+
+	/** The Constant PARTNER_ID. */
+	public static final String PARTNER_ID = "partnerId";
+
+	/** The Constant MISP_ID. */
+	public static final String MISP_ID = "mispId";
+
+	/** The Constant POLICY_ID. */
+	public static final String POLICY_ID = "policyId";
+
+	/** The Constant ACTIVE_STATUS. */
+	public static final String ACTIVE_STATUS = "active";
+
+	/** The Constant EXPIRY_DT. */
+	public static final String EXPIRY_DT = "expiryDt";
+
+	/** The Constant KYC. */
+	public static final String KYC = "kyc";
+
+	/** The Constant SESSION_KEY. */
+	public static final String REQUEST_SESSION_KEY = "requestSessionKey";
 
 }
 
