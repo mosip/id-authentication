@@ -47,13 +47,13 @@ public class RegisteredDeviceHistory extends BaseEntity {
 	private String deviceSubId;
 
 	@Column(name = "serial_number")
-	private String serialNumber;
+	private String serialNo;
 
 	@Column(name = "provider_id")
-	private String providerId;
+	private String dpId;
 
 	@Column(name = "provider_name")
-	private String providerName;
+	private String dp;
 
 	@Column(name = "purpose")
 	private String purpose;

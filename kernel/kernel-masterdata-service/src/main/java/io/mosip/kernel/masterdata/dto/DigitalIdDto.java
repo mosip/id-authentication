@@ -22,21 +22,21 @@ public class DigitalIdDto {
 	@NotBlank
 	@Size(min=1, max=64)
 	@ApiModelProperty(value = "serialNumber", required = true, dataType = "java.lang.String")
-	private String serialNumber;
+	private String serialNo;
 	
 	
 	/** The Device Provider Name. */
 	@NotBlank
 	@Size(min=1, max=128)
 	@ApiModelProperty(value = "providerName", required = true, dataType = "java.lang.String")
-	private String providerName;
+	private String dp;
 	
 
 	/** The Device Provider id. */
 	@NotBlank
 	@Size(min=1, max=36)
 	@ApiModelProperty(value = "providerId", required = true, dataType = "java.lang.String")
-	private String providerId;
+	private String dpId;
 	
 	
 	/** The make. */

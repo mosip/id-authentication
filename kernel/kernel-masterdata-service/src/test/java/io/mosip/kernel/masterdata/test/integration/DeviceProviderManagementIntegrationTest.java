@@ -117,11 +117,11 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice = new RegisteredDevice();
 		registeredDevice.setDeviceId("10001");
 		registeredDevice.setStatusCode("Registered");
-		registeredDevice.setProviderId("1111");
-		registeredDevice.setProviderName("INTEL");
+		registeredDevice.setDpId("1111");
+		registeredDevice.setDp("INTEL");
 		registeredDevice.setMake("make-updated");
 		registeredDevice.setModel("model-updated");
-		registeredDevice.setSerialNumber("GV3434343M");
+		registeredDevice.setSerialNo("GV3434343M");
 		
 		registeredDevice.setDeviceTypeCode("Face");
 		registeredDevice.setDevicesTypeCode("Slab");
@@ -138,11 +138,11 @@ public class DeviceProviderManagementIntegrationTest {
 		validateDeviceDto.setDeviceCode("10001");
 		validateDeviceDto.setDeviceServiceVersion("0.1v");
 		DigitalIdDto digitalIdDto = new DigitalIdDto();
-		digitalIdDto.setProviderId("1111");
-		digitalIdDto.setProviderName("INTEL");
+		digitalIdDto.setDpId("1111");
+		digitalIdDto.setDp("INTEL");
 		digitalIdDto.setMake("make-updated");
 		digitalIdDto.setModel("model-updated");
-		digitalIdDto.setSerialNumber("BS563Q2230890");
+		digitalIdDto.setSerialNo("BS563Q2230890");
 		digitalIdDto.setType("face");
 		validateDeviceDto.setDigitalId(digitalIdDto);
 
@@ -165,11 +165,11 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory = new RegisteredDeviceHistory();
 		registeredDeviceHistory.setDeviceId("10001");
 		registeredDeviceHistory.setStatusCode("Registered");
-		registeredDeviceHistory.setProviderId("1111");
-		registeredDeviceHistory.setProviderName("INTEL");
+		registeredDeviceHistory.setDpId("1111");
+		registeredDeviceHistory.setDp("INTEL");
 		registeredDeviceHistory.setMake("make-updated");
 		registeredDeviceHistory.setModel("model-updated");
-		registeredDeviceHistory.setSerialNumber("GV3434343M");
+		registeredDeviceHistory.setSerialNo("GV3434343M");
 		registeredDeviceHistory.setEffectivetimes(LocalDateTime.now(ZoneOffset.UTC));
 
 		deviceProviderHistory = new DeviceProviderHistory();
@@ -337,11 +337,11 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenMappingDeviceServiceDetails() throws Exception {
 		registeredDevice.setDeviceId("1001");
 		registeredDevice.setStatusCode("Registered");
-		registeredDevice.setProviderId("111");
-		registeredDevice.setProviderName("INTE");
+		registeredDevice.setDpId("111");
+		registeredDevice.setDp("INTE");
 		registeredDevice.setMake("make-update");
 		registeredDevice.setModel("model-update");
-		registeredDevice.setSerialNumber("GV343434");
+		registeredDevice.setSerialNo("GV343434");
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
@@ -438,11 +438,11 @@ public class DeviceProviderManagementIntegrationTest {
 	public void validateDeviceProviderWhenMappingDeviceServiceHistoryDetails() throws Exception {
 		registeredDeviceHistory.setDeviceId("1001");
 		registeredDeviceHistory.setStatusCode("Registered");
-		registeredDeviceHistory.setProviderId("111");
-		registeredDeviceHistory.setProviderName("INTE");
+		registeredDeviceHistory.setDpId("111");
+		registeredDeviceHistory.setDp("INTE");
 		registeredDeviceHistory.setMake("make-update");
 		registeredDeviceHistory.setModel("model-update");
-		registeredDeviceHistory.setSerialNumber("GV343434");
+		registeredDeviceHistory.setSerialNo("GV343434");
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);
 		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());

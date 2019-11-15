@@ -62,15 +62,15 @@ public class RegisteredDevice extends BaseEntity {
 
 	//inner class
 	@Column(name = "serial_number", unique=true, length=64)
-	private String serialNumber;
+	private String serialNo;
 
 	//inner class
 	@Column(name = "provider_id", unique=true, length=36)
-	private String providerId;
+	private String dpId;
 
 	//inner class
 	@Column(name = "provider_name", length=128)
-	private String providerName;
+	private String dp;
 
 	//inner class
 	@Column(name = "make", length=36)

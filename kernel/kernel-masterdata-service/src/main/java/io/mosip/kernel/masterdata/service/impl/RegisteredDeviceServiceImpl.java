@@ -84,7 +84,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 
 		try {
 			if (deviceProviderRepository.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-					dto.getDigitalIdDto().getProviderId(), dto.getDigitalIdDto().getProviderName()) == null) {
+					dto.getDigitalIdDto().getDpId(), dto.getDigitalIdDto().getDp()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 						RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 			}
@@ -138,11 +138,11 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		String code = "";
 			if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.REGISTRATION)) {
 				List<Device> device = deviceRepository.findDeviceBySerialNumberAndIsDeletedFalseorIsDeletedIsNullNoIsActive(
-						dto.getDigitalIdDto().getSerialNumber());
+						dto.getDigitalIdDto().getSerialNo());
 				if (device.isEmpty()) {
 					throw new RequestException(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorCode(),
 							String.format(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorMessage(),
-									dto.getDigitalIdDto().getSerialNumber()));
+									dto.getDigitalIdDto().getSerialNo()));
 				}
 				// copy Device id as code
 				code = device.get(0).getId();

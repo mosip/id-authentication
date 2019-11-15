@@ -577,9 +577,9 @@ public class MapperUtils {
 		
 
 		entity.setDigitalId(digitalIdJson);        
-        entity.setSerialNumber(dto.getDigitalIdDto().getSerialNumber());
-        entity.setProviderId(dto.getDigitalIdDto().getProviderId());
-        entity.setProviderName(dto.getDigitalIdDto().getProviderName());
+        entity.setSerialNo(dto.getDigitalIdDto().getSerialNo());
+        entity.setDpId(dto.getDigitalIdDto().getDpId());
+        entity.setDp(dto.getDigitalIdDto().getDp());
         entity.setMake(dto.getDigitalIdDto().getMake());
         entity.setModel(dto.getDigitalIdDto().getModel());
         
