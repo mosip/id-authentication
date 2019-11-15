@@ -950,14 +950,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			if (regCenterType == null) {
 				throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
-						"Invalid centerTypeCode");
+						MasterDataConstant.INVALID_REG_CENTER_TYPE);
 			}
 			List<Location> location = locationRepository.findLocationHierarchyByCodeAndLanguageCode(
 					regCenterPostReqDto.getLocationCode(), regCenterPostReqDto.getLangCode());
 			if (CollectionUtils.isEmpty(location)) {
 				throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
-						"Invalid Location Code");
+						MasterDataConstant.INVALID_LOCATION_CODE);
 			}
 
 			// call method generate ID or validate with DB
@@ -1017,12 +1017,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(exception));
 		}
 		return registrationCenterExtnDto;
-		// registrationCenterDtoList =
-		// MapperUtils.mapAll(registrationCenterList,
-		// RegistrationCenterExtnDto.class);
-		// registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
-		// registrationCenterPostResponseDto.setConstraintViolatedDataList(constraintViolationedSecList);
-		// return registrationCenterExtnDto;
 
 	}
 
