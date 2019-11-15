@@ -203,7 +203,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		if (null != mapOfcenterId && mapOfcenterId.size() > 0
 				&& null != mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID)) {
 
-			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
 					"Registration center id found....!" + mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID));
 
 			userDetailSyncResponse = getUsrDetails((String) mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID),

@@ -657,24 +657,24 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<SyncJobDef> masterSyncControlList = MetaDataUtils.setCreateMetaData(syncJobDefList, SyncJobDef.class);
 			syncJobDefRepository.saveAll(masterSyncControlList);
 			
-//			List<RegisteredDeviceMaster> registeredDeviceList = MetaDataUtils.setCreateMetaData(registeredDeviceDetails, RegisteredDeviceMaster.class);
-//			registeredDeviceRepository.saveAll(registeredDeviceList);
-//			
-//			List<RegisteredDeviceType> registeredDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredDeviceTypes, RegisteredDeviceType.class);
-//			registeredDeviceTypeRepository.saveAll(registeredDeviceTypeList);
-//			
-//			List<RegisteredSubDeviceType> registeredSubDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredSubDeviceTypes, RegisteredSubDeviceType.class);
-//			registeredSubDeviceTypeRepository.saveAll(registeredSubDeviceTypeList);
-//			
-//			List<MosipDeviceService> mosipDeviceServiceList = MetaDataUtils.setCreateMetaData(mosipDeviceServices, MosipDeviceService.class);
-//			mosipDeviceServiceRepository.saveAll(mosipDeviceServiceList);
+			List<RegisteredDeviceMaster> registeredDeviceList = MetaDataUtils.setCreateMetaData(registeredDeviceDetails, RegisteredDeviceMaster.class);
+			registeredDeviceRepository.saveAll(registeredDeviceList);
 			
-//			List<FoundationalTrustProvider> foundationalTrustProviderList = MetaDataUtils.setCreateMetaData(foundationalTrustProviders, FoundationalTrustProvider.class);
-//			foundationalTrustProviderRepository.saveAll(foundationalTrustProviderList);
-//			
-//			List<DeviceProvider> deviceProviderList = MetaDataUtils.setCreateMetaData(deviceProviders, DeviceProvider.class);
-//			deviceProviderRepository.saveAll(deviceProviderList);
-//			
+			List<RegisteredDeviceType> registeredDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredDeviceTypes, RegisteredDeviceType.class);
+			registeredDeviceTypeRepository.saveAll(registeredDeviceTypeList);
+			
+			List<RegisteredSubDeviceType> registeredSubDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredSubDeviceTypes, RegisteredSubDeviceType.class);
+			registeredSubDeviceTypeRepository.saveAll(registeredSubDeviceTypeList);
+			
+			List<MosipDeviceService> mosipDeviceServiceList = MetaDataUtils.setCreateMetaData(mosipDeviceServices, MosipDeviceService.class);
+		//	mosipDeviceServiceRepository.saveAll(mosipDeviceServiceList);
+			
+			List<FoundationalTrustProvider> foundationalTrustProviderList = MetaDataUtils.setCreateMetaData(foundationalTrustProviders, FoundationalTrustProvider.class);
+			foundationalTrustProviderRepository.saveAll(foundationalTrustProviderList);
+			
+			List<DeviceProvider> deviceProviderList = MetaDataUtils.setCreateMetaData(deviceProviders, DeviceProvider.class);
+			deviceProviderRepository.saveAll(deviceProviderList);
+			
 			sucessResponse = RegistrationConstants.SUCCESS;
 
 		} catch (Exception runtimeException) {
