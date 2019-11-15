@@ -31,8 +31,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
 			@Param("authtypecode") String authtypecode);
 
-	@Query(value = "Select * from ida.auth_transaction where ref_id=:individualId ORDER BY cr_dtimes DESC", nativeQuery = true)
-	public List<AutnTxn> findByUin(@Param("individualId") String individualId, Pageable pagaeable);
+	@Query(value = "Select * from ida.auth_transaction where uin_hash=:uinHash ORDER BY cr_dtimes DESC", nativeQuery = true)
+	public List<AutnTxn> findByUin(@Param("uinHash") String uinHash, Pageable pagaeable);
 
 	/**
 	 * Obtain the number of count of request_dTtimes for particular UIN(uniqueId)

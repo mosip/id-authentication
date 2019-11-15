@@ -116,7 +116,7 @@ public class RegistrationTransactionExceptionHandler {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_TRANSACTION_APPLICATION_VERSION));
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		if(isEnabled) {
 			HttpHeaders headers = new HttpHeaders();

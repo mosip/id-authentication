@@ -28,35 +28,29 @@ public class SecreteKeyStore {
 	@Column(name = "is_expired")
 	private Boolean expired;
 
-	*//** The Key Generated date time. *//*
+	
 	@Column(name = "key_gen_dtimes")
 	private LocalDateTime genratedtimes;
 
-	*//** The Key Expire date time. *//*
+	
 	@Column(name = "key_expire_dtimes")
 	private LocalDateTime expiryDate;
 
-	*//** The created by. *//*
 	@Column(name = "cr_by")
 	private String createdBy;
 
-	*//** The create date time. *//*
 	@Column(name = "cr_dtimes")
 	private LocalDateTime createDateTime;
 
-	*//** The updated by. *//*
 	@Column(name = "upd_by")
 	private String updatedBy;
 
-	*//** The update date time. *//*
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updateDateTime;
 
-	*//** The Deleted state. *//*
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	*//** The deleted date time. *//*
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtimes;
 

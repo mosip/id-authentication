@@ -57,6 +57,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -429,6 +430,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void createPacket() {
 
+		BioServiceImpl.clearAllCaptures();
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -464,6 +466,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
 							getScene(createRoot).setRoot(createRoot);
+							
+							SessionContext.setAutoLogout(false);
 						}
 					}
 
@@ -484,6 +488,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void lostUIN() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -539,6 +545,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							} else {
 								getScene(createRoot).setRoot(createRoot);
 								demographicDetailController.lostUIN();
+								
+								SessionContext.setAutoLogout(false);
 							}
 						}
 					} catch (IOException ioException) {
@@ -681,6 +689,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				getScene(uploadRoot);
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
+				//Enable Auto-Logout
+				SessionContext.setAutoLogout(true);
+				
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -691,6 +706,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	public void updateUIN() {
 
+		BioServiceImpl.clearAllCaptures();
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -736,6 +752,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 							} else {
 								getScene(root);
+								
+								SessionContext.setAutoLogout(false);
 							}
 						}
 					}
@@ -745,7 +763,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				}
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
 	}
 
@@ -770,6 +788,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void onBoardUser() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -818,6 +838,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 		}
 
+		//Clear all bio-captures data
+		BioServiceImpl.clearAllCaptures();
+		
 		// packet creation
 		ResponseDTO response = packetHandlerService.handle(registrationDTO);
 
@@ -933,6 +956,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void loadReRegistrationScreen() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - LOAD_RE_REGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
@@ -1110,7 +1135,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.getSyncControlOfJob(RegistrationConstants.OPT_TO_REG_PDS_J00003);
 
 		if (syncControl != null) {
-			Timestamp lastPreRegPacketDownloaded = syncControl.getUpdDtimes();
+			Timestamp lastPreRegPacketDownloaded = syncControl.getLastSyncDtimes();
 
 			if (lastPreRegPacketDownloaded != null) {
 

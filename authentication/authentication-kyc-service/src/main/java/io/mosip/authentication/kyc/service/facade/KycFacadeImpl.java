@@ -119,7 +119,7 @@ public class KycFacadeImpl implements KycFacade {
 		String resTime = null;
 		if (kycAuthRequestDTO != null) {
 			String idvId = kycAuthRequestDTO.getIndividualId();
-			String idvIdtype =kycAuthRequestDTO.getIndividualIdType();
+			String idvIdtype =IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
 			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
 			String uin = (String) idResDTO.get("uin");
 			String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);

@@ -47,15 +47,17 @@ public class IdaTransactionInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof AutnTxn) {
 				AutnTxn authTxn = (AutnTxn) entity;
-				List<String> uinList = Arrays.asList(authTxn.getUin().split(IdRepoConstants.SPLITTER.getValue()));
-				byte[] encryptedUinByteWithSalt = idAuthTransactionManager.encryptWithSalt(uinList.get(1).getBytes(),
-						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + IdAuthCommonConstants.UIN_MODULO_SPLITTER
-						+ new String(encryptedUinByteWithSalt);
-				authTxn.setUin(encryptedUinWithSalt);
-				List<String> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("uin");
-				state[indexOfData] = encryptedUinWithSalt;
+				if (authTxn.getUin() != null) {
+					List<String> uinList = Arrays.asList(authTxn.getUin().split(IdRepoConstants.SPLITTER.getValue()));
+					byte[] encryptedUinByteWithSalt = idAuthTransactionManager
+							.encryptWithSalt(uinList.get(1).getBytes(), CryptoUtil.decodeBase64(uinList.get(2)));
+					String encryptedUinWithSalt = uinList.get(0) + IdAuthCommonConstants.UIN_MODULO_SPLITTER
+							+ new String(encryptedUinByteWithSalt);
+					authTxn.setUin(encryptedUinWithSalt);
+					List<String> propertyNamesList = Arrays.asList(propertyNames);
+					int indexOfData = propertyNamesList.indexOf("uin");
+					state[indexOfData] = encryptedUinWithSalt;
+				}
 				return super.onSave(authTxn, id, state, propertyNames, types);
 			}
 

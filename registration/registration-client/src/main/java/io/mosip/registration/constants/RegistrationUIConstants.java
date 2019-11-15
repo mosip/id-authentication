@@ -95,6 +95,7 @@ public class RegistrationUIConstants {
 	public static final String EXCEPTION_PHOTO_CAPTURE_ERROR = bundle.getString("EXCEPTION_PHOTO_CAPTURE_ERROR");
 	public static final String PARENT_FACE_CAPTURE_ERROR = bundle.getString("PARENT_FACE_CAPTURE_ERROR");
 	public static final String FACE_SCANNING_ERROR = bundle.getString("FACE_SCANNING_ERROR");
+	public static final String FACE_DUPLICATE_ERROR = bundle.getString("FACE_SCANNING_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
 	// LOCK ACCOUNT
@@ -151,6 +152,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
 	public static final String STREAMING_PREP_MESSAGE = bundle.getString("STREAMING_PREP_MESSAGE");
 	public static final String STREAMING_INIT_MESSAGE = bundle.getString("STREAMING_INIT_MESSAGE");
+	public static final String STREAMING_CLOSED_MESSAGE = bundle.getString("STREAMING_CLOSED_MESSAGE");
 	public static final String CAPTURING = bundle.getString("CAPTURING");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");

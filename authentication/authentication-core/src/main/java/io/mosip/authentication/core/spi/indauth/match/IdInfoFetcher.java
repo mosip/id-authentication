@@ -75,7 +75,7 @@ public interface IdInfoFetcher {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
-			CbeffDocType cbeffDocType, MatchType matchType) throws IdAuthenticationBusinessException;
+			CbeffDocType[] cbeffDocTypes, MatchType matchType) throws IdAuthenticationBusinessException;
 
 	/**
 	 * To get Environment.
@@ -119,6 +119,7 @@ public interface IdInfoFetcher {
 	public BioMatcherUtil getBioMatcherUtil() ;
 	
 	
+	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings);
 	
 
 }

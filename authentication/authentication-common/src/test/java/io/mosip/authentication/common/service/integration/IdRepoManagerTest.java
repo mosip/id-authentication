@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -367,6 +368,7 @@ public class IdRepoManagerTest {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		Map<String, Object> response = new HashMap<>();
 		response.put("UIN", "1112324546567879923");
+		response.put(IdAuthCommonConstants.STATUS, "ACTIVATED");
 		Map<String, Map<String, Object>> finalMap = new HashMap<>();
 		finalMap.put("response", response);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))

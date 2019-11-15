@@ -28,6 +28,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -78,6 +79,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
@@ -322,7 +326,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	public PageResponseDto<DocumentCategoryExtnDto> searchDocCategories(SearchDto dto) {
 		PageResponseDto<DocumentCategoryExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentCategoryExtnDto> documentCategories = null;
+		pageUtils.validateSortField(DocumentCategory.class, dto.getSort());
 		if (filterTypeValidator.validate(DocumentCategoryExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(DocumentCategory.class, dto.getSort());
 			Page<DocumentCategory> page = masterDataSearchHelper.searchMasterdata(DocumentCategory.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);

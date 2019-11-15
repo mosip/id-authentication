@@ -3,8 +3,14 @@ package io.mosip.registration.validator;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +25,7 @@ import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -38,7 +45,17 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 @Service
 public class RegIdObjectValidator {
 
+	private static final String MOSIP_ID_VALIDATIONS = "mosip.id.validation.identity";
+	private static final String APPLICATION_ID_VALUE = "reg-client";
+	private static final String APPLICATION_ID_KEY = "application.id";
+	private static final String MOSIP_KERNEL_ID_MANDATORY_KEY = "mosip.kernel.idobjectvalidator.mandatory-attributes.reg-client"; 
+	
 	private static final Logger LOGGER = AppConfig.getLogger(RegIdObjectValidator.class);
+	
+	@Autowired
+	private Environment environment;
+	
+	
 	@Autowired
 	@Qualifier("schema")
 	private IdObjectValidator idObjectValidator;
@@ -83,6 +100,9 @@ public class RegIdObjectValidator {
 				operationType = IdObjectValidatorSupportedOperations.CHILD_REGISTRATION;
 			}
 
+			setPatternValidatorProps();
+			setSchemaValidatorProps();
+			
 			if (idObjectValidator.validateIdObject(idObject, operationType)) {
 				LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 						"ID object shema validation is successful");
@@ -150,6 +170,27 @@ public class RegIdObjectValidator {
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Completed validating age from global param ending ");
 		return false;
+	}
+	
+	private void setPatternValidatorProps() {
+		Map<String, String> patternValidaitons = ApplicationContext.map().entrySet().stream()
+				.filter(key -> key.getKey() != null && key.getKey().contains(MOSIP_ID_VALIDATIONS))
+				.map(entry -> new AbstractMap.SimpleEntry<String, String>(entry.getKey(), (String) entry.getValue()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		
+		IdObjectPatternValidator patternValidator = (IdObjectPatternValidator)idOjectPatternvalidator; 
+		patternValidator.setValidation(patternValidaitons);
+	}
+	
+	private void setSchemaValidatorProps() {
+		Map<String, String> schemaValidaitons = ApplicationContext.map().entrySet().stream()
+				.filter(key -> key.getKey() != null && (key.getKey().contains(MOSIP_KERNEL_ID_MANDATORY_KEY) || key.getKey().contains(APPLICATION_ID_KEY)))
+				.map(entry -> new AbstractMap.SimpleEntry<String, String>(entry.getKey(), (String) entry.getValue()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		
+		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment)environment;
+		configurableEnvironment.getSystemProperties().put(APPLICATION_ID_KEY, APPLICATION_ID_VALUE);
+		configurableEnvironment.getSystemProperties().putAll(schemaValidaitons);
 	}
 
 }

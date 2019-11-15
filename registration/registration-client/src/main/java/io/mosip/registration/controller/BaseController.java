@@ -12,7 +12,6 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -60,6 +59,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.remap.CenterMachineReMapService;
@@ -108,6 +108,8 @@ import javafx.util.Duration;
 
 @Component
 public class BaseController {
+	
+	private static final String ALERT_STAGE = "alertStage";
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -332,12 +334,12 @@ public class BaseController {
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
 			if (SessionContext.isSessionContextAvailable()) {
-				SessionContext.map().put("alertStage", alertStage);
+				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
 		} else {
 			if (SessionContext.isSessionContextAvailable()) {
-				SessionContext.map().put("alertStage", alertStage);
+				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
@@ -507,6 +509,10 @@ public class BaseController {
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
 					clearRegistrationData();
+					
+					//Clear Captured images data
+					BioServiceImpl.clearAllCaptures();
+					
 				} else {
 					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
 							RegistrationConstants.ENABLE);
@@ -1374,9 +1380,11 @@ public class BaseController {
 	}
 	
 	public void closeAlreadyExistedAlert() {
-		Stage alertStageFromSession = (Stage)SessionContext.map().get("alertStage");
-		if(alertStageFromSession != null) alertStageFromSession.close();
-		
+		if (SessionContext.isSessionContextAvailable() && SessionContext.map() != null
+				&& SessionContext.map().get(ALERT_STAGE) != null) {
+			Stage alertStageFromSession = (Stage) SessionContext.map().get(ALERT_STAGE);
+			alertStageFromSession.close();
+		}
 	}
 
 }

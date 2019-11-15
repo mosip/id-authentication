@@ -3,6 +3,7 @@ package io.mosip.registration.test.service;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.SocketTimeoutException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -81,7 +82,8 @@ public class UserOnBoardServiceImplTest {
 	private ServiceDelegateUtil serviceDelegateUtil;
 	
 	@Mock
-	private Encryptor<?, PublicKey, SecretKey> encryptor;
+    private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> encryptor;
+
 	
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
@@ -224,14 +226,25 @@ public class UserOnBoardServiceImplTest {
 		responseApi.put(RegistrationConstants.ERRORS, null);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(publicKeyResponse);
+		Map<String,Object> publicMapData=new LinkedHashMap<String,Object>();
+		publicMapData.put("authStatus", true);
+		publicMapData.put(RegistrationConstants.PUBLIC_KEY, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp7rM0m8Vp91T5IkuSPhwibGivMn46-Eg3sjwiNDd1M0frs6Vmf1A7Guo-tjgMAAWkEuk-fX9yJ4j9HxMBJmhrIM7bFFaF4htOh5A78qvTdgahvGccpC080m_pDllSIhJk3R5TExLMxC823gvm0cqJQh2xvttissag0fHXBeqo6SAvN7214WgN2zqPZiN2PbDWv8qICHTw8R2GGshc4pu-rh4atLWe7waLJFrFY00TpKLGTrR7TEH4GQ45LcQ7fRV4N63FN7A0ikM1jjLWoi78rn4PCLL5T91o3VBUau3V0WKdDQ9ZrIjcFdjaLS6gzmM9mI6BRIeMGVxOfnuops8FwIDAQAB");
+		Map<String,Object> myMapPublic=new LinkedHashMap<String,Object>();
+		myMapPublic.put("response", publicMapData);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(myMapPublic);
 		SecretKey mock = PowerMockito.mock(SecretKey.class);
 		PowerMockito.when(keyGenerator.getSymmetricKey()).thenReturn(PowerMockito.mock(SecretKey.class));
-		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any(),Mockito.eq(null))).thenReturn("test".getBytes());
+		Mockito.when(encryptor.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(), Mockito.anyString())).thenReturn(responseApi);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
-		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		
+		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);	
+		Map<String,Object> myMapData=new LinkedHashMap<String,Object>();
+		myMapData.put("data", "IO7pawokCjgnjR-jo40DCbz2w0ELErUtCcDoKL6VTe644pqUPMq22MOXThNIXyLybBCO4LVSk3uaipYDnZr4ANxMsYr3WDp7KbQwcG9KnmVOm1mbzzCpkkJNRhbA8O2Ucj77KOXOLI3TszTKRUhBz2uLs46IvWiksuLsZwurYgkne62Gqr1QMh74PDPE9dKgvOC3o4hfPbP53H3bbc7HNR_Vu1kzn4xfyYFSNGATNVVXitZOlAKYgTcFdGde3eX2bos7OAivQad4TsmWeT0Pjmg1gixdwLq5agXhix3Pc-DvQgJzx-OnNUulAQTDkdbREx2TOJAu_ptF2JrrMuEflyNLRVlfU1BMSVRURVIjTsKlrgzfzXOXIb-NqJQWkz2OSMg");
+		myMapData.put("authStatus", true);
+		Map<String,Object> myMap=new LinkedHashMap<String,Object>();
+		myMap.put("response", myMapData);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(myMap);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -359,14 +372,25 @@ public class UserOnBoardServiceImplTest {
 		responseApi.put(RegistrationConstants.ERRORS, new ArrayList<>());
 		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(publicKeyResponse);
+		Map<String,Object> publicMapData=new LinkedHashMap<String,Object>();
+		publicMapData.put("authStatus", false);
+		publicMapData.put(RegistrationConstants.PUBLIC_KEY, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp7rM0m8Vp91T5IkuSPhwibGivMn46-Eg3sjwiNDd1M0frs6Vmf1A7Guo-tjgMAAWkEuk-fX9yJ4j9HxMBJmhrIM7bFFaF4htOh5A78qvTdgahvGccpC080m_pDllSIhJk3R5TExLMxC823gvm0cqJQh2xvttissag0fHXBeqo6SAvN7214WgN2zqPZiN2PbDWv8qICHTw8R2GGshc4pu-rh4atLWe7waLJFrFY00TpKLGTrR7TEH4GQ45LcQ7fRV4N63FN7A0ikM1jjLWoi78rn4PCLL5T91o3VBUau3V0WKdDQ9ZrIjcFdjaLS6gzmM9mI6BRIeMGVxOfnuops8FwIDAQAB");
+		Map<String,Object> myMapPublic=new LinkedHashMap<String,Object>();
+		myMapPublic.put("response", publicMapData);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(myMapPublic);
 		SecretKey mock = PowerMockito.mock(SecretKey.class);
 		PowerMockito.when(keyGenerator.getSymmetricKey()).thenReturn(PowerMockito.mock(SecretKey.class));
-		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any(), Mockito.eq(null))).thenReturn("test".getBytes());
+		Mockito.when(encryptor.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(), Mockito.anyString())).thenReturn(responseApi);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
-		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		
+		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);	
+		Map<String,Object> myMapData=new LinkedHashMap<String,Object>();
+		myMapData.put("data", "IO7pawokCjgnjR-jo40DCbz2w0ELErUtCcDoKL6VTe644pqUPMq22MOXThNIXyLybBCO4LVSk3uaipYDnZr4ANxMsYr3WDp7KbQwcG9KnmVOm1mbzzCpkkJNRhbA8O2Ucj77KOXOLI3TszTKRUhBz2uLs46IvWiksuLsZwurYgkne62Gqr1QMh74PDPE9dKgvOC3o4hfPbP53H3bbc7HNR_Vu1kzn4xfyYFSNGATNVVXitZOlAKYgTcFdGde3eX2bos7OAivQad4TsmWeT0Pjmg1gixdwLq5agXhix3Pc-DvQgJzx-OnNUulAQTDkdbREx2TOJAu_ptF2JrrMuEflyNLRVlfU1BMSVRURVIjTsKlrgzfzXOXIb-NqJQWkz2OSMg");
+		myMapData.put("authStatus", false);
+		Map<String,Object> myMap=new LinkedHashMap<String,Object>();
+		myMap.put("response", myMapData);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(myMap);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}
@@ -488,15 +512,27 @@ public class UserOnBoardServiceImplTest {
 		responseApi.put(RegistrationConstants.RESPONSE, responseMap);
 		responseApi.put(RegistrationConstants.ERRORS, new ArrayList<>());
 		
+		Map<String,Object> publicMapData=new LinkedHashMap<String,Object>();
+		publicMapData.put(RegistrationConstants.PUBLIC_KEY, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp7rM0m8Vp91T5IkuSPhwibGivMn46-Eg3sjwiNDd1M0frs6Vmf1A7Guo-tjgMAAWkEuk-fX9yJ4j9HxMBJmhrIM7bFFaF4htOh5A78qvTdgahvGccpC080m_pDllSIhJk3R5TExLMxC823gvm0cqJQh2xvttissag0fHXBeqo6SAvN7214WgN2zqPZiN2PbDWv8qICHTw8R2GGshc4pu-rh4atLWe7waLJFrFY00TpKLGTrR7TEH4GQ45LcQ7fRV4N63FN7A0ikM1jjLWoi78rn4PCLL5T91o3VBUau3V0WKdDQ9ZrIjcFdjaLS6gzmM9mI6BRIeMGVxOfnuops8FwIDAQAB");
+		Map<String,Object> myMapPublic=new LinkedHashMap<String,Object>();
+		myMapPublic.put("response", publicMapData);
+		
 		biometricDTO.setOperatorBiometricDTO(info);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(publicKeyResponse);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(myMapPublic);
 		SecretKey mock = PowerMockito.mock(SecretKey.class);
 		PowerMockito.when(keyGenerator.getSymmetricKey()).thenReturn(PowerMockito.mock(SecretKey.class));
-		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
-		Mockito.when(encryptor.asymmetricPublicEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+		Mockito.when(encryptor.symmetricEncrypt(Mockito.any(), Mockito.any(), Mockito.eq(null))).thenReturn("test".getBytes());
+		Mockito.when(encryptor.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(), Mockito.anyString())).thenReturn(responseApi);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
-		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);		
+		Mockito.when(userOnBoardDao.save()).thenReturn(RegistrationConstants.SUCCESS);	
+		Map<String,Object> myMapData=new LinkedHashMap<String,Object>();
+		publicMapData.put("authStatus", true);
+		myMapData.put("data", "IO7pawokCjgnjR-jo40DCbz2w0ELErUtCcDoKL6VTe644pqUPMq22MOXThNIXyLybBCO4LVSk3uaipYDnZr4ANxMsYr3WDp7KbQwcG9KnmVOm1mbzzCpkkJNRhbA8O2Ucj77KOXOLI3TszTKRUhBz2uLs46IvWiksuLsZwurYgkne62Gqr1QMh74PDPE9dKgvOC3o4hfPbP53H3bbc7HNR_Vu1kzn4xfyYFSNGATNVVXitZOlAKYgTcFdGde3eX2bos7OAivQad4TsmWeT0Pjmg1gixdwLq5agXhix3Pc-DvQgJzx-OnNUulAQTDkdbREx2TOJAu_ptF2JrrMuEflyNLRVlfU1BMSVRURVIjTsKlrgzfzXOXIb-NqJQWkz2OSMg");
+		myMapData.put("authStatus", true);
+		Map<String,Object> myMap=new LinkedHashMap<String,Object>();
+		myMap.put("response", myMapData);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(),Mockito.anyString())).thenReturn(myMap);
 		userOnboardServiceImpl.validate(biometricDTO);
 		
 	}

@@ -11,10 +11,15 @@ import io.mosip.kernel.syncdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.syncdata.dto.BiometricTypeDto;
 import io.mosip.kernel.syncdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.syncdata.dto.DeviceDto;
+import io.mosip.kernel.syncdata.dto.DeviceProviderDto;
+import io.mosip.kernel.syncdata.dto.DeviceServiceDto;
 import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.syncdata.dto.DeviceSubTypeDPMDto;
+import io.mosip.kernel.syncdata.dto.DeviceTypeDPMDto;
 import io.mosip.kernel.syncdata.dto.DeviceTypeDto;
 import io.mosip.kernel.syncdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.syncdata.dto.DocumentTypeDto;
+import io.mosip.kernel.syncdata.dto.FoundationalTrustProviderDto;
 import io.mosip.kernel.syncdata.dto.GenderDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
 import io.mosip.kernel.syncdata.dto.IdTypeDto;
@@ -27,6 +32,7 @@ import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ProcessListDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
+import io.mosip.kernel.syncdata.dto.RegisteredDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
@@ -95,6 +101,12 @@ public class MasterDataResponseDto {
 	private List<ProcessListDto> processList;
 	private List<SyncJobDefDto> syncJobDefinitions;
 	private List<ScreenDetailDto> screenDetails;
+	private List<DeviceProviderDto> deviceProviders = null;
+	private List<DeviceServiceDto> deviceServices = null;
+	private List<RegisteredDeviceDto> registeredDevices = null;
+	private List<FoundationalTrustProviderDto> functionalTrustProviders = null;
+	private List<DeviceTypeDPMDto> deviceTypeDPMs = null;
+	private List<DeviceSubTypeDPMDto> deviceSubTypeDPMs = null;
 	
 	
 	private List<RegistrationCenterMachineDto> registrationCenterMachines;

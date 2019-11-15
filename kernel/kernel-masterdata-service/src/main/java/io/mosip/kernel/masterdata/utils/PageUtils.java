@@ -9,9 +9,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
@@ -49,6 +53,18 @@ public class PageUtils {
 			pageResponse.setTotalRecord(totalItem);
 		}
 		return pageResponse;
+	}
+
+	public <T extends BaseEntity> void validateSortField(Class<T> clazz, List<SearchSort> searchSorts) {
+		sortUtils.validateSortField(clazz, searchSorts);
+	}
+	
+	public <T> void validateSortFieldLocation(Class<LocationSearchDto> class1, Class<Location> class2,List<SearchSort> list) {
+		sortUtils.validateSortLocationField(class1, class2,list);
+	}
+	
+	public <T extends BaseEntity,E> void validateSortField(Class<E> class1, Class<T> class2,List<SearchSort> list) {
+		sortUtils.validateSortField(class1, class2,list);
 	}
 
 	public <D> PageResponseDto<D> sortPage(List<D> content, List<SearchSort> sort, Pagination page) {
@@ -93,4 +109,5 @@ public class PageUtils {
 		int endIndex = Math.min(fromIndex + page.getPageFetch(), list.size());
 		return list.subList(fromIndex, endIndex);
 	}
+
 }

@@ -34,9 +34,9 @@ mosip.kernel.keymanager.softhsm.certificate.organization=IITB
 mosip.kernel.keymanager.softhsm.certificate.country=IN
 
 mosip.kernel.keygenerator.asymmetric-algorithm-name=RSA
-mosip.kernel.keygenerator.asymmetric-algorithm-length=2048
+mosip.kernel.keygenerator.asymmetric-key-length=2048
 mosip.kernel.keygenerator.symmetric-algorithm-name=AES
-mosip.kernel.keygenerator.symmetric-algorithm-length=256
+mosip.kernel.keygenerator.symmetric-key-length=256
 
 mosip.kernel.crypto.asymmetric-algorithm-name=RSA
 mosip.kernel.crypto.symmetric-algorithm-name=AES

@@ -204,14 +204,22 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> {
 					String errorMessage;
 					if (args != null && !args.isEmpty()) {
-						errorMessage = String.format(errorMessages.get(i), args.get(i));
+						if(args.get(i) != null) {
+							errorMessage = String.format(errorMessages.get(i), args.get(i));
+						} else {
+							errorMessage = errorMessages.get(i);
+						}
 					} else {
 						errorMessage = errorMessages.get(i);
 					}
 
 					String actionMessage;
-					if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.contains(null)) {
-						actionMessage = String.format(actionArgs.get(i), args.get(i));
+					if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.isEmpty()) {
+						if(actionArgs.get(i) != null && args.get(i) != null) {
+							actionMessage = String.format(actionArgs.get(i), args.get(i));
+						} else {
+							actionMessage = actionArgs.get(i);
+						}
 					} else {
 						actionMessage = actionArgs.get(i);
 					}

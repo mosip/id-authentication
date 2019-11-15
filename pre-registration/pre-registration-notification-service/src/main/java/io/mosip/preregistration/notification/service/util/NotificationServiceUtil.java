@@ -87,7 +87,7 @@ public class NotificationServiceUtil {
 	}
 
 	public Map<String, String> createRequestMap(MainRequestDTO<?> requestDto) {
-		log.info("sessionId", "idType", "id", "In prepareRequestMap method of notification Service Util");
+		log.info("sessionId", "idType", "id", "In prepareRequestMap method of notification Service Util with requestDto "+requestDto);
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());

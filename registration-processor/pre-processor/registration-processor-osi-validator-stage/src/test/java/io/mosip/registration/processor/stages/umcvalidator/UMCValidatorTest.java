@@ -26,6 +26,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -1127,6 +1128,1041 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenThrow(apisResourceAccessException)
 				.thenReturn(centerDeviceHistoryResponseDto);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
+	}
+
+	@Test
+	public void isValidCenterHistroyTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+		FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Document Scanner");
+		// fv1.setValue("3000091");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Camera");
+		// fv1.setValue("3000071");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Finger Print Scanner");
+		// fv1.setValue("3000092");
+		// capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO error = new ErrorDTO();
+		error.setMessage("In valid center");
+		errors.add(error);
+		regrepdtoWrapper.setResponse(null);
+		regrepdtoWrapper.setErrors(errors);
+
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY, pathsegments, "", "",
+				ResponseWrapper.class)).thenReturn(regrepdtoWrapper);
+
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
+	}
+
+	@Test
+	public void isValidMachineHistroyTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+		FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Document Scanner");
+		// fv1.setValue("3000091");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Camera");
+		// fv1.setValue("3000071");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Finger Print Scanner");
+		// fv1.setValue("3000092");
+		// capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
+
+		regrepdtoWrapper.setResponse(regrepdto);
+		regrepdtoWrapper.setErrors(null);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("yyeqy26356");
+
+		ResponseWrapper<MachineHistoryDto> mcdtoWrapper = new ResponseWrapper<>();
+
+		mcdtoWrapper.setResponse(mcdto);
+		mcdtoWrapper.setErrors(null);
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO error = new ErrorDTO();
+		error.setMessage("In valid Machine");
+		errors.add(error);
+		mhrepdtoWrapper.setResponse(null);
+		mhrepdtoWrapper.setErrors(errors);
+
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY, pathsegments, "", "",
+				ResponseWrapper.class)).thenReturn(regrepdtoWrapper);
+
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY, pathsegments1, "", "",
+				ResponseWrapper.class)).thenReturn(mhrepdtoWrapper);
+
+		// Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(),
+		// any(), any())).thenReturn(offrepdto).thenReturn(test)
+		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		// UMC validation successfull;
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
+	}
+
+	@Test
+	public void isValidDeviceMappedWithCenterTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+		FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Document Scanner");
+		// fv1.setValue("3000091");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Camera");
+		// fv1.setValue("3000071");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Finger Print Scanner");
+		// fv1.setValue("3000092");
+		// capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
+
+		regrepdtoWrapper.setResponse(regrepdto);
+		regrepdtoWrapper.setErrors(null);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("yyeqy26356");
+
+		ResponseWrapper<MachineHistoryDto> mcdtoWrapper = new ResponseWrapper<>();
+
+		mcdtoWrapper.setResponse(mcdto);
+		mcdtoWrapper.setErrors(null);
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
+
+		mhrepdtoWrapper.setResponse(mhrepdto);
+		mhrepdtoWrapper.setErrors(null);
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
+
+		offrepdtoWrapper.setResponse(offrepdto);
+		offrepdtoWrapper.setErrors(null);
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Valid");
+		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
+
+		testWrapper.setResponse(test);
+		testWrapper.setErrors(null);
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+
+		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
+		deviceHistoryResponsedtoWrapper.setErrors(null);
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+
+		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
+		// centerDeviceHistoryResponseDtoWrapper.setResponse(statusResponseDto);
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO error = new ErrorDTO();
+		error.setMessage("Invalid center device mapping");
+		errors.add(error);
+		centerDeviceHistoryResponseDtoWrapper.setResponse(null);
+		centerDeviceHistoryResponseDtoWrapper.setErrors(errors);
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY, pathsegments, "", "",
+				ResponseWrapper.class)).thenReturn(regrepdtoWrapper);
+
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY, pathsegments1, "", "",
+				ResponseWrapper.class)).thenReturn(mhrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments2, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments6, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
+				ResponseWrapper.class)).thenReturn(testWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
+				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
+				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
+
+		// Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(),
+		// any(), any())).thenReturn(offrepdto).thenReturn(test)
+		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		// UMC validation successfull;
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
+	}
+
+	@Test
+	public void isValidDeviceTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+		FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Document Scanner");
+		// fv1.setValue("3000091");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Camera");
+		// fv1.setValue("3000071");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Finger Print Scanner");
+		// fv1.setValue("3000092");
+		// capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
+
+		regrepdtoWrapper.setResponse(regrepdto);
+		regrepdtoWrapper.setErrors(null);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("yyeqy26356");
+
+		ResponseWrapper<MachineHistoryDto> mcdtoWrapper = new ResponseWrapper<>();
+
+		mcdtoWrapper.setResponse(mcdto);
+		mcdtoWrapper.setErrors(null);
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
+
+		mhrepdtoWrapper.setResponse(mhrepdto);
+		mhrepdtoWrapper.setErrors(null);
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
+
+		offrepdtoWrapper.setResponse(offrepdto);
+		offrepdtoWrapper.setErrors(null);
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Valid");
+		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
+
+		testWrapper.setResponse(test);
+		testWrapper.setErrors(null);
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO error = new ErrorDTO();
+		error.setMessage("Invalid device");
+		errors.add(error);
+		deviceHistoryResponsedtoWrapper.setResponse(null);
+		deviceHistoryResponsedtoWrapper.setErrors(errors);
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+
+		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
+		// centerDeviceHistoryResponseDtoWrapper.setResponse(statusResponseDto);
+		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
+		centerDeviceHistoryResponseDtoWrapper.setErrors(null);
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY, pathsegments, "", "",
+				ResponseWrapper.class)).thenReturn(regrepdtoWrapper);
+
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY, pathsegments1, "", "",
+				ResponseWrapper.class)).thenReturn(mhrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments2, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments6, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
+				ResponseWrapper.class)).thenReturn(testWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
+				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
+				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
+
+		// Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(),
+		// any(), any())).thenReturn(offrepdto).thenReturn(test)
+		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		// UMC validation successfull;
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
+	}
+
+	@Test
+	public void isValidCenterIdAndTimestampTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+		FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Document Scanner");
+		// fv1.setValue("3000091");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Camera");
+		// fv1.setValue("3000071");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Finger Print Scanner");
+		// fv1.setValue("3000092");
+		// capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
+
+		regrepdtoWrapper.setResponse(regrepdto);
+		regrepdtoWrapper.setErrors(null);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("yyeqy26356");
+
+		ResponseWrapper<MachineHistoryDto> mcdtoWrapper = new ResponseWrapper<>();
+
+		mcdtoWrapper.setResponse(mcdto);
+		mcdtoWrapper.setErrors(null);
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
+
+		mhrepdtoWrapper.setResponse(mhrepdto);
+		mhrepdtoWrapper.setErrors(null);
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
+
+		offrepdtoWrapper.setResponse(offrepdto);
+		offrepdtoWrapper.setErrors(null);
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Valid");
+		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO error = new ErrorDTO();
+		error.setMessage("Invalid  center Timestamp");
+		errors.add(error);
+		testWrapper.setResponse(null);
+		testWrapper.setErrors(errors);
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+
+		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
+		deviceHistoryResponsedtoWrapper.setErrors(null);
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+
+		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
+		// centerDeviceHistoryResponseDtoWrapper.setResponse(statusResponseDto);
+		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
+		centerDeviceHistoryResponseDtoWrapper.setErrors(null);
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY, pathsegments, "", "",
+				ResponseWrapper.class)).thenReturn(regrepdtoWrapper);
+
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY, pathsegments1, "", "",
+				ResponseWrapper.class)).thenReturn(mhrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments2, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments6, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
+				ResponseWrapper.class)).thenReturn(testWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
+				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
+				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
+
+		// Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(),
+		// any(), any())).thenReturn(offrepdto).thenReturn(test)
+		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		// UMC validation successfull;
+		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
+	}
+
+	@Test
+	public void isValidCenterUserMachineMappingTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
+		FieldValue fv1 = new FieldValue();
+		fv1.setLabel("Printer");
+		fv1.setValue("3000111");
+		capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Document Scanner");
+		// fv1.setValue("3000091");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Camera");
+		// fv1.setValue("3000071");
+		// capturedRegisteredDevices.add(fv1);
+		// fv1 = new FieldValue();
+		// fv1.setLabel("Finger Print Scanner");
+		// fv1.setValue("3000092");
+		// capturedRegisteredDevices.add(fv1);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
+
+		metaData = new ArrayList<>();
+		FieldValue fv = new FieldValue();
+		fv.setLabel("REGISTRATIONID");
+		fv.setValue("2018782130000121112018103016");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CENTERID");
+		fv.setValue("12245");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("MACHINEID");
+		fv.setValue("yyeqy26356");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLATITUDE");
+		fv.setValue("13.0049");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("GEOLOCLONGITUDE");
+		fv.setValue("80.24492");
+		metaData.add(fv);
+
+		fv = new FieldValue();
+		fv.setLabel("CREATIONDATE");
+		fv.setValue("2018-11-28T15:34:20.122");
+		metaData.add(fv);
+
+		identity.setMetaData(metaData);
+		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
+
+		regrepdtoWrapper.setResponse(regrepdto);
+		regrepdtoWrapper.setErrors(null);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("yyeqy26356");
+
+		ResponseWrapper<MachineHistoryDto> mcdtoWrapper = new ResponseWrapper<>();
+
+		mcdtoWrapper.setResponse(mcdto);
+		mcdtoWrapper.setErrors(null);
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
+
+		mhrepdtoWrapper.setResponse(mhrepdto);
+		mhrepdtoWrapper.setErrors(null);
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO error = new ErrorDTO();
+		error.setMessage("Invalid  operator center user");
+		errors.add(error);
+		offrepdtoWrapper.setResponse(null);
+		offrepdtoWrapper.setErrors(errors);
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Valid");
+		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
+
+		testWrapper.setResponse(test);
+		testWrapper.setErrors(null);
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+
+		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
+		deviceHistoryResponsedtoWrapper.setErrors(null);
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+
+		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
+		// centerDeviceHistoryResponseDtoWrapper.setResponse(statusResponseDto);
+		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
+		centerDeviceHistoryResponseDtoWrapper.setErrors(null);
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add("12245");
+		pathsegments.add(null);
+		pathsegments.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments1 = new ArrayList<>();
+		pathsegments1.add("yyeqy26356");
+		pathsegments1.add(null);
+		pathsegments1.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments2 = new ArrayList<>();
+		pathsegments2.add("2018-11-28T15:34:20.122");
+		pathsegments2.add("12245");
+		pathsegments2.add("yyeqy26356");
+		pathsegments2.add("S1234");
+		List<String> pathsegments3 = new ArrayList<>();
+		pathsegments3.add("12245");
+		pathsegments3.add(null);
+		pathsegments3.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments4 = new ArrayList<>();
+		pathsegments4.add("3000111");
+		pathsegments4.add(null);
+		pathsegments4.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments5 = new ArrayList<>();
+		pathsegments5.add("12245");
+		pathsegments5.add("3000111");
+		pathsegments5.add("2018-11-28T15:34:20.122");
+		List<String> pathsegments6 = new ArrayList<>();
+		pathsegments6.add("2018-11-28T15:34:20.122");
+		pathsegments6.add("12245");
+		pathsegments6.add("yyeqy26356");
+		pathsegments6.add("O1234");
+
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERHISTORY, pathsegments, "", "",
+				ResponseWrapper.class)).thenReturn(regrepdtoWrapper);
+
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY, pathsegments1, "", "",
+				ResponseWrapper.class)).thenReturn(mhrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments2, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments6, "", "",
+				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
+				ResponseWrapper.class)).thenReturn(testWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
+				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
+				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
+
+		// Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(),
+		// any(), any())).thenReturn(offrepdto).thenReturn(test)
+		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		// UMC validation successfull;
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 

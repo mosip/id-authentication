@@ -18,6 +18,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.DocumentScanController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -127,6 +128,23 @@ public class ScanPopUpViewController extends BaseController {
 			} else {
 				isDocumentScan = false;
 			}
+			
+			scanningMsg.textProperty().addListener((observable, oldValue, newValue) -> {
+			 
+			    if(RegistrationUIConstants.NO_DEVICE_FOUND.contains(newValue)) {
+			 
+			        Platform.runLater( () -> {
+			        	
+			        	generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
+			        	
+			        });
+
+				  
+			 
+			    }
+			});
+			
+			
 			LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
 

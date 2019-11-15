@@ -118,9 +118,9 @@ public class ServiceDelegateUtil {
 
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
-
+			url = url != null && System.getenv("mosip.hostname") !=null ? url.replace("${mosip.hostname}", System.getenv("mosip.hostname")) : url;
 			Map<String, String> queryParams = new HashMap<>();
-			for (String key : requestParams.keySet()) {
+			for(String key : requestParams.keySet()) {
 				if (!url.contains("{" + key + "}")) {
 					queryParams.put(key, requestParams.get(key));
 				}
@@ -550,15 +550,23 @@ public class ServiceDelegateUtil {
 			}
 			
 			String cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);
-			if (cookie == null
-					|| cookie.trim().isEmpty()) {
-				throw new RegBaseCheckedException(
-						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
-						RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorMessage());
+			if (cookieEmpty(cookie)) {
+				
+				cookie = (responseHeader.get(RegistrationConstants.AUTH_AUTHORIZATION) != null  
+						&& !responseHeader.get(RegistrationConstants.AUTH_AUTHORIZATION).isEmpty())
+						? responseHeader.get(RegistrationConstants.AUTH_AUTHORIZATION).get(0) : null;
+				
+				if (cookieEmpty(cookie)) {
+					throw new RegBaseCheckedException(
+							RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorCode(),
+							RegistrationExceptionConstants.AUTH_TOKEN_COOKIE_NOT_FOUND.getErrorMessage());
+				} else {
+					cookie = RegistrationConstants.AUTH_AUTHORIZATION + "=" + cookie;
+				}
 			}
 
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-			authTokenDTO.setCookie(responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0));
+			authTokenDTO.setCookie(cookie);
 			authTokenDTO.setLoginMode(loginMode.getCode());
 
 			if (haveToSaveAuthToken) {
@@ -589,6 +597,11 @@ public class ServiceDelegateUtil {
 			throw new RegBaseUncheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
 					RegistrationConstants.REST_OAUTH_ERROR_MSG, runtimeException);
 		}
+	}
+
+	private boolean cookieEmpty(String cookie) {
+		return cookie == null
+				|| cookie.trim().isEmpty();
 	}
 
 	private String getEnvironmentProperty(String serviceName, String serviceComponent) {

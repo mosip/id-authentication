@@ -355,7 +355,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		registrationTxn.setRegId(registration.getId());
 		registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 		registrationTxn.setLangCode("ENG");
-		registrationTxn.setCrBy(SessionContext.userContext().getUserId());
+		registrationTxn.setCrBy(createdByUser());
 		registrationTxn.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 
 		registrationTxn.setStatusCode(serverStatus);
@@ -491,6 +491,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			responseDTO.setErrorResponseDTOs(errorList);
 		}
 		return responseDTO;
+	}
+	
+	private String createdByUser() {
+		return SessionContext.isSessionContextAvailable() && SessionContext.userContext() != null && SessionContext.userContext().getUserId() != null  ? 
+				SessionContext.userContext().getUserId() : RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 	}
 
 }

@@ -753,7 +753,7 @@ public class TemplateGenerator extends BaseService {
 				getSecondaryLanguageLabel("ageDatePicker"));
 		if (dob != null && !dob.isEmpty()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_DOB,
-					DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+					DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "yyyy/MM/dd"));
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_DOB, RegistrationConstants.EMPTY);
 		}
@@ -1389,7 +1389,7 @@ public class TemplateGenerator extends BaseService {
 				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(individualIdentity.getAge()));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
-						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "yyyy/MM/dd"));
 			}
 
 			values.put(RegistrationConstants.TEMPLATE_GENDER,

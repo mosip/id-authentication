@@ -18,6 +18,7 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.TransactionType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ParseException;
@@ -167,12 +168,12 @@ public class AuthTransactionBuilder {
 			if (authRequestDTO != null) {
 				idvId = authRequestDTO.getIndividualId();
 				reqTime = authRequestDTO.getRequestTime();
-				idvIdType = authRequestDTO.getIndividualIdType();
+				idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
 				txnID = authRequestDTO.getTransactionID();
 			} else if (otpRequestDTO != null) {
 				idvId = otpRequestDTO.getIndividualId();
 				reqTime = otpRequestDTO.getRequestTime();
-				idvIdType = otpRequestDTO.getIndividualIdType();
+				idvIdType = IdType.getIDTypeStrOrDefault(otpRequestDTO.getIndividualIdType());
 				txnID = otpRequestDTO.getTransactionID();
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
@@ -180,7 +181,7 @@ public class AuthTransactionBuilder {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
-			if (uin != null && requestType != null) {
+			if (requestType != null) {
 				String status = isStatus ? SUCCESS_STATUS : FAILED;
 				String comment = isStatus ? requestType.getMessage() + " Success"
 						: requestType.getMessage() + " Failed";
@@ -202,6 +203,7 @@ public class AuthTransactionBuilder {
 				autnTxn.setStatusComment(comment);
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+
 				int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
 				Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
 				String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
@@ -209,6 +211,7 @@ public class AuthTransactionBuilder {
 				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
 				autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
 						+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
+
 				Optional<String> clientId = Optional.of(transactionManager.getUser());
 				if (clientId.isPresent()) {
 					autnTxn.setEntityName(clientId.get());

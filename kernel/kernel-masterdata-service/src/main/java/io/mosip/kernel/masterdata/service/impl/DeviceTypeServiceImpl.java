@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceType;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -32,6 +34,7 @@ import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -54,18 +57,24 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	 */
 	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
-	
+
 	@Autowired
 	private FilterTypeValidator filterValidator;
-	
+
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
-	
+
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
-	
+
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	private PageUtils pageUtils;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -77,12 +86,12 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	@Override
 	public CodeAndLanguageCodeID createDeviceType(DeviceTypeDto deviceType) {
 		DeviceType renDeviceType = null;
-
-		DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
-
 		try {
+			deviceType = masterdataCreationUtil.createMasterData(DeviceType.class,
+					deviceType);
+			DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
 			renDeviceType = deviceTypeRepository.create(entity);
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException | IllegalArgumentException | SecurityException  e) {
 			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
@@ -122,45 +131,53 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		}
 		return deviceTypesPages;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceTypeService#deviceTypeSearch(io.mosip.kernel.masterdata.dto.request.SearchDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceTypeService#deviceTypeSearch(io.
+	 * mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
 	public PageResponseDto<DeviceTypeExtnDto> deviceTypeSearch(SearchDto searchRequestDto) {
 		PageResponseDto<DeviceTypeExtnDto> pageDto = new PageResponseDto<>();
-		
+
 		List<DeviceTypeExtnDto> deviceTypeList = null;
-		
 		if (filterValidator.validate(DeviceTypeExtnDto.class, searchRequestDto.getFilters())) {
-		Page<DeviceType> page = masterdataSearchHelper.searchMasterdata(DeviceType.class, searchRequestDto, null);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			pageDto = PageUtils.pageResponse(page);
-			deviceTypeList = MapperUtils.mapAll(page.getContent(), DeviceTypeExtnDto.class);
-			pageDto.setData(deviceTypeList);
-		}
+			pageUtils.validateSortField(DeviceType.class, searchRequestDto.getSort());
+			Page<DeviceType> page = masterdataSearchHelper.searchMasterdata(DeviceType.class, searchRequestDto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				deviceTypeList = MapperUtils.mapAll(page.getContent(), DeviceTypeExtnDto.class);
+				pageDto.setData(deviceTypeList);
+			}
 		}
 		return pageDto;
 	}
-		
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceTypeService#deviceTypeFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceTypeService#deviceTypeFilterValues(
+	 * io.mosip.kernel.masterdata.dto.request.FilterValueDto)
 	 */
 	@Override
 	public FilterResponseDto deviceTypeFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(),DeviceType.class)) {
-			for (FilterDto filterDto : filterValueDto.getFilters()) {				
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), DeviceType.class)) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(DeviceType.class, filterDto, filterValueDto)
-				.forEach(filterValue -> {
-					if (filterValue != null) {
-						ColumnValue columnValue = new ColumnValue();
-						columnValue.setFieldID(filterDto.getColumnName());
-						columnValue.setFieldValue(filterValue.toString());
-						columnValueList.add(columnValue);
-					}
-				});				
+						.forEach(filterValue -> {
+							if (filterValue != null) {
+								ColumnValue columnValue = new ColumnValue();
+								columnValue.setFieldID(filterDto.getColumnName());
+								columnValue.setFieldValue(filterValue.toString());
+								columnValueList.add(columnValue);
+							}
+						});
 			}
 			filterResponseDto.setFilters(columnValueList);
 

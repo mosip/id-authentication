@@ -10,6 +10,10 @@ import lombok.Data;
  * 
  * @author M1048358 Alok
  */
+
+/**
+ * Instantiates a new request DTO.
+ */
 @Data
 public class RequestDTO implements Serializable {
 
@@ -21,4 +25,7 @@ public class RequestDTO implements Serializable {
 
 	/** The id value. */
 	private String idValue;
+
+	/** The card type. */
+	private String cardType;
 }

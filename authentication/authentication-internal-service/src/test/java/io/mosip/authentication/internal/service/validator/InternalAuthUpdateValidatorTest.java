@@ -222,6 +222,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -247,6 +248,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -273,6 +275,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);

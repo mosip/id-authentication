@@ -20,19 +20,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
-import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DecryptorTest {
 
-	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptorImpl;
+	private static final String MOCKAAD = "MOCKAAD";
 
 	@Autowired
-	private Decryptor<PrivateKey, PublicKey, SecretKey> decryptorImpl;
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	private KeyPair rsaPair;
 
@@ -55,22 +52,18 @@ public class DecryptorTest {
 	}
 
 	@Test
-	public void testRSAPKS1AsymmetricPrivateDecrypt() {
-		byte[] encryptedData = encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(), data);
-		assertThat(decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), encryptedData), isA(byte[].class));
+	public void testAsymmetricDecrypt() {
+		byte[] encryptedData = cryptoCore.asymmetricEncrypt(rsaPair.getPublic(), data);
+		assertThat(cryptoCore.asymmetricDecrypt(rsaPair.getPrivate(), encryptedData), isA(byte[].class));
 	}
 
-	@Test
-	public void testRSAPKS1AsymmetricPublicDecrypt() {
-		byte[] encryptedData = encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), data);
-		assertThat(decryptorImpl.asymmetricPublicDecrypt(rsaPair.getPublic(), encryptedData), isA(byte[].class));
-	}
+
 
 	@Test
 	public void testAESSymmetricDecrypt() throws java.security.NoSuchAlgorithmException {
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
-		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
-		assertThat(decryptorImpl.symmetricDecrypt(secretKeySpec, encryptedData), isA(byte[].class));
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKeySpec, data,MOCKAAD.getBytes());
+		assertThat(cryptoCore.symmetricDecrypt(secretKeySpec, encryptedData,MOCKAAD.getBytes()), isA(byte[].class));
 	}
 	
 	@Test
@@ -79,40 +72,36 @@ public class DecryptorTest {
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[16];
 		random.nextBytes(keyBytes);
-		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data,keyBytes);
-		assertThat(decryptorImpl.symmetricDecrypt(secretKeySpec, encryptedData,keyBytes), isA(byte[].class));
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKeySpec, data,MOCKAAD.getBytes(),keyBytes);
+		assertThat(cryptoCore.symmetricDecrypt(secretKeySpec, encryptedData,MOCKAAD.getBytes(),keyBytes), isA(byte[].class));
 	}
 
-	@Test(expected = InvalidKeyException.class)
+	@Test(expected = NullPointerException.class)
 	public void testAESSymmetricDecryptInvalidKey() throws java.security.NoSuchAlgorithmException {
 		SecretKeySpec secretKeySpec = setSymmetricUp(32, "AES");
-		byte[] encryptedData = encryptorImpl.symmetricEncrypt(secretKeySpec, data);
-		decryptorImpl.symmetricDecrypt(null, encryptedData);
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKeySpec, data,MOCKAAD.getBytes());
+		cryptoCore.symmetricDecrypt(null, encryptedData,MOCKAAD.getBytes());
 	}
 
 	@Test(expected = InvalidDataException.class)
 	public void testAESSymmetricDecryptInvalidDataArrayIndexOutOfBounds()
 			throws java.security.NoSuchAlgorithmException {
-		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), "aa".getBytes());
+		cryptoCore.symmetricDecrypt(setSymmetricUp(32, "AES"), "aa".getBytes(),MOCKAAD.getBytes());
 	}
 
 	@Test(expected = InvalidDataException.class)
 	public void testAESSymmetricDecryptInvalidDataIllegalBlockSize() throws java.security.NoSuchAlgorithmException {
-		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[121]);
+		cryptoCore.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[121],MOCKAAD.getBytes());
 	}
 
 	// @Test(expected=InvalidDataException.class)
 	public void testAESSymmetricDecryptInvalidDataBadPadding() throws java.security.NoSuchAlgorithmException {
-		decryptorImpl.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[32]);
+		cryptoCore.symmetricDecrypt(setSymmetricUp(32, "AES"), new byte[32],MOCKAAD.getBytes());
 	}
 
 	@Test(expected = InvalidDataException.class)
 	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataIllegalBlockSize() {
-		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[121]);
+		cryptoCore.asymmetricDecrypt(rsaPair.getPrivate(), new byte[121]);
 	}
 
-	@Test(expected = InvalidDataException.class)
-	public void testRSAPKS1AsymmetricPrivateDecryptInvalidDataBadPadding() {
-		decryptorImpl.asymmetricPrivateDecrypt(rsaPair.getPrivate(), new byte[32]);
-	}
 }

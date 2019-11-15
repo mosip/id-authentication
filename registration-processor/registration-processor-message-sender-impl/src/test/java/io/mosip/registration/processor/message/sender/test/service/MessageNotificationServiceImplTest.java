@@ -167,31 +167,82 @@ public class MessageNotificationServiceImplTest {
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		String value = "{\r\n" + "	\"identity\": {\r\n" + "		\"name\": {\r\n"
-				+ "			\"value\": \"fullName\",\r\n" + "			\"weight\": 20\r\n" + "		},\r\n"
-				+ "		\"gender\": {\r\n" + "			\"value\": \"gender\",\r\n" + "			\"weight\": 20\r\n"
-				+ "		},\r\n" + "		\"dob\": {\r\n" + "			\"value\": \"dateOfBirth\",\r\n"
-				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"pheoniticName\": {\r\n"
-				+ "			\"weight\": 20\r\n" + "		},\r\n" + "		\"poa\": {\r\n"
-				+ "			\"value\" : \"proofOfAddress\"\r\n" + "		},\r\n" + "		\"poi\": {\r\n"
-				+ "			\"value\" : \"proofOfIdentity\"\r\n" + "		},\r\n" + "		\"por\": {\r\n"
-				+ "			\"value\" : \"proofOfRelationship\"\r\n" + "		},\r\n" + "		\"pob\": {\r\n"
-				+ "			\"value\" : \"proofOfDateOfBirth\"\r\n" + "		},\r\n"
-				+ "		\"individualBiometrics\": {\r\n" + "			\"value\" : \"individualBiometrics\"\r\n"
-				+ "		},\r\n" + "		\"age\": {\r\n" + "			\"value\" : \"age\"\r\n" + "		},\r\n"
-				+ "		\"addressLine1\": {\r\n" + "			\"value\" : \"addressLine1\"\r\n" + "		},\r\n"
-				+ "		\"addressLine2\": {\r\n" + "			\"value\" : \"addressLine2\"\r\n" + "		},\r\n"
-				+ "		\"addressLine3\": {\r\n" + "			\"value\" : \"addressLine3\"\r\n" + "		},\r\n"
-				+ "		\"region\": {\r\n" + "			\"value\" : \"region\"\r\n" + "		},\r\n"
-				+ "		\"province\": {\r\n" + "			\"value\" : \"province\"\r\n" + "		},\r\n"
-				+ "		\"postalCode\": {\r\n" + "			\"value\" : \"postalCode\"\r\n" + "		},\r\n"
-				+ "		\"phone\": {\r\n" + "			\"value\" : \"phone\"\r\n" + "		},\r\n"
-				+ "		\"email\": {\r\n" + "			\"value\" : \"email\"\r\n" + "		},\r\n"
-				+ "		\"localAdministrativeAuthority\": {\r\n"
-				+ "			\"value\" : \"localAdministrativeAuthority\"\r\n" + "		},\r\n"
-				+ "		\"idschemaversion\": {\r\n" + "			\"value\" : \"IDSchemaVersion\"\r\n" + "		},\r\n"
-				+ "		\"cnienumber\": {\r\n" + "			\"value\" : \"CNIENumber\"\r\n" + "		},\r\n"
-				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
+		String value = "{\r\n" + 
+				"	\"identity\": {\r\n" + 
+				"		\"name\": {\r\n" + 
+				"			\"value\": \"fullName\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"gender\": {\r\n" + 
+				"			\"value\": \"gender\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"dob\": {\r\n" + 
+				"			\"value\": \"dateOfBirth\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianRID\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianRID\"\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianUIN\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianUIN\"\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianName\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianName\"\r\n" + 
+				"		},\r\n" + 
+				"		\"poa\": {\r\n" + 
+				"			\"value\" : \"proofOfAddress\"\r\n" + 
+				"		},\r\n" + 
+				"		\"poi\": {\r\n" + 
+				"			\"value\" : \"proofOfIdentity\"\r\n" + 
+				"		},\r\n" + 
+				"		\"por\": {\r\n" + 
+				"			\"value\" : \"proofOfRelationship\"\r\n" + 
+				"		},\r\n" + 
+				"		\"pob\": {\r\n" + 
+				"			\"value\" : \"proofOfDateOfBirth\"\r\n" + 
+				"		},\r\n" + 
+				"		\"individualBiometrics\": {\r\n" + 
+				"			\"value\" : \"individualBiometrics\"\r\n" + 
+				"		},\r\n" + 
+				"		\"age\": {\r\n" + 
+				"			\"value\" : \"age\"\r\n" + 
+				"		},\r\n" + 
+				"		\"address\": {\r\n" + 
+				"			\"value\" : \"addressLine1,addressLine2,addressLine3\"\r\n" + 
+				"		},\r\n" + 
+				"		\"region\": {\r\n" + 
+				"			\"value\" : \"region\"\r\n" + 
+				"		},\r\n" + 
+				"		\"province\": {\r\n" + 
+				"			\"value\" : \"province\"\r\n" + 
+				"		},\r\n" + 
+				"		\"postalCode\": {\r\n" + 
+				"			\"value\" : \"postalCode\"\r\n" + 
+				"		},\r\n" + 
+				"		\"phone\": {\r\n" + 
+				"			\"value\" : \"phone\"\r\n" + 
+				"		},\r\n" + 
+				"		\"email\": {\r\n" + 
+				"			\"value\" : \"email\"\r\n" + 
+				"		},\r\n" + 
+				"		\"localAdministrativeAuthority\": {\r\n" + 
+				"			\"value\" : \"localAdministrativeAuthority\"\r\n" + 
+				"		},\r\n" + 
+				"		\"idschemaversion\": {\r\n" + 
+				"			\"value\" : \"IDSchemaVersion\"\r\n" + 
+				"		},\r\n" + 
+				"		\"cnienumber\": {\r\n" + 
+				"			\"value\" : \"CNIENumber\"\r\n" + 
+				"		},\r\n" + 
+				"		\"city\": {\r\n" + 
+				"			\"value\" : \"city\"\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianBiometrics\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianBiometrics\"\r\n" + 
+				"		}\r\n" + 
+				"	}\r\n" + 
+				"}  ";
 
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);

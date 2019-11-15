@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
@@ -23,6 +22,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
+import io.mosip.authentication.internal.service.validator.InternalOTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -42,7 +42,7 @@ public class InternalOTPController {
 	private OTPService otpService;
 
 	@Autowired
-	private OTPRequestValidator otpRequestValidator;
+	private InternalOTPRequestValidator otpRequestValidator;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {

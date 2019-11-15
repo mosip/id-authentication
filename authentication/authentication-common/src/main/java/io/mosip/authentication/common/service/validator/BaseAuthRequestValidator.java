@@ -235,7 +235,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private void validateCount(AuthRequestDTO authRequestDTO, Errors errors, List<DataDTO> bioData) {
 		if (!errors.hasErrors()) {
-			if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
+			if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_IMG_COMPOSITE)) {
 				validateFinger(authRequestDTO, bioData, errors);
 			}
 			if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
@@ -271,7 +271,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		BioAuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		for (BioAuthType authType : authTypes) {
-			availableAuthTypeInfos.add(authType.getConfigKey().toLowerCase());
+			availableAuthTypeInfos.add(authType.getConfigNameValue().toLowerCase());
 		}
 		Set<String> allowedAvailableAuthTypes = allowedAuthTypesFromConfig.stream().filter(authTypeFromConfig -> {
 			String authType = authTypeFromConfig.toLowerCase();
@@ -284,7 +284,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthCommonConstants.VALIDATE, "Invalid bio type config: " + authTypeFromConfig);
 			}
 			return contains;
-		}).map(BioAuthType::getTypeForConfigKey).filter(Optional::isPresent).map(Optional::get)
+		}).map(BioAuthType::getTypeForConfigNameValue).filter(Optional::isPresent).map(Optional::get)
 				.collect(Collectors.toSet());
 
 		for (DataDTO bioInfo : bioInfos) {
@@ -330,7 +330,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 					boolean invalidBioType = associatedMatchTypes.stream()
 							.filter(matchType -> matchType instanceof BioMatchType)
 							.map(matchType -> (BioMatchType) matchType).map(BioMatchType::getIdMapping)
-							.map(IdMapping::getIdname).distinct()
+							.map(IdMapping::getSubType).distinct()
 							.noneMatch(idName -> idName.equalsIgnoreCase(bioSubType));
 					if (invalidBioType) {
 						errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -878,10 +878,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors     the errors
 	 * @param configKey  the config key
 	 */
-	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors, String configKey) {
+	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
 		if (authTypeDTO != null) {
-			Set<String> allowedAuthType = getAllowedAuthTypes(configKey);
+			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
 		} else {
 			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
@@ -949,16 +949,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
-	/**
-	 * Extract auth info.
-	 *
-	 * @param configKey the config key
-	 * @return the sets the
-	 */
-	protected Set<String> getAllowedAuthTypes(String configKey) {
-		String intAllowedAuthType = env.getProperty(configKey);
-		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
-	}
 
 	/**
 	 * validateSecondayLangCode method used to validate secondaryLangCode for KYC

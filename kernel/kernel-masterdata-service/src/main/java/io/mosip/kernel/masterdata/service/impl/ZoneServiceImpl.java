@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class ZoneServiceImpl implements ZoneService {
 				throw new DataNotFoundException(ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorCode(),
 						ZoneErrorCode.ZONEUSER_ENTITY_NOT_FOUND.getErrorMessage());
 			}
-			zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneUser.getZoneCode(), zoneUser.getLangCode());
+			zone = zoneRepository.findZoneByCodeAndLangCodeNonDeleted(zoneUser.getZoneCode(), langCode);
 			if (zone == null) {
 				throw new DataNotFoundException(ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorCode(),
 						ZoneErrorCode.ZONE_ENTITY_NOT_FOUND.getErrorMessage());
@@ -100,5 +101,24 @@ public class ZoneServiceImpl implements ZoneService {
 		zoneNameResponseDto.setZoneName(zone.getName());
 		return zoneNameResponseDto;
 	}
-
+	
+	@Override
+	public boolean getUserValidityZoneHierarchy(String langCode,String zoneCode) {
+		List<Zone> zones = zoneUtils.getUserZones();
+		boolean zoneValid = false;
+		List<ZoneExtnDto> zoneExtnList = new ArrayList<>();
+		if (zones != null && !zones.isEmpty()) {
+			List<Zone> zoneList = zones.parallelStream().filter(z -> z.getLangCode().equals(langCode))
+					.collect(Collectors.toList());
+			zoneExtnList =  MapperUtils.mapAll(zoneList, ZoneExtnDto.class);
+		}
+		for(ZoneExtnDto zoneExtnDto : zoneExtnList)
+		{
+				if(zoneCode.equals(zoneExtnDto.getCode()))
+				{
+					zoneValid = true;
+				}
+		}
+		return zoneValid;	
+	}
 }

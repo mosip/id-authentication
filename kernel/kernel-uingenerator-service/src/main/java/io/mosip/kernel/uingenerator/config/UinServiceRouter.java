@@ -46,7 +46,7 @@ import io.vertx.ext.web.handler.StaticHandler;
  * @author Dharmesh Khandelwal
  * @author Urvil Joshi
  * @author Megha Tanga
- * @author Raj Jha 
+ * @author Raj Jha
  * @since 1.0.0
  *
  */
@@ -94,7 +94,10 @@ public class UinServiceRouter {
 		if (!profile.equalsIgnoreCase("test")) {
 			authHandler.addAuthFilter(router, path, HttpMethod.GET, "REGISTRATION_PROCESSOR");
 		}
-		router.get(path).handler(routingContext -> getRouter(vertx, routingContext));
+		boolean isSignEnable = environment.getProperty(UinGeneratorConstant.SIGNING_ENABLE, boolean.class, false);
+		router.get(path).handler(routingContext -> {
+			getRouter(vertx, routingContext, isSignEnable);
+		});
 
 		router.route().handler(BodyHandler.create());
 		if (!profile.equalsIgnoreCase("test")) {
@@ -120,48 +123,73 @@ public class UinServiceRouter {
 				future -> healthCheckHandler.verticleHealthHandler(future, vertx));
 	}
 
-	private void getRouter(Vertx vertx, RoutingContext routingContext) {
+	private void getRouter(Vertx vertx, RoutingContext routingContext, boolean isSignEnable) {
+		ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
+		String timestamp = DateUtils.getUTCCurrentDateTimeString();
+		vertx.executeBlocking(blockingCodeHandler -> {
 
-		String resWrpJsonString = null;
-		String signedData = null;
-
-		try {
-			UinResponseDto uin = new UinResponseDto();
-			uin = uinGeneratorService.getUin();
-			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
-			String timestamp = DateUtils.getUTCCurrentDateTimeString();
-			reswrp.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
-			reswrp.setResponse(uin);
-			reswrp.setErrors(null);
-			String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
-			if (!profile.equalsIgnoreCase("test")) {
-				resWrpJsonString = objectMapper.writeValueAsString(reswrp);
-
-				SignatureResponse cryptoManagerResponseDto = signatureUtil.sign(resWrpJsonString, timestamp);
-				signedData = cryptoManagerResponseDto.getData();
+			try {
+				UinResponseDto uin = new UinResponseDto();
+				uin = uinGeneratorService.getUin();
+				reswrp.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
+				reswrp.setResponse(uin);
+				reswrp.setErrors(null);
+				blockingCodeHandler.complete();
+			} catch (UinNotFoundException e) {
+				ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
+						UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+				setError(routingContext, error);
+				blockingCodeHandler.fail(e.getMessage());
+			} catch (SignatureUtilClientException e1) {
+				ExceptionUtils.logRootCause(e1);
+				setError(routingContext, e1.getList().get(0));
+				blockingCodeHandler.fail(e1.getMessage());
+			} catch (SignatureUtilException e1) {
+				ExceptionUtils.logRootCause(e1);
+				ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+						e1.toString());
+				setError(routingContext, error);
+				blockingCodeHandler.fail(e1.getMessage());
+			} catch (Exception e) {
+				ExceptionUtils.logRootCause(e);
+				ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+						e.getMessage());
+				setError(routingContext, error);
+				blockingCodeHandler.fail(e.getMessage());
+			} finally {
+				checkAndGenerateUins(vertx);
+				blockingCodeHandler.fail("finally");
 			}
-			routingContext.response().putHeader("response-signature", signedData)
-					.end(objectMapper.writeValueAsString(reswrp));
-		} catch (UinNotFoundException e) {
-			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
-					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
-			setError(routingContext, error);
-		} catch (SignatureUtilClientException e1) {
-			ExceptionUtils.logRootCause(e1);
-			setError(routingContext, e1.getList().get(0));
-		} catch (SignatureUtilException e1) {
-			ExceptionUtils.logRootCause(e1);
-			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
-					e1.toString());
-			setError(routingContext, error);
-		} catch (Exception e) {
-			ExceptionUtils.logRootCause(e);
-			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
-					e.getMessage());
-			setError(routingContext, error);
-		} finally {
-			checkAndGenerateUins(vertx);
-		}
+			
+		}, resultHandler -> {
+			if(resultHandler.succeeded()) {
+			if (isSignEnable) {
+				String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
+				String signedData =null;
+				if (!profile.equalsIgnoreCase("test")) {
+					String resWrpJsonString = null;
+					try {
+						resWrpJsonString = objectMapper.writeValueAsString(reswrp);
+					} catch (JsonProcessingException e) {
+						
+					}
+
+					SignatureResponse cryptoManagerResponseDto = signatureUtil.sign(resWrpJsonString, timestamp);
+					signedData = cryptoManagerResponseDto.getData();
+				}
+				routingContext.response().putHeader("response-signature", signedData);
+			}
+			try {
+				routingContext.response().end(objectMapper.writeValueAsString(reswrp));
+			} catch (JsonProcessingException e) {
+				
+			}
+			}
+			else {
+				
+			}
+		});
+
 	}
 
 	/**

@@ -26,8 +26,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
@@ -48,6 +46,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
+
+	private static final String REACTIVATE = "reactivate";
+
+	private static final String DEACTIVATE = "deactivate";
 
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
 	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
@@ -178,9 +180,20 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				.getRootCause(ex).getClass().isAssignableFrom(DateTimeParseException.class)) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-
-			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), null),
-					HttpStatus.OK);
+			if (request instanceof ServletWebRequest
+					&& ((ServletWebRequest) request).getRequest().getRequestURI().endsWith(DEACTIVATE)) {
+				return new ResponseEntity<>(
+						buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), DEACTIVATE),
+						HttpStatus.OK);
+			} else if (request instanceof ServletWebRequest
+					&& ((ServletWebRequest) request).getRequest().getRequestURI().endsWith(REACTIVATE)) {
+				return new ResponseEntity<>(
+						buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), REACTIVATE),
+						HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(
+						buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), null), HttpStatus.OK);
+			}
 		} else if (ex instanceof HttpMessageNotReadableException || ex instanceof ServletException
 				|| ex instanceof BeansException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),

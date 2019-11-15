@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 
 /**
  * Service to register and de register Device.
@@ -28,4 +29,13 @@ public interface DeviceRegisterService {
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
 	public DeviceRegisterResponseDto deRegisterDevice(DeRegisterDeviceRequestDto request);
+	
+	/**
+	 * Update status.
+	 *
+	 * @param deviceCode the device code
+	 * @param statusCode the status code
+	 * @return the response dto
+	 */
+	public ResponseDto updateStatus(String deviceCode,String statusCode);
 }

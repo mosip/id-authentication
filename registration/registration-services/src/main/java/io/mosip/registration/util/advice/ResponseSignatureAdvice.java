@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
@@ -51,8 +51,8 @@ public class ResponseSignatureAdvice {
 	private static final Logger LOGGER = AppConfig.getLogger(ResponseSignatureAdvice.class);
 
 	/** The decryptor. */
-	@Autowired
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+	@Autowired       
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	/** The key generator. */
 	@Autowired

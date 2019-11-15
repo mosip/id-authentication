@@ -105,6 +105,7 @@ public class TemplateUtil {
 				throw new AuthManagerException(OTPErrorCode.LANGUAGENOTCONFIGURED.getErrorCode(),
 						OTPErrorCode.LANGUAGENOTCONFIGURED.getErrorMessage());
 			}
+			System.out.println("Primary Language "+ primaryLanguage +" Secondary Lang "+secondaryLanguage);
 			String emailSubject = getEmailData(otpUser, "email-subject-template", token, primaryLanguage,
 					secondaryLanguage);
 			String mergedEmailSubject = getMergedEmailContent(otp, emailSubject, otpUser.getTemplateVariables());
@@ -209,18 +210,21 @@ public class TemplateUtil {
 		} else {
 			url = mosipEnvironment.getMasterDataTemplateApi() + "/" + language + "/" + otpUser.getContext();
 		}
-
+		System.out.println("Url added "+ url);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
 		try {
+			System.out.println("Language "+ language);
 			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers), String.class);
 			if (response.getStatusCode().equals(HttpStatus.OK)) {
 				String responseBody = response.getBody();
 				List<ServiceError> validationErrorsList = null;
 				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+				System.out.println("Template response body "+ responseBody);
 				Optional<ServiceError> service = validationErrorsList.stream()
 						.filter(a -> a.getErrorCode().equals("KER-MSD-046")).findFirst();
 				if (service.isPresent()) {
+					System.out.println("Service error "+service);
 					throw new AuthManagerException(AuthErrorCode.TEMPLATE_ERROR.getErrorCode(),
 							AuthErrorCode.TEMPLATE_ERROR.getErrorMessage() + language + "with context "
 									+ otpUser.getContext() + "-" + templateType);

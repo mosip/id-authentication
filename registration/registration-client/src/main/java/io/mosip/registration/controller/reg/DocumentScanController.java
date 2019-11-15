@@ -78,7 +78,7 @@ import javafx.util.StringConverter;
 public class DocumentScanController extends BaseController {
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanController.class);
-
+	
 	@FXML
 	private Label bioExceptionToggleLabel1;
 
@@ -511,7 +511,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
-		if (byteArray.length > Integer.parseInt(documentSize)) {
+		if (byteArray.length > Double.parseDouble(documentSize) * 1024 * 1024) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE.replace("1", documentSize));
 		} else {
 			if (selectedDocument != null) {
@@ -978,6 +978,7 @@ public class DocumentScanController extends BaseController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					clearAllValues();
+					fingerPrintCaptureController.duplicateCheckLbl.setText("");
 					if (newValue) {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;

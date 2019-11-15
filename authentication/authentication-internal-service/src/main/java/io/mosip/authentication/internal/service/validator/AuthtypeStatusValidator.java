@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.indauth.dto.IdType;
 /**
  * 
  * @author Dinesh Karuppiah.T
