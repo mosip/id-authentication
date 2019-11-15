@@ -69,6 +69,8 @@ public enum ApiName {
 
 	/** The Cryptomaanger *. */
 	CRYPTOMANAGERDECRYPT,
+	
+	ENCRYPTURL,
 
 	/** The ReverseDataSync *. */
 	REVERSEDATASYNC,
