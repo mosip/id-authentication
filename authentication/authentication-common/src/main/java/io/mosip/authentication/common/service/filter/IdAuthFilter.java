@@ -130,12 +130,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-
-			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				requestBody.replace(IdAuthCommonConstants.REQUEST,
-						decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+			if (null == requestBody.get(REQUEST)) {
+				throwMissingInputParameter(REQUEST);
+			} else {
+				requestBody.replace(REQUEST,
+						decode((String) requestBody.get(REQUEST)));
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
-				if (null != requestBody.get(REQUEST_HMAC)) {
+				if (null == requestBody.get(REQUEST_HMAC)) {
+					throwMissingInputParameter(REQUEST_HMAC);
+				} else {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
 					String reqHMAC = keyManager
@@ -147,8 +150,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
 
 				}
-				
-				if(getStringValue(requestBody, BIOMETRICS).isPresent()) {
+				//If biometrics is present validate and decipher it.
+				if(request.get(BIOMETRICS) != null) {
 					validateBioDataInRequest(request);
 					decipherBioData(request);
 				}
@@ -431,12 +434,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Gets the string value.
 	 *
-	 * @param biometricData the biometric data
+	 * @param map the biometric data
 	 * @param fieldName the field name
 	 * @return the string value
 	 */
-	private Optional<String> getStringValue(Map<String, Object> biometricData, String fieldName) {
-		return Optional.ofNullable(biometricData.get(fieldName))
+	private Optional<String> getStringValue(Map<String, Object> map, String fieldName) {
+		return Optional.ofNullable(map.get(fieldName))
 				.filter(obj -> obj instanceof String)
 				.map(obj -> (String) obj);
 	}
