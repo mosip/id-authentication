@@ -53,6 +53,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	private static final String DIGITAL_ID = "digitalId";
+
 	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
 	private static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
 
@@ -182,8 +184,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] decodedData = Objects.nonNull(map.get(DATA)) ? CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA))) : new byte[0];
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 			Object bioValue = data.get(BIO_VALUE);
-			DigitalId digitalId = mapper.readValue(CryptoUtil.decodeBase64((String) data.get("digitalId")), DigitalId.class);
-			data.replace("digitalId", digitalId);
+			DigitalId digitalId = Objects.nonNull(map.get(DIGITAL_ID)) ? mapper.readValue(CryptoUtil.decodeBase64((String) data.get(DIGITAL_ID)), DigitalId.class) : null;
+			data.replace(DIGITAL_ID, digitalId);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
 			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
