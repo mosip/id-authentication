@@ -1351,7 +1351,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_DOES_NOT_EXIST, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1378,7 +1378,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_REVOKED_OR_RETIRED, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1405,7 +1405,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_PROVIDER_NOT_EXIST, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1432,7 +1432,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_PROVIDER_INACTIVE, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1459,7 +1459,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.MDS_DOES_NOT_EXIST, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1486,7 +1486,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.MDS_INACTIVE_STATE, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1513,7 +1513,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.SOFTWARE_VERSION_IS_NOT_A_MATCH, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1540,7 +1540,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
@@ -1567,7 +1567,7 @@ public class BioAuthServiceTest {
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.KER_DECRYPTION_FAILURE, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, Optional.of(response)));
+				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
