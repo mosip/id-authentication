@@ -118,7 +118,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 	private boolean verifyBiometricDevice(List<BioIdentityInfoDTO> bioRequest)
 			throws IdAuthenticationBusinessException {
 		try {
-			IntStream.range(0, bioRequest.size() - 1).forEach(index -> {
+			IntStream.range(0, bioRequest.size()).forEach(index -> {
 				try {
 					DataDTO data = bioRequest.get(index).getData();
 					ValidateDeviceDTO request = new ValidateDeviceDTO();
