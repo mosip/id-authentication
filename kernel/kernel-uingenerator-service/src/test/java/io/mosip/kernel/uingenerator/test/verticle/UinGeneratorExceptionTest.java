@@ -1,4 +1,4 @@
-package io.mosip.kernel.uingenerator.test.verticle;
+/**package io.mosip.kernel.uingenerator.test.verticle;
 
 import static org.junit.Assert.assertTrue;
 
@@ -132,3 +132,4 @@ public class UinGeneratorExceptionTest {
 		});
 	}
 }
+*/
