@@ -42,7 +42,7 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 			FoundationalTrustProviderDto foundationalTrustProviderDto) {
 		FoundationalTrustProvider foundationalTrustProvider = null;
 		FoundationalTrustProvider foundationalTrustProviderEntity = null;
-		FoundationalTrustProviderResDto foundationalTrustProviderResDto = new FoundationalTrustProviderResDto();
+		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
 		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
 		foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias(),foundationalTrustProviderDto.isActive());
 		if(foundationalTrustProvider!=null)
@@ -77,7 +77,7 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 			FoundationalTrustProviderPutDto foundationalTrustProviderPutDto) {
 		ResponseWrapper<FoundationalTrustProviderResDto> response = new ResponseWrapper<>();
 		FoundationalTrustProvider updateFoundationalTrustProvider = new FoundationalTrustProvider();
-		FoundationalTrustProviderResDto foundationalTrustProviderResDto = new FoundationalTrustProviderResDto();
+		FoundationalTrustProviderResDto foundationalTrustProviderResDto = null;
 		updateFoundationalTrustProvider = foundationalTrustProviderRepository.findById(FoundationalTrustProvider.class, foundationalTrustProviderPutDto.getId());
 		if(updateFoundationalTrustProvider==null)
 		{

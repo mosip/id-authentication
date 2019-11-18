@@ -19,14 +19,6 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 @Configuration
 public class IdAuthConfig extends HibernateDaoConfig {
 	
-	/**
-	 * Ida transaction interceptor.
-	 */
-	@PostConstruct
-	public void idaTransactionInterceptor() {
-		System.err.println("IDA*******Tranaction config");
-	}
-	
 	/** The interceptor. */
 	@Autowired
 	private Interceptor interceptor;

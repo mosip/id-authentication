@@ -69,6 +69,8 @@ public enum ApiName {
 
 	/** The Cryptomaanger *. */
 	CRYPTOMANAGERDECRYPT,
+	
+	ENCRYPTURL,
 
 	/** The ReverseDataSync *. */
 	REVERSEDATASYNC,
@@ -203,6 +205,8 @@ public enum ApiName {
 	/** The templates. */
 	TEMPLATES,
 
-	GETUINBYVID;
+	GETUINBYVID,
+
+	DEVICEVALIDATEHISTORY;
 
 }

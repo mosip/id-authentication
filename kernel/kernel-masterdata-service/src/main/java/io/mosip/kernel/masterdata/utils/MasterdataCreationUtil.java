@@ -170,14 +170,12 @@ public class MasterdataCreationUtil {
 				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
 						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
 			}
-			if (primaryEntity != null) {
-				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
+			for (Field field : primaryEntity.getClass().getDeclaredFields()) {
 					field.setAccessible(true);
 							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
 								activePrimary = (boolean) field.get(t);
 					}
 							
-				}
 				if(activeDto==true)
 				{
 					Field isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
@@ -414,7 +412,7 @@ public class MasterdataCreationUtil {
 	private <E> Predicate setId(CriteriaBuilder builder, Root<E> root, String id,String idColumn) {
 		if (id != null && !id.isEmpty()) {
 			Path<Object> idPath = root.get(idColumn);
-			if (id != null) {
+			if (idPath != null) {
 				return builder.equal(idPath, id);
 			}
 		}
