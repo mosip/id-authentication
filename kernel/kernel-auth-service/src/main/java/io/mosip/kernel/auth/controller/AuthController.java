@@ -280,11 +280,32 @@ public class AuthController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/authorize/admin/validateToken")
-	public ResponseWrapper<MosipUserDto> validateToken(
-			@CookieValue(value = "Authorization", required = false) String token,HttpServletResponse res){
-		MosipUserDto mosipUserDto = authService.valdiateToken(token);
+	public ResponseWrapper<MosipUserDto> validateAdminToken(
+			HttpServletRequest request,HttpServletResponse res){
+		String authToken = null;
+		Cookie[] cookies = request.getCookies();
+		if (cookies == null) {
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
+		MosipUserDto mosipUserDto =null;
+		try {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
+					authToken = cookie.getValue();
+				}
+			}
+			if (authToken == null) {
+				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
+						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
+			}
+		
+		mosipUserDto = authService.valdiateToken(authToken);
 		Cookie cookie = createCookie(mosipUserDto.getToken(), mosipEnvironment.getTokenExpiry());
 		res.addCookie(cookie);
+		}catch (NonceExpiredException exp) {
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
+		}
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
 		return responseWrapper;

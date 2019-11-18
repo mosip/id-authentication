@@ -4,25 +4,19 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javax.net.ssl.SSLContext;
-
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -46,6 +40,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.mosip.kernel.auth.adapter.config.LoggerConfiguration;
+import io.mosip.kernel.auth.adapter.config.RestTemplateInterceptor;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
 import io.mosip.kernel.auth.adapter.exception.AuthManagerException;
@@ -87,7 +82,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/v1/authmanager/authorize/admin/validateToken}")
+	@Value("${auth.server.admin.validate.url:http://localhost:8091/v1/authmanager/authorize/admin/validateToken}")
 	private String adminValidateUrl;
 	
 	@Value("${auth.jwt.base:Mosip-Token}")
@@ -186,7 +181,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	
 	private ResponseEntity<String> getKeycloakValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
+		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
 			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
@@ -195,17 +190,20 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		}
 	}
 
-	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		return new RestTemplate(requestFactory);
+    public RestTemplate getRestTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+//        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+//        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
+//                     .build();
+//        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+//        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+//        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+//        requestFactory.setHttpClient(httpClient);            
+//        RestTemplate restTemplate = new RestTemplate(requestFactory);
+          RestTemplate restTemplate = new RestTemplate();
+          restTemplate.setInterceptors(Collections.singletonList(new RestTemplateInterceptor()));
+          return restTemplate;
+    }
 
-	}
 
 	public void addCorsFilter(HttpServer httpServer, Vertx vertx) {
 		Router router = Router.router(vertx);
