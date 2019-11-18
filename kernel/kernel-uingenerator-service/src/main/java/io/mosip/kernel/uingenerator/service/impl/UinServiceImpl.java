@@ -3,14 +3,11 @@
  */
 package io.mosip.kernel.uingenerator.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.uingenerator.config.UinServiceRouter;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -54,6 +51,7 @@ public class UinServiceImpl implements UinService {
 	 * 
 	 * @see io.mosip.kernel.core.uingenerator.service.UinGeneratorService#getId()
 	 */
+	@Transactional
 	@Override
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();

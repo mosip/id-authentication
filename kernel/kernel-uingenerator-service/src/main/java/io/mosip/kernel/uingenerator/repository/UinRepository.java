@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,7 @@ public interface UinRepository extends JpaRepository<UinEntity, String> {
 	 */
 	public UinEntity findByUin(String uin);
 
+	@Modifying
 	@Query(value="UPDATE kernel.uin SET uin_status=:status, upd_by=:contextUser, upd_dtimes=:uptimes where uin=:uin",nativeQuery = true)
 	public void updateStatus(@Param("status") String status, @Param("contextUser") String contextUser, @Param("uptimes") LocalDateTime uptimes,@Param("uin")  String uin);
 }
