@@ -21,7 +21,6 @@ import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
-import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.UserRoleDto;
 import io.mosip.kernel.auth.dto.ValidationResponseDto;
 
@@ -51,7 +50,7 @@ public interface AuthService extends AuthZService, AuthNService {
 
 	public UserNameDto getUserNameBasedOnMobileNumber(String appId, String mobileNumber) throws Exception;
 
-	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto);
+	MosipUserDto registerUser(UserRegistrationRequestDto userCreationRequestDto);
 
 	UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto);
 
