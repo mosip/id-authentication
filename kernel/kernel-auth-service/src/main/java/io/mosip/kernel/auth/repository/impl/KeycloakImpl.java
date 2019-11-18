@@ -65,7 +65,6 @@ import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils;
 
 @Service
 public class KeycloakImpl implements DataStore {

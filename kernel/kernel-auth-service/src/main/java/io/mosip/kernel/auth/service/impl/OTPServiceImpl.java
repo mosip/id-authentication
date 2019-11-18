@@ -394,7 +394,7 @@ public class OTPServiceImpl implements OTPService {
              try {
                     //token = tokenService.getInternalTokenGenerationService();
                     accessTokenResponse=getAuthAccessToken("ida","9d7ea3ba-b6b7-4c9c-9847-4a9923d9667b");
-                    token=AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+accessTokenResponse.getAccess_token();
+                    token=accessTokenResponse.getAccess_token();
              } catch (Exception e) {
                     throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
              }
@@ -463,7 +463,7 @@ public class OTPServiceImpl implements OTPService {
                     switch (channel.toLowerCase()) {
                     case AuthConstant.EMAIL:
                           emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser, accessTokenResponse.getAccess_token());
-                          otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(), accessTokenResponse.getAccess_token());
+                          otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getUserId(), accessTokenResponse.getAccess_token());
                           break;
                     case AuthConstant.PHONE:
                           mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser, accessTokenResponse.getAccess_token());

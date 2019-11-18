@@ -181,7 +181,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	
 	private ResponseEntity<String> getKeycloakValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, token);
+		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER+token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
 			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
