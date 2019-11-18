@@ -587,8 +587,7 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public List<String> getChildList(String locCode) {
 		childList = new ArrayList<>();
-		List<String> resultList = new ArrayList<>();
-		resultList = getChildByLocCode(locCode);
+		List<String> resultList = getChildByLocCode(locCode);
 		if (!resultList.isEmpty())
 			return resultList;
 		return Arrays.asList(locCode);
