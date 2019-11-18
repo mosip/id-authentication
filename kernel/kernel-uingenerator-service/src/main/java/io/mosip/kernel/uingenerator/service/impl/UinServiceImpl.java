@@ -5,7 +5,9 @@ package io.mosip.kernel.uingenerator.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -17,6 +19,8 @@ import io.mosip.kernel.uingenerator.exception.UinStatusNotFoundException;
 import io.mosip.kernel.uingenerator.repository.UinRepository;
 import io.mosip.kernel.uingenerator.service.UinService;
 import io.mosip.kernel.uingenerator.util.MetaDataUtil;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 /**
  * @author Dharmesh Khandelwal
@@ -27,6 +31,8 @@ import io.mosip.kernel.uingenerator.util.MetaDataUtil;
  */
 @Component
 public class UinServiceImpl implements UinService {
+	
+	private Logger LOGGER = LoggerFactory.getLogger(UinServiceImpl.class);
 
 	/**
 	 * Field for {@link #uinRepository}
@@ -45,14 +51,20 @@ public class UinServiceImpl implements UinService {
 	 * 
 	 * @see io.mosip.kernel.core.uingenerator.service.UinGeneratorService#getId()
 	 */
+	@Transactional
 	@Override
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();
+		long getStart= System.currentTimeMillis();
 		UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
+		LOGGER.info("getStart {}",(System.currentTimeMillis()-getStart));
 		if (uinBean != null) {
-			uinBean.setStatus(UinGeneratorConstant.ISSUED);
-			metaDataUtil.setUpdateMetaData(uinBean);
-			uinRepository.save(uinBean);
+			//uinBean.setStatus(UinGeneratorConstant.ISSUED);
+			//metaDataUtil.setUpdateMetaData(uinBean);
+			long saveStart=System.currentTimeMillis();
+			//uinRepository.save(uinBean);
+			uinRepository.updateStatus(UinGeneratorConstant.ISSUED,UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO,DateUtils.getUTCCurrentDateTime(),uinBean.getUin());
+			LOGGER.info("saveStart {}",(System.currentTimeMillis()-saveStart));
 			uinResponseDto.setUin(uinBean.getUin());
 		} else {
 			throw new UinNotFoundException(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
