@@ -95,6 +95,9 @@ public class NotificationServiceTest {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
+	
+	@Value("#{'${mosip.notificationtype}'.split('\\|')}")
+	private List<String> notificationTypeList;
 
 	@MockBean
 	private NotificationUtil NotificationUtil;
