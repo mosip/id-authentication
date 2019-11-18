@@ -90,7 +90,7 @@ public class UinServiceRouter {
 	public Router createRouter(Vertx vertx) {
 		Router router = Router.router(vertx);
 		
-		final int workerExecutorPool = environment.getProperty(UinGeneratorConstant.GET_EXECUTOR_POOL_ENABLE,Integer.class);
+		final int workerExecutorPool = environment.getProperty(UinGeneratorConstant.GET_EXECUTOR_POOL_ENABLE,Integer.class,400);
 		LOGGER.info("worker executor pool {}",workerExecutorPool);
 		final String servletPath = environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH);
 		String path = servletPath + UinGeneratorConstant.VUIN;
