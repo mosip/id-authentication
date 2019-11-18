@@ -103,7 +103,7 @@ public class UinGeneratorExceptionTest {
 			context.close();
 	}
 
-	@Test
+	//@Test
 	public void getUinExceptionTest(TestContext context) {
 		LOGGER.info("getUinExceptionTest execution...");
 		Async async = context.async();
