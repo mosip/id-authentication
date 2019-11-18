@@ -19,10 +19,12 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -30,7 +32,6 @@ import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -152,11 +153,11 @@ public class DeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When Device is not found"),
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> updateDevice(
-			@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
+	public ResponseWrapper<DeviceExtnDto> updateDevice(
+			@Valid @RequestBody RequestWrapper<DevicePutReqDto> devicePutReqDto) {
 
-		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.updateDevice(deviceRequestDto.getRequest()));
+		ResponseWrapper<DeviceExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.updateDevice1(devicePutReqDto.getRequest()));
 		return responseWrapper;
 	}
 

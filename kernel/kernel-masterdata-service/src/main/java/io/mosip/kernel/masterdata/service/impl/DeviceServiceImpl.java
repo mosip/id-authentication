@@ -23,13 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -45,8 +48,10 @@ import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -130,6 +135,10 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Value("${mosip.primary-language}")
 	private String primaryLangCode;
+	
+
+	@Value("${mosip.secondary-language:ara}")
+	private String secondaryLang;
 	
 
 	/*
@@ -806,6 +815,105 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		return idResponseDto;
 	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenter1(java.util.List)
+	 */
+	@Transactional
+	@Override
+	public DeviceExtnDto updateDevice1(DevicePutReqDto devicePutReqDto) {
+
+		Device updDevice = null;
+		Device updDeviecEntity = null;
+		String deviecZone = devicePutReqDto.getZoneCode();
+		DeviceHistory deviceHistory = new DeviceHistory();
+		DeviceExtnDto deviceExtnDto = new DeviceExtnDto();
+
+		// call method to check the machineZone will come under Accessed user zone or
+		// not
+		validateZone(deviecZone);
+		try {
+
+			// find requested device is there or not in Device Table
+			Device renDevice = deviceRepository
+					.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
+							devicePutReqDto.getId(), devicePutReqDto.getLangCode());
+			
+			devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
+			
+			if(renDevice==null&&primaryLangCode.equals(devicePutReqDto.getLangCode()))
+			{
+				throw new MasterDataServiceException(DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
+						DeviceErrorCode.DECOMMISSIONED.getErrorMessage());
+			}
+			else if(renDevice==null&&secondaryLang.equals(devicePutReqDto.getLangCode()))
+			{
+				Device crtDeviceEntity = new Device();
+				crtDeviceEntity = MetaDataUtils.setCreateMetaData(devicePutReqDto,
+						crtDeviceEntity.getClass());
+				crtDeviceEntity = deviceRepository.create(crtDeviceEntity);
+				deviceHistory = MetaDataUtils.setCreateMetaData(crtDeviceEntity,
+						RegistrationCenterHistory.class);
+				deviceHistory.setEffectDateTime(crtDeviceEntity.getCreatedDateTime());
+				deviceHistory.setCreatedDateTime(crtDeviceEntity.getCreatedDateTime());
+				deviceHistoryService.createDeviceHistory(deviceHistory);
+				deviceExtnDto = MapperUtils.map(crtDeviceEntity, deviceExtnDto);
+			}
+
+			if (renDevice != null) {
+		
+				// updating registration center
+				updDeviecEntity = MetaDataUtils.setUpdateMetaData(devicePutReqDto, renDevice, false);
+				updDeviecEntity.setIsActive(devicePutReqDto.getIsActive());
+
+				// updating Device
+				updDevice = deviceRepository.update(updDeviecEntity);
+
+				// updating Device history	
+				MapperUtils.map(updDevice, deviceHistory);
+				MapperUtils.setBaseFieldValue(updDevice, deviceHistory);
+				deviceHistory.setEffectDateTime(updDevice.getUpdatedDateTime());
+				deviceHistory.setUpdatedDateTime(updDevice.getUpdatedDateTime());
+				deviceHistoryService.createDeviceHistory(deviceHistory);
+				deviceExtnDto= MapperUtils.map(updDevice, DeviceExtnDto.class);
+
+			} else {
+				// if given Id and language code is not present in DB
+				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
+				| NoSuchFieldException | SecurityException exception) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		
+		
+		return deviceExtnDto;
+
+	}
+	
+	// method to check the deviceZone will come under Accessed user zone or not
+		private void validateZone(String deviceZone) {
+			List<String> zoneIds;
+			// get user zone and child zones list
+			List<Zone> userZones = zoneUtils.getUserZones();
+			zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
+			if (!(zoneIds.contains(deviceZone))) {
+				// check the given device zones will come under accessed user zones
+				throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
+						DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
+			}
+		}
+
+	
+
 	
 	
 }
