@@ -126,8 +126,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		} else if (authType.isBio()) {
 			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
-			validateDeviceDetails(authRequest.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-					.collect(Collectors.toList()), errors);
 		}
 	}
 
@@ -144,7 +142,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors
 	 *            the errors
 	 */
-	private void validateDeviceDetails(List<DataDTO> bioData, Errors errors) {
+	public void validateDeviceDetails(AuthRequestDTO authRequest, Errors errors) {
+		List<DataDTO> bioData = authRequest.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+		.collect(Collectors.toList());
 		IntStream.range(0, bioData.size()).forEach(index -> {
 			if (StringUtils.isEmpty(bioData.get(index).getDeviceCode())) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
