@@ -304,7 +304,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					digitalIdDto.getDp()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getSerialNo().equals(digitalIdDto.getDp())) {
+		if (!registeredDevice.getSerialNo().equals(digitalIdDto.getSerialNo())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
