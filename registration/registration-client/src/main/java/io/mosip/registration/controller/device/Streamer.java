@@ -18,6 +18,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
@@ -77,6 +78,9 @@ public class Streamer {
 
 				LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread started for : " + requestDetail.getType());
 
+				//Disable Auto-Logout
+				SessionContext.setAutoLogout(false);
+				
 				scanPopUpViewController.disableCloseButton();
 				isRunning = true;
 				try {
@@ -119,6 +123,9 @@ public class Streamer {
 							setPopViewControllerMessage(true,
 									RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
 
+							//Enable Auto-Logout
+							SessionContext.setAutoLogout(true);
+							
 							return;
 						}
 						setPopViewControllerMessage(true, RegistrationUIConstants.STREAMING_INIT_MESSAGE, true);
@@ -131,6 +138,9 @@ public class Streamer {
 
 						setPopViewControllerMessage(true,
 								RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
+						
+						//Enable Auto-Logout
+						SessionContext.setAutoLogout(true);
 					}
 
 				}
@@ -153,7 +163,11 @@ public class Streamer {
 								RegistrationConstants.APPLICATION_ID, exception.getMessage()
 										+ ExceptionUtils.getStackTrace(exception));
 
+						//Enable Auto-Logout
+						SessionContext.setAutoLogout(true);
+						
 						if(exception.getMessage().contains("Stream closed")){
+							
 							setPopViewControllerMessage(true, RegistrationUIConstants.STREAMING_CLOSED_MESSAGE, false);
 						}
 						    
@@ -237,6 +251,9 @@ public class Streamer {
 	 */
 	public synchronized void stop() {
 
+		//Enable Auto-Logout
+		SessionContext.setAutoLogout(true);
+		
 		if (streamer_thread != null) {
 			try {
 				isRunning = false;

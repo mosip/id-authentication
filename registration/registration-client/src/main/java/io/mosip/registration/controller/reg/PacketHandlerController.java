@@ -467,7 +467,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 						} else {
 							getScene(createRoot).setRoot(createRoot);
 							
-							SessionContext.setAutoLogout(false);
+							//SessionContext.setAutoLogout(false);
 						}
 					}
 
@@ -546,7 +546,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 								getScene(createRoot).setRoot(createRoot);
 								demographicDetailController.lostUIN();
 								
-								SessionContext.setAutoLogout(false);
+								//SessionContext.setAutoLogout(false);
 							}
 						}
 					} catch (IOException ioException) {
@@ -753,7 +753,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 							} else {
 								getScene(root);
 								
-								SessionContext.setAutoLogout(false);
+								//SessionContext.setAutoLogout(false);
 							}
 						}
 					}
