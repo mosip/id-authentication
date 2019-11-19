@@ -146,11 +146,12 @@ public class UinGeneratorVertxApplication {
 	private static void startApplication() {
 		ApplicationContext context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		VertxOptions options = new VertxOptions();
-		DeploymentOptions deploymentOptions = new DeploymentOptions().setWorkerPoolSize(50);
+		DeploymentOptions deploymentOptions = new DeploymentOptions();
 		Vertx vertx = Vertx.vertx(options);
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new HttpServerVerticle(context) };
 		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle,deploymentOptions,stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
+				
 				LOGGER.info("Successfully deployed: " + verticle.getClass().getSimpleName());
 			} else {
 				LOGGER.info("Failed to deploy:" + verticle.getClass().getSimpleName() + "\nCause: "
