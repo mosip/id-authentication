@@ -594,6 +594,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
 		abisResponseEntity.setUpdDtimes(abisResponseDto.getUpdDtimes());
 		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
+		abisResponseEntity.setRespDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 
 		return abisResponseEntity;
 
