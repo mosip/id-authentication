@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -19,6 +20,7 @@ import lombok.EqualsAndHashCode;
  */
 
 
+@Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "mosip_device_service", schema = "reg")
@@ -30,7 +32,7 @@ public class MosipDeviceService extends RegistrationCommonFields {
 	private String id;
 	
 	@Column(name="sw_binary_hash", nullable=false)
-	private Blob swBinaryHash;
+	private byte[] swBinaryHash;
 	
 	@Column(name="sw_version",length=64, nullable=false)
 	private String swVersion;

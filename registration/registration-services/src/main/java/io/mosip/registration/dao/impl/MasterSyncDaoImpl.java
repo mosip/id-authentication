@@ -666,8 +666,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<RegisteredSubDeviceType> registeredSubDeviceTypeList = MetaDataUtils.setCreateMetaData(registeredSubDeviceTypes, RegisteredSubDeviceType.class);
 			registeredSubDeviceTypeRepository.saveAll(registeredSubDeviceTypeList);
 			
-			List<MosipDeviceService> mosipDeviceServiceList = MetaDataUtils.setCreateMetaData(mosipDeviceServices, MosipDeviceService.class);
-		//	mosipDeviceServiceRepository.saveAll(mosipDeviceServiceList);
+//			List<MosipDeviceService> mosipDeviceServiceList = MetaDataUtils.setCreateMetaData(mosipDeviceServices, MosipDeviceService.class);
+//			mosipDeviceServiceRepository.saveAll(mosipDeviceServiceList);
+			
+			mosipDeviceServiceSnc(mosipDeviceServices);
 			
 			List<FoundationalTrustProvider> foundationalTrustProviderList = MetaDataUtils.setCreateMetaData(foundationalTrustProviders, FoundationalTrustProvider.class);
 			foundationalTrustProviderRepository.saveAll(foundationalTrustProviderList);
@@ -871,6 +873,48 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		}
 	}
 
+	
+	/**
+	 * Device service Sync.
+	 *
+	 * @param mosipDeviceServiceDto 
+	 * 				the device service DTO
+	 */
+	private void mosipDeviceServiceSnc(List<MosipDeviceServiceDto> mosipDeviceServiceDto) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Template Type details syncing....");
+		if (null != mosipDeviceServiceDto && !mosipDeviceServiceDto.isEmpty()) {
+			List<MosipDeviceService> mosipDeviceServiceList = new ArrayList<>();
+			mosipDeviceServiceDto.forEach(serviceDto -> {
+				MosipDeviceService mosipDeviceService = new MosipDeviceService();
+				mosipDeviceService.setId(serviceDto.getId());
+				mosipDeviceService.setSwBinaryHash(serviceDto.getSwBinaryHash());
+				mosipDeviceService.setSwVersion(serviceDto.getSwVersion());
+				mosipDeviceService.setDProviderId(serviceDto.getdProviderId());
+				mosipDeviceService.setDtypeCode(serviceDto.getdTypeCode());
+				mosipDeviceService.setDsTypeCode(serviceDto.getDsTypeCode());
+				mosipDeviceService.setMake(serviceDto.getMake());
+				mosipDeviceService.setModel(serviceDto.getModel());
+				mosipDeviceService.setSwCrDtimes(serviceDto.getSwCrDtimes());
+				mosipDeviceService.setSwExpiryDtimes(serviceDto.getSwExpiryDtimes());
+				mosipDeviceService.setIsActive(serviceDto.getIsActive());
+				mosipDeviceService.setCrDtime(serviceDto.getCrDtime());
+				mosipDeviceService.setCrBy(serviceDto.getCrBy());
+				if (SessionContext.isSessionContextAvailable()) {
+					mosipDeviceService.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					mosipDeviceService.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				mosipDeviceService.setUpdBy(serviceDto.getUpdBy());
+				mosipDeviceService.setUpdDtimes(serviceDto.getUpdDtimes());
+				mosipDeviceServiceList.add(mosipDeviceService);
+			});
+
+			mosipDeviceServiceRepository.saveAll(mosipDeviceServiceList);
+		}
+	}
+
+	
 	/**
 	 * Template type details sync.
 	 *

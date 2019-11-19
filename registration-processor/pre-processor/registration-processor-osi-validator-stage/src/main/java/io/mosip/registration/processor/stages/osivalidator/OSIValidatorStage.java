@@ -75,6 +75,9 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
+	
+	@Value("${mosip.registartion.processor.validateUMC}")
+	private boolean validateUMC;
 
 	private MosipEventBus mosipEventBus = null;
 
@@ -123,7 +126,10 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 		// osiValidator.registrationStatusDto = registrationStatusDto;
 		// umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = umcValidator.isValidUMC(registrationId, registrationStatusDto);
+			if(validateUMC)
+			    isValidUMC = umcValidator.isValidUMC(registrationId, registrationStatusDto);
+			else
+				isValidUMC = true;
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId, registrationStatusDto);
 				if (isValidOSI) {

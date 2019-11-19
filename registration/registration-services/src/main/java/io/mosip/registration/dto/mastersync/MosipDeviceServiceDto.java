@@ -10,7 +10,7 @@ public class MosipDeviceServiceDto extends MasterSyncBaseDto {
 	private String id;
 	private String swBinaryHash;
 	private String swVersion;
-	private String dProviderId;
+	private String dproviderId;
 	private String dtypeCode;
 	private String dsTypeCode;
 	private String make;
@@ -41,10 +41,10 @@ public class MosipDeviceServiceDto extends MasterSyncBaseDto {
 		this.swVersion = swVersion;
 	}
 	public String getdProviderId() {
-		return dProviderId;
+		return dproviderId;
 	}
-	public void setdProviderId(String dProviderId) {
-		this.dProviderId = dProviderId;
+	public void setdProviderId(String dproviderId) {
+		this.dproviderId = dproviderId;
 	}
 	public String getdTypeCode() {
 		return dtypeCode;
