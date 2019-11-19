@@ -294,7 +294,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
+		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456", true)).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
