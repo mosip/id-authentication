@@ -2346,8 +2346,9 @@ public class BaseAuthRequestValidatorTest {
 		bioInfo.setData(dataDTO);
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
-		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
+		AuthRequestDTO authRequest = new AuthRequestDTO();
+		authRequest.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequest, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/type"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
