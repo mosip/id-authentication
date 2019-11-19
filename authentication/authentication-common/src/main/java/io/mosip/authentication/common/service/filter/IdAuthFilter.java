@@ -3,7 +3,6 @@ package io.mosip.authentication.common.service.filter;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ACTIVE_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TIMESTAMP_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
@@ -178,10 +177,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 			
 			if(!getStringValue(data, TIMESTAMP).isPresent()) {
 				throwMissingInputParameter(String.format(BIO_TIMESTAMP_INPUT_PARAM, index));
-			}
-			
-			if(!getStringValue(data, DIGITAL_ID).isPresent()) {
-				throwMissingInputParameter(String.format(BIO_DIGITALID_INPUT_PARAM, index));
 			}
 			
 			Object bioValue = data.get(BIO_VALUE);
