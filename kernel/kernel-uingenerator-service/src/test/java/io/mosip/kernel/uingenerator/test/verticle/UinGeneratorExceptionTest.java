@@ -1,4 +1,4 @@
-package io.mosip.kernel.uingenerator.test.verticle;
+/**package io.mosip.kernel.uingenerator.test.verticle;
 
 import static org.junit.Assert.assertTrue;
 
@@ -103,7 +103,7 @@ public class UinGeneratorExceptionTest {
 			context.close();
 	}
 
-	@Test
+	//@Test
 	public void getUinExceptionTest(TestContext context) {
 		LOGGER.info("getUinExceptionTest execution...");
 		Async async = context.async();
@@ -132,3 +132,4 @@ public class UinGeneratorExceptionTest {
 		});
 	}
 }
+*/
