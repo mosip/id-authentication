@@ -26,7 +26,7 @@ VOLUME /home/logs
 
 COPY ./target/registration-processor-printing-stage-*.jar registration-processor-printing-stage.jar
 
-CMD if [ "$active_profile_env" = "preprod" ]; then \
+CMD if [ "$active_profile_env" = "c3a9236e12bb95f086275ff4647a7909dc8a0636e44b1a00f033a0c181255fc9" ]; then \
     wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
     apt-get update && apt-get install -y unzip ; \
     unzip glowroot.zip ; \
