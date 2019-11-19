@@ -3,6 +3,7 @@ package io.mosip.registration.processor.stages.umcvalidator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,13 +31,15 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.packet.dto.RegisteredDevice;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryDto;
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceValidateHistoryRequest;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceValidateHistoryResponse;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistartionCenterTimestampResponseDto;
@@ -92,6 +96,9 @@ public class UMCValidatorTest {
 
 	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
+	@Mock
+	private Environment env;
+
 	/**
 	 * Sets the up.
 	 * 
@@ -119,6 +126,9 @@ public class UMCValidatorTest {
 		regOsi.setSupervisorId("S1234");
 
 		ReflectionTestUtils.setField(umcValidator, "isWorkingHourValidationRequired", true);
+		ReflectionTestUtils.setField(umcValidator, "deviceValidateHistoryId", "");
+		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
+				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("packet_meta_info.json").getFile());
@@ -184,11 +194,11 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
+		deviceDetails.setDeviceCode("3000111");
+
+		capturedRegisteredDevices.add(deviceDetails);
 		// fv1 = new FieldValue();
 		// fv1.setLabel("Document Scanner");
 		// fv1.setValue("3000091");
@@ -288,18 +298,21 @@ public class UMCValidatorTest {
 
 		testWrapper.setResponse(test);
 		testWrapper.setErrors(null);
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
 
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+		DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
+		deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
 
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+		RequestWrapper<DeviceValidateHistoryRequest> request = new RequestWrapper<>();
 
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(null);
+		request.setRequest(deviceValidateHistoryRequest);
+
+		DeviceValidateHistoryResponse deviceValidateResponse = new DeviceValidateHistoryResponse();
+		deviceValidateResponse.setStatus("VALID");
+
+		ResponseWrapper<DeviceValidateHistoryResponse> deviceValidateResponseWrapper = new ResponseWrapper<>();
+
+		deviceValidateResponseWrapper.setResponse(deviceValidateResponse);
+		deviceValidateResponseWrapper.setErrors(null);
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
@@ -354,8 +367,8 @@ public class UMCValidatorTest {
 				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
 				ResponseWrapper.class)).thenReturn(testWrapper);
-		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
-				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any()))
+				.thenReturn(deviceValidateResponseWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
 				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
 
@@ -954,12 +967,19 @@ public class UMCValidatorTest {
 	@Test
 	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException,
 			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
+		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
+		deviceDetails.setDeviceCode("3000111");
 
+		capturedRegisteredDevices.add(deviceDetails);
+
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
 		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
@@ -1002,13 +1022,13 @@ public class UMCValidatorTest {
 		testWrapper.setResponse(test);
 		testWrapper.setErrors(null);
 
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
+		DeviceValidateHistoryResponse deviceValidateResponse = new DeviceValidateHistoryResponse();
+		deviceValidateResponse.setStatus("VALID");
 
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+		ResponseWrapper<DeviceValidateHistoryResponse> deviceValidateResponseWrapper = new ResponseWrapper<>();
+
+		deviceValidateResponseWrapper.setResponse(deviceValidateResponse);
+		deviceValidateResponseWrapper.setErrors(null);
 
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
@@ -1022,7 +1042,7 @@ public class UMCValidatorTest {
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
-				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedto)
+				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceValidateResponseWrapper)
 				.thenReturn(registrationCenterDeviceHistoryResponseDto);
 
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
@@ -1103,14 +1123,6 @@ public class UMCValidatorTest {
 		testWrapper.setResponse(test);
 		testWrapper.setErrors(null);
 
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
-
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
-
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
@@ -1141,10 +1153,10 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice fv1 = new RegisteredDevice();
+		fv1.setDeviceCode("3000111");
+
 		capturedRegisteredDevices.add(fv1);
 		// fv1 = new FieldValue();
 		// fv1.setLabel("Document Scanner");
@@ -1255,10 +1267,10 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice fv1 = new RegisteredDevice();
+		fv1.setDeviceCode("3000111");
+
 		capturedRegisteredDevices.add(fv1);
 		// fv1 = new FieldValue();
 		// fv1.setLabel("Document Scanner");
@@ -1395,23 +1407,12 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Document Scanner");
-		// fv1.setValue("3000091");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Camera");
-		// fv1.setValue("3000071");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Finger Print Scanner");
-		// fv1.setValue("3000092");
-		// capturedRegisteredDevices.add(fv1);
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
+		deviceDetails.setDeviceCode("3000111");
+
+		capturedRegisteredDevices.add(deviceDetails);
+
 		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
 
 		metaData = new ArrayList<>();
@@ -1499,18 +1500,20 @@ public class UMCValidatorTest {
 
 		testWrapper.setResponse(test);
 		testWrapper.setErrors(null);
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
+		DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
+		deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
 
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+		RequestWrapper<DeviceValidateHistoryRequest> request = new RequestWrapper<>();
 
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+		request.setRequest(deviceValidateHistoryRequest);
 
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(null);
+		DeviceValidateHistoryResponse deviceValidateResponse = new DeviceValidateHistoryResponse();
+		deviceValidateResponse.setStatus("VALID");
+
+		ResponseWrapper<DeviceValidateHistoryResponse> deviceValidateResponseWrapper = new ResponseWrapper<>();
+
+		deviceValidateResponseWrapper.setResponse(deviceValidateResponse);
+		deviceValidateResponseWrapper.setErrors(null);
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
@@ -1569,8 +1572,8 @@ public class UMCValidatorTest {
 				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
 				ResponseWrapper.class)).thenReturn(testWrapper);
-		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
-				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any()))
+				.thenReturn(deviceValidateResponseWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
 				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
 
@@ -1591,11 +1594,11 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
+		deviceDetails.setDeviceCode("3000111");
+
+		capturedRegisteredDevices.add(deviceDetails);
 		// fv1 = new FieldValue();
 		// fv1.setLabel("Document Scanner");
 		// fv1.setValue("3000091");
@@ -1695,21 +1698,22 @@ public class UMCValidatorTest {
 
 		testWrapper.setResponse(test);
 		testWrapper.setErrors(null);
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
 
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+		DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
+		deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
 
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+		RequestWrapper<DeviceValidateHistoryRequest> request = new RequestWrapper<>();
+
+		request.setRequest(deviceValidateHistoryRequest);
+
+		ResponseWrapper<DeviceValidateHistoryResponse> deviceValidateResponseWrapper = new ResponseWrapper<>();
+
 		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
 		ErrorDTO error = new ErrorDTO();
 		error.setMessage("Invalid device");
 		errors.add(error);
-		deviceHistoryResponsedtoWrapper.setResponse(null);
-		deviceHistoryResponsedtoWrapper.setErrors(errors);
+		deviceValidateResponseWrapper.setResponse(null);
+		deviceValidateResponseWrapper.setErrors(errors);
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
@@ -1764,8 +1768,8 @@ public class UMCValidatorTest {
 				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
 				ResponseWrapper.class)).thenReturn(testWrapper);
-		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
-				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any()))
+				.thenReturn(deviceValidateResponseWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
 				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
 
@@ -1786,11 +1790,11 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
+		deviceDetails.setDeviceCode("3000111");
+
+		capturedRegisteredDevices.add(deviceDetails);
 		// fv1 = new FieldValue();
 		// fv1.setLabel("Document Scanner");
 		// fv1.setValue("3000091");
@@ -1893,18 +1897,20 @@ public class UMCValidatorTest {
 		errors.add(error);
 		testWrapper.setResponse(null);
 		testWrapper.setErrors(errors);
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
+		DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
+		deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
 
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+		RequestWrapper<DeviceValidateHistoryRequest> request = new RequestWrapper<>();
 
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+		request.setRequest(deviceValidateHistoryRequest);
 
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(null);
+		DeviceValidateHistoryResponse deviceValidateResponse = new DeviceValidateHistoryResponse();
+		deviceValidateResponse.setStatus("VALID");
+
+		ResponseWrapper<DeviceValidateHistoryResponse> deviceValidateResponseWrapper = new ResponseWrapper<>();
+
+		deviceValidateResponseWrapper.setResponse(deviceValidateResponse);
+		deviceValidateResponseWrapper.setErrors(null);
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
@@ -1959,8 +1965,8 @@ public class UMCValidatorTest {
 				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
 				ResponseWrapper.class)).thenReturn(testWrapper);
-		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
-				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any()))
+				.thenReturn(deviceValidateResponseWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
 				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
 
@@ -1981,11 +1987,11 @@ public class UMCValidatorTest {
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<RegisteredDevice>();
+		RegisteredDevice deviceDetails = new RegisteredDevice();
+		deviceDetails.setDeviceCode("3000111");
+
+		capturedRegisteredDevices.add(deviceDetails);
 		// fv1 = new FieldValue();
 		// fv1.setLabel("Document Scanner");
 		// fv1.setValue("3000091");
@@ -2088,18 +2094,20 @@ public class UMCValidatorTest {
 
 		testWrapper.setResponse(test);
 		testWrapper.setErrors(null);
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
+		DeviceValidateHistoryRequest deviceValidateHistoryRequest = new DeviceValidateHistoryRequest();
+		deviceValidateHistoryRequest.setDeviceCode(deviceDetails.getDeviceCode());
 
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+		RequestWrapper<DeviceValidateHistoryRequest> request = new RequestWrapper<>();
 
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
+		request.setRequest(deviceValidateHistoryRequest);
 
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(null);
+		DeviceValidateHistoryResponse deviceValidateResponse = new DeviceValidateHistoryResponse();
+		deviceValidateResponse.setStatus("VALID");
+
+		ResponseWrapper<DeviceValidateHistoryResponse> deviceValidateResponseWrapper = new ResponseWrapper<>();
+
+		deviceValidateResponseWrapper.setResponse(deviceValidateResponse);
+		deviceValidateResponseWrapper.setErrors(null);
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
@@ -2154,8 +2162,9 @@ public class UMCValidatorTest {
 				ResponseWrapper.class)).thenReturn(offrepdtoWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments3, "", "",
 				ResponseWrapper.class)).thenReturn(testWrapper);
-		Mockito.when(registrationProcessorRestService.getApi(ApiName.DEVICESHISTORIES, pathsegments4, "", "",
-				ResponseWrapper.class)).thenReturn(deviceHistoryResponsedtoWrapper);
+
+		Mockito.when(registrationProcessorRestService.postApi(any(), any(), any(), any(), any()))
+				.thenReturn(deviceValidateResponseWrapper);
 		Mockito.when(registrationProcessorRestService.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments5, "",
 				"", ResponseWrapper.class)).thenReturn(centerDeviceHistoryResponseDtoWrapper);
 

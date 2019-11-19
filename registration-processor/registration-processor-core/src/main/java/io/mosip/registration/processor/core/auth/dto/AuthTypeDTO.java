@@ -8,9 +8,5 @@ public class AuthTypeDTO {
 	private boolean bio;
 	
 	private boolean demo = false;
-	
-	private boolean otp = false;;
-
-	private boolean pin = false;
 
 }

@@ -69,7 +69,6 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity {
 
 	/** The create date time. */
 	@Column(name = "cr_dtimes",updatable=false )
-	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
 	/** The updated by. */
@@ -78,7 +77,6 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updateDateTime;
 
 	/** The is deleted. */

@@ -665,22 +665,6 @@ public class RegistrationCenterValidator {
 
 		}
 
-		// method to compare PerKioskProcessTime
-		private <T extends RegcenterBaseDto, D extends RegcenterBaseDto> boolean validatePerKioskProcessTime(T firstObj,
-				D eachRecord, List<ServiceError> errors) {
-			if (eachRecord.getPerKioskProcessTime() != null && firstObj.getPerKioskProcessTime() != null) {
-				if (eachRecord.getPerKioskProcessTime().equals(firstObj.getPerKioskProcessTime())) {
-					return true;
-				} else {
-					errors.add(new ServiceError(RegistrationCenterErrorCode.PERKIOSKPROCESSTIME_NOT_UNIQUE.getErrorCode(),
-							String.format(RegistrationCenterErrorCode.PERKIOSKPROCESSTIME_NOT_UNIQUE.getErrorMessage(),
-									eachRecord.getPerKioskProcessTime())));
-
-				}
-			}
-			return false;
-		}
-
 	// validate for the given ID, do we have records in all supported languages then make True for all records.
 	public void isActiveTrueAllSupLang(List<RegCenterPutReqDto> registrationCenterPutReqAdmDto) {
 		if (registrationCenterPutReqAdmDto.get(0).getIsActive() != null
@@ -827,13 +811,31 @@ public class RegistrationCenterValidator {
 				List<ServiceError> errors) {
 			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
 			// Lunch End Time
-			if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+			LocalTime lunchStartTime = LocalTime.parse("00:00:00", formatter);
+			if ((registrationCenterDto.getLunchStartTime()!=null && !registrationCenterDto.getLunchStartTime().equals(lunchStartTime)) && registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 				errors.add(new ServiceError(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
 						String.format(
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage(),
 								registrationCenterDto.getLunchEndTime())));
 
+			}
+			if ((registrationCenterDto.getLunchEndTime()!=null && !registrationCenterDto.getLunchEndTime().equals(lunchStartTime)) && registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
+						String.format(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getLunchEndTime())));
+
+			}
+			if((registrationCenterDto.getLunchStartTime()!=null && !registrationCenterDto.getLunchStartTime().equals(lunchStartTime)) && registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime()))
+			{
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),
+						String.format(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getLunchEndTime())));
 			}
 		}
 

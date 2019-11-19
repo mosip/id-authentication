@@ -606,7 +606,7 @@ public class IrisCaptureController extends BaseController {
 					continueBtn.setDisable(false);
 				}else {
 					continueBtn.setDisable(true);
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.DUPLICATE+" "+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS)+" "+RegistrationConstants.FOUND);
 				}
 
 			} else {
@@ -639,7 +639,7 @@ public class IrisCaptureController extends BaseController {
 			authenticationValidatorDTO.setIrisDetails(irises);
 			authenticationValidatorDTO.setAuthValidationType("multiple");
 			boolean isValid =  !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
-			if(getValueFromApplicationContext("IDENTY_SDK").equals("FAILED")) {
+			if(null != getValueFromApplicationContext("IDENTY_SDK")) {
 				isValid = false;
 			}
 			return isValid;

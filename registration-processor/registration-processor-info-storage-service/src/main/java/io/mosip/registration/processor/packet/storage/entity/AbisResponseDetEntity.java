@@ -8,9 +8,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 @Entity
 @Table(name = "abis_response_det", schema = "regprc")
 public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEntity> implements Serializable {
@@ -23,11 +20,9 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	private String crBy = "SYSTEM";
 
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	@Column(name = "is_deleted")
@@ -39,7 +34,6 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 	private String updBy = "MOSIP_SYSTEM";
 
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
 	public AbisResponseDetEntity() {

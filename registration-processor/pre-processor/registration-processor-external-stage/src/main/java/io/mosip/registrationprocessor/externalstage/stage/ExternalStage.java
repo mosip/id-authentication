@@ -198,7 +198,11 @@ public class ExternalStage extends MosipVerticleAPIManager {
 
 				registrationStatusDto.setRetryCount(retryCount);
 			}
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			/** Module-Id can be Both Succes/Error code */
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.EXTERNAL.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 			if (isTransactionSuccessful) {
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage());
 				description.setCode(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode());
@@ -207,10 +211,6 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
-			/** Module-Id can be Both Succes/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.EXTERNAL.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 		}

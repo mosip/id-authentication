@@ -51,7 +51,9 @@ public enum RestServicesConstants {
 	
 	TOKEN_ID_GENERATOR("token-id-generator"),
 	
-	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service");
+	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service"),
+	
+	DEVICE_VERIFICATION_SERVICE("device-verification-service");
 
 	/** The service name. */
 	private final String serviceName;

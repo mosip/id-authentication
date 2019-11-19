@@ -9,13 +9,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
-import io.mosip.kernel.masterdata.service.DeviceProviderService;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
+import io.swagger.annotations.Api;
+
 
 /**
  * Device provider management controller
@@ -25,10 +29,11 @@ import io.mosip.kernel.masterdata.service.DeviceProviderService;
  */
 @RestController
 @RequestMapping(value = "/deviceprovidermanagement")
+@Api(tags = { "DeviceProvider Management" })
 public class DeviceProviderManagementController {
 
 	@Autowired
-	private DeviceProviderService deviceProviderService;
+	private DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> deviceProviderService;
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@PostMapping("/validate")

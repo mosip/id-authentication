@@ -372,12 +372,13 @@ public class PrintStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			/** Module-Id can be Both Success/Error code */
 			String moduleId = isTransactionSuccessful
 					? PlatformSuccessMessages.RPR_PRINT_STAGE_SENT_QUEUE_SUCCESS.getCode()
 					: description.getCode();
 			String moduleName = ModuleName.PRINT_STAGE.toString();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
+
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, regId);
 
@@ -532,7 +533,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationStatusDto.setLatestTransactionTypeCode(
 							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
 					registrationStatusDto.setUpdatedBy(USER);
-					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+					/** Module-Id can be Both Success/Error code */
+					String moduleId = description.getCode();
+					String moduleName = ModuleName.PRINT_STAGE.toString();
+					registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 				} else if (status.equalsIgnoreCase(RESEND)) {
 					MessageDTO messageDTO = new MessageDTO();
 					messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
@@ -546,7 +550,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationStatusDto.setLatestTransactionTypeCode(
 							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
 					registrationStatusDto.setUpdatedBy(USER);
-					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+					String moduleId = description.getCode();
+					String moduleName = ModuleName.PRINT_STAGE.toString();
+					registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 					this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS, messageDTO);
 				}
 

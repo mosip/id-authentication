@@ -76,7 +76,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	private static final Logger LOGGER = AppConfig.getLogger(BioServiceImpl.class);
 
 	private byte[] isoImage;
-	
+
 	private static HashMap<String, CaptureResponsBioDataDto> bestCaptures = new HashMap<>();
 
 	public static HashMap<String, CaptureResponsBioDataDto> getBestCaptures() {
@@ -88,13 +88,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 		captures.forEach(key -> bestCaptures.remove(key));
 
 	}
-	
+
 	public static void clearAllCaptures() {
 
 		bestCaptures.clear();
 
 	}
-
 
 	/**
 	 * Returns Authentication validator Dto that will be passed
@@ -117,9 +116,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
-		
-		if(isNull(userId))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_AUTTHENTICATION); 
+
+		if (isNull(userId))
+			throwRegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_AUTTHENTICATION);
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = null;
 		CaptureResponseDto captureResponseDto = null;
@@ -202,16 +202,18 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
-		if(isNull(userId))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_AUTHENTICATION);
-		
+		if (isNull(userId))
+			throwRegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_AUTHENTICATION);
+
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
 		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-		irisDetailsDTO.setIrisIso(captureIris(requestDetail));
+		captureIris(irisDetailsDTO, requestDetail);
 		irisDetailsDTOs.add(irisDetailsDTO);
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
+		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.SINGLE);
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Iris scan done");
 		return authenticationValidatorDTO;
@@ -246,7 +248,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail)
 			throws RegBaseCheckedException, IOException {
-		
+
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
 		if (captureResponseDto == null)
 			throw new RegBaseCheckedException("202", "Decice is not available");
@@ -258,10 +260,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 		mosipBioDeviceDataResponses.forEach(captured -> {
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
-			
-			//Get Best Capture
+
+			// Get Best Capture
 			captureRespoonse = getBestCapture(captureRespoonse);
-			
+
 			fingerPrintDetail.setFingerPrintISOImage(Base64.getDecoder().decode(captureRespoonse.getBioExtract()));
 			fingerPrintDetail.setFingerType(captureRespoonse.getBioSubType());
 			fingerPrintDetail.setFingerPrint(captureRespoonse.getBioValue());
@@ -331,8 +333,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private Map<String, Object> getFingerPrintScannedImageWithStub(String path) throws RegBaseCheckedException {
-		if(isNull(path))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_SCANNED_PATH);
+		if (isNull(path))
+			throwRegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_SCANNED_PATH);
 
 		try {
 			LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
@@ -386,9 +389,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail)
 			throws RegBaseCheckedException, IOException {
-		if(isNull(requestDetail.getType()))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
-		
+		if (isNull(requestDetail.getType()))
+			throwRegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
+
 		if (isMdmEnabled())
 			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, requestDetail);
 		else
@@ -418,9 +422,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	@Override
 	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath,
 			String fingerType) throws RegBaseCheckedException {
-		
-		if(isNull(fingerType))
-			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
+
+		if (isNull(fingerType))
+			throwRegBaseCheckedException(
+					RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
 
 		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath, fingerType);
 
@@ -534,7 +539,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @return byte[] of captured Iris
 	 * @throws IOException
 	 */
-	private byte[] captureIris(RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
+	private void captureIris(IrisDetailsDTO IrisDetailsDTO, RequestDetail requestDetail)
+			throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
 
@@ -549,16 +555,18 @@ public class BioServiceImpl extends BaseService implements BioService {
 				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
 						captureResponseDto.getError().getErrorInfo());
 			capturedByte = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
-			return capturedByte;
-		} else
+			IrisDetailsDTO.setIrisType(
+					captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData().getBioSubType());
+			IrisDetailsDTO.setIrisIso(capturedByte);
+		} else {
 			bufferedImage = ImageIO.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
+			capturedByte = byteArrayOutputStream.toByteArray();
+			IrisDetailsDTO.setIrisIso(capturedByte);
+			IrisDetailsDTO.setIrisType("Left Eye");
+		}
 
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
-
-		capturedByte = byteArrayOutputStream.toByteArray();
-
-		return capturedByte;
 	}
 
 	/*
@@ -575,17 +583,18 @@ public class BioServiceImpl extends BaseService implements BioService {
 		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
 	}
 
-	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException {
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail)
+			throws RegBaseCheckedException, IOException {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		CaptureResponseDto captureResponseDto=null;
-			captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
-			if (captureResponseDto == null)
-				throw new RegBaseCheckedException("202", "Decice is not available");
-			if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
-				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
-						captureResponseDto.getError().getErrorInfo());
-		
+		CaptureResponseDto captureResponseDto = null;
+		captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
+		if (captureResponseDto == null)
+			throw new RegBaseCheckedException("202", "Decice is not available");
+		if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
+			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
+					captureResponseDto.getError().getErrorInfo());
+
 		byte[] faceBytes = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
 		if (null != faceBytes) {
 			faceDetailsDTO.setFaceISO(faceBytes);
@@ -607,14 +616,13 @@ public class BioServiceImpl extends BaseService implements BioService {
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, RequestDetail requestDetail)
 			throws RegBaseCheckedException, IOException {
 
-		if(isNull(requestDetail.getType()))
+		if (isNull(requestDetail.getType()))
 			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
-		
+
 		if (isMdmEnabled()) {
 			requestDetail.setType(RegistrationConstants.IRIS_DOUBLE);
 			getIrisImageAsDTOWithMdm(irisDetailsDTO, requestDetail);
-		}
-		else
+		} else
 			getIrisImageAsDTONonMdm(irisDetailsDTO, requestDetail.getType());
 	}
 
@@ -629,7 +637,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, RequestDetail requestDetail)
 			throws RegBaseCheckedException, IOException {
 
-		if(isNull(requestDetail.getType()))
+		if (isNull(requestDetail.getType()))
 			throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 		requestDetail.setType(RegistrationConstants.IRIS_DOUBLE);
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
@@ -645,10 +653,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 		mosipBioDeviceDataResponses.forEach(captured -> {
 			IrisDetailsDTO irisDetails = new IrisDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
-			
-			//Get Best Capture
+
+			// Get Best Capture
 			captureRespoonse = getBestCapture(captureRespoonse);
-			
+
 			irisDetails.setIrisIso((Base64.getDecoder().decode(captureRespoonse.getBioExtract())));
 			irisDetails.setIrisImageName(captureRespoonse.getBioSubType());
 			irisDetails.setIris((captureRespoonse.getBioValue()));
@@ -670,8 +678,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration");
-			
-			if(isNull(irisType))
+
+			if (isNull(irisType))
 				throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 
 			Map<String, Object> scannedIrisMap = getIrisScannedImage(irisType);
@@ -712,8 +720,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
-			
-			if(isNull(irisType))
+
+			if (isNull(irisType))
 				throwRegBaseCheckedException(RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_IRIS_IMAGE);
 
 			double qualityScore;
@@ -723,13 +731,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 				bufferedImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 				qualityScore = 90.5;
-				iso = IOUtils
-						.resourceToByteArray(RegistrationConstants.LEFT_EYE_ISO);
+				iso = IOUtils.resourceToByteArray(RegistrationConstants.LEFT_EYE_ISO);
 			} else {
 				bufferedImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL_RIGHT));
-				iso = IOUtils
-						.resourceToByteArray(RegistrationConstants.RIGHT_EYE_ISO);
+				iso = IOUtils.resourceToByteArray(RegistrationConstants.RIGHT_EYE_ISO);
 				qualityScore = 50.0;
 			}
 

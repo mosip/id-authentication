@@ -37,7 +37,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param metaData
 	 *            the meta data
 	 */
-	public void saveDemographicInfoJson(byte[] bytes, String regId, List<FieldValue> metaData);
+	public void saveDemographicInfoJson(byte[] bytes, String regId, List<FieldValue> metaData, String moduleId,
+			String moduleName);
 
 	/**
 	 * Gets the packetsfor QC user.
@@ -69,7 +70,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 */
 
 	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,
-			DedupeSourceName sourceName);
+			DedupeSourceName sourceName, String moduleId, String moduleName);
 
 	/**
 	 * Save abis ref.
@@ -77,7 +78,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param regAbisRefDto
 	 *            the reg abis ref dto
 	 */
-	public void saveAbisRef(RegAbisRefDto regAbisRefDto);
+	public void saveAbisRef(RegAbisRefDto regAbisRefDto, String moduleId, String moduleName);
 
 	/**
 	 * Gets the reference id by rid.
@@ -210,7 +211,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param regBioRefDto
 	 *            the reg bio ref dto
 	 */
-	public void saveBioRef(RegBioRefDto regBioRefDto);
+	public void saveBioRef(RegBioRefDto regBioRefDto, String moduleId, String moduleName);
 
 	/**
 	 * Save abis request.
@@ -218,7 +219,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param abisRequestDto
 	 *            the abis request dto
 	 */
-	public void saveAbisRequest(AbisRequestDto abisRequestDto);
+	public void saveAbisRequest(AbisRequestDto abisRequestDto, String moduleId, String moduleName);
 
 	/**
 	 * Gets the demo list by transaction id.
@@ -235,7 +236,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param regDemoDedupeListDto
 	 *            the reg demo dedupe list dto
 	 */
-	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto);
+	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto, String moduleId,
+			String moduleName);
 
 	/**
 	 * Gets the abis response records.
@@ -305,7 +307,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param regId
 	 *            the reg id
 	 */
-	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demoDedupeData, String regId);
+	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demoDedupeData, String regId,
+			String moduleId, String moduleName);
 
 	/**
 	 * Gets the identity keys and fetch values from JSON.
@@ -339,6 +342,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
 			String processed);
 
-	public void saveRegLostUinDet(String regId, String latestRegId);
+	public void saveRegLostUinDet(String regId, String latestRegId, String moduleId, String moduleName);
 
 }

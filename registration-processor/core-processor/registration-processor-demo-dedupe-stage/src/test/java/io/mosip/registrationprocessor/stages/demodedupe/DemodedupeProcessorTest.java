@@ -285,7 +285,7 @@ public class DemodedupeProcessorTest {
 
 		registrationStatusDto.setRetryCount(null);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(), any(), any());
 
 	}
 
@@ -439,7 +439,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(), anyString())).thenReturn(abisResponseDtos);
 		Mockito.when(packetInfoManager.getAbisResponseDetRecordsList(any())).thenReturn(abisResponseDetDtos);
 		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRegIds);
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(anyList(), anyString(), any());
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(anyList(), anyString(), any(), any(), any());
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());

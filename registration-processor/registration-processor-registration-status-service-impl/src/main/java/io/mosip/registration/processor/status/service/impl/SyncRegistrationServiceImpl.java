@@ -4,6 +4,7 @@
 package io.mosip.registration.processor.status.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -359,7 +360,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			eventId = EventId.RPR_402.toString();
 		} else {
 			// first time sync registration
+
 			syncRegistration = convertDtoToEntity(registrationDto);
+			syncRegistration.setCreateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 			syncRegistration.setId(RegistrationUtility.generateId());
 			syncRegistrationDao.save(syncRegistration);
 			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
@@ -413,6 +416,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setPacketSize(dto.getPacketSize());
 		syncRegistrationEntity.setSupervisorStatus(dto.getSupervisorStatus());
 		syncRegistrationEntity.setSupervisorComment(dto.getSupervisorComment());
+		syncRegistrationEntity.setUpdateDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		if (dto.getOptionalValues() != null) {
 			syncRegistrationEntity.setOptionalValues(dto.getOptionalValues().toString().getBytes());
 		}
@@ -420,7 +424,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setCreatedBy(CREATED_BY);
 		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
 		if (syncRegistrationEntity.getIsDeleted() != null && syncRegistrationEntity.getIsDeleted()) {
-			syncRegistrationEntity.setDeletedDateTime(LocalDateTime.now());
+			syncRegistrationEntity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		} else {
 			syncRegistrationEntity.setDeletedDateTime(null);
 		}

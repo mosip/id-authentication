@@ -207,7 +207,7 @@ public class KycFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456")).thenReturn(authStatusInfo);
+		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456", true)).thenReturn(authStatusInfo);
 		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
 		kycFacade.authenticateIndividual(authRequestDTO, true, "123456");
 	}

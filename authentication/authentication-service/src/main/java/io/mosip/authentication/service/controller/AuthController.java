@@ -77,6 +77,7 @@ public class AuthController {
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		AuthResponseDTO authResponsedto = null;
 		try {
+			authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 			DataValidationUtil.validate(errors);
 			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId);
 		} catch (IDDataValidationException e) {

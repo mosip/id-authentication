@@ -203,13 +203,11 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 				String jsonString = new ObjectMapper().writeValueAsString(
 						masterSyncResponse.get(RegistrationConstants.RESPONSE));
 				
-		//		String jsonString = new String(Files.readAllBytes(Paths.get("C:\\Users\\M1047962\\git\\mosip-platform-mt\\registration\\registration-client\\logs\\test.txt")));
-
 				// Mapping json object to respective dto's
 				MasterDataResponseDto masterSyncDto = gson.fromJson(jsonString, MasterDataResponseDto.class);
 
 				resoponse = masterSyncDao.save(masterSyncDto);
-
+				
 				if (resoponse.equals(RegistrationConstants.SUCCESS)) {
 
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
