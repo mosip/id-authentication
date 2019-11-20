@@ -129,14 +129,17 @@ public class NotificationService {
 
 	@Value("${preregistartion.identity.phone}")
 	private String phone;
+	
+	@Value("#{'${mosip.notificationtype}'.split('\\|')}")
+	private List<String> notificationTypeList;
 
 	MainResponseDTO<ResponseDTO> response;
 
 	/**
 	 * Autowired reference for {@link #AuditLogUtil}
 	 */
-	@Autowired
-	private AuditLogUtil auditLogUtil;
+//	@Autowired
+//	private AuditLogUtil auditLogUtil;
 
 	@Autowired
 	private ValidationUtil validationUtil;
@@ -220,17 +223,17 @@ public class NotificationService {
 			new NotificationExceptionCatcher().handle(ex, response);
 		} finally {
 			response.setResponsetime(serviceUtil.getCurrentResponseTime());
-			if (isSuccess) {
-				setAuditValues(EventId.PRE_411.toString(), EventName.NOTIFICATION.toString(),
-						EventType.SYSTEM.toString(),
-						"Pre-Registration data is sucessfully trigger notification to the user",
-						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to trigger notification to the user", AuditLogVariables.NO_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
-			}
+//			if (isSuccess) {
+//				setAuditValues(EventId.PRE_411.toString(), EventName.NOTIFICATION.toString(),
+//						EventType.SYSTEM.toString(),
+//						"Pre-Registration data is sucessfully trigger notification to the user",
+//						AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+//						authUserDetails().getUsername());
+//			} else {
+//				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+//						"Failed to trigger notification to the user", AuditLogVariables.NO_ID.toString(),
+//						authUserDetails().getUserId(), authUserDetails().getUsername());
+//			}
 		}
 		return response;
 	}
@@ -271,12 +274,12 @@ public class NotificationService {
 
 		notificationDto.setName(responseNode.get(fullName).get(0).get("value").asText());
 
-		if (responseNode.get(email) != null) {
+		if (notificationTypeList.contains(RequestCodes.EMAIL.getCode()) && responseNode.get(email) != null) {
 			String emailId = responseNode.get(email).asText();
 			notificationDto.setEmailID(emailId);
 			notificationUtil.notify(RequestCodes.EMAIL.getCode(), notificationDto, langCode, file);
 		}
-		if (responseNode.get(phone) != null) {
+		if (notificationTypeList.contains(RequestCodes.SMS.getCode()) && responseNode.get(phone) != null) {
 			String phoneNumber = responseNode.get(phone).asText();
 			notificationDto.setMobNum(phoneNumber);
 			notificationUtil.notify(RequestCodes.SMS.getCode(), notificationDto, langCode, file);
@@ -307,20 +310,20 @@ public class NotificationService {
 	 * @param description
 	 * @param idType
 	 */
-	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName) {
-		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		auditRequestDto.setEventId(eventId);
-		auditRequestDto.setEventName(eventName);
-		auditRequestDto.setEventType(eventType);
-		auditRequestDto.setDescription(description);
-		auditRequestDto.setSessionUserId(userId);
-		auditRequestDto.setSessionUserName(userName);
-		auditRequestDto.setId(idType);
-		auditRequestDto.setModuleId(AuditLogVariables.NOTIFY.toString());
-		auditRequestDto.setModuleName(AuditLogVariables.NOTIFICATION_SERVICE.toString());
-		auditLogUtil.saveAuditDetails(auditRequestDto);
-	}
+//	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+//			String userId, String userName) {
+//		AuditRequestDto auditRequestDto = new AuditRequestDto();
+//		auditRequestDto.setEventId(eventId);
+//		auditRequestDto.setEventName(eventName);
+//		auditRequestDto.setEventType(eventType);
+//		auditRequestDto.setDescription(description);
+//		auditRequestDto.setSessionUserId(userId);
+//		auditRequestDto.setSessionUserName(userName);
+//		auditRequestDto.setId(idType);
+//		auditRequestDto.setModuleId(AuditLogVariables.NOTIFY.toString());
+//		auditRequestDto.setModuleName(AuditLogVariables.NOTIFICATION_SERVICE.toString());
+//		auditLogUtil.saveAuditDetails(auditRequestDto);
+//	}
 
 	public void notificationDtoValidation(NotificationDTO dto) throws IOException, ParseException {
 		getDemographicDetails(dto);
