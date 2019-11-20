@@ -128,7 +128,8 @@ public class DemographicServiceUtil {
 	 *            pass the demographicEntity
 	 * @return createDTO with the values
 	 */
-	public DemographicCreateResponseDTO setterForCreatePreRegistration(DemographicEntity demographicEntity, JSONObject requestJson) {
+	public DemographicCreateResponseDTO setterForCreatePreRegistration(DemographicEntity demographicEntity,
+			JSONObject requestJson) {
 		log.info("sessionId", "idType", "id", "In setterForCreateDTO method of pre-registration service util");
 		DemographicCreateResponseDTO createDto = new DemographicCreateResponseDTO();
 		try {
@@ -442,9 +443,9 @@ public class DemographicServiceUtil {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 					.append(configLabel + "/").append(filename);
-			 /*uriBuilder.append(
-			 "http://104.211.212.28:51000/preregistration/dev/master/PreRegistrationIdentitiyMapping.json");
-			log.info("sessionId", "idType", "id", " URL in demographic service util of getJson " + uriBuilder);*/
+			// uriBuilder.append(
+			// "http://104.211.212.28:51000/preregistration/dev/master/PreRegistrationIdentitiyMapping.json");
+			log.info("sessionId", "idType", "id", " URL in demographic service util of getJson " + uriBuilder);
 			return restTemplate.getForObject(uriBuilder.toString(), String.class);
 		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));

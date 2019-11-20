@@ -13,9 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +34,8 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.DataValidationUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.demographic.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
@@ -41,6 +46,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * This class provides different API's to perform operations on
@@ -63,6 +69,29 @@ public class DemographicController {
 	/** Autowired reference for {@link #DemographicService}. */
 	@Autowired
 	private DemographicServiceIntf preRegistrationService;
+	
+	@Autowired
+	private RequestValidator requestValidator;
+	
+	/** The Constant CREATE application. */
+	private static final String CREATE = "create";
+	
+	
+	/** The Constant UPADTE application. */
+	private static final String UPDATE = "update";
+	
+	/** The Constant for GET UPDATED DATE TIME application. */
+	private static final String UPDATEDTIME = "retrieve.date";
+	
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(requestValidator);
+	}
 
 	private Logger log = LoggerConfiguration.logConfig(DemographicController.class);
 
@@ -79,9 +108,11 @@ public class DemographicController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration successfully Created") })
 	public ResponseEntity<MainResponseDTO<DemographicCreateResponseDTO>> register(
-			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
+			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject, @ApiIgnore Errors errors ) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for add preregistration with json object" + jsonObject);
+		requestValidator.validateId(CREATE, jsonObject.getId(), errors);
+		DataValidationUtil.validate(errors,CREATE);
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
@@ -99,10 +130,12 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Updated") })
 	public ResponseEntity<MainResponseDTO<DemographicUpdateResponseDTO>> update(
 			@PathVariable("preRegistrationId") String preRegistrationId,
-			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject) {
+			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject, @ApiIgnore Errors errors) {
 		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for Update preregistration with json object" + jsonObject);
+		requestValidator.validateId(UPDATE, jsonObject.getId(), errors);
+		DataValidationUtil.validate(errors,UPDATE);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.updatePreRegistration(jsonObject, preRegistrationId, userId));
 	}
@@ -225,7 +258,9 @@ public class DemographicController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated Date Time successfully fetched for list of pre-registration ids") })
 	public ResponseEntity<MainResponseDTO<Map<String, String>>> getUpdatedDateTimeByPreIds(
-			@RequestBody MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO) {
+			@RequestBody MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO, @ApiIgnore Errors errors) {
+		requestValidator.validateId(UPDATEDTIME, mainRequestDTO.getId(), errors);
+		DataValidationUtil.validate(errors,UPDATEDTIME);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getUpdatedDateTimeForPreIds(mainRequestDTO.getRequest()));
 	}

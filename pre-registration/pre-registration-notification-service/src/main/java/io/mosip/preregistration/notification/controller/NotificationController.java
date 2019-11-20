@@ -35,6 +35,19 @@ public class NotificationController {
 	@Autowired
 	private NotificationService notificationService;
 	
+//	@Autowired
+//	private RequestValidator requestValidator;
+//	
+//	/**
+//	 * Inits the binder.
+//	 *
+//	 * @param binder the binder
+//	 */
+//	@InitBinder
+//	public void initBinder(WebDataBinder binder) {
+//		binder.addValidators(requestValidator);
+//	}
+	
 	private Logger log = LoggerConfiguration.logConfig(NotificationController.class);
 
 	/**

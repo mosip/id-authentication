@@ -94,7 +94,7 @@ public class LoginExceptionHandler {
 	public ResponseEntity<MainResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e){
 	
 		MainResponseDTO<?> errorRes = e.getMainResponseDto();
-		errorRes.setId(id.get("sendotp"));
+		errorRes.setId(id.get(e.getOperation()));
 		errorRes.setVersion(env.getProperty("version"));
 		errorRes.setErrors(e.getExptionList());
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());

@@ -2,10 +2,13 @@ package io.mosip.preregistration.datasync.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,8 +26,31 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
+@ConfigurationProperties("mosip")
 public class DataSyncConfig {
 
+	/** The id. */
+	private Map<String, String> id;
+	
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the id
+	 */
+	public void setId(Map<String, String> id) {
+		this.id = id;
+	}
+	
+
+	/**
+	 * Id.
+	 *
+	 * @return the map
+	 */
+	@Bean
+	public Map<String, String> ic() {
+		return Collections.unmodifiableMap(id);
+	}
 	/**
 	 * @return docket
 	 */

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.service.NotificationService;
@@ -46,6 +48,9 @@ public class NotificationControllerTest {
 
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Mock
+	private RequestValidator requestValidator;
 
 	/**
 	 * /** Creating Mock Bean for NotificationService

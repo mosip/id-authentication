@@ -9,10 +9,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -42,6 +45,7 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.demographic.exception.BookingDeletionFailedException;
+import io.mosip.preregistration.demographic.exception.CryptocoreException;
 import io.mosip.preregistration.demographic.exception.DemographicServiceException;
 import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.demographic.exception.IdValidationException;
@@ -73,6 +77,14 @@ import io.mosip.preregistration.demographic.exception.system.SystemUnsupportedEn
  */
 @RestControllerAdvice
 public class DemographicExceptionHandler {
+	
+	/**  The Environment. */
+	@Autowired
+	protected  Environment env;
+	
+	/** The id. */
+	@Resource
+	protected Map<String, String> id;
 
 	/**
 	 * @param e
@@ -179,7 +191,24 @@ public class DemographicExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e) {
-		return GenericUtil.errorResponse(e, e.getMainResponseDto());
+		MainResponseDTO<?> errorRes = e.getMainResponseDto();
+		errorRes.setId(id.get(e.getOperation()));
+		errorRes.setVersion(env.getProperty("version"));
+		errorRes.setErrors(e.getExptionList());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for InvalidRequestParameterException
+	 */
+	@ExceptionHandler(CryptocoreException.class)
+	public ResponseEntity<MainResponseDTO<?>> cryptocoreException(final CryptocoreException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**

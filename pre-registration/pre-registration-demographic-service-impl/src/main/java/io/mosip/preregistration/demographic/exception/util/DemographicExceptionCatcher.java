@@ -6,6 +6,13 @@ package io.mosip.preregistration.demographic.exception.util;
 
 import org.springframework.beans.factory.BeanCreationException;
 
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.InvalidParamSpecException;
+import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.crypto.exception.NullKeyException;
+import io.mosip.kernel.core.crypto.exception.NullMethodException;
+import io.mosip.kernel.core.crypto.exception.SignatureException;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
@@ -20,6 +27,7 @@ import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.demographic.exception.BookingDeletionFailedException;
+import io.mosip.preregistration.demographic.exception.CryptocoreException;
 import io.mosip.preregistration.demographic.exception.DemographicServiceException;
 import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.demographic.exception.IdValidationException;
@@ -142,12 +150,32 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof DemographicServiceException) {
 			throw new DemographicServiceException(((DemographicServiceException) ex).getValidationErrorList(),
 					mainResponsedto);
-		}
-		else if (ex instanceof NoSuchAlgorithmException) {
+		} else if (ex instanceof InvalidDataException) {
+			throw new CryptocoreException(((InvalidDataException) ex).getErrorCode(),
+					((InvalidDataException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof SignatureException) {
+			throw new CryptocoreException(((SignatureException) ex).getErrorCode(),
+					((SignatureException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof InvalidKeyException) {
+			throw new CryptocoreException(((InvalidKeyException) ex).getErrorCode(),
+					((InvalidKeyException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof InvalidParamSpecException) {
+			throw new CryptocoreException(((InvalidParamSpecException) ex).getErrorCode(),
+					((InvalidParamSpecException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof NullDataException) {
+			throw new CryptocoreException(((NullDataException) ex).getErrorCode(),
+					((NullDataException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof NullKeyException) {
+			throw new CryptocoreException(((NullKeyException) ex).getErrorCode(),
+					((NullKeyException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof NullMethodException) {
+			throw new CryptocoreException(((NullMethodException) ex).getErrorCode(),
+					((NullMethodException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof NoSuchAlgorithmException) {
 			throw new InvalidRequestParameterException(((NoSuchAlgorithmException) ex).getErrorCode(),
 					((NoSuchAlgorithmException) ex).getErrorText(), mainResponsedto);
 		}
-		
+
 	}
 
 }

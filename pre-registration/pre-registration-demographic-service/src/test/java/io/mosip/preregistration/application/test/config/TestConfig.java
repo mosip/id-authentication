@@ -1,4 +1,4 @@
-/*package io.mosip.preregistration.application.test.config;
+package io.mosip.preregistration.application.test.config;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -36,4 +36,3 @@ public class TestConfig {
 			return new RestTemplate(requestFactory);
 	}
 }
-*/
