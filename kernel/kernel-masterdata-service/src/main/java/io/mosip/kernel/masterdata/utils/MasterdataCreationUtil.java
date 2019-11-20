@@ -243,7 +243,7 @@ public class MasterdataCreationUtil {
 
 			if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
 				activeDto = (boolean) field.get(t);
-				isAlreadyActiveOrInActive(entity, activeDto, id, primaryKeyCol);
+				//isAlreadyActiveOrInActive(entity, activeDto, id, primaryKeyCol);
 			}
 		}
 
@@ -371,7 +371,7 @@ public class MasterdataCreationUtil {
 		return result;
 	}
 
-	private <E extends BaseEntity> List<E> isAlreadyActiveOrInActive(Class<E> entity, boolean isActive, String id,
+	/*private <E extends BaseEntity> List<E> isAlreadyActiveOrInActive(Class<E> entity, boolean isActive, String id,
 			String idColumn) {
 		List<E> result = null;
 		try {
@@ -402,7 +402,7 @@ public class MasterdataCreationUtil {
 		}
 		return result;
 
-	}
+	}*/
 
 	/**
 	 * Method to add the Language Code in the criteria query

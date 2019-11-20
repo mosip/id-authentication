@@ -14,7 +14,6 @@ import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -77,18 +76,6 @@ public interface DeviceService {
 	// public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
 
 	/**
-	 * This method is used to update an existing Device to master data
-	 * 
-	 * @param deviceRequestDto
-	 *            Device DTO to update data
-	 * @return IdResponseDto Device ID which is successfully updated
-	 *         {@link IdResponseDto}
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while updating Device
-	 */
-	public IdAndLanguageCodeID updateDevice(DeviceDto deviceRequestDto);
-
-	/**
 	 * This method is used to delete an existing Device of master data
 	 * 
 	 * @param id
@@ -138,7 +125,7 @@ public interface DeviceService {
 	 * @return device ID of decommissioned device
 	 */
 	public IdResponseDto decommissionDevice(String deviceId);
-	
+
 	/**
 	 * This method is used to update an existing Device to master data
 	 * 
@@ -149,6 +136,6 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Device
 	 */
-	public DeviceExtnDto updateDevice1(DevicePutReqDto devicePutReqDto);
+	public DeviceExtnDto updateDevice(DevicePutReqDto devicePutReqDto);
 
 }

@@ -127,8 +127,7 @@ public class DeviceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseWrapper<Device> createDevice(
-			@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
+	public ResponseWrapper<Device> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
 
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
@@ -148,7 +147,7 @@ public class DeviceController {
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id")
+	@ApiOperation(value = "Service to update Device", notes = "Update Device and return updated Device")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Device updated successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When Device is not found"),
@@ -157,7 +156,7 @@ public class DeviceController {
 			@Valid @RequestBody RequestWrapper<DevicePutReqDto> devicePutReqDto) {
 
 		ResponseWrapper<DeviceExtnDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.updateDevice1(devicePutReqDto.getRequest()));
+		responseWrapper.setResponse(deviceService.updateDevice(devicePutReqDto.getRequest()));
 		return responseWrapper;
 	}
 
@@ -264,5 +263,4 @@ public class DeviceController {
 		return responseWrapper;
 	}
 
-	
 }

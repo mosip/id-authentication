@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
@@ -48,13 +47,10 @@ import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
-import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -135,11 +131,9 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Value("${mosip.primary-language}")
 	private String primaryLangCode;
-	
 
 	@Value("${mosip.secondary-language:ara}")
 	private String secondaryLang;
-	
 
 	/*
 	 * (non-Javadoc)
@@ -235,49 +229,6 @@ public class DeviceServiceImpl implements DeviceService {
 
 		return device;
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.DeviceService#updateDevice(io.mosip.kernel
-	 * .masterdata.dto.RequestDto)
-	 */
-	@Override
-	@Transactional
-	public IdAndLanguageCodeID updateDevice(DeviceDto deviceRequestDto) {
-		Device entity = null;
-		Device updatedDevice = null;
-		try {
-			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
-					deviceRequestDto.getId(), deviceRequestDto.getLangCode());
-
-			if (oldDevice != null) {
-				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto, oldDevice, false);
-				updatedDevice = deviceRepository.update(entity);
-				DeviceHistory deviceHistory = new DeviceHistory();
-				MapperUtils.map(updatedDevice, deviceHistory);
-				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
-
-				deviceHistory.setEffectDateTime(updatedDevice.getUpdatedDateTime());
-				deviceHistory.setUpdatedDateTime(updatedDevice.getUpdatedDateTime());
-
-				deviceHistoryService.createDeviceHistory(deviceHistory);
-			} else {
-				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
-		}
-
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		idAndLanguageCodeID.setId(entity.getId());
-		idAndLanguageCodeID.setLangCode(entity.getLangCode());
-
-		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -459,7 +410,7 @@ public class DeviceServiceImpl implements DeviceService {
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
-		pageUtils.validateSortField(DeviceSearchDto.class,Device.class, sort);
+		pageUtils.validateSortField(DeviceSearchDto.class, Device.class, sort);
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
 		if (filterValidator.validate(DeviceSearchDto.class, dto.getFilters())) {
@@ -755,8 +706,12 @@ public class DeviceServiceImpl implements DeviceService {
 		return filterResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceService#decommissionDevice(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#decommissionDevice(java.lang
+	 * .String)
 	 */
 	@Override
 	@Transactional
@@ -770,8 +725,7 @@ public class DeviceServiceImpl implements DeviceService {
 		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
 		// get machine from DB by given id
-		List<Device> renDevices = deviceRepository
-				.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(deviceId);
+		List<Device> renDevices = deviceRepository.findDeviceByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(deviceId);
 
 		// device is not in DB
 		if (renDevices.isEmpty()) {
@@ -784,15 +738,16 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
 					DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
 		}
-		try {	
+		try {
 			// check the device has mapped to any reg-Center
-			if(!registrationCenterDeviceRepository.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId).isEmpty()){
+			if (!registrationCenterDeviceRepository.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId)
+					.isEmpty()) {
 				throw new RequestException(DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
 						DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
 			}
-			decommissionedDevice = deviceRepository.decommissionDevice(deviceId,MetaDataUtils.getContextUser(), 
+			decommissionedDevice = deviceRepository.decommissionDevice(deviceId, MetaDataUtils.getContextUser(),
 					MetaDataUtils.getCurrentDateTime());
-			
+
 			// create Device history
 			for (Device device : renDevices) {
 				DeviceHistory deviceHistory = new DeviceHistory();
@@ -815,8 +770,7 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		return idResponseDto;
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -825,7 +779,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Transactional
 	@Override
-	public DeviceExtnDto updateDevice1(DevicePutReqDto devicePutReqDto) {
+	public DeviceExtnDto updateDevice(DevicePutReqDto devicePutReqDto) {
 
 		Device updDevice = null;
 		Device updDeviecEntity = null;
@@ -839,33 +793,30 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 
 			// find requested device is there or not in Device Table
-			Device renDevice = deviceRepository
-					.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
-							devicePutReqDto.getId(), devicePutReqDto.getLangCode());
-			
+			Device renDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
+					devicePutReqDto.getId(), devicePutReqDto.getLangCode());
+
 			devicePutReqDto = masterdataCreationUtil.updateMasterData(Device.class, devicePutReqDto);
-			
-			if(renDevice==null&&primaryLangCode.equals(devicePutReqDto.getLangCode()))
-			{
+
+			if (renDevice == null && primaryLangCode.equals(devicePutReqDto.getLangCode())) {
 				throw new MasterDataServiceException(DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
 						DeviceErrorCode.DECOMMISSIONED.getErrorMessage());
-			}
-			else if(renDevice==null&&secondaryLang.equals(devicePutReqDto.getLangCode()))
-			{
+			} else if (renDevice == null && secondaryLang.equals(devicePutReqDto.getLangCode())) {
+				// create new entry
 				Device crtDeviceEntity = new Device();
-				crtDeviceEntity = MetaDataUtils.setCreateMetaData(devicePutReqDto,
-						crtDeviceEntity.getClass());
+				crtDeviceEntity = MetaDataUtils.setCreateMetaData(devicePutReqDto, crtDeviceEntity.getClass());
 				crtDeviceEntity = deviceRepository.create(crtDeviceEntity);
-				deviceHistory = MetaDataUtils.setCreateMetaData(crtDeviceEntity,
-						RegistrationCenterHistory.class);
+
+				// updating Device history
+				MapperUtils.map(crtDeviceEntity, deviceHistory);
+				MapperUtils.setBaseFieldValue(crtDeviceEntity, deviceHistory);
 				deviceHistory.setEffectDateTime(crtDeviceEntity.getCreatedDateTime());
 				deviceHistory.setCreatedDateTime(crtDeviceEntity.getCreatedDateTime());
 				deviceHistoryService.createDeviceHistory(deviceHistory);
-				deviceExtnDto = MapperUtils.map(crtDeviceEntity, deviceExtnDto);
-			}
 
+				deviceExtnDto = MapperUtils.map(crtDeviceEntity, DeviceExtnDto.class);
+			}
 			if (renDevice != null) {
-		
 				// updating registration center
 				updDeviecEntity = MetaDataUtils.setUpdateMetaData(devicePutReqDto, renDevice, false);
 				updDeviecEntity.setIsActive(devicePutReqDto.getIsActive());
@@ -873,47 +824,38 @@ public class DeviceServiceImpl implements DeviceService {
 				// updating Device
 				updDevice = deviceRepository.update(updDeviecEntity);
 
-				// updating Device history	
+				// updating Device history
 				MapperUtils.map(updDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(updDevice, deviceHistory);
 				deviceHistory.setEffectDateTime(updDevice.getUpdatedDateTime());
 				deviceHistory.setUpdatedDateTime(updDevice.getUpdatedDateTime());
 				deviceHistoryService.createDeviceHistory(deviceHistory);
-				deviceExtnDto= MapperUtils.map(updDevice, DeviceExtnDto.class);
-
-			} else {
-				// if given Id and language code is not present in DB
-				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+				deviceExtnDto = MapperUtils.map(updDevice, DeviceExtnDto.class);
 			}
+
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-		
-		
+
 		return deviceExtnDto;
 
 	}
-	
+
 	// method to check the deviceZone will come under Accessed user zone or not
-		private void validateZone(String deviceZone) {
-			List<String> zoneIds;
-			// get user zone and child zones list
-			List<Zone> userZones = zoneUtils.getUserZones();
-			zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+	private void validateZone(String deviceZone) {
+		List<String> zoneIds;
+		// get user zone and child zones list
+		List<Zone> userZones = zoneUtils.getUserZones();
+		zoneIds = userZones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 
-			if (!(zoneIds.contains(deviceZone))) {
-				// check the given device zones will come under accessed user zones
-				throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
-						DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
-			}
+		if (!(zoneIds.contains(deviceZone))) {
+			// check the given device zones will come under accessed user zones
+			throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
+					DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
 		}
+	}
 
-	
-
-	
-	
 }
