@@ -88,11 +88,6 @@ public class DevicePutReqDto {
 	private String zoneCode;
 	
 	/**
-	 * Zone name for Device.
-	 */
-	private String zone;
-	
-	/**
 	 * Device Type name of Device.
 	 */
 	private String deviceTypeName;
