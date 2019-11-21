@@ -52,6 +52,7 @@ import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.Role;
+import io.mosip.kernel.auth.dto.Roles;
 import io.mosip.kernel.auth.dto.RolesListDto;
 import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
@@ -272,12 +273,59 @@ public class KeycloakImpl implements DataStore {
 		if (!isUserAlreadyPresent(userId.getUserName())) {
 			callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(), HttpMethod.POST,
 					httpEntity);
+			if (keycloakRequestDto.getRealmRoles().contains("INDIVIDUAL")) {
+				String userID = getIDfromUserID(userId.getUserName());
+				roleMapper(userID);
+			}
 		}
 
 		MosipUserDto mosipUserDTO = new MosipUserDto();
 		mosipUserDTO.setUserId(userId.getUserName());
 		return mosipUserDTO;
 
+	}
+
+	private void roleMapper(String userID) {
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put("realmId", realmId);
+		pathParams.put("userID", userID);
+		Roles role = new Roles("45c92d2c-8788-4ce3-b281-8fe619b770b2", "INDIVIDUAL");
+		List<Roles> roles = new ArrayList<>();
+		roles.add(role);
+		pathParams.put("realmId", realmId);
+		HttpEntity<List<Roles>> httpEntity = new HttpEntity<>(roles);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
+				.fromUriString(keycloakAdminUrl + users + "/{userID}/role-mappings/realm");
+		String response = callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(),
+				HttpMethod.POST, httpEntity);
+	}
+
+	private String getIDfromUserID(String userName) {
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put("realmId", realmId);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
+				.fromUriString(keycloakAdminUrl + users + "?username=" + userName);
+		String response = callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(),
+				HttpMethod.GET, null);
+		JsonNode jsonNodes;
+		try {
+			if (response == null) {
+				return null;
+			}
+			jsonNodes = objectMapper.readTree(response);
+		} catch (IOException e) {
+			throw new AuthManagerException(AuthErrorCode.IO_EXCEPTION.getErrorCode(),
+					AuthErrorCode.IO_EXCEPTION.getErrorMessage());
+		}
+		if (jsonNodes.size() > 0) {
+			for (JsonNode jsonNode : jsonNodes) {
+				if (userName.equals(jsonNode.get("username").asText())) {
+					return jsonNode.get("id").asText();
+				}
+			}
+
+		}
+		return null;
 	}
 
 	/**
@@ -319,16 +367,16 @@ public class KeycloakImpl implements DataStore {
 		KeycloakRequestDto keycloakRequestDto = new KeycloakRequestDto();
 		List<String> roles = new ArrayList<>();
 		List<KeycloakPasswordDTO> credentialObject = null;
-		KeycloakPasswordDTO dto=null;
+		KeycloakPasswordDTO dto = null;
 		if (userRegDto.getAppId().equalsIgnoreCase("preregistration")) {
 			roles.add("INDIVIDUAL");
 			credentialObject = new ArrayList<>();
-			dto= new KeycloakPasswordDTO();
+			dto = new KeycloakPasswordDTO();
 			dto.setType("password");
 			dto.setValue("mosip");
 		} else if (userRegDto.getAppId().equalsIgnoreCase("registrationclient")) {
 			credentialObject = new ArrayList<>();
-			dto= new KeycloakPasswordDTO();
+			dto = new KeycloakPasswordDTO();
 			dto.setType("password");
 			dto.setValue(userRegDto.getUserPassword());
 		}
@@ -499,15 +547,15 @@ public class KeycloakImpl implements DataStore {
 				}
 				JsonNode attributeNodes = jsonNode.get("attributes");
 				userPassword = getPasswordFromDatabase(userName);
-				if(attributeNodes.get("contact no")!=null) {
+				if (attributeNodes.get("contact no") != null) {
 					mobile = attributeNodes.get("contact no").get(0).textValue();
-					}
-					if(attributeNodes.get("name")!=null) {
+				}
+				if (attributeNodes.get("name") != null) {
 					name = attributeNodes.get("name").get(0).textValue();
-					}
-					if(attributeNodes.get("rid")!=null) {
+				}
+				if (attributeNodes.get("rid") != null) {
 					rid = attributeNodes.get("rid").get(0).textValue();
-					} 
+				}
 
 				mosipUserDto.setMail(email);
 				mosipUserDto.setMobile(mobile);

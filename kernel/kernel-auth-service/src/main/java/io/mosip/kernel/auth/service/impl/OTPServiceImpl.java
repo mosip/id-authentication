@@ -336,9 +336,11 @@ public class OTPServiceImpl implements OTPService {
              final String url = mosipEnvironment.getVerifyOtpUserApi();
              String token = null;
              AccessTokenResponse accessTokenResponse=null;
+             AccessTokenResponse responseAccessTokenResponse=null;
              try {
                     //token = tokenService.getInternalTokenGenerationService();
              accessTokenResponse=getAuthAccessToken("auth","90c62f15-2e9a-4cda-a8ba-9a7a7dbcbeb3");
+             
              token=accessTokenResponse.getAccess_token();
              } catch (Exception e) {
                     throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
@@ -357,6 +359,7 @@ public class OTPServiceImpl implements OTPService {
                     if (!validationErrorsList.isEmpty()) {
                           throw new AuthManagerServiceException(validationErrorsList);
                     }
+                    responseAccessTokenResponse=getUserAccessToken(mosipUser.getUserId());
                     OtpValidatorResponseDto otpResponse = null;
                     ResponseWrapper<?> responseObject;
                     try {
@@ -369,8 +372,8 @@ public class OTPServiceImpl implements OTPService {
                     if (otpResponse.getStatus() != null && otpResponse.getStatus().equals("success")) {
                           //BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
                                            String expTime = accessTokenResponse.getExpires_in();
-                          mosipUserDtoToken = new MosipUserTokenDto(mosipUser, accessTokenResponse.getAccess_token(),
-                                 accessTokenResponse.getRefresh_token(),Long.parseLong(expTime), null, null);
+                          mosipUserDtoToken = new MosipUserTokenDto(mosipUser, responseAccessTokenResponse.getAccess_token(),
+                        		  responseAccessTokenResponse.getRefresh_token(),Long.parseLong(expTime), null, null);
                            mosipUserDtoToken.setMessage(otpResponse.getMessage());
                            mosipUserDtoToken.setStatus(otpResponse.getStatus());
                     } else {
