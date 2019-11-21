@@ -184,10 +184,10 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			AuthToken token = getAuthToken(authResponseDto);
-			if (token != null && token.getUserId() != null) {
-				customTokenServices.StoreToken(token);
-			}
+			/*
+			 * AuthToken token = getAuthToken(authResponseDto); if (token != null &&
+			 * token.getUserId() != null) { customTokenServices.StoreToken(token); }
+			 */
 		} else {
 			authNResponse = new AuthNResponse();
 			authNResponse.setStatus(authResponseDto.getStatus());
