@@ -75,6 +75,10 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
+
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
 	
 	@Value("${mosip.registartion.processor.validateUMC}")
 	private boolean validateUMC;
@@ -87,7 +91,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
 	}
 

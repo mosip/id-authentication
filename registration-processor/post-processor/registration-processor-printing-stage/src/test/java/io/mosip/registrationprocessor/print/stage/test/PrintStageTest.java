@@ -187,6 +187,8 @@ public class PrintStageTest {
 
 	@Before
 	public void setup() throws Exception {
+		ReflectionTestUtils.setField(stage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(stage, "clusterManagerUrl", "/dummyPath");
 		System.setProperty("server.port", "8099");
 		System.setProperty("registration.processor.queue.username", "admin");
 		System.setProperty("registration.processor.queue.password", "admin");
