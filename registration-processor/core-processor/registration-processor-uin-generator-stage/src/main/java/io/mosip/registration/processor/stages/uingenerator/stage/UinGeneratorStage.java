@@ -126,6 +126,10 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** The adapter. */
 	@Autowired
 	private PacketManager adapter;
@@ -892,7 +896,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 	}

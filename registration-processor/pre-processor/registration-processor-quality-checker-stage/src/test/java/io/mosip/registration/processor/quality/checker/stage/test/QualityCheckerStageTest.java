@@ -97,6 +97,8 @@ public class QualityCheckerStageTest {
 
 	@Before
 	public void setUp() throws Exception {
+		ReflectionTestUtils.setField(qualityCheckerStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(qualityCheckerStage, "clusterManagerUrl", "/dummyPath");
 		ReflectionTestUtils.setField(qualityCheckerStage, "irisThreshold", 70);
 		ReflectionTestUtils.setField(qualityCheckerStage, "leftFingerThreshold", 80);
 		ReflectionTestUtils.setField(qualityCheckerStage, "rightFingerThreshold", 80);

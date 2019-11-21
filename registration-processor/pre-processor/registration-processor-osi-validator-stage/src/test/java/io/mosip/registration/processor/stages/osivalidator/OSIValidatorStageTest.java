@@ -23,6 +23,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -107,6 +108,9 @@ public class OSIValidatorStageTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		ReflectionTestUtils.setField(osiValidatorStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(osiValidatorStage, "clusterManagerUrl", "/dummyPath");
 
 		@SuppressWarnings("unchecked")
 		RegistrationProcessorRestClientService<Object> mockObj = Mockito

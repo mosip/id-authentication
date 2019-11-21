@@ -182,6 +182,8 @@ public class BiometricAuthenticationStageTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		ReflectionTestUtils.setField(biometricAuthenticationStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(biometricAuthenticationStage, "clusterManagerUrl", "/dummyPath");
 		ReflectionTestUtils.setField(biometricAuthenticationStage, "ageLimit", "5");
 
 		list = new ArrayList<InternalRegistrationStatusDto>();

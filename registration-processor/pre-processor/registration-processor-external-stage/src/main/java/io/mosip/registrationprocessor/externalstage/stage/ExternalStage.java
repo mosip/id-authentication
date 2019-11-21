@@ -62,6 +62,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -91,7 +95,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	 * method to deploy external stage verticle
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.EXTERNAL_STAGE_BUS_IN,
 				MessageBusAddress.EXTERNAL_STAGE_BUS_OUT);
 	}

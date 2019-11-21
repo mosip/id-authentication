@@ -50,6 +50,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** server context Path. */
 	@Value("${server.servlet.path}")
 	private String contextPath;
@@ -91,7 +95,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * deploys this verticle.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 	}
 
 	/** The env. */

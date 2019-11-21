@@ -129,13 +129,10 @@ public class MessageSenderStageTest {
 		}
 	};
 
-	@Test
-	public void testDeployVerticle() {
-		stage.deployVerticle();
-	}
-
 	@Before
 	public void setup() throws Exception {
+		ReflectionTestUtils.setField(stage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(stage, "clusterManagerUrl", "/dummyPath");
 		ReflectionTestUtils.setField(stage, "notificationTypes", "SMS|EMAIL");
 		ReflectionTestUtils.setField(stage, "uinGeneratedSubject", "UIN generated");
 		ReflectionTestUtils.setField(stage, "uinActivateSubject", "UIN activated");
@@ -179,6 +176,11 @@ public class MessageSenderStageTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
+	}
+
+	@Test
+	public void testDeployVerticle() {
+		stage.deployVerticle();
 	}
 
 	@SuppressWarnings("unchecked")
