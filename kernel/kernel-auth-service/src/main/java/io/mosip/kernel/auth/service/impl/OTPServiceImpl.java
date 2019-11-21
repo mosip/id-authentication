@@ -339,7 +339,7 @@ public class OTPServiceImpl implements OTPService {
              try {
                     //token = tokenService.getInternalTokenGenerationService();
                     accessTokenResponse=getUserAccessToken(mosipUser.getUserId());
-             token=AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+accessTokenResponse.getAccess_token();
+             token=accessTokenResponse.getAccess_token();
              } catch (Exception e) {
                     throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
              }
