@@ -337,7 +337,7 @@ public class MosipBioDeviceManager {
 
 		String constructedDeviceType = constructDeviceType(deviceType);
 
-		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
+		if (deviceRegistry.isEmpty() || deviceRegistry.get(constructedDeviceType) == null) {
 			initByDeviceType(constructedDeviceType);
 		}
 		BioDevice bioDevice = deviceRegistry.get(constructedDeviceType);
