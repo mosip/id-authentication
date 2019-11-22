@@ -629,7 +629,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "finger count is exceeding to " + maxFingerCount);
 			errors.reject(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage()));
+					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage(), maxFingerCount));
 		}
 	}
 
