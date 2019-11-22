@@ -34,9 +34,12 @@ import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessag
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.SupervisorStatus;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.decryptor.Decryptor;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
@@ -90,6 +93,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncRegistrationServiceImpl.class);
 
+	/** The decryptor. */
 	@Autowired
 	private Decryptor decryptor;
 
@@ -208,6 +212,15 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		return syncResponseList;
 	}
 
+	/**
+	 * Validate supervisor status.
+	 *
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
+	 * @return true, if successful
+	 */
 	private boolean validateSupervisorStatus(SyncRegistrationDto registrationDto,
 			List<SyncResponseDto> syncResponseList) {
 		String value = registrationDto.getSupervisorStatus();
@@ -229,6 +242,15 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	}
 
+	/**
+	 * Validate hash value.
+	 *
+	 * @param registrationDto
+	 *            the registration dto
+	 * @param syncResponseList
+	 *            the sync response list
+	 * @return true, if successful
+	 */
 	private boolean validateHashValue(SyncRegistrationDto registrationDto, List<SyncResponseDto> syncResponseList) {
 
 		if (registrationDto.getPacketHashValue() == null) {
@@ -432,6 +454,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		return syncRegistrationEntity;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.status.service.SyncRegistrationService#
+	 * decryptAndGetSyncRequest(java.lang.Object, java.lang.String,
+	 * java.lang.String, java.util.List)
+	 */
 	@Override
 	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(Object encryptedSyncMetaInfo, String referenceId,
 			String timeStamp, List<SyncResponseDto> syncResponseList) {
@@ -478,5 +507,71 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				"SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::exit");
 
 		return registrationSyncRequestDTO;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.status.service.SyncRegistrationService#
+	 * getByIds(java.util.List)
+	 */
+	@Override
+	public List<RegistrationStatusDto> getByIds(List<RegistrationStatusSubRequestDto> requestIds) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"SyncRegistrationServiceImpl::getByIds()::entry");
+
+		try {
+			List<String> registrationIds = new ArrayList<>();
+
+			for (RegistrationStatusSubRequestDto registrationStatusSubRequestDto : requestIds) {
+				registrationIds.add(registrationStatusSubRequestDto.getRegistrationId());
+			}
+			List<SyncRegistrationEntity> syncRegistrationEntityList = syncRegistrationDao.getByIds(registrationIds);
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"SyncRegistrationServiceImpl::getByIds()::exit");
+			return convertEntityListToDtoListAndGetExternalStatus(syncRegistrationEntityList);
+
+		} catch (DataAccessLayerException e) {
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+		}
+
+	}
+
+	/**
+	 * Convert entity list to dto list and get external status.
+	 *
+	 * @param syncRegistrationEntityList
+	 *            the sync registration entity list
+	 * @return the list
+	 */
+	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(
+			List<SyncRegistrationEntity> syncRegistrationEntityList) {
+		List<RegistrationStatusDto> list = new ArrayList<>();
+		if (syncRegistrationEntityList != null) {
+			for (SyncRegistrationEntity entity : syncRegistrationEntityList) {
+				list.add(convertEntityToDtoAndGetExternalStatus(entity));
+			}
+
+		}
+		return list;
+	}
+
+	/**
+	 * Convert entity to dto and get external status.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the registration status dto
+	 */
+	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(SyncRegistrationEntity entity) {
+		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+		registrationStatusDto.setRegistrationId(entity.getRegistrationId());
+		registrationStatusDto.setStatusCode(RegistrationExternalStatusCode.UPLOAD_PENDING.toString());
+		return registrationStatusDto;
 	}
 }

@@ -25,7 +25,6 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -33,12 +32,12 @@ import io.mosip.registration.processor.core.token.validation.exception.AccessDen
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.api.controller.RegistrationStatusController;
+import io.mosip.registration.processor.status.dto.ErrorDTO;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.sync.response.dto.RegStatusResponseDTO;
 
-
-@RestControllerAdvice(assignableTypes=RegistrationStatusController.class)
+@RestControllerAdvice(assignableTypes = RegistrationStatusController.class)
 public class RegistrationStatusExceptionHandler {
 
 	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.processor.registration.status.id";
@@ -66,50 +65,57 @@ public class RegistrationStatusExceptionHandler {
 
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<Object> duplicateentry(TablenotAccessibleException e, WebRequest request) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getCause().toString());
-		return buildRegStatusExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getCause().toString());
+		return buildRegStatusExceptionResponse((Exception) e);
 	}
 
 	@ExceptionHandler(JsonMappingException.class)
-	public ResponseEntity<Object> badRequest(JsonMappingException ex, WebRequest request){
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION.getCode(),PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION.getMessage());
-		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION, ex);
-		return handleRegStatusException(reg1,request);
+	public ResponseEntity<Object> badRequest(JsonMappingException ex, WebRequest request) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION.getCode(),
+				PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION.getMessage());
+		RegStatusAppException reg1 = new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_MAPPING_EXCEPTION,
+				ex);
+		return handleRegStatusException(reg1, request);
 	}
 
 	@ExceptionHandler(JsonParseException.class)
 	public ResponseEntity<Object> badRequest(JsonParseException ex, WebRequest request) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION.getCode(),PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION.getMessage());
-		RegStatusAppException reg1=new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION, ex);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION.getCode(),
+				PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION.getMessage());
+		RegStatusAppException reg1 = new RegStatusAppException(PlatformErrorMessages.RPR_RGS_JSON_PARSING_EXCEPTION,
+				ex);
 		return handleRegStatusException(reg1, request);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> badRequest(MethodArgumentNotValidException ex) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getCode(),"langCode must be of 3 characters");
-		return buildRegStatusExceptionResponse((Exception)ex);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getCode(), "langCode must be of 3 characters");
+		return buildRegStatusExceptionResponse((Exception) ex);
 	}
-
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<Object> dataExceptionHandler(final DataIntegrityViolationException e, WebRequest request) {
 
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"RPR-DBE-001 Data integrity violation exception",e.getMessage());
-		return buildRegStatusExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"RPR-DBE-001 Data integrity violation exception", e.getMessage());
+		return buildRegStatusExceptionResponse((Exception) e);
 	}
-
 
 	@ExceptionHandler(RegStatusAppException.class)
 	protected ResponseEntity<Object> handleRegStatusException(RegStatusAppException e, WebRequest request) {
-		return buildRegStatusExceptionResponse((Exception)e);
+		return buildRegStatusExceptionResponse((Exception) e);
 
 	}
+
 	@ExceptionHandler(InvalidTokenException.class)
 	protected ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException e, WebRequest request) {
-		return buildRegStatusExceptionResponse((Exception)e);
+		return buildRegStatusExceptionResponse((Exception) e);
 
 	}
-
 
 	private ResponseEntity<Object> buildRegStatusExceptionResponse(Exception ex) {
 
@@ -125,7 +131,9 @@ public class RegistrationStatusExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
+			List<ErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}
@@ -145,14 +153,13 @@ public class RegistrationStatusExceptionHandler {
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
-		if(isEnabled) {
+		if (isEnabled) {
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
+			headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
 			return ResponseEntity.ok().headers(headers).body(gson.toJson(response));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
-
 
 }
