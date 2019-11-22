@@ -237,13 +237,14 @@ public class AuthController {
 	@PostMapping(value = "/authorize/validateToken")
 	public ResponseWrapper<MosipUserDto> validateToken(HttpServletRequest request, HttpServletResponse res)
 			throws AuthManagerException, Exception {
+		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		String authToken = null;
 		Cookie[] cookies = request.getCookies();
 		if (cookies == null) {
 			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
 					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
 		}
-		MosipUserDto mosipUserDto =null;
+		MosipUserTokenDto mosipUserDtoToken = null;
 		try {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
@@ -254,15 +255,17 @@ public class AuthController {
 				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
 						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
-		
-		mosipUserDto = authService.valdiateToken(authToken);
-		Cookie cookie = createCookie(mosipUserDto.getToken(), mosipEnvironment.getTokenExpiry());
-		res.addCookie(cookie);
-		}catch (NonceExpiredException exp) {
+			mosipUserDtoToken = authService.validateToken(authToken);
+			System.out.println("Token check after validate :::"+mosipUserDtoToken.getToken());
+			if (mosipUserDtoToken != null) {
+				mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
+			}
+			Cookie cookie = createCookie(mosipUserDtoToken.getToken(), mosipEnvironment.getTokenExpiry());
+			res.addCookie(cookie);
+		} catch (NonceExpiredException exp) {
 			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
 		}
-		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(mosipUserDto);
+		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
 		return responseWrapper;
 	}
 
