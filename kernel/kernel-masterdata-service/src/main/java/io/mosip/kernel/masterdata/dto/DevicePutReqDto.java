@@ -1,41 +1,40 @@
-package io.mosip.kernel.masterdata.dto.getresponse.extn;
+package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.mosip.kernel.masterdata.validator.FilterType;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+
+/**
+ * Response dto for Device Detail
+ * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
+ */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
 @ApiModel(value = "Device", description = "Device Detail resource")
-public class DeviceExtnDto extends BaseDto {
-	
+public class DevicePutReqDto {
+
 	/**
 	 * Field for device id
 	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS})
 	@NotBlank
 	@Size(min = 1, max = 36)
-	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
+	@ApiModelProperty(value = "id", required = false, dataType = "java.lang.String")
 	private String id;
 	/**
 	 * Field for device name
 	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
@@ -43,7 +42,6 @@ public class DeviceExtnDto extends BaseDto {
 	/**
 	 * Field for device serial number
 	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "serialNum", required = true, dataType = "java.lang.String")
@@ -51,7 +49,6 @@ public class DeviceExtnDto extends BaseDto {
 	/**
 	 * Field for device device specification Id
 	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceSpecId", required = true, dataType = "java.lang.String")
@@ -59,7 +56,6 @@ public class DeviceExtnDto extends BaseDto {
 	/**
 	 * Field for device mac address
 	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "macAddress", required = true, dataType = "java.lang.String")
@@ -68,22 +64,36 @@ public class DeviceExtnDto extends BaseDto {
 	 * Field for device ip address
 	 */
 
-	@Size(min = 1, max = 17)
+	@Size(min = 0, max = 17)
 	@ApiModelProperty(value = "ipAddress", required = true, dataType = "java.lang.String")
 	private String ipAddress;
 	/**
 	 * Field for language code
 	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS })
-	@ValidLangCode
-	@NotBlank
-	@Size(min = 1, max = 3)
+	@ValidLangCode(message = "Language Code is Invalid")
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
+	/**
+	 * Field for is active
+	 */
+	@NotNull
+	private Boolean isActive;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;
-	
-	
 
+	@NotNull
+	@ApiModelProperty(value = "zoneCode", required = true, dataType = "java.lang.String")
+	@Size(min = 1, max = 36)
+	private String zoneCode;
+	
+	/**
+	 * Device Type name of Device.
+	 */
+	private String deviceTypeName;
+
+	/**
+	 * Device center mapping status.
+	 */
+	private String mapStatus;
 }
