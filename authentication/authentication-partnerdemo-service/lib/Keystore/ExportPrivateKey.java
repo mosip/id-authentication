@@ -4,7 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.security.*;
-//Command: java ExportPrivateKey <path_to_keystore> JCEKS <keystore_password> “<key_alias>” <key_password> <output_file_name>
+/**
+ * Class to export private key from key store in PEM format.
+ * This is used since keytool cannot be used for this purpose.
+ * Referenced from https://security.stackexchange.com/a/114776/221987
+ * 
+ * Command Line: java ExportPrivateKey <path_to_keystore> JCEKS <keystore_password> “<key_alias>” <key_password> <output_file_name>
+ * 
+ * @author Loganathan.Sekar
+ *
+ */
+
 
 public class ExportPrivateKey
 {
