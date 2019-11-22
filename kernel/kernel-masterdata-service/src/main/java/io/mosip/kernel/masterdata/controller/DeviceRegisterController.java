@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +29,7 @@ import io.swagger.annotations.ApiParam;
  * Controller class for Device registration and de registration.
  * 
  * @author Ritesh Sinha
+ * @author Ramadurai Pandian
  * @since 1.0.0
  */
 @RestController
@@ -61,11 +64,11 @@ public class DeviceRegisterController {
 	 *            the request DTO.
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
-	@PreAuthorize("hasAnyRole('DEVICE_PROVIDER')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ApiOperation(value = "DeRegister Device")
-	@DeleteMapping("/deregister")
-	public ResponseEntity<DeviceRegisterResponseDto> deRegisterDevice(@RequestBody DeRegisterDeviceRequestDto request) {
-		return new ResponseEntity<>(deviceRegisterService.deRegisterDevice(request), HttpStatus.OK);
+	@DeleteMapping("/deregister/{deviceCode}")
+	public ResponseEntity<DeviceRegisterResponseDto> deRegisterDevice(@Valid @PathVariable String deviceCode) {
+		return new ResponseEntity<>(deviceRegisterService.deRegisterDevice(deviceCode), HttpStatus.OK);
 	}
 	
 	

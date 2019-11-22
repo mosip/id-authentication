@@ -14,6 +14,6 @@ public enum AuthBioType {
 	IIR,
 
 	/** The FID. */
-	FID,
+	FACE,
 
 }

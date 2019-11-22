@@ -28,7 +28,6 @@ import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
-import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -146,10 +145,9 @@ public class UinGeneratorVertxApplication {
 	private static void startApplication() {
 		ApplicationContext context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		VertxOptions options = new VertxOptions();
-		DeploymentOptions deploymentOptions = new DeploymentOptions().setWorkerPoolSize(50);
 		Vertx vertx = Vertx.vertx(options);
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new HttpServerVerticle(context) };
-		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle,deploymentOptions,stringAsyncResult -> {
+		Stream.of(verticles).forEach(verticle -> vertx.deployVerticle(verticle, stringAsyncResult -> {
 			if (stringAsyncResult.succeeded()) {
 				LOGGER.info("Successfully deployed: " + verticle.getClass().getSimpleName());
 			} else {
