@@ -234,6 +234,49 @@ public class DeviceServiceImpl implements DeviceService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DeviceService#updateDevice(io.mosip.kernel
+	 * .masterdata.dto.RequestDto)
+	 */
+	@Override
+	@Transactional
+	public IdAndLanguageCodeID updateDevice(DeviceDto deviceRequestDto) {
+		Device entity = null;
+		Device updatedDevice = null;
+		try {
+			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
+					deviceRequestDto.getId(), deviceRequestDto.getLangCode());
+
+			if (oldDevice != null) {
+				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto, oldDevice, false);
+				updatedDevice = deviceRepository.update(entity);
+				DeviceHistory deviceHistory = new DeviceHistory();
+				MapperUtils.map(updatedDevice, deviceHistory);
+				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
+
+				deviceHistory.setEffectDateTime(updatedDevice.getUpdatedDateTime());
+				deviceHistory.setUpdatedDateTime(updatedDevice.getUpdatedDateTime());
+
+				deviceHistoryService.createDeviceHistory(deviceHistory);
+			} else {
+				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+		}
+
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		idAndLanguageCodeID.setId(entity.getId());
+		idAndLanguageCodeID.setLangCode(entity.getLangCode());
+
+		return idAndLanguageCodeID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.masterdata.service.DeviceService#deleteDevice(java.lang.
 	 * String)
 	 */
