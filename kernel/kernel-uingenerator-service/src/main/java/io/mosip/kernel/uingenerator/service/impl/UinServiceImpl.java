@@ -55,16 +55,16 @@ public class UinServiceImpl implements UinService {
 	@Override
 	public UinResponseDto getUin() {
 		UinResponseDto uinResponseDto = new UinResponseDto();
-		long getStart= System.currentTimeMillis();
+		//long getStart= System.currentTimeMillis();
 		UinEntity uinBean = uinRepository.findFirstByStatus(UinGeneratorConstant.UNUSED);
-		LOGGER.info("getStart {}",(System.currentTimeMillis()-getStart));
+		//LOGGER.info("getStart {}",(System.currentTimeMillis()-getStart));
 		if (uinBean != null) {
 			//uinBean.setStatus(UinGeneratorConstant.ISSUED);
 			//metaDataUtil.setUpdateMetaData(uinBean);
-			long saveStart=System.currentTimeMillis();
+			//long saveStart=System.currentTimeMillis();
 			//uinRepository.save(uinBean);
 			uinRepository.updateStatus(UinGeneratorConstant.ISSUED,UinGeneratorConstant.DEFAULTADMIN_MOSIP_IO,DateUtils.getUTCCurrentDateTime(),uinBean.getUin());
-			LOGGER.info("saveStart {}",(System.currentTimeMillis()-saveStart));
+			//LOGGER.info("saveStart {}",(System.currentTimeMillis()-saveStart));
 			uinResponseDto.setUin(uinBean.getUin());
 		} else {
 			throw new UinNotFoundException(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),

@@ -100,14 +100,14 @@ public class DeviceRegisterIntergrationTest {
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
-	@Test
-	@WithUserDetails("device-provider")
-	public void deRegisterDeviceTest() throws JsonProcessingException, Exception {
-		mockMvc.perform(
-				delete("/device/deregister").content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
-						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
+//	@Test
+//	@WithUserDetails("device-provider")
+//	public void deRegisterDeviceTest() throws JsonProcessingException, Exception {
+//		mockMvc.perform(
+//				delete("/device/deregister").content(objectMapper.writeValueAsString(deRegisterDeviceRequestDto))
+//						.contentType(MediaType.APPLICATION_JSON))
+//				.andExpect(status().isOk());
+//	}
 	
 	@Test
 	@WithUserDetails("zonal-admin")

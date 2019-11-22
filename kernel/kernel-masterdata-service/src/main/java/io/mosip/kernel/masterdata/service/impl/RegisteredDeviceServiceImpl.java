@@ -1,10 +1,13 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,12 +17,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegisteredDeviceErrorCode;
+import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
+import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DeviceRegister;
+import io.mosip.kernel.masterdata.entity.DeviceRegisterHistory;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
+import io.mosip.kernel.masterdata.exception.DeviceRegisterException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceProviderRepository;
@@ -153,4 +162,29 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		return code;
 	}
 
+	@Override
+	public DeviceDeRegisterResponse deRegisterDevice(@Valid String deviceCode) {
+		RegisteredDevice deviceRegisterEntity = null;
+		RegisteredDeviceHistory deviceRegisterHistory = new RegisteredDeviceHistory();
+		try {
+			deviceRegisterEntity = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
+			if (deviceRegisterEntity != null) {
+				deviceRegisterEntity.setStatusCode("Retired");
+				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
+				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+				registeredDeviceRepository.update(deviceRegisterEntity);
+				registeredDeviceHistoryRepo.create(deviceRegisterHistory);
+			} else {
+				throw new DeviceRegisterException("KER-MSD-xx", "No register device found");
+			}
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new DeviceRegisterException("KER-MSD-xx",
+					"Error occur while deregistering device details " + ExceptionUtils.parseException(e));
+		}
+		DeviceDeRegisterResponse response = new DeviceDeRegisterResponse();
+		response.setStatus("success");
+		response.setMessage("Device deregistered successfully");
+		return response;
+	}
 }

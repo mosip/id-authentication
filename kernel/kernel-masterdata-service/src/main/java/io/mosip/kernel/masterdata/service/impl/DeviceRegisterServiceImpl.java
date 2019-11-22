@@ -119,14 +119,13 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 	 * mosip.kernel.masterdata.dto.DeRegisterDeviceRequestDto)
 	 */
 	@Override
-	public DeviceRegisterResponseDto deRegisterDevice(DeRegisterDeviceRequestDto request) {
+	public DeviceRegisterResponseDto deRegisterDevice(String deviceCode) {
 		DeviceRegister deviceRegisterEntity = null;
 		DeviceRegisterHistory deviceRegisterHistory = new DeviceRegisterHistory();
-		String deviceCode = request.getDevice().getDeviceCode();
 		try {
 			deviceRegisterEntity = deviceRegisterRepository.findDeviceRegisterByCodeAndStatusCode(deviceCode);
 			if (deviceRegisterEntity != null) {
-				deviceRegisterEntity.setStatusCode("deregister");
+				deviceRegisterEntity.setStatusCode("Retired");
 				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
 				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
 				deviceRegisterRepository.update(deviceRegisterEntity);
@@ -142,7 +141,7 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 
 		DeviceRegisterResponseDto responseDto = new DeviceRegisterResponseDto();
 		DeviceRegResponseDto regResponseDto = new DeviceRegResponseDto();
-		regResponseDto.setDeviceCode(request.getDevice().getDeviceCode());
+		regResponseDto.setDeviceCode(deviceCode);
 		regResponseDto.setStatus("success");
 		responseDto.setResponse(regResponseDto);
 		return responseDto;

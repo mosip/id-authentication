@@ -67,6 +67,9 @@ public class PacketValidatorStageTest {
 	 */
 	@Test
 	public void testDeployVerticle() {
+		
+		ReflectionTestUtils.setField(packetValidatorStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(packetValidatorStage, "clusterManagerUrl", "/dummyPath");
 		packetValidatorStage.deployVerticle();
 	}
 

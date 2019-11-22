@@ -35,6 +35,10 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/**
 	 * The mosip event bus.
 	 */
@@ -56,7 +60,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl ,workerPoolSize);
 	}
 
 	/*

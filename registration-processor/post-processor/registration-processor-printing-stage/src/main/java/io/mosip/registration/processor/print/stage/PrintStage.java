@@ -163,6 +163,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 	@Value("${server.servlet.path}")
 	private String contextPath;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
 
@@ -201,7 +205,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
 
 		queue = getQueueConnection();
