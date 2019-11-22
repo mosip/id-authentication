@@ -114,8 +114,8 @@ public class DeviceController {
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
-	 * @param deviceRequestDto
-	 *            input parameter deviceRequestDto
+	 * @param deviceDto
+	 *            input parameter deviceDto
 	 * 
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
@@ -127,10 +127,10 @@ public class DeviceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseWrapper<Device> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
-
+	public ResponseWrapper<Device> createDevice(
+			@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
+		responseWrapper.setResponse(deviceService.createDevice(deviceDto.getRequest()));
 		return responseWrapper;
 
 	}
