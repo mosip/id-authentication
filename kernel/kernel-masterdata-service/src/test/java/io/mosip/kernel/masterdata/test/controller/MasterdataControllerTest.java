@@ -44,6 +44,7 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
@@ -54,6 +55,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ExceptionalHolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -80,6 +82,7 @@ import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
@@ -129,6 +132,9 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private RegWorkingNonWorkingService regWorkingNonWorkingService;
+	
+	@MockBean
+	private ExceptionalHolidayService exceptionalHolidayService;
 
 	// private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{
 	// \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\",
@@ -220,6 +226,7 @@ public class MasterdataControllerTest {
 	
 	WeekDaysResponseDto weekDaysResponseDto=new WeekDaysResponseDto();
 	WorkingDaysResponseDto workingDaysResponseDto=new WorkingDaysResponseDto();
+	ExceptionalHolidayResponseDto exceptionalHolidayResponseDto=new ExceptionalHolidayResponseDto();
 
 	@Before
 	public void setUp() {
@@ -248,6 +255,8 @@ public class MasterdataControllerTest {
 		templateFileFormatSetup();
 		
 		regWorkingDaySetup();
+		
+		exceptionalHolidaySetUp();
 
 	}
 
@@ -256,6 +265,12 @@ public class MasterdataControllerTest {
 		List<WeekDaysDto> WeekDaysResponseList = new ArrayList<>();
 		WeekDaysDto weekDaysDto = new WeekDaysDto();
 		WeekDaysResponseList.add(weekDaysDto);
+	}
+	
+	public void exceptionalHolidaySetUp() {
+		List<ExceptionalHolidayDto> exceptionalHolidayList=new ArrayList<>();
+		ExceptionalHolidayDto exceptionalHolidayDto=new ExceptionalHolidayDto();
+		exceptionalHolidayList.add(exceptionalHolidayDto);
 	}
 
 	private void templateSetup() {
@@ -1131,5 +1146,14 @@ public class MasterdataControllerTest {
 
 	}
 	
+	// -----------------------------ExceptionalHolidayControllerTest------------------------
+	@Test
+	@WithUserDetails("reg-processor")
+	public void exceptionalHolidayControllerTest() throws Exception {
+
+		Mockito.when(exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng")).thenReturn(exceptionalHolidayResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng")).andExpect(status().isOk());
+
+	}
 
 }
