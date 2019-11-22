@@ -48,12 +48,10 @@ import io.mosip.idrepository.vid.repository.VidRepo;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
-import io.mosip.kernel.idgenerator.vid.exception.VidException;
 
 /**
  * The Class VidServiceImpl - service implementation for VID service.
@@ -99,10 +97,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/** The vid repo. */
 	@Autowired
 	private VidRepo vidRepo;
-
-	/** The vid generator. */
-	@Autowired
-	private VidGenerator<String> vidGenerator;
 
 	/** The rest builder. */
 	@Autowired
@@ -153,9 +147,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 					securityManager.hash(uin.getBytes()), IdType.VID,
 					"Create VID requested for " + vidRequest.getVidType());
 			return buildResponse(responseDTO, id.get("create"));
-		} catch (VidException e) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED, e);
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID,
 					"\n" + ExceptionUtils.getStackTrace(e));
@@ -194,7 +185,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID,
 					uin + IdRepoConstants.SPLITTER.getValue() + DateUtils.getUTCCurrentDateTime()).toString();
 			return vidRepo
-					.save(new Vid(vidRefId, vidGenerator.generateId(), uinHash, uinToEncrypt, vidType, currentTime,
+					.save(new Vid(vidRefId, generateVid(), uinHash, uinToEncrypt, vidType, currentTime,
 							Objects.nonNull(policy.getValidForInMinutes())
 									? DateUtils.getUTCCurrentDateTime().plusMinutes(policy.getValidForInMinutes())
 									: LocalDateTime.MAX.withYear(9999),
@@ -204,6 +195,22 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID,
 					"throwing vid creation failed");
 			throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private String generateVid() throws IdRepoAppException {
+		try {
+			ResponseWrapper response = restHelper.requestSync(
+					restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class));
+			return ((Map<String, String>) response.getResponse()).get("vid");
+		} catch (IdRepoDataValidationException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, "generateVID",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorText());
+		} catch (RestServiceException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
+			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED, e);
 		}
 	}
 
