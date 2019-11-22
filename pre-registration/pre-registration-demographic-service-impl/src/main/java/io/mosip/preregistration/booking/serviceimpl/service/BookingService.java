@@ -113,7 +113,7 @@ public class BookingService implements BookingServiceIntf {
 	@Value("${mosip.preregistration.booking.availability.sync.id}")
 	String idUrlSync;
 
-	@Value("${mosip.preregistration.booking.book.id}")
+	@Value("${mosip.preregistration.booking.id.book}")
 	String idUrlBookAppointment;
 
 	@Value("${mosip.preregistration.booking.fetch.booking.id}")
@@ -143,12 +143,8 @@ public class BookingService implements BookingServiceIntf {
 	@Value("${mosip.primary-language}")
 	String primaryLang;
 
-	Map<String, String> requiredRequestMap = new HashMap<>();
-
 	@PostConstruct
 	public void setupBookingService() {
-		// requiredRequestMap.put("id", idUrl);
-		requiredRequestMap.put("version", versionUrl);
 
 	}
 
@@ -259,8 +255,12 @@ public class BookingService implements BookingServiceIntf {
 		return response;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#sendNotification(io.mosip.preregistration.core.common.entity.RegistrationBookingEntity)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * sendNotification(io.mosip.preregistration.core.common.entity.
+	 * RegistrationBookingEntity)
 	 */
 	@Override
 	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) throws JsonProcessingException {
@@ -277,8 +277,11 @@ public class BookingService implements BookingServiceIntf {
 		serviceUtil.emailNotification(notification, primaryLang);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#getAvailability(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * getAvailability(java.lang.String)
 	 */
 	@Override
 	public MainResponseDTO<AvailabilityDto> getAvailability(String regID) {
@@ -355,8 +358,12 @@ public class BookingService implements BookingServiceIntf {
 		return noOfHoliday;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#bookAppointment(io.mosip.preregistration.core.common.dto.MainRequestDTO, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * bookAppointment(io.mosip.preregistration.core.common.dto.MainRequestDTO,
+	 * java.lang.String)
 	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
@@ -370,78 +377,74 @@ public class BookingService implements BookingServiceIntf {
 		responseDTO.setId(idUrlBookAppointment);
 		responseDTO.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
-
-		requiredRequestMap.put("id", idUrlBookAppointment);
-
 		synchronized (bookingLock) {
 
 			log.info("Sync block :", preRegistrationId, " Start", "");
 
 			BookingStatusDTO response = new BookingStatusDTO();
 			try {
-				if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs), requiredRequestMap)) {
-					BookingRequestDTO bookingRequestDTO = bookingRequestDTOs.getRequest();
-					Map<String, String> dateMap = new HashMap<>();
-					dateMap.put(RequestCodes.REG_DATE.getCode(), bookingRequestDTO.getRegDate());
-					dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), bookingRequestDTO.getSlotFromTime());
-					dateMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
-					if (serviceUtil.validateAppointmentDate(dateMap)) {
-						/* Getting Status From Demographic */
-						String preRegStatusCode = serviceUtil.getDemographicStatus(preRegistrationId);
 
-						if (serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO)) {
+				BookingRequestDTO bookingRequestDTO = bookingRequestDTOs.getRequest();
+				Map<String, String> dateMap = new HashMap<>();
+				dateMap.put(RequestCodes.REG_DATE.getCode(), bookingRequestDTO.getRegDate());
+				dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), bookingRequestDTO.getSlotFromTime());
+				dateMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
+				if (serviceUtil.validateAppointmentDate(dateMap)) {
+					/* Getting Status From Demographic */
+					String preRegStatusCode = serviceUtil.getDemographicStatus(preRegistrationId);
 
-							/* Checking the availability of slots */
-							checkSlotAvailability(bookingRequestDTO);
+					if (serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO)) {
 
-							if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+						/* Checking the availability of slots */
+						checkSlotAvailability(bookingRequestDTO);
 
-								/* Creating new booking */
-								response = book(preRegistrationId, bookingRequestDTO);
+						if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
 
-							} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
+							/* Creating new booking */
+							response = book(preRegistrationId, bookingRequestDTO);
 
-								/* Concatenating Booking date and slot from time */
-								RegistrationBookingEntity bookingEntity = bookingDAO
-										.findByPreRegistrationId(preRegistrationId);
+						} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 
-								BookingRequestDTO oldBooking = new BookingRequestDTO();
-								oldBooking.setRegDate(bookingEntity.getRegDate().toString());
-								oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
-								oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
-								oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
+							/* Concatenating Booking date and slot from time */
+							RegistrationBookingEntity bookingEntity = bookingDAO
+									.findByPreRegistrationId(preRegistrationId);
 
-								String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
-								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-								LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
+							BookingRequestDTO oldBooking = new BookingRequestDTO();
+							oldBooking.setRegDate(bookingEntity.getRegDate().toString());
+							oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
+							oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
+							oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
 
-								log.info("sessionId", "idType", "id",
-										"In bookAppointment method of Booking Service for booking Date Time- "
-												+ bookedDateTime);
-								/* Time span check for re-book */
-								serviceUtil.timeSpanCheckForRebook(bookedDateTime, bookingRequestDTOs.getRequesttime());
+							String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
+							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+							LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
-								/* Deleting old booking */
-								deleteOldBooking(preRegistrationId);
+							log.info("sessionId", "idType", "id",
+									"In bookAppointment method of Booking Service for booking Date Time- "
+											+ bookedDateTime);
+							/* Time span check for re-book */
+							serviceUtil.timeSpanCheckForRebook(bookedDateTime, bookingRequestDTOs.getRequesttime());
 
-								/* Increase availability */
-								increaseAvailability(oldBooking);
+							/* Deleting old booking */
+							deleteOldBooking(preRegistrationId);
 
-								/* Creating new booking */
-								response = book(preRegistrationId, bookingRequestDTO);
+							/* Increase availability */
+							increaseAvailability(oldBooking);
 
-							} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+							/* Creating new booking */
+							response = book(preRegistrationId, bookingRequestDTO);
 
-								/* Deleting old booking */
-								deleteOldBooking(preRegistrationId);
+						} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
 
-								/* Creating new booking */
-								response = book(preRegistrationId, bookingRequestDTO);
-							}
+							/* Deleting old booking */
+							deleteOldBooking(preRegistrationId);
 
+							/* Creating new booking */
+							response = book(preRegistrationId, bookingRequestDTO);
 						}
 
 					}
+
 				}
 				isSaveSuccess = true;
 			} catch (Exception ex) {
@@ -469,8 +472,11 @@ public class BookingService implements BookingServiceIntf {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#bookMultiAppointment(io.mosip.preregistration.core.common.dto.MainRequestDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * bookMultiAppointment(io.mosip.preregistration.core.common.dto.MainRequestDTO)
 	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
@@ -489,84 +495,76 @@ public class BookingService implements BookingServiceIntf {
 			BookingStatus response = new BookingStatus();
 			responseDTO.setId(idUrlBookAppointment);
 			responseDTO.setVersion(versionUrl);
-
-			requiredRequestMap.put("id", idUrlBookAppointment);
-
 			boolean isSaveSuccess = false;
 			List<BookingStatusDTO> respList = new ArrayList<>();
 			try {
-				if (ValidationUtil.requestValidator(prepareRequestParamMap(bookingRequestDTOs), requiredRequestMap)) {
-					for (MultiBookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest()
-							.getBookingRequest()) {
-						Map<String, String> dateMap = new HashMap<>();
-						dateMap.put(RequestCodes.REG_DATE.getCode(), bookingRequestDTO.getRegDate());
-						dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), bookingRequestDTO.getSlotFromTime());
-						dateMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(),
-								bookingRequestDTO.getPreRegistrationId());
-						if (serviceUtil.validateAppointmentDate(dateMap)) {
-							/* Getting Status From Demographic */
-							String preRegStatusCode = serviceUtil
-									.getDemographicStatus(bookingRequestDTO.getPreRegistrationId());
+				for (MultiBookingRequestDTO bookingRequestDTO : bookingRequestDTOs.getRequest().getBookingRequest()) {
+					Map<String, String> dateMap = new HashMap<>();
+					dateMap.put(RequestCodes.REG_DATE.getCode(), bookingRequestDTO.getRegDate());
+					dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), bookingRequestDTO.getSlotFromTime());
+					dateMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), bookingRequestDTO.getPreRegistrationId());
+					if (serviceUtil.validateAppointmentDate(dateMap)) {
+						/* Getting Status From Demographic */
+						String preRegStatusCode = serviceUtil
+								.getDemographicStatus(bookingRequestDTO.getPreRegistrationId());
 
-							// Taking one booking request from multiple
-							BookingRequestDTO bookingRequest = new BookingRequestDTO();
-							bookingRequest.setRegDate(bookingRequestDTO.getRegDate());
-							bookingRequest.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
-							bookingRequest.setSlotFromTime(bookingRequestDTO.getSlotFromTime());
-							bookingRequest.setSlotToTime(bookingRequestDTO.getSlotToTime());
+						// Taking one booking request from multiple
+						BookingRequestDTO bookingRequest = new BookingRequestDTO();
+						bookingRequest.setRegDate(bookingRequestDTO.getRegDate());
+						bookingRequest.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
+						bookingRequest.setSlotFromTime(bookingRequestDTO.getSlotFromTime());
+						bookingRequest.setSlotToTime(bookingRequestDTO.getSlotToTime());
 
-							if (serviceUtil.mandatoryParameterCheck(bookingRequestDTO.getPreRegistrationId(),
-									bookingRequest)) {
+						if (serviceUtil.mandatoryParameterCheck(bookingRequestDTO.getPreRegistrationId(),
+								bookingRequest)) {
 
-								/* Checking the availability of slots */
-								checkSlotAvailability(bookingRequest);
+							/* Checking the availability of slots */
+							checkSlotAvailability(bookingRequest);
 
-								if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+							if (preRegStatusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
 
-									/* Creating new booking */
-									respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+								/* Creating new booking */
+								respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
 
-								} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
+							} else if (preRegStatusCode.equals(StatusCodes.BOOKED.getCode())) {
 
-									/* Concatenating Booking date and slot from time */
-									RegistrationBookingEntity bookingEntity = bookingDAO
-											.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
-									BookingRequestDTO oldBooking = new BookingRequestDTO();
-									oldBooking.setRegDate(bookingEntity.getRegDate().toString());
-									oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
-									oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
-									oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
+								/* Concatenating Booking date and slot from time */
+								RegistrationBookingEntity bookingEntity = bookingDAO
+										.findByPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
+								BookingRequestDTO oldBooking = new BookingRequestDTO();
+								oldBooking.setRegDate(bookingEntity.getRegDate().toString());
+								oldBooking.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
+								oldBooking.setSlotFromTime(bookingEntity.getSlotFromTime().toString());
+								oldBooking.setSlotToTime(bookingEntity.getSlotToTime().toString());
 
-									String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
-									DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-									LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
+								String str = bookingEntity.getRegDate() + " " + bookingEntity.getSlotFromTime();
+								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+								LocalDateTime bookedDateTime = LocalDateTime.parse(str, formatter);
 
-									log.info("sessionId", "idType", "id",
-											"In bookMultiAppointment method of Booking Service for booking Date Time- "
-													+ bookedDateTime);
-									/* Time span check for re-book */
-									serviceUtil.timeSpanCheckForRebook(bookedDateTime,
-											bookingRequestDTOs.getRequesttime());
+								log.info("sessionId", "idType", "id",
+										"In bookMultiAppointment method of Booking Service for booking Date Time- "
+												+ bookedDateTime);
+								/* Time span check for re-book */
+								serviceUtil.timeSpanCheckForRebook(bookedDateTime, bookingRequestDTOs.getRequesttime());
 
-									/* Deleting old booking */
-									deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+								/* Deleting old booking */
+								deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
 
-									/* Increase availability */
-									increaseAvailability(oldBooking);
+								/* Increase availability */
+								increaseAvailability(oldBooking);
 
-									/* Creating new booking */
-									respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
+								/* Creating new booking */
+								respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
 
-								} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
+							} else if (preRegStatusCode.equals(StatusCodes.EXPIRED.getCode())) {
 
-									/* Deleting old booking */
-									deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
+								/* Deleting old booking */
+								deleteOldBooking(bookingRequestDTO.getPreRegistrationId());
 
-									/* Creating new booking */
-									respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
-								}
-
+								/* Creating new booking */
+								respList.add(book(bookingRequestDTO.getPreRegistrationId(), bookingRequest));
 							}
+
 						}
 					}
 				}
@@ -600,8 +598,11 @@ public class BookingService implements BookingServiceIntf {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#getAppointmentDetails(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * getAppointmentDetails(java.lang.String)
 	 */
 	@Override
 	public MainResponseDTO<BookingRegistrationDTO> getAppointmentDetails(String preRegID) {
@@ -635,8 +636,11 @@ public class BookingService implements BookingServiceIntf {
 		return responseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#cancelAppointment(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * cancelAppointment(java.lang.String)
 	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
@@ -653,8 +657,11 @@ public class BookingService implements BookingServiceIntf {
 		return responseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#cancelAppointmentBatch(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * cancelAppointmentBatch(java.lang.String)
 	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
@@ -671,8 +678,13 @@ public class BookingService implements BookingServiceIntf {
 		return responseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#book(java.lang.String, io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#book(
+	 * java.lang.String,
+	 * io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO)
 	 */
 	@Override
 	public BookingStatusDTO book(String preRegistrationId, BookingRequestDTO bookingRequestDTO) {
@@ -720,8 +732,11 @@ public class BookingService implements BookingServiceIntf {
 		return bookingStatusDTO;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#cancelBooking(java.lang.String, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * cancelBooking(java.lang.String, boolean)
 	 */
 	@Override
 	public CancelBookingResponseDTO cancelBooking(String preRegistrationId, boolean isBatchUser) {
@@ -758,8 +773,7 @@ public class BookingService implements BookingServiceIntf {
 					bookingDAO.deleteByPreRegistrationId(preRegistrationId);
 
 					/* Update the status to Canceled in demographic Table */
-					serviceUtil.updateDemographicStatus(preRegistrationId,
-							StatusCodes.PENDING_APPOINTMENT.getCode());
+					serviceUtil.updateDemographicStatus(preRegistrationId, StatusCodes.PENDING_APPOINTMENT.getCode());
 
 					/* No. of Availability. update */
 					availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
@@ -792,8 +806,11 @@ public class BookingService implements BookingServiceIntf {
 		return cancelBookingResponseDTO;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#deleteBooking(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * deleteBooking(java.lang.String)
 	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
@@ -851,8 +868,12 @@ public class BookingService implements BookingServiceIntf {
 		return response;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#checkSlotAvailability(io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * checkSlotAvailability(io.mosip.preregistration.booking.serviceimpl.dto.
+	 * BookingRequestDTO)
 	 */
 	@Override
 	public void checkSlotAvailability(BookingRequestDTO bookingRequestDTO) {
@@ -892,8 +913,11 @@ public class BookingService implements BookingServiceIntf {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#deleteOldBooking(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * deleteOldBooking(java.lang.String)
 	 */
 	@Override
 	public boolean deleteOldBooking(String preId) {
@@ -916,8 +940,12 @@ public class BookingService implements BookingServiceIntf {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#increaseAvailability(io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * increaseAvailability(io.mosip.preregistration.booking.serviceimpl.dto.
+	 * BookingRequestDTO)
 	 */
 	@Override
 	public boolean increaseAvailability(BookingRequestDTO oldBooking) {
@@ -943,8 +971,13 @@ public class BookingService implements BookingServiceIntf {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#setAuditValues(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * setAuditValues(java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
@@ -963,8 +996,12 @@ public class BookingService implements BookingServiceIntf {
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#getBookedPreRegistrationByDate(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * getBookedPreRegistrationByDate(java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 
 	@Override
@@ -1005,8 +1042,12 @@ public class BookingService implements BookingServiceIntf {
 		return response;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#prepareRequestParamMap(io.mosip.preregistration.core.common.dto.MainRequestDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
+	 * prepareRequestParamMap(io.mosip.preregistration.core.common.dto.
+	 * MainRequestDTO)
 	 */
 
 	@Override

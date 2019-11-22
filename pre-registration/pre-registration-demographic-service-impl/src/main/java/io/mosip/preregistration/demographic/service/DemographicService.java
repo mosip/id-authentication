@@ -156,13 +156,13 @@ public class DemographicService implements DemographicServiceIntf {
 	/**
 	 * Reference for ${createId} from property file
 	 */
-	@Value("${mosip.preregistration.demographic.create.id}")
+	@Value("${mosip.preregistration.demographic.id.create}")
 	private String createId;
 
 	/**
 	 * Reference for ${updateId} from property file
 	 */
-	@Value("${mosip.preregistration.demographic.update.id}")
+	@Value("${mosip.preregistration.demographic.id.update}")
 	private String updateId;
 
 	/**
@@ -197,7 +197,7 @@ public class DemographicService implements DemographicServiceIntf {
 	/**
 	 * Reference for ${dateId} from property file
 	 */
-	@Value("${mosip.preregistration.demographic.retrieve.date.id}")
+	@Value("${mosip.preregistration.demographic.id.retrieve.date}")
 	private String dateId;
 
 	/**

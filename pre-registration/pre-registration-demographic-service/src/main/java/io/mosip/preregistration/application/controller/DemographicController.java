@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -108,7 +109,7 @@ public class DemographicController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration successfully Created") })
 	public ResponseEntity<MainResponseDTO<DemographicCreateResponseDTO>> register(
-			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject, @ApiIgnore Errors errors ) {
+			@Validated @RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject, @ApiIgnore Errors errors ) {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for add preregistration with json object" + jsonObject);
 		requestValidator.validateId(CREATE, jsonObject.getId(), errors);
@@ -130,7 +131,7 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Updated") })
 	public ResponseEntity<MainResponseDTO<DemographicUpdateResponseDTO>> update(
 			@PathVariable("preRegistrationId") String preRegistrationId,
-			@RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject, @ApiIgnore Errors errors) {
+			@Validated @RequestBody(required = true) MainRequestDTO<DemographicRequestDTO> jsonObject, @ApiIgnore Errors errors) {
 		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for Update preregistration with json object" + jsonObject);
@@ -258,7 +259,7 @@ public class DemographicController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated Date Time successfully fetched for list of pre-registration ids") })
 	public ResponseEntity<MainResponseDTO<Map<String, String>>> getUpdatedDateTimeByPreIds(
-			@RequestBody MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO, @ApiIgnore Errors errors) {
+			@Validated @RequestBody MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO, @ApiIgnore Errors errors) {
 		requestValidator.validateId(UPDATEDTIME, mainRequestDTO.getId(), errors);
 		DataValidationUtil.validate(errors,UPDATEDTIME);
 		return ResponseEntity.status(HttpStatus.OK)

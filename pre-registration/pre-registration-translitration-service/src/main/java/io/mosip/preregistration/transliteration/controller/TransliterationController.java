@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.util.DataValidationUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
 import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
@@ -23,6 +29,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * This class provides different API's to perform operations on
@@ -41,6 +48,22 @@ public class TransliterationController {
 	/** Autowired reference for {@link #transliterationService}. */
 	@Autowired
 	private TransliterationService transliterationService;
+	
+	@Autowired
+	private RequestValidator requestValidator;
+	
+	/** The Constant for GET UPDATED DATE TIME application. */
+	private static final String TRANS = "transliterate";
+	
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(requestValidator);
+	}
 
 	/**
 	 * Post API to transliterate from transliteration application.
@@ -52,7 +75,9 @@ public class TransliterationController {
 	@ApiOperation(value = "Get Pre-Registartion-Translitration data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Given key is translitrated successfully") })
 	public ResponseEntity<MainResponseDTO<TransliterationResponseDTO>> translitrator(
-			@RequestBody(required = true) MainRequestDTO<TransliterationRequestDTO> requestDTO) {
+			@Validated @RequestBody(required = true) MainRequestDTO<TransliterationRequestDTO> requestDTO, @ApiIgnore Errors errors) {
+		requestValidator.validateId(TRANS, requestDTO.getId(), errors);
+		DataValidationUtil.validate(errors,TRANS);
 		return ResponseEntity.status(HttpStatus.OK).body(transliterationService.translitratorService(requestDTO));
 	}
 }
