@@ -67,7 +67,7 @@ public class AuthTokenUtil {
 			HttpHeaders tokenHeader = new HttpHeaders();
 			tokenHeader.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RequestWrapper<LoginUser>> tokenEntity = new HttpEntity<>(requestWrapper, tokenHeader);
-
+                        System.out.println("tokenUrl "+tokenUrl+"  appId =  "+appId+" userName "+userName+" password "+password);
 			String tokenUriBuilder = authBuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In BookingTasklet to get token with URL- " + tokenUriBuilder);
 			ResponseEntity<ResponseWrapper<AuthNResponse>> tokenResponse = restTemplate.exchange(tokenUriBuilder,
@@ -82,6 +82,7 @@ public class AuthTokenUtil {
 			/* Call to availability sync Util */
 
 			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
+			System.out.println("token "+ tokenResponse.getHeaders().get("Set-Cookie").get(0));
 
 		} catch (Exception e) {
 			log.error("Sync master ", " Tasklet ", " encountered exception ", e.getMessage());
