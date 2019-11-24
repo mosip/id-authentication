@@ -3,9 +3,11 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,13 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ZoneErrorCode;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.ZoneService;
@@ -27,6 +32,7 @@ import io.mosip.kernel.masterdata.utils.ZoneUtils;
  * Zone Service Implementation
  * 
  * @author Abhishek Kumar
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -41,6 +47,16 @@ public class ZoneServiceImpl implements ZoneService {
 
 	@Autowired
 	ZoneRepository zoneRepository;
+	
+	@Autowired
+	private RegistrationCenterRepository registrationCenterRepo;
+	
+	@Value("${mosip.kernel.registrationcenterid.length}")
+	private int centerIdLength;
+	
+	@Value("${mosip.primary-language}")
+	private String primaryLangCode;
+
 
 	/*
 	 * (non-Javadoc)
@@ -120,5 +136,34 @@ public class ZoneServiceImpl implements ZoneService {
 				}
 		}
 		return zoneValid;	
+	}
+
+	@Override
+	public boolean authorizeZone(String rId) {
+		String centerId = rId.substring(0, centerIdLength);
+		String zoneCode=getZoneBasedOnTheRId(centerId, primaryLangCode);
+		return isPresentInTheHierarchy(zoneCode, primaryLangCode);
+	}
+	
+	private String getZoneBasedOnTheRId(String centerId, String primaryLangCode) {
+		RegistrationCenter registrationCenter = null;
+		try {
+			registrationCenter = registrationCenterRepo.findByIdAndLangCode(centerId, primaryLangCode);
+		} catch (DataAccessException | DataAccessLayerException ex) {
+			throw new MasterDataServiceException("ADM-PKT-500", "Error occured while fetching packet");
+		}
+		Objects.nonNull(registrationCenter);
+		return registrationCenter.getZoneCode();
+	}
+
+	private boolean isPresentInTheHierarchy(String zoneCode,String primaryLangCode) {
+		List<Zone> zones = zoneUtils.getUserLeafZones(primaryLangCode);
+		boolean isAuthorized = zones.stream().anyMatch(zone -> zone.getCode().equals(zoneCode));
+		if (!isAuthorized) {
+			throw new RequestException(ZoneErrorCode.ADMIN_UNAUTHORIZED.getErrorCode(),
+					ZoneErrorCode.ADMIN_UNAUTHORIZED.getErrorMessage());
+		}
+		
+		return isAuthorized;
 	}
 }
