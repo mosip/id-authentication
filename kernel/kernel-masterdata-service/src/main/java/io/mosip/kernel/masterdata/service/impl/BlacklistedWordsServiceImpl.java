@@ -172,8 +172,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		try {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(BlacklistedWordsErrorCode.BLACKLISTED_WORDS_INSERT_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -230,8 +230,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_DELETE_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_DELETE_EXCEPTION.getErrorMessage());
 		}
 		if (noOfRowAffected == 0) {
 			throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
