@@ -56,8 +56,8 @@ public class AuthTokenUtil {
 			/* Get the token from auth-manager service */
 			LoginUser loginUser = new LoginUser();
 			loginUser.setAppId(appId);
-			loginUser.setPassword(password);
-			loginUser.setUserName(userName);
+			loginUser.setSecretKey(password);
+			loginUser.setClientId(userName);
 			RequestWrapper<LoginUser> requestWrapper = new RequestWrapper<>();
 			requestWrapper.setId(id);
 			requestWrapper.setRequest(loginUser);
