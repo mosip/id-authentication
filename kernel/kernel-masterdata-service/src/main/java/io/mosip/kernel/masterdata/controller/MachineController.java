@@ -236,7 +236,7 @@ public class MachineController {
 	/**
 	 * Post API to insert a new row of Machine data
 	 * 
-	 * @param machine
+	 * @param machineRequest
 	 *            input from user Machine DTO
 	 * 
 	 * @return Responding with Machine which is inserted successfully
@@ -250,9 +250,9 @@ public class MachineController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
-	public ResponseWrapper<MachineExtnDto> createMachine(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machine) {
+	public ResponseWrapper<MachineExtnDto> createMachine(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machineRequest) {
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.createMachine(machine.getRequest()));
+		responseWrapper.setResponse(machineService.createMachine(machineRequest.getRequest()));
 		return responseWrapper;
 	}
 	
