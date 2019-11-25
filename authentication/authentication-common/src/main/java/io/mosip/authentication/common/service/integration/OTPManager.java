@@ -149,12 +149,12 @@ public class OTPManager {
 					e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				handleOtpErrorResponse(responseBody.get());
+				handleOtpErrorResponse(responseBody.get(), e);
 
 			} else {
 				// FIXME Could not validate OTP -OTP - Request could not be processed. Please
 				// try again
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 			}
 
 		} catch (IDDataValidationException e) {
@@ -169,11 +169,12 @@ public class OTPManager {
 	 * Handle otp error response.
 	 *
 	 * @param responseBody the response body
+	 * @param e 
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	private void handleOtpErrorResponse(Object responseBody) throws IdAuthenticationBusinessException {
+	private void handleOtpErrorResponse(Object responseBody, Exception e) throws IdAuthenticationBusinessException {
 		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody;
 		List<ServiceError> errorList = otpGeneratorResponsetDto.getErrors();
 		if (errorList != null && !errorList.isEmpty()) {
@@ -182,19 +183,19 @@ public class OTPManager {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.PHONE.name()));
+								IdaIdMapping.PHONE.name()), e);
 			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
 					.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.EMAIL.name()));
+								IdaIdMapping.EMAIL.name()), e);
 			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
 					.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name()));
+								IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name()), e);
 			}
 		}
 	}
