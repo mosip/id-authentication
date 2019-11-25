@@ -53,6 +53,9 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/** The zone validation url. */
 	@Value("${mosip.kernel.zone-validation-url}")
 	private String zoneValidationUrl;
+	
+	@Value("${mosip.primary-language=eng}")
+	private String primaryLang;
 
 	/** The rest template. */
 	@Autowired
@@ -86,10 +89,8 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			//packetHeaders.set("Cookie","Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTAwMDYiLCJtb2JpbGUiOiI3OTE4MzA5ODYiLCJtYWlsIjoiYXVkcmEuYW1lenF1aXRhQHh5ei5jb20iLCJyb2xlIjoiUkVHSVNUUkFUSU9OX0FETUlOLFJFR0lTVFJBVElPTl9PRkZJQ0VSLFpPTkFMX0FETUlOLFJFR0lTVFJBVElPTl9TVVBFUlZJU09SLEdMT0JBTF9BRE1JTiIsIm5hbWUiOiJ0ZXN0IiwicklkIjoiMjc4NDc2NTczNjAwMDI1MjAxOTA4MjAxMDQ5NTciLCJpYXQiOjE1NzQ0ODgzNTIsImV4cCI6MTU3NDQ5NDM1Mn0.od7A7pkyW_nVckPtXn-pQS-kDM9bcTf9lgZ3YTZNGnqGL65ryDib1EX6Jd4F4CwNJ2k6tzYn4bPSNanNvfXiMQ");
 			StringBuilder urlBuilder= new StringBuilder();
-			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append("eng").append(SLASH).append(rId);
-			HttpEntity<String> httpReq = new HttpEntity<>(null, packetHeaders);
+			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
 			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(),HttpMethod.GET,null,String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				List<PacketStatusUpdateDto> packetStatusUpdateDtos= getPacketResponse(ArrayList.class, response.getBody());
