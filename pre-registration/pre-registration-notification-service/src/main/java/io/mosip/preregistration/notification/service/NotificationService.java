@@ -49,6 +49,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.demographic.service.DemographicServiceIntf;
 import io.mosip.preregistration.notification.code.RequestCodes;
 import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
@@ -82,6 +83,9 @@ public class NotificationService {
 	 */
 	@Autowired
 	private NotificationServiceUtil serviceUtil;
+	
+	@Autowired
+	private DemographicServiceIntf demographicServiceIntf;
 
 	/**
 	 * Reference for ${appointmentResourse.url} from property file
