@@ -17,54 +17,57 @@ import io.mosip.preregistration.login.exception.ParseResponseException;
 import io.mosip.preregistration.login.exception.SendOtpFailedException;
 import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
 
-
-
 /**
  * This class is use to catch the exception while login
- * @author Akshay 
- *@since 1.0.0
+ * 
+ * @author Akshay
+ * @since 1.0.0
  */
 public class LoginExceptionCatcher {
 
-	public void handle(Exception ex,String serviceType,MainResponseDTO<?> mainResponsedto) {
-		if((ex instanceof RestClientException || ex instanceof HttpClientErrorException || ex instanceof HttpServerErrorException )&& (serviceType !=null && serviceType.equals("sendOtp"))) {
-			throw new SendOtpFailedException(ErrorCodes.PRG_AUTH_001.name(),(ErrorMessages.SEND_OTP_FAILED.getMessage()),mainResponsedto );
+	public void handle(Exception ex, String serviceType, MainResponseDTO<?> mainResponsedto) {
+		if ((ex instanceof RestClientException || ex instanceof HttpClientErrorException
+				|| ex instanceof HttpServerErrorException) && (serviceType != null && serviceType.equals("sendOtp"))) {
+			throw new SendOtpFailedException(ErrorCodes.PRG_AUTH_001.name(),
+					(ErrorMessages.SEND_OTP_FAILED.getMessage()), mainResponsedto);
+		} else if (ex instanceof RestClientException && (serviceType != null && serviceType.equals("userIdOtp"))) {
+			throw new UserIdOtpFaliedException(ErrorCodes.PRG_AUTH_002.name(),
+					(ErrorMessages.USERID_OTP_VALIDATION_FAILED.getMessage()), mainResponsedto);
+		} else if (ex instanceof RestClientException
+				&& (serviceType != null && serviceType.equals("invalidateToken"))) {
+			throw new InvalidateTokenException(ErrorCodes.PRG_AUTH_003.getCode(),
+					(ErrorMessages.INVALIDATE_TOKEN_FAILED.getMessage()), mainResponsedto);
+		} else if (ex instanceof InvalidRequestParameterException
+				&& (serviceType != null && serviceType.equals("sendOtp"))) {
+			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
+					((InvalidRequestParameterException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof InvalidRequestParameterException
+				&& (serviceType != null && serviceType.equals("userIdOtp"))) {
+			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
+					((InvalidRequestParameterException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof LoginServiceException) {
+			throw new LoginServiceException(((LoginServiceException) ex).getValidationErrorList(), mainResponsedto);
+		} else if (ex instanceof ParseResponseException) {
+			throw new ParseResponseException(((ParseResponseException) ex).getErrorCode(),
+					((ParseResponseException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof ConfigFileNotFoundException) {
+			throw new ConfigFileNotFoundException(((ConfigFileNotFoundException) ex).getErrorCode(),
+					((ConfigFileNotFoundException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof InvalidOtpOrUseridException) {
+			throw new InvalidOtpOrUseridException(ErrorCodes.PRG_AUTH_013.getCode(),
+					((InvalidOtpOrUseridException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof NoAuthTokenException) {
+			throw new NoAuthTokenException(((NoAuthTokenException) ex).getErrorCode(),
+					((NoAuthTokenException) ex).getErrorText(), mainResponsedto);
+		} else if ((ex instanceof HttpClientErrorException || ex instanceof HttpServerErrorException)
+				&& serviceType == "refreshConfig") {
+			throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),
+					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(), mainResponsedto);
+		} else if ((ex instanceof HttpClientErrorException || ex instanceof HttpServerErrorException)
+				&& serviceType == "postconstruct") {
+			throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),
+					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(), new MainResponseDTO<>());
 		}
-		else if(ex instanceof RestClientException && (serviceType != null && serviceType.equals("userIdOtp"))) {
-			throw new UserIdOtpFaliedException(ErrorCodes.PRG_AUTH_002.name(),( ErrorMessages.USERID_OTP_VALIDATION_FAILED.getMessage()),mainResponsedto);
-		}
-		else if (ex instanceof RestClientException && (serviceType != null && serviceType.equals("invalidateToken"))) {
-			throw new InvalidateTokenException(ErrorCodes.PRG_AUTH_003.getCode(), (ErrorMessages.INVALIDATE_TOKEN_FAILED.getMessage()),mainResponsedto);
-		}
-		else if (ex instanceof InvalidRequestParameterException && (serviceType !=null && serviceType.equals("sendOtp"))) {
-			throw new InvalidRequestParameterException(((InvalidRequestParameterException)ex).getErrorCode(),((InvalidRequestParameterException) ex).getErrorText(),mainResponsedto);
-		}
-		else if (ex instanceof InvalidRequestParameterException && (serviceType != null && serviceType.equals("userIdOtp"))) {
-			throw new InvalidRequestParameterException(((InvalidRequestParameterException)ex).getErrorCode(),((InvalidRequestParameterException) ex).getErrorText(),mainResponsedto);
-		}
-		else if (ex instanceof LoginServiceException) {
-			throw new LoginServiceException(((LoginServiceException) ex).getValidationErrorList(),mainResponsedto);
-		}
-		else if (ex instanceof ParseResponseException) {
-			throw new ParseResponseException(((ParseResponseException) ex).getErrorCode(),((ParseResponseException) ex).getErrorText(),mainResponsedto);
-		}
-		else if (ex instanceof ConfigFileNotFoundException) {
-			throw new ConfigFileNotFoundException(((ConfigFileNotFoundException) ex).getErrorCode(),((ConfigFileNotFoundException) ex).getErrorText(),mainResponsedto);
-		}
-		else if(ex instanceof InvalidOtpOrUseridException) {
-			throw new InvalidOtpOrUseridException(ErrorCodes.PRG_AUTH_013.getCode(),((InvalidOtpOrUseridException) ex).getErrorText(),mainResponsedto);
-		}
-		else if (ex instanceof NoAuthTokenException) {
-			throw new NoAuthTokenException(((NoAuthTokenException) ex).getErrorCode(), ((NoAuthTokenException) ex).getErrorText(), mainResponsedto);
-		}
-		else if((ex instanceof HttpClientErrorException || ex instanceof HttpServerErrorException) && serviceType=="refreshConfig") {
-			throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(),mainResponsedto);
-		}
-		else if((ex instanceof HttpClientErrorException || ex instanceof HttpServerErrorException) && serviceType=="postconstruct") {
-			throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(),new MainResponseDTO<>());
-		}
-		
-		
-		
+
 	}
 }

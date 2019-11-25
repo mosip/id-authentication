@@ -12,12 +12,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import javax.persistence.LockModeType;
+
 import org.apache.commons.collections4.SetValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -280,7 +283,7 @@ public class ValidationUtil {
 		}
 	}
 
-	
+	@Lock(LockModeType.READ)
 	public boolean validateDocuments(String langCode, String catCode, String typeCode, String preRegistrationId) {
 		log.debug("sessionId", "idType", "id", "beforegetAllDocCategories preRegistrationId " + preRegistrationId);
 		log.debug("sessionId", "idType", "id", "aftergetAllDocCategories preRegistrationId " + preRegistrationId);

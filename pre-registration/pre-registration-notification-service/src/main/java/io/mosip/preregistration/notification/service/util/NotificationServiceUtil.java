@@ -69,7 +69,7 @@ public class NotificationServiceUtil {
 		MainRequestDTO<NotificationDTO> notificationReqDto = new MainRequestDTO<>();
 		JSONObject notificationData = new JSONObject(jsonString);
 		JSONObject notificationDtoData = (JSONObject) notificationData.get("request");
-		NotificationDTO notififcationDTO = (NotificationDTO) JsonUtils.jsonStringToJavaObject(NotificationDTO.class,
+		NotificationDTO notificationDTO = (NotificationDTO) JsonUtils.jsonStringToJavaObject(NotificationDTO.class,
 				notificationDtoData.toString());
 		notificationReqDto.setId(notificationData.get("id").toString());
 		notificationReqDto.setVersion(notificationData.get("version").toString());
@@ -81,7 +81,7 @@ public class NotificationServiceUtil {
 		{
 			notificationReqDto.setRequesttime(null);
 		}
-		notificationReqDto.setRequest(notififcationDTO);
+		notificationReqDto.setRequest(notificationDTO);
 		return notificationReqDto;
 
 	}

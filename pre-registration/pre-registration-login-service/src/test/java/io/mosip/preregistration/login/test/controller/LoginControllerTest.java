@@ -27,13 +27,17 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.WebDataBinder;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.login.PreRegistartionLoginApplication;
 import io.mosip.preregistration.login.config.LoginValidator;
 import io.mosip.preregistration.login.controller.LoginController;
+import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.service.LoginService;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
 import net.minidev.json.parser.ParseException;
@@ -54,7 +58,7 @@ public class LoginControllerTest {
 	private LoginCommonUtil authCommonUtil;
 
 	@Mock
-	private LoginValidator loginValidator;
+	private RequestValidator loginValidator;
 
 	@InjectMocks
 	private LoginController controller;

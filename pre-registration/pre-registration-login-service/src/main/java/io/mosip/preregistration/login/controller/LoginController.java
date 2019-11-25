@@ -30,6 +30,7 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.DataValidationUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.login.config.LoginValidator;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.User;
@@ -59,7 +60,7 @@ public class LoginController {
 	private LoginCommonUtil loginCommonUtil;
 	
 	@Autowired
-	private LoginValidator loginValidator;
+	private RequestValidator loginValidator;
 	
 	/** The Constant SENDOTP. */
 	private static final String SENDOTP = "sendotp";
@@ -105,7 +106,7 @@ public class LoginController {
 	@PostMapping(value="/validateOtp",produces=MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Validate UserId and Otp")
 	@ResponseStatus(value=HttpStatus.OK)
-	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@Validated @RequestBody MainRequestDTO<User> userIdOtpRequest,HttpServletResponse res,@ApiIgnore Errors errors){
+	public ResponseEntity<MainResponseDTO<AuthNResponse>> validateWithUserIdOtp(@Validated @RequestBody MainRequestDTO<User> userIdOtpRequest,@ApiIgnore Errors errors,HttpServletResponse res){
 		log.info("sessionId", "idType", "id",
 				"In validateWithUserIdotp method of Login controller for validating user and Otp and providing the access token ");
 		loginValidator.validateId(VALIDATEOTP, userIdOtpRequest.getId(), errors);

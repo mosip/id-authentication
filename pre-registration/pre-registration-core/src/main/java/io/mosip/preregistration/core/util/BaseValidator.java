@@ -30,7 +30,7 @@ public abstract class BaseValidator {
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-
+	
 	/**
 	 * Logger configuration for BaseValidator
 	 */
