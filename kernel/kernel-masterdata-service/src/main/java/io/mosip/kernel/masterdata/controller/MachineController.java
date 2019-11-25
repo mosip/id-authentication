@@ -148,8 +148,30 @@ public class MachineController {
 		return responseWrapper;
 	}
 
-	
-	
+	/**
+	 * Post API to update a row of Machine data
+	 * 
+	 * @param machine
+	 *            input from user Machine DTO
+	 * 
+	 * @return ResponseEntity Machine Id which is update successfully
+	 *         {@link ResponseEntity}
+	 *//*
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PutMapping("/machines")
+	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine successfully udated"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
+	public ResponseWrapper<MachineExtnDto> updateMachine(@Valid @RequestBody RequestWrapper<MachinePutReqDto> machine) {
+
+		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.updateMachine(machine.getRequest()));
+		return responseWrapper;
+	}*/
+
 	/**
 	 * 
 	 * Function to fetch machine detail those are mapped with given registration Id
@@ -160,7 +182,7 @@ public class MachineController {
 	 * @return MachineResponseDto all machines details those are mapped with given
 	 *         registration Id {@link MachineResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
@@ -191,7 +213,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machines/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineSearchDto>> searchMachine(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<MachineSearchDto>> responseWrapper = new ResponseWrapper<>();
@@ -208,7 +230,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machines/filtervalues")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> machineFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -226,13 +248,13 @@ public class MachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Machine")
 	@PutMapping("/machines/decommission/{machineId}")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.decommissionMachine(machineId));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Post API to insert a new row of Machine data
 	 * 
@@ -255,7 +277,7 @@ public class MachineController {
 		responseWrapper.setResponse(machineService.createMachine(machineRequest.getRequest()));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * This method updates Machine by Admin.
 	 * 
@@ -263,7 +285,7 @@ public class MachineController {
 	 *            the request DTO for updating machine.
 	 * @return the response i.e. the updated machine.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/machines")
 	@ApiOperation(value = "Service to upadte Machine", notes = "Update Machine Detail and return updated Machine")
@@ -275,8 +297,7 @@ public class MachineController {
 			@RequestBody @Valid RequestWrapper<MachinePutReqDto> machineCenterDto) {
 
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				machineService.updateMachine(machineCenterDto.getRequest()));
+		responseWrapper.setResponse(machineService.updateMachine(machineCenterDto.getRequest()));
 		return responseWrapper;
 	}
 }

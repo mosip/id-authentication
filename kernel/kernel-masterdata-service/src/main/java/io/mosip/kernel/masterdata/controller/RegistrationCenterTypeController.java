@@ -62,6 +62,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcentertypes")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 
@@ -81,6 +82,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PutMapping("/registrationcentertypes")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 
@@ -139,7 +141,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcentertypes/filtervalues")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> registrationCenterTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
@@ -155,7 +157,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcentertypes/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> searchRegistrationCenterType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
