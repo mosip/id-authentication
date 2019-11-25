@@ -1,13 +1,17 @@
 package io.mosip.preregistration.batchjob.utils;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjob.audit.AuditUtil;
 import io.mosip.preregistration.batchjob.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.DocumentEntityConsumed;
@@ -34,7 +38,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
  */
 @Component
 public class ConsumedStatusUtil {
-	
+
 	/** The Constant LOGGER. */
 	private Logger log = LoggerConfiguration.logConfig(ConsumedStatusUtil.class);
 
@@ -58,16 +62,20 @@ public class ConsumedStatusUtil {
 	 */
 	@Autowired
 	private BatchJpaRepositoryImpl batchJpaRepositoryImpl;
-	
+
 	@Autowired
 	private AuthTokenUtil tokenUtil;
 
 	@Autowired
 	AuditUtil auditLogUtil;
 
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+
 	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
-	
+
 	@Value("${mosip.batch.token.authmanager.appId}")
 	private String auditUserId;
 
@@ -82,8 +90,8 @@ public class ConsumedStatusUtil {
 	public boolean demographicConsumedStatus() {
 
 		/* Get token for audit */
-		HttpHeaders headers=tokenUtil.getTokenHeader();
-		
+		HttpHeaders headers = tokenUtil.getTokenHeader();
+
 		List<ProcessedPreRegEntity> preRegList = null;
 		boolean isSaveSuccess = false;
 		try {
@@ -108,12 +116,12 @@ public class ConsumedStatusUtil {
 					demographicEntityConsumed.setEncryptedDateTime(demographicEntity.getEncryptedDateTime());
 					demographicEntityConsumed.setLangCode(demographicEntity.getLangCode());
 					demographicEntityConsumed.setPreRegistrationId(demographicEntity.getPreRegistrationId());
-					demographicEntityConsumed.setUpdateDateTime(demographicEntity.getUpdateDateTime());
-					demographicEntityConsumed.setUpdatedBy(demographicEntity.getUpdatedBy());
+					demographicEntityConsumed.setUpdateDateTime(DateUtils.parseDateToLocalDateTime(new Date()));
+					demographicEntityConsumed.setUpdatedBy(authUserDetails().getUserId());
 					demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 					batchJpaRepositoryImpl.updateConsumedDemographic(demographicEntityConsumed);
 
-					List<DocumentEntity> documentEntityList = batchJpaRepositoryImpl.getDocumentDetails(preRegId);
+					List<DocumentEntity> documentEntityList = demographicEntity.getDocumentEntity();
 					if (documentEntityList != null) {
 						documentEntityList.forEach(documentEntity -> {
 
@@ -129,16 +137,17 @@ public class ConsumedStatusUtil {
 							documentEntityConsumed.setDocumentId(documentEntity.getDocumentId());
 							documentEntityConsumed.setEncryptedDateTime(documentEntity.getEncryptedDateTime());
 							documentEntityConsumed.setLangCode(documentEntity.getLangCode());
-							documentEntityConsumed.setPreregId(documentEntity.getDemographicEntity().getPreRegistrationId());
+							documentEntityConsumed
+									.setPreregId(documentEntity.getDemographicEntity().getPreRegistrationId());
 							documentEntityConsumed.setStatusCode(documentEntity.getStatusCode());
-							documentEntityConsumed.setUpdBy(documentEntity.getUpdBy());
-							documentEntityConsumed.setUpdDtime(documentEntity.getUpdDtime());
+							documentEntityConsumed.setUpdBy(authUserDetails().getUserId());
+							documentEntityConsumed.setUpdDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 							batchJpaRepositoryImpl.updateConsumedDocument(documentEntityConsumed);
 
 						});
 
 					}
-					RegistrationBookingEntity bookingEntity = batchJpaRepositoryImpl.getPreRegId(preRegId);
+					RegistrationBookingEntity bookingEntity = demographicEntity.getRegistrationBookingEntity();
 					RegistrationBookingPKConsumed consumedPk = new RegistrationBookingPKConsumed();
 					consumedPk.setBookingDateTime(bookingEntity.getBookingPK().getBookingDateTime());
 					consumedPk.setPreregistrationId(bookingEntity.getDemographicEntity().getPreRegistrationId());
@@ -151,8 +160,8 @@ public class ConsumedStatusUtil {
 					bookingEntityConsumed.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
 					bookingEntityConsumed.setSlotFromTime(bookingEntity.getSlotFromTime());
 					bookingEntityConsumed.setSlotToTime(bookingEntity.getSlotToTime());
-					bookingEntityConsumed.setUpBy(bookingEntity.getUpBy());
-					bookingEntityConsumed.setUpdDate(bookingEntity.getUpdDate());
+					bookingEntityConsumed.setUpBy(authUserDetails().getUserId());
+					bookingEntityConsumed.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
 					batchJpaRepositoryImpl.updateConsumedBooking(bookingEntityConsumed);
 
 					if (documentEntityList != null) {
@@ -180,12 +189,12 @@ public class ConsumedStatusUtil {
 				setAuditValues(EventId.PRE_412.toString(), EventName.CONSUMEDSTATUS.toString(),
 						EventType.BUSINESS.toString(),
 						"Upadted the consumed status & the consumed PreRegistration ids successfully saved in the database",
-						AuditLogVariables.PRE_REGISTRATION_ID.toString(), auditUserId,
-						auditUsername, null,headers);
+						AuditLogVariables.PRE_REGISTRATION_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), null, headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(),
-						auditUserId, auditUsername, null,headers);
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null, headers);
 			}
 		}
 		return true;
@@ -201,7 +210,7 @@ public class ConsumedStatusUtil {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName, String refId,HttpHeaders headers) {
+			String userId, String userName, String refId, HttpHeaders headers) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -213,7 +222,7 @@ public class ConsumedStatusUtil {
 		auditRequestDto.setId(refId);
 		auditRequestDto.setModuleId(AuditLogVariables.BAT.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.CONSUMED_BATCH_SERVICE.toString());
-		auditLogUtil.saveAuditDetails(auditRequestDto,headers);
+		auditLogUtil.saveAuditDetails(auditRequestDto, headers);
 	}
 
 }
