@@ -54,7 +54,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	@Value("${mosip.kernel.zone-validation-url}")
 	private String zoneValidationUrl;
 	
-	@Value("${mosip.primary-language=eng}")
+	@Value("${mosip.primary-language:eng}")
 	private String primaryLang;
 
 	/** The rest template. */
