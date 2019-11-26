@@ -107,4 +107,12 @@ public class SyncRegistrationDaoTest {
 				syncRegistrationEntityResult);
 	}
 
+	@Test
+	public void getByIds() {
+		List<String> idList = new ArrayList<>();
+		idList.add("1000.zip");
+		List<SyncRegistrationEntity> rEntityList = syncRegistrationDao.getByIds(idList);
+		assertEquals(syncRegistrationEntityList, rEntityList);
+	}
+
 }
