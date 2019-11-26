@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -416,13 +415,21 @@ public class RequestHandlerRequestValidator {
 	 * @return true, if is valid registration type and uin
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
+	 * @throws IOException 
 	 */
-	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException {
+	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException, IOException {
 		try {
 			if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-					|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
+					|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))||registrationType!=null && registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
 				boolean isValidUin = uinValidatorImpl.validateId(uin);
 				if (isValidUin) {
+					if(registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
+						JSONObject idObject = utilities.retrieveIdrepoJson(Long.valueOf(uin));
+						if(idObject!=null)
+							return true;
+						else
+							return false;
+					}
 					String status = utilities.retrieveIdrepoJsonStatus(Long.parseLong(uin));
 					if (!status.equalsIgnoreCase(registrationType)) {
 						return true;

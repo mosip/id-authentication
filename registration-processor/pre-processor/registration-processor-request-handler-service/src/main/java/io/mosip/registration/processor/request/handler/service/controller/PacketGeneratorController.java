@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
@@ -23,6 +24,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
+import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResponseDto;
@@ -46,7 +48,8 @@ public class PacketGeneratorController {
 
 	/** The packet generator service. */
 	@Autowired
-	private PacketGeneratorService packetGeneratorService;
+	@Qualifier("packetGeneratorService")
+	private PacketGeneratorService<PacketGeneratorDto> packetGeneratorService;
 
 	/** The env. */
 	@Autowired
