@@ -148,7 +148,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	public void validateDeviceDetails(AuthRequestDTO authRequest, Errors errors) {
 		List<DataDTO> bioData = Optional.ofNullable(authRequest.getRequest())
 									.map(RequestDTO::getBiometrics)
-									.map(list -> list.stream())
+									.map(List<BioIdentityInfoDTO>::stream)
 									.orElseGet(Stream::empty)
 									.map(BioIdentityInfoDTO::getData)
 									.collect(Collectors.toList());
