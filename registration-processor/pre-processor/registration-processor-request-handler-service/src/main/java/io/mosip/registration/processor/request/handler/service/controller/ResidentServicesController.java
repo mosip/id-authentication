@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,27 +47,27 @@ public class ResidentServicesController {
 	@Autowired
 	DigitalSignatureUtility digitalSignatureUtility;
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
-	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
+	private static final String RES_UPDATE_SERVICE_ID = "mosip.registration.processor.resident.service.id";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
 
-	@PostMapping("/resUpdate")
+	@PostMapping(path = "/resUpdate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> updateResidentUINData(
 			@RequestBody(required = true) ResidentUpdateRequestDto residentUpdateRequestDto,
 			@CookieValue(value = "Authorization", required = true) String token)
 			throws RegBaseCheckedException, IOException {
-		tokenValidator.validate("Authorization=" + token, "residentUpdateService");
+		tokenValidator.validate("Authorization=" + token, "requesthandler");
 		PacketGeneratorResDto packetGeneratorResDto;
 
 		validator.validate(residentUpdateRequestDto.getRequesttime(), residentUpdateRequestDto.getId(),
 				residentUpdateRequestDto.getVersion());
 		packetGeneratorResDto = residentUpdateServiceImpl.createPacket(residentUpdateRequestDto.getRequest());
 		if (isEnabled) {
-			PacketGeneratorResponseDto response = buildPacketGeneratorResponse(packetGeneratorResDto);
 			Gson gson = new GsonBuilder().serializeNulls().create();
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
-			return ResponseEntity.ok().headers(headers).body(response);
+			headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility
+					.getDigitalSignature(gson.toJson(buildPacketGeneratorResponse(packetGeneratorResDto))));
+			return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packetGeneratorResDto));
 		}
 		return ResponseEntity.ok().body(buildPacketGeneratorResponse(packetGeneratorResDto));
 
@@ -76,7 +77,7 @@ public class ResidentServicesController {
 
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
 		if (Objects.isNull(response.getId())) {
-			response.setId(env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
+			response.setId(env.getProperty(RES_UPDATE_SERVICE_ID));
 		}
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));

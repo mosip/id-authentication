@@ -32,7 +32,7 @@ public class ResidentUpdateDto implements Serializable {
 	// private String otp;
 	private String centerId;
 	private String machineId;
-	private JSONObject demographics;
+	private String identityJson;
 
 	public static void main(String[] args) {
 

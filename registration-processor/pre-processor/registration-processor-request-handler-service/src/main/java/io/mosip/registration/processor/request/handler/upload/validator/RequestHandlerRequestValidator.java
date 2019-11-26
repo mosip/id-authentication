@@ -82,6 +82,8 @@ public class RequestHandlerRequestValidator {
 
 	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
 	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
+	
+	private static final String RES_UPDATE_SERVICE_ID = "mosip.registration.processor.resident.service.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
@@ -137,6 +139,7 @@ public class RequestHandlerRequestValidator {
 			throws RequestHandlerValidationException {
 		id.put("packet_generator", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
 		id.put("uincard_reprint_status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
+		id.put("res_update", env.getProperty(RES_UPDATE_SERVICE_ID));
 		validateReqTime(requestTime);
 		validateId(requestId);
 		validateVersion(requestVersion);

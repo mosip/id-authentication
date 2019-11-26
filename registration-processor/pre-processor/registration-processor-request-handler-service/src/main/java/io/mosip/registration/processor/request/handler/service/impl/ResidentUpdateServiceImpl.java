@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -66,7 +67,9 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 			RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getIndividualId(),
 					request.getIndividualIdType().toString(), request.getCenterId(), request.getMachineId());
 			try {
-				packetZipBytes = packetCreationService.create(registrationDTO, request.getDemographics());
+				String demoJsonString = new String(CryptoUtil.decodeBase64(request.getIdentity()));
+				JSONObject demoJsonObject = JsonUtil.objectMapperReadValue(demoJsonString, JSONObject.class);
+				packetZipBytes = packetCreationService.create(registrationDTO, demoJsonObject);
 			} catch (IdObjectValidationFailedException | IdObjectIOException | ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
