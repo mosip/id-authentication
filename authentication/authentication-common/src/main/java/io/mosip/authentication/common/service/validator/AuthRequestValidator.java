@@ -4,9 +4,11 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PA
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -17,6 +19,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -143,8 +146,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 *            the errors
 	 */
 	public void validateDeviceDetails(AuthRequestDTO authRequest, Errors errors) {
-		List<DataDTO> bioData = authRequest.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-		.collect(Collectors.toList());
+		List<DataDTO> bioData = Optional.ofNullable(authRequest.getRequest())
+									.map(RequestDTO::getBiometrics)
+									.map(list -> list.stream())
+									.orElseGet(Stream::empty)
+									.map(BioIdentityInfoDTO::getData)
+									.collect(Collectors.toList());
+		
 		IntStream.range(0, bioData.size()).forEach(index -> {
 			if (StringUtils.isEmpty(bioData.get(index).getDeviceCode())) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
