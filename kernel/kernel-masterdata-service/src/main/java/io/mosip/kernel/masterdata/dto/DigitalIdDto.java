@@ -53,7 +53,7 @@ public class DigitalIdDto {
 
 	/** type */
 	@ApiModelProperty(value = "type", dataType = "java.lang.String")
-	@ValidType(message = "Type Value is Invalid")
+	//@ValidType(message = "Type Value is Invalid")
 	private String type;
 
 	/** The date time. */
