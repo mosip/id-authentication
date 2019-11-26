@@ -621,7 +621,7 @@ public class AuthController {
 		AccessTokenResponseDTO jwtResponseDTO = authService.loginRedirect(state, sessionState, code, stateCookie,
 				redirectURI);
 		String uri = new String(Base64.decodeBase64(redirectURI.getBytes()));
-		Cookie cookie = createCookie(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
+		Cookie cookie = createCookie(jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
 		res.addCookie(cookie);
 		res.setStatus(302);
 		res.sendRedirect(uri);
