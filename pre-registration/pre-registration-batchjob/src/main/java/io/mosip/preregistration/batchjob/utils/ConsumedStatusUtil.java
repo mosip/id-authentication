@@ -6,10 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjob.audit.AuditUtil;
@@ -69,10 +67,6 @@ public class ConsumedStatusUtil {
 	@Autowired
 	AuditUtil auditLogUtil;
 
-	public AuthUserDetails authUserDetails() {
-		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	}
-
 	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
 
@@ -117,7 +111,7 @@ public class ConsumedStatusUtil {
 					demographicEntityConsumed.setLangCode(demographicEntity.getLangCode());
 					demographicEntityConsumed.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 					demographicEntityConsumed.setUpdateDateTime(DateUtils.parseDateToLocalDateTime(new Date()));
-					demographicEntityConsumed.setUpdatedBy(authUserDetails().getUserId());
+					demographicEntityConsumed.setUpdatedBy(auditUserId);
 					demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 					batchJpaRepositoryImpl.updateConsumedDemographic(demographicEntityConsumed);
 
@@ -140,7 +134,7 @@ public class ConsumedStatusUtil {
 							documentEntityConsumed
 									.setPreregId(documentEntity.getDemographicEntity().getPreRegistrationId());
 							documentEntityConsumed.setStatusCode(documentEntity.getStatusCode());
-							documentEntityConsumed.setUpdBy(authUserDetails().getUserId());
+							documentEntityConsumed.setUpdBy(auditUserId);
 							documentEntityConsumed.setUpdDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 							batchJpaRepositoryImpl.updateConsumedDocument(documentEntityConsumed);
 
@@ -160,7 +154,7 @@ public class ConsumedStatusUtil {
 					bookingEntityConsumed.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
 					bookingEntityConsumed.setSlotFromTime(bookingEntity.getSlotFromTime());
 					bookingEntityConsumed.setSlotToTime(bookingEntity.getSlotToTime());
-					bookingEntityConsumed.setUpBy(authUserDetails().getUserId());
+					bookingEntityConsumed.setUpBy(auditUserId);
 					bookingEntityConsumed.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
 					batchJpaRepositoryImpl.updateConsumedBooking(bookingEntityConsumed);
 
@@ -189,12 +183,12 @@ public class ConsumedStatusUtil {
 				setAuditValues(EventId.PRE_412.toString(), EventName.CONSUMEDSTATUS.toString(),
 						EventType.BUSINESS.toString(),
 						"Upadted the consumed status & the consumed PreRegistration ids successfully saved in the database",
-						AuditLogVariables.PRE_REGISTRATION_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null, headers);
+						AuditLogVariables.PRE_REGISTRATION_ID.toString(), auditUserId,
+						auditUsername, null, headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername(), null, headers);
+						auditUserId, auditUsername, null, headers);
 			}
 		}
 		return true;

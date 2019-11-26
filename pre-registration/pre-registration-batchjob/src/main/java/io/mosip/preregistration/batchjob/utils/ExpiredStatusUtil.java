@@ -6,10 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjob.audit.AuditUtil;
@@ -49,10 +47,6 @@ public class ExpiredStatusUtil {
 	@Autowired
 	AuditUtil auditLogUtil;
 
-	public AuthUserDetails authUserDetails() {
-		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	}
-
 	@Autowired
 	private AuthTokenUtil tokenUtil;
 
@@ -87,7 +81,7 @@ public class ExpiredStatusUtil {
 
 					if (iterate.getDemographicEntity().getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
 						iterate.getDemographicEntity().setStatusCode(StatusCodes.EXPIRED.getCode());
-						iterate.setUpBy(authUserDetails().getUserId());
+						iterate.setUpBy(auditUserId);
 						iterate.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
 						batchServiceDAO.updateApplicantDemographic(iterate.getDemographicEntity());
 					}
@@ -105,12 +99,12 @@ public class ExpiredStatusUtil {
 				setAuditValues(EventId.PRE_413.toString(), EventName.EXPIREDSTATUS.toString(),
 						EventType.BUSINESS.toString(),
 						"Updated the expired status & the expired PreRegistration ids successfully saved in the database",
-						AuditLogVariables.PRE_REGISTRATION_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null, headers);
+						AuditLogVariables.PRE_REGISTRATION_ID.toString(), auditUserId,
+						auditUsername, null, headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Expired status failed to update", AuditLogVariables.NO_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername(), null, headers);
+						auditUserId, auditUsername, null, headers);
 			}
 		}
 		response.setResponsetime(GenericUtil.getCurrentResponseTime());
