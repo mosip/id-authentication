@@ -57,6 +57,7 @@ public class PacketReceiverStageTest {
 	private File file;
 	private String id = "2018782130000113112018183001.zip";
 	private String newId = "2018782130000113112018183000.zip";
+	private String deletePath = "deleteTest\folder";
 	public FileUpload fileUpload;
 	@Mock
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
@@ -93,6 +94,11 @@ public class PacketReceiverStageTest {
 		@Override
 		public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
 
+		}
+		
+		@Override
+		public void deleteFile(File f ) {
+			
 		}
 	};
 
@@ -160,7 +166,7 @@ public class PacketReceiverStageTest {
 		Mockito.when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
 		packetReceiverStage.failure(ctx);
 	}
-
+	
 	private FileUpload setFileUpload() {
 		return new FileUpload() {
 
