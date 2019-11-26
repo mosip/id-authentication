@@ -43,6 +43,7 @@ import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
@@ -55,8 +56,10 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
+import io.mosip.kernel.masterdata.entity.DaysOfWeek;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.RegWorkingNonWorking;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
@@ -69,8 +72,10 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
@@ -82,7 +87,6 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.service.ZoneService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -92,7 +96,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterValidator;
-import io.mosip.kernel.masterdata.utils.UBtree;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -219,6 +222,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private DaysOfWeekListRepo daysOfWeekListRepo;
+	
+	@Autowired
+	private RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
 
 	/**
 	 * Constructing regex for matching the Latitude and Longitude format
@@ -997,8 +1006,39 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				 */
 				// registrationCenterEntity.setIsActive(false);
 				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-				// registrationCenterList.add(registrationCenter);
+				
+            // insert 7 rows in WorkingNonWorking
+			RegWorkingNonWorking regWorkingNonWorkingEntity = new RegWorkingNonWorking();
+			List<Short> daySeq;
+			List<String> dayCodes;
+			List<DaysOfWeek> daysOfWeek = daysOfWeekListRepo.findBylangCode(primaryLang);
+			daySeq = daysOfWeek.parallelStream().map(DaysOfWeek::getDaySeq).collect(Collectors.toList());
+			dayCodes =daysOfWeek.parallelStream().map(DaysOfWeek::getCode).collect(Collectors.toList());
+			
+			WorkingNonWorkingDaysDto workingNonWorkingDays = regCenterPostReqDto.getWorkingNonWorkingDays();
+			
+			Boolean[] working = {workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(), workingNonWorkingDays.getTue(),workingNonWorkingDays.getWed(),
+					workingNonWorkingDays.getThu(), workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat()};
 
+			List<RegWorkingNonWorking> regWorkingNonWorkingEntityList = new ArrayList<>();
+			int i=0;
+			for(String dayCode : dayCodes) {
+				regWorkingNonWorkingEntity = new RegWorkingNonWorking();
+				regWorkingNonWorkingEntity.setRegistrationCenterId(registrationCenterEntity.getId());
+				regWorkingNonWorkingEntity.setDayCode(dayCode);
+				regWorkingNonWorkingEntity.setWorking(working[i]); i++;
+				regWorkingNonWorkingEntity.setLanguagecode(registrationCenterEntity.getLangCode());
+				regWorkingNonWorkingEntity.setIsActive(registrationCenterEntity.getIsActive());
+				regWorkingNonWorkingEntity.setCreatedBy(registrationCenterEntity.getCreatedBy());
+				regWorkingNonWorkingEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+				regWorkingNonWorkingEntityList.add(regWorkingNonWorkingEntity);
+				//regWorkingNonWorkingRepo.create(regWorkingNonWorkingEntity);
+			}
+			
+			regWorkingNonWorkingRepo.saveAll(regWorkingNonWorkingEntityList);
+			
+			
+			
 				// creating registration center history
 				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
 						RegistrationCenterHistory.class);

@@ -99,4 +99,6 @@ public class RegCenterPostReqDto {
 	@NotNull
 	@Size(min = 0, max = 36)
 	private String zoneCode;
+	
+	private WorkingNonWorkingDaysDto workingNonWorkingDays;
 }
