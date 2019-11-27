@@ -117,6 +117,7 @@ public class AuthController {
 		if (authResponseDto != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
+			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
@@ -181,6 +182,7 @@ public class AuthController {
 		if (authResponseDto != null && authResponseDto.getToken() != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
+			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
@@ -216,6 +218,7 @@ public class AuthController {
 		if (authResponseDto != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
+			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
