@@ -93,7 +93,7 @@ public class TokenValidator {
 		DecodedJWT decodedJWT = JWT.decode(token);
 		long expiryEpochTime = decodedJWT.getClaim("exp").asLong();
 		long currentEpoch = DateUtils.getUTCCurrentDateTime().toEpochSecond(ZoneOffset.UTC);
-		return currentEpoch < expiryEpochTime;
+		return currentEpoch > expiryEpochTime;
 	}
 
 	private Claims getClaims(String token) throws Exception {

@@ -48,7 +48,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 		AuthUserDetails authUserDetails = getAuthUserDetails();
 		if (authUserDetails != null)
 			headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE,
-					AuthAdapterConstant.AUTH_COOOKIE_HEADER+authUserDetails.getToken());
+					authUserDetails.getToken());
 	}
 
 	private AuthUserDetails getAuthUserDetails() {
