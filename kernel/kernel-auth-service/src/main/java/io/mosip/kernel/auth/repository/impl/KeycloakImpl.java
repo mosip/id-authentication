@@ -535,23 +535,23 @@ public class KeycloakImpl implements DataStore {
 
 			if (userDetails.stream().anyMatch(user -> user.equals(userName))) {
 				String email = jsonNode.get("email").textValue();
-				String userPassword = null;
+				JsonNode attributeNodes = jsonNode.get("attributes");
+				String userPassword = attributeNodes.get("userPassword").get(0).asText();
 				String mobile = null;
 				String rid = null;
-				String name = null;
+				String name = jsonNode.get("firstName").asText()+jsonNode.get("lastName").asText();
 				try {
 					roles = getRolesAsString(jsonNode.get("id").textValue());
 				} catch (IOException e) {
 					throw new AuthManagerException(AuthErrorCode.IO_EXCEPTION.getErrorCode(),
 							AuthErrorCode.IO_EXCEPTION.getErrorMessage());
 				}
-				JsonNode attributeNodes = jsonNode.get("attributes");
 				userPassword = getPasswordFromDatabase(userName);
 				if (attributeNodes.get("contact no") != null) {
-					mobile = attributeNodes.get("contact no").get(0).textValue();
+					mobile = attributeNodes.get("mobile").get(0).textValue();
 				}
 				if (attributeNodes.get("name") != null) {
-					name = attributeNodes.get("name").get(0).textValue();
+					name = jsonNode.get("firstName").asText()+" "+jsonNode.get("lastName").asText();
 				}
 				if (attributeNodes.get("rid") != null) {
 					rid = attributeNodes.get("rid").get(0).textValue();
