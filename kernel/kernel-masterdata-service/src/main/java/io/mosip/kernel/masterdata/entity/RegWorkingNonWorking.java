@@ -17,6 +17,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Kishan Rathore
+ *
+ */
 @Data
 @EqualsAndHashCode(callSuper=true)
 @Entity

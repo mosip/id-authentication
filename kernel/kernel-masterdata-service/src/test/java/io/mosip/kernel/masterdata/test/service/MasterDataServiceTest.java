@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
@@ -37,6 +38,7 @@ import io.mosip.kernel.masterdata.dto.DayNameAndSeqListDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -65,6 +67,7 @@ import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
+import io.mosip.kernel.masterdata.entity.ExceptionalHoliday;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -85,6 +88,7 @@ import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
+import io.mosip.kernel.masterdata.repository.ExceptionalHolidayRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
@@ -100,6 +104,7 @@ import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
@@ -110,6 +115,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
 
@@ -203,13 +209,19 @@ public class MasterDataServiceTest {
 	RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory;
 
 	@Autowired
-		RegistrationCenterMachineDeviceHistoryService registrationCenterMachineDeviceHistoryService;
+	RegistrationCenterMachineDeviceHistoryService registrationCenterMachineDeviceHistoryService;
 	
-		@MockBean
+	@MockBean
 	RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
 
 	@Autowired
 	RegWorkingNonWorkingService regWorkingNonWorkingService;
+	
+	@Autowired
+	ExceptionalHolidayService exceptionalHolidayService;
+	
+	@MockBean
+	ExceptionalHolidayRepository exceptionalHolidayRepository;
 
 	private DocumentCategory documentCategory1;
 	private DocumentCategory documentCategory2;
@@ -2456,6 +2468,43 @@ public class MasterDataServiceTest {
 		Mockito.when(regWorkingNonWorkingRepo.findByregistrationCenterIdAndlanguagecode(Mockito.anyString(),
 				Mockito.anyString())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
 		regWorkingNonWorkingService.getWeekDaysList("10001", "eng");
+	}
+	
+	@Test
+	public void exceptionalHolidaysServiceTest() {
+		List<ExceptionalHoliday> exceptionalHolidayList = new ArrayList<>();
+		ExceptionalHoliday exceptionalHoliday = new ExceptionalHoliday();
+		LocalDate date=LocalDate.now();
+		
+		exceptionalHoliday.setIsActive(true);
+		exceptionalHoliday.setHolidayDate(date);
+		exceptionalHoliday.setLangCode("eng");
+		exceptionalHoliday.setHolidayDate(date);
+		exceptionalHoliday.setHolidayName("Exceptional Holiday");
+		exceptionalHoliday.setHolidayReason("Exceptional Holiday");
+		exceptionalHolidayList.add(exceptionalHoliday);
+
+		Mockito.when(exceptionalHolidayRepository.findAllNonDeletedExceptionalHoliday("10001", "eng"))
+				.thenReturn(exceptionalHolidayList);
+		System.out.println("sdgd");
+		
+		List<ExceptionalHolidayDto> excepHolidays = MapperUtils.mapExceptionalHolidays(exceptionalHolidayList);
+
+		assertEquals("Exceptional Holiday",
+				exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng").getExceptionalHolidayList().get(0).getHolidayName());
+	}
+	@Test(expected = DataNotFoundException.class)
+	public void exceptionalHolidaysFailureTest() {
+
+		Mockito.when(exceptionalHolidayRepository.findAllNonDeletedExceptionalHoliday("10001", "eng"))
+		.thenReturn(null);
+		exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng");
+	}
+	@Test(expected = MasterDataServiceException.class)
+	public void exceptionalHolidaysFailureTest2() {
+
+		Mockito.when(exceptionalHolidayRepository.findAllNonDeletedExceptionalHoliday("10001", "eng")).thenThrow(new DataAccessLayerException("", "", new Throwable()));
+		exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng");
 	}
 
 }
