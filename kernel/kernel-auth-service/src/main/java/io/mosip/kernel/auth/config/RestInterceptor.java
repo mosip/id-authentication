@@ -58,6 +58,10 @@ public class RestInterceptor implements ClientHttpRequestInterceptor {
 		if ((accessTokenResponse = memoryCache.get("adminToken")) != null) {
 			boolean accessTokenExpired=tokenValidator.isExpired(accessTokenResponse.getAccess_token());
 			boolean refreshTokenExpired=tokenValidator.isExpired(accessTokenResponse.getRefresh_token());
+			System.out.println("access token "+accessTokenResponse.getAccess_token());
+			System.out.println("refresh token "+accessTokenResponse.getRefresh_token());
+			System.out.println(accessTokenExpired);
+			System.out.println(refreshTokenExpired);
 			if (accessTokenExpired && refreshTokenExpired) {
 				accessTokenResponse = getAdminToken(false, null);
 			}else if(accessTokenExpired) {
