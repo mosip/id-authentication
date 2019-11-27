@@ -1,11 +1,12 @@
 package io.mosip.registration.processor.request.handler.service.impl;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -34,10 +34,15 @@ import io.mosip.registration.processor.request.handler.service.dto.PackerGenerat
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.processor.request.handler.service.dto.ResidentIndividialIDType;
 import io.mosip.registration.processor.request.handler.service.dto.ResidentUpdateDto;
+import io.mosip.registration.processor.request.handler.service.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.processor.request.handler.service.dto.demographic.DemographicDTO;
+import io.mosip.registration.processor.request.handler.service.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService;
 import io.mosip.registration.processor.request.handler.upload.validator.RequestHandlerRequestValidator;
+import io.mosip.registration.processor.status.code.RegistrationType;
 
 @Service
 @Qualifier("residentUpdateService")
@@ -56,37 +61,73 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
 
+	private static final String PROOF_OF_ADDRESS = "proofOfAddress";
+	private static final String PROOF_OF_DOB = "proofOfDOB";
+	private static final String PROOF_OF_RELATIONSHIP = "proofOfRelationship";
+	private static final String PROOF_OF_IDENTITY = "proofOfIdentity";
+	private static final String IDENTITY = "identity";
+	private static final String FORMAT = "format";
+	private static final String TYPE = "type";
+
 	@Override
 	public PacketGeneratorResDto createPacket(ResidentUpdateDto request) throws RegBaseCheckedException, IOException {
 		byte[] packetZipBytes = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 		if (validator.isValidCenter(request.getCenterId()) && validator.isValidMachine(request.getMachineId())
-				&& validator.isValidRegistrationTypeAndUin(request.getIndividualIdType().name(),
-						request.getIndividualId())) {
+				&& request.getIdType().equals(ResidentIndividialIDType.UIN)
+						? validator.isValidRegistrationTypeAndUin(RegistrationType.RES_UPDATE.toString(),
+								request.getIdValue())
+						: validator.isValidVid(request.getIdValue())) {
 
-			RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getIndividualId(),
-					request.getIndividualIdType().toString(), request.getCenterId(), request.getMachineId());
+			RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getIdValue(),
+					request.getIdType().toString(), request.getCenterId(), request.getMachineId());
+
 			try {
-				String demoJsonString = new String(CryptoUtil.decodeBase64(request.getIdentity()));
+				String demoJsonString = new String(CryptoUtil.decodeBase64(request.getIdentityJson()));
 				JSONObject demoJsonObject = JsonUtil.objectMapperReadValue(demoJsonString, JSONObject.class);
+
+				// set demographic documents
+				Map<String, DocumentDetailsDTO> map = new HashMap<>();
+				if (request.getProofOfAddress() != null && !request.getProofOfAddress().isEmpty())
+					setDemographicDocuments(request.getProofOfAddress(), demoJsonObject, PROOF_OF_ADDRESS, map);
+				if (request.getProofOfDateOfBirth() != null && !request.getProofOfDateOfBirth().isEmpty())
+					setDemographicDocuments(request.getProofOfAddress(), demoJsonObject, PROOF_OF_DOB, map);
+				if (request.getProofOfRelationship() != null && !request.getProofOfRelationship().isEmpty())
+					setDemographicDocuments(request.getProofOfAddress(), demoJsonObject, PROOF_OF_RELATIONSHIP, map);
+				if (request.getProofOfIdentity() != null && !request.getProofOfIdentity().isEmpty())
+					setDemographicDocuments(request.getProofOfAddress(), demoJsonObject, PROOF_OF_IDENTITY, map);
+				if (map.size() > 0) {
+					DemographicDTO dummyDemoDto = new DemographicDTO();
+					ApplicantDocumentDTO dummyApplicantDto = new ApplicantDocumentDTO();
+					registrationDTO.setDemographicDTO(dummyDemoDto);
+					registrationDTO.getDemographicDTO().setApplicantDocumentDTO(dummyApplicantDto);
+					registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setDocuments(map);
+
+				}
+				registrationDTO.setRegType(RegistrationType.RES_UPDATE.toString());
 				packetZipBytes = packetCreationService.create(registrationDTO, demoJsonObject);
-			} catch (IdObjectValidationFailedException | IdObjectIOException | ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				String rid = registrationDTO.getRegistrationId();
+				String packetCreatedDateTime = rid.substring(rid.length() - 14);
+				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
+						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
+				LocalDateTime ldt = LocalDateTime.parse(formattedDate,
+						DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+				String creationTime = ldt.toString() + ".000Z";
+
+				PacketGeneratorResDto packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(
+						registrationDTO.getRegistrationId(), creationTime, request.getRequestType().toString(),
+						packetZipBytes);
+
+				return packerGeneratorResDto;
+			} catch (Exception e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(),
+						PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage(), ExceptionUtils.getStackTrace(e));
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						ExceptionUtils.getStackTrace(e), e);
+
 			}
-
-			String rid = registrationDTO.getRegistrationId();
-			String packetCreatedDateTime = rid.substring(rid.length() - 14);
-			String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
-					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
-			LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
-			String creationTime = ldt.toString() + ".000Z";
-
-			PacketGeneratorResDto packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(
-					registrationDTO.getRegistrationId(), creationTime, request.getIndividualIdType().toString(),
-					packetZipBytes);
-
-			return packerGeneratorResDto;
 
 		} else {
 			return dto;
@@ -94,10 +135,23 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 		}
 	}
 
+	private void setDemographicDocuments(String documentBytes, JSONObject demoJsonObject, String documentName,
+			Map<String, DocumentDetailsDTO> map) {
+		JSONObject identityJson = JsonUtil.getJSONObject(demoJsonObject, IDENTITY);
+		JSONObject documentJson = JsonUtil.getJSONObject(identityJson, documentName);
+		if (documentJson == null)
+			return;
+		DocumentDetailsDTO docDetailsDto = new DocumentDetailsDTO();
+		docDetailsDto.setDocument(CryptoUtil.decodeBase64(documentBytes));
+		docDetailsDto.setFormat((String) JsonUtil.getJSONValue(documentJson, FORMAT));
+		docDetailsDto.setValue(documentName);
+		docDetailsDto.setType((String) JsonUtil.getJSONValue(documentJson, TYPE));
+		map.put(documentName, docDetailsDto);
+	}
+
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
 			String machineId) throws RegBaseCheckedException {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
-		// registrationDTO.setDemographicDTO(getDemographicDTO(uin));
 		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, uin, centerId,
 				machineId);
 		String registrationId = generateRegistrationId(registrationMetaDataDTO.getCenterId(),
@@ -107,17 +161,6 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 		return registrationDTO;
 
 	}
-
-//	private DemographicDTO getDemographicDTO(String uin) {
-//		DemographicDTO demographicDTO = new DemographicDTO();
-//		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-//		MoroccoIdentity identity = new MoroccoIdentity();
-//		identity.setIdSchemaVersion(1.0);
-//		identity.setUin(new BigInteger(uin));
-//		demographicInfoDTO.setIdentity(identity);
-//		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
-//		return demographicDTO;
-//	}
 
 	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String uin, String centerId,
 			String machineId) {
@@ -132,7 +175,6 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 	}
 
 	private String generateRegistrationId(String centerId, String machineId) throws RegBaseCheckedException {
-
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
