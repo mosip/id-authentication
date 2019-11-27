@@ -249,7 +249,7 @@ public class AuthServiceImpl implements AuthService {
 		Map<String, String> pathParams = new HashMap<>();
 		pathParams.put("realmId", realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
-		tokenRequestBody=getPasswordValueMap("mosip-local","98432186-daf4-442c-8623-9f38ec62d031",loginUser.getUserName(), loginUser.getPassword());
+		tokenRequestBody=getPasswordValueMap("mosip-local","e68b61e3-2da4-4a37-8ee0-9733a3f8dfb2",loginUser.getUserName(), loginUser.getPassword());
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
 		ResponseEntity<AccessTokenResponse> response = authRestTemplate.postForEntity(
 				uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);

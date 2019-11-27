@@ -111,7 +111,7 @@ public class OTPServiceImpl implements OTPService {
              String token = null;
              try {
                     //token = tokenService.getInternalTokenGenerationService();
-                    AccessTokenResponse accessTokenResponse=getAuthAccessToken("auth","90c62f15-2e9a-4cda-a8ba-9a7a7dbcbeb3");
+                    AccessTokenResponse accessTokenResponse=getAuthAccessToken("auth","050c7e61-e415-4390-a1ac-03e1624e2b1d");
              token=AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+accessTokenResponse.getAccess_token();
              } catch (HttpClientErrorException | HttpServerErrorException ex) {
                     List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
@@ -339,7 +339,7 @@ public class OTPServiceImpl implements OTPService {
              AccessTokenResponse responseAccessTokenResponse=null;
              try {
                     //token = tokenService.getInternalTokenGenerationService();
-             accessTokenResponse=getAuthAccessToken("auth","90c62f15-2e9a-4cda-a8ba-9a7a7dbcbeb3");
+             accessTokenResponse=getAuthAccessToken("auth","050c7e61-e415-4390-a1ac-03e1624e2b1d");
              
              token=accessTokenResponse.getAccess_token();
              } catch (Exception e) {
@@ -396,7 +396,7 @@ public class OTPServiceImpl implements OTPService {
              AccessTokenResponse accessTokenResponse=null;
              try {
                     //token = tokenService.getInternalTokenGenerationService();
-                    accessTokenResponse=getAuthAccessToken("ida","9d7ea3ba-b6b7-4c9c-9847-4a9923d9667b");
+                    accessTokenResponse=getAuthAccessToken("ida","bad25866-e6a5-4f93-831a-08923ea6eee0");
                     token=accessTokenResponse.getAccess_token();
              } catch (Exception e) {
                     throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
@@ -430,7 +430,7 @@ public class OTPServiceImpl implements OTPService {
              authOtpValidator.validateOTPUser(otpUser);
              try {
                     //token = tokenService.getInternalTokenGenerationService();
-                    accessTokenResponse=getAuthAccessToken("auth","90c62f15-2e9a-4cda-a8ba-9a7a7dbcbeb3");
+                    accessTokenResponse=getAuthAccessToken("auth","050c7e61-e415-4390-a1ac-03e1624e2b1d");
              } catch (HttpClientErrorException | HttpServerErrorException ex) {
                     List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
@@ -585,7 +585,7 @@ public class OTPServiceImpl implements OTPService {
              map.add("username", username);
              map.add("password", "mosip");
              map.add("client_id", "mosip-local");
-             map.add("client_secret", "98432186-daf4-442c-8623-9f38ec62d031");
+             map.add("client_secret", "e68b61e3-2da4-4a37-8ee0-9733a3f8dfb2");
              return map;
        }
        
@@ -595,7 +595,7 @@ public class OTPServiceImpl implements OTPService {
              map.add("client_id", clientID);
              map.add("client_secret", clientSecret);
             // map.add("client_id", "auth");
-             //map.add("client_secret", "90c62f15-2e9a-4cda-a8ba-9a7a7dbcbeb3");
+             //map.add("client_secret", "050c7e61-e415-4390-a1ac-03e1624e2b1d");
              return map;
        }
 }
