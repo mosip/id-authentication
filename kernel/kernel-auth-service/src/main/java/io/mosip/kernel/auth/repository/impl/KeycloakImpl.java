@@ -289,7 +289,7 @@ public class KeycloakImpl implements DataStore {
 		Map<String, String> pathParams = new HashMap<>();
 		pathParams.put("realmId", realmId);
 		pathParams.put("userID", userID);
-		Roles role = new Roles("45c92d2c-8788-4ce3-b281-8fe619b770b2", "INDIVIDUAL");
+		Roles role = new Roles("24a3b0b9-cbde-4591-ab40-05e700fdbc03", "INDIVIDUAL");
 		List<Roles> roles = new ArrayList<>();
 		roles.add(role);
 		pathParams.put("realmId", realmId);
