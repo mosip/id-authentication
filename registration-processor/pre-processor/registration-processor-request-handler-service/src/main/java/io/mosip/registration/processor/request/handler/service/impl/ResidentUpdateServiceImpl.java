@@ -80,7 +80,7 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 						: validator.isValidVid(request.getIdValue())) {
 
 			RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getIdValue(),
-					request.getIdType().toString(), request.getCenterId(), request.getMachineId());
+					request.getRequestType().toString(), request.getCenterId(), request.getMachineId());
 
 			try {
 				String demoJsonString = new String(CryptoUtil.decodeBase64(request.getIdentityJson()));
