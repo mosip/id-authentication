@@ -132,7 +132,9 @@ public class PacketInfoDao {
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-
+		demo.setPhone(object.getPhone());
+		demo.setEmail(object.getEmail());
+		demo.setPostalcode(object.getPostalCode());
 		return demo;
 	}
 
@@ -255,7 +257,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the reference id by batch id.
 	 *
-	 * @param batchId the batch id
+	 * @param batchId
+	 *            the batch id
 	 * @return the reference id by batch id
 	 */
 	public List<String> getReferenceIdByBatchId(String batchId) {
@@ -522,9 +525,12 @@ public class PacketInfoDao {
 	/**
 	 * Gets the abis processed requests app code by bio ref id.
 	 *
-	 * @param bioRefId the bio ref id
-	 * @param requestType the request type
-	 * @param processed the processed
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param requestType
+	 *            the request type
+	 * @param processed
+	 *            the processed
 	 * @return the abis processed requests app code by bio ref id
 	 */
 	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
@@ -536,8 +542,10 @@ public class PacketInfoDao {
 	/**
 	 * Gets the processed or processing reg ids.
 	 *
-	 * @param matchedRegIds the matched reg ids
-	 * @param statusCode the status code
+	 * @param matchedRegIds
+	 *            the matched reg ids
+	 * @param statusCode
+	 *            the status code
 	 * @return the processed or processing reg ids
 	 */
 	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds, String statusCode) {
@@ -547,7 +555,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the abis response det records list.
 	 *
-	 * @param abisResponseDto the abis response dto
+	 * @param abisResponseDto
+	 *            the abis response dto
 	 * @return the abis response det records list
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
