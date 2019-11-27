@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_audit
--- Release Version 	: 0.10.2
--- Purpose    		: Revoking Database Alter deployement done for release in Audit DB.       
+-- Database Name: mosip_kernel
+-- Release Version 	: 0.10.4
+-- Purpose    		: Revoking Database Alter deployement done for release in Kernel DB.       
 -- Create By   		: Sadanandegowda
--- Created Date		: 20-Sep-2019
+-- Created Date		: 23-Sep-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 
-\c mosip_audit sysadmin
+\c mosip_kernel sysadmin

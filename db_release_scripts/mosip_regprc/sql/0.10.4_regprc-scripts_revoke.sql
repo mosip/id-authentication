@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
--- Release Version 	: 0.10.2
--- Purpose    		: Database Alter scripts for the release for ID Authentication DB.       
+-- Database Name: mosip_regprc
+-- Release Version 	: 0.10.4
+-- Purpose    		: Revoking Database Alter deployement done for release in Registration ProcessorDB.       
 -- Create By   		: Sadanandegowda
--- Created Date		: 06-Sep-2019
+-- Created Date		: 23-Sep-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 
-\c mosip_ida sysadmin
+\c mosip_regprc sysadmin

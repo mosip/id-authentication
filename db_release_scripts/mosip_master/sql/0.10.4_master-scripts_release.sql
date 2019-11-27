@@ -1,6 +1,6 @@
 -- ---------------------------------------------------------------------------------------------------------
 -- Database Name: mosip_master
--- Release Version 	: 0.10.2
+-- Release Version 	: 0.10.4
 -- Purpose    		: Database Alter scripts for the release for Master DB.       
 -- Create By   		: Sadanandegowda
 -- Created Date		: 06-Sep-2019
