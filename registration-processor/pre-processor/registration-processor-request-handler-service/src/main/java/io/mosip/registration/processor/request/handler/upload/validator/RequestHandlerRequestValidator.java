@@ -78,6 +78,15 @@ public class RequestHandlerRequestValidator {
 	/** The Constant VID. */
 	private static final String VID = "VID";
 
+	/** The Constant VID. */
+	private static final String RID = "RID";
+
+	/** The Constant VID. */
+	private static final String EMAIL = "Email";
+
+	/** The Constant VID. */
+	private static final String PHONE = "Phone";
+
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
 
@@ -86,6 +95,9 @@ public class RequestHandlerRequestValidator {
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
+
+	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
+	private static final String REG_LOST_PACKET_SERVICE_ID = "mosip.registration.processor.lost.id";
 
 	/** The env. */
 	@Autowired
@@ -138,6 +150,7 @@ public class RequestHandlerRequestValidator {
 			throws RequestHandlerValidationException {
 		id.put("packet_generator", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
 		id.put("uincard_reprint_status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
+		id.put("lost_id", env.getProperty(REG_LOST_PACKET_SERVICE_ID));
 		validateReqTime(requestTime);
 		validateId(requestId);
 		validateVersion(requestVersion);
@@ -518,6 +531,55 @@ public class RequestHandlerRequestValidator {
 					"Invalid CardType : Enter UIN or MASKED_UIN", new Throwable());
 		}
 
+	}
+
+	public boolean isValidIdTypeForLost(String idType) throws RegBaseCheckedException {
+		if (idType != null && (idType.equalsIgnoreCase(UIN) || idType.equalsIgnoreCase(RID))) {
+			return true;
+		} else {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_ID_TYPE_EXCEPTION,
+					PlatformErrorMessages.RPR_PGS_ID_TYPE_EXCEPTION.getMessage(), new Throwable());
+		}
+
+	}
+
+	public boolean isValidContactType(String contactType) throws RegBaseCheckedException {
+		if (contactType != null && (contactType.equalsIgnoreCase(EMAIL) || contactType.equalsIgnoreCase(PHONE))) {
+			return true;
+		} else {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_CONTACT_TYPE_EXCEPTION,
+					PlatformErrorMessages.RPR_PGS_CONTACT_TYPE_EXCEPTION.getMessage(), new Throwable());
+		}
+
+	}
+
+	public boolean isValidName(String name) throws RegBaseCheckedException {
+		if (name == null || name.isEmpty()) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_NAME_EXCEPTION,
+					PlatformErrorMessages.RPR_PGS_NAME_EXCEPTION.getMessage(), new Throwable());
+		} else {
+			return true;
+		}
+
+	}
+
+	public boolean isValidContactValue(String contactValue) throws RegBaseCheckedException {
+		if (contactValue == null || contactValue.isEmpty()) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_CONTACTVALUE_EXCEPTION,
+					PlatformErrorMessages.RPR_PGS_CONTACTVALUE_EXCEPTION.getMessage(), new Throwable());
+		} else {
+			return true;
+		}
+
+	}
+
+	public boolean isValidPostalCode(String postalCode) throws RegBaseCheckedException {
+		if (postalCode == null || postalCode.isEmpty()) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_POSTALCODE_EXCEPTION,
+					PlatformErrorMessages.RPR_PGS_POSTALCODE_EXCEPTION.getMessage(), new Throwable());
+		} else {
+			return true;
+		}
 	}
 
 }
