@@ -68,6 +68,8 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 	private static final String IDENTITY = "identity";
 	private static final String FORMAT = "format";
 	private static final String TYPE = "type";
+	private static final String VALUE = "value";
+
 
 	@Override
 	public PacketGeneratorResDto createPacket(ResidentUpdateDto request) throws RegBaseCheckedException, IOException {
@@ -144,7 +146,7 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 		DocumentDetailsDTO docDetailsDto = new DocumentDetailsDTO();
 		docDetailsDto.setDocument(CryptoUtil.decodeBase64(documentBytes));
 		docDetailsDto.setFormat((String) JsonUtil.getJSONValue(documentJson, FORMAT));
-		docDetailsDto.setValue(documentName);
+		docDetailsDto.setValue((String) JsonUtil.getJSONValue(documentJson, VALUE));
 		docDetailsDto.setType((String) JsonUtil.getJSONValue(documentJson, TYPE));
 		map.put(documentName, docDetailsDto);
 	}
