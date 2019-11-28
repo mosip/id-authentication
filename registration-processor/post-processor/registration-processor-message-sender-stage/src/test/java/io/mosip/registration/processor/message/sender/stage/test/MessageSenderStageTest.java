@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.message.sender.stage.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -569,7 +570,7 @@ public class MessageSenderStageTest {
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
 		MessageDTO result = stage.process(dto);
-		assertTrue(result.getIsValid());
+		assertFalse(result.getIsValid());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -607,6 +608,224 @@ public class MessageSenderStageTest {
 		ApisResourceAccessException e = new ApisResourceAccessException();
 		Mockito.doThrow(e).when(service).sendSmsNotification(any(), any(), any(), any(), any());
 		Mockito.doThrow(e).when(service).sendEmailNotification(any(), any(), any(), any(), any(), any(), any(), any());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertFalse(result.getIsValid());
+	}
+
+	@Test
+	public void testNotificationTyeNoneSuccess() throws Exception {
+		ReflectionTestUtils.setField(stage, "notificationTypes", "NONE");
+
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
+		templateDto.setTemplateTypeCode("RPR_UIN_REAC_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_UIN_REAC_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
+				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("ACTIVATED");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
+	}
+
+	@Test
+	public void testNotificationSentFailureForAllNotificationType() throws Exception {
+		ReflectionTestUtils.setField(stage, "notificationTypes", "SMS|EMAIL");
+
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
+		templateDto.setTemplateTypeCode("RPR_UIN_REAC_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_UIN_REAC_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
+				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("failed");
+		Mockito.when(responseDto.getStatus()).thenReturn("failed");
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("ACTIVATED");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertFalse(result.getIsValid());
+
+	}
+
+	@Test
+	public void testNotificationSentFailureForOneNotificationType() throws Exception {
+		ReflectionTestUtils.setField(stage, "notificationTypes", "SMS|EMAIL");
+
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
+		templateDto.setTemplateTypeCode("RPR_UIN_REAC_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_UIN_REAC_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
+				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("failed");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("ACTIVATED");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertFalse(result.getIsValid());
+
+	}
+
+
+	@Test
+	public void testNotificationSentSuccessForOneNotificationType() throws Exception {
+		ReflectionTestUtils.setField(stage, "notificationTypes", "SMS");
+
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
+		templateDto.setTemplateTypeCode("RPR_UIN_REAC_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_UIN_REAC_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
+				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+
+		FieldValue registrationType = new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("ACTIVATED");
+		List<FieldValue> fieldValueList = new ArrayList<>();
+		fieldValueList.add(registrationType);
+		identity.setMetaData(fieldValueList);
+		packetMetaInfo.setIdentity(identity);
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
