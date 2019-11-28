@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
@@ -120,11 +121,13 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 			i++;
 		}
 		try {
-			scores = ibioApi.compositeMatch(capturedBir, registeredBir, null).getIndividualScores();
+			CompositeScore compositeScore = ibioApi.compositeMatch(capturedBir, registeredBir, null);
+			scores=compositeScore.getIndividualScores();
 			int reqScore = 80;
 			for (Score score : scores) {
 				if (score.getScaleScore() >= reqScore) {
 					flag = true;
+					break;
 				}
 			}
 		} catch (BiometricException exception) {
