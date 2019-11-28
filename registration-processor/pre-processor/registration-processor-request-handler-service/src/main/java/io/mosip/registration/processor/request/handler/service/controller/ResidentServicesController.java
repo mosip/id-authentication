@@ -83,7 +83,7 @@ public class ResidentServicesController {
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packetGeneratorResDto));
 		} catch (RegBaseCheckedException | IOException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED,e.getMessage(),e);
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
 		}
 

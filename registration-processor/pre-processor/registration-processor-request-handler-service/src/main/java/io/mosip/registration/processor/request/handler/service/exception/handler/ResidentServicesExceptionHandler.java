@@ -33,7 +33,7 @@ public class ResidentServicesExceptionHandler {
 	private Environment env;
 
 	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
-	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
+	private static final String RES_UPDATE_SERVICE_ID = "mosip.registration.processor.resident.service.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.application.version";
@@ -98,7 +98,7 @@ public class ResidentServicesExceptionHandler {
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
 
 		if (Objects.isNull(response.getId())) {
-			response.setId(env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
+			response.setId(env.getProperty(RES_UPDATE_SERVICE_ID));
 		}
 		if (ex instanceof BaseCheckedException)
 
