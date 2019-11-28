@@ -27,12 +27,10 @@ public class ResidentUpdateDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -8491761257330824671L;
 
-	private String transactionID;
 	private String idValue;
 	private ResidentIndividialIDType idType;
 	@JsonIgnore
 	private RegistrationType requestType = RegistrationType.RES_UPDATE;
-	private String otp;
 	private String centerId;
 	private String machineId;
 	private String identityJson;

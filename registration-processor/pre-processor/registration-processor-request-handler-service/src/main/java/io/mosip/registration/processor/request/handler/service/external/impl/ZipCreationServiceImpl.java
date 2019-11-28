@@ -3,12 +3,14 @@ package io.mosip.registration.processor.request.handler.service.external.impl;
 import static java.io.File.separator;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -22,6 +24,7 @@ import io.mosip.registration.processor.request.handler.service.dto.demographic.D
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.external.ZipCreationService;
 import io.mosip.registration.processor.request.handler.service.impl.PacketCreationServiceImpl;
+import io.mosip.registration.processor.status.code.RegistrationType;
 
 /**
  * API Class to generate the in-memory zip file for Registration Packet.
@@ -48,14 +51,16 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
-			//add proof documents
-			Map<String, DocumentDetailsDTO> documents = registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments();
 			
-			for (Entry<String, DocumentDetailsDTO> documentCategory : documents.entrySet()) {
-				writeFileToZip("Demographic".concat(separator) + getFileNameWithExt(documentCategory.getValue()),
-						documentCategory.getValue().getDocument(), zipOutputStream);
+			if(registrationDTO.getRegType() != null && registrationDTO.getRegType().equals(RegistrationType.RES_UPDATE.toString())){
+				//add proof documents
+				Map<String, DocumentDetailsDTO> documents = registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments();
+				
+				for (Entry<String, DocumentDetailsDTO> documentCategory : documents.entrySet()) {
+					writeFileToZip("Demographic".concat(separator) + getFileNameWithExt(documentCategory.getValue()),
+							documentCategory.getValue().getDocument(), zipOutputStream);
+				}
 			}
-
 			// Create folder structure for Demographic
 			if (checkNotNull(registrationDTO.getDemographicDTO())) {
 
@@ -100,7 +105,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationDTO.getRegistrationId(), "ZipCreationServiceImpl ::createPacket()::end()");
-
+			
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
