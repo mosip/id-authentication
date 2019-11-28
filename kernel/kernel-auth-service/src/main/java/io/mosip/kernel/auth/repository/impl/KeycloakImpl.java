@@ -546,7 +546,7 @@ public class KeycloakImpl implements DataStore {
 					throw new AuthManagerException(AuthErrorCode.IO_EXCEPTION.getErrorCode(),
 							AuthErrorCode.IO_EXCEPTION.getErrorMessage());
 				}
-				userPassword = getPasswordFromDatabase(userName);
+				//userPassword = getPasswordFromDatabase(userName);
 				if (attributeNodes.get("contact no") != null) {
 					mobile = attributeNodes.get("mobile").get(0).textValue();
 				}
