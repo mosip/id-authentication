@@ -70,9 +70,10 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 	private static final String TYPE = "type";
 	private static final String VALUE = "value";
 
-
 	@Override
 	public PacketGeneratorResDto createPacket(ResidentUpdateDto request) throws RegBaseCheckedException, IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(),
+				request.getIdValue(), "ResidentUpdateServiceImpl::createPacket()");
 		byte[] packetZipBytes = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 		if (validator.isValidCenter(request.getCenterId()) && validator.isValidMachine(request.getMachineId())
@@ -80,6 +81,10 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 						? validator.isValidRegistrationTypeAndUin(RegistrationType.RES_UPDATE.toString(),
 								request.getIdValue())
 						: validator.isValidVid(request.getIdValue())) {
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(),
+					request.getIdValue(),
+					"ResidentUpdateServiceImpl::createPacket()::validations for UIN,TYPE,CENTER,MACHINE are successful");
 
 			RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getIdValue(),
 					request.getRequestType().toString(), request.getCenterId(), request.getMachineId());
@@ -117,10 +122,17 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 						DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
 				String creationTime = ldt.toString() + ".000Z";
 
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationDTO.getRegistrationId(),
+						"ResidentUpdateServiceImpl::createPacket()::packet created and sent for sync service");
+
 				PacketGeneratorResDto packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(
 						registrationDTO.getRegistrationId(), creationTime, request.getRequestType().toString(),
 						packetZipBytes);
 
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationDTO.getRegistrationId(),
+						"ResidentUpdateServiceImpl::createPacket()::packet synched and uploaded");
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
