@@ -5,6 +5,7 @@ import static java.io.File.separator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -47,6 +48,13 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+			//add proof documents
+			Map<String, DocumentDetailsDTO> documents = registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getDocuments();
+			
+			for (Entry<String, DocumentDetailsDTO> documentCategory : documents.entrySet()) {
+				writeFileToZip("Demographic".concat(separator) + getFileNameWithExt(documentCategory.getValue()),
+						documentCategory.getValue().getDocument(), zipOutputStream);
+			}
 
 			// Create folder structure for Demographic
 			if (checkNotNull(registrationDTO.getDemographicDTO())) {
