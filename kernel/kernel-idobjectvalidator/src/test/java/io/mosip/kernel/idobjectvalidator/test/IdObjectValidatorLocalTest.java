@@ -44,8 +44,8 @@ public class IdObjectValidatorLocalTest {
 		ReflectionTestUtils.setField(validator, "propertySource", "LOCAL");
 		ReflectionTestUtils.setField(validator, "schemaName", "schemaV1.json");
 		MockEnvironment env = new MockEnvironment();
-		env.setProperty(APPLICATION_ID.getValue(), "reg-client");
-		env.setProperty(String.format(FIELD_LIST.getValue(), "reg-client", "new-registration"), "firstName");
+		env.setProperty(APPLICATION_ID, "reg-client");
+		env.setProperty(String.format(FIELD_LIST, "reg-client", "new-registration"), "firstName");
 		ReflectionTestUtils.setField(validator, "env", env);
 		ReflectionTestUtils.setField(validator, "mapper", new ObjectMapper());
 	}

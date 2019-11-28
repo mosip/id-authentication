@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -21,6 +20,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
@@ -53,10 +53,9 @@ import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@ImportAutoConfiguration(RefreshAutoConfiguration.class)
+@ImportAutoConfiguration({ RefreshAutoConfiguration.class, JacksonAutoConfiguration.class })
 @SpringBootTest
-@Import({ IdObjectPatternValidator.class, IdObjectSchemaValidator.class,
-		IdObjectCompositeValidator.class, TestConfig.class })
+@Import({ IdObjectPatternValidator.class, IdObjectSchemaValidator.class, IdObjectCompositeValidator.class })
 @EnableConfigurationProperties
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles("test")
@@ -124,8 +123,7 @@ public class IdObjectValidatorTest {
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
 			assertTrue(e.getCodes().contains(MISSING_INPUT_PARAMETER.getErrorCode()));
-			assertTrue(e.getErrorTexts()
-					.contains(String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue())));
+			assertTrue(e.getErrorTexts().contains(String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID)));
 		}
 	}
 
@@ -135,7 +133,7 @@ public class IdObjectValidatorTest {
 			JsonParseException, JsonMappingException, IOException {
 		try {
 			MockEnvironment mockEnv = (MockEnvironment) ReflectionTestUtils.getField(schemaValidator, "env");
-			mockEnv.setProperty(APPLICATION_ID.getValue(), "");
+			mockEnv.setProperty(APPLICATION_ID, "");
 			ReflectionTestUtils.setField(schemaValidator, "env", mockEnv);
 			String identityString = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN1\":4920546943,\"fullName\":[{\"language\":\"ara\",\"value\":\"ابراهيم بن علي\"},{\"language\":\"eng\",\"value\":\"Ibrahim Ibn Ali\"}],\"dateOfBirth\":\"1955/04/15\",\"age\":45,\"gender\":[{\"language\":\"ara\",\"value\":\"الذكر\"},{\"language\":\"eng\",\"value\":\"male\"}],\"addressLine1\":[{\"language\":\"ara\",\"value\":\"عنوان العينة سطر 1\"},{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 1\"}],\"addressLine2\":[{\"language\":\"ara\",\"value\":\"عنوان العينة سطر 2\"},{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 2\"}],\"addressLine3\":[{\"language\":\"ara\",\"value\":\"عنوان العينة سطر 2\"},{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"ara\",\"value\":\"طنجة - تطوان - الحسيمة\"},{\"language\":\"eng\",\"value\":\"T\"}],\"province\":[{\"language\":\"ara\",\"value\":\"فاس-مكناس\"},{\"language\":\"eng\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"ara\",\"value\":\"الدار البيضاء\"},{\"language\":\"eng\",\"value\":\"Casablanca\"}],\"postalCode\":\"570004\",\"phone\":\"9876543210\",\"email\":\"abc@xyz.com\",\"CNIENumber\":\"6789545678909\",\"localAdministrativeAuthority\":[{\"language\":\"ara\",\"value\":\"سلمى\"},{\"language\":\"eng\",\"value\":\"salma\"}],\"parentOrGuardianRID\":212124324784912,\"parentOrGuardianUIN\":212124324784912,\"parentOrGuardianName\":[{\"language\":\"ara\",\"value\":\"سلمى\"},{\"language\":\"eng\",\"value\":\"salma\"}],\"proofOfAddress\":{\"format\":\"pdf\",\"type\":\"drivingLicense\",\"value\":\"fileReferenceID\"},\"proofOfIdentity\":{\"format\":\"txt\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"value\":\"fileReferenceID\"},\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.1,\"value\":\"fileReferenceID\"}}}";
 			schemaValidator.validateIdObject(
@@ -145,25 +143,6 @@ public class IdObjectValidatorTest {
 			assertTrue(e.getCodes().contains(MISSING_INPUT_PARAMETER.getErrorCode()));
 			assertTrue(e.getErrorText().contains(String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION.getOperation())));
-		}
-	}
-
-	@Test
-	@Ignore
-	public void testMasterDataError() throws IdObjectValidationFailedException, IdObjectIOException, JsonParseException,
-			JsonMappingException, IOException {
-		try {
-			String identityString = "{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":4920546943,\"fullName\":[{\"language\":\"ara\",\"value\":\"ابراهيم بن علي\"},{\"language\":\"eng\",\"value\":\"Ibrahim Ibn Ali\"}],\"dateOfBirth\":\"1955/04/15\",\"age\":45,\"gender\":[{\"language\":\"ara\",\"value\":\"الذكر\"},{\"language\":\"eng\",\"value\":\"male\"}],\"addressLine1\":[{\"language\":\"ara\",\"value\":\"عنوان العينة سطر 1\"},{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 1\"}],\"addressLine2\":[{\"language\":\"ara\",\"value\":\"عنوان العينة سطر 2\"},{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 2\"}],\"addressLine3\":[{\"language\":\"ara\",\"value\":\"عنوان العينة سطر 2\"},{\"language\":\"eng\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"ara\",\"value\":\"طنجة - تطوان - الحسيمة\"},{\"language\":\"eng\",\"value\":\"T\"}],\"province\":[{\"language\":\"ara\",\"value\":\"فاس-مكناس\"},{\"language\":\"eng\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"ara\",\"value\":\"الدار البيضاء\"},{\"language\":\"eng\",\"value\":\"Casablanca\"}],\"postalCode\":\"570004\",\"phone\":\"9876543210\",\"email\":\"abc@xyz.com\",\"CNIENumber\":\"6789545678909\",\"localAdministrativeAuthority\":[{\"language\":\"ara\",\"value\":\"سلمى\"},{\"language\":\"eng\",\"value\":\"salma\"}],\"parentOrGuardianRID\":212124324784912,\"parentOrGuardianUIN\":212124324784912,\"parentOrGuardianName\":[{\"language\":\"ara\",\"value\":\"سلمى\"},{\"language\":\"eng\",\"value\":\"salma\"}],\"proofOfAddress\":{\"format\":\"pdf\",\"type\":\"drivingLicense\",\"value\":\"fileReferenceID\"},\"proofOfIdentity\":{\"format\":\"txt\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"value\":\"fileReferenceID\"},\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.1,\"value\":\"fileReferenceID\"}}}";
-			validator.validateIdObject(
-					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
-					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
-		} catch (IdObjectValidationFailedException e) {
-			assertTrue(Optional.ofNullable(e.getCodes())
-					.map(codes -> codes.contains(INVALID_INPUT_PARAMETER.getErrorCode())).get());
-			assertTrue(e.getErrorTexts()
-					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/gender/0/language")));
-			assertTrue(e.getErrorTexts()
-					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/addressLine3/0/language")));
 		}
 	}
 
