@@ -81,8 +81,8 @@ public class ExpiredStatusUtil {
 
 					if (iterate.getDemographicEntity().getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
 						iterate.getDemographicEntity().setStatusCode(StatusCodes.EXPIRED.getCode());
-						iterate.setUpBy(auditUserId);
-						iterate.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
+						iterate.getDemographicEntity().setUpdatedBy(auditUserId);
+						iterate.getDemographicEntity().setUpdateDateTime(DateUtils.parseDateToLocalDateTime(new Date()));
 						batchServiceDAO.updateApplicantDemographic(iterate.getDemographicEntity());
 					}
 					log.info("sessionId", "idType", "id",
