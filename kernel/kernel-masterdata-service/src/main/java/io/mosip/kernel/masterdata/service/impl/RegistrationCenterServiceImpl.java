@@ -1293,9 +1293,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	}
 	
-	
-	
-	
 	//update expHoliday
 	@Transactional
 	private void updateExpHoliday(RegistrationCenter updRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto,
@@ -1313,18 +1310,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			if (regCenterPutReqDto.getExceptionalHolidayDto() != null
 					&& !regCenterPutReqDto.getExceptionalHolidayDto().isEmpty()) {
 				if (!dbRegExceptionalHolidays.isEmpty()) {
-					for (ExceptionalHolidayDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayDto()) {
-						if (dbRegExceptionalHolidays.contains(reqExpHoliday.getExceptionHolidayDate())) {
-							reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
-						} else {
-							List<ExceptionalHolidayDto> addExpHoliday = new ArrayList<>();
-							addExpHoliday.add(reqExpHoliday);
-							// create new expHoliday in DB for the Id with new expHoliday date from request
-							createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
-									updRegistrationCenter);
-						}
-						reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
-					}
+					//db is not empty and req is not empty
+					createReqExpHolidayAndBDNotEmpt(updRegistrationCenter, regCenterPutReqDto, dbRegExceptionalHolidays,
+							reqHolidayDates);
 
 					for (LocalDate dbHoliday : dbRegExceptionalHolidays) {
 						if (reqHolidayDates.contains(dbHoliday)) {
@@ -1335,14 +1323,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						}
 					}
 				} else {
-					for (ExceptionalHolidayDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayDto()) {
-						// db is empty and req has data, so create new entry with req data
-						List<ExceptionalHolidayDto> addExpHoliday = new ArrayList<>();
-						addExpHoliday.add(reqExpHoliday);
-						// create new expHoliday in DB for the Id with new expHoliday date from request
-						createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
-								updRegistrationCenter);
-					}
+					// db is empty and req has data, so create new entry with req data
+					createReqExpHoldayAndDBEmpty(updRegistrationCenter, regCenterPutReqDto);
 
 				}
 			} else if (dbRegExceptionalHolidays != null && !dbRegExceptionalHolidays.isEmpty()) {
@@ -1354,6 +1336,35 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (NullPointerException exp) {
 			errors.add(new ServiceError(RegistrationCenterErrorCode.EXP_HOLIDAY_NULL.getErrorCode(),
 					RegistrationCenterErrorCode.EXP_HOLIDAY_NULL.getErrorMessage()));
+		}
+	}
+
+	// db is empty and req has data, so create new entry with req data
+	private void createReqExpHoldayAndDBEmpty(RegistrationCenter updRegistrationCenter,
+			RegCenterPutReqDto regCenterPutReqDto) {
+		for (ExceptionalHolidayDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayDto()) {
+			List<ExceptionalHolidayDto> addExpHoliday = new ArrayList<>();
+			addExpHoliday.add(reqExpHoliday);
+			// create new expHoliday in DB for the Id with new expHoliday date from request
+			createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
+					updRegistrationCenter);
+		}
+	}
+
+	//db is not empty and req is not empty
+	private void createReqExpHolidayAndBDNotEmpt(RegistrationCenter updRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto,
+			Set<LocalDate> dbRegExceptionalHolidays, Set<LocalDate> reqHolidayDates) {
+		for (ExceptionalHolidayDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayDto()) {
+			if (dbRegExceptionalHolidays.contains(reqExpHoliday.getExceptionHolidayDate())) {
+				reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
+			} else {
+				List<ExceptionalHolidayDto> addExpHoliday = new ArrayList<>();
+				addExpHoliday.add(reqExpHoliday);
+				// create new expHoliday in DB for the Id with new expHoliday date from request
+				createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
+						updRegistrationCenter);
+			}
+			reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
 		}
 	}
 	
