@@ -823,17 +823,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 */
 	private boolean validateFingerprint(FingerprintDetailsDTO capturedFinger, String leftSlapQualityThreshold,
 			String rightSlapQualityThreshold, String thumbQualityThreshold, String fingerprintRetries) {
-		if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.LEFT.toLowerCase())) {
-			return capturedFinger.getQualityScore() < Double.parseDouble(leftSlapQualityThreshold)
-					&& capturedFinger.getNumRetry() == Integer.parseInt(fingerprintRetries);
+		if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.THUMBS.toLowerCase())) {
+			return capturedFinger.getQualityScore() < Double.parseDouble(thumbQualityThreshold) ;
+		} else if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.LEFT.toLowerCase())) {
+			return capturedFinger.getQualityScore() < Double.parseDouble(leftSlapQualityThreshold);
 		} else if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.RIGHT.toLowerCase())) {
-			return capturedFinger.getQualityScore() < Double.parseDouble(rightSlapQualityThreshold)
-					&& capturedFinger.getNumRetry() == Integer.parseInt(fingerprintRetries);
-		} else if (capturedFinger.getFingerType().toLowerCase().contains(RegistrationConstants.THUMBS.toLowerCase())) {
-			return capturedFinger.getQualityScore() < Double.parseDouble(thumbQualityThreshold)
-					&& capturedFinger.getNumRetry() == Integer.parseInt(fingerprintRetries);
+			return capturedFinger.getQualityScore() < Double.parseDouble(rightSlapQualityThreshold);
 		}
-		return false;
+			return false;
 	}
 
 	/**
