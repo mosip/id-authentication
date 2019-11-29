@@ -1005,6 +1005,9 @@ public enum PlatformErrorMessages {
 	/** The rpr pgs no records exception. */
 	RPR_PGS_NO_RECORDS_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "021", "No Records Found"),
 
+	/** The rpr pgs no records exception. */
+	RPR_PGS_MULTIPLE_RECORDS_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "022", "Multiple Records Found"),
+
 	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
 

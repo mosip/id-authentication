@@ -48,9 +48,6 @@ public class LostPacketController {
 
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
-	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
-	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
-
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
 

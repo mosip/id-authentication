@@ -565,4 +565,62 @@ public class PacketInfoDao {
 		abisResponseDetDtoList.addAll(PacketInfoMapper.convertAbisResponseDetEntityListToDto(abisResEntity));
 		return abisResponseDetDtoList;
 	}
+
+	public List<DemographicInfoDto> getMatchedDemographicDtosByEmail(String name, String postalCode, String email) {
+		Map<String, Object> params = new HashMap<>();
+		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
+		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
+		StringBuilder query = new StringBuilder();
+		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
+		if (name != null) {
+			query.append(alias + ".name=:name ").append(AND);
+			params.put("name", name);
+		}
+		if (postalCode != null) {
+			query.append(alias + ".postalCode=:postalCode ").append(AND);
+			params.put("postalCode", postalCode);
+		}
+		if (email != null) {
+			query.append(alias + ".email=:email ").append(AND);
+			params.put("email", email);
+		}
+
+		query.append(alias + ".isActive=:isActive");
+		params.put("isActive", IS_ACTIVE_TRUE);
+		return convertEntityToDemographicDto(demographicDedupeRepository.createQuerySelect(query.toString(), params));
+	}
+
+	public List<DemographicInfoDto> getMatchedDemographicDtosByPhone(String name, String postalCode, String phone) {
+		Map<String, Object> params = new HashMap<>();
+		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
+		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
+		StringBuilder query = new StringBuilder();
+		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
+		if (name != null) {
+			query.append(alias + ".name=:name ").append(AND);
+			params.put("name", name);
+		}
+		if (postalCode != null) {
+			query.append(alias + ".postalCode=:postalCode ").append(AND);
+			params.put("postalCode", postalCode);
+		}
+		if (phone != null) {
+			query.append(alias + ".phone=:phone ").append(AND);
+			params.put("phone", phone);
+		}
+
+		query.append(alias + ".isActive=:isActive");
+		params.put("isActive", IS_ACTIVE_TRUE);
+		return convertEntityToDemographicDto(demographicDedupeRepository.createQuerySelect(query.toString(), params));
+	}
+
+	private List<DemographicInfoDto> convertEntityToDemographicDto(
+			List<IndividualDemographicDedupeEntity> demographicInfoEntities) {
+		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
+
+		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
+			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
+		}
+		return demographicInfoDtos;
+	}
 }

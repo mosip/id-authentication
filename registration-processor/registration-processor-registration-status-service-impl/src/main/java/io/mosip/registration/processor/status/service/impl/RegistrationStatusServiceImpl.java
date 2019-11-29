@@ -489,4 +489,25 @@ public class RegistrationStatusServiceImpl
 		return registrationStatusDao.checkUinAvailabilityForRid(rid);
 	}
 
+	@Override
+	public List<InternalRegistrationStatusDto> getByIdsAndTimestamp(List<String> ids) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"RegistrationStatusServiceImpl::getByIdsAndTimestamp()::entry");
+
+		try {
+			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
+					.getByIdsAndTimestamp(ids);
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"RegistrationStatusServiceImpl::getByIdsAndTimestamp()::exit");
+			return convertEntityListToDtoList(registrationStatusEntityList);
+		} catch (DataAccessLayerException e) {
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+		}
+	}
+
 }
