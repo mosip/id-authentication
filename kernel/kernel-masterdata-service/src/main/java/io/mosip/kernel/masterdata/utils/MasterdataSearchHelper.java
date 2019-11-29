@@ -24,6 +24,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -56,6 +57,10 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 @Repository
 @Transactional(readOnly = true)
 public class MasterdataSearchHelper {
+	
+	@Value("${master.search.maximum.rows}")
+	private int maximumRows;
+	
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
 	private static final String ENTITY_IS_NULL = "entity is null";
 	private static final String WILD_CARD_CHARACTER = "%";
@@ -104,6 +109,9 @@ public class MasterdataSearchHelper {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<E> selectQuery = criteriaBuilder.createQuery(entity);
 		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+		Pagination pagination= searchDto.getPagination();
+		pagination.setPageFetch(pagination.getPageFetch() > maximumRows ? maximumRows : pagination.getPageFetch());
+		searchDto.setPagination(pagination);
 		// root Query
 		Root<E> rootQuery = selectQuery.from(entity);
 		// count query
