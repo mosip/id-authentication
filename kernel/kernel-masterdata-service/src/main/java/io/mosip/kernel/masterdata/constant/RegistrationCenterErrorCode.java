@@ -76,7 +76,8 @@ public enum RegistrationCenterErrorCode {
 	DECOMMISSIONED("KER-MSD-042", "Registration center has been already decommissioned or Registration center not found"),
 	HOLIDAY_NOT_FOUND("KER-MSD-440", "HolidayLocationCode Not Found"),
 	EXP_HOLIDAY_DATE("ADM-SSS-sss","this holiday date is persent in pre-defined list of country holidays"),
-	WORKING_NON_WORKING_NULL("ADM-fff-sss","working non working is null");
+	WORKING_NON_WORKING_NULL("ADM-fff-sss","working non working request is null"),
+	EXP_HOLIDAY_NULL("ADM-fff-sss","Expectional Holiday request is null");
 
 
 	private final String errorCode;

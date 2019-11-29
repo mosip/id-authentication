@@ -102,11 +102,5 @@ public class RegistrationCenterExtnDto extends BaseDto {
 	
 	private WorkingNonWorkingDaysDto workingNonWorkingDays;
 	
-    /*private LocalDate exceptionHolidayDate;
-	
-	private String exceptionHolidayName;
-	
-	private String exceptionHolidayReson;*/
-	
 	private List<ExceptionalHolidayDto>	 exceptionalHolidayDto;
 }
