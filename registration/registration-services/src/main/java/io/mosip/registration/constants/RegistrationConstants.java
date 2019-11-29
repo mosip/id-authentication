@@ -1,4 +1,4 @@
-package io.mosip.registration.constants;
+﻿package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1571,4 +1571,6 @@ public class RegistrationConstants {
 	public static final String REQ_TIME="requesttime";
 	public static final String AP_ID="applicationId";
 	public static final String AP_IDA="IDA";
+	
+	public static String DEDUPLICATION_ENABLE_FLAG = "mosip.registration.mds.deduplication.enable.flag";
 }
