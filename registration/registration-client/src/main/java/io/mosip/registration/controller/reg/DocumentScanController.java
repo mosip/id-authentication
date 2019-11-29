@@ -978,6 +978,7 @@ public class DocumentScanController extends BaseController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					clearAllValues();
+					fingerPrintCaptureController.duplicateCheckLbl.setText("");
 					if (newValue) {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;

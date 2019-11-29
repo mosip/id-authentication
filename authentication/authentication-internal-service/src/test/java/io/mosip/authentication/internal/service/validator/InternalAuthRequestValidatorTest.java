@@ -39,11 +39,13 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -330,8 +332,19 @@ public class InternalAuthRequestValidatorTest {
 		authTypeDTO.setBio(true);
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioValue("finger");
-		dataDTO.setBioSubType("LEFT_THUMB");
+		dataDTO.setBioSubType("Left Thumb");
 		dataDTO.setBioType("FIR");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -340,8 +353,19 @@ public class InternalAuthRequestValidatorTest {
 
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO irisData = new DataDTO();
+		irisData.setDeviceCode("1");
+		irisData.setDeviceServiceVersion("1");
+		DigitalId digitalId1 = new DigitalId();
+		digitalId1.setSerialNo("1");
+		digitalId1.setMake("1");
+		digitalId1.setModel("1");
+		digitalId1.setType("1");
+		digitalId1.setDeviceProvider("1");
+		digitalId1.setDeviceProviderId("1");
+		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
+		irisData.setDigitalId(digitalId1);
 		irisData.setBioValue("iris img");
-		irisData.setBioSubType("LEFT");
+		irisData.setBioSubType("Left Iris");
 		irisData.setBioType("IIR");
 		irisData.setDeviceProviderID("provider001");
 		irisData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -349,8 +373,19 @@ public class InternalAuthRequestValidatorTest {
 		irisValue.setData(irisData);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO faceData = new DataDTO();
+		faceData.setDeviceCode("1");
+		faceData.setDeviceServiceVersion("1");
+		DigitalId digitalId2= new DigitalId();
+		digitalId2.setSerialNo("1");
+		digitalId2.setMake("1");
+		digitalId2.setModel("1");
+		digitalId2.setType("1");
+		digitalId2.setDeviceProvider("1");
+		digitalId2.setDeviceProviderId("1");
+		digitalId2.setDateTime(DateUtils.getCurrentDateTimeString());
+		faceData.setDigitalId(digitalId2);
 		faceData.setBioValue("face img");
-		faceData.setBioType("FID");
+		faceData.setBioType("FACE");
 		faceData.setBioSubType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))

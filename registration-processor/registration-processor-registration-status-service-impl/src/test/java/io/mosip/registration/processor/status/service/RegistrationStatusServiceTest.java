@@ -60,11 +60,11 @@ public class RegistrationStatusServiceTest {
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Mock
-	private  RegistrationExternalStatusUtility regexternalstatusUtil;
+	private RegistrationExternalStatusUtility regexternalstatusUtil;
 
 	@Mock
 	LogDescription description;
-	
+
 	List<RegistrationStatusDto> registrations = new ArrayList<>();
 
 	List<String> statusList;
@@ -74,7 +74,7 @@ public class RegistrationStatusServiceTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
 		Mockito.doNothing().when(description).setMessage(any());
-		
+
 		registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setIsActive(true);
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_VIRUS_SCAN");
@@ -125,7 +125,7 @@ public class RegistrationStatusServiceTest {
 	@Test
 	public void testAddRegistrationStatusSuccess() {
 
-		registrationStatusService.addRegistrationStatus(registrationStatusDto);
+		registrationStatusService.addRegistrationStatus(registrationStatusDto, "", "");
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", dto.getStatusCode());
 	}
@@ -135,12 +135,12 @@ public class RegistrationStatusServiceTest {
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 				"errorMessage", new Exception());
 		Mockito.when(registrationStatusDao.save(any())).thenThrow(exp);
-		registrationStatusService.addRegistrationStatus(registrationStatusDto);
+		registrationStatusService.addRegistrationStatus(registrationStatusDto, "", "");
 	}
 
 	@Test
 	public void testUpdateRegistrationStatusSuccess() {
-		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		registrationStatusService.updateRegistrationStatus(registrationStatusDto, "", "");
 
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_VIRUS_SCAN", dto.getStatusCode());
@@ -152,7 +152,7 @@ public class RegistrationStatusServiceTest {
 				"errorMessage", new Exception());
 
 		Mockito.when(registrationStatusDao.save(any())).thenThrow(exp);
-		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+		registrationStatusService.updateRegistrationStatus(registrationStatusDto, "", "");
 	}
 
 	@Test

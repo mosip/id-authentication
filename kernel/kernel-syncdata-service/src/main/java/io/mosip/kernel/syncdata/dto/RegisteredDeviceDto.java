@@ -1,7 +1,5 @@
 package io.mosip.kernel.syncdata.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,12 +39,14 @@ public class RegisteredDeviceDto extends BaseDto {
 	private String purpose;
 
 	private String firmware;
+	
+	private String digitalId;
 
 	private String make;
 
 	private String model;
 
-	private LocalDateTime expiryDate;
+	private String expiryDate;
 
 	private String certificationLevel;
 
@@ -56,5 +56,5 @@ public class RegisteredDeviceDto extends BaseDto {
 
 	private String foundationalTrustCertificate;
 
-	private byte[] dProviderSignature;
+	private String dProviderSignature;
 }

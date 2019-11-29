@@ -1,10 +1,12 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -12,7 +14,6 @@ import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -75,18 +76,6 @@ public interface DeviceService {
 	// public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
 
 	/**
-	 * This method is used to update an existing Device to master data
-	 * 
-	 * @param deviceRequestDto
-	 *            Device DTO to update data
-	 * @return IdResponseDto Device ID which is successfully updated
-	 *         {@link IdResponseDto}
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while updating Device
-	 */
-	public IdAndLanguageCodeID updateDevice(DeviceDto deviceRequestDto);
-
-	/**
 	 * This method is used to delete an existing Device of master data
 	 * 
 	 * @param id
@@ -136,4 +125,17 @@ public interface DeviceService {
 	 * @return device ID of decommissioned device
 	 */
 	public IdResponseDto decommissionDevice(String deviceId);
+
+	/**
+	 * This method is used to update an existing Device to master data
+	 * 
+	 * @param deviceRequestDto
+	 *            Device DTO to update data
+	 * @return IdResponseDto Device ID which is successfully updated
+	 *         {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Device
+	 */
+	public DeviceExtnDto updateDevice(DevicePutReqDto devicePutReqDto);
+
 }

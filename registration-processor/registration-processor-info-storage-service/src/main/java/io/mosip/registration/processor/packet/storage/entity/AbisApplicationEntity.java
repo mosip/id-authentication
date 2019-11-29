@@ -7,9 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 /**
  * The persistent class for the abis_application database table.
  * 
@@ -23,11 +20,9 @@ public class AbisApplicationEntity extends BasePacketEntity<AbisApplicationPKEnt
 	private String crBy = "SYSTEM";
 
 	@Column(name = "cr_dtimes", updatable = false)
-	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
 	private String descr;
@@ -47,7 +42,6 @@ public class AbisApplicationEntity extends BasePacketEntity<AbisApplicationPKEnt
 	private String updBy = "MOSIP_SYSTEM";
 
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
 	public AbisApplicationEntity() {

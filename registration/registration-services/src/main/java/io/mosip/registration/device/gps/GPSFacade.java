@@ -149,10 +149,10 @@ public class GPSFacade extends GPSBU343Connector {
 		// TODO: Hard codded because if gps device and signa is not connected and weak
 		// it wont allow for new registarion
 
-		gpsResponseMap.put(RegistrationConstants.LATITUDE, 12.9913);
+		/*gpsResponseMap.put(RegistrationConstants.LATITUDE, 12.9913);
 		gpsResponseMap.put(RegistrationConstants.LONGITUDE, 80.2457);
 		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
-		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);*/
 
 		return gpsResponseMap;
 	}

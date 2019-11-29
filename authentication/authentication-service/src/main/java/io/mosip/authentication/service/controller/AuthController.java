@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -21,6 +23,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -77,6 +80,12 @@ public class AuthController {
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		AuthResponseDTO authResponsedto = null;
 		try {
+			if(Optional.of(authrequestdto)
+					.map(AuthRequestDTO::getRequestedAuth)
+					.filter(AuthTypeDTO::isBio)
+					.isPresent()) {
+				authRequestValidator.validateDeviceDetails(authrequestdto, errors);
+			}
 			DataValidationUtil.validate(errors);
 			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId);
 		} catch (IDDataValidationException e) {

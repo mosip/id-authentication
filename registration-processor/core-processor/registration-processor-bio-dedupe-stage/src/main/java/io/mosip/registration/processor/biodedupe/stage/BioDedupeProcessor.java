@@ -259,7 +259,10 @@ public class BioDedupeProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} finally {
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.BIO_DEDUPE.name();
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto, moduleId, moduleName);
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "BioDedupeProcessor::" + registrationStatusDto.getLatestTransactionStatusCode());
@@ -267,10 +270,6 @@ public class BioDedupeProcessor {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
-
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_BIO_DEDUPE_SUCCESS.getCode()
-					: description.getCode();
-			String moduleName = ModuleName.BIO_DEDUPE.name();
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
@@ -381,7 +380,8 @@ public class BioDedupeProcessor {
 	private void postAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object,
 			String registrationType) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException,
 			io.mosip.kernel.core.exception.IOException {
-
+		String moduleId = "";
+		String moduleName = ModuleName.BIO_DEDUPE.toString();
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				registrationType);
 		// TODO : temporary fix. Need to analyze more.
@@ -403,8 +403,9 @@ public class BioDedupeProcessor {
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_POTENTIAL_MATCH.getMessage());
 			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_POTENTIAL_MATCH.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+			moduleId = PlatformSuccessMessages.RPR_BIO_METRIC_POTENTIAL_MATCH.getCode();
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
-					DedupeSourceName.BIO);
+					DedupeSourceName.BIO, moduleId, moduleName);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(), BioDedupeConstants.ABIS_RESPONSE_NOT_NULL);
 
@@ -480,7 +481,8 @@ public class BioDedupeProcessor {
 	private void lostPacketPostAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
 			MessageDTO object, List<String> matchedRegIds) throws IOException, ApisResourceAccessException,
 			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
-
+		String moduleId = "";
+		String moduleName = ModuleName.BIO_DEDUPE.toString();
 		String registrationId = registrationStatusDto.getRegistrationId();
 
 		if (matchedRegIds.isEmpty()) {
@@ -500,7 +502,8 @@ public class BioDedupeProcessor {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getMessage());
 			registrationStatusDto.setSubStatusCode(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getCode());
-			packetInfoManager.saveRegLostUinDet(registrationId, matchedRegIds.get(0));
+			moduleId = PlatformSuccessMessages.RPR_BIO_LOST_PACKET_UNIQUE_MATCH_FOUND.getCode();
+			packetInfoManager.saveRegLostUinDet(registrationId, matchedRegIds.get(0), moduleId, moduleName);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					BioDedupeConstants.FOUND_UIN_IN_BIO_CHECK + registrationId);
@@ -541,7 +544,8 @@ public class BioDedupeProcessor {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 					registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getMessage());
 					registrationStatusDto.setSubStatusCode(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getCode());
-					packetInfoManager.saveRegLostUinDet(registrationId, demoMatchedIds.get(0));
+					moduleId = PlatformSuccessMessages.RPR_BIO_LOST_PACKET_UNIQUE_MATCH_FOUND.getCode();
+					packetInfoManager.saveRegLostUinDet(registrationId, demoMatchedIds.get(0), moduleId, moduleName);
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 							BioDedupeConstants.FOUND_UIN_IN_DEMO_CHECK + registrationId);
@@ -556,8 +560,9 @@ public class BioDedupeProcessor {
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 							BioDedupeConstants.MULTIPLE_RID_FOUND);
+					moduleId = PlatformErrorMessages.RPR_BIO_LOST_PACKET_MULTIPLE_MATCH_FOUND.getCode();
 					packetInfoManager.saveManualAdjudicationData(matchedRegIds,
-							registrationStatusDto.getRegistrationId(), DedupeSourceName.BIO);
+							registrationStatusDto.getRegistrationId(), DedupeSourceName.BIO, moduleId, moduleName);
 				}
 
 			}

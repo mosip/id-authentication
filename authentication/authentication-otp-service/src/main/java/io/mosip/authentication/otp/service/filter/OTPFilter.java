@@ -27,14 +27,6 @@ public class OTPFilter extends IdAuthFilter {
 	private static final String OTP_REQUEST = "otp-request";
 
 	/* (non-Javadoc)
-	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#validateSignature(java.lang.String, byte[])
-	 */
-	@Override
-	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		return true;
-	}
-
-	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
 	 */
 	@Override
@@ -75,6 +67,12 @@ public class OTPFilter extends IdAuthFilter {
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		// Nothing to do
+	}
+	
+	@Override
+	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		// Nothing to do
+		return requestBody;
 	}
 
 }

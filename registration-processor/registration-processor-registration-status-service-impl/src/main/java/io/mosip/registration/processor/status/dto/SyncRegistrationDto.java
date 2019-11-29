@@ -5,6 +5,7 @@ package io.mosip.registration.processor.status.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import org.json.simple.JSONArray;
 
@@ -45,6 +46,12 @@ public class SyncRegistrationDto implements Serializable {
 
 	/** The lang code. */
 	private String langCode;
+
+	private LocalDateTime createDateTime;
+
+	private LocalDateTime updateDateTime;
+
+	private LocalDateTime deletedDateTime;
 
 	/** The is active. */
 	@ApiModelProperty(hidden = true)
@@ -273,6 +280,30 @@ public class SyncRegistrationDto implements Serializable {
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+	public LocalDateTime getUpdateDateTime() {
+		return updateDateTime;
+	}
+
+	public void setUpdateDateTime(LocalDateTime updateDateTime) {
+		this.updateDateTime = updateDateTime;
+	}
+
+	public LocalDateTime getDeletedDateTime() {
+		return deletedDateTime;
+	}
+
+	public void setDeletedDateTime(LocalDateTime deletedDateTime) {
+		this.deletedDateTime = deletedDateTime;
 	}
 
 }

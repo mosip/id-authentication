@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
@@ -24,6 +25,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceType;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -32,6 +34,7 @@ import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -69,6 +72,9 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -80,14 +86,14 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	@Override
 	public CodeAndLanguageCodeID createDeviceType(DeviceTypeDto deviceType) {
 		DeviceType renDeviceType = null;
-
-		DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
-
 		try {
+			deviceType = masterdataCreationUtil.createMasterData(DeviceType.class,
+					deviceType);
+			DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
 			renDeviceType = deviceTypeRepository.create(entity);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()
+		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException | IllegalArgumentException | SecurityException  e) {
+			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

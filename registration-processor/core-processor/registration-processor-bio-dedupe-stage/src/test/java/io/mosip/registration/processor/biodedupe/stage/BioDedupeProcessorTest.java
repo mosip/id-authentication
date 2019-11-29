@@ -28,7 +28,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -162,7 +161,6 @@ public class BioDedupeProcessorTest {
 	@Mock
 	LogDescription description;
 
-
 	/**
 	 * Sets the up.
 	 *
@@ -184,7 +182,7 @@ public class BioDedupeProcessorTest {
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setRegistrationType("new");
 
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(), any(), any());
 		Mockito.doNothing().when(description).setMessage(any());
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -192,8 +190,8 @@ public class BioDedupeProcessorTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn("1233445566".getBytes("UTF-16"));
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn(ERROR);
-		Mockito.doNothing().when(packetInfoManager).saveManualAdjudicationData(any(), any(), any());
-		Mockito.doNothing().when(packetInfoManager).saveRegLostUinDet(any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveManualAdjudicationData(any(), any(), any(), any(), any());
+		Mockito.doNothing().when(packetInfoManager).saveRegLostUinDet(any(), any(), any(), any());
 
 		Identity identity = new Identity();
 		regProcessorIdentityJson.setIdentity(identity);

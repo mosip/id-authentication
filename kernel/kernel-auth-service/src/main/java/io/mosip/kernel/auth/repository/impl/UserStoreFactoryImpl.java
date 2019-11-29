@@ -44,7 +44,7 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 	private int idleTimeout;
 	@Value("${hikari.minimumIdle:0}")
 	private int minimumIdle;
-	@Value("${iam.datastore.commonname:morocco}")
+	@Value("${iam.datastore.commonname}")
 	private String commonname;
 	@Value("${ldap.admin.dn:uid=admin,ou=system}")
 	private String adminDN;

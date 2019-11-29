@@ -11,7 +11,7 @@ import io.mosip.registration.processor.request.handler.service.exception.RegBase
  * 
  * @author Sowmya
  */
-public interface PacketGeneratorService {
+public interface PacketGeneratorService<T> {
 
 	/**
 	 * Creates the packet.
@@ -20,6 +20,6 @@ public interface PacketGeneratorService {
 	 *            the request
 	 * @return the packer generator res dto
 	 */
-	public PacketGeneratorResDto createPacket(PacketGeneratorDto request) throws RegBaseCheckedException,IOException;
+	public PacketGeneratorResDto createPacket(T request) throws RegBaseCheckedException,IOException;
 
 }

@@ -21,14 +21,18 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.entity.ExceptionalHoliday;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
+import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
@@ -43,6 +47,9 @@ import io.mosip.kernel.masterdata.entity.ReasonCategory;
 @Component
 @SuppressWarnings("unchecked")
 public class MapperUtils {
+	
+	/*@Autowired
+	private ObjectMapper mapper;*/
 
 	private MapperUtils() {
 		super();
@@ -512,6 +519,25 @@ public class MapperUtils {
 		});
 		return holidayDtos;
 	}
+	
+	public static List<ExceptionalHolidayDto> mapExceptionalHolidays(List<ExceptionalHoliday> exeptionalHolidayList) {
+		Objects.requireNonNull(exeptionalHolidayList);
+		List<ExceptionalHolidayDto> holidayDtos = new ArrayList<>();
+		exeptionalHolidayList.forEach(holiday -> {
+			LocalDate date = holiday.getHolidayDate();
+			ExceptionalHolidayDto dto = new ExceptionalHolidayDto();
+			dto.setHolidayDate(date);
+			dto.setHolidayName(holiday.getHolidayName());
+			dto.setLangCode(holiday.getLangCode());
+			dto.setHolidayYear(String.valueOf(date.getYear()));
+			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
+			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
+			dto.setIsActive(holiday.getIsActive());
+			dto.setHolidayReason(holiday.getHolidayReason());
+			holidayDtos.add(dto);
+		});
+		return holidayDtos;
+	}
 
 	public static List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
@@ -559,6 +585,37 @@ public class MapperUtils {
 
 		});
 		return deviceLangCodeDtypeDtoList;
+	}
+	
+	public static RegisteredDevice mapRegisteredDeviceDto(RegisteredDevicePostReqDto dto, String digitalIdJson) {
+		
+		RegisteredDevice entity = new RegisteredDevice();
+		entity.setDeviceTypeCode(dto.getDeviceTypeCode());
+        entity.setDevicesTypeCode(dto.getDeviceSTypeCode());
+        entity.setStatusCode(dto.getStatusCode());
+        entity.setDeviceId(dto.getDeviceId());
+		entity.setDeviceSubId(dto.getDeviceSubId());
+		
+
+		entity.setDigitalId(digitalIdJson);        
+        entity.setSerialNo(dto.getDigitalIdDto().getSerialNo());
+        entity.setDpId(dto.getDigitalIdDto().getDpId());
+        entity.setDp(dto.getDigitalIdDto().getDp());
+        entity.setMake(dto.getDigitalIdDto().getMake());
+        entity.setModel(dto.getDigitalIdDto().getModel());
+        
+       
+		entity.setPurpose(dto.getPurpose());
+        entity.setFirmware(dto.getFirmware());
+		entity.setExpiryDate(dto.getExpiryDate());
+		entity.setCertificationLevel(dto.getCertificationLevel());
+        entity.setFoundationalTPId(dto.getFoundationalTPId());
+        entity.setFoundationalTrustSignature(dto.getFoundationalTrustSignature());
+        entity.setFoundationalTrustCertificate(dto.getFoundationalTrustCertificate());      
+        entity.setDeviceProviderSignature(dto.getDeviceProviderSignature());
+		
+		return entity;
+		
 	}
 
 }

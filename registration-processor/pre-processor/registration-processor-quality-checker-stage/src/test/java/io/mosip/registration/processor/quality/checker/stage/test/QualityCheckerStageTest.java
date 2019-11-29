@@ -97,6 +97,8 @@ public class QualityCheckerStageTest {
 
 	@Before
 	public void setUp() throws Exception {
+		ReflectionTestUtils.setField(qualityCheckerStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(qualityCheckerStage, "clusterManagerUrl", "/dummyPath");
 		ReflectionTestUtils.setField(qualityCheckerStage, "irisThreshold", 70);
 		ReflectionTestUtils.setField(qualityCheckerStage, "leftFingerThreshold", 80);
 		ReflectionTestUtils.setField(qualityCheckerStage, "rightFingerThreshold", 80);
@@ -106,7 +108,7 @@ public class QualityCheckerStageTest {
 		ReflectionTestUtils.setField(qualityCheckerStage, "faceApi", fingerApi);
 		ReflectionTestUtils.setField(qualityCheckerStage, "irisApi", fingerApi);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(), any(), any());
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
 				+ "      \"language\" : \"eng\",\n" + "      \"value\" : \"Ragavendran V\"\n" + "    }, {\n"
 				+ "      \"language\" : \"ara\",\n" + "      \"value\" : \"قشلشرثىيقشى ر\"\n" + "    } ],\n"

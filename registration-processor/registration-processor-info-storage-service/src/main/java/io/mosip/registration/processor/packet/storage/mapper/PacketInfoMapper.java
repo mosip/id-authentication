@@ -2,6 +2,8 @@ package io.mosip.registration.processor.packet.storage.mapper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,6 +81,8 @@ public class PacketInfoMapper {
 		regAbisRefEntity.setAbisRefId(regAbisRefDto.getAbis_ref_id());
 		regAbisRefEntity.setId(regAbisRefPkEntity);
 		regAbisRefEntity.setIsActive(true);
+		regAbisRefEntity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		regAbisRefEntity.setUpdateDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				regAbisRefDto.getReg_id(), "PacketInfoMapper::convertRegAbisRefToEntity()::exit");
@@ -114,7 +118,7 @@ public class PacketInfoMapper {
 	 *            the json node
 	 * @return the languages
 	 */
-	private static String[] getLanguages(JsonValue[] jsonNode,StringBuilder languages) {
+	private static String[] getLanguages(JsonValue[] jsonNode, StringBuilder languages) {
 		if (jsonNode != null) {
 			for (int i = 0; i < jsonNode.length; i++) {
 				if (!(languages.toString().contains(jsonNode[i].getLanguage())))
@@ -143,28 +147,31 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
 		StringBuilder languages = new StringBuilder();
-		if (!demoDto.getName().isEmpty()) {
-			for(JsonValue[] jsonValue : demoDto.getName())
-			getLanguages(jsonValue,languages);
+		if (demoDto.getName()!=null && !demoDto.getName().isEmpty()) {
+			for (JsonValue[] jsonValue : demoDto.getName())
+				getLanguages(jsonValue, languages);
 		}
-		String[] languageArray = getLanguages(demoDto.getGender(),languages);
+		String[] languageArray = getLanguages(demoDto.getGender(), languages);
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
 			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();
 
 			applicantDemographicPKEntity.setRegId(regId);
 			applicantDemographicPKEntity.setLangCode(languageArray[i]);
-
+			entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+			entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 			entity.setId(applicantDemographicPKEntity);
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
 			StringBuilder applicantFullName = new StringBuilder();
-			
-			if (!demoDto.getName().isEmpty()) {
-				for(JsonValue[] jsonValue : demoDto.getName()) {
+
+			if (demoDto.getName()!=null &&!demoDto.getName().isEmpty()) {
+				for (JsonValue[] jsonValue : demoDto.getName()) {
 					applicantFullName.append(getJsonValues(jsonValue, languageArray[i]));
 				}
-				entity.setName(!applicantFullName.toString().isEmpty()?getHMACHashCode(applicantFullName.toString().trim().toUpperCase()):null);
+				entity.setName(!applicantFullName.toString().isEmpty()
+						? getHMACHashCode(applicantFullName.toString().trim().toUpperCase())
+						: null);
 			}
 
 			if (demoDto.getDateOfBirth() != null) {
@@ -190,7 +197,8 @@ public class PacketInfoMapper {
 	}
 
 	public static String getHMACHashCode(String value) {
-		if(value==null) return null;
+		if (value == null)
+			return null;
 		return CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
 
 	}
@@ -257,6 +265,8 @@ public class PacketInfoMapper {
 		entity.setCrBy(regBioRefDto.getCrBy());
 		entity.setIsActive(regBioRefDto.getIsActive());
 		entity.setUpdBy(regBioRefDto.getUpdBy());
+		entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		RegBioRefPKEntity refPKEntity = new RegBioRefPKEntity();
 		refPKEntity.setRegId(regBioRefDto.getRegId());
 		entity.setId(refPKEntity);
@@ -305,6 +315,9 @@ public class PacketInfoMapper {
 		entity.setStatusCode(abisRequestDto.getStatusCode());
 		entity.setStatusComment(abisRequestDto.getStatusComment());
 		entity.setUpdBy(abisRequestDto.getUpdBy());
+		entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		entity.setRequestDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 
 		return entity;
 	}
@@ -336,12 +349,21 @@ public class PacketInfoMapper {
 		RegDemoDedupeListPKEntity pkEntity = new RegDemoDedupeListPKEntity();
 
 		entity.setCrBy(regDemoDedupeListDto.getCrBy());
-		entity.setCrDtimes(regDemoDedupeListDto.getCrDtimes());
-		entity.setDelDtimes(regDemoDedupeListDto.getDelDtimes());
+		if (regDemoDedupeListDto.getCrDtimes() == null) {
+			entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			entity.setCrDtimes(regDemoDedupeListDto.getCrDtimes());
+		}
+
 		entity.setIsDeleted(regDemoDedupeListDto.getIsDeleted());
+		if (entity.getIsDeleted() != null && entity.getIsDeleted()) {
+			entity.setDelDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			entity.setDelDtimes(null);
+		}
 		entity.setRegId(regDemoDedupeListDto.getRegId());
 		entity.setUpdBy(regDemoDedupeListDto.getUpdBy());
-		entity.setUpdDtimes(regDemoDedupeListDto.getUpdDtimes());
+		entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 
 		pkEntity.setMatchedRegId(regDemoDedupeListDto.getMatchedRegId());
 		pkEntity.setRegtrnId(regDemoDedupeListDto.getRegtrnId());
@@ -349,7 +371,7 @@ public class PacketInfoMapper {
 
 		return entity;
 	}
-	
+
 	public static AbisResponseDto convertAbisResponseEntityToDto(AbisResponseEntity entity) {
 
 		AbisResponseDto abisResDto = new AbisResponseDto();
@@ -392,16 +414,21 @@ public class PacketInfoMapper {
 
 		entity.setId(resPkEntity);
 		entity.setCrBy(abisResDto.getCrBy());
-		entity.setCrDtimes(abisResDto.getCrDtimes());
+		if (abisResDto.getCrDtimes() == null) {
+			entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			entity.setCrDtimes(abisResDto.getCrDtimes());
+		}
+
 		entity.setDelDtimes(abisResDto.getDelDtimes());
 		entity.setIsDeleted(abisResDto.getIsDeleted());
 		entity.setLangCode(abisResDto.getLangCode());
-		entity.setRespDtimes(abisResDto.getRespDtimes());
+		entity.setRespDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setRespText(abisResDto.getRespText());
 		entity.setStatusCode(abisResDto.getStatusCode());
 		entity.setStatusComment(abisResDto.getStatusComment());
 		entity.setUpdBy(abisResDto.getUpdBy());
-		entity.setUpdDtimes(abisResDto.getUpdDtimes());
+		entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setAbisRequest(abisResDto.getAbisRequest());
 
 		return entity;
@@ -419,7 +446,7 @@ public class PacketInfoMapper {
 		}
 		return abisResponseEntityList;
 	}
-	
+
 	public static AbisResponseDetDto convertAbisResponseDetEntityToDto(AbisResponseDetEntity entity) {
 
 		AbisResponseDetDto abisResDetDto = new AbisResponseDetDto();
@@ -435,23 +462,28 @@ public class PacketInfoMapper {
 		return abisResDetDto;
 
 	}
-	
-	public static AbisResponseDetEntity  convertAbisResponseDetEntityToDto(AbisResponseDetDto abisResponseDetDto ) {
+
+	public static AbisResponseDetEntity convertAbisResponseDetEntityToDto(AbisResponseDetDto abisResponseDetDto) {
 
 		AbisResponseDetEntity entity = new AbisResponseDetEntity();
 		AbisResponseDetPKEntity entityPk = new AbisResponseDetPKEntity();
-		
+
 		entityPk.setAbisRespId(abisResponseDetDto.getAbiRespId());
 		entityPk.setMatchedBioRefId(abisResponseDetDto.getMatchedBioRefId());
-		
+
 		entity.setId(entityPk);
 		entity.setCrBy(abisResponseDetDto.getCrBy());
-		entity.setCrDtimes(abisResponseDetDto.getCrDtimes());
+		if (abisResponseDetDto.getCrDtimes() == null) {
+			entity.setCrDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+		} else {
+			entity.setCrDtimes(abisResponseDetDto.getCrDtimes());
+		}
 		entity.setDelDtimes(abisResponseDetDto.getDelDtimes());
 		entity.setIsDeleted(abisResponseDetDto.getIsDeleted());
 		entity.setScore(abisResponseDetDto.getScore());
 		entity.setUpdBy(abisResponseDetDto.getUpdBy());
-		entity.setUpdDtimes(abisResponseDetDto.getUpdDtimes());
+		entity.setUpdDtimes(LocalDateTime.now(ZoneId.of("UTC")));
+
 		return entity;
 
 	}

@@ -88,10 +88,10 @@ public enum StatusUtil {
 																	"Center-Device Mapping was InActive during Packet Creation - "), DEVICE_NOT_FOUND_MASTER_DB(
 																			StatusConstants.OSI_VALIDAOR_MODULE_FAILED
 																					+ "009",
-																			"Device Not Found in Master DB - "), DEVICE_ID_INACTIVE(
+																			"Device Not Found in Master DB - "), DEVICE_VALIDATION_FAILED(
 																					StatusConstants.OSI_VALIDAOR_MODULE_FAILED
 																							+ "010",
-																					"Device ID was InActive during Packet Creation - "), PACKET_CREATION_WORKING_HOURS(
+																					"Device Validation Failed"), PACKET_CREATION_WORKING_HOURS(
 																							StatusConstants.OSI_VALIDAOR_MODULE_FAILED
 																									+ "011",
 																							"Packet was Not Created during Working Hours - "), REGISTRATION_CENTER_TIMESTAMP_FAILURE(
@@ -291,10 +291,18 @@ public enum StatusUtil {
 									"Unable to Send Notification - UIN was not found for the Lost Packet"),
 
 	MESSAGE_SENDER_NOTIF_SUCC(StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "001",
-			"Notification sent successfully for registrationId "), MESSAGE_SENDER_EMAIL_FAILED(
-					StatusConstants.MESSAGE_SENDER__FAILED_CODE + "005",
-					"Email failed for registrationId "), MESSAGE_SENDER_SMS_FAILED(
-							StatusConstants.MESSAGE_SENDER__FAILED_CODE + "006", "SMS failed for registrationId ");
+            "Email and SMS Notification were sent"), MESSAGE_SENDER_NOT_CONFIGURED(
+                    StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "002", "Notification was not sent as notification type was not set"),
+                        MESSAGE_SENDER_EMAIL_SUCCESS(StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "003",
+                            "Email Notification was sent"), MESSAGE_SENDER_SMS_SUCCESS(
+                                StatusConstants.MESSAGE_SENDER_NOTIF_SUCCESS_CODE + "004",
+                                    "SMS Notification was sent"), MESSAGE_SENDER_EMAIL_FAILED(
+                                            StatusConstants.MESSAGE_SENDER__FAILED_CODE + "005",
+                                                "Notification was not sent as the required mode of channel was not available"),
+                                                    MESSAGE_SENDER_SMS_FAILED(StatusConstants.MESSAGE_SENDER__FAILED_CODE + "006",
+                                                            "Notification was not sent as the required mode of channel was not available"),
+                                                                MESSAGE_SENDER_NOTIFICATION_FAILED(StatusConstants.MESSAGE_SENDER__FAILED_CODE + "006",
+                                                                        "Notification was not sent as the required mode of channel was not available");
 
 	private final String statusComment;
 	private final String statusCode;

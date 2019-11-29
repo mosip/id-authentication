@@ -2,9 +2,6 @@ package io.mosip.kernel.syncdata.dto;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +25,7 @@ public class DeviceServiceDto extends BaseDto {
 
 	/** The sw binary hash. */
 
-	private byte[] swBinaryHash;
+	private String swBinaryHash;
 
 	/** The sw version. */
 

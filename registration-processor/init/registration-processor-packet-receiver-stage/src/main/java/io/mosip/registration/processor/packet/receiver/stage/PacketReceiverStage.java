@@ -50,6 +50,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** server context Path. */
 	@Value("${server.servlet.path}")
 	private String contextPath;
@@ -91,7 +95,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * deploys this verticle.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 	}
 
 	/** The env. */
@@ -128,7 +132,15 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param routingContext the routing context
 	 */
 	public void failure(RoutingContext routingContext) {
-		this.setResponseWithDigitalSignature(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
+		try {
+			deleteFile(getFileFromCtx(routingContext));
+		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+		}
+		this.setResponseWithDigitalSignature(routingContext, globalExceptionHandler.handler(routingContext.failure()),
+				APPLICATION_JSON);
+
 	}
 
 
@@ -153,12 +165,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		} finally {
-			if (file != null) {
-				if (file.exists()) {
-					deleteFile(file);
-				}
-			}
-		 }
+			deleteFile(file);
+		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				"", "PacketReceiverStage::processPacket()::exit");
 
@@ -201,9 +209,13 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param file
 	 *            the file
 	 */
-	private void deleteFile(File file) {
+	public void deleteFile(File file) {
 		try {
-			FileUtils.forceDelete(file);
+			if (file != null) {
+				if (file.exists()) {
+					FileUtils.forceDelete(file);
+				}
+			}
 		} catch (IOException e) {
 			throw new UnexpectedException(e.getMessage());
 		}

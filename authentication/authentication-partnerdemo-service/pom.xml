@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.3</version>
 	</parent>
 
 	<artifactId>authentication-partnerdemo-service</artifactId>
@@ -91,14 +91,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.bitbucket.b_c</groupId>
-			<artifactId>jose4j</artifactId>
-			<version>0.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>Mantra</groupId>
-			<artifactId>MFS100</artifactId>
-			<version>1.0</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.15.0</version>
 		</dependency>
 
 		<dependency>

@@ -10,11 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
+import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
+import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
-import io.mosip.kernel.masterdata.service.DeviceProviderService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -27,10 +31,11 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(value = "/deviceprovider")
+@Api(tags = { "DeviceProvider" })
 public class DeviceProviderController {
 
 	@Autowired
-	private DeviceProviderService deviceProviderSerice;
+	private DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> deviceProviderSerice;
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PostMapping

@@ -236,11 +236,16 @@ public class HeaderController extends BaseController {
 	 *            event for redirecting to home
 	 */
 	public void redirectHome(ActionEvent event) {
+		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			goToHomePageFromOnboard();
 		} else {
 			goToHomePageFromRegistration();
 		}
+		
+		//Enable Auto-Logout
+		SessionContext.setAutoLogout(true);
+		
 	}
 
 	/**
@@ -250,10 +255,10 @@ public class HeaderController extends BaseController {
 	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
-		if (pageNavigantionAlert()) {
+		
 			try {
-				// Go To Home Page 
-				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				
+				redirectHome(event);
 				
 				//Clear all registration data
 				clearRegistrationData();
@@ -285,12 +290,12 @@ public class HeaderController extends BaseController {
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 				}
-			} catch (IOException ioException) {
+			} catch (RuntimeException exception) {
 				LOGGER.error("REGISTRATION - REDIRECTHOME - HEADER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 			}
-		}
+		
 	}
 
 	/**
@@ -321,6 +326,12 @@ public class HeaderController extends BaseController {
 					pane.getChildren().remove(index);
 				}
 				pane.getChildren().add(syncServerClientRoot);
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
+				//Enable Auto-Logout
+				SessionContext.setAutoLogout(true);
 
 			}
 		} catch (IOException ioException) {
@@ -336,10 +347,10 @@ public class HeaderController extends BaseController {
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
-		if (pageNavigantionAlert()) {
+		
 			try {
 				// Go To Home Page 
-				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				redirectHome(event);
 				
 				//Clear all registration data
 				clearRegistrationData();
@@ -355,13 +366,15 @@ public class HeaderController extends BaseController {
 
 				executeDownloadPreRegDataTask(homeController.getMainBox(),
 						packetHandlerController.getProgressIndicator());
-			} catch (IOException ioException) {
+				
+				
+			} catch (RuntimeException exception) {
 				LOGGER.error("REGISTRATION - REDIRECTHOME - HEADER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 			}
 
-		}
+		
 	}
 
 	public void uploadPacketToServer() {

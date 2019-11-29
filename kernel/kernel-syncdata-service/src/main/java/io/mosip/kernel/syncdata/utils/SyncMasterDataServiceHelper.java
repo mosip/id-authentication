@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -1715,7 +1716,7 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<DeviceServiceDto>> getDeviceServiceDetails(LocalDateTime lastUpdatedTime,
 			LocalDateTime currentTimeStamp) {
 		List<DeviceService> deviceServices = null;
-		List<DeviceServiceDto> deviceServiceDtos = null;
+		List<DeviceServiceDto> deviceServiceDtos = new ArrayList<>();
 		try {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1727,7 +1728,13 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.DEVICE_SERVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceServices != null && !deviceServices.isEmpty()) {
-			deviceServiceDtos = MapperUtils.mapAll(deviceServices, DeviceServiceDto.class);
+			deviceServices.stream().forEach(deviceService ->{
+				DeviceServiceDto deviceServiceDto= new DeviceServiceDto();
+				deviceServiceDto.setSwBinaryHash(CryptoUtil.encodeBase64(deviceService.getSwBinaryHash()));
+				MapperUtils.map(deviceService, deviceServiceDto);
+				deviceServiceDtos.add(deviceServiceDto);
+			});
+			//deviceServiceDtos = MapperUtils.mapAll(deviceServices, DeviceServiceDto.class);
 		}
 		return CompletableFuture.completedFuture(deviceServiceDtos);
 	}
@@ -1736,7 +1743,7 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<RegisteredDeviceDto>> getRegisteredDeviceDetails(String regId,
 			LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
 		List<RegisteredDevice> registeredDevices = null;
-		List<RegisteredDeviceDto> registeredDeviceDtos = null;
+		List<RegisteredDeviceDto> registeredDeviceDtos = new ArrayList<>();
 		try {
 			if (lastUpdatedTime == null) {
 				lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -1748,7 +1755,15 @@ public class SyncMasterDataServiceHelper {
 					MasterDataErrorCode.REGISTERED_DEVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (registeredDevices != null && !registeredDevices.isEmpty()) {
-			registeredDeviceDtos = MapperUtils.mapAll(registeredDevices, RegisteredDeviceDto.class);
+			registeredDevices.stream().forEach(regDevice -> {
+				RegisteredDeviceDto registeredDeviceDto=new RegisteredDeviceDto();
+				registeredDeviceDto.setExpiryDate(DateUtils.toISOString(regDevice.getExpiryDate()));
+				registeredDeviceDto.setDProviderSignature(CryptoUtil.encodeBase64(regDevice.getDProviderSignature()));
+				MapperUtils.map(regDevice, registeredDeviceDto);
+				registeredDeviceDtos.add(registeredDeviceDto);
+			});
+
+			//registeredDeviceDtos = MapperUtils.mapAll(registeredDevices, RegisteredDeviceDto.class);
 		}
 		return CompletableFuture.completedFuture(registeredDeviceDtos);
 	}

@@ -8,26 +8,25 @@ import java.io.InputStreamReader;
 import java.security.KeyFactory;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
-import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
+import javax.ws.rs.core.MediaType;
+
 import org.jose4j.lang.JoseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 
 // 
 /**
@@ -37,9 +36,9 @@ import io.mosip.kernel.core.util.HMACUtils;
 @RestController
 public class DigitalSign {
 
-	/** The mapper. */
-	ObjectMapper mapper = new ObjectMapper();
-
+	@Autowired
+	private JWSValidation jwsValidation;
+	
 	/**
 	 * Sign.
 	 *
@@ -53,53 +52,62 @@ public class DigitalSign {
 	 * @throws JoseException the jose exception
 	 * @throws InvalidKeySpecException the invalid key spec exception
 	 */
-	@PostMapping(path = "/sign")
+	@PostMapping(path = "/sign", consumes=MediaType.TEXT_PLAIN, produces=MediaType.TEXT_PLAIN)
 	public String sign(@RequestBody String data) throws KeyStoreException, NoSuchAlgorithmException,
 	CertificateException, IOException, UnrecoverableEntryException, JoseException, InvalidKeySpecException {
-		FileInputStream pkeyfis = new FileInputStream("lib/Keystore/privkey1.pem");
+		FileInputStream pkeyfis = new FileInputStream("lib/Keystore/PrivateKey.pem");
 		String pKey = getFileContent(pkeyfis, "UTF-8");
-		FileInputStream certfis = new FileInputStream("lib/Keystore/cert1.pem");
+		FileInputStream certfis = new FileInputStream("lib/Keystore/MosipTestCert.pem");
 		String cert =  getFileContent(certfis, "UTF-8");
-		pKey = pKey.replaceAll("-----BEGIN (.*)-----\n", "");
-		pKey = pKey.replaceAll("-----END (.*)----\n", "");
-		pKey = pKey.replaceAll("\\s", "");
-		cert = cert.replaceAll("-----BEGIN (.*)-----\n", "");
-		cert = cert.replaceAll("-----END (.*)----\n", "");
-		cert = cert.replaceAll("\\s", "");
+		pKey = trimBeginEnd(pKey);
+		cert = trimBeginEnd(cert);
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(cert)));
-		List<X509Certificate> certList = new ArrayList<>();
-		certList.add(certificate);
-		X509Certificate[] certArray = certList.toArray(new X509Certificate[]{});
-		JsonWebSignature jws = new JsonWebSignature();
-		jws.setCertificateChainHeaderValue(certArray);
-		jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-		jws.setPayload(HMACUtils.digestAsPlainText(HMACUtils.generateHash(data.getBytes())));
 		KeyFactory kf = KeyFactory.getInstance("RSA");
-		jws.setKey(kf.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(pKey))));
+		PrivateKey privateKey = kf.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(pKey)));
 
-		/*FileInputStream is = new FileInputStream("lib/Keystore/opkeystore.jks");
-		KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-		JsonWebSignature jws = new JsonWebSignature();
-		keystore.load(is, "Cpassword".toCharArray());
-		Enumeration<?> e = keystore.aliases();
-		for (; e.hasMoreElements();) {
-			String alias = (String) e.nextElement();
-			KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) keystore.getEntry(alias,
-					new KeyStore.PasswordProtection("Cpassword".toCharArray()));
-			jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-			byte[] digest = HMACUtils.generateHash(data.getBytes());
-			String hmac = HMACUtils.digestAsPlainText(digest);
-			jws.setPayload(hmac);
-			jws.setKey(entry.getPrivateKey());
-			X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-			jws.setCertificateChainHeaderValue(cert);
-		}*/
-		return jws.getCompactSerialization();
-		
-		 //return dynamicCertificateAndSign(data);
+		return jwsValidation.jwsSign(data, privateKey, certificate);	 
 		 
-		 
+	}
+
+
+	private String trimBeginEnd(String pKey) {
+		pKey = pKey.replaceAll("-*BEGIN([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("-*END([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("\\s", "");
+		return pKey;
+	}
+
+	
+	/**
+	 * Sign.
+	 *
+	 * @param data the data
+	 * @return the string
+	 * @throws KeyStoreException the key store exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws UnrecoverableEntryException the unrecoverable entry exception
+	 * @throws JoseException the jose exception
+	 * @throws InvalidKeySpecException the invalid key spec exception
+	 */
+	@PostMapping(path = "/verify", consumes=MediaType.TEXT_PLAIN, produces=MediaType.TEXT_PLAIN)
+	public String verify(@RequestBody String jwsSignature) throws KeyStoreException, NoSuchAlgorithmException,
+	CertificateException, IOException, UnrecoverableEntryException, JoseException, InvalidKeySpecException {
+		if( jwsValidation.verifySignature(jwsSignature)) {
+			byte[] payload = CryptoUtil.decodeBase64(getPayloadFromJwsSingature(jwsSignature));
+			return "Signature is Valid.\nPayload:\n" + new String(payload);
+		}
+		return "Invalid Signature";
+	}
+	
+	protected String getPayloadFromJwsSingature(String jws) {
+		String[] split = jws.split("\\.");
+		if(split.length >= 2) {
+			return split[1];
+		}
+		return jws;
 	}
 
 

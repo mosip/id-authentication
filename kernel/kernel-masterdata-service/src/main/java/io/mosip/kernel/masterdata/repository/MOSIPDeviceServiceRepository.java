@@ -36,6 +36,17 @@ public interface MOSIPDeviceServiceRepository extends BaseRepository<MOSIPDevice
 	 * @return the device service
 	 */
 	MOSIPDeviceService findByDeviceProviderIdAndSwVersion(String id, String deviceProviderId);
+	
+	/**
+	 * Find by provider id and service version.
+	 *
+	 * @param id
+	 *            the id
+	 * @param providerId
+	 *            the provider id
+	 * @return the device service
+	 */
+	MOSIPDeviceService findByDeviceProviderIdAndSwVersionAndMakeAndModel(String deviceProviderId, String swVersion,String make,String model);
 
 	/**
 	 * Find by device code.

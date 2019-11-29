@@ -39,4 +39,7 @@ public class MasterDataConstant {
     public static final String USER_AND_REGISTRATION_CENTER_MAPPING_SUCCESS_MESSAGE = "User %s - Registration Center Mapping %s is added successfully";
     public static final String SUCCESS="Success"; 
     public static final String IS_ACTIVE="isActive";
+    public static final String DEVICE_REGISTER_UPDATE_MESSAGE="Device status updated successfully";
+    public static final String INVALID_REG_CENTER_TYPE="Invalid centerTypeCode";
+    public static final String INVALID_LOCATION_CODE="Invalid Location Code";
 }

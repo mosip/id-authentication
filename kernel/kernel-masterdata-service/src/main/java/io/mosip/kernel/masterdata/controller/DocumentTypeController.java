@@ -86,7 +86,7 @@ public class DocumentTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
@@ -105,7 +105,7 @@ public class DocumentTypeController {
 	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")
@@ -175,7 +175,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documenttypes/filtervalues")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> documentTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -190,7 +190,7 @@ public class DocumentTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/documenttypes/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
