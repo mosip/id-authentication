@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.partnerdemo.service.config.SwaggerConfig;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 
 /**
@@ -15,8 +16,8 @@ import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
-@Import(value = {  TemplateManagerImpl.class, VelocityEngine.class, SwaggerConfig.class, CryptoCore.class
-		 })
+@Import(value = {  TemplateManagerImpl.class, VelocityEngine.class, SwaggerConfig.class, CryptoCore.class,
+		JWSValidation.class})
 public class PartnerDemoApplication {
 
 	/**

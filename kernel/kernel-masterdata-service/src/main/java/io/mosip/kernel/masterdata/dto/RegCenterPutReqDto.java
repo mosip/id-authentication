@@ -106,6 +106,6 @@ public class RegCenterPutReqDto
 	
     private WorkingNonWorkingDaysDto workingNonWorkingDays;
 	
-	private List<ExceptionalHolidayDto>	 exceptionalHolidayDto;
+    private List<ExceptionalHolidayPutPostDto>	 exceptionalHolidayPutPostDto;
 	
 }

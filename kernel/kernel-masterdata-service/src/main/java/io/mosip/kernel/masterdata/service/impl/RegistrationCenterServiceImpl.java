@@ -38,6 +38,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -923,7 +924,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		RegistrationCenter registrationCenter = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
-		List<ExceptionalHolidayDto> exceptionalHolidayDtoList = new ArrayList<>();
+		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
 
 		// List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
@@ -1023,9 +1024,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 				}
 				try {
-					if (!regCenterPostReqDto.getExceptionalHolidayDto().isEmpty()) {
+					if (!regCenterPostReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
 						// Exceptional holiday create
-						createExpHoliday(regCenterPostReqDto.getExceptionalHolidayDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
+						createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
 					}
 				} catch (NullPointerException e) {
 					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
@@ -1038,7 +1039,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
 			}
 				//set ExpHoliday Dto
-				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayDtoList);
+				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
 				
 
 				// creating registration center history
@@ -1062,15 +1063,15 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Transactional
 	private void setRegExpHolidayDto(RegistrationCenter registrationCenter,
 			RegistrationCenterExtnDto registrationCenterExtnDto,
-			List<ExceptionalHolidayDto> exceptionalHolidayDtoList) {
+			List<ExceptionalHolidayPutPostDto> exceptionalHolidayDtoList) {
 		List<RegExceptionalHoliday> dbRegExpHolidays=regExceptionalHolidayRepository.findByRegIdAndLangcode(registrationCenter.getId(),primaryLang);
 		if(!dbRegExpHolidays.isEmpty()) {
 			for(RegExceptionalHoliday regExceptionalHoliday : dbRegExpHolidays) {
-				ExceptionalHolidayDto exceptionalHolidayDto = MapperUtils.map(regExceptionalHoliday,
-						ExceptionalHolidayDto.class);
+				ExceptionalHolidayPutPostDto exceptionalHolidayDto = MapperUtils.map(regExceptionalHoliday,
+						ExceptionalHolidayPutPostDto.class);
 				exceptionalHolidayDtoList.add(exceptionalHolidayDto);
 			}
-			registrationCenterExtnDto.setExceptionalHolidayDto(exceptionalHolidayDtoList);
+			registrationCenterExtnDto.setExceptionalHolidayPutPostDto(exceptionalHolidayDtoList);
 			
 		}
 	}
@@ -1118,7 +1119,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	@Transactional
-	private void createExpHoliday(List<ExceptionalHolidayDto> reqExceptionalHolidayDtos,  String holidayLocationCode, RegistrationCenter registrationCenterEntity) {
+	private void createExpHoliday(List<ExceptionalHolidayPutPostDto> reqExceptionalHolidayDtos,  String holidayLocationCode, RegistrationCenter registrationCenterEntity) {
 		if(!reqExceptionalHolidayDtos.isEmpty()) {
 		List<LocalDate> dbHolidayList = holidayRepository
 				.findHolidayByLocationCode1(holidayLocationCode, primaryLang);
@@ -1126,7 +1127,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		if (!dbHolidayList.isEmpty()) {
 			//List<ExceptionalHolidayDto> exceptionalHolidayDtos = reqExceptionalHolidayDto;
 			if(!reqExceptionalHolidayDtos.isEmpty()) { //***
-			for (ExceptionalHolidayDto expHoliday : reqExceptionalHolidayDtos) {
+			for (ExceptionalHolidayPutPostDto expHoliday : reqExceptionalHolidayDtos) {
 				if (dbHolidayList.contains(expHoliday.getExceptionHolidayDate())) {
 					throw new MasterDataServiceException(RegistrationCenterErrorCode.EXP_HOLIDAY_DATE.getErrorCode(),
 							RegistrationCenterErrorCode.EXP_HOLIDAY_DATE.getErrorMessage());
@@ -1195,7 +1196,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		List<ServiceError> errors = new ArrayList<>();
-		List<ExceptionalHolidayDto> exceptionalHolidayDtoList = new ArrayList<>();
+		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
 		
 		try {
 
@@ -1267,7 +1268,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						setResponseDtoWorkingNonWorking(updRegistrationCenter, registrationCenterExtnDto);
 						
 						//set expHolidayDto 
-						setRegExpHolidayDto(updRegistrationCenter,registrationCenterExtnDto,exceptionalHolidayDtoList);
+						setRegExpHolidayDto(updRegistrationCenter,registrationCenterExtnDto,exceptionalHolidayPutPostDtoList);
 					}
 
 					// creating registration center history
@@ -1307,8 +1308,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			dbRegExceptionalHolidays = dbRegExcpHoliday.stream().map(date -> date.getExceptionHolidayDate())
 					.collect(Collectors.toSet());
 
-			if (regCenterPutReqDto.getExceptionalHolidayDto() != null
-					&& !regCenterPutReqDto.getExceptionalHolidayDto().isEmpty()) {
+			if (regCenterPutReqDto.getExceptionalHolidayPutPostDto() != null
+					&& !regCenterPutReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
 				if (!dbRegExceptionalHolidays.isEmpty()) {
 					//db is not empty and req is not empty
 					createReqExpHolidayAndBDNotEmpt(updRegistrationCenter, regCenterPutReqDto, dbRegExceptionalHolidays,
@@ -1342,8 +1343,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	// db is empty and req has data, so create new entry with req data
 	private void createReqExpHoldayAndDBEmpty(RegistrationCenter updRegistrationCenter,
 			RegCenterPutReqDto regCenterPutReqDto) {
-		for (ExceptionalHolidayDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayDto()) {
-			List<ExceptionalHolidayDto> addExpHoliday = new ArrayList<>();
+		for (ExceptionalHolidayPutPostDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayPutPostDto()) {
+			List<ExceptionalHolidayPutPostDto> addExpHoliday = new ArrayList<>();
 			addExpHoliday.add(reqExpHoliday);
 			// create new expHoliday in DB for the Id with new expHoliday date from request
 			createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
@@ -1354,11 +1355,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	//db is not empty and req is not empty
 	private void createReqExpHolidayAndBDNotEmpt(RegistrationCenter updRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto,
 			Set<LocalDate> dbRegExceptionalHolidays, Set<LocalDate> reqHolidayDates) {
-		for (ExceptionalHolidayDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayDto()) {
+		for (ExceptionalHolidayPutPostDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayPutPostDto()) {
 			if (dbRegExceptionalHolidays.contains(reqExpHoliday.getExceptionHolidayDate())) {
 				reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
 			} else {
-				List<ExceptionalHolidayDto> addExpHoliday = new ArrayList<>();
+				List<ExceptionalHolidayPutPostDto> addExpHoliday = new ArrayList<>();
 				addExpHoliday.add(reqExpHoliday);
 				// create new expHoliday in DB for the Id with new expHoliday date from request
 				createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),

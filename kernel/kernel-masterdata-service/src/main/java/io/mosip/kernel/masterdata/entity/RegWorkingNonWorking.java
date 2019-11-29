@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,11 +31,7 @@ public class RegWorkingNonWorking extends BaseEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = -5192880804937801240L;
 	
-	/*@Id
-	@AttributeOverrides({ @AttributeOverride(name = "registrationCenterId", column = @Column(name = "regcntr_id", nullable = false, length = 36)),
-			@AttributeOverride(name = "dayCode", column = @Column(name = "day_code", nullable = false, length = 3)) })
-	private String registrationCenterId;
-	private String dayCode;*/
+
 
 	@Id
 	@Column(name="regcntr_id",nullable=false,length=10)

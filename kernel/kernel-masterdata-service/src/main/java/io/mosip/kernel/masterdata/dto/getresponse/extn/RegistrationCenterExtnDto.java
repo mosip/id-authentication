@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -9,7 +8,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -102,5 +101,5 @@ public class RegistrationCenterExtnDto extends BaseDto {
 	
 	private WorkingNonWorkingDaysDto workingNonWorkingDays;
 	
-	private List<ExceptionalHolidayDto>	 exceptionalHolidayDto;
+	private List<ExceptionalHolidayPutPostDto>	 exceptionalHolidayPutPostDto;
 }

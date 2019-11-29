@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,18 +17,22 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.DeviceRegisterErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegisteredDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
 import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceRegister;
 import io.mosip.kernel.masterdata.entity.DeviceRegisterHistory;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.DeviceRegisterException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -73,6 +78,15 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 
 	@Autowired
 	DeviceRepository deviceRepository;
+	
+	/** The registered. */
+	private static String REGISTERED = "Registered";
+
+	/** The revoked. */
+	private static String REVOKED = "Revoked";
+
+	/** The retired. */
+	private static String RETIRED = "Retired";
 
 	/*
 	 * (non-Javadoc)
@@ -186,5 +200,72 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		response.setStatus("success");
 		response.setMessage("Device deregistered successfully");
 		return response;
+	}
+	
+	@Transactional
+	@Override
+	public ResponseDto updateStatus(String deviceCode, String statusCode) {
+		RegisteredDevice deviceRegister = null;
+		try {
+			deviceRegister = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorCode(),
+					DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+		}
+
+		if (deviceRegister == null) {
+			throw new DataNotFoundException(DeviceRegisterErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceRegisterErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		if (!Arrays.asList(REGISTERED, REVOKED, RETIRED).contains(statusCode)) {
+			throw new RequestException(DeviceRegisterErrorCode.INVALID_STATUS_CODE.getErrorCode(),
+					DeviceRegisterErrorCode.INVALID_STATUS_CODE.getErrorMessage());
+		}
+		deviceRegister.setStatusCode(statusCode);
+		updateRegisterDetails(deviceRegister);
+		createHistoryDetails(deviceRegister);
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setMessage(MasterDataConstant.DEVICE_REGISTER_UPDATE_MESSAGE);
+		responseDto.setStatus(MasterDataConstant.SUCCESS);
+		return responseDto;
+	}
+	
+	/**
+	 * Creates the history details.
+	 *
+	 * @param deviceRegister
+	 *            the device register
+	 */
+	private void createHistoryDetails(RegisteredDevice deviceRegister) {
+		RegisteredDeviceHistory deviceRegisterHistory = new RegisteredDeviceHistory();
+		MapperUtils.map(deviceRegister, deviceRegisterHistory);
+		deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+		try {
+			registeredDeviceHistoryRepo.create(deviceRegisterHistory);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(
+					DeviceRegisterErrorCode.DEVICE_REGISTER_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceRegisterErrorCode.DEVICE_REGISTER_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
+	}
+
+	/**
+	 * Update register details.
+	 *
+	 * @param deviceRegister
+	 *            the device register
+	 */
+	private void updateRegisterDetails(RegisteredDevice deviceRegister) {
+		try {
+			registeredDeviceRepository.update(deviceRegister);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(
+					DeviceRegisterErrorCode.DEVICE_REGISTER_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceRegisterErrorCode.DEVICE_REGISTER_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
+		}
+
 	}
 }

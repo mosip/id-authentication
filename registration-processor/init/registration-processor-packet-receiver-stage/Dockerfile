@@ -33,7 +33,7 @@ COPY ./target/registration-processor-packet-receiver-stage-*.jar registration-pr
 EXPOSE 8081
 EXPOSE 4001
 
-CMD if [ "$active_profile_env" = "c3a9236e12bb95f086275ff4647a7909dc8a0636e44b1a00f033a0c181255fc9" ]; then \
+CMD if [ "$active_profile_env" = "preprod" ]; then \
     wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
     apt-get update && apt-get install -y unzip ; \
     unzip glowroot.zip ; \

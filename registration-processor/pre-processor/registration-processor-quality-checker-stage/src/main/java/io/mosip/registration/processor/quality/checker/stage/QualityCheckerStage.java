@@ -116,6 +116,10 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** The adapter. */
 	@Autowired
 	private PacketManager adapter;
@@ -168,7 +172,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.QUALITY_CHECKER_BUS_IN,
 				MessageBusAddress.QUALITY_CHECKER_BUS_OUT);
 	}

@@ -337,6 +337,8 @@ public class PacketUploaderStageTest {
 	public void setup() {
 
 		ctx = setContext();
+		ReflectionTestUtils.setField(packetUploaderStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(packetUploaderStage, "clusterManagerUrl", "/dummyPath");
 		ReflectionTestUtils.setField(packetUploaderStage, "port", "7999");
 		Mockito.when(router.post(Mockito.any())).thenReturn(null);
 		Mockito.doNothing().when(router).setRoute(Mockito.any());

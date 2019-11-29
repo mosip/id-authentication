@@ -68,5 +68,11 @@ public class OTPFilter extends IdAuthFilter {
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		// Nothing to do
 	}
+	
+	@Override
+	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		// Nothing to do
+		return requestBody;
+	}
 
 }
