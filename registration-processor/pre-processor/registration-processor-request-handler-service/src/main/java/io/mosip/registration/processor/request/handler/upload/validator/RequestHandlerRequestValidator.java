@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -93,6 +92,8 @@ public class RequestHandlerRequestValidator {
 	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
 	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
 
+	private static final String RES_UPDATE_SERVICE_ID = "mosip.registration.processor.resident.service.id";
+
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
 
@@ -150,6 +151,7 @@ public class RequestHandlerRequestValidator {
 			throws RequestHandlerValidationException {
 		id.put("packet_generator", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
 		id.put("uincard_reprint_status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
+		id.put("res_update", env.getProperty(RES_UPDATE_SERVICE_ID));
 		id.put("lost_id", env.getProperty(REG_LOST_PACKET_SERVICE_ID));
 		validateReqTime(requestTime);
 		validateId(requestId);
@@ -429,13 +431,21 @@ public class RequestHandlerRequestValidator {
 	 * @return true, if is valid registration type and uin
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
+	 * @throws IOException
 	 */
-	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException {
+	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException, IOException {
 		try {
 			if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-					|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
+					|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))||registrationType!=null && registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
 				boolean isValidUin = uinValidatorImpl.validateId(uin);
 				if (isValidUin) {
+					if(registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
+						JSONObject idObject = utilities.retrieveIdrepoJson(Long.valueOf(uin));
+						if(idObject!=null)
+							return true;
+						else
+							return false;
+					}
 					String status = utilities.retrieveIdrepoJsonStatus(Long.parseLong(uin));
 					if (!status.equalsIgnoreCase(registrationType)) {
 						return true;

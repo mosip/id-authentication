@@ -526,12 +526,14 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			for (RegistrationStatusSubRequestDto registrationStatusSubRequestDto : requestIds) {
 				registrationIds.add(registrationStatusSubRequestDto.getRegistrationId());
 			}
-			List<SyncRegistrationEntity> syncRegistrationEntityList = syncRegistrationDao.getByIds(registrationIds);
+			if (!registrationIds.isEmpty()) {
+				List<SyncRegistrationEntity> syncRegistrationEntityList = syncRegistrationDao.getByIds(registrationIds);
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"SyncRegistrationServiceImpl::getByIds()::exit");
-			return convertEntityListToDtoListAndGetExternalStatus(syncRegistrationEntityList);
-
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"SyncRegistrationServiceImpl::getByIds()::exit");
+				return convertEntityListToDtoListAndGetExternalStatus(syncRegistrationEntityList);
+			}
+			return null;
 		} catch (DataAccessLayerException e) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

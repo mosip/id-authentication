@@ -1498,29 +1498,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 					isValid = true;
 			} else {
-				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
-						.get(RegistrationConstants.DUPLICATE_FINGER);
-
-				Iterator<FingerprintDetailsDTO> iterator = fingerprintDetailsDTOs.iterator();
-
-				while (iterator.hasNext()) {
-					FingerprintDetailsDTO value = iterator.next();
-					for (FingerprintDetailsDTO duplicate : value.getSegmentedFingerprints()) {
-						if (duplicate.getFingerType().equals(duplicateFinger.getFingerType())) {
-							iterator.remove();
-							break;
-						}
-					}
-				}
-				String finger;
-				if (duplicateFinger.getFingerType().contains(RegistrationConstants.LEFT.toLowerCase())) {
-					finger = duplicateFinger.getFingerType().replace(RegistrationConstants.LEFT.toLowerCase(),
-							RegistrationConstants.LEFT_HAND);
-				} else {
-					finger = duplicateFinger.getFingerType().replace(RegistrationConstants.RIGHT.toLowerCase(),
-							RegistrationConstants.RIGHT_HAND);
-				}
-				duplicateCheckLbl.setText(finger + " " + RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
+				duplicateCheckLbl.setText( RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
 			}
 		} else {
 			isValid = true;

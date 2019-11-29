@@ -27,7 +27,7 @@ VOLUME /home/logs /home/ftp1/LANDING_ZONE /home/ftp1/ARCHIVE_PACKET_LOCATION
 COPY ./target/registration-processor-packet-uploader-stage-*.jar registration-processor-packet-uploader-stage.jar
 
 
-CMD if [ "$active_profile_env" = "c3a9236e12bb95f086275ff4647a7909dc8a0636e44b1a00f033a0c181255fc9" ]; then \
+CMD if [ "$active_profile_env" = "preprod" ]; then \
     wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
     apt-get update && apt-get install -y unzip ; \
     unzip glowroot.zip ; \

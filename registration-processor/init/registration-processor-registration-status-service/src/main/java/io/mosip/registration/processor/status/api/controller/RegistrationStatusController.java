@@ -108,7 +108,10 @@ public class RegistrationStatusController {
 					.filter(request -> registrations.stream().noneMatch(
 							registration -> registration.getRegistrationId().equals(request.getRegistrationId())))
 					.collect(Collectors.toList());
-			registrations.addAll(syncRegistrationService.getByIds(requestIdsNotAvailable));
+			List<RegistrationStatusDto> registrationsList = syncRegistrationService.getByIds(requestIdsNotAvailable);
+			if (registrationsList != null && !registrationsList.isEmpty()) {
+				registrations.addAll(syncRegistrationService.getByIds(requestIdsNotAvailable));
+			}
 
 			if (isEnabled) {
 				RegStatusResponseDTO response = buildRegistrationStatusResponse(registrations,

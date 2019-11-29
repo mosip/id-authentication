@@ -147,7 +147,7 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
 		StringBuilder languages = new StringBuilder();
-		if (!demoDto.getName().isEmpty()) {
+		if (demoDto.getName()!=null && !demoDto.getName().isEmpty()) {
 			for (JsonValue[] jsonValue : demoDto.getName())
 				getLanguages(jsonValue, languages);
 		}
@@ -165,7 +165,7 @@ public class PacketInfoMapper {
 			entity.setIsDeleted(false);
 			StringBuilder applicantFullName = new StringBuilder();
 
-			if (!demoDto.getName().isEmpty()) {
+			if (demoDto.getName()!=null &&!demoDto.getName().isEmpty()) {
 				for (JsonValue[] jsonValue : demoDto.getName()) {
 					applicantFullName.append(getJsonValues(jsonValue, languageArray[i]));
 				}

@@ -36,4 +36,6 @@ public interface ZoneService {
 	public ZoneNameResponseDto getZoneNameBasedOnLangCodeAndUserID(String userID, String langCode);
 	
 	public boolean getUserValidityZoneHierarchy(String langCode,String zoneCode);
+	
+	public boolean authorizeZone(String rId);
 }
