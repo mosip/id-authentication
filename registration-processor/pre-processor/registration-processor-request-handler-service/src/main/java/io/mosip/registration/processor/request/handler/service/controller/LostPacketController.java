@@ -36,16 +36,19 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * @author Sowmya
+ * The Class LostPacketController.
  *
+ * @author Sowmya
  */
 @RestController
 @Api(tags = "Lost")
 public class LostPacketController {
-	/** Token validator class */
+
+	/** Token validator class. */
 	@Autowired
 	TokenValidator tokenValidator;
 
+	/** The Constant RESPONSE_SIGNATURE. */
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
@@ -57,6 +60,7 @@ public class LostPacketController {
 	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
 	private static final String REG_LOST_PACKET_SERVICE_ID = "mosip.registration.processor.lost.id";
 
+	/** The is enabled. */
 	@Value("${registration.processor.signature.isEnabled}")
 	Boolean isEnabled;
 
@@ -64,6 +68,7 @@ public class LostPacketController {
 	@Autowired
 	private RequestHandlerRequestValidator validator;
 
+	/** The digital signature utility. */
 	@Autowired
 	DigitalSignatureUtility digitalSignatureUtility;
 
@@ -75,6 +80,19 @@ public class LostPacketController {
 	@Autowired
 	private Environment env;
 
+	/**
+	 * Gets the id value.
+	 *
+	 * @param lostPacketRequestDto
+	 *            the lost packet request dto
+	 * @param token
+	 *            the token
+	 * @return the id value
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lost UIN or RID Api"),
 			@ApiResponse(code = 400, message = "Unable to fetch the detail "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
@@ -101,6 +119,13 @@ public class LostPacketController {
 		}
 	}
 
+	/**
+	 * Builds the lost packet response.
+	 *
+	 * @param lostResponseDto
+	 *            the lost response dto
+	 * @return the lost packet response dto
+	 */
 	public LostPacketResponseDto buildLostPacketResponse(LostResponseDto lostResponseDto) {
 
 		LostPacketResponseDto response = new LostPacketResponseDto();

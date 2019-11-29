@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -30,6 +31,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -92,6 +94,7 @@ public class RequestHandlerRequestValidator {
 	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
 	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
 
+	/** The Constant RES_UPDATE_SERVICE_ID. */
 	private static final String RES_UPDATE_SERVICE_ID = "mosip.registration.processor.resident.service.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
@@ -432,16 +435,20 @@ public class RequestHandlerRequestValidator {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException, IOException {
+	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin)
+			throws RegBaseCheckedException, IOException {
 		try {
-			if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-					|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))||registrationType!=null && registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
+			if (registrationType != null
+					&& (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+							|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))
+					|| registrationType != null && registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
 				boolean isValidUin = uinValidatorImpl.validateId(uin);
 				if (isValidUin) {
-					if(registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
+					if (registrationType.equals(RegistrationType.RES_UPDATE.toString())) {
 						JSONObject idObject = utilities.retrieveIdrepoJson(Long.valueOf(uin));
-						if(idObject!=null)
+						if (idObject != null)
 							return true;
 						else
 							return false;
@@ -517,6 +524,7 @@ public class RequestHandlerRequestValidator {
 		if (idType != null && (idType.equalsIgnoreCase(UIN) || idType.equalsIgnoreCase(VID))) {
 			return true;
 		} else {
+
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 					"Invalid IdType : Enter UIN or VID", new Throwable());
 		}
@@ -543,28 +551,61 @@ public class RequestHandlerRequestValidator {
 
 	}
 
-	public boolean isValidIdTypeForLost(String idType) throws RegBaseCheckedException {
+	/**
+	 * Checks if is valid id type for lost.
+	 *
+	 * @param idType
+	 *            the id type
+	 * @return true, if is valid id type for lost
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	public boolean isValidIdTypeForLost(String idType, LogDescription description) throws RegBaseCheckedException {
 		if (idType != null && (idType.equalsIgnoreCase(UIN) || idType.equalsIgnoreCase(RID))) {
 			return true;
 		} else {
+			description.setMessage(PlatformErrorMessages.RPR_PGS_ID_TYPE_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PGS_ID_TYPE_EXCEPTION.getCode());
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_ID_TYPE_EXCEPTION,
 					PlatformErrorMessages.RPR_PGS_ID_TYPE_EXCEPTION.getMessage(), new Throwable());
 		}
 
 	}
 
-	public boolean isValidContactType(String contactType) throws RegBaseCheckedException {
+	/**
+	 * Checks if is valid contact type.
+	 *
+	 * @param contactType
+	 *            the contact type
+	 * @return true, if is valid contact type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	public boolean isValidContactType(String contactType, LogDescription description) throws RegBaseCheckedException {
 		if (contactType != null && (contactType.equalsIgnoreCase(EMAIL) || contactType.equalsIgnoreCase(PHONE))) {
 			return true;
 		} else {
+			description.setMessage(PlatformErrorMessages.RPR_PGS_CONTACT_TYPE_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PGS_CONTACT_TYPE_EXCEPTION.getCode());
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_CONTACT_TYPE_EXCEPTION,
 					PlatformErrorMessages.RPR_PGS_CONTACT_TYPE_EXCEPTION.getMessage(), new Throwable());
 		}
 
 	}
 
-	public boolean isValidName(String name) throws RegBaseCheckedException {
+	/**
+	 * Checks if is valid name.
+	 *
+	 * @param name
+	 *            the name
+	 * @return true, if is valid name
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	public boolean isValidName(String name, LogDescription description) throws RegBaseCheckedException {
 		if (name == null || name.isEmpty()) {
+			description.setMessage(PlatformErrorMessages.RPR_PGS_NAME_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PGS_NAME_EXCEPTION.getCode());
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_NAME_EXCEPTION,
 					PlatformErrorMessages.RPR_PGS_NAME_EXCEPTION.getMessage(), new Throwable());
 		} else {
@@ -573,8 +614,19 @@ public class RequestHandlerRequestValidator {
 
 	}
 
-	public boolean isValidContactValue(String contactValue) throws RegBaseCheckedException {
+	/**
+	 * Checks if is valid contact value.
+	 *
+	 * @param contactValue
+	 *            the contact value
+	 * @return true, if is valid contact value
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	public boolean isValidContactValue(String contactValue, LogDescription description) throws RegBaseCheckedException {
 		if (contactValue == null || contactValue.isEmpty()) {
+			description.setMessage(PlatformErrorMessages.RPR_PGS_CONTACTVALUE_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PGS_CONTACTVALUE_EXCEPTION.getCode());
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_CONTACTVALUE_EXCEPTION,
 					PlatformErrorMessages.RPR_PGS_CONTACTVALUE_EXCEPTION.getMessage(), new Throwable());
 		} else {
@@ -583,8 +635,19 @@ public class RequestHandlerRequestValidator {
 
 	}
 
-	public boolean isValidPostalCode(String postalCode) throws RegBaseCheckedException {
+	/**
+	 * Checks if is valid postal code.
+	 *
+	 * @param postalCode
+	 *            the postal code
+	 * @return true, if is valid postal code
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	public boolean isValidPostalCode(String postalCode, LogDescription description) throws RegBaseCheckedException {
 		if (postalCode == null || postalCode.isEmpty()) {
+			description.setMessage(PlatformErrorMessages.RPR_PGS_POSTALCODE_EXCEPTION.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_PGS_POSTALCODE_EXCEPTION.getCode());
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_POSTALCODE_EXCEPTION,
 					PlatformErrorMessages.RPR_PGS_POSTALCODE_EXCEPTION.getMessage(), new Throwable());
 		} else {

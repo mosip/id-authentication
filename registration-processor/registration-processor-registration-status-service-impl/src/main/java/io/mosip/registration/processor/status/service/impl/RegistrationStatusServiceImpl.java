@@ -52,6 +52,7 @@ public class RegistrationStatusServiceImpl
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The regexternalstatus util. */
 	@Autowired
 	private RegistrationExternalStatusUtility regexternalstatusUtil;
 
@@ -437,6 +438,8 @@ public class RegistrationStatusServiceImpl
 	 *            the elapse time
 	 * @param reprocessCount
 	 *            the reprocess count
+	 * @param status
+	 *            the status
 	 * @return the un processed packets
 	 */
 	public List<InternalRegistrationStatusDto> getUnProcessedPackets(Integer fetchSize, long elapseTime,
@@ -462,6 +465,13 @@ public class RegistrationStatusServiceImpl
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * getUnProcessedPacketsCount(long, java.lang.Integer, java.util.List)
+	 */
 	@Override
 	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status) {
 
@@ -484,11 +494,25 @@ public class RegistrationStatusServiceImpl
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * checkUinAvailabilityForRid(java.lang.String)
+	 */
 	@Override
 	public Boolean checkUinAvailabilityForRid(String rid) {
 		return registrationStatusDao.checkUinAvailabilityForRid(rid);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * getByIdsAndTimestamp(java.util.List)
+	 */
 	@Override
 	public List<InternalRegistrationStatusDto> getByIdsAndTimestamp(List<String> ids) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",

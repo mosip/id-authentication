@@ -50,6 +50,7 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
 
+	/** The registration repositary. */
 	@Autowired
 	private RegistrationRepositary<BaseRegistrationEntity, String> registrationRepositary;
 
@@ -235,8 +236,10 @@ public class PacketInfoDao {
 	/**
 	 * Gets the reg id by UIN.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param refRegtrnId
+	 *            the ref regtrn id
 	 * @return the reg id by UIN
 	 */
 
@@ -566,6 +569,17 @@ public class PacketInfoDao {
 		return abisResponseDetDtoList;
 	}
 
+	/**
+	 * Gets the matched demographic dtos by email.
+	 *
+	 * @param name
+	 *            the name
+	 * @param postalCode
+	 *            the postal code
+	 * @param email
+	 *            the email
+	 * @return the matched demographic dtos by email
+	 */
 	public List<DemographicInfoDto> getMatchedDemographicDtosByEmail(String name, String postalCode, String email) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
@@ -590,6 +604,17 @@ public class PacketInfoDao {
 		return convertEntityToDemographicDto(demographicDedupeRepository.createQuerySelect(query.toString(), params));
 	}
 
+	/**
+	 * Gets the matched demographic dtos by phone.
+	 *
+	 * @param name
+	 *            the name
+	 * @param postalCode
+	 *            the postal code
+	 * @param phone
+	 *            the phone
+	 * @return the matched demographic dtos by phone
+	 */
 	public List<DemographicInfoDto> getMatchedDemographicDtosByPhone(String name, String postalCode, String phone) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
@@ -614,6 +639,13 @@ public class PacketInfoDao {
 		return convertEntityToDemographicDto(demographicDedupeRepository.createQuerySelect(query.toString(), params));
 	}
 
+	/**
+	 * Convert entity to demographic dto.
+	 *
+	 * @param demographicInfoEntities
+	 *            the demographic info entities
+	 * @return the list
+	 */
 	private List<DemographicInfoDto> convertEntityToDemographicDto(
 			List<IndividualDemographicDedupeEntity> demographicInfoEntities) {
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();

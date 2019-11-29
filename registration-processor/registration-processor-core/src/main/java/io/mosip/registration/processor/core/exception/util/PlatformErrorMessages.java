@@ -1008,6 +1008,16 @@ public enum PlatformErrorMessages {
 	/** The rpr pgs no records exception. */
 	RPR_PGS_MULTIPLE_RECORDS_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "022", "Multiple Records Found"),
 
+	/** The rpr ugs api resource exception. */
+	RPR_PGS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "023",
+			"Not able to access the API resource"),
+	/** The rpr ugs io exception. */
+	RPR_PGS_IO_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "024", "IO exception"),
+
+	/** The rpr pis identity not found. */
+	RPR_PGS_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "025",
+			"Unable to Find Identity Field in ID JSON"),
+
 	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
 
