@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
@@ -67,7 +68,7 @@ public class ResidentServicesController {
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> updateResidentUINData(
 			@RequestBody(required = true) ResidentUpdateRequestDto residentUpdateRequestDto,
-			@CookieValue(value = "Authorization", required = true) String token) throws RegBaseCheckedException {
+			@CookieValue(value = "Authorization", required = true) String token) throws RegBaseCheckedException, IOException {
 		tokenValidator.validate("Authorization=" + token, "requesthandler");
 		try {
 			validator.validate(residentUpdateRequestDto.getRequesttime(), residentUpdateRequestDto.getId(),
@@ -83,7 +84,10 @@ public class ResidentServicesController {
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packetGeneratorResDto));
 		} catch (RegBaseCheckedException | IOException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
+			if(e instanceof RegBaseCheckedException) {
+				throw e;
+			}
+			throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
 		}
 

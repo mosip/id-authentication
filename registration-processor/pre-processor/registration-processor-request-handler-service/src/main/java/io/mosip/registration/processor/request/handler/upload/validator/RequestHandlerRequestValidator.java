@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
@@ -277,12 +278,11 @@ public class RequestHandlerRequestValidator {
 				} else {
 					List<ErrorDTO> error = responseWrapper.getErrors();
 
-					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-							error.get(0).getMessage(), new Throwable());
+					throw new RegBaseCheckedException(StatusUtil.INVALID_REQUEST.getCode(), StatusUtil.INVALID_REQUEST.getMessage()+" "+error.get(0).getMessage());
 				}
 			} else {
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						"Center id is mandatory", new Throwable());
+				throw new RegBaseCheckedException(StatusUtil.INVALID_CENTER.getCode(), StatusUtil.INVALID_CENTER.getMessage()+" CenterId is Mandatory");
+
 			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -332,12 +332,11 @@ public class RequestHandlerRequestValidator {
 					isValidMachine = true;
 				} else {
 					List<ErrorDTO> error = responseWrapper.getErrors();
-					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-							error.get(0).getMessage(), new Throwable());
+					throw new RegBaseCheckedException(StatusUtil.INVALID_REQUEST.getCode(), StatusUtil.INVALID_REQUEST.getMessage()+" "+error.get(0).getMessage());
 				}
 			} else {
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						"Machine id is mandatory", new Throwable());
+				throw new RegBaseCheckedException(StatusUtil.INVALID_MACHINE.getCode(), StatusUtil.INVALID_CENTER.getMessage()+" MachineId is Mandatory");
+
 			}
 
 		} catch (ApisResourceAccessException e) {
