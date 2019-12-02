@@ -680,20 +680,10 @@ public class LocationServiceImpl implements LocationService {
 
 			}
 		}
-		List<LocationSearchDto> updatedResponse = new ArrayList<>();
-		zones = zoneUtils.getUserZones();
-		List<String> zoneList = zones.parallelStream().map(z->z.getCode()).collect(Collectors.toList());
-		for(LocationSearchDto locationSearchDto :responseDto)
-		{
-			if(zoneList.contains(locationSearchDto.getZone()))
-			{
-				updatedResponse.add(locationSearchDto);
-			}
-		}
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
 		pageUtils.validateSortFieldLocation(LocationSearchDto.class, Location.class, dto.getSort());
-		pageDto = pageUtils.sortPage(updatedResponse, sort, pagination);
+		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
 	}
 
