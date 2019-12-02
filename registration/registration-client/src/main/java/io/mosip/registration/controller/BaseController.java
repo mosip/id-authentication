@@ -344,6 +344,8 @@ public class BaseController {
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
 		}
+		
+		alertController.alertWindowExit();
 	}
 
 	/**
