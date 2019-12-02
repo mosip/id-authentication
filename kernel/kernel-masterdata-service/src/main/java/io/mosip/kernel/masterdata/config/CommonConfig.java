@@ -8,12 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
+import io.mosip.kernel.core.util.Node;
+import io.mosip.kernel.core.util.UBtree;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;
 import io.mosip.kernel.masterdata.utils.DefaultSort;
-import io.mosip.kernel.masterdata.utils.Node;
-import io.mosip.kernel.masterdata.utils.UBtree;
+
 
 /**
  * Config class with beans for modelmapper and request logging
@@ -70,4 +71,6 @@ public class CommonConfig {
 	public DefaultSort defaultSort() {
 		return new DefaultSort();
 	}
+	
+	
 }

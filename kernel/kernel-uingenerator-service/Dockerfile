@@ -16,7 +16,7 @@ CMD if [ "$active_profile_env" = "c3a9236e12bb95f086275ff4647a7909dc8a0636e44b1a
     rm -rf glowroot.zip ; \
     
     sed -i 's/<service_name>/kernel-uingenerator-service/g' glowroot/glowroot.properties ; \
-    java -jar -javaagent:glowroot/glowroot.jar kernel-uingenerator-service.jar ; \
+   java -jar -javaagent:glowroot/glowroot.jar kernel-uingenerator-service.jar ; \
     else \
     java -jar kernel-uingenerator-service.jar ; \
     fi

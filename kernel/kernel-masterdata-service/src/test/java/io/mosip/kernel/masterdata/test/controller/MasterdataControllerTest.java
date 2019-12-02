@@ -809,7 +809,7 @@ public class MasterdataControllerTest {
 	 * 
 	 **/
 	@Test
-	@WithUserDetails("central-admin")
+	@WithUserDetails("global-admin")
 	public void testUpdateLocationDetails() throws Exception {
 		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
@@ -817,7 +817,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("central-admin")
+	@WithUserDetails("global-admin")
 	public void testUpdateLocationDetailsException() throws Exception {
 		Mockito.when(locationService.updateLocationDetails(Mockito.any()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));

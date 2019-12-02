@@ -17,14 +17,14 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.bio.dedupe.api.controller.BioDedupeController;
-import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
+import io.mosip.registration.processor.status.dto.ErrorDTO;
 import io.mosip.registration.processor.status.sync.response.dto.RegStatusResponseDTO;
 
-@RestControllerAdvice(assignableTypes=BioDedupeController.class)
+@RestControllerAdvice(assignableTypes = BioDedupeController.class)
 public class BioDedupeExceptionHandler {
 
 	private static final String BIO_DEDUPE_SERVICE_ID = "mosip.registration.processor.bio.dedupe.id";
@@ -32,20 +32,23 @@ public class BioDedupeExceptionHandler {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	@Autowired
 	private Environment env;
-	
+
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeExceptionHandler.class);
 
 	@ExceptionHandler(AccessDeniedException.class)
 	public String accessDenied(AccessDeniedException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getMessage());
-		return buildBioDedupeExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return buildBioDedupeExceptionResponse((Exception) e);
 	}
-	
+
 	@ExceptionHandler(InvalidTokenException.class)
 	public String invalidToken(InvalidTokenException e) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getMessage());
-		return buildBioDedupeExceptionResponse((Exception)e);
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return buildBioDedupeExceptionResponse((Exception) e);
 	}
+
 	private String buildBioDedupeExceptionResponse(Exception ex) {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
@@ -60,7 +63,9 @@ public class BioDedupeExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ErrorDTO> errors = errorTexts.parallelStream().map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
+			List<ErrorDTO> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		}

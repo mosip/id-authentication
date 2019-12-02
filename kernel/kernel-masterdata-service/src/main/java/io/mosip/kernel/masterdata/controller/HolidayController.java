@@ -111,6 +111,7 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@PostMapping
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
 		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.saveHoliday(holiday.getRequest()));
@@ -126,6 +127,7 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@PutMapping
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
 	public ResponseWrapper<HolidayIDDto> updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
 		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
@@ -189,8 +191,9 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@PostMapping("/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
-	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchHoliday(
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
+
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
@@ -206,7 +209,7 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> holidayFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
