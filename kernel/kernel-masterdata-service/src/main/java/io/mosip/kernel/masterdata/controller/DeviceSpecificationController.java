@@ -123,6 +123,7 @@ public class DeviceSpecificationController {
 	 */
 	@ResponseFilter
 	@PostMapping("/devicespecifications")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to save Device Specification", notes = "Saves Device Specification and return Device Specification ID")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device Specification successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -138,6 +139,7 @@ public class DeviceSpecificationController {
 
 	@ResponseFilter
 	@PutMapping("/devicespecifications")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to update device specification", notes = "update Device Specification and return Device Specification ID")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When device specification successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -197,6 +199,7 @@ public class DeviceSpecificationController {
 	}
 
 	@ResponseFilter
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@PostMapping("/devicespecifications/search")
 	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
 			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper) {
@@ -215,6 +218,7 @@ public class DeviceSpecificationController {
 	 *         name and type.
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@PostMapping("/devicespecifications/filtervalues")
 	public ResponseWrapper<FilterResponseDto> deviceSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {

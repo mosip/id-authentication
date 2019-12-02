@@ -30,7 +30,8 @@ public enum DeviceErrorCode {
 	DEVICE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the Device "),
 	MAPPED_TO_REGCENTER("KER-MSD-438","Device cannot be Decommissioned as it is assigned to a Registration Center"),
 	DEVICE_ERROR("KER-MSD-XXX", "Device Error"),
-	INVALIDE_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone");
+	INVALIDE_DEVICE_ZONE("KER-MSD-439", "Admin not authorized to access this Device for this Zone"),
+	DECOMMISSIONED("KER-MSD-DDD", "Device has been already decommissioned or Device not found");
 
 	private final String errorCode;
 	private final String errorMessage;

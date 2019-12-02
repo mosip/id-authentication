@@ -177,4 +177,6 @@ public final class VIDGeneratorConstant {
 	public static final String SIGNING_ENABLE = "mosip.kernel.vid.response-signing-enable";
 	
 	public static final String VIDEXPIRY = "videxpiry";
+	
+	public static final String GET_EXECUTOR_POOL_ENABLE ="mosip.kernel.vid.get_executor_pool";
 }

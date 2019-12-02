@@ -126,6 +126,10 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** The adapter. */
 	@Autowired
 	private PacketManager adapter;
@@ -892,7 +896,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
 	}
@@ -931,9 +935,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@SuppressWarnings("unchecked")
 	private void generateVid(String registrationId, String UIN)
 			throws ApisResourceAccessException, IOException, VidCreationException {
-		ObjectMapper mapper;
 		VidRequestDto vidRequestDto = new VidRequestDto();
-		VidResponseDto vidResponseDto;
 		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
 		ResponseWrapper<VidResponseDto> response;
 		try {
@@ -951,14 +953,14 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
 					"UinGeneratorStage::generateVid():: post CREATEVID service call started with request data : "
-							+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
+							+ JsonUtil.objectMapperObjectToJson(request));
 
 			response = (ResponseWrapper<VidResponseDto>) registrationProcessorRestClientService
 					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
-					"UinGeneratorStage::generateVid():: post CREATEVID service call ended successfully");
+					"UinGeneratorStage::generateVid():: create Vid response :: "+JsonUtil.objectMapperObjectToJson(response));
 
 			if (!response.getErrors().isEmpty()) {
 				throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),

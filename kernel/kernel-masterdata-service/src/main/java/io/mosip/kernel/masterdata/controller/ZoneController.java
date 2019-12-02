@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -72,6 +73,14 @@ public class ZoneController {
 			@RequestParam("userID") String userID, @ValidLangCode(message = "Language Code is Invalid") @RequestParam("langCode") String langCode) {
 		ResponseWrapper<ZoneNameResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.getZoneNameBasedOnLangCodeAndUserID(userID, langCode));
+		return responseWrapper;
+	}
+
+	@GetMapping("/authorize")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','REGISTRATION_ADMIN')")
+	public ResponseWrapper<Boolean> authorizeZone(@NotBlank @RequestParam("rid") String rId){
+		ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(zoneService.authorizeZone(rId));
 		return responseWrapper;
 	}
 

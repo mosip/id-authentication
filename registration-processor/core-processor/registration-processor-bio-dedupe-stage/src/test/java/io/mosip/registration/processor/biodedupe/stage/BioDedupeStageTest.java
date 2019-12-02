@@ -17,6 +17,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.vertx.core.Vertx;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author M1022006
@@ -53,6 +54,8 @@ public class BioDedupeStageTest {
 	 */
 	@Test
 	public void testDeployVerticle() {
+		ReflectionTestUtils.setField(bioDedupeStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(bioDedupeStage, "clusterManagerUrl", "/dummyPath");
 		bioDedupeStage.deployVerticle();
 	}
 

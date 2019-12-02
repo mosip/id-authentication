@@ -8,6 +8,7 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 
 import org.jose4j.lang.JoseException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import io.mosip.authentication.partnerdemo.service.controller.DigitalSign;
  * @author Arun Bose S
  * The Class DigitalSignatureTest.
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

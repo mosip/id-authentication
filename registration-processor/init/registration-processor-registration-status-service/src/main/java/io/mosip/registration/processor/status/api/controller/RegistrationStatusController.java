@@ -1,7 +1,9 @@
 package io.mosip.registration.processor.status.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +26,12 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
+import io.mosip.registration.processor.status.dto.ErrorDTO;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusErrorDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
@@ -71,7 +76,6 @@ public class RegistrationStatusController {
 	@Autowired
 	private Environment env;
 
-
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
 
@@ -92,24 +96,33 @@ public class RegistrationStatusController {
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<Object> search(
 			@RequestBody(required = true) RegistrationStatusRequestDTO registrationStatusRequestDTO,
-			@CookieValue(value = "Authorization") String token)
-			throws RegStatusAppException {
+			@CookieValue(value = "Authorization") String token) throws RegStatusAppException {
 		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,
 					env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService
 					.getByIds(registrationStatusRequestDTO.getRequest());
+			List<RegistrationStatusSubRequestDto> requestIdsNotAvailable = registrationStatusRequestDTO.getRequest()
+					.stream()
+					.filter(request -> registrations.stream().noneMatch(
+							registration -> registration.getRegistrationId().equals(request.getRegistrationId())))
+					.collect(Collectors.toList());
+			List<RegistrationStatusDto> registrationsList = syncRegistrationService.getByIds(requestIdsNotAvailable);
+			if (registrationsList != null && !registrationsList.isEmpty()) {
+				registrations.addAll(syncRegistrationService.getByIds(requestIdsNotAvailable));
+			}
+
 			if (isEnabled) {
-				RegStatusResponseDTO response =buildRegistrationStatusResponse(registrations);
+				RegStatusResponseDTO response = buildRegistrationStatusResponse(registrations,
+						registrationStatusRequestDTO.getRequest());
 				Gson gson = new GsonBuilder().serializeNulls().create();
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(RESPONSE_SIGNATURE,
-						digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
-				return ResponseEntity.status(HttpStatus.OK).headers(headers)
-						.body(gson.toJson(response));
+				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
+				return ResponseEntity.status(HttpStatus.OK).headers(headers).body(gson.toJson(response));
 			}
-			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(buildRegistrationStatusResponse(registrations, registrationStatusRequestDTO.getRequest()));
 		} catch (RegStatusAppException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		} catch (Exception e) {
@@ -117,7 +130,8 @@ public class RegistrationStatusController {
 		}
 	}
 
-	public RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
+	public RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations,
+			List<RegistrationStatusSubRequestDto> requestIds) {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
 		if (Objects.isNull(response.getId())) {
@@ -126,7 +140,23 @@ public class RegistrationStatusController {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(registrations);
-		response.setErrors(null);
+		List<RegistrationStatusSubRequestDto> requestIdsNotAvailable = requestIds.stream()
+				.filter(request -> registrations.stream().noneMatch(
+						registration -> registration.getRegistrationId().equals(request.getRegistrationId())))
+				.collect(Collectors.toList());
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		if (!requestIdsNotAvailable.isEmpty()) {
+
+			for (RegistrationStatusSubRequestDto requestDto : requestIdsNotAvailable) {
+				RegistrationStatusErrorDto errorDto = new RegistrationStatusErrorDto(
+						PlatformErrorMessages.RPR_RGS_RID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.RPR_RGS_RID_NOT_FOUND.getMessage());
+
+				errorDto.setRegistrationId(requestDto.getRegistrationId());
+				errors.add(errorDto);
+			}
+		}
+		response.setErrors(errors);
 		return response;
 	}
 

@@ -25,4 +25,17 @@ COPY ./target/kernel-auditmanager-service-*.jar kernel-auditmanager-service.jar
 
 EXPOSE 8081
 
-CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","kernel-auditmanager-service.jar"]
+CMD if [ "$active_profile_env" = "c3a9236e12bb95f086275ff4647a7909dc8a0636e44b1a00f033a0c181255fc9" ]; then \
+    wget 'http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/testing/glowroot.zip' ; \
+    apt-get update && apt-get install -y unzip ; \
+    unzip glowroot.zip ; \
+    rm -rf glowroot.zip ; \
+    
+    sed -i 's/<service_name>/kernel-auditmanager-service/g' glowroot/glowroot.properties ; \
+    java -jar  -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" kernel-auditmanager-service.jar ; \
+    else \
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" kernel-auditmanager-service.jar ; \
+    fi
+
+
+#CMD ["java","-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","kernel-auditmanager-service.jar"]

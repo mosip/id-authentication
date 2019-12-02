@@ -2200,7 +2200,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingDeviceCode() {
 		DataDTO dataDTO = new DataDTO();
@@ -2215,12 +2215,17 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
 		assertEquals(String.format(BIO_PATH, 0, "deviceCode"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingDeviceServiceVersion() {
 		DataDTO dataDTO = new DataDTO();
@@ -2235,12 +2240,18 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
-		assertEquals(String.format(BIO_PATH, 0, "deviceServiceVersion"), error.getFieldErrors().get(0).getArguments()[0]);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
+		assertEquals(String.format(BIO_PATH, 0, "deviceServiceVersion"),
+				error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingSerialNo() {
 		DataDTO dataDTO = new DataDTO();
@@ -2255,9 +2266,14 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/serialNo"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
@@ -2275,12 +2291,17 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/make"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingModel() {
 		DataDTO dataDTO = new DataDTO();
@@ -2295,12 +2316,17 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/model"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingType() {
 		DataDTO dataDTO = new DataDTO();
@@ -2315,12 +2341,17 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		AuthRequestDTO authRequest = new AuthRequestDTO();
+		authRequest.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequest, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/type"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingDeviceProvider() {
 		DataDTO dataDTO = new DataDTO();
@@ -2335,12 +2366,18 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/deviceProvider"), error.getFieldErrors().get(0).getArguments()[0]);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
+		assertEquals(String.format(BIO_PATH, 0, "digitalId/deviceProvider"),
+				error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingDeviceProviderId() {
 		DataDTO dataDTO = new DataDTO();
@@ -2355,12 +2392,18 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/deviceProviderId"), error.getFieldErrors().get(0).getArguments()[0]);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
+		assertEquals(String.format(BIO_PATH, 0, "digitalId/deviceProviderId"),
+				error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsMissingDateTime() {
 		DataDTO dataDTO = new DataDTO();
@@ -2375,12 +2418,17 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
+
 	@Test
 	public void testValidateDeviceDetailsInvalidDateTime() {
 		DataDTO dataDTO = new DataDTO();
@@ -2395,12 +2443,16 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime("1");
 		dataDTO.setDigitalId(digitalId);
-		List<DataDTO> bioData = Collections.singletonList(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", bioData,
-				error);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
 		assertEquals(String.format(BIO_PATH, 0, "digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
-	
 
 	private Map<String, List<String>> fetchGenderType() {
 		Map<String, List<String>> map = new HashMap<>();

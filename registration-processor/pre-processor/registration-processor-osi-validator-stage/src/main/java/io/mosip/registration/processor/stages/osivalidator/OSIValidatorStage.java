@@ -76,6 +76,13 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+	
+	@Value("${mosip.registartion.processor.validateUMC}")
+	private boolean validateUMC;
+
 	private MosipEventBus mosipEventBus = null;
 
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
@@ -84,7 +91,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
 	}
 
@@ -123,7 +130,10 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 		// osiValidator.registrationStatusDto = registrationStatusDto;
 		// umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = umcValidator.isValidUMC(registrationId, registrationStatusDto);
+			if(validateUMC)
+			    isValidUMC = umcValidator.isValidUMC(registrationId, registrationStatusDto);
+			else
+				isValidUMC = true;
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId, registrationStatusDto);
 				if (isValidOSI) {

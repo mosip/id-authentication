@@ -91,11 +91,13 @@ public class BioAuthServiceImpl implements BioAuthService {
 	 */
 	@Override
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
-			Map<String, List<IdentityInfoDTO>> bioIdentity, String partnerId) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> bioIdentity, String partnerId, boolean isAuth) throws IdAuthenticationBusinessException {
 		if (bioIdentity == null || bioIdentity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(SERVER_ERROR);
 		} else {
-			verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
+			if (isAuth) {
+				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
+			}
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
 					partnerId);
@@ -118,7 +120,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 	private boolean verifyBiometricDevice(List<BioIdentityInfoDTO> bioRequest)
 			throws IdAuthenticationBusinessException {
 		try {
-			IntStream.range(0, bioRequest.size() - 1).forEach(index -> {
+			IntStream.range(0, bioRequest.size()).forEach(index -> {
 				try {
 					DataDTO data = bioRequest.get(index).getData();
 					ValidateDeviceDTO request = new ValidateDeviceDTO();

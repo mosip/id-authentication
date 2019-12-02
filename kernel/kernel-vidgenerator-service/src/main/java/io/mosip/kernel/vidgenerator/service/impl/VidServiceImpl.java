@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
 import io.mosip.kernel.vidgenerator.constant.VIDGeneratorErrorCode;
 import io.mosip.kernel.vidgenerator.constant.VidLifecycleStatus;
 import io.mosip.kernel.vidgenerator.dto.VidFetchResponseDto;
@@ -56,11 +57,11 @@ public class VidServiceImpl implements VidService {
 			if (vidExpiry != null) {
 				vidEntity.setVidExpiry(vidExpiry);
 			}
-			vidEntity.setStatus(VidLifecycleStatus.ASSIGNED);
-			metaDataUtil.setUpdateMetaData(vidEntity);
+			//vidEntity.setStatus(VidLifecycleStatus.ASSIGNED);
+			//metaDataUtil.setUpdateMetaData(vidEntity);
 			vidFetchResponseDto.setVid(vidEntity.getVid());
 			try {
-				vidRepository.save(vidEntity);
+				vidRepository.updateVid(VidLifecycleStatus.ASSIGNED,VIDGeneratorConstant.DEFAULTADMIN_MOSIP_IO,DateUtils.getUTCCurrentDateTime(),vidEntity.getVid());
 			} catch (DataAccessException exception) {
 				LOGGER.error(ExceptionUtils.parseException(exception));
 				throw new VidGeneratorServiceException(VIDGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),

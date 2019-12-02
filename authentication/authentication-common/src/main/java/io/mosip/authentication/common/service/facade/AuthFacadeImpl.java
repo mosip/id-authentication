@@ -247,7 +247,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processBioAuth(authRequestDTO, idInfo, uin, authStatusList, idType, staticTokenId, partnerId);
+		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
 		processPinAuth(authRequestDTO, uin, authStatusList, idType, staticTokenId, partnerId);
 
@@ -306,6 +306,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the id info
 	 * @param uin
 	 *            the uin
+	 * @param isAuth 
 	 * @param authStatusList
 	 *            the auth status list
 	 * @param idType
@@ -318,13 +319,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *             the id authentication business exception
 	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isBio()) {
 			AuthStatusInfo bioValidationStatus;
 			try {
-				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId);
+				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId, isAuth);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {
