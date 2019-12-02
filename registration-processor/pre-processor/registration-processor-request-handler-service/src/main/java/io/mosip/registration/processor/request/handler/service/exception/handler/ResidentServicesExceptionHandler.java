@@ -142,7 +142,7 @@ public class ResidentServicesExceptionHandler extends ResponseEntityExceptionHan
 		for (ObjectError error : ex.getBindingResult().getAllErrors()) {
 			errorDto = new ErrorDTO();
 			errorDto.setErrorCode(StatusUtil.INVALID_REQUEST.getCode());
-			errorDto.setErrorCode(StatusUtil.INVALID_REQUEST.getMessage() + error.getDefaultMessage());
+			errorDto.setMessage(StatusUtil.INVALID_REQUEST.getMessage() + error.getDefaultMessage());
 
 			details.add(errorDto);
 		}
