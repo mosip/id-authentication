@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -962,7 +961,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info("REGISTRATION - LOAD_RE_REGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
+			/*
+			 * check if there is no pending re register packets and blocks the user to
+			 * proceed further
+			 */
+			if (!isPacketsPendingForReRegister())
+				return;
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
