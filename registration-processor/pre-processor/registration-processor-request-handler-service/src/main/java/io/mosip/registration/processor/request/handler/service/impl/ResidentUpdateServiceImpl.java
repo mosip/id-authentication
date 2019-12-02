@@ -152,8 +152,10 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 							LoggerFileConstant.REGISTRATIONID.toString(),
 							PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage(),
 							ExceptionUtils.getStackTrace(e));
-					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-							ExceptionUtils.getStackTrace(e), e);
+					if (e instanceof RegBaseCheckedException) {
+						throw (RegBaseCheckedException) e;
+					}
+					throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
 				}
 

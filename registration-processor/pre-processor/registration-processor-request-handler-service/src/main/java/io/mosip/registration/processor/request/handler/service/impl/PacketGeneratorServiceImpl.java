@@ -18,7 +18,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -31,15 +30,11 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.request.handler.service.PacketCreationService;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
 import io.mosip.registration.processor.request.handler.service.dto.PackerGeneratorFailureDto;
@@ -78,23 +73,11 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService<Packet
 	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
-	@Autowired
-	private UinValidator<String> uinValidatorImpl;
-
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
-
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
-
-	@Autowired
-	private ObjectMapper mapper = new ObjectMapper();
-
-	@Autowired
-	private Utilities utilities;
 
 	@Autowired
 	RequestHandlerRequestValidator validator;
@@ -145,8 +128,10 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService<Packet
 							LoggerFileConstant.REGISTRATIONID.toString(),
 							PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage(),
 							ExceptionUtils.getStackTrace(e));
-					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-							ExceptionUtils.getStackTrace(e), e);
+					if (e instanceof RegBaseCheckedException) {
+						throw (RegBaseCheckedException) e;
+					}
+					throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
 				}
 			} else
@@ -158,7 +143,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService<Packet
 			String message = isTransactional ? StatusUtil.RESIDENT_UPDATE_SUCCES.getMessage()
 					: StatusUtil.RESIDENT_UPDATE_FAILED.getMessage();
 			String moduleName = ModuleName.REQUEST_HANDLER_SERVICE.toString();
-            String moduleId = isTransactional ? StatusUtil.PACKET_GENERATION_SUCCESS.getCode() : StatusUtil.PACKET_GENERATION_FAILED.getCode();
+			String moduleId = isTransactional ? StatusUtil.PACKET_GENERATION_SUCCESS.getCode()
+					: StatusUtil.PACKET_GENERATION_FAILED.getCode();
 			auditLogRequestBuilder.createAuditRequestBuilder(message, eventId, eventName, eventType, moduleId,
 					moduleName, dto.getRegistrationId());
 		}
