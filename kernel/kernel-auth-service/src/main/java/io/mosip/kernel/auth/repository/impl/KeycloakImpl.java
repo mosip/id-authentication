@@ -14,7 +14,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
 import org.apache.directory.api.ldap.model.password.PasswordUtil;
-import org.apache.directory.api.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +42,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.mosip.kernel.auth.adapter.exception.AuthManagerException;
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
+import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.ClientSecret;
@@ -70,16 +70,11 @@ import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils;
 
 @Service
 public class KeycloakImpl implements DataStore {
 	
 	private static final String INDIVIDUAL = "INDIVIDUAL";
-
-	public static void main(String[] args) {
-		System.out.println(HMACUtils.digestAsPlainTextWithSalt("mosip".getBytes(), "9wSS7ODKBuI".getBytes()));
-	}
 
 	@Value("${mosip.kernel.base-url}")
 	private String keycloakBaseUrl;
@@ -123,7 +118,11 @@ public class KeycloakImpl implements DataStore {
 
 	@Value("${db_3_DS.keycloak.driverClassName}")
 	private String keycloakDriver;
-
+	
+	
+	@Value("${mosip.admin.pre-reg_user_password}")
+	private String preRegUserPassword;
+	
 	@Value("${hikari.maximumPoolSize:25}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
@@ -170,7 +169,7 @@ public class KeycloakImpl implements DataStore {
 	public RolesListDto getAllRoles() {
 
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakAdminUrl + roles);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		HttpEntity<String> httpEntity = new HttpEntity<>(null, httpHeaders);
@@ -199,7 +198,7 @@ public class KeycloakImpl implements DataStore {
 	public MosipUserListDto getListOfUsersDetails(List<String> userDetails) throws Exception {
 		List<MosipUserDto> mosipUserDtos = null;
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		HttpEntity<String> httpEntity = new HttpEntity<>(null, new HttpHeaders());
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakAdminUrl + users);
 		String response = callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(),
@@ -251,7 +250,7 @@ public class KeycloakImpl implements DataStore {
 	public RIdDto getRidFromUserId(String userId) throws Exception {
 		RIdDto rIdDto = new RIdDto();
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		HttpEntity<String> httpEntity = new HttpEntity<>(null, httpHeaders);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakAdminUrl + users);
@@ -287,7 +286,7 @@ public class KeycloakImpl implements DataStore {
 	public MosipUserDto registerUser(UserRegistrationRequestDto userId) {
 		Map<String, String> pathParams = new HashMap<>();
 		KeycloakRequestDto keycloakRequestDto = mapUserRequestToKeycloakRequestDto(userId);
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		HttpEntity<KeycloakRequestDto> httpEntity = new HttpEntity<KeycloakRequestDto>(keycloakRequestDto);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakAdminUrl + users);
 		if (!isUserAlreadyPresent(userId.getUserName())) {
@@ -307,12 +306,12 @@ public class KeycloakImpl implements DataStore {
 
 	private void roleMapper(String userID) {
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		pathParams.put("userID", userID);
 		Roles role = new Roles(individualRoleID, INDIVIDUAL);
 		List<Roles> roles = new ArrayList<>();
 		roles.add(role);
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		HttpEntity<List<Roles>> httpEntity = new HttpEntity<>(roles);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
 				.fromUriString(keycloakAdminUrl + users + "/{userID}/role-mappings/realm");
@@ -322,7 +321,7 @@ public class KeycloakImpl implements DataStore {
 
 	private String getIDfromUserID(String userName) {
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
 				.fromUriString(keycloakAdminUrl + users + "?username=" + userName);
 		String response = callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(),
@@ -357,7 +356,7 @@ public class KeycloakImpl implements DataStore {
 	 */
 	public boolean isUserAlreadyPresent(String userName) {
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
 				.fromUriString(keycloakAdminUrl + users + "?username=" + userName);
 		String response = callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(),
@@ -392,12 +391,12 @@ public class KeycloakImpl implements DataStore {
 			roles.add(INDIVIDUAL);
 			credentialObject = new ArrayList<>();
 			dto = new KeycloakPasswordDTO();
-			dto.setType("password");
-			dto.setValue("mosip");
+			dto.setType(AuthConstant.PASSWORDCONSTANT);
+			dto.setValue(preRegUserPassword);
 		} else if (userRegDto.getAppId().equalsIgnoreCase("registrationclient")) {
 			credentialObject = new ArrayList<>();
 			dto = new KeycloakPasswordDTO();
-			dto.setType("password");
+			dto.setType(AuthConstant.PASSWORDCONSTANT);
 			dto.setValue(userRegDto.getUserPassword());
 		}
 		credentialObject.add(dto);
@@ -406,7 +405,7 @@ public class KeycloakImpl implements DataStore {
 		genderList.add(userRegDto.getGender());
 		contactNoList.add(userRegDto.getContactNo());
 		HashMap<String, List<Object>> attributes = new HashMap<>();
-		attributes.put("contact no", contactNoList);
+		attributes.put("mobile", contactNoList);
 
 		attributes.put("gender", genderList);
 		keycloakRequestDto.setUsername(userRegDto.getUserName());
@@ -630,7 +629,7 @@ public class KeycloakImpl implements DataStore {
 	private String getRolesAsString(String userId) throws IOException {
 		StringBuilder roleBuilder = new StringBuilder();
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		pathParams.put("userId", userId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
 				.fromUriString(keycloakAdminUrl + users + roleUserMappingurl);
@@ -642,7 +641,7 @@ public class KeycloakImpl implements DataStore {
 		for (JsonNode node : jsonNode) {
 			String role = node.get("name").textValue();
 			Objects.nonNull(role);
-			roleBuilder.append(role).append(",");
+			roleBuilder.append(role).append(AuthConstant.COMMA);
 		}
 		return roleBuilder.length() > 0 ? roleBuilder.substring(0, roleBuilder.length() - 1) : "";
 	}
