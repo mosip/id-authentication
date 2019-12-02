@@ -33,6 +33,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.service.DeviceService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,6 +60,9 @@ public class DeviceController {
 	 */
 	@Autowired
 	private DeviceService deviceService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * Get api to fetch a all device details based on language code
@@ -225,6 +229,7 @@ public class DeviceController {
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+     //auditUtil.auditRequest(DeviceSearchDto.class.toGenericString()+"Search API called",;
 		ResponseWrapper<PageResponseDto<DeviceSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		return responseWrapper;

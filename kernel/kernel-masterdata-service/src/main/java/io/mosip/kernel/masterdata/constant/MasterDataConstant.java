@@ -42,4 +42,6 @@ public class MasterDataConstant {
     public static final String DEVICE_REGISTER_UPDATE_MESSAGE="Device status updated successfully";
     public static final String INVALID_REG_CENTER_TYPE="Invalid centerTypeCode";
     public static final String INVALID_LOCATION_CODE="Invalid Location Code";
+	public static final String ENTITY_IS_CALLED = "Search API called";
+	public static final String AUDIT_SYSTEM = "SYSTEM";
 }
