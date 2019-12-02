@@ -32,7 +32,6 @@ import com.jayway.jsonpath.Option;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorDocumentMapping;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorLocationMapping;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
