@@ -3,7 +3,8 @@ package io.mosip.resident.constant;
 public enum ResidentErrorCode {
 
 	NO_RID_FOUND_EXCEPTION("RES-XXX-XXX", "RID not found"),
-	INVALID_REQUEST_EXCEPTION("RES-XXX-XXX", "One or more input parameter is invalid or does not exist");
+	INVALID_REQUEST_EXCEPTION("RES-XXX-XXX", "One or more input parameter is invalid or does not exist"),
+	TOKEN_GENERATION_FAILED("RES-XXX-XXX", "Token generation failed");
 
 	private final String errorCode;
 	private final String errorMessage;

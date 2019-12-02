@@ -46,13 +46,13 @@ public class SwaggerConfig {
 	@Value("${swagger.base-url:#{null}}")
 	private String swaggerBaseUrl;
 
-	@Value("${server.port:8080}")
+	@Value("${server.port:8099}")
 	private int serverPort;
 
 	String proto = "http";
 	String host = "localhost";
 	int port = -1;
-	String hostWithPort = "localhost:8080";
+	String hostWithPort = "localhost:8099";
 
 	/**
 	 * Produces {@link ApiInfo}

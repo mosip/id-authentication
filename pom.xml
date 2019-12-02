@@ -17,6 +17,7 @@
 		<module>authentication</module>
 		<module>id-repository</module>
 		<module>admin</module>
+		<module>resident</module>
 		</modules>
 
 </project>
