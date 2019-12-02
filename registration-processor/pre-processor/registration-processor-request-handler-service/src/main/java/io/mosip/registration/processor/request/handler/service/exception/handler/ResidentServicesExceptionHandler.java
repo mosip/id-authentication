@@ -1,16 +1,21 @@
 package io.mosip.registration.processor.request.handler.service.exception.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -19,6 +24,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.request.handler.service.controller.ResidentServicesController;
@@ -26,8 +32,8 @@ import io.mosip.registration.processor.request.handler.service.dto.PacketGenerat
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseUnCheckedException;
 
-@RestControllerAdvice(assignableTypes=ResidentServicesController.class)
-public class ResidentServicesExceptionHandler {
+@RestControllerAdvice(assignableTypes = ResidentServicesController.class)
+public class ResidentServicesExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -54,8 +60,7 @@ public class ResidentServicesExceptionHandler {
 	/**
 	 * Badrequest.
 	 *
-	 * @param e
-	 *            the e
+	 * @param e the e
 	 * @return the string
 	 */
 	@ExceptionHandler(RegBaseCheckedException.class)
@@ -69,8 +74,7 @@ public class ResidentServicesExceptionHandler {
 	/**
 	 * Badrequest.
 	 *
-	 * @param e
-	 *            the e
+	 * @param e the e
 	 * @return the string
 	 */
 	@ExceptionHandler(RegBaseUnCheckedException.class)
@@ -90,8 +94,7 @@ public class ResidentServicesExceptionHandler {
 	/**
 	 * Packet gen exception response.
 	 *
-	 * @param ex
-	 *            the ex
+	 * @param ex the ex
 	 * @return the string
 	 */
 	public ResponseEntity<Object> packetGenExceptionResponse(Exception ex) {
@@ -127,6 +130,27 @@ public class ResidentServicesExceptionHandler {
 		response.setResponse(null);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		List<ErrorDTO> details = new ArrayList<>();
+		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
+		ErrorDTO errorDto;
+		response.setId(env.getProperty(RES_UPDATE_SERVICE_ID));
+		for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+			errorDto = new ErrorDTO();
+			errorDto.setErrorCode(StatusUtil.INVALID_REQUEST.getCode());
+			errorDto.setErrorCode(StatusUtil.INVALID_REQUEST.getMessage() + error.getDefaultMessage());
+
+			details.add(errorDto);
+		}
+		response.setErrors(details);
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));
+		response.setResponse(null);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 }
