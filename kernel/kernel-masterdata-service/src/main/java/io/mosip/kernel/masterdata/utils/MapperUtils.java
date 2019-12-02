@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
@@ -28,6 +29,7 @@ import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.entity.ExceptionalHoliday;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
@@ -513,6 +515,25 @@ public class MapperUtils {
 			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holiday.getLocationCode());
 			dto.setHolidayDesc(holiday.getHolidayDesc());
+			holidayDtos.add(dto);
+		});
+		return holidayDtos;
+	}
+	
+	public static List<ExceptionalHolidayDto> mapExceptionalHolidays(List<ExceptionalHoliday> exeptionalHolidayList) {
+		Objects.requireNonNull(exeptionalHolidayList);
+		List<ExceptionalHolidayDto> holidayDtos = new ArrayList<>();
+		exeptionalHolidayList.forEach(holiday -> {
+			LocalDate date = holiday.getHolidayDate();
+			ExceptionalHolidayDto dto = new ExceptionalHolidayDto();
+			dto.setHolidayDate(date);
+			dto.setHolidayName(holiday.getHolidayName());
+			dto.setLangCode(holiday.getLangCode());
+			dto.setHolidayYear(String.valueOf(date.getYear()));
+			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
+			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
+			dto.setIsActive(holiday.getIsActive());
+			dto.setHolidayReason(holiday.getHolidayReason());
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;

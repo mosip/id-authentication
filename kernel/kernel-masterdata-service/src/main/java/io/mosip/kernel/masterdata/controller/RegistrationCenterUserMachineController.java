@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,7 @@ public class RegistrationCenterUserMachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Create a mapping of registration center,user,and machine")
 	@PostMapping("/registrationmachineusermappings")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
 
@@ -94,6 +96,7 @@ public class RegistrationCenterUserMachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine")
 	@PutMapping("/registrationmachineusermappings")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
 		

@@ -59,6 +59,7 @@ public class MachineTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machinetypes")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Service to save Machine Type", notes = "Saves MachineType and return  code and Languge Code")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine Type successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -111,6 +112,7 @@ public class MachineTypeController {
 	@ResponseFilter
 	@PostMapping("/machinetypes/search")
 	@ApiOperation(value = "Api to search Machine Types")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineTypeExtnDto>> searchMachineType(
 			@ApiParam(value = "Request DTO to search Machine Types") @RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<MachineTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
@@ -127,6 +129,7 @@ public class MachineTypeController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machinetypes/filtervalues")
+	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> machineTypesFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
