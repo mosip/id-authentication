@@ -75,6 +75,8 @@ import io.mosip.kernel.core.util.HMACUtils;
 @Service
 public class KeycloakImpl implements DataStore {
 	
+	private static final String INDIVIDUAL = "INDIVIDUAL";
+
 	public static void main(String[] args) {
 		System.out.println(HMACUtils.digestAsPlainTextWithSalt("mosip".getBytes(), "9wSS7ODKBuI".getBytes()));
 	}
@@ -99,6 +101,9 @@ public class KeycloakImpl implements DataStore {
 
 	@Value("${mosip.kernel.role-user-mapping-url}")
 	private String roleUserMappingurl;
+	
+	@Value("${mosip.admin.individual_role_id}")
+	private String individualRoleID;
 
 	@Qualifier(value = "keycloakRestTemplate")
 	@Autowired
@@ -288,7 +293,7 @@ public class KeycloakImpl implements DataStore {
 		if (!isUserAlreadyPresent(userId.getUserName())) {
 			callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(), HttpMethod.POST,
 					httpEntity);
-			if (keycloakRequestDto.getRealmRoles().contains("INDIVIDUAL")) {
+			if (keycloakRequestDto.getRealmRoles().contains(INDIVIDUAL)) {
 				String userID = getIDfromUserID(userId.getUserName());
 				roleMapper(userID);
 			}
@@ -304,7 +309,7 @@ public class KeycloakImpl implements DataStore {
 		Map<String, String> pathParams = new HashMap<>();
 		pathParams.put("realmId", realmId);
 		pathParams.put("userID", userID);
-		Roles role = new Roles("24a3b0b9-cbde-4591-ab40-05e700fdbc03", "INDIVIDUAL");
+		Roles role = new Roles(individualRoleID, INDIVIDUAL);
 		List<Roles> roles = new ArrayList<>();
 		roles.add(role);
 		pathParams.put("realmId", realmId);
@@ -384,7 +389,7 @@ public class KeycloakImpl implements DataStore {
 		List<KeycloakPasswordDTO> credentialObject = null;
 		KeycloakPasswordDTO dto = null;
 		if (userRegDto.getAppId().equalsIgnoreCase("preregistration")) {
-			roles.add("INDIVIDUAL");
+			roles.add(INDIVIDUAL);
 			credentialObject = new ArrayList<>();
 			dto = new KeycloakPasswordDTO();
 			dto.setType("password");

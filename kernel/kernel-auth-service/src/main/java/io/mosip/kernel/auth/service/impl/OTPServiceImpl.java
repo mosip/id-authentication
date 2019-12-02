@@ -59,543 +59,566 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 /**
-* @author Ramadurai Pandian
-*
-*/
+ * @author Ramadurai Pandian
+ *
+ */
 @Component
 public class OTPServiceImpl implements OTPService {
 
-       /*
-       * (non-Javadoc)
-       * 
-        * @see io.mosip.kernel.auth.service.OTPService#sendOTP(io.mosip.kernel.auth.
-       * entities.MosipUserDto, java.lang.String)
-       */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.auth.service.OTPService#sendOTP(io.mosip.kernel.auth.
+	 * entities.MosipUserDto, java.lang.String)
+	 */
 
-       @Autowired
-       RestTemplate restTemplate;
+	@Autowired
+	RestTemplate restTemplate;
 
-       @Autowired
-       MosipEnvironment mosipEnvironment;
+	@Autowired
+	MosipEnvironment mosipEnvironment;
 
-       @Autowired
-       TokenGenerator tokenGenerator;
+	@Autowired
+	TokenGenerator tokenGenerator;
 
-       @Autowired
-       OTPGenerateService oTPGenerateService;
+	@Autowired
+	OTPGenerateService oTPGenerateService;
 
-       @Autowired
-       private ObjectMapper mapper;
+	@Autowired
+	private ObjectMapper mapper;
 
-       @Autowired
-       private TokenGenerationService tokenService;
+	@Autowired
+	private TokenGenerationService tokenService;
 
-       @Autowired
-       private TemplateUtil templateUtil;
+	@Autowired
+	private TemplateUtil templateUtil;
 
-       @Autowired
-       private OtpValidator authOtpValidator;
-       
-       @Value("${mosip.kernel.open-id-url}")
-       private String keycloakOpenIdUrl;
+	@Autowired
+	private OtpValidator authOtpValidator;
 
-       @Value("${mosip.kernel.realm-id}")
-       private String realmId;
+	@Value("${mosip.kernel.open-id-url}")
+	private String keycloakOpenIdUrl;
 
-       @Override
-       public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
-             AuthNResponseDto authNResponseDto = null;
-             OtpEmailSendResponseDto otpEmailSendResponseDto = null;
-             SmsResponseDto otpSmsSendResponseDto = null;
-             String emailMessage = null, mobileMessage = null;
-             String token = null;
-             try {
-                    //token = tokenService.getInternalTokenGenerationService();
-                    AccessTokenResponse accessTokenResponse=getAuthAccessToken("auth","050c7e61-e415-4390-a1ac-03e1624e2b1d");
-             token=AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+accessTokenResponse.getAccess_token();
-             } catch (HttpClientErrorException | HttpServerErrorException ex) {
-                    List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+	@Value("${mosip.kernel.realm-id}")
+	private String realmId;
 
-                    if (ex.getRawStatusCode() == 401) {
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthNException(validationErrorsList);
-                          } else {
-                                 throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-                                              AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
-                          }
-                    }
-                    if (ex.getRawStatusCode() == 403) {
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthZException(validationErrorsList);
-                          } else {
-                                 throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-                                              AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
-                          }
-                    }
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    } else {
-                          throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
-                    }
-             } catch (Exception e) {
-                    throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(), e.getMessage(), e);
-             }
-             OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, token);
-             if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
-                    authNResponseDto = new AuthNResponseDto();
-                    authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
-             authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
-                    return authNResponseDto;
-             }
-             for (String channel : otpChannel) {
-                    switch (channel) {
-                    case AuthConstant.EMAIL:
-                          emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId, token);
-                          otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail(), token);
-                          break;
-                    case AuthConstant.PHONE:
-                          mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId, token);
-                          otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile(), token);
-                          break;
-                    }
-             }
-             if (otpEmailSendResponseDto != null) {
-                    authNResponseDto = new AuthNResponseDto();
-             authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
-             authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
-             }
-             if (otpSmsSendResponseDto != null) {
-                    authNResponseDto = new AuthNResponseDto();
-               authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
-             authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
-             }
-             return authNResponseDto;
-       }
+	@Value("${mosip.kernel.auth.client.id}")
+	private String authClientID;
 
-       private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId, String token) {
-             String template = null;
-             OtpTemplateResponseDto otpTemplateResponseDto = null;
+	@Value("${mosip.kernel.auth.secret.key}")
+	private String authSecret;
 
-             final String url = mosipEnvironment.getMasterDataTemplateApi() + "/" + mosipEnvironment.getPrimaryLanguage()
-                          + mosipEnvironment.getMasterDataOtpTemplate();
-             HttpHeaders headers = new HttpHeaders();
-             headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
-                          String.class);
-             if (response.getStatusCode().equals(HttpStatus.OK)) {
-                    String responseBody = response.getBody();
-                    List<ServiceError> validationErrorsList = null;
-                    validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    }
-                    ResponseWrapper<?> responseObject;
-                    try {
-                          responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-                          otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-                                        OtpTemplateResponseDto.class);
-                    } catch (Exception e) {
-                          throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-                    }
-             }
-             List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
-             for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
-                    if (otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase())) {
-                          template = otpTemplateDto.getFileText();
+	@Value("${mosip.kernel.ida.client.id}")
+	private String idaClientID;
 
-                    }
-             }
-             String otp = otpGenerateResponseDto.getOtp();
-             template = template.replace("$otp", otp);
-             return template;
-       }
+	@Value("${mosip.kernel.ida.secret.key}")
+	private String idaSecret;
+	
+	@Value("${mosip.admin.clientid}")
+	private String mosipAdminClientID;
 
-       private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId, String token) {
-             try {
-                    final String url = mosipEnvironment.getMasterDataTemplateApi() + "/" + mosipEnvironment.getPrimaryLanguage()
-                                 + mosipEnvironment.getMasterDataOtpTemplate();
-                    OtpTemplateResponseDto otpTemplateResponseDto = null;
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-                    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
-                                 new HttpEntity<Object>(headers), String.class);
-                    if (response.getStatusCode().equals(HttpStatus.OK)) {
-                          String responseBody = response.getBody();
-                          List<ServiceError> validationErrorsList = null;
-                          validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthManagerServiceException(validationErrorsList);
-                          }
-                          ResponseWrapper<?> responseObject;
-                          try {
-                                 responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-                                 otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-                                              OtpTemplateResponseDto.class);
-                          } catch (Exception e) {
-                                 throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-                          }
-                    }
-                    String template = null;
-                    List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
-                    for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
-                          if (otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase())) {
-                                 template = otpTemplateDto.getFileText();
+	@Value("${mosip.admin.clientsecret}")
+	private String mosipAdminSecret;
 
-                          }
-                    }
-                    String otp = otpGenerateResponseDto.getOtp();
-                    template = template.replace("$otp", otp);
-                    return template;
-             } catch (HttpClientErrorException | HttpServerErrorException e) {
-                    String message = e.getResponseBodyAsString();
-                    throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
-             }
-       }
+	@Override
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
+		AuthNResponseDto authNResponseDto = null;
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		SmsResponseDto otpSmsSendResponseDto = null;
+		String emailMessage = null, mobileMessage = null;
+		String token = null;
+		try {
+			// token = tokenService.getInternalTokenGenerationService();
+			AccessTokenResponse accessTokenResponse = getAuthAccessToken("auth",
+					"050c7e61-e415-4390-a1ac-03e1624e2b1d");
+			token = AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX + accessTokenResponse.getAccess_token();
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-       private OtpEmailSendResponseDto sendOtpByEmail(String message, String email, String token) {
-             ResponseEntity<String> response = null;
-             String url = mosipEnvironment.getOtpSenderEmailApi();
-             HttpHeaders headers = new HttpHeaders();
-              headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-       headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
-             OtpEmailSendResponseDto otpEmailSendResponseDto = null;
-             headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-             MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-             map.add("mailTo", email);
-             map.add("mailSubject", "MOSIP Notification");
-             map.add("mailContent", message);
-             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-             try {
-                    try {
-                          response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-                    } catch (HttpServerErrorException | HttpClientErrorException e) {
-                          String error = e.getResponseBodyAsString();
-                    } catch (RestClientException e) {
-                          e.printStackTrace();
-                    }
-             } catch (HttpServerErrorException | HttpClientErrorException e) {
-                    String error = e.getResponseBodyAsString();
-             }
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
+			}
+		} catch (Exception e) {
+			throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(), e.getMessage(), e);
+		}
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, token);
+		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
+			authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
+			return authNResponseDto;
+		}
+		for (String channel : otpChannel) {
+			switch (channel) {
+			case AuthConstant.EMAIL:
+				emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId, token);
+				otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail(), token);
+				break;
+			case AuthConstant.PHONE:
+				mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId, token);
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile(), token);
+				break;
+			}
+		}
+		if (otpEmailSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
+		}
+		if (otpSmsSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
+		}
+		return authNResponseDto;
+	}
 
-             if (response.getStatusCode().equals(HttpStatus.OK)) {
-                    String responseBody = response.getBody();
-                    List<ServiceError> validationErrorsList = null;
-                    validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    }
-                    ResponseWrapper<?> responseObject;
-                    try {
-                          responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-                          otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-                                        OtpEmailSendResponseDto.class);
-                    } catch (Exception e) {
-                          throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-                    }
-             }
-             return otpEmailSendResponseDto;
-       }
+	private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId, String token) {
+		String template = null;
+		OtpTemplateResponseDto otpTemplateResponseDto = null;
 
-       private SmsResponseDto sendOtpBySms(String message, String mobile, String token) {
-             try {
-                    List<ServiceError> validationErrorsList = null;
-                    OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
-                    SmsResponseDto otpSmsSendResponseDto = null;
-                    String url = mosipEnvironment.getOtpSenderSmsApi();
-                    RequestWrapper<OtpSmsSendRequestDto> reqWrapper = new RequestWrapper<>();
-                    reqWrapper.setRequesttime(LocalDateTime.now());
-                    reqWrapper.setRequest(otpSmsSendRequestDto);
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-                    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST,
-                                 new HttpEntity<Object>(reqWrapper, headers), String.class);
-                    validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    }
-                    ResponseWrapper<?> responseObject;
-                    try {
-                          responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-                          otpSmsSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-                                       SmsResponseDto.class);
-                    } catch (Exception e) {
-                          throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
-                    }
-                    return otpSmsSendResponseDto;
-             } catch (HttpClientErrorException | HttpServerErrorException e) {
-                    String errmessage = e.getResponseBodyAsString();
-                    throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), errmessage);
-             }
-       }
+		final String url = mosipEnvironment.getMasterDataTemplateApi() + "/" + mosipEnvironment.getPrimaryLanguage()
+				+ mosipEnvironment.getMasterDataOtpTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
+				String.class);
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						OtpTemplateResponseDto.class);
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+			}
+		}
+		List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
+		for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
+			if (otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase())) {
+				template = otpTemplateDto.getFileText();
 
-       @Override
-       public MosipUserTokenDto validateOTP(MosipUserDto mosipUser, String otp) {
-             String key = new OtpGenerateRequest(mosipUser).getKey();
-             MosipUserTokenDto mosipUserDtoToken = null;
-             ResponseEntity<String> response = null;
-             final String url = mosipEnvironment.getVerifyOtpUserApi();
-             String token = null;
-             AccessTokenResponse accessTokenResponse=null;
-             AccessTokenResponse responseAccessTokenResponse=null;
-             try {
-                    //token = tokenService.getInternalTokenGenerationService();
-             accessTokenResponse=getAuthAccessToken("auth","050c7e61-e415-4390-a1ac-03e1624e2b1d");
-             
-             token=accessTokenResponse.getAccess_token();
-             } catch (Exception e) {
-                    throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-             }
-             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("key", key).queryParam("otp",
-                          otp);
-             HttpHeaders headers = new HttpHeaders();
-             headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-             response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity<Object>(headers),
-                          String.class);
-             if (response.getStatusCode().equals(HttpStatus.OK)) {
-                    String responseBody = response.getBody();
-                    List<ServiceError> validationErrorsList = null;
-                    validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+			}
+		}
+		String otp = otpGenerateResponseDto.getOtp();
+		template = template.replace("$otp", otp);
+		return template;
+	}
 
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    }
-                    responseAccessTokenResponse=getUserAccessToken(mosipUser.getUserId());
-                    OtpValidatorResponseDto otpResponse = null;
-                    ResponseWrapper<?> responseObject;
-                    try {
-                          responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-                          otpResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-                                        OtpValidatorResponseDto.class);
-                    } catch (Exception e) {
-                          throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-                    }
-                    if (otpResponse.getStatus() != null && otpResponse.getStatus().equals("success")) {
-                          //BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
-                                           String expTime = accessTokenResponse.getExpires_in();
-                          mosipUserDtoToken = new MosipUserTokenDto(mosipUser, responseAccessTokenResponse.getAccess_token(),
-                        		  responseAccessTokenResponse.getRefresh_token(),Long.parseLong(expTime), null, null);
-                           mosipUserDtoToken.setMessage(otpResponse.getMessage());
-                           mosipUserDtoToken.setStatus(otpResponse.getStatus());
-                    } else {
-                          mosipUserDtoToken = new MosipUserTokenDto();
-                           mosipUserDtoToken.setMessage(otpResponse.getMessage());
-                           mosipUserDtoToken.setStatus(otpResponse.getStatus());
-                    }
+	private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto, String appId, String token) {
+		try {
+			final String url = mosipEnvironment.getMasterDataTemplateApi() + "/" + mosipEnvironment.getPrimaryLanguage()
+					+ mosipEnvironment.getMasterDataOtpTemplate();
+			OtpTemplateResponseDto otpTemplateResponseDto = null;
+			HttpHeaders headers = new HttpHeaders();
+			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
+					new HttpEntity<Object>(headers), String.class);
+			if (response.getStatusCode().equals(HttpStatus.OK)) {
+				String responseBody = response.getBody();
+				List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthManagerServiceException(validationErrorsList);
+				}
+				ResponseWrapper<?> responseObject;
+				try {
+					responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+					otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+							OtpTemplateResponseDto.class);
+				} catch (Exception e) {
+					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+				}
+			}
+			String template = null;
+			List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
+			for (OtpTemplateDto otpTemplateDto : otpTemplateList) {
+				if (otpTemplateDto.getId().toLowerCase().equals(appId.toLowerCase())) {
+					template = otpTemplateDto.getFileText();
 
-             }
-             return mosipUserDtoToken;
-       }
+				}
+			}
+			String otp = otpGenerateResponseDto.getOtp();
+			template = template.replace("$otp", otp);
+			return template;
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			String message = e.getResponseBodyAsString();
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
+		}
+	}
 
-       @Override
-       public AuthNResponseDto sendOTPForUin(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
-             AuthNResponseDto authNResponseDto = null;
-             OtpEmailSendResponseDto otpEmailSendResponseDto = null;
-             SmsResponseDto otpSmsSendResponseDto = null;
-             String emailMessage = null, mobileMessage = null;
-             String token = null;
-             AccessTokenResponse accessTokenResponse=null;
-             try {
-                    //token = tokenService.getInternalTokenGenerationService();
-                    accessTokenResponse=getAuthAccessToken("ida","bad25866-e6a5-4f93-831a-08923ea6eee0");
-                    token=accessTokenResponse.getAccess_token();
-             } catch (Exception e) {
-                    throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
-             }
-             OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, token);
-             for (String channel : otpChannel) {
-                    switch (channel) {
-                    case AuthConstant.EMAIL:
-                          emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId, token);
-                          otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail(), token);
-                    case AuthConstant.PHONE:
-                          mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId, token);
-                          otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile(), token);
-                    }
-             }
-             if (otpEmailSendResponseDto != null && otpSmsSendResponseDto != null) {
-                    AuthNResponseDto authResponseDto = new AuthNResponseDto();
-             authResponseDto.setMessage(AuthConstant.UIN_NOTIFICATION_MESSAGE);
-             }
-             return authNResponseDto;
-       }
+	private OtpEmailSendResponseDto sendOtpByEmail(String message, String email, String token) {
+		ResponseEntity<String> response = null;
+		String url = mosipEnvironment.getOtpSenderEmailApi();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("mailTo", email);
+		map.add("mailSubject", "MOSIP Notification");
+		map.add("mailContent", message);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		try {
+			try {
+				response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+			} catch (HttpServerErrorException | HttpClientErrorException e) {
+				String error = e.getResponseBodyAsString();
+			} catch (RestClientException e) {
+				e.printStackTrace();
+			}
+		} catch (HttpServerErrorException | HttpClientErrorException e) {
+			String error = e.getResponseBodyAsString();
+		}
 
-       @Override
-       public AuthNResponseDto sendOTP(MosipUserDto mosipUser, OtpUser otpUser) throws Exception {
-             AuthNResponseDto authNResponseDto = null;
-             OtpEmailSendResponseDto otpEmailSendResponseDto = null;
-             SmsResponseDto otpSmsSendResponseDto = null;
-             String mobileMessage = null;
-             OTPEmailTemplate emailTemplate = null;
-             AccessTokenResponse accessTokenResponse=null;
-             authOtpValidator.validateOTPUser(otpUser);
-             try {
-                    //token = tokenService.getInternalTokenGenerationService();
-                    accessTokenResponse=getAuthAccessToken("auth","050c7e61-e415-4390-a1ac-03e1624e2b1d");
-             } catch (HttpClientErrorException | HttpServerErrorException ex) {
-                    List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						OtpEmailSendResponseDto.class);
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+			}
+		}
+		return otpEmailSendResponseDto;
+	}
 
-                    if (ex.getRawStatusCode() == 401) {
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthNException(validationErrorsList);
-                          } else {
-                                 throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-                                              AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
-                          }
-                    }
-                    if (ex.getRawStatusCode() == 403) {
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthZException(validationErrorsList);
-                          } else {
-                                 throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
-                          }
-                    }
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    } else {
-                          throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
-                    }
-             }
-             OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser, accessTokenResponse.getAccess_token());
-             if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
-                    authNResponseDto = new AuthNResponseDto();
-                    authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
-             authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
-                    return authNResponseDto;
-             }
-             for (String channel : otpUser.getOtpChannel()) {
-                    switch (channel.toLowerCase()) {
-                    case AuthConstant.EMAIL:
-                          emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser, accessTokenResponse.getAccess_token());
-                          otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getUserId(), accessTokenResponse.getAccess_token());
-                          break;
-                    case AuthConstant.PHONE:
-                          mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser, accessTokenResponse.getAccess_token());
-                          otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(), accessTokenResponse.getAccess_token());
-                          break;
-                    }
-             }
+	private SmsResponseDto sendOtpBySms(String message, String mobile, String token) {
+		try {
+			List<ServiceError> validationErrorsList = null;
+			OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(mobile, message);
+			SmsResponseDto otpSmsSendResponseDto = null;
+			String url = mosipEnvironment.getOtpSenderSmsApi();
+			RequestWrapper<OtpSmsSendRequestDto> reqWrapper = new RequestWrapper<>();
+			reqWrapper.setRequesttime(LocalDateTime.now());
+			reqWrapper.setRequest(otpSmsSendRequestDto);
+			HttpHeaders headers = new HttpHeaders();
+			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST,
+					new HttpEntity<Object>(reqWrapper, headers), String.class);
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpSmsSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						SmsResponseDto.class);
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			}
+			return otpSmsSendResponseDto;
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			String errmessage = e.getResponseBodyAsString();
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), errmessage);
+		}
+	}
 
-             if (otpEmailSendResponseDto != null && otpSmsSendResponseDto != null) {
-                    authNResponseDto = new AuthNResponseDto();
-                    authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
-             authNResponseDto.setMessage(AuthConstant.ALL_CHANNELS_MESSAGE);
-             } else if (otpEmailSendResponseDto != null) {
-                    authNResponseDto = new AuthNResponseDto();
-             authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
-             authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
-             } else if (otpSmsSendResponseDto != null) {
-                    authNResponseDto = new AuthNResponseDto();
-               authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
-             authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
-             }
-             return authNResponseDto;
-       }
+	@Override
+	public MosipUserTokenDto validateOTP(MosipUserDto mosipUser, String otp) {
+		String key = new OtpGenerateRequest(mosipUser).getKey();
+		MosipUserTokenDto mosipUserDtoToken = null;
+		ResponseEntity<String> response = null;
+		final String url = mosipEnvironment.getVerifyOtpUserApi();
+		String token = null;
+		AccessTokenResponse accessTokenResponse = null;
+		AccessTokenResponse responseAccessTokenResponse = null;
+		try {
+			// token = tokenService.getInternalTokenGenerationService();
+			accessTokenResponse = getAuthAccessToken(authClientID, authSecret);
 
-       private OtpEmailSendResponseDto sendOtpByEmail(OTPEmailTemplate emailTemplate, String email, String token) {
-             ResponseEntity<String> response = null;
-             String url = mosipEnvironment.getOtpSenderEmailApi();
-             HttpHeaders headers = new HttpHeaders();
-              headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-       headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
-             OtpEmailSendResponseDto otpEmailSendResponseDto = null;
-             headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-             MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-             map.add("mailTo", email);
-             map.add("mailSubject", emailTemplate.getEmailSubject());
-             map.add("mailContent", emailTemplate.getEmailContent());
-             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-             try {
-                    response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-                    if (response.getStatusCode().equals(HttpStatus.OK)) {
-                          String responseBody = response.getBody();
-                          List<ServiceError> validationErrorsList = null;
-                          validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthManagerServiceException(validationErrorsList);
-                          }
-                          ResponseWrapper<?> responseObject;
-                          try {
-                                 responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-                                 otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-                                              OtpEmailSendResponseDto.class);
-                          } catch (Exception e) {
-                                 throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
-                          }
-                    }
-             } catch (HttpClientErrorException | HttpServerErrorException ex) {
-                    List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+			token = accessTokenResponse.getAccess_token();
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+		}
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("key", key).queryParam("otp",
+				otp);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+		response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity<Object>(headers),
+				String.class);
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
 
-                    if (ex.getRawStatusCode() == 401) {
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthNException(validationErrorsList);
-                          } else {
-                                 throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-                                              AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
-                          }
-                    }
-                    if (ex.getRawStatusCode() == 403) {
-                          if (!validationErrorsList.isEmpty()) {
-                                 throw new AuthZException(validationErrorsList);
-                          } else {
-                                 throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
-                          }
-                    }
-                    if (!validationErrorsList.isEmpty()) {
-                          throw new AuthManagerServiceException(validationErrorsList);
-                    } else {
-                          throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
-                    }
-             }
-             return otpEmailSendResponseDto;
-       }
-       
-       
-       private AccessTokenResponse getUserAccessToken(String username) {
-             HttpHeaders headers = new HttpHeaders();
-         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-             MultiValueMap<String, String> tokenRequestBody = null;
-             Map<String, String> pathParams = new HashMap<>();
-             pathParams.put("realmId", realmId);
-             UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
-             tokenRequestBody=getAdminValueMap(username);
-             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
-             ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(
-                      uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);
-             return response.getBody();
-       }
-       
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			responseAccessTokenResponse = getUserAccessToken(mosipUser.getUserId());
+			OtpValidatorResponseDto otpResponse = null;
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				otpResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						OtpValidatorResponseDto.class);
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+			}
+			if (otpResponse.getStatus() != null && otpResponse.getStatus().equals("success")) {
+				// BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser,
+				// true);
+				String expTime = accessTokenResponse.getExpires_in();
+				mosipUserDtoToken = new MosipUserTokenDto(mosipUser, responseAccessTokenResponse.getAccess_token(),
+						responseAccessTokenResponse.getRefresh_token(), Long.parseLong(expTime), null, null);
+				mosipUserDtoToken.setMessage(otpResponse.getMessage());
+				mosipUserDtoToken.setStatus(otpResponse.getStatus());
+			} else {
+				mosipUserDtoToken = new MosipUserTokenDto();
+				mosipUserDtoToken.setMessage(otpResponse.getMessage());
+				mosipUserDtoToken.setStatus(otpResponse.getStatus());
+			}
 
-       private AccessTokenResponse getAuthAccessToken(String clientID,String clientSecret) {
-             HttpHeaders headers = new HttpHeaders();
-         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-             MultiValueMap<String, String> tokenRequestBody = null;
-             Map<String, String> pathParams = new HashMap<>();
-             pathParams.put("realmId", realmId);
-             UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
-             tokenRequestBody=getClientValueMap(clientID,clientSecret);
-             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
-             ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(
-                      uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);
-             return response.getBody();
-       }
-       
-       private MultiValueMap<String, String> getAdminValueMap(String username) {
-             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-             map.add("grant_type", "password");
-             map.add("username", username);
-             map.add("password", "mosip");
-             map.add("client_id", "mosip-local");
-             map.add("client_secret", "e68b61e3-2da4-4a37-8ee0-9733a3f8dfb2");
-             return map;
-       }
-       
-       private MultiValueMap<String, String> getClientValueMap(String clientID, String clientSecret) {
-             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-             map.add("grant_type", "client_credentials");
-             map.add("client_id", clientID);
-             map.add("client_secret", clientSecret);
-            // map.add("client_id", "auth");
-             //map.add("client_secret", "050c7e61-e415-4390-a1ac-03e1624e2b1d");
-             return map;
-       }
+		}
+		return mosipUserDtoToken;
+	}
+
+	@Override
+	public AuthNResponseDto sendOTPForUin(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
+		AuthNResponseDto authNResponseDto = null;
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		SmsResponseDto otpSmsSendResponseDto = null;
+		String emailMessage = null, mobileMessage = null;
+		String token = null;
+		AccessTokenResponse accessTokenResponse = null;
+		try {
+			// token = tokenService.getInternalTokenGenerationService();
+			accessTokenResponse = getAuthAccessToken(idaClientID, idaSecret);
+			token = accessTokenResponse.getAccess_token();
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+		}
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, token);
+		for (String channel : otpChannel) {
+			switch (channel) {
+			case AuthConstant.EMAIL:
+				emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId, token);
+				otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail(), token);
+			case AuthConstant.PHONE:
+				mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId, token);
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile(), token);
+			}
+		}
+		if (otpEmailSendResponseDto != null && otpSmsSendResponseDto != null) {
+			AuthNResponseDto authResponseDto = new AuthNResponseDto();
+			authResponseDto.setMessage(AuthConstant.UIN_NOTIFICATION_MESSAGE);
+		}
+		return authNResponseDto;
+	}
+
+	@Override
+	public AuthNResponseDto sendOTP(MosipUserDto mosipUser, OtpUser otpUser) throws Exception {
+		AuthNResponseDto authNResponseDto = null;
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		SmsResponseDto otpSmsSendResponseDto = null;
+		String mobileMessage = null;
+		OTPEmailTemplate emailTemplate = null;
+		AccessTokenResponse accessTokenResponse = null;
+		authOtpValidator.validateOTPUser(otpUser);
+		try {
+			// token = tokenService.getInternalTokenGenerationService();
+			accessTokenResponse = getAuthAccessToken("auth", "050c7e61-e415-4390-a1ac-03e1624e2b1d");
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+							AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
+			}
+		}
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser,
+				accessTokenResponse.getAccess_token());
+		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
+			authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
+			return authNResponseDto;
+		}
+		for (String channel : otpUser.getOtpChannel()) {
+			switch (channel.toLowerCase()) {
+			case AuthConstant.EMAIL:
+				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser,
+						accessTokenResponse.getAccess_token());
+				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getUserId(),
+						accessTokenResponse.getAccess_token());
+				break;
+			case AuthConstant.PHONE:
+				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser,
+						accessTokenResponse.getAccess_token());
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(),
+						accessTokenResponse.getAccess_token());
+				break;
+			}
+		}
+
+		if (otpEmailSendResponseDto != null && otpSmsSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
+			authNResponseDto.setMessage(AuthConstant.ALL_CHANNELS_MESSAGE);
+		} else if (otpEmailSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
+		} else if (otpSmsSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
+		}
+		return authNResponseDto;
+	}
+
+	private OtpEmailSendResponseDto sendOtpByEmail(OTPEmailTemplate emailTemplate, String email, String token) {
+		ResponseEntity<String> response = null;
+		String url = mosipEnvironment.getOtpSenderEmailApi();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("mailTo", email);
+		map.add("mailSubject", emailTemplate.getEmailSubject());
+		map.add("mailContent", emailTemplate.getEmailContent());
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		try {
+			response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+			if (response.getStatusCode().equals(HttpStatus.OK)) {
+				String responseBody = response.getBody();
+				List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthManagerServiceException(validationErrorsList);
+				}
+				ResponseWrapper<?> responseObject;
+				try {
+					responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+					otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+							OtpEmailSendResponseDto.class);
+				} catch (Exception e) {
+					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+				}
+			}
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+							AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
+			}
+		}
+		return otpEmailSendResponseDto;
+	}
+
+	private AccessTokenResponse getUserAccessToken(String username) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> tokenRequestBody = null;
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put("realmId", realmId);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
+		tokenRequestBody = getAdminValueMap(username);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
+		ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(
+				uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);
+		return response.getBody();
+	}
+
+	private AccessTokenResponse getAuthAccessToken(String clientID, String clientSecret) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> tokenRequestBody = null;
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put("realmId", realmId);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
+		tokenRequestBody = getClientValueMap(clientID, clientSecret);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
+		ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(
+				uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);
+		return response.getBody();
+	}
+
+	private MultiValueMap<String, String> getAdminValueMap(String username) {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", "password");
+		map.add("username", username);
+		map.add("password", "mosip");
+		map.add("client_id", mosipAdminClientID);
+		map.add("client_secret", mosipAdminSecret);
+		return map;
+	}
+
+	private MultiValueMap<String, String> getClientValueMap(String clientID, String clientSecret) {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", "client_credentials");
+		map.add("client_id", clientID);
+		map.add("client_secret", clientSecret);
+		// map.add("client_id", "auth");
+		// map.add("client_secret", "050c7e61-e415-4390-a1ac-03e1624e2b1d");
+		return map;
+	}
 }
