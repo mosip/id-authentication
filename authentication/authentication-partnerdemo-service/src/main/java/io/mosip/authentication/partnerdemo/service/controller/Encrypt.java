@@ -256,12 +256,12 @@ public class Encrypt {
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
 		String publicKeyId = isInternal ? env.getProperty("internal.reference.id") : env.getProperty(IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID);
 		request.setReferenceId(publicKeyId );
-		String utcTime = DateUtils.getUTCCurrentDateTimeString();
+		String utcTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		request.setTimeStamp(utcTime);
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("appId", appID);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(publicKeyURL)
-				.queryParam("timeStamp", DateUtils.getUTCCurrentDateTimeString())
+				.queryParam("timeStamp", utcTime)
 				.queryParam("referenceId", publicKeyId);
 		ResponseEntity<Map> response = restTemplate.exchange(builder.build(uriParams), HttpMethod.GET,
 				null, Map.class);
