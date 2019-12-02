@@ -32,6 +32,9 @@ public class RegistrationDTO extends BaseDTO implements Serializable {
 	
 	private Timestamp auditLogEndTime;
 	
+	//added for resident update service
+	private String regType;
+	
 	public Timestamp getAuditLogStartTime() {
 		if(this.auditLogStartTime!=null) {
 			return new Timestamp(this.auditLogStartTime.getTime());

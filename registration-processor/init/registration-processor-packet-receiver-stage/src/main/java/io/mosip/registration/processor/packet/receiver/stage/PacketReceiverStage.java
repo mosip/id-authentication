@@ -213,7 +213,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		try {
 			if (file != null) {
 				if (file.exists()) {
-					FileUtils.cleanDirectory(file.getParentFile());
+					FileUtils.forceDelete(file);
 				}
 			}
 		} catch (IOException e) {

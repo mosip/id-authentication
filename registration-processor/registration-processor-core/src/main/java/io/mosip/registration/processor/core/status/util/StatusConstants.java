@@ -92,5 +92,12 @@ public final class StatusConstants {
 	public static final String MESSAGE_SENDER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MSS-";
 	public static final String MESSAGE_SENDER_NOTIF_SUCCESS_CODE = MESSAGE_SENDER_MODULE + SUCCESS;
 	public static final String MESSAGE_SENDER__FAILED_CODE = MESSAGE_SENDER_MODULE + FAILED;
+	
+	//Request Handler
+	public static final String REQUEST_HANDLER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RHM-";
+	public static final String REQUEST_HANDLER_MODULE_SUCCESS = REQUEST_HANDLER_MODULE + SUCCESS;
+	public static final String REQUEST_HANDLER_MODULE_FAILED = REQUEST_HANDLER_MODULE + FAILED;
+
+
 
 }

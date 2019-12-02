@@ -2,6 +2,7 @@ package io.mosip.registration.processor.request.handler.service.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 
 /**
  * The class to handle all the checked exception in REG
@@ -29,6 +30,10 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	}
 
 	public RegBaseCheckedException(PlatformErrorMessages exceptionConstant, Throwable rootCause) {
+		super(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);
+	}
+	
+	public RegBaseCheckedException(StatusUtil exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant.getCode(), exceptionConstant.getMessage(), rootCause);
 	}
 

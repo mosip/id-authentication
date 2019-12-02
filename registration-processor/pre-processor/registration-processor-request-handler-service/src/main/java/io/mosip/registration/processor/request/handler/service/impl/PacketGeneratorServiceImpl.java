@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -52,7 +53,8 @@ import io.mosip.registration.processor.request.handler.upload.validator.RequestH
  * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
 @Service
-public class PacketGeneratorServiceImpl implements PacketGeneratorService {
+@Qualifier("packetGeneratorService")
+public class PacketGeneratorServiceImpl implements PacketGeneratorService<PacketGeneratorDto> {
 
 	/** The packet creation service. */
 	@Autowired
@@ -113,7 +115,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 						LoggerFileConstant.REGISTRATIONID.toString(), "", "Packet Generator Validation successfull");
 				RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
 						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
-				packetZipBytes = packetCreationService.create(registrationDTO);
+				packetZipBytes = packetCreationService.create(registrationDTO,null);
 				String rid = registrationDTO.getRegistrationId();
 				String packetCreatedDateTime = rid.substring(rid.length() - 14);
 				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
