@@ -1,3 +1,13 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: REGPRC DB Artifacts deploy
+### -- Deploy Module 	: MOSIP REGPRC
+### -- Purpose    		: To deploy MOSIP REGPRC Database DB Artifacts.       
+### -- Create By   		: Sadanandegowda DM
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
 #########Properties file #############
 set -e
 properties_file="$1"

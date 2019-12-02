@@ -1,3 +1,13 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: MOSIP ALL DB Artifacts deployment script
+### -- Deploy Module 	: ALL MOSIP Modules
+### -- Purpose    		: To deploy MOSIP All Modules Database DB Artifacts.       
+### -- Create By   		: Sadanandegowda DM
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
 #! bin/bash
 echo "`date` : You logged on to DB deplyment server as : `whoami`"
 echo "`date` : MOSIP Database objects deployment started...."
