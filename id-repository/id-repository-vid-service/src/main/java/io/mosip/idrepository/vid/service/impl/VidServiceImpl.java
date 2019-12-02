@@ -63,6 +63,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Transactional
 public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper<VidResponseDTO>> {
 
+	/** The Constant VID. */
 	private static final String VID = "vid";
 
 	/** The Constant REACTIVATE. */
@@ -200,6 +201,12 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		}
 	}
 
+	/**
+	 * Generate vid.
+	 *
+	 * @return the string
+	 * @throws IdRepoAppException the id repo app exception
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String generateVid() throws IdRepoAppException {
 		try {
