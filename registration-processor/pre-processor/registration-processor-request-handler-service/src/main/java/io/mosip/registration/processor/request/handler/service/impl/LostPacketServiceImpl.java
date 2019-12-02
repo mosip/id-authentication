@@ -185,14 +185,14 @@ public class LostPacketServiceImpl implements LostPacketService {
 					"", "LostPacketServiceImpl ::findUIN()::exit");
 			return uin;
 		} catch (ApisResourceAccessException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_EXCEPTION,
-					PlatformErrorMessages.RPR_PGS_API_RESOURCE_EXCEPTION.getMessage(), e);
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_PGS_API_RESOURCE_EXCEPTION.getMessage(), e.getCause());
 		} catch (IdRepoAppException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_IDENTITY_NOT_FOUND,
-					PlatformErrorMessages.RPR_PGS_IDENTITY_NOT_FOUND.getMessage(), e);
+					PlatformErrorMessages.RPR_PGS_IDENTITY_NOT_FOUND.getMessage(), e.getCause());
 		} catch (IOException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_IO_EXCEPTION,
-					PlatformErrorMessages.RPR_PGS_IO_EXCEPTION.getMessage(), new Throwable());
+					PlatformErrorMessages.RPR_PGS_IO_EXCEPTION.getMessage(), e.getCause());
 		}
 
 	}
@@ -243,7 +243,7 @@ public class LostPacketServiceImpl implements LostPacketService {
 				"LostPacketServiceImpl ::searchRid()::entry");
 		Set<String> matchedRidset = new HashSet<String>();
 		List<DemographicInfoDto> matchedDemographicInfoDtoList = new ArrayList<DemographicInfoDto>();
-		String hashedName = getHMACHashCode(lostRequestDto.getName());
+		String hashedName = getHMACHashCode(lostRequestDto.getName().trim().toUpperCase());
 		String hashedPostalCode = getHMACHashCode(lostRequestDto.getPostalCode());
 
 		if (EMAIL.equalsIgnoreCase(lostRequestDto.getContactType())) {
@@ -286,7 +286,7 @@ public class LostPacketServiceImpl implements LostPacketService {
 	 *            the matched rid list
 	 * @return the uin for multiple rids
 	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 *             the reg base checked
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 * @throws IOException
