@@ -1,4 +1,4 @@
-﻿package io.mosip.registration.constants;
+package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
