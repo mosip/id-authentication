@@ -30,15 +30,14 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorDocumentMapping;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorLocationMapping;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.IdObjectReferenceValidatorDocumentMapping;
 import io.mosip.registration.constants.IdObjectReferenceValidatorLocationMapping;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.entity.DocumentCategory;
@@ -529,7 +528,7 @@ public class RegIdObjectMasterDataValidator {
 		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Validating documents has been started");
 
-		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().stream()
+		IdObjectReferenceValidatorDocumentMapping.getAllMapping().entrySet().stream()
 				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
 					JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() + ".type");
 					Object value = jsonPath.read(identityString, READ_OPTIONS);
