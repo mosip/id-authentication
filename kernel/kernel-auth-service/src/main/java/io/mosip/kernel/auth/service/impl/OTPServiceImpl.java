@@ -119,6 +119,11 @@ public class OTPServiceImpl implements OTPService {
 
 	@Value("${mosip.admin.clientsecret}")
 	private String mosipAdminSecret;
+	
+
+	@Value("${mosip.admin.pre-reg_user_password}")
+	private String preRegUserPassword;
+	
 
 	@Override
 	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
@@ -129,7 +134,7 @@ public class OTPServiceImpl implements OTPService {
 		String token = null;
 		try {
 			// token = tokenService.getInternalTokenGenerationService();
-			AccessTokenResponse accessTokenResponse = getAuthAccessToken("auth",
+			AccessTokenResponse accessTokenResponse = getAuthAccessToken(authClientID,
 					"050c7e61-e415-4390-a1ac-03e1624e2b1d");
 			token = AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX + accessTokenResponse.getAccess_token();
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
@@ -450,7 +455,7 @@ public class OTPServiceImpl implements OTPService {
 		authOtpValidator.validateOTPUser(otpUser);
 		try {
 			// token = tokenService.getInternalTokenGenerationService();
-			accessTokenResponse = getAuthAccessToken("auth", "050c7e61-e415-4390-a1ac-03e1624e2b1d");
+			accessTokenResponse = getAuthAccessToken(authClientID, authSecret);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
@@ -579,7 +584,7 @@ public class OTPServiceImpl implements OTPService {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		MultiValueMap<String, String> tokenRequestBody = null;
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
 		tokenRequestBody = getAdminValueMap(username);
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
@@ -593,7 +598,7 @@ public class OTPServiceImpl implements OTPService {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		MultiValueMap<String, String> tokenRequestBody = null;
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
 		tokenRequestBody = getClientValueMap(clientID, clientSecret);
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
@@ -604,21 +609,19 @@ public class OTPServiceImpl implements OTPService {
 
 	private MultiValueMap<String, String> getAdminValueMap(String username) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("grant_type", "password");
-		map.add("username", username);
-		map.add("password", "mosip");
-		map.add("client_id", mosipAdminClientID);
-		map.add("client_secret", mosipAdminSecret);
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.PASSWORDCONSTANT);
+		map.add(AuthConstant.USER_NAME, username);
+		map.add(AuthConstant.PASSWORDCONSTANT, preRegUserPassword);
+		map.add(AuthConstant.CLIENT_ID, mosipAdminClientID);
+		map.add(AuthConstant.CLIENT_SECRET, mosipAdminSecret);
 		return map;
 	}
 
 	private MultiValueMap<String, String> getClientValueMap(String clientID, String clientSecret) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("grant_type", "client_credentials");
-		map.add("client_id", clientID);
-		map.add("client_secret", clientSecret);
-		// map.add("client_id", "auth");
-		// map.add("client_secret", "050c7e61-e415-4390-a1ac-03e1624e2b1d");
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.CLIENT_CREDENTIALS);
+		map.add(AuthConstant.CLIENT_ID, clientID);
+		map.add(AuthConstant.CLIENT_SECRET, clientSecret);
 		return map;
 	}
 }

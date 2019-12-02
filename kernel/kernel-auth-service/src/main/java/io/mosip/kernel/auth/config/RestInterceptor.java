@@ -21,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.dto.AccessTokenResponse;
 import io.mosip.kernel.auth.util.MemoryCache;
 import io.mosip.kernel.auth.util.TokenValidator;
@@ -50,6 +51,15 @@ public class RestInterceptor implements ClientHttpRequestInterceptor {
 
 	@Value("${mosip.master.realm-id}")
 	private String realmId;
+	
+	@Value("${mosip.keycloak.admin.client.id}")
+	private String adminClientID;
+	
+	@Value("${mosip.keycloak.admin.user.id}")
+	private String adminUserName;
+	
+	@Value("${mosip.keycloak.admin.secret.key}")
+	private String adminSecret;
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
@@ -80,7 +90,7 @@ public class RestInterceptor implements ClientHttpRequestInterceptor {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		MultiValueMap<String, String> tokenRequestBody = null;
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put("realmId", realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
 		if (isGetRefreshToken) {
 			tokenRequestBody = getAdminValueMap(refreshToken);
@@ -96,18 +106,18 @@ public class RestInterceptor implements ClientHttpRequestInterceptor {
 
 	private MultiValueMap<String, String> getAdminValueMap() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("grant_type", "password");
-		map.add("username", "admin");
-		map.add("password", "KEYCLOAKPASS");
-		map.add("client_id", "admin-cli");
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.PASSWORDCONSTANT);
+		map.add(AuthConstant.USER_NAME, adminUserName);
+		map.add(AuthConstant.PASSWORDCONSTANT, adminSecret);
+		map.add(AuthConstant.CLIENT_ID, adminClientID);
 		return map;
 	}
 
 	private MultiValueMap<String, String> getAdminValueMap(String refreshToken) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("grant_type", "refresh_token");
-		map.add("refresh_token", refreshToken);
-		map.add("client_id", "admin-cli");
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.REFRESH_TOKEN);
+		map.add(AuthConstant.REFRESH_TOKEN, refreshToken);
+		map.add(AuthConstant.CLIENT_ID, adminClientID);
 		return map;
 	}
 }

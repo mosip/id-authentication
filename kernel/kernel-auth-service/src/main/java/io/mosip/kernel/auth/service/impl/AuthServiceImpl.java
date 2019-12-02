@@ -94,33 +94,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 @Component
 public class AuthServiceImpl implements AuthService {
 
-	private static final String CLIENT_CREDENTIALS = "client_credentials";
-
-	private static final String CLIENT_SECRET = "client_secret";
-
-	private static final String CLIENT_ID = "client_id";
-
-	private static final String PASSWORDCONSTANT = "password";
-
-	private static final String USER_NAME = "username";
-
-	private static final String GRANT_TYPE = "grant_type";
-
-	private static final String COMMA = ",";
-
-	private static final String RID = "rid";
-
-	private static final String MOBILE = "mobile";
-
-	private static final String EMAIL = "email";
-
-	private static final String PREFERRED_USERNAME = "preferred_username";
-
-	private static final String REALM_ACCESS = "realm_access";
-
 	private static final String CLIENTID_AND_TOKEN_COMBINATION_HAD_BEEN_VALIDATED_SUCCESSFULLY = "Clientid and Token combination had been validated successfully";
-
-	private static final String REALM_ID = "realmId";
 
 	private static final String LOG_OUT_FAILED = "log out failed";
 
@@ -276,7 +250,7 @@ public class AuthServiceImpl implements AuthService {
 		MultiValueMap<String, String> tokenRequestBody = null;
 		ResponseEntity<AccessTokenResponse> response = null;
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put(REALM_ID, realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
 		tokenRequestBody=getPasswordValueMap(clientID,clientSecret,loginUser.getUserName(), loginUser.getPassword());
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
@@ -401,7 +375,7 @@ public class AuthServiceImpl implements AuthService {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		MultiValueMap<String, String> tokenRequestBody = null;
 		Map<String, String> pathParams = new HashMap<>();
-		pathParams.put(REALM_ID, realmId);
+		pathParams.put(AuthConstant.REALM_ID, realmId);
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
 		tokenRequestBody=getClientSecretValueMap(clientSecret.getClientId(), clientSecret.getSecretKey());
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
@@ -659,7 +633,7 @@ public class AuthServiceImpl implements AuthService {
 	private MosipUserDto getClaims(String cookie) {
 		DecodedJWT decodedJWT = JWT.decode(cookie);
 
-		Claim realmAccess = decodedJWT.getClaim(REALM_ACCESS);
+		Claim realmAccess = decodedJWT.getClaim(AuthConstant.REALM_ACCESS);
 
 		RealmAccessDto access = realmAccess.as(RealmAccessDto.class);
 		String[] roles = access.getRoles();
@@ -667,14 +641,14 @@ public class AuthServiceImpl implements AuthService {
 
 		for (String r : roles) {
 			builder.append(r);
-			builder.append(COMMA);
+			builder.append(AuthConstant.COMMA);
 		}
 		MosipUserDto dto = new MosipUserDto();
-		dto.setUserId(decodedJWT.getClaim(PREFERRED_USERNAME).asString());
-		dto.setMail(decodedJWT.getClaim(EMAIL).asString());
-		dto.setMobile(decodedJWT.getClaim(MOBILE).asString());
-		dto.setName(decodedJWT.getClaim(PREFERRED_USERNAME).asString());
-		dto.setRId(decodedJWT.getClaim(RID).asString());
+		dto.setUserId(decodedJWT.getClaim(AuthConstant.PREFERRED_USERNAME).asString());
+		dto.setMail(decodedJWT.getClaim(AuthConstant.EMAIL).asString());
+		dto.setMobile(decodedJWT.getClaim(AuthConstant.MOBILE).asString());
+		dto.setName(decodedJWT.getClaim(AuthConstant.PREFERRED_USERNAME).asString());
+		dto.setRId(decodedJWT.getClaim(AuthConstant.RID).asString());
 		dto.setToken(cookie);
 		dto.setRole(builder.toString());
 		return dto;
@@ -749,19 +723,19 @@ public class AuthServiceImpl implements AuthService {
 
 	private MultiValueMap<String, String> getPasswordValueMap(String clientID,String clientSecret,String username,String password) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add(GRANT_TYPE, PASSWORDCONSTANT);
-		map.add(USER_NAME, username);
-		map.add(PASSWORDCONSTANT, password);
-		map.add(CLIENT_ID, clientID);
-		map.add(CLIENT_SECRET, clientSecret);
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.PASSWORDCONSTANT);
+		map.add(AuthConstant.USER_NAME, username);
+		map.add(AuthConstant.PASSWORDCONSTANT, password);
+		map.add(AuthConstant.CLIENT_ID, clientID);
+		map.add(AuthConstant.CLIENT_SECRET, clientSecret);
 		return map;
 	}
 
 	private MultiValueMap<String, String> getClientSecretValueMap(String clientID,String clientSecret) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add(GRANT_TYPE, CLIENT_CREDENTIALS);
-		map.add(CLIENT_ID, clientID);
-		map.add(CLIENT_SECRET, clientSecret);
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.CLIENT_CREDENTIALS);
+		map.add(AuthConstant.CLIENT_ID, clientID);
+		map.add(AuthConstant.CLIENT_SECRET, clientSecret);
 		return map;
 	}
 
