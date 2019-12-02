@@ -10,6 +10,7 @@
 \ir ddl/kernel-sync_transaction.sql
 \ir ddl/kernel-uin.sql
 \ir ddl/kernel-dao_key_store.sql
+\ir ddl/kernel-vid.sql
 
 \ir ddl/kernel-fk.sql
 

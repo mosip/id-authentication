@@ -39,9 +39,9 @@ public class IdObjectValidatorConfig {
 	 */
 	@PostConstruct
 	public void validateReferenceValidator() throws ClassNotFoundException {
-		if (StringUtils.isNotBlank(env.getProperty(REFERENCE_VALIDATOR.getValue()))) {
+		if (StringUtils.isNotBlank(env.getProperty(REFERENCE_VALIDATOR))) {
 			logger.debug("validating referenceValidator Class is present or not");
-			Class.forName(env.getProperty(REFERENCE_VALIDATOR.getValue()));
+			Class.forName(env.getProperty(REFERENCE_VALIDATOR));
 		}
 		logger.debug("validateReferenceValidator: referenceValidator Class is not provided");
 	}
@@ -58,10 +58,10 @@ public class IdObjectValidatorConfig {
 	@Lazy
 	public IdObjectValidator referenceValidator()
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		if (StringUtils.isNotBlank(env.getProperty(REFERENCE_VALIDATOR.getValue()))) {
+		if (StringUtils.isNotBlank(env.getProperty(REFERENCE_VALIDATOR))) {
 			logger.debug("instance of referenceValidator is created");
 			return (IdObjectValidator) Class
-					.forName(env.getProperty(REFERENCE_VALIDATOR.getValue())).newInstance();
+					.forName(env.getProperty(REFERENCE_VALIDATOR)).newInstance();
 		} else {
 			logger.debug("no reference validator is provided");
 			return new IdObjectValidator() {

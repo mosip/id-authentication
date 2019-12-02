@@ -89,9 +89,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			if (null == requestBody.get(REQUEST)) {
-				throwMissingInputParameter(REQUEST);
-			} else {
+			if (null != requestBody.get(REQUEST)) {
 				requestBody.replace(REQUEST,
 						decode((String) requestBody.get(REQUEST)));
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
@@ -118,6 +116,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				
 				requestBody.replace(REQUEST, request);
 			}
+			
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);

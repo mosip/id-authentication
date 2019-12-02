@@ -1,3 +1,15 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: Audit DB Artifacts deploy
+### -- Deploy Module 	: MOSIP Audit
+### -- Purpose    		: To deploy MOSIP Audit Database DB Artifacts.       
+### -- Create By   		: Sadanandegowda DM
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
+### -- -----------------------------------------------------------------------------------------------------------
+
 #########Properties file #############
 set -e
 properties_file="$1"

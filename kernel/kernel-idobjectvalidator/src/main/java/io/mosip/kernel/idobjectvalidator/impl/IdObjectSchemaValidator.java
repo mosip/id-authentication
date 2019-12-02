@@ -150,10 +150,10 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			List<ServiceError> errorList = new ArrayList<>();
 			if (!report.isSuccess()) {
 				report.forEach(processingMessage -> {
-					if (processingMessage.getLogLevel().toString().equals(ERROR.getValue())) {
+					if (processingMessage.getLogLevel().toString().equals(ERROR)) {
 						JsonNode processingMessageAsJson = processingMessage.asJson();
-						if (processingMessageAsJson.hasNonNull(INSTANCE.getValue())
-								&& processingMessageAsJson.get(INSTANCE.getValue()).hasNonNull(POINTER.getValue())) {
+						if (processingMessageAsJson.hasNonNull(INSTANCE)
+								&& processingMessageAsJson.get(INSTANCE).hasNonNull(POINTER)) {
 							if (processingMessageAsJson.has(MISSING)
 									&& !processingMessageAsJson.get(MISSING).isNull()) {
 								errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -198,13 +198,13 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getMessage(), OPERATION));
 		}
-		String appId = env.getProperty(APPLICATION_ID.getValue());
+		String appId = env.getProperty(APPLICATION_ID);
 		if (Objects.isNull(appId)) {
 			logger.debug("mandatory field input appId is null");
 			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
+					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID));
 		}
-		String fields = env.getProperty(String.format(FIELD_LIST.getValue(), appId, operation.getOperation()));
+		String fields = env.getProperty(String.format(FIELD_LIST, appId, operation.getOperation()));
 		Optional.ofNullable(fields)
 				.ifPresent(fieldList -> Arrays.asList(StringUtils.split(fields, ','))
 				.parallelStream()
@@ -212,9 +212,9 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				.forEach(field -> {
 					List<String> fieldNames = Arrays.asList(field.split("\\|"));
 					fieldNames = fieldNames.stream()
-							.map(fieldName -> PATH_SEPERATOR.getValue()
-									.concat(ROOT_PATH.getValue().concat(
-											PATH_SEPERATOR.getValue().concat(fieldName.replace('.', '/')))))
+							.map(fieldName -> PATH_SEPERATOR
+									.concat(ROOT_PATH.concat(
+											PATH_SEPERATOR.concat(fieldName.replace('.', '/')))))
 							.collect(Collectors.toList());
 					validateMissingFields(jsonObjectNode, errorList, fieldNames);
 					validateInvalidFields(jsonObjectNode, errorList, fieldNames);
@@ -234,7 +234,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getMessage(),
 							fieldNames.parallelStream()
-									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR.getValue(), ""))
+									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR, ""))
 									.collect(Collectors.joining(" | ")))));
 		}
 	}
@@ -250,7 +250,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		if (fieldNames.parallelStream().anyMatch(fieldName -> 
 					!isMissingOrEmpty(jsonObjectNode, fieldName)
 							&& (jsonObjectNode.at(fieldName).isArray()
-									? jsonObjectNode.findValuesAsText(IDENTITY_ARRAY_VALUE_FIELD.getValue())
+									? jsonObjectNode.findValuesAsText(IDENTITY_ARRAY_VALUE_FIELD)
 											.stream().allMatch(StringUtils::isBlank)
 									: StringUtils.isBlank(jsonObjectNode.at(fieldName).toString()))
 				)) {
@@ -258,7 +258,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 					String.format(INVALID_INPUT_PARAMETER.getMessage(),
 							fieldNames
 									.parallelStream()
-									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR.getValue(), ""))
+									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR, ""))
 									.collect(Collectors.joining(" | ")))));
 		}
 	}
@@ -284,10 +284,10 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 * @return the string
 	 */
 	private String buildErrorMessage(JsonNode processingMessageAsJson, String messageBody, String field) {
-		return String.format(messageBody, StringUtils.strip(processingMessageAsJson.get(INSTANCE.getValue())
-				.get(POINTER.getValue()).asText()
+		return String.format(messageBody, StringUtils.strip(processingMessageAsJson.get(INSTANCE)
+				.get(POINTER).asText()
 				+ (processingMessageAsJson.hasNonNull(field)
-						? PATH_SEPERATOR.getValue()
+						? PATH_SEPERATOR
 								+ StringUtils.removeAll(processingMessageAsJson.get(field).toString(), "[\\[\"\\]]")
 						: ""),
 				"/"));
@@ -320,7 +320,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		}
 		else if (LOCAL.getPropertySource().equals(propertySource)) {
 			try {
-				jsonSchemaNode = JsonLoader.fromResource(PATH_SEPERATOR.getValue() + schemaName);
+				jsonSchemaNode = JsonLoader.fromResource(PATH_SEPERATOR + schemaName);
 				logger.debug("schema is loaded from LOCAL");
 			} catch (IOException e) {
 				ExceptionUtils.logRootCause(e);

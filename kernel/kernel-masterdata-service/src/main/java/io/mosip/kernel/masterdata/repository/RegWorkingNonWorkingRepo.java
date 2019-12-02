@@ -11,6 +11,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
 import io.mosip.kernel.masterdata.entity.RegWorkingNonWorking;
 import io.mosip.kernel.masterdata.entity.id.RegWorkingNonWorkingId;
 
+/**
+ * @author Kishan rathore
+ *
+ */
 @Repository("workingDaysRepo")
 public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWorking, RegWorkingNonWorkingId>{
 	

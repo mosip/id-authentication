@@ -121,7 +121,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 
 			if (!gpsResponse.equals(RegistrationConstants.GPS_CAPTURE_FAILURE)
 					&& !gpsResponse.equals(RegistrationConstants.GPS_CAPTURE_FAILURE_MSG)
-					&& !gpsResponse.equals(RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG)
+					&& !gpsResponse.contains(RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG)
 					&& !gpsResponse.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE)) {
 
 				inputStream.close();
@@ -138,6 +138,13 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 					RegistrationConstants.APPLICATION_ID, ExceptionUtils.getStackTrace(regBaseCheckedException));
 			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
 					regBaseCheckedException.getMessage(), regBaseCheckedException);
+
+		} catch (RuntimeException regBaseUnCheckedException) {
+			Thread.currentThread().interrupt();
+			LOGGER.error(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ExceptionUtils.getStackTrace(regBaseUnCheckedException));
+			throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
+					regBaseUnCheckedException.getMessage());
 
 		}
 
