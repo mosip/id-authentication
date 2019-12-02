@@ -63,6 +63,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 @Transactional
 public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper<VidResponseDTO>> {
 
+	private static final String VID = "vid";
+
 	/** The Constant REACTIVATE. */
 	private static final String REACTIVATE = "reactivate";
 
@@ -203,7 +205,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		try {
 			ResponseWrapper response = restHelper.requestSync(
 					restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class));
-			return ((Map<String, String>) response.getResponse()).get("vid");
+			return ((Map<String, String>) response.getResponse()).get(VID);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, "generateVID",
 					"\n" + ExceptionUtils.getStackTrace(e));
