@@ -90,11 +90,6 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag("GenderType", "Operations related to gender type"))
-				.tags(new Tag("RegistrationCenterUserMachine",
-						"Operations related to registration center,user,machine"))
-				.tags(new Tag("RegistrationCenterUserMachineHistory",
-						"Operations related to registration center,user,machine history"))
 				.groupName(TITLE).select().apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.regex("(?!/(error).*).*")).build();
 		if (swaggerBaseUrlSet) {
