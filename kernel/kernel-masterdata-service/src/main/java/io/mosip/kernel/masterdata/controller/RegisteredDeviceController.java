@@ -87,7 +87,7 @@ public class RegisteredDeviceController {
 	
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
-	@PutMapping("/update/status")
+	@PutMapping("/status")
 	public ResponseWrapper<DeviceDeRegisterResponse> deRegisterDevice(@NotBlank @RequestParam(value="devicecode",required=true) String deviceCode,
 			@NotBlank @RequestParam(value="statuscode",required=true) String statusCode) {
 		ResponseWrapper<DeviceDeRegisterResponse> response = new ResponseWrapper<>();
