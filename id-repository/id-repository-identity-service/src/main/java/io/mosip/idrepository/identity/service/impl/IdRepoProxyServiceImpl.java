@@ -55,6 +55,7 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 @Service
 public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO> {
 
+	/** The Constant GET_FILES. */
 	private static final String GET_FILES = "getFiles";
 
 	/** The Constant UPDATE_IDENTITY. */
@@ -122,6 +123,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Autowired
 	private UinRepo uinRepo;
 
+	/** The uin history repo. */
 	@Autowired
 	private UinHistoryRepo uinHistoryRepo;
 
@@ -129,15 +131,19 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Autowired
 	private FileSystemAdapter fsAdapter;
 
+	/** The audit helper. */
 	@Autowired
 	private AuditHelper auditHelper;
 
+	/** The service. */
 	@Autowired
 	private IdRepoService<IdRequestDTO, Uin> service;
 
+	/** The security manager. */
 	@Autowired
 	private IdRepoSecurityManager securityManager;
 
+	/** The uin hash salt repo. */
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
 
@@ -184,8 +190,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	@Override
 	public IdResponseDTO retrieveIdentityByUin(String uin, String type) throws IdRepoAppException {
-		String uinHash = retrieveUinHash(uin);
 		try {
+			String uinHash = retrieveUinHash(uin);
 			if (uinRepo.existsByUinHash(uinHash)) {
 				return retrieveIdentityByUinHash(type, uinHash);
 			} else {
@@ -208,6 +214,12 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		}
 	}
 
+	/**
+	 * Retrieve uin hash.
+	 *
+	 * @param uin the uin
+	 * @return the string
+	 */
 	private String retrieveUinHash(String uin) {
 		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
@@ -215,6 +227,14 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		return modResult + IdRepoConstants.SPLITTER.getValue() + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 	}
 
+	/**
+	 * Retrieve identity by uin hash.
+	 *
+	 * @param type the type
+	 * @param uinHash the uin hash
+	 * @return the id response DTO
+	 * @throws IdRepoAppException the id repo app exception
+	 */
 	private IdResponseDTO retrieveIdentityByUinHash(String type, String uinHash) throws IdRepoAppException {
 		List<DocumentsDTO> documents = new ArrayList<>();
 		Uin uinObject = service.retrieveIdentityByUin(uinHash, type);
@@ -449,7 +469,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	}
 
 	/**
-	 * Convert to object.
+	 * Convert Identity to object.
 	 *
 	 * @param identity the identity
 	 * @param clazz    the clazz
