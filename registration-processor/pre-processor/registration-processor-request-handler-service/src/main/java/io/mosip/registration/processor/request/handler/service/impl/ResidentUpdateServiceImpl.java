@@ -115,14 +115,13 @@ public class ResidentUpdateServiceImpl implements PacketGeneratorService<Residen
 								map);
 					if (request.getProofOfIdentity() != null && !request.getProofOfIdentity().isEmpty())
 						setDemographicDocuments(request.getProofOfAddress(), demoJsonObject, PROOF_OF_IDENTITY, map);
-					if (map.size() > 0) {
+
 						DemographicDTO dummyDemoDto = new DemographicDTO();
 						ApplicantDocumentDTO dummyApplicantDto = new ApplicantDocumentDTO();
 						registrationDTO.setDemographicDTO(dummyDemoDto);
 						registrationDTO.getDemographicDTO().setApplicantDocumentDTO(dummyApplicantDto);
 						registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setDocuments(map);
 
-					}
 					registrationDTO.setRegType(RegistrationType.RES_UPDATE.toString());
 					packetZipBytes = packetCreationService.create(registrationDTO, demoJsonObject);
 
