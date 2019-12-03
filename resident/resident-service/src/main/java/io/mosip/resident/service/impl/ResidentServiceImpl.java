@@ -43,7 +43,7 @@ public class ResidentServiceImpl implements ResidentService {
     private TokenGenerator tokenGenerator;
     
     private static final String PRINT_ID="mosip.registration.processor.print.id";
-    private static final String VERSION="mosip.registration.processor.application.version";
+    private static final String PRINT_VERSION="mosip.registration.processor.application.version";
     private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 
@@ -63,12 +63,13 @@ public class ResidentServiceImpl implements ResidentService {
 		PrintRequest request=new PrintRequest();
 		request.setRequest(dto);
 		request.setId(env.getProperty(PRINT_ID));
-		request.setVersion(env.getProperty(VERSION));
+		request.setVersion(env.getProperty(PRINT_VERSION));
 		request.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		PrintResponse response= new PrintResponse();
 		try {
 			response = (PrintResponse) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()), null,
 					request, PrintResponse.class, tokenGenerator.getToken());
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,6 +77,7 @@ public class ResidentServiceImpl implements ResidentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		/*TODO Send notification*/
 		return response;
 	}
 
