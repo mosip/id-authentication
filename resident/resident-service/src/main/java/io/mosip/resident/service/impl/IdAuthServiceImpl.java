@@ -38,7 +38,7 @@ import java.security.spec.X509EncodedKeySpec;
 @Component
 public class IdAuthServiceImpl implements IdAuthService {
 
-    Logger logger = LoggerConfiguration.logConfig(IdAuthServiceImpl.class);
+    private static final Logger logger = LoggerConfiguration.logConfig(IdAuthServiceImpl.class);
 
     @Value("${auth.internal.id}")
     private String internalAuthId;

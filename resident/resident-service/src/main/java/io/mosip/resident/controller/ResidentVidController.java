@@ -3,6 +3,7 @@ package io.mosip.resident.controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.dto.ResidentVidRequestDto;
+import io.mosip.resident.dto.VidResponseDto;
 import io.mosip.resident.service.ResidentVidService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +37,7 @@ public class ResidentVidController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
             @ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
     public ResponseEntity<Object> generateVid(@RequestBody(required = true) ResidentVidRequestDto requestDto) {
-        System.out.println(residentVidService.isAuthenticationSuccessful(requestDto.getRequest()));
-        return null;
+        VidResponseDto vidResponseDto = residentVidService.generateVid(requestDto.getRequest());
+        return ResponseEntity.ok().body(vidResponseDto);
     }
 }

@@ -5,7 +5,9 @@ public enum ResidentErrorCode {
 	NO_RID_FOUND_EXCEPTION("RES-XXX-XXX", "RID not found"),
 	INVALID_REQUEST_EXCEPTION("RES-XXX-XXX", "One or more input parameter is invalid or does not exist"),
 	TOKEN_GENERATION_FAILED("RES-XXX-XXX", "Token generation failed"),
-	API_RESOURCE_UNAVAILABLE("RES-XXX-XXX", "API resource is not available");
+	OTP_VALIDATION_FAILED("RES-XXX-XXX", "OTP validation failed"),
+	API_RESOURCE_UNAVAILABLE("RES-XXX-XXX", "API resource is not available"),
+	VID_CREATION_EXCEPTION("RES-XXX-XXX", "Exception while creating vid");
 
 	private final String errorCode;
 	private final String errorMessage;

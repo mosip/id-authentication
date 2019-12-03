@@ -1,13 +1,13 @@
 package io.mosip.resident.exception;
 	
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.resident.constant.ResidentErrorCode;
 
 /**
  * The Class ApisResourceAccessException.
  * 
  */
-public class ApisResourceAccessException extends BaseCheckedException {
+public class ApisResourceAccessException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
