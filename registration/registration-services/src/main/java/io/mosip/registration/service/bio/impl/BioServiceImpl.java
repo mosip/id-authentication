@@ -5,12 +5,16 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACAD
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+
+import static io.mosip.registration.constants.LoggerConstants.BIO_SERVICE;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,21 +81,25 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 	private byte[] isoImage;
 
-	private static HashMap<String, CaptureResponsBioDataDto> bestCaptures = new HashMap<>();
+	private static HashMap<String, CaptureResponsBioDataDto> BEST_CAPTURES = new HashMap<>();
+	
+	private static Map<String, Map<Integer, Double>> BIO_QUALITY_SCORE = new HashMap<String, Map<Integer, Double>>();
+
 
 	public static HashMap<String, CaptureResponsBioDataDto> getBestCaptures() {
-		return bestCaptures;
+		return BEST_CAPTURES;
 	}
 
 	public static void clearCaptures(List<String> captures) {
 
-		captures.forEach(key -> bestCaptures.remove(key));
+		captures.forEach(key -> BEST_CAPTURES.remove(key));
 
 	}
 
 	public static void clearAllCaptures() {
 
-		bestCaptures.clear();
+		BEST_CAPTURES.clear();
+		BIO_QUALITY_SCORE.clear();
 
 	}
 
@@ -246,7 +254,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 * @throws IOException
 	 */
-	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail)
+	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail,int attempt)
 			throws RegBaseCheckedException, IOException {
 
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(requestDetail);
@@ -257,9 +265,15 @@ public class BioServiceImpl extends BaseService implements BioService {
 					captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
-		mosipBioDeviceDataResponses.forEach(captured -> {
+
+		int currentCaptureQualityScore = 0;
+
+		for (CaptureResponseBioDto captured : mosipBioDeviceDataResponses) {
+
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
+
+			currentCaptureQualityScore += Integer.parseInt(captureRespoonse.getQualityScore());
 
 			// Get Best Capture
 			captureRespoonse = getBestCapture(captureRespoonse);
@@ -270,7 +284,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 			fingerPrintDetail.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
 			fingerPrintDetail.setFingerprintImageName("FingerPrint " + captureRespoonse.getBioSubType());
 			fpDetailsDTO.getSegmentedFingerprints().add(fingerPrintDetail);
-		});
+		}
+
+		setBioQualityScores(fpDetailsDTO.getFingerType(), attempt, currentCaptureQualityScore / mosipBioDeviceDataResponses.size());
+
 		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream()
 				.mapToDouble(finger -> finger.getQualityScore()).sum())
 				/ fpDetailsDTO.getSegmentedFingerprints().size();
@@ -387,14 +404,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 * @throws IOException
 	 */
-	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail)
+	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail,int attempt)
 			throws RegBaseCheckedException, IOException {
 		if (isNull(requestDetail.getType()))
 			throwRegBaseCheckedException(
 					RegistrationExceptionConstants.REG_MASTER_BIO_SERVICE_IMPL_FINGERPRINT_IMAGE_TYPE);
 
 		if (isMdmEnabled())
-			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, requestDetail);
+			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, requestDetail,attempt);
 		else
 			getFingerPrintImageAsDTONonMdm(fpDetailsDTO, requestDetail);
 	}
@@ -825,7 +842,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	private CaptureResponsBioDataDto getBestCapture(CaptureResponsBioDataDto captureResponsBioDataDto) {
 
 		// Get Stored Capture of bio type
-		CaptureResponsBioDataDto responsBioDataDtoStored = bestCaptures.get(captureResponsBioDataDto.getBioSubType());
+		CaptureResponsBioDataDto responsBioDataDtoStored = BEST_CAPTURES.get(captureResponsBioDataDto.getBioSubType());
 
 		if (responsBioDataDtoStored != null) {
 			int qualityScore = Integer.parseInt(captureResponsBioDataDto.getQualityScore());
@@ -835,17 +852,69 @@ public class BioServiceImpl extends BaseService implements BioService {
 			// If Better capture found, store it
 			if (qualityScoreStored < qualityScore) {
 
-				bestCaptures.put(captureResponsBioDataDto.getBioSubType(), captureResponsBioDataDto);
+				BEST_CAPTURES.put(captureResponsBioDataDto.getBioSubType(), captureResponsBioDataDto);
 
 			}
 		} else {
 
 			// If Not stored, store it
-			bestCaptures.put(captureResponsBioDataDto.getBioSubType(), captureResponsBioDataDto);
+			BEST_CAPTURES.put(captureResponsBioDataDto.getBioSubType(), captureResponsBioDataDto);
 
 		}
 
-		return bestCaptures.get(captureResponsBioDataDto.getBioSubType());
+		return BEST_CAPTURES.get(captureResponsBioDataDto.getBioSubType());
+	}
+	
+	@Override
+	public double getHighQualityScoreByBioType(String bioType) {
+		return BIO_QUALITY_SCORE.get(bioType).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get()
+				.getValue();
+
+	}
+
+	public void setBioQualityScores(String bioType, int attempt, double qualityScore) {
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Started Set Quality Score of : " + bioType + " for attempt : " + attempt);
+
+		Map<Integer, Double> bioData = null;
+
+		if (BIO_QUALITY_SCORE.get(bioType) != null) {
+			bioData = BIO_QUALITY_SCORE.get(bioType);
+
+		} else {
+
+			bioData = new HashMap<Integer, Double>();
+
+		}
+
+		bioData.put(attempt, qualityScore);
+
+		BIO_QUALITY_SCORE.put(bioType, bioData);
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Completed Set Stream image of : " + bioType + " for attempt : " + attempt);
+
+	}
+
+	public double getBioQualityScores(String bioType, int attempt) {
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Get Stream  Quality Score of : " + bioType + " for attempt : " + attempt);
+
+		if (BIO_QUALITY_SCORE.get(bioType) != null) {
+			return BIO_QUALITY_SCORE.get(bioType).get(attempt);
+		}
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"NOT FOUND : Stream image of : " + bioType + " for attempt : " + attempt);
+
+		return (Double) null;
+
+	}
+
+	public static void clearBIOScoreByBioType(List<String> captures) {
+		captures.forEach(key -> BIO_QUALITY_SCORE.remove(key));
 	}
 
 }

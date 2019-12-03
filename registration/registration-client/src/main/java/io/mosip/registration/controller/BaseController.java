@@ -12,6 +12,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -1404,4 +1405,14 @@ public class BaseController {
 		}
 	}
 
+	protected void clearBiometrics(String bioType) {
+		if(bioType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
+			BioServiceImpl.clearCaptures(RegistrationConstants.LEFT_SLAP);
+			BioServiceImpl.clearCaptures(RegistrationConstants.RIGHT_SLAP);
+			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_THUMBS);
+			
+			BioServiceImpl.clearBIOScoreByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
+		}
+	}
 }
