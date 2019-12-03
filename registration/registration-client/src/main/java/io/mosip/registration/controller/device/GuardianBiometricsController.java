@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_B
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
