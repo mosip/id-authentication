@@ -259,10 +259,14 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	 */
 	@Override
 	public boolean isPacketsPendingForEOD() {
-		List<Registration> newRegistrations = registrationDAO
-				.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
-		return isNotNullNotEmpty(newRegistrations);
+		return isNotNullNotEmpty(registrationDAO.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode()));
+	}
+	
+	@Override
+	public boolean isPacketsPendingForReRegister() {
+
+		return isNotNullNotEmpty(registrationDAO.fetchReRegisterPendingPackets());
 	}
 
 	/**

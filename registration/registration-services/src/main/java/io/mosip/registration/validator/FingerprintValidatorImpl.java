@@ -96,7 +96,9 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 */
 	private boolean validateFpWithBioApi(List<FingerprintDetailsDTO> capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
-
+		boolean flag = true;
+		if((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_ENABLE_FLAG))).equalsIgnoreCase(RegistrationConstants.DISABLE))
+		return false;
 		BIR[] capturedBir = new BIR[capturedFingerPrintDto.size()];
 
 		int i = 0;
@@ -110,7 +112,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 
 		BIR[] registeredBir = new BIR[userFingerprintDetails.size()];
 		Score[] scores = null;
-		boolean flag = false;
+		flag = false;
 		i = 0;
 		ApplicationContext.map().remove("IDENTY_SDK");
 		for (UserBiometric userBiometric : userFingerprintDetails) {
@@ -122,7 +124,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		}
 		try {
 			CompositeScore compositeScore = ibioApi.compositeMatch(capturedBir, registeredBir, null);
-			scores=compositeScore.getIndividualScores();
+			scores = compositeScore.getIndividualScores();
 			int reqScore = 80;
 			for (Score score : scores) {
 				if (score.getScaleScore() >= reqScore) {

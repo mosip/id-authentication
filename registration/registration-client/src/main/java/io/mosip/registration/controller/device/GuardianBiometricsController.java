@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_B
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -568,10 +567,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 			popupStage.close();
 			if(validateIrisLocalDedup(detailsDTO.getIrises())){
 				continueBtn.setDisable(true);
+				duplicateCheckLbl.setText("Duplicate" + " " + (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
 			}else {
 				continueBtn.setDisable(true);
-				duplicateCheckLbl.setText("Duplicate" + " " + (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
-
 			}
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
@@ -587,7 +585,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 			authenticationValidatorDTO.setIrisDetails(irises);
 			authenticationValidatorDTO.setAuthValidationType("single");
-			boolean isValid = !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			boolean isValid = authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 			if(null !=getValueFromApplicationContext("IDENTY_SDK")) {
 				isValid = false;
 			}

@@ -602,11 +602,12 @@ public class IrisCaptureController extends BaseController {
 					getIrises().add(iris);
 					popupStage.close();
 				});
-				if (validateIris() && validateIrisLocalDedup(getIrises())) {
+				if (validateIris()) {
 					continueBtn.setDisable(false);
 				}else {
 					continueBtn.setDisable(true);
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.DUPLICATE+" "+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS)+" "+RegistrationConstants.FOUND);
+					if(validateIrisLocalDedup(getIrises()))
+						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.DUPLICATE+" "+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS)+" "+RegistrationConstants.FOUND);
 				}
 
 			} else {
@@ -638,7 +639,7 @@ public class IrisCaptureController extends BaseController {
 			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 			authenticationValidatorDTO.setIrisDetails(irises);
 			authenticationValidatorDTO.setAuthValidationType("multiple");
-			boolean isValid =  !authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+			boolean isValid =  authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 			if(null != getValueFromApplicationContext("IDENTY_SDK")) {
 				isValid = false;
 			}
@@ -945,9 +946,10 @@ public class IrisCaptureController extends BaseController {
 
 		if (anyIrisException(RegistrationConstants.LEFT) && anyIrisException(RegistrationConstants.RIGHT)) {
 			continueBtn.setDisable(false);
+		}else {
+			populateException();
 		}
 
-		populateException();
 	}
 
 	private void singleBiometricCaptureCheck() {

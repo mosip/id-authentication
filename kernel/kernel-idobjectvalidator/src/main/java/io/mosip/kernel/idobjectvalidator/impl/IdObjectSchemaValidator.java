@@ -52,19 +52,20 @@ import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailed
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.util.StringUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class provides the implementation for JSON validation against the
  * schema.
  * 
  * @author Manoj SP
  * @author Swati Raj
- * @since 1.0.0
  * 
  */
 @Component("schema")
 @RefreshScope
 public class IdObjectSchemaValidator implements IdObjectValidator {
 	
+	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(IdObjectSchemaValidator.class);
 
 	/** The Constant OPERATION. */
@@ -85,7 +86,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	private static final String UNWANTED = "unwanted";
 
 	/** The config server file storage URL. 
-	/*
+	 *
 	 * Address of Spring cloud config server for getting the schema file
 	 */
 	@Value("${mosip.kernel.idobjectvalidator.file-storage-uri}")
@@ -109,8 +110,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Load schema.
 	 *
-	 * @throws IdObjectIOException
-	 *             the id object IO exception
+	 * @throws IdObjectIOException the id object IO exception
 	 */
 	@PostConstruct
 	public void loadSchema() throws IdObjectIOException {
@@ -128,12 +128,11 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Validates a JSON object passed as string with the schema provided.
 	 *
-	 * @param idObject            JSON as string that has to be Validated against the schema.
-	 * @param operation            the operation
-	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
-	 *         'warnings' arraylist
-	 * @throws IdObjectValidationFailedException             JsonValidationProcessingException
-	 * @throws IdObjectIOException             JsonIOException
+	 * @param idObject the id object
+	 * @param operation the operation
+	 * @return true, if successful
+	 * @throws IdObjectValidationFailedException the id object validation failed exception
+	 * @throws IdObjectIOException the id object IO exception
 	 */
 	@Override
 	public boolean validateIdObject(Object idObject, IdObjectValidatorSupportedOperations operation)
@@ -151,10 +150,10 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			List<ServiceError> errorList = new ArrayList<>();
 			if (!report.isSuccess()) {
 				report.forEach(processingMessage -> {
-					if (processingMessage.getLogLevel().toString().equals(ERROR.getValue())) {
+					if (processingMessage.getLogLevel().toString().equals(ERROR)) {
 						JsonNode processingMessageAsJson = processingMessage.asJson();
-						if (processingMessageAsJson.hasNonNull(INSTANCE.getValue())
-								&& processingMessageAsJson.get(INSTANCE.getValue()).hasNonNull(POINTER.getValue())) {
+						if (processingMessageAsJson.hasNonNull(INSTANCE)
+								&& processingMessageAsJson.get(INSTANCE).hasNonNull(POINTER)) {
 							if (processingMessageAsJson.has(MISSING)
 									&& !processingMessageAsJson.get(MISSING).isNull()) {
 								errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -187,14 +186,10 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Validate mandatory fields.
 	 *
-	 * @param jsonObjectNode
-	 *            the json object node
-	 * @param operation
-	 *            the operation
-	 * @param errorList
-	 *            the error list
-	 * @throws IdObjectIOException
-	 *             the id object IO exception
+	 * @param jsonObjectNode the json object node
+	 * @param operation the operation
+	 * @param errorList the error list
+	 * @throws IdObjectIOException the id object IO exception
 	 */
 	private void validateMandatoryFields(JsonNode jsonObjectNode, IdObjectValidatorSupportedOperations operation,
 			List<ServiceError> errorList) throws IdObjectIOException {
@@ -203,13 +198,13 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getMessage(), OPERATION));
 		}
-		String appId = env.getProperty(APPLICATION_ID.getValue());
+		String appId = env.getProperty(APPLICATION_ID);
 		if (Objects.isNull(appId)) {
 			logger.debug("mandatory field input appId is null");
 			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
+					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID));
 		}
-		String fields = env.getProperty(String.format(FIELD_LIST.getValue(), appId, operation.getOperation()));
+		String fields = env.getProperty(String.format(FIELD_LIST, appId, operation.getOperation()));
 		Optional.ofNullable(fields)
 				.ifPresent(fieldList -> Arrays.asList(StringUtils.split(fields, ','))
 				.parallelStream()
@@ -217,9 +212,9 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				.forEach(field -> {
 					List<String> fieldNames = Arrays.asList(field.split("\\|"));
 					fieldNames = fieldNames.stream()
-							.map(fieldName -> PATH_SEPERATOR.getValue()
-									.concat(ROOT_PATH.getValue().concat(
-											PATH_SEPERATOR.getValue().concat(fieldName.replace('.', '/')))))
+							.map(fieldName -> PATH_SEPERATOR
+									.concat(ROOT_PATH.concat(
+											PATH_SEPERATOR.concat(fieldName.replace('.', '/')))))
 							.collect(Collectors.toList());
 					validateMissingFields(jsonObjectNode, errorList, fieldNames);
 					validateInvalidFields(jsonObjectNode, errorList, fieldNames);
@@ -239,7 +234,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getMessage(),
 							fieldNames.parallelStream()
-									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR.getValue(), ""))
+									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR, ""))
 									.collect(Collectors.joining(" | ")))));
 		}
 	}
@@ -255,7 +250,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		if (fieldNames.parallelStream().anyMatch(fieldName -> 
 					!isMissingOrEmpty(jsonObjectNode, fieldName)
 							&& (jsonObjectNode.at(fieldName).isArray()
-									? jsonObjectNode.findValuesAsText(IDENTITY_ARRAY_VALUE_FIELD.getValue())
+									? jsonObjectNode.findValuesAsText(IDENTITY_ARRAY_VALUE_FIELD)
 											.stream().allMatch(StringUtils::isBlank)
 									: StringUtils.isBlank(jsonObjectNode.at(fieldName).toString()))
 				)) {
@@ -263,7 +258,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 					String.format(INVALID_INPUT_PARAMETER.getMessage(),
 							fieldNames
 									.parallelStream()
-									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR.getValue(), ""))
+									.map(fieldName -> fieldName.replaceFirst(PATH_SEPERATOR, ""))
 									.collect(Collectors.joining(" | ")))));
 		}
 	}
@@ -283,19 +278,16 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Builds the error message.
 	 *
-	 * @param processingMessageAsJson
-	 *            the processing message as json
-	 * @param messageBody
-	 *            the message body
-	 * @param field
-	 *            the field
+	 * @param processingMessageAsJson the processing message as json
+	 * @param messageBody the message body
+	 * @param field the field
 	 * @return the string
 	 */
 	private String buildErrorMessage(JsonNode processingMessageAsJson, String messageBody, String field) {
-		return String.format(messageBody, StringUtils.strip(processingMessageAsJson.get(INSTANCE.getValue())
-				.get(POINTER.getValue()).asText()
+		return String.format(messageBody, StringUtils.strip(processingMessageAsJson.get(INSTANCE)
+				.get(POINTER).asText()
 				+ (processingMessageAsJson.hasNonNull(field)
-						? PATH_SEPERATOR.getValue()
+						? PATH_SEPERATOR
 								+ StringUtils.removeAll(processingMessageAsJson.get(field).toString(), "[\\[\"\\]]")
 						: ""),
 				"/"));
@@ -303,22 +295,22 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 
 	/**
 	 * Gets the json schema node.
-	 *
+	 * If the property source selected is CONFIG_SERVER. In this scenario schema is
+	 * coming from Config Server, whose location has to be mentioned in the
+	 * bootstrap.properties by the application using this JSON validator API.
+	 * If the property source selected is local. In this scenario schema is coming
+	 * from local resource location.
+	 * If the property source is APPLICATION_CONTEXT, schema is loaded using PostConstruct
+	 * for one time, and loaded schema is reused for validation.
+	 * 
 	 * @return the json schema node
-	 * @throws IdObjectIOException
-	 *             the id object IO exception
+	 * @throws IdObjectIOException the id object IO exception
 	 */
 	private JsonNode getJsonSchemaNode() throws IdObjectIOException {
 		logger.debug("propertySource is set to " + propertySource);
 		JsonNode jsonSchemaNode = null;
-		/*
-		 * If the property source selected is CONFIG_SERVER. In this scenario schema is
-		 * coming from Config Server, whose location has to be mentioned in the
-		 * bootstrap.properties by the application using this JSON validator API.
-		 */
 		if (CONFIG_SERVER.getPropertySource().equals(propertySource)) {
 			try {
-				// creating a JsonSchema node against which the JSON object will be validated.
 				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 				logger.debug("schema is loaded from config server");
 			} catch (IOException e) {
@@ -326,11 +318,9 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				throw new IdObjectIOException(SCHEMA_IO_EXCEPTION, e);
 			}
 		}
-		// If the property source selected is local. In this scenario schema is coming
-		// from local resource location.
 		else if (LOCAL.getPropertySource().equals(propertySource)) {
 			try {
-				jsonSchemaNode = JsonLoader.fromResource(PATH_SEPERATOR.getValue() + schemaName);
+				jsonSchemaNode = JsonLoader.fromResource(PATH_SEPERATOR + schemaName);
 				logger.debug("schema is loaded from LOCAL");
 			} catch (IOException e) {
 				ExceptionUtils.logRootCause(e);

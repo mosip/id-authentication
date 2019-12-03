@@ -1,3 +1,13 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: IDMAP DB Artifacts deploy
+### -- Deploy Module 	: MOSIP IDMAP
+### -- Purpose    		: To deploy MOSIP IDMAP Database DB Artifacts.       
+### -- Create By   		: Sadanandegowda DM
+### -- Created Date		: 25-Oct-2019
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
 #########Properties file #############
 set -e
 properties_file="$1"

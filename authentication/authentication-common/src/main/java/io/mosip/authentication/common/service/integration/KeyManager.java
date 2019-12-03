@@ -192,7 +192,7 @@ public class KeyManager {
 
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());

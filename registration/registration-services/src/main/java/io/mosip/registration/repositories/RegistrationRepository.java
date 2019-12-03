@@ -135,4 +135,14 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @return the list of registrations
 	 */
 	List<Registration> findByServerStatusCodeNotInOrServerStatusCodeIsNull(List<String> statusCodes);
+
+	/**
+	 * Fetches all the re register pending records
+	 * 
+	 * @param asList
+	 * @param asList2
+	 * @return
+	 */
+	List<Registration> findByClientStatusCodeNotInAndServerStatusCodeIn(List<String> clientStutusCodes,
+			List<String> serverStatusCodes);
 }

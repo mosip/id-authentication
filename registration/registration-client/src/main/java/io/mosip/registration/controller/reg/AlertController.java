@@ -118,7 +118,7 @@ public class AlertController extends BaseController implements Initializable {
 	}
 
 	@FXML
-	private void alertWindowExit() {
+	public void alertWindowExit() {
 		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert closing has been started");
 
 		Stage stage = (Stage) exit.getScene().getWindow();
