@@ -143,6 +143,41 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
+		validateAuthTypeStatus(authRequestDTO);
+		AuthResponseDTO authResponseDTO;
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
+				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+		Map<String, List<IdentityInfoDTO>> idInfo = null;
+		String uin = idResDTO.get("uin") == null ? null : String.valueOf(idResDTO.get("uin"));
+		String staticTokenId = null;
+		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
+		try {
+			idInfo = idInfoService.getIdInfo(idResDTO);
+			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
+			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : null;
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
+					partnerId);
+			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
+		} finally {
+			// Set static token
+			if (staticTokenRequired) {
+				authResponseDTO = authResponseBuilder.build(staticTokenId);
+			} else {
+				authResponseDTO = authResponseBuilder.build(null);
+			}
+			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
+		}
+
+		if (idInfo != null && uin != null) {
+			notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
+		}
+
+		return authResponseDTO;
+
+	}
+
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
 				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
 		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
@@ -182,37 +217,6 @@ public class AuthFacadeImpl implements AuthFacade {
 				}
 			}
 		}
-		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
-				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
-		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String uin = idResDTO.get("uin") == null ? null : String.valueOf(idResDTO.get("uin"));
-		String staticTokenId = null;
-		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
-		try {
-			idInfo = idInfoService.getIdInfo(idResDTO);
-			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : null;
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
-					partnerId);
-			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
-		} finally {
-			// Set static token
-			if (staticTokenRequired) {
-				authResponseDTO = authResponseBuilder.build(staticTokenId);
-			} else {
-				authResponseDTO = authResponseBuilder.build(null);
-			}
-			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
-					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
-		}
-
-		if (idInfo != null && uin != null) {
-			notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
-		}
-
-		return authResponseDTO;
-
 	}
 
 	/**
