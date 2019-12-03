@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -132,11 +131,6 @@ public class DemographicService implements DemographicServiceIntf {
 	@Autowired
 	private BookingServiceIntf bookingServiceImpl;
 
-	/**
-	 * Autowired reference for {@link #RestTemplateBuilder}
-	 */
-	@Autowired
-	private RestTemplate restTemplate;
 
 	/**
 	 * Autowired reference for {@link #AuditLogUtil}
