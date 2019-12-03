@@ -177,6 +177,7 @@
                 <module>kernel-vidgenerator-service</module>
 		<!--<module>kernel-salt-generator</module>-->
     <!--<module>kernel-packetstatusupdater-api</module>-->
+                <module>kernel-pridgenerator-service</module>
   </modules>
 
 	<dependencies>
