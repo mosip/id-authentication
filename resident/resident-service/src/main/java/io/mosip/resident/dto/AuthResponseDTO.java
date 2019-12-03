@@ -11,7 +11,7 @@ public class AuthResponseDTO extends BaseAuthResponseDTO {
 	
 	private String transactionID;
 	
-	private ResponseDTO response; 
+	private IdAuthResponseDto response;
 	
 	private String responseTime;
 	

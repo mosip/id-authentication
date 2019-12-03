@@ -5,8 +5,5 @@ import lombok.Data;
 @Data
 public class AuthTypeDTO {
 
-	private boolean bio;
-	
-	private boolean demo = false;
-
+	private boolean otp;
 }

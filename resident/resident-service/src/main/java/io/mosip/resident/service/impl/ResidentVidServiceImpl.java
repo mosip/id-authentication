@@ -4,6 +4,7 @@ import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.dto.AuthRequestDTO;
 import io.mosip.resident.dto.AuthResponseDTO;
 import io.mosip.resident.dto.VidRequestDto;
+import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentVidService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
@@ -24,8 +25,18 @@ public class ResidentVidServiceImpl implements ResidentVidService {
     @Autowired
     private TokenGenerator tokenGenerator;
 
+    @Autowired
+    private IdAuthService idAuthService;
+
     @Override
     public boolean isAuthenticationSuccessful(VidRequestDto requestDto) {
+
+        boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(),
+                requestDto.getIndividualId(), requestDto.getIndividualIdType(), requestDto.getOtp());
+
+        if (!isAuthenticated)
+            return false;
+
         AuthRequestDTO reqDto = new AuthRequestDTO();
         reqDto.setTransactionID(requestDto.getTransactionID());
 
