@@ -1,3 +1,5 @@
+package io.mosip.kernel.bioapi.impl;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -9,10 +11,8 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
@@ -24,7 +24,6 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
  * 
  * @author Sanjay Murali
  */
-@Ignore
 public class BioApiTest {
 	
 	CbeffImpl cbeffUtil = new CbeffImpl();
@@ -63,7 +62,7 @@ public class BioApiTest {
 	public void checkQualityTest() {
 		BIR BIR = birDataFromXML.get(0);
 		QualityScore checkQuality = bioApiImpl.checkQuality(BIR, null);
-		assertEquals(90, checkQuality.getInternalScore());
+		assertEquals(60, checkQuality.getInternalScore());
 	}
 	
 	@Test

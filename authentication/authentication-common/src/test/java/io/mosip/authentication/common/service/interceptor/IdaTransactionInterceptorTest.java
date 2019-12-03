@@ -56,6 +56,7 @@ public class IdaTransactionInterceptorTest {
 		assertEquals("123_abc", entity.getUin());
 	}
 	
+	@Test
 	public void testOnSave_nullEntity() throws IdAuthenticationBusinessException, RestServiceException {
 		AutnTxn entity =  new AutnTxn();;
 		entity.setUin(null);
