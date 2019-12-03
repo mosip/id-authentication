@@ -6,6 +6,13 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.kernel.core.idvalidator.spi.VidValidator;
+import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
+import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+
 
 @Configuration
 public class Config {
@@ -21,5 +28,20 @@ public class Config {
 	@Bean
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
+	}
+	
+	@Bean
+	public VidValidator<String> vidValidator() {
+		return new VidValidatorImpl();
+	}
+	
+	@Bean
+	public UinValidator<String> uinValidator() {
+		return new UinValidatorImpl();
+	}
+	
+	@Bean
+	public RidValidator<String> ridValidator() {
+		return new RidValidatorImpl();
 	}
 }

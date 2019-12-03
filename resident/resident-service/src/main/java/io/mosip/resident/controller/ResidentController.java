@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.resident.dto.PrintResponse;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.dto.UINCardRequestDTO;
 import io.mosip.resident.service.ResidentService;
 
 @RestController
@@ -32,10 +35,10 @@ public class ResidentController {
 	}
 
 	@ResponseFilter
-	@PostMapping(value = "/req/euin")
-	public ResponseWrapper<ResponseDTO> reqEuin(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) {
-		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
-		response.setResponse(residentService.reqEuin(requestDTO.getRequest()));
+	@PostMapping(value = "/req/euin",produces = MediaType.APPLICATION_JSON_VALUE)
+	public PrintResponse reqEuin(@Valid @RequestBody RequestWrapper<UINCardRequestDTO> requestDTO) {
+		PrintResponse response = residentService.reqEuin(requestDTO.getRequest());
+		
 		return response;
 	}
 
