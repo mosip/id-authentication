@@ -85,6 +85,9 @@ public class NotificationService {
 	 */
 	@Autowired
 	private NotificationServiceUtil serviceUtil;
+	
+	@Autowired
+	private DemographicServiceIntf demographicServiceIntf;
 
 	@Autowired
 	private DemographicServiceIntf demogrphicServiceIntf;

@@ -15,7 +15,10 @@ import org.springframework.context.annotation.FilterType;
  * @since 1.0.0
  *
  */
-@SpringBootApplication(scanBasePackages= {"io.mosip.preregistration.*","io.mosip.kernel.auth.*"})
+
+@SpringBootApplication
+//@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class }) 
+@ComponentScan(basePackages = "io.mosip.*")
 public class NotificationApplication {
 
 	/**

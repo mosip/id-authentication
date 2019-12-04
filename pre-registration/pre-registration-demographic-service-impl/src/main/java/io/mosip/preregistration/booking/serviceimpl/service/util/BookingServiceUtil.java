@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -104,6 +105,7 @@ public class BookingServiceUtil {
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */
 	@Autowired
+	@Qualifier("restTemplateConfig")
 	RestTemplate restTemplate;
 	
 	@Autowired

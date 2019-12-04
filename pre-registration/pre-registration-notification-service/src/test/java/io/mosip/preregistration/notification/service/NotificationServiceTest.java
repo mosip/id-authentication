@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.notification.service;
 
 import static org.junit.Assert.assertEquals;
@@ -268,74 +269,7 @@ public class NotificationServiceTest {
 		assertEquals(responseDTO.getResponse(), response.getResponse());
 	}
 
-//	@Test(expected=RestCallException.class)
-	public void getDemographicDetailsWithPreIdrestcallTest()
-			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
-		notificationDTO.setAdditionalRecipient(false);
 
-		notificationDTO.setIsBatch(false);
-		mainReqDto.setRequest(notificationDTO);
-		String stringjson = mapper.writeValueAsString(mainReqDto);
-		String langCode = "fra";
-		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-				}))).thenThrow(RestClientException.class);
-		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
-		assertEquals("Demographic rest call failed", response.getResponse());
-	}
-	
-//	@Test(expected=RestCallException.class)
-	public void getBookingDetailsExceptionTest()
-			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
-		notificationDTO.setAdditionalRecipient(false);
-
-		notificationDTO.setIsBatch(false);
-		mainReqDto.setRequest(notificationDTO);
-		String stringjson = mapper.writeValueAsString(mainReqDto);
-		String langCode = "eng";
-		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
-		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-				}))).thenReturn(demores);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-				}),Mockito.anyMap())).thenThrow(RestClientException.class);
-		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
-		assertEquals("Demographic rest call failed", response.getResponse());
-	}
-
-	/**
-	 * This method is for failure case of sendNotification
-	 * 
-	 * @throws JsonProcessingException
-	 */
-//	@Test(expected = RestCallException.class)
-	public void sendNotificationFailureTest() throws JsonProcessingException {
-		notificationDTO = new NotificationDTO();
-		notificationDTO.setName("sanober Noor");
-		notificationDTO.setPreRegistrationId("1234567890");
-		notificationDTO.setMobNum("");
-		notificationDTO.setEmailID("");
-		notificationDTO.setAppointmentDate("2019-01-22");
-		notificationDTO.setAppointmentTime("22:57");
-		notificationDTO.setAdditionalRecipient(true);
-		mainReqDto.setRequest(notificationDTO);
-		responseDTO = new MainResponseDTO<>();
-		response.setMessage("Email and sms request successfully submitted");
-		responseDTO.setResponse(response);
-		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-				}))).thenThrow(RestClientException.class);
-		String stringjson = mapper.writeValueAsString(mainReqDto);
-		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
-		//assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
-
-	}
 
 	/**
 	 * This method is for failure case of sendNotification
@@ -517,3 +451,4 @@ public class NotificationServiceTest {
 
 	}
 }
+

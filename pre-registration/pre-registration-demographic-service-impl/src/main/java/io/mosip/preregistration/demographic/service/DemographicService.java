@@ -23,13 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -131,11 +131,6 @@ public class DemographicService implements DemographicServiceIntf {
 	@Autowired
 	private BookingServiceIntf bookingServiceImpl;
 
-	/**
-	 * Autowired reference for {@link #RestTemplateBuilder}
-	 */
-	@Autowired
-	private RestTemplate restTemplate;
 
 	/**
 	 * Autowired reference for {@link #AuditLogUtil}

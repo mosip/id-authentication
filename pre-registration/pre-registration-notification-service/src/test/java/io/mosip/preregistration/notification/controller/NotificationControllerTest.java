@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.notification.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,8 +52,9 @@ public class NotificationControllerTest {
 	@Autowired
 	private ObjectMapper mapper;
 	
-//	@Mock
-//	private RequestValidator requestValidator;
+
+	@Mock
+	private RequestValidator requestValidator;
 
 	@MockBean
 	private DemographicServiceIntf preRegistrationService;
@@ -115,7 +117,7 @@ public class NotificationControllerTest {
 				.andExpect(status().isOk());
 
 	}
-
+}
 	// /**
 	// * This test method is for success qrCodeGeneration
 	// * @throws Exception
@@ -131,4 +133,4 @@ public class NotificationControllerTest {
 	// .content(stringjson)).andExpect(status().isOk());
 	//
 	// }
-}
+
