@@ -4,7 +4,7 @@
 package io.mosip.kernel.pridgenerator.constant;
 
 /**
- * Constants for VID generator
+ * Constants for PRID generator
  * 
  * @author Urvil Joshi
  * @since 1.0.0
@@ -40,7 +40,7 @@ public final class PRIDGeneratorConstant {
 	/**
 	 * The string field V1_0_VID
 	 */
-	public static final String PRID = "/v1/pridgenerator";
+	public static final String PRID = "prid";
 
 	/**
 	 * The string field COMMA
