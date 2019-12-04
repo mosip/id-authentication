@@ -892,8 +892,7 @@ public class IrisCaptureController extends BaseController {
 
 	public void clearIrisData() {
 
-		BioServiceImpl.clearCaptures(RegistrationConstants.TWO_IRIS);
-		BioServiceImpl.clearBIOScoreByBioType(RegistrationConstants.TWO_IRIS);
+		clearBiometrics(RegistrationConstants.IRIS);
 
 		leftIrisCount = 0;
 		rightIrisCount = 0;

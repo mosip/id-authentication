@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -316,6 +317,21 @@ public class Streamer {
 		}
 		scanPopUpViewController.setScanningMsg(message);
 		this.isRunning = isRunning;
+	}
+	
+	public static void clearBIOStreamImagesByBioType(List<String> captures) {
+		
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+				"Clearing Stream images of : " + captures);
+		
+		captures.forEach(key -> BIO_STREAM_IMAGES.remove(key));
+		
+	}
+
+	public static void clearAllStreamImages() {
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Clearing all Stream images");
+
+		BIO_STREAM_IMAGES.clear();
 	}
 
 }

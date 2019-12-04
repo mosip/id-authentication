@@ -90,12 +90,17 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 	public static void clearCaptures(List<String> captures) {
 
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Clearing caprures of : "+captures);
+
 		captures.forEach(key -> BEST_CAPTURES.remove(key));
 
 	}
 
 	public static void clearAllCaptures() {
 
+		LOGGER.info(LoggerConstants.STREAMER, APPLICATION_NAME, APPLICATION_ID,
+				"Clearing All captures");
+		
 		BEST_CAPTURES.clear();
 		BIO_QUALITY_SCORE.clear();
 
@@ -895,6 +900,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 	@Override
 	public double getHighQualityScoreByBioType(String bioType) {
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Getting highest quality score for : " + bioType );
+		
 		return BIO_QUALITY_SCORE.get(bioType).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get()
 				.getValue();
 
@@ -942,6 +950,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	}
 
 	public static void clearBIOScoreByBioType(List<String> captures) {
+		
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Clearing bio scores of : "+captures);
+
 		captures.forEach(key -> BIO_QUALITY_SCORE.remove(key));
 		
 	}

@@ -39,6 +39,7 @@ import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
+import io.mosip.registration.controller.device.Streamer;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.controller.eodapproval.RegistrationApprovalController;
 import io.mosip.registration.controller.reg.AlertController;
@@ -109,7 +110,7 @@ import javafx.util.Duration;
 
 @Component
 public class BaseController {
-	
+
 	private static final String ALERT_STAGE = "alertStage";
 
 	@Autowired
@@ -186,7 +187,7 @@ public class BaseController {
 	private List<String> pageDetails = new ArrayList<>();
 
 	private Stage alertStage;
-	
+
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -201,7 +202,7 @@ public class BaseController {
 	public Stage getAlertStage() {
 		return alertStage;
 	}
-	
+
 	/**
 	 * Adding events to the stage.
 	 *
@@ -345,7 +346,7 @@ public class BaseController {
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
 		}
-		
+
 		alertController.alertWindowExit();
 	}
 
@@ -404,7 +405,7 @@ public class BaseController {
 	 *            alert context
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
-		String type="#TYPE#";
+		String type = "#TYPE#";
 		if (id.contains(RegistrationConstants.ONTYPE)) {
 			id = id.replaceAll(RegistrationConstants.UNDER_SCORE + RegistrationConstants.ONTYPE,
 					RegistrationConstants.EMPTY);
@@ -419,7 +420,7 @@ public class BaseController {
 			label.setText(split[0]);
 		}
 
-		Tooltip tool = new Tooltip(context.contains(type)? context.split(type)[0] : context);
+		Tooltip tool = new Tooltip(context.contains(type) ? context.split(type)[0] : context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);
 		label.setVisible(true);
@@ -512,10 +513,10 @@ public class BaseController {
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
 					clearRegistrationData();
-					
-					//Clear Captured images data
+
+					// Clear Captured images data
 					BioServiceImpl.clearAllCaptures();
-					
+
 				} else {
 					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
 							RegistrationConstants.ENABLE);
@@ -553,7 +554,7 @@ public class BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-		webCameraController.closeWebcam();		
+		webCameraController.closeWebcam();
 		goToHomePage();
 
 	}
@@ -667,7 +668,8 @@ public class BaseController {
 	 * @param imageType
 	 *            Type of image that is to be saved
 	 */
-	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType,CaptureResponseDto captureResponseDto) {
+	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType,
+			CaptureResponseDto captureResponseDto) {
 		// will be implemented in the derived class.
 	}
 
@@ -1150,7 +1152,7 @@ public class BaseController {
 
 		return isPacketsPendingForEOD() || isPacketsPendingForReRegister();
 	}
-	
+
 	/**
 	 * Checks if is packets pending for ReRegister.
 	 *
@@ -1220,8 +1222,8 @@ public class BaseController {
 		alert.initStyle(StageStyle.UNDECORATED);
 		alert.initModality(Modality.WINDOW_MODAL);
 		alert.initOwner(fXComponents.getStage());
-		if(SessionContext.isSessionContextAvailable()) {
-		SessionContext.map().put("alert", alert);
+		if (SessionContext.isSessionContextAvailable()) {
+			SessionContext.map().put("alert", alert);
 		}
 		return alert;
 	}
@@ -1337,7 +1339,6 @@ public class BaseController {
 
 	}
 
-	
 	protected List<BiometricExceptionDTO> getIrisExceptions() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
@@ -1363,10 +1364,9 @@ public class BaseController {
 		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
 				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
-	
 
 	public void getExceptionIdentifier(List<String> exception, String exceptionType) {
-			exception.add(RegistrationConstants.userOnBoardMap.get(exceptionType));
+		exception.add(RegistrationConstants.userOnBoardMap.get(exceptionType));
 	}
 
 	/**
@@ -1396,7 +1396,7 @@ public class BaseController {
 			});
 		}
 	}
-	
+
 	public void closeAlreadyExistedAlert() {
 		if (SessionContext.isSessionContextAvailable() && SessionContext.map() != null
 				&& SessionContext.map().get(ALERT_STAGE) != null) {
@@ -1406,13 +1406,30 @@ public class BaseController {
 	}
 
 	protected void clearBiometrics(String bioType) {
-		if(bioType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
+		
+		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Clearing Bio Data (Capture Response,bio scores, bio stream images) of : "+bioType);
+
+		if (bioType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
 			BioServiceImpl.clearCaptures(RegistrationConstants.LEFT_SLAP);
 			BioServiceImpl.clearCaptures(RegistrationConstants.RIGHT_SLAP);
 			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_THUMBS);
-			
+
 			BioServiceImpl.clearBIOScoreByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
+			
+			Streamer.clearBIOStreamImagesByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
+			
+		} else if (bioType.equalsIgnoreCase(RegistrationConstants.IRIS)) {
+			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_IRIS);
+			BioServiceImpl.clearBIOScoreByBioType(RegistrationConstants.TWO_IRIS);
+			
+			Streamer.clearBIOStreamImagesByBioType(RegistrationConstants.TWO_IRIS);
+		
 		}
+		
+		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Cleared Bio Data (Capture Response,bio scores, bio stream images) of : "+bioType);
 	}
 }
