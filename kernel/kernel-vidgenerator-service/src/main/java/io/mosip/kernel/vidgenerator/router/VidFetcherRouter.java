@@ -68,6 +68,7 @@ public class VidFetcherRouter {
 			LOGGER.info("publishing event to CHECKPOOL");
 			// send a publish event to vid pool checker
 			vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
+			routingContext.response().headers().add("Content-Type","application/json");
 			ResponseWrapper<VidFetchResponseDto> reswrp = new ResponseWrapper<>();
 			WorkerExecutor executor=vertx.createSharedWorkerExecutor("get-vid", workerExecutorPool);
 			executor.executeBlocking(blockingCodeHandler -> {

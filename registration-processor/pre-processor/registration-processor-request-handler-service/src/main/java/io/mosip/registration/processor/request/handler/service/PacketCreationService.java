@@ -3,6 +3,8 @@ package io.mosip.registration.processor.request.handler.service;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.json.simple.JSONObject;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -33,7 +35,7 @@ public interface PacketCreationService {
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException, ParseException, IdObjectValidationFailedException, IdObjectIOException, JsonParseException, JsonMappingException, IOException;
+	byte[] create(RegistrationDTO registrationDTO , JSONObject demoJsonObject) throws RegBaseCheckedException, ParseException, IdObjectValidationFailedException, IdObjectIOException, JsonParseException, JsonMappingException, IOException;
 
 	String getCreationTime();
 }

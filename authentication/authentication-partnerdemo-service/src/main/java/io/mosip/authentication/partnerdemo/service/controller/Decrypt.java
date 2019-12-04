@@ -147,7 +147,7 @@ public class Decrypt {
 		cryptomanagerRequestDto.setApplicationId(appID);
 		cryptomanagerRequestDto.setReferenceId(refId);
 		cryptomanagerRequestDto.setData(data);
-		cryptomanagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
+		cryptomanagerRequestDto.setTimeStamp(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 		
 		HttpEntity<RequestWrapper<CryptomanagerRequestDto>> httpEntity = new HttpEntity<>(createRequest(cryptomanagerRequestDto));
 		ResponseEntity<Map> response = restTemplate.exchange(decryptURL, HttpMethod.POST, httpEntity, Map.class);

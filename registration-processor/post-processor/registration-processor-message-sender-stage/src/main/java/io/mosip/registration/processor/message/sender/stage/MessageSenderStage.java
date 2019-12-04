@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.mosip.registration.processor.message.sender.constants.NotificationTypeEnum;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,7 +81,7 @@ import io.mosip.registration.processor.status.service.TransactionService;
 
 /**
  * The Class MessageSenderStage.
- * 
+ *
  * @author M1048358 Alok
  * @since 1.0.0
  */
@@ -146,12 +147,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Autowired
 	private TransactionService<TransactionDto> transactionStatusService;
 
-	/** The Constant SMS_TYPE. */
-	private static final String SMS_TYPE = "SMS";
-
-	/** The Constant EMAIL_TYPE. */
-	private static final String EMAIL_TYPE = "EMAIL";
-
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
@@ -185,7 +180,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)
@@ -272,20 +267,15 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 						regType, messageSenderDto, description);
 
 				if (isNotificationSuccess) {
-					description.setMessage(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getMessage());
-					description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
 					isTransactionSuccessful = true;
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				} else {
-					description.setMessage(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getMessage());
-					description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
 					isTransactionSuccessful = false;
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				}
 			}
-			object.setIsValid(Boolean.TRUE);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, "MessageSenderStage::success");
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException |
@@ -336,7 +326,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} finally {
-			registrationStatusDto.setStatusComment(description.getMessage());
+			object.setIsValid(isTransactionSuccessful);
+			registrationStatusDto.setStatusComment(description.getStatusComment());
 			registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -394,11 +385,21 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			String[] allNotificationTypes, String regType, MessageSenderDto messageSenderDto,
 			LogDescription description) throws Exception {
 		boolean isNotificationSuccess = false;
-		boolean isSMSSuccess = true, isEmailSuccess = true;
+		boolean isSMSSuccess = false, isEmailSuccess = false;
+		// if notification is set as none then dont send notification
+		if (allNotificationTypes != null && allNotificationTypes.length == 1
+				&& allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.NONE.name())) {
+			isNotificationSuccess = true;
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getCode());
+			return isNotificationSuccess;
+		}
 		for (String notificationType : allNotificationTypes) {
-			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(messageSenderDto)) {
+			if (notificationType.equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isTemplateAvailable(messageSenderDto)) {
 				isSMSSuccess = SendSms(id, attributes, regType, messageSenderDto, description);
-			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(messageSenderDto)) {
+			} else if (notificationType.equalsIgnoreCase(NotificationTypeEnum.EMAIL.name()) && isTemplateAvailable(messageSenderDto)) {
 				isEmailSuccess = sendEmail(id, attributes, ccEMailList, regType, messageSenderDto, description);
 			} else {
 				throw new TemplateNotFoundException(MessageSenderStatusMessage.TEMPLATE_NOT_FOUND);
@@ -407,8 +408,28 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 		if (isEmailSuccess && isSMSSuccess) {
 			isNotificationSuccess = true;
-			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage() + id);
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getCode());
+		} else if (!isEmailSuccess && !isSMSSuccess) {
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getCode());
+		} else if (allNotificationTypes.length == 1 &&
+				((allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isSMSSuccess) ||
+						(allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.EMAIL.name()) && isEmailSuccess))) {
+			// if only one notification type is set and that is successful
+					isNotificationSuccess = true;
+		} else if (!isEmailSuccess || !isSMSSuccess) {
+			isNotificationSuccess = false;
+			String failedMessage = "Failed to send Notification for type : "
+					+ (isEmailSuccess ? NotificationTypeEnum.SMS.name() : NotificationTypeEnum.EMAIL.name());
+			description.setMessage(failedMessage);
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
+			description.setStatusComment(failedMessage);
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getCode());
 		}
 
 		return isNotificationSuccess;
@@ -423,14 +444,23 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					regType);
 			if (emailResponse.getStatus().equals("success")) {
 				isEmailSuccess = true;
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage());
+				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getCode());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage());
+				description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
 			} else {
-				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage() + id);
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
 				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
-				description.setMessage(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getMessage());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
 				description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getCode());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
+		} catch (EmailIdNotFoundException e) {
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
+			description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getCode());
 		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
 			description.setStatusComment(e.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
@@ -450,14 +480,23 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					messageSenderDto.getIdType(), attributes, regType);
 			if (smsResponse.getStatus().equals("success")) {
 				isSmsSuccess = true;
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_SUCCESS.getMessage());
+				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_SUCCESS.getCode());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_SUCCESS.getMessage());
+				description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
 			} else {
-				description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage() + id);
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
 				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
-				description.setMessage(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getMessage());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
 				description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getCode());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
+		}catch (PhoneNumberNotFoundException e) {
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
+			description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getCode());
 		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
 			description.setStatusComment(e.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());

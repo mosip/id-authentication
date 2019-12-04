@@ -181,7 +181,7 @@ public class UinCardRePrintServiceImpl {
 						uinCardRePrintRequestDto.getRequest().getRegistrationType(),
 						uinCardRePrintRequestDto.getRequest().getCenterId(),
 						uinCardRePrintRequestDto.getRequest().getMachineId(), vid, cardType);
-				packetZipBytes = packetCreationService.create(registrationDTO);
+				packetZipBytes = packetCreationService.create(registrationDTO , null);
 				String rid = registrationDTO.getRegistrationId();
 				String packetCreatedDateTime = rid.substring(rid.length() - 14);
 				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
