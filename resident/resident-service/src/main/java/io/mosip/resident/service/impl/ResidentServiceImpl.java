@@ -1,7 +1,6 @@
 package io.mosip.resident.service.impl;
 
-import java.io.IOException;
-
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -9,21 +8,33 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.constant.LoggerFileConstant;
+import io.mosip.resident.constant.NotificationTemplate;
+import io.mosip.resident.constant.ResidentErrorCode;
+import io.mosip.resident.dto.EuinRequestDTO;
+import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.PrintRequest;
-import io.mosip.resident.dto.PrintResponse;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.dto.UINCardRequestDTO;
+import io.mosip.resident.exception.ApisResourceAccessException;
+import io.mosip.resident.exception.ResidentServiceException;
+import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentService;
+import io.mosip.resident.util.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 
 @Service
 public class ResidentServiceImpl implements ResidentService {
+	
+	private static final Logger logger = LoggerConfiguration.logConfig(ResidentServiceImpl.class);
 
 	@Autowired
 	private VidValidator<String> vidValidator;
@@ -43,9 +54,14 @@ public class ResidentServiceImpl implements ResidentService {
     @Autowired
     private TokenGenerator tokenGenerator;
     
+    @Autowired
+    private IdAuthService idAuthService;
+    
+    @Autowired
+    NotificationService notificationService;
+    
     private static final String PRINT_ID="mosip.registration.processor.print.id";
     private static final String PRINT_VERSION="mosip.registration.processor.application.version";
-    private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 
 	@Override
@@ -57,28 +73,54 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public PrintResponse reqEuin(UINCardRequestDTO dto) {
-		if(validateIndividualId(dto.getIdValue(),dto.getIdtype())) {
-		/*TODO IDA OTP Authentication*/
-		}
-		PrintRequest request=new PrintRequest();
-		request.setRequest(dto);
-		request.setId(env.getProperty(PRINT_ID));
-		request.setVersion(env.getProperty(PRINT_VERSION));
-		request.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-		PrintResponse response= new PrintResponse();
-		try {
-			response = (PrintResponse) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()), null,
-					request, PrintResponse.class, tokenGenerator.getToken());
+	public byte[]  reqEuin(EuinRequestDTO dto) {
+		
+		byte[]	response;
+		
+		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
+					dto.getIndividualIdType(), dto.getOtp())) {
+				
+				PrintRequest request=new PrintRequest();
+				UINCardRequestDTO uincardDTO=new UINCardRequestDTO();
+				uincardDTO.setCardType(dto.getCardType());
+				uincardDTO.setIdValue(dto.getIndividualId());
+				IdType idtype=getIdType(dto.getIndividualIdType());
+				uincardDTO.setIdtype(idtype);
+				request.setRequest(uincardDTO);
+				request.setId(env.getProperty(PRINT_ID));
+				request.setVersion(env.getProperty(PRINT_VERSION));
+				request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+				try {
+					response = (byte[]) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()),
+							null,request, byte[].class, tokenGenerator.getToken());
+					if(response !=null) {
+						NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
+						notificationRequestDto.setId(dto.getIndividualId());
+						notificationRequestDto.setIdType(idtype);
+						notificationRequestDto.setRegistrationType("NEW");
+						notificationRequestDto.setTemplateType(NotificationTemplate.RS_DOW_UIN_Status);
+						notificationService.sendNotification(notificationRequestDto);
+					}
+					
+				} catch ( Exception e) {
+					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+							dto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
+							+ e.getMessage()+ ExceptionUtils.getStackTrace(e));
+					throw new ApisResourceAccessException("Unable to fetch uin card");
+				} 
+			}
+			else {
+				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+			}
 		}
-		/*TODO Send notification*/
+		else {
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
+		}
+		
 		return response;
 	}
 
@@ -136,18 +178,35 @@ public class ResidentServiceImpl implements ResidentService {
 		return null;
 	}
 	
-	private boolean validateIndividualId(String individualId,IdType individualIdType) {
+	private boolean validateIndividualId(String individualId,String individualIdType) {
 		boolean validation=false;
-		if(individualIdType.toString().equalsIgnoreCase(IdType.UIN.toString())) {
+		if(individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
 			validation= uinValidator.validateId(individualId);
 		}
-		else if(individualIdType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+		else if(individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
 			validation= vidValidator.validateId(individualId);
 		}
-		else if(individualIdType.toString().equalsIgnoreCase(IdType.RID.toString())) {
+		else if(individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
 			validation= ridValidator.validateId(individualId);
 		}
+		else {
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
+		}
 		return validation;
+	}
+	private IdType getIdType(String individualIdType) {
+		IdType idType=null;
+		if(individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
+			idType= IdType.UIN;
+		}
+		else if(individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
+			idType= IdType.VID;
+		}
+		else if(individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
+			idType= IdType.RID;
+		}
+		return idType;
 	}
 
 }

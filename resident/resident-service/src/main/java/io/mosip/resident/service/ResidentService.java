@@ -1,17 +1,16 @@
 package io.mosip.resident.service;
 
-import io.mosip.resident.dto.PrintResponse;
+import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
-import io.mosip.resident.dto.UINCardRequestDTO;
 
 public interface ResidentService {
 
 
 	public ResponseDTO getRidStatus(RequestDTO dto);
 	
-	public PrintResponse reqEuin(UINCardRequestDTO dto);
+	public byte[] reqEuin(EuinRequestDTO euinRequestDTO);
 	
 	public ResponseDTO reqPrintUin(ResidentReprintRequestDto dto);
 	

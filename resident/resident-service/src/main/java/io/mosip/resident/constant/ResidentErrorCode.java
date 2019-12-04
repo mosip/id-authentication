@@ -10,7 +10,8 @@ public enum ResidentErrorCode {
 	VID_CREATION_EXCEPTION("RES-SER-006", "Exception while creating vid"),
 	VID_ALREADY_PRESENT("RES-SER-007", "Maximum allowed VIDs are active. Deactivate VID to generate new one."),
 	INVALID_INPUT("RES-SER-008", "Invalid Input - "),
-    IN_VALID_UIN_OR_RID("RES-SER-009","In Valid UIN or RID"),;
+    IN_VALID_UIN_OR_RID("RES-SER-009","In Valid UIN or RID"), 
+    IN_VALID_UIN_OR_VID("RES-SER-010","Data entered is not valid.");
 
 	private final String errorCode;
 	private final String errorMessage;

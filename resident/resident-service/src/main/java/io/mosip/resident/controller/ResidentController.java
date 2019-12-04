@@ -1,10 +1,14 @@
 package io.mosip.resident.controller;
 
+import java.io.ByteArrayInputStream;
+
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.PrintResponse;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
@@ -37,10 +42,16 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/euin",produces = MediaType.APPLICATION_JSON_VALUE)
-	public PrintResponse reqEuin(@Valid @RequestBody RequestWrapper<UINCardRequestDTO> requestDTO) {
-		PrintResponse response = residentService.reqEuin(requestDTO.getRequest());
+	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO) {
 		
-		return response;
+		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
+		
+		InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfbytes));
+		
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
+				.header("Content-Disposition",
+						"attachment; filename=\"" + requestDTO.getRequest().getIndividualId() + ".pdf\"")
+				.body((Object) resource);
 	}
 
 	@ResponseFilter
