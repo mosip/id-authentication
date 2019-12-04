@@ -76,7 +76,7 @@ public class InternalRetrieveAuthTypeController {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IDDataValidationException    the ID data validation exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@ApiOperation(value = "Authtype Status Request", response = IdAuthenticationAppException.class)
 	@GetMapping(path = "/authtypes/status/individualIdType/{IDType}/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
