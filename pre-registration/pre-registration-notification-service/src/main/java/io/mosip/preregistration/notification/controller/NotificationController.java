@@ -51,7 +51,7 @@ public class NotificationController {
 	private Logger log = LoggerConfiguration.logConfig(NotificationController.class);
 
 	/**
-	 * Api to Trigger notification.
+	 * Api to Trigger notification service.
 	 * 
 	 * @param jsonbObject
 	 *            the json string.
