@@ -530,10 +530,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, attempt);
 				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
+				qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_RED);
+				qualityText.getStyleClass().add(RegistrationConstants.LABEL_GREEN);
+				
 			} else {
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, attempt);
 				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
 				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
+				qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
+				qualityText.getStyleClass().add(RegistrationConstants.LABEL_RED);
 			}
 		}
 	}
