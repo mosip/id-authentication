@@ -1,7 +1,6 @@
 package io.mosip.resident.service.impl;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
@@ -13,6 +12,7 @@ import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.*;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
+import io.mosip.resident.exception.VidAlreadyPresentException;
 import io.mosip.resident.exception.VidCreationException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentVidService;
@@ -25,19 +25,27 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Component
 public class ResidentVidServiceImpl implements ResidentVidService {
 
     private static final Logger logger = LoggerConfiguration.logConfig(ResidentVidServiceImpl.class);
 
-    @Value("${vid.create.id}")
+    private static final String VID_ALREADY_EXISTS_ERROR_CODE = "IDR-VID-003";
+
+    @Value("${resident.vid.id}")
     private String id;
 
-    @Value("${vid.create.version}")
+    @Value("${resident.vid.version}")
     private String version;
+
+    @Value("${vid.create.id}")
+    private String vidCreateId;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Autowired
     private Environment env;
@@ -52,7 +60,9 @@ public class ResidentVidServiceImpl implements ResidentVidService {
     private IdAuthService idAuthService;
 
     @Override
-    public VidResponseDto generateVid(VidRequestDto requestDto) {
+    public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) {
+
+        ResponseWrapper<VidResponseDto> responseDto = new ResponseWrapper<>();
 
         boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(),
                 requestDto.getIndividualId(), requestDto.getIndividualIdType(), requestDto.getOtp());
@@ -61,26 +71,37 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             throw new OtpValidationFailedException();
 
         try {
-            vidGenerator(requestDto);
+            VidGeneratorResponseDto vidResponse = vidGenerator(requestDto);
+            VidResponseDto vidResponseDto = new VidResponseDto();
+            vidResponseDto.setVid(vidResponse.getVID());
+            vidResponseDto.setStatus("Success");
+            vidResponseDto.setMessage("Message has been sent to email id");
+            responseDto.setResponse(vidResponseDto);
         } catch (JsonProcessingException e) {
-            throw new VidCreationException(e.getErrorCode(), e.getErrorText());
+            throw new VidCreationException(e.getErrorText());
+        } catch (IOException e) {
+            throw new VidCreationException(e.getMessage());
         }
 
-        return null;
+        responseDto.setId(id);
+        responseDto.setVersion(version);
+        responseDto.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
+
+        return responseDto;
 
     }
 
-    private boolean vidGenerator(VidRequestDto requestDto) throws JsonProcessingException {
+    private VidGeneratorResponseDto vidGenerator(VidRequestDto requestDto) throws JsonProcessingException, IOException {
         VidGeneratorRequestDto vidRequestDto = new VidGeneratorRequestDto();
         RequestWrapper<VidGeneratorRequestDto> request = new RequestWrapper<>();
-        ResponseWrapper<VidGeneratorResponseDto> response = null;
+        ResponseWrapper<?> response = null;
 
         vidRequestDto.setUIN(requestDto.getIndividualId());
         vidRequestDto.setVidType(requestDto.getVidType());
-        request.setId(id);
+        request.setId(vidCreateId);
         request.setVersion(version);
         request.setRequest(vidRequestDto);
-        request.setRequesttime(LocalDateTime.now(ZoneId.of("UTC")));
+        request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 
         logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                 requestDto.getIndividualIdType(),
@@ -88,8 +109,8 @@ public class ResidentVidServiceImpl implements ResidentVidService {
                         + JsonUtils.javaObjectToJsonString(request));
 
         try {
-            response = (ResponseWrapper<VidGeneratorResponseDto>) residentServiceRestClient
-                    .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()), MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getToken());
+            response = (ResponseWrapper) residentServiceRestClient
+                    .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()), MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getRegprocToken());
         } catch (Exception e) {
             logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode() + e.getMessage()
@@ -101,12 +122,19 @@ public class ResidentVidServiceImpl implements ResidentVidService {
                 requestDto.getIndividualIdType(),
                 "ResidentVidServiceImpl::vidGenerator():: create Vid response :: "+ JsonUtils.javaObjectToJsonString(response));
 
-        if (!response.getErrors().isEmpty()) {
-            throw new VidCreationException(ResidentErrorCode.VID_CREATION_EXCEPTION.getErrorCode(),
-                    ResidentErrorCode.VID_CREATION_EXCEPTION.getErrorMessage());
+        if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+            response.getErrors().stream().map(err -> err.getErrorCode().equalsIgnoreCase(VID_ALREADY_EXISTS_ERROR_CODE)).collect(Collectors.toList());
+            throw (response.getErrors().size() == 1) ?
+                new VidAlreadyPresentException(ResidentErrorCode.VID_ALREADY_PRESENT.getErrorCode(),
+                        ResidentErrorCode.VID_ALREADY_PRESENT.getErrorMessage())
+            :
+            new VidCreationException(ResidentErrorCode.VID_CREATION_EXCEPTION.getErrorMessage());
 
         }
 
-        return response != null && response.getResponse().getVID() != null;
+        VidGeneratorResponseDto vidResponse = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
+                VidGeneratorResponseDto.class);
+
+        return vidResponse;
     }
 }

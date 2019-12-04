@@ -3,8 +3,10 @@ package io.mosip.resident.controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.dto.ResidentVidRequestDto;
+import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.dto.VidResponseDto;
 import io.mosip.resident.service.ResidentVidService;
+import io.mosip.resident.validator.RequestValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,13 +33,17 @@ public class ResidentVidController {
     @Autowired
     private ResidentVidService residentVidService;
 
+    @Autowired
+    private RequestValidator validator;
+
     //@PreAuthorize("hasAnyRole('INDIVIDUAL')")
     @PostMapping(path = "/vid", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get the registration entity", response = ResidentVidRequestDto.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
-            @ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
+    @ApiOperation(value = "Generate new VID", response = ResidentVidRequestDto.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "VID successfully generated"),
+            @ApiResponse(code = 400, message = "Unable to generate VID") })
     public ResponseEntity<Object> generateVid(@RequestBody(required = true) ResidentVidRequestDto requestDto) {
-        VidResponseDto vidResponseDto = residentVidService.generateVid(requestDto.getRequest());
+        validator.validateVidCreateRequest(requestDto);
+        ResponseWrapper<VidResponseDto> vidResponseDto = residentVidService.generateVid(requestDto.getRequest());
         return ResponseEntity.ok().body(vidResponseDto);
     }
 }

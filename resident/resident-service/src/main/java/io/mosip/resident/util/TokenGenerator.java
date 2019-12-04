@@ -38,6 +38,14 @@ public class TokenGenerator {
      * @throws IOException
      */
     public String getToken() throws IOException {
+        return generateToken(setRequestDto());
+    }
+
+    public String getRegprocToken() throws IOException {
+        return generateToken(setRegprcRequestDto());
+    }
+
+    private String generateToken(ClientIdSecretKeyRequestDto dto) throws IOException {
         // TokenRequestDTO<PasswordRequest> tokenRequest = new
         // TokenRequestDTO<PasswordRequest>();
         TokenRequestDto tokenRequest = new TokenRequestDto();
@@ -45,7 +53,7 @@ public class TokenGenerator {
 
         tokenRequest.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
         // tokenRequest.setRequest(setPasswordRequestDTO());
-        tokenRequest.setRequest(setRequestDto());
+        tokenRequest.setRequest(dto);
         tokenRequest.setVersion(environment.getProperty("token.request.version"));
 
         Gson gson = new Gson();
@@ -84,4 +92,13 @@ public class TokenGenerator {
         request.setSecretKey(environment.getProperty("resident.secretKey"));
         return request;
     }
+
+    private ClientIdSecretKeyRequestDto setRegprcRequestDto() {
+        ClientIdSecretKeyRequestDto request = new ClientIdSecretKeyRequestDto();
+        request.setAppId(environment.getProperty("regprc.appid"));
+        request.setClientId(environment.getProperty("regprc.clientId"));
+        request.setSecretKey(environment.getProperty("regprc.secretKey"));
+        return request;
+    }
+
 }

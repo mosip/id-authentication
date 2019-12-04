@@ -12,7 +12,7 @@ public class OtpValidationFailedException extends BaseUncheckedException {
      * Instantiates a new otp validation failed exception.
      */
     public OtpValidationFailedException() {
-        super(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(), ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage());
+        super(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(), ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
     }
 
     /**
@@ -22,7 +22,7 @@ public class OtpValidationFailedException extends BaseUncheckedException {
      *            the error message
      */
     public OtpValidationFailedException(String errorMessage) {
-        super(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode() + EMPTY_SPACE, errorMessage);
+        super(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode() + EMPTY_SPACE, errorMessage);
     }
 
     /**
