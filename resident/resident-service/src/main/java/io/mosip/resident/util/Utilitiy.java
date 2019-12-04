@@ -2,10 +2,16 @@ package io.mosip.resident.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ServiceError;
@@ -13,9 +19,11 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.IdRepoResponseDto;
+import io.mosip.resident.dto.JsonValue;
 import io.mosip.resident.dto.VidGeneratorResponseDto;
 import io.mosip.resident.exception.IdRepoAppException;
 
+@Component
 public class Utilitiy {
 
 	@Autowired
@@ -24,7 +32,26 @@ public class Utilitiy {
 	@Autowired
 	private TokenGenerator tokenGenerator;
 
-	public JSONObject retrieveIdrepoJsonByUIN(String id, IdType idType) throws IOException, Exception {
+	@Value("${config.server.file.storage.uri}")
+	private static String configServerFileStorageURL;
+
+	@Value("${registration.processor.identityjson}")
+	private static String getRegProcessorIdentityJson;
+
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
+
+	@Value("${mosip.secondary-language}")
+	private String secondaryLang;
+
+	@Value("${mosip.notification.language-type}")
+	private String languageType;
+
+	private static final String IDENTITY = "identity";
+	private static final String EMAIL = "email";
+	private static final String PHONE = "phone";
+
+	public JSONObject retrieveIdrepoJson(String id, IdType idType) throws IOException, Exception {
 
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(id);
@@ -62,6 +89,45 @@ public class Utilitiy {
 		ObjectMapper objMapper = new ObjectMapper();
 		return objMapper.convertValue(idRepoResponseDto.getResponse().getIdentity(), JSONObject.class);
 
+	}
+
+	public Map<String, Object> getMailingAttributes(String id, IdType idType) throws IOException, Exception {
+		Map<String, Object> attributes = new HashMap<>();
+		JSONObject idJson = retrieveIdrepoJson(id, idType);
+		JSONObject identity = (JSONObject) idJson.get(IDENTITY);
+		String email = (String) identity.get(EMAIL);
+		String phone = (String) identity.get(PHONE);
+		attributes.put(EMAIL, email);
+		attributes.put(PHONE, phone);
+		String mappingJsonString = getMappingJson();
+		JSONObject mappingJsonObject = new ObjectMapper().readValue(mappingJsonString, JSONObject.class);
+		JSONObject mappingIdentityJson = (JSONObject) mappingJsonObject.get(IDENTITY);
+		JSONObject nameJson = (JSONObject) mappingIdentityJson.get("name");
+		String[] names = ((String) nameJson.get("value")).split(",");
+		for (String name : names) {
+			JsonValue[] nameArray = JsonUtil.getJsonValues(identity, name);
+			if (nameArray != null) {
+				for (JsonValue value : nameArray) {
+					if (languageType.equals("BOTH")) {
+						if (value.getLanguage().equals(primaryLang))
+							attributes.put(name + "_" + primaryLang, value.getValue());
+						if (value.getLanguage().equals(secondaryLang))
+							attributes.put(name + "_" + secondaryLang, value.getValue());
+					} else {
+						if (value.getLanguage().equals(primaryLang))
+							attributes.put(name + "_" + primaryLang, value.getValue());
+					}
+				}
+
+			}
+		}
+
+		return attributes;
+	}
+
+	private static String getMappingJson() {
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(configServerFileStorageURL + getRegProcessorIdentityJson, String.class);
 	}
 
 }
