@@ -168,14 +168,15 @@ public interface BioService {
 	 *
 	 * @param irisDetailsDTO
 	 *            the iris details DTO
-	 * @param irisType
-	 *            the iris type
-	 * @throws IOException 
+	 * @param requestDetail details of iris request
+	 * @param leftEyeAttempt leftEye attempt number
+	 * @param rightEyeAttempt right eye attempt number
+	 * @throws IOException  the IO exception
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, RequestDetail requestDetail,int leftEyeAttempt,int rightEyeAttempt) throws RegBaseCheckedException, IOException;
-		
+	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, RequestDetail requestDetail, int leftEyeAttempt,
+			int rightEyeAttempt) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validate the Input Finger with the finger that is fetched from the Database.

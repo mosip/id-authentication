@@ -701,6 +701,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			irisDetails.setIris((captureRespoonse.getBioValue()));
 			irisDetails.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
 			irisDetails.setIrisType(captureRespoonse.getBioSubType());
+			irisDetails.setCaptured(true);
 			detailsDTO.getIrises().add(irisDetails);
 
 			
