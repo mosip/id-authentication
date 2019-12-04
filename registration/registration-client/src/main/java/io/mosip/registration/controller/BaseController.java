@@ -1063,7 +1063,7 @@ public class BaseController {
 
 			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
-			if (isPacketsPendingForEOD()) {
+			if (isPacketsPendingForEODOrReRegister()) {
 				message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
 			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
@@ -1142,6 +1142,21 @@ public class BaseController {
 	protected boolean isPacketsPendingForEOD() {
 
 		return centerMachineReMapService.isPacketsPendingForEOD();
+	}
+
+	protected boolean isPacketsPendingForEODOrReRegister() {
+
+		return isPacketsPendingForEOD() || isPacketsPendingForReRegister();
+	}
+	
+	/**
+	 * Checks if is packets pending for ReRegister.
+	 *
+	 * @return true, if is packets pending for ReRegister
+	 */
+	protected boolean isPacketsPendingForReRegister() {
+
+		return centerMachineReMapService.isPacketsPendingForReRegister();
 	}
 
 	/**
