@@ -7,6 +7,7 @@ public enum ResidentErrorCode {
 	TOKEN_GENERATION_FAILED("RES-XXX-XXX", "Token generation failed"),
 	OTP_VALIDATION_FAILED("RES-XXX-XXX", "OTP validation failed"),
 	API_RESOURCE_UNAVAILABLE("RES-XXX-XXX", "API resource is not available"),
+	IN_VALID_UIN_OR_RID("RES-XXX-XXX","In Valid UIN or RID"),
 	VID_CREATION_EXCEPTION("RES-XXX-XXX", "Exception while creating vid");
 
 	private final String errorCode;

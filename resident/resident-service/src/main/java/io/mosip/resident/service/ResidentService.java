@@ -2,6 +2,7 @@ package io.mosip.resident.service;
 
 import io.mosip.resident.dto.PrintResponse;
 import io.mosip.resident.dto.RequestDTO;
+import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.dto.UINCardRequestDTO;
 
@@ -12,7 +13,7 @@ public interface ResidentService {
 	
 	public PrintResponse reqEuin(UINCardRequestDTO dto);
 	
-	public ResponseDTO reqPrintUin(RequestDTO dto);
+	public ResponseDTO reqPrintUin(ResidentReprintRequestDto dto);
 	
 	public ResponseDTO reqUin(RequestDTO dto);
 	

@@ -15,6 +15,7 @@ import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.PrintRequest;
 import io.mosip.resident.dto.PrintResponse;
 import io.mosip.resident.dto.RequestDTO;
+import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.dto.UINCardRequestDTO;
 import io.mosip.resident.service.ResidentService;
@@ -82,7 +83,7 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqPrintUin(RequestDTO dto) {
+	public ResponseDTO reqPrintUin(ResidentReprintRequestDto dto) {
 		// TODO Auto-generated method stub
 		return null;
 	}
