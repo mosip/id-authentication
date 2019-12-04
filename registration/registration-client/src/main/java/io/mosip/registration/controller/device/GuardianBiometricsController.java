@@ -540,36 +540,40 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 		if (detailsDTO.isCaptured()) {
 			detailsDTO.getIrises().forEach((iris) -> {
-				if(iris.getIrisType().equals(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
-					leftIrisCount++;
-					retries=leftIrisCount;
-				}else {
-					rightIrisCount++;
-					retries=rightIrisCount;
-				}
-				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
-				biometricImage.setImage(convertBytesToImage(iris.getIris()));
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-				setCapturedValues(iris.getQualityScore(), retries, thresholdValue);
-				iris.setNumOfIrisRetry(retries);
+				
+				if (irisType.toLowerCase().contains(iris.getIrisType().split(" ")[0].toLowerCase())) {
+					if (iris.getIrisType().equals(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
+						leftIrisCount++;
+						retries = leftIrisCount;
+					} else {
+						rightIrisCount++;
+						retries = rightIrisCount;
+					}
+					scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
+					biometricImage.setImage(convertBytesToImage(iris.getIris()));
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
+					setCapturedValues(iris.getQualityScore(), retries, thresholdValue);
+					iris.setNumOfIrisRetry(retries);
 
-				if (validateIrisQulaity(iris, new Double(thresholdValue))) {
-					if(retries==Integer
+					if (validateIrisQulaity(iris, new Double(thresholdValue))) {
+						if (retries == Integer
 								.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
-						scanBtn.setDisable(true);
-					continueBtn.setDisable(false);
-				} else {
-					scanBtn.setDisable(false);
-					continueBtn.setDisable(true);
+							scanBtn.setDisable(true);
+						continueBtn.setDisable(false);
+					} else {
+						scanBtn.setDisable(false);
+						continueBtn.setDisable(true);
+					}
+					irisDetailsDTOs.add(iris);
 				}
-				irisDetailsDTOs.add(iris);
+
 			});
 			popupStage.close();
 			if(validateIrisLocalDedup(detailsDTO.getIrises())){
 				continueBtn.setDisable(true);
 				duplicateCheckLbl.setText("Duplicate" + " " + (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
 			}else {
-				continueBtn.setDisable(true);
+				continueBtn.setDisable(false);
 			}
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);

@@ -1,4 +1,4 @@
-﻿package io.mosip.registration.constants;
+package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,6 @@ import java.util.Set;
  *
  */
 public class RegistrationConstants {
-
 	/**
 	 * private constructor
 	 */
@@ -1573,4 +1572,8 @@ public class RegistrationConstants {
 	public static final String AP_IDA="IDA";
 	
 	public static String DEDUPLICATION_ENABLE_FLAG = "mosip.registration.mds.deduplication.enable.flag";
+
+	public static String DEDUPLICATION_FINGERPRINT_ENABLE_FLAG = "mosip.registration.mds.fingerprint.dedup.enable.flag";
+	public static String DEDUPLICATION_IRIS_ENABLE_FLAG = "mosip.registration.mds.iris.dedup.enable.flag";
+	public static String DEDUPLICATION_FACE_ENABLE_FLAG = "mosip.registration.mds.face.dedup.enable.flag";
 }

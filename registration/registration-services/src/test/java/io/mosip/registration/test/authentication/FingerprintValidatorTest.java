@@ -45,7 +45,7 @@ import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SessionContext.class })
+@PrepareForTest({ SessionContext.class, ApplicationContext.class})
 public class FingerprintValidatorTest {
 
 	@Rule
@@ -72,7 +72,6 @@ public class FingerprintValidatorTest {
 		Map<String, Object> temp = new HashMap<String, Object>();
 		temp.put("mosip.registration.finger_print_score", "1");
 		applicationContext.setApplicationMap(temp);
-
 		authenticationValidatorDTO.setUserId("mosip");
 		authenticationValidatorDTO.setPassword("mosip");
 		authenticationValidatorDTO.setOtp("12345");
@@ -107,6 +106,10 @@ public class FingerprintValidatorTest {
 		String minutiae = fingerprintTemplate.serialize();
 		userBiometric.setBioMinutia(minutiae);
 		// capturedBir.setBDB(minutiae.getBytes());
+		Map<String, Object> applicationMap = new HashMap<>();	
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.DISABLE);
 
 		when(userDetailDAO.getUserSpecificBioDetails("mosip", "FIN")).thenReturn(userBiometrics);
 		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))
@@ -137,7 +140,11 @@ public class FingerprintValidatorTest {
 		userBiometrics.add(userBiometric);
 		
 		PowerMockito.mockStatic(SessionContext.class);
-		SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);	
+		SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
+		Map<String, Object> applicationMap = new HashMap<>();	
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.DISABLE);
 
 		when(userDetailDAO.getUserSpecificBioDetail("mosip", "FIN", "fingerType")).thenReturn(userBiometric);
 		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))

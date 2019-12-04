@@ -62,6 +62,13 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		LOGGER.info(LoggerConstants.FINGER_PRINT_AUTHENTICATION, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Scanned Finger");
 
+		if (!authenticationValidatorDTO.isAuthValidationFlag()) {
+			if ((String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG)))
+							.equalsIgnoreCase(RegistrationConstants.DISABLE))
+				return false;
+		}
+
 		if (RegistrationConstants.SINGLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
 			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
 					authenticationValidatorDTO.getFingerPrintDetails().get(0));
@@ -97,8 +104,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private boolean validateFpWithBioApi(List<FingerprintDetailsDTO> capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
 		boolean flag = true;
-		if((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_ENABLE_FLAG))).equalsIgnoreCase(RegistrationConstants.DISABLE))
-		return false;
+
 		BIR[] capturedBir = new BIR[capturedFingerPrintDto.size()];
 
 		int i = 0;
