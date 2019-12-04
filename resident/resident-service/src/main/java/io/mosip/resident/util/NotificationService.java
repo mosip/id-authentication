@@ -19,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -52,12 +53,18 @@ public class NotificationService {
 
 	@Value("${mosip.notification.language-type}")
 	private String languageType;
-	
+
 	@Value("${registration.processor.notification.emails}")
 	private String notificationEmails;
-	
+
 	@Autowired
 	private Environment env;
+
+	@Autowired
+	private ResidentServiceRestClient restClient;
+
+	@Autowired
+	private TokenGenerator tokenGenerator;
 
 	public static final String LINE_SEPARATOR = "" + '\n' + '\n' + '\n';
 
@@ -78,6 +85,9 @@ public class NotificationService {
 
 		try {
 			Map<String, Object> mailingAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
+			if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
+				mailingAttributes.putAll(dto.getAdditionalAttributes());
+			}
 			switch (dto.getTemplateType().name()) {
 			case "RS_DOW_UIN_Status":
 				subject = "Download e-card";
@@ -87,7 +97,7 @@ public class NotificationService {
 			}
 
 			sendSMSNotification(mailingAttributes, dto.getTemplateType());
-
+			sendEmailNotification(mailingAttributes, dto.getTemplateType(), null, subject);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,15 +132,15 @@ public class NotificationService {
 
 	private boolean sendSMSNotification(Map<String, Object> mailingAttributes,
 			NotificationTemplate notificationTemplate) throws IOException {
-		//ResponseWrapper<NotificationResponseDTO> response = new ResponseWrapper<>();
+		// ResponseWrapper<NotificationResponseDTO> response = new ResponseWrapper<>();
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 
-		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate+"_SMS"),
+		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_SMS"),
 				mailingAttributes);
 
 		if (languageType.equalsIgnoreCase("both")) {
-			String secondaryLanguageMergeTemplate = templateMerge(getTemplate(secondaryLang, notificationTemplate+"_SMS"),
-					mailingAttributes);
+			String secondaryLanguageMergeTemplate = templateMerge(
+					getTemplate(secondaryLang, notificationTemplate + "_SMS"), mailingAttributes);
 			primaryLanguageMergeTemplate = primaryLanguageMergeTemplate + LINE_SEPARATOR
 					+ secondaryLanguageMergeTemplate;
 		}
@@ -159,32 +169,45 @@ public class NotificationService {
 	}
 
 	private boolean sendEmailNotification(Map<String, Object> mailingAttributes,
-			NotificationTemplate notificationTemplate,MultipartFile[] attachment) throws IOException {
-		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
-		
-		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate+"_SMS"),
+			NotificationTemplate notificationTemplate, MultipartFile[] attachment, String subject) throws Exception {
+		// ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
+
+		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_SMS"),
 				mailingAttributes);
 
 		if (languageType.equalsIgnoreCase("both")) {
-			String secondaryLanguageMergeTemplate = templateMerge(getTemplate(secondaryLang, notificationTemplate+"_SMS"),
-					mailingAttributes);
+			String secondaryLanguageMergeTemplate = templateMerge(
+					getTemplate(secondaryLang, notificationTemplate + "_SMS"), mailingAttributes);
 			primaryLanguageMergeTemplate = primaryLanguageMergeTemplate + LINE_SEPARATOR
 					+ secondaryLanguageMergeTemplate;
 		}
-		
+		LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
 		String[] mailTo = { mailingAttributes.get("email").toString() };
-		String[] mailCC = notificationEmails.split("\\|");
+		String[] mailCc = notificationEmails.split("\\|");
 		String apiHost = env.getProperty(ApiName.EMAILNOTIFIER.name());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiHost);
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-		
-		if (mailCC != null) {
-			for (String item : mailCC) {
+
+		if (mailCc != null) {
+			for (String item : mailCc) {
 				builder.queryParam("mailCc", item);
 			}
 		}
+
+		builder.queryParam("mailSubject", subject);
+		builder.queryParam("mailContent", primaryLanguageMergeTemplate);
+		params.add("attachments", attachment);
+		ResponseWrapper<NotificationResponseDTO> response = restClient.postApi(builder.build().toUriString(),
+				MediaType.MULTIPART_FORM_DATA, params,
+				new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {
+				}.getClass(), tokenGenerator.getToken());
+
+		if (response.getResponse().getStatus().equals("success")) {
+			return true;
+		}
+
 		return false;
 
 	}

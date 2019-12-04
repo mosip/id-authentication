@@ -1,7 +1,7 @@
 package io.mosip.resident.dto;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.NotificationTemplate;
@@ -16,6 +16,6 @@ public class NotificationRequestDto implements Serializable {
 	static final long serialVersionUID = 3726544930055329455L;
 	private String id;
 	private IdType idType;
-	private String registrationType;
 	private NotificationTemplate templateType;
+	private Map<String, Object> additionalAttributes;
 }
