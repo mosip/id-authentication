@@ -42,6 +42,24 @@ public class MasterDataConstant {
     public static final String DEVICE_REGISTER_UPDATE_MESSAGE="Device status updated successfully";
     public static final String INVALID_REG_CENTER_TYPE="Invalid centerTypeCode";
     public static final String INVALID_LOCATION_CODE="Invalid Location Code";
-	public static final String ENTITY_IS_CALLED = "Search API called";
+	public static final String SEARCH_API_IS_CALLED = "Search API called::";
+	public static final String SUCCESSFUL_SEARCH=" System successfully searched List of %s";
+	public static final String SEARCH_FAILED="%s - Search Failure";
+	public static final String FILTER_API_IS_CALLED = "Filter API called::";
+	public static final String SUCCESSFUL_FILTER=" %s - Filter Success";
+	public static final String FILTER_FAILED="%s - Filter Failure";
+	public static final String CREATE_API_IS_CALLED = "Create API called::";
+	public static final String SUCCESSFUL_CREATE="Create %s - Success";
+	public static final String CREATE_ERROR_AUDIT="Create %s - Failure";
+	public static final String UPDATE_API_IS_CALLED= "%s Update API called";
+	public static final String SUCCESSFUL_UPDATE="Update %s - Success";
+	public static final String FAILURE_UPDATE="Update %s - Failure";
+	public static final String DECOMMISION_API_CALLED="%s Decommission API called";
+	public static final String DECOMMISSION_SUCCESS="Decommission %s - Success";
+	public static final String DECOMMISSION_SUCCESS_DESC="System successfully decommissioned a %s %d";
+	public static final String DECOMMISSION_FAILURE="Decommission %s - Failure";
+	public static final String DECOMMISSION_FAILURE_DESC="%s_%d";
+	
+	
 	public static final String AUDIT_SYSTEM = "SYSTEM";
 }
