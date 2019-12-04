@@ -310,7 +310,7 @@ public class LostPacketServiceImpl implements LostPacketService {
 					PlatformErrorMessages.RPR_PGS_NO_RECORDS_EXCEPTION.getMessage(), new Throwable());
 		} else if (uinSet.size() == 1) {
 			Optional<String> value = uinSet.stream().findFirst();
-			uin = value.toString();
+			uin = value.get();
 		} else {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_MULTIPLE_RECORDS_EXCEPTION,
 					PlatformErrorMessages.RPR_PGS_MULTIPLE_RECORDS_EXCEPTION.getMessage(), new Throwable());
