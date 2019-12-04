@@ -1,5 +1,6 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.BIO_SERVICE;
 import static io.mosip.registration.constants.LoggerConstants.STREAMER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -71,7 +72,7 @@ public class Streamer {
 		imageView.setImage(streamImage);
 	}
 
-	public void setBioStreamImages(Image streamImage, String bioType, int attempt) {
+	public void setBioStreamImages(Image image, String bioType, int attempt) {
 
 		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
 				"Started Set Stream image of : " + bioType + " for attempt : " + attempt);
@@ -87,7 +88,8 @@ public class Streamer {
 
 		}
 
-		bioImage.put(attempt, streamImage);
+		image = image == null ? streamImage : image;
+		bioImage.put(attempt, image);
 
 		BIO_STREAM_IMAGES.put(bioType, bioImage);
 
@@ -334,4 +336,19 @@ public class Streamer {
 		BIO_STREAM_IMAGES.clear();
 	}
 
+	public Image getBioQualityScores(String bioType, int attempt) {
+
+//		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+//				"Get Stream  Quality Score of : " + bioType + " for attempt : " + attempt);
+
+		if (BIO_STREAM_IMAGES.get(bioType) != null) {
+			return BIO_STREAM_IMAGES.get(bioType).get(attempt);
+		}
+
+//		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+//				"NOT FOUND : Stream image of : " + bioType + " for attempt : " + attempt);
+
+		return null;
+
+	}
 }
