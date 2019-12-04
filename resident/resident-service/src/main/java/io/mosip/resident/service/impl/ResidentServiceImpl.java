@@ -14,8 +14,10 @@ import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.LoggerFileConstant;
+import io.mosip.resident.constant.NotificationTemplate;
 import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.EuinRequestDTO;
+import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.PrintRequest;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
@@ -25,6 +27,7 @@ import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentService;
+import io.mosip.resident.util.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 
@@ -54,6 +57,9 @@ public class ResidentServiceImpl implements ResidentService {
     @Autowired
     private IdAuthService idAuthService;
     
+    @Autowired
+    NotificationService notificationService;
+    
     private static final String PRINT_ID="mosip.registration.processor.print.id";
     private static final String PRINT_VERSION="mosip.registration.processor.application.version";
 
@@ -80,7 +86,8 @@ public class ResidentServiceImpl implements ResidentService {
 				UINCardRequestDTO uincardDTO=new UINCardRequestDTO();
 				uincardDTO.setCardType(dto.getCardType());
 				uincardDTO.setIdValue(dto.getIndividualId());
-				uincardDTO.setIdtype(getIdType(dto.getIndividualIdType()));
+				IdType idtype=getIdType(dto.getIndividualIdType());
+				uincardDTO.setIdtype(idtype);
 				request.setRequest(uincardDTO);
 				request.setId(env.getProperty(PRINT_ID));
 				request.setVersion(env.getProperty(PRINT_VERSION));
@@ -88,6 +95,14 @@ public class ResidentServiceImpl implements ResidentService {
 				try {
 					response = (byte[]) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()),
 							null,request, byte[].class, tokenGenerator.getToken());
+					if(response !=null) {
+						NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
+						notificationRequestDto.setId(dto.getIndividualId());
+						notificationRequestDto.setIdType(idtype);
+						notificationRequestDto.setRegistrationType("NEW");
+						notificationRequestDto.setTemplateType(NotificationTemplate.RS_DOW_UIN_Status);
+						notificationService.sendNotification(notificationRequestDto);
+					}
 					
 				} catch ( Exception e) {
 					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -106,7 +121,6 @@ public class ResidentServiceImpl implements ResidentService {
 					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
 		}
 		
-		/*TODO Send notification*/
 		return response;
 	}
 
