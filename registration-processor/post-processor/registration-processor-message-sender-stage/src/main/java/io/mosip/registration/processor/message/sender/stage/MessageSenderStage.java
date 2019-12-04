@@ -392,7 +392,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			isNotificationSuccess = true;
 			description.setMessage(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage());
 			description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
-			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage() + id);
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getCode());
 			return isNotificationSuccess;
 		}
@@ -410,12 +410,12 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			isNotificationSuccess = true;
 			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage());
 			description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
-			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage() + id);
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getCode());
 		} else if (!isEmailSuccess && !isSMSSuccess) {
 			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
 			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
-			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage() + id);
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getCode());
 		} else if (allNotificationTypes.length == 1 &&
 				((allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isSMSSuccess) ||
@@ -444,7 +444,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					regType);
 			if (emailResponse.getStatus().equals("success")) {
 				isEmailSuccess = true;
-				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage() + id);
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage());
 				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getCode());
 				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage());
 				description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());

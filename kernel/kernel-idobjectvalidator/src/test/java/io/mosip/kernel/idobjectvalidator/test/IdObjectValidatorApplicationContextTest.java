@@ -63,8 +63,8 @@ public class IdObjectValidatorApplicationContextTest {
 		ReflectionTestUtils.setField(validator, "propertySource", "APPLICATION_CONTEXT");
 		ReflectionTestUtils.setField(validator, "configServerFileStorageURL", "http://1.1.1.1/");
 		ReflectionTestUtils.setField(validator, "schemaName", "schemaName");
-		env.setProperty(APPLICATION_ID.getValue(), "reg-client");
-		env.setProperty(String.format(FIELD_LIST.getValue(), "reg-client", "new-registration"), "firstName");
+		env.setProperty(APPLICATION_ID, "reg-client");
+		env.setProperty(String.format(FIELD_LIST, "reg-client", "new-registration"), "firstName");
 		ReflectionTestUtils.setField(validator, "env", env);
 		ReflectionTestUtils.setField(validator, "mapper", mapper);
 	}

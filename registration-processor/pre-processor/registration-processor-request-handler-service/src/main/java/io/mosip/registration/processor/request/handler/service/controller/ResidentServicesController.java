@@ -3,6 +3,8 @@ package io.mosip.registration.processor.request.handler.service.controller;
 import java.io.IOException;
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
@@ -66,8 +68,9 @@ public class ResidentServicesController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> updateResidentUINData(
-			@RequestBody(required = true) ResidentUpdateRequestDto residentUpdateRequestDto,
-			@CookieValue(value = "Authorization", required = true) String token) throws RegBaseCheckedException {
+			@RequestBody(required = true) @Valid ResidentUpdateRequestDto residentUpdateRequestDto,
+			@CookieValue(value = "Authorization", required = true) String token)
+			throws RegBaseCheckedException, IOException {
 		tokenValidator.validate("Authorization=" + token, "requesthandler");
 		try {
 			validator.validate(residentUpdateRequestDto.getRequesttime(), residentUpdateRequestDto.getId(),
@@ -83,7 +86,10 @@ public class ResidentServicesController {
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packetGeneratorResDto));
 		} catch (RegBaseCheckedException | IOException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
+			if (e instanceof RegBaseCheckedException) {
+				throw e;
+			}
+			throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
 		}
 

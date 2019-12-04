@@ -201,7 +201,7 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 
 		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
-		String resTime = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+		String resTime = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC)),
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
 		if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(IdAuthCommonConstants.REQ_TIME))
@@ -294,7 +294,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private void logTime(String time, String type, Temporal requestTime) {
 
 		if (time == null || time.isEmpty()) {
-			time = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+			time = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
 					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC)),
 					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
 		}
@@ -516,7 +516,7 @@ public abstract class BaseIDAFilter implements Filter {
 			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(IdAuthCommonConstants.REQ_TIME)).getZone();
 
 			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME)
-					: DateUtils.getUTCCurrentDateTimeString();
+					: DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 			responseBody.remove("responsetime");// Handled for forbidden error scenario
 			responseBody.remove("metadata");// Handled for forbidden error scenario
 			responseBody.put(RES_TIME,

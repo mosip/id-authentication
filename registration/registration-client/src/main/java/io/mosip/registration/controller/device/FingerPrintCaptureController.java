@@ -604,8 +604,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		if (leftSlapExceptionCount == 4 && rightSlapExceptionCount == 4 && thumbExceptionCount == 2) {
 			continueBtn.setDisable(false);
 		}
-
-		populateException();
+		else 
+			populateException();
 	}
 
 	public void initializeCaptureCount() {
@@ -1172,7 +1172,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			
 //fingerprintDetailsDTOs.remove(detailsDTO);
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-				if (fingerprintDetailsDTO.getFingerType().equals(fingerType)) {
+				if (fingerType.equals(fingerprintDetailsDTO.getFingerType())) {
 					fingerprintDetailsDTO.getSegmentedFingerprints().addAll(tempSegmentedFpDetailsDtos);
 				}
 				

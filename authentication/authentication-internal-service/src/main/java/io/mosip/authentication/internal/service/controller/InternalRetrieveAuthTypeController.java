@@ -115,7 +115,7 @@ public class InternalRetrieveAuthTypeController {
 	 */
 	private String getResponseTime() {
 		return DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+				DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
 						environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),

@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,62" last-zoom="0.85"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,671" last-zoom="0.85"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -668,6 +668,52 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_daokeystr_id" type="pk-constr" table="kernel.dao_key_store">
 		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="vid">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[VID: Stores pre-generated VIDs that are assigned to an individual as part of mosip process.]]></comment>
+	<position x="80" y="880"/>
+	<column name="vid" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[VID: Pre-generated VIDs (Vertual Identification Number), which will be used to assign to an individual]]></comment>
+	</column>
+	<column name="expiry_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Expiry Date and Time: Expiry Date and Time of the Vertual ID]]></comment>
+	</column>
+	<column name="vid_status" not-null="true">
+		<type name="character varying" length="16"/>
+		<comment><![CDATA[VID: Status of the pre-generated VID, whether it is available, expired or assigned.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_vid_id" type="pk-constr" table="kernel.vid">
+		<columns names="vid" ref-type="src-columns"/>
 	</constraint>
 </table>
 

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
+import static com.jayway.jsonpath.Option.*;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -87,7 +87,7 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 			JsonPath jsonPath = JsonPath.compile(entry.getKey());
 			Pattern pattern = Pattern.compile(entry.getValue());
 			JSONArray data = jsonPath.read(identity, Configuration.defaultConfiguration()
-					.addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
+					.addOptions(SUPPRESS_EXCEPTIONS, ALWAYS_RETURN_LIST));
 			if (Objects.nonNull(data) && !data.isEmpty()) {
 				IntStream.range(0, data.size())
 					.parallel()
@@ -95,10 +95,7 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 					.forEach(index -> {
 						JSONArray pathList = jsonPath.read(identity, 
 								Configuration.defaultConfiguration()
-								.addOptions(
-										Option.SUPPRESS_EXCEPTIONS, 
-										Option.ALWAYS_RETURN_LIST, 
-										Option.AS_PATH_LIST));
+								.addOptions(SUPPRESS_EXCEPTIONS, ALWAYS_RETURN_LIST, AS_PATH_LIST));
 						errorList.add(new ServiceError(
 								INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(INVALID_INPUT_PARAMETER.getMessage(),
