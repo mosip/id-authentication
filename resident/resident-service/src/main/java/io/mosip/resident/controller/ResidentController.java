@@ -16,6 +16,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.resident.dto.PrintResponse;
 import io.mosip.resident.dto.RequestDTO;
+import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.dto.UINCardRequestDTO;
 import io.mosip.resident.service.ResidentService;
@@ -44,7 +45,7 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/print-uin")
-	public ResponseWrapper<ResponseDTO> reqPrintUin(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) {
+	public ResponseWrapper<ResponseDTO> reqPrintUin(@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO) {
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqPrintUin(requestDTO.getRequest()));
 		return response;
