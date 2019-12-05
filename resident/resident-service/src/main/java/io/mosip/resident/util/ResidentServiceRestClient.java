@@ -1,6 +1,8 @@
 package io.mosip.resident.util;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -19,6 +21,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
@@ -66,20 +70,26 @@ public class ResidentServiceRestClient {
 	 * @return the api
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getApi(URI uri, Class<?> responseType, String token) throws ApisResourceAccessException {
+	public <T> ResponseWrapper<T> getApi(URI uri, Class<?> responseType, String token)
+			throws ApisResourceAccessException {
 		RestTemplate restTemplate;
-		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			result = (T) restTemplate.exchange(uri, HttpMethod.GET, setRequestHeader(null, null, token), responseType)
-					.getBody();
+			ResponseEntity<ResponseWrapper<T>> response = restTemplate.exchange(uri, HttpMethod.GET,
+					setRequestHeader(null, null, token), new ParameterizedTypeReference<ResponseWrapper<T>>() {
+						public Type getType() {
+							return new ResidentParameterizedTypeImpl((ParameterizedType) super.getType(),
+									new Type[] { responseType });
+						}
+					});
+
+			return response.getBody();
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
-		return result;
+
 	}
 
 	public Object getApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
@@ -133,18 +143,22 @@ public class ResidentServiceRestClient {
 	 * @param responseClass the response class
 	 * @return the t
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> T postApi(String uri, MediaType mediaType, Object requestType, Class<?> responseClass, String token)
-			throws ApisResourceAccessException {
-
+	public <T> ResponseWrapper<T> postApi(String uri, MediaType mediaType, Object requestType, Class<?> responseClass,
+			String token) throws ApisResourceAccessException {
 		RestTemplate restTemplate;
-		T result = null;
 		try {
 			restTemplate = getRestTemplate();
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), uri);
-			result = (T) restTemplate.postForObject(uri, setRequestHeader(requestType, mediaType, token),
-					responseClass);
+			ResponseEntity<ResponseWrapper<T>> response = restTemplate.exchange(uri, HttpMethod.POST,
+					setRequestHeader(requestType, mediaType, token),
+					new ParameterizedTypeReference<ResponseWrapper<T>>() {
+						public Type getType() {
+							return new ResidentParameterizedTypeImpl((ParameterizedType) super.getType(),
+									new Type[] { responseClass });
+						}
+					});
+			return response.getBody();
 
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
@@ -152,7 +166,6 @@ public class ResidentServiceRestClient {
 
 			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
-		return result;
 	}
 
 	/**

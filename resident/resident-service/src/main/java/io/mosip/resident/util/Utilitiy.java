@@ -74,7 +74,7 @@ public class Utilitiy {
 		try {
 			if (IdType.UIN.equals(idType))
 				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
-						ApiName.IDREPOGETIDBYUIN, pathsegments, null, null, ResponseWrapper.class,
+						ApiName.IDREPOGETIDBYUIN, pathsegments, null, null, IdRepoResponseDto.class,
 						tokenGenerator.getToken());
 			else if (IdType.RID.equals(idType))
 				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(

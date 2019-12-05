@@ -113,7 +113,7 @@ public class NotificationService {
 		pathSegments.add(templatetypecode);
 		try {
 			ResponseWrapper<TemplateResponseDto> resp = (ResponseWrapper<TemplateResponseDto>) restClient.getApi(
-					ApiName.TEMPLATES, pathSegments, null, null, ResponseWrapper.class, tokenGenerator.getToken());
+					ApiName.TEMPLATES, pathSegments, null, null, TemplateResponseDto.class, tokenGenerator.getToken());
 			if (resp == null || resp.getErrors() != null && !resp.getErrors().isEmpty()) {
 				throw new ResidentServiceException(ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorCode(),
 						ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorMessage() + resp.getErrors().get(0));
@@ -182,7 +182,7 @@ public class NotificationService {
 		ResponseWrapper<NotificationResponseDTO> resp;
 		try {
 			resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()), MediaType.APPLICATION_JSON, req,
-					ResponseWrapper.class, tokenGenerator.getToken());
+					NotificationResponseDTO.class, tokenGenerator.getToken());
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
 			notifierResponse.setMessage(resp.getResponse().getMessage());
 			notifierResponse.setStatus(resp.getResponse().getStatus());
@@ -248,7 +248,7 @@ public class NotificationService {
 			ResponseWrapper<NotificationResponseDTO> response;
 
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
-					ResponseWrapper.class, tokenGenerator.getToken());
+					NotificationResponseDTO.class, tokenGenerator.getToken());
 			if (response.getResponse().getStatus().equals("success")) {
 				return true;
 			}
