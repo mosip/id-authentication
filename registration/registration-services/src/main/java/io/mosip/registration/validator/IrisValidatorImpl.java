@@ -68,7 +68,11 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 
 		LOGGER.info(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Stubbing iris details for user registration");
-
+		if (!authenticationValidatorDTO.isAuthValidationFlag()) {
+		if ((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_IRIS_ENABLE_FLAG)))
+				.equalsIgnoreCase(RegistrationConstants.DISABLE))
+		return false;
+		}
 		List<UserBiometric> userIrisDetails = userDetailDAO
 				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.IRS);
 
@@ -122,14 +126,10 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.IRIS)).build())
 				.build();
 		
-		boolean flag = true;
-		if((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_ENABLE_FLAG))).equalsIgnoreCase(RegistrationConstants.DISABLE))
-		return false;
-		
 		BIR[] registeredBir = new BIR[userIrisDetails.size()];
 		ApplicationContext.map().remove("IDENTY_SDK");
 		Score[] scores = null;
-		flag = false;
+		boolean flag = false;
 		int i = 0;
 		for (UserBiometric userBiometric : userIrisDetails) {
 			registeredBir[i] = new BIRBuilder().withBdb(userBiometric.getBioIsoImage())
