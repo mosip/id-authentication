@@ -67,7 +67,7 @@ public class ResidentServiceRestClient {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getApi(URI uri, Class<?> responseType, String token) throws Exception {
+	public <T> T getApi(URI uri, Class<?> responseType, String token) throws ApisResourceAccessException {
 		RestTemplate restTemplate;
 		T result = null;
 		try {
@@ -77,7 +77,7 @@ public class ResidentServiceRestClient {
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw e;
+			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
 		return result;
 	}
@@ -135,7 +135,7 @@ public class ResidentServiceRestClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T postApi(String uri, MediaType mediaType, Object requestType, Class<?> responseClass, String token)
-			throws Exception {
+			throws ApisResourceAccessException {
 
 		RestTemplate restTemplate;
 		T result = null;
@@ -150,7 +150,7 @@ public class ResidentServiceRestClient {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			throw e;
+			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
 		return result;
 	}
@@ -166,7 +166,7 @@ public class ResidentServiceRestClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T patchApi(String uri, MediaType mediaType, Object requestType, Class<?> responseClass, String token)
-			throws Exception {
+			throws ApisResourceAccessException {
 
 		RestTemplate restTemplate;
 		T result = null;
@@ -182,7 +182,7 @@ public class ResidentServiceRestClient {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			throw e;
+			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
 		return result;
 	}
@@ -204,7 +204,7 @@ public class ResidentServiceRestClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T putApi(String uri, Object requestType, Class<?> responseClass, MediaType mediaType, String token)
-			throws Exception {
+			throws ApisResourceAccessException {
 
 		RestTemplate restTemplate;
 		T result = null;
@@ -222,7 +222,7 @@ public class ResidentServiceRestClient {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			throw e;
+			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
 		return result;
 	}

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.math3.exception.NullArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -101,7 +100,8 @@ public class NotificationService {
 		emailStatus = sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null, subject);
 		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
 		if (!(smsStatus && emailStatus))
-			throw new NullPointerExceptiozxcn();
+			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage());
 		notificationResponse.setMessage(notificationMessage);
 		return notificationResponse;
 	}
@@ -188,15 +188,37 @@ public class NotificationService {
 			notifierResponse.setStatus(resp.getResponse().getStatus());
 			if (resp.getResponse().getStatus().equalsIgnoreCase("success"))
 				return true;
-			return false;
-		} catch (Exception e) {
-			throw new NullArgumentException();
+		} catch (ApisResourceAccessException e) {
+
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
+
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+			}
+
+		} catch (IOException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
+					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
 		}
+
+		return false;
+
 	}
 
 	private boolean sendEmailNotification(Map<String, Object> mailingAttributes,
 			NotificationTemplateCode notificationTemplate, MultipartFile[] attachment, String subject)
-			throws Exception {
+			throws ResidentServiceCheckedException {
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_EMAIL"),
 				mailingAttributes);
 		if (languageType.equalsIgnoreCase("both")) {
@@ -219,16 +241,40 @@ public class NotificationService {
 				builder.queryParam("mailCc", item);
 			}
 		}
+		try {
+			builder.queryParam("mailSubject", subject);
+			builder.queryParam("mailContent", primaryLanguageMergeTemplate);
+			params.add("attachments", attachment);
+			ResponseWrapper<NotificationResponseDTO> response;
 
-		builder.queryParam("mailSubject", subject);
-		builder.queryParam("mailContent", primaryLanguageMergeTemplate);
-		params.add("attachments", attachment);
-		ResponseWrapper<NotificationResponseDTO> response = restClient.postApi(builder.build().toUriString(),
-				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class, tokenGenerator.getToken());
+			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
+					ResponseWrapper.class, tokenGenerator.getToken());
+			if (response.getResponse().getStatus().equals("success")) {
+				return true;
+			}
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
 
-		if (response.getResponse().getStatus().equals("success")) {
-			return true;
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+			}
+
+		} catch (IOException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
+					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
 		}
+
 		return false;
 
 	}
