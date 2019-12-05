@@ -13,7 +13,7 @@ package io.mosip.kernel.pridgenerator.constant;
 public final class PRIDGeneratorConstant {
 
 	/**
-	 * Private constructor for VIDGeneratorConstants
+	 * Private constructor for PRIDGeneratorConstants
 	 */
 	private PRIDGeneratorConstant() {
 	}
@@ -38,9 +38,9 @@ public final class PRIDGeneratorConstant {
 	public static final String SERVER_SERVLET_PATH = "server.servlet.path";
 
 	/**
-	 * The string field V1_0_VID
+	 * The string field V1_0_PRID
 	 */
-	public static final String PRID = "prid";
+	public static final String PRID = "/prid";
 
 	/**
 	 * The string field COMMA
@@ -84,12 +84,12 @@ public final class PRIDGeneratorConstant {
 	public static final String SPRING_CLOUD_CONFIG_URI = "spring.cloud.config.uri";
 
 	/**
-	 * The string field for GENERATE_VID
+	 * The string field for GENERATE_PRID
 	 */
 	public static final String GENERATE_PRID = "GENERATE_PRID";
 
 	/**
-	 * The string field for VID_GENERATOR_ADDRESS
+	 * The string field for PRID_GENERATOR_ADDRESS
 	 */
 	public static final String PRID_GENERATOR_ADDRESS = "PRID_GENERATOR_ADDRESS";
 

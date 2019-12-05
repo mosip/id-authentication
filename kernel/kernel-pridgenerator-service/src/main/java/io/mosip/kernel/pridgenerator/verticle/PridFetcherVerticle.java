@@ -14,7 +14,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 
 /**
- * Verticle for fetching VID
+ * Verticle for fetching PRID
  * 
  * @author Urvil Joshi
  * @since 1.0.0
@@ -28,11 +28,11 @@ public class PridFetcherVerticle extends AbstractVerticle {
 	private Environment environment;
 
 	/**
-	 * Field for UinGeneratorRouter
+	 * Field for PridGeneratorRouter
 	 */
 	private PridFetcherRouter pridFetcherRouter;
 
-	//private AuthHandler authHandler;
+	// private AuthHandler authHandler;
 
 	/**
 	 * Initialize beans
@@ -40,7 +40,7 @@ public class PridFetcherVerticle extends AbstractVerticle {
 	 * @param context context
 	 */
 	public PridFetcherVerticle(final ApplicationContext context) {
-		//authHandler = (AuthHandler) context.getBean("authHandler");
+		// authHandler = (AuthHandler) context.getBean("authHandler");
 		pridFetcherRouter = (PridFetcherRouter) context.getBean("pridFetcherRouter");
 		environment = context.getEnvironment();
 	}
@@ -59,7 +59,7 @@ public class PridFetcherVerticle extends AbstractVerticle {
 		// giving the root to parent router
 		parentRouter.route().consumes(PRIDGeneratorConstant.APPLICATION_JSON)
 				.produces(PRIDGeneratorConstant.APPLICATION_JSON);
-		//System.out.println(environment.getProperty(PRIDGeneratorConstant.SERVER_SERVLET_PATH));
+		// System.out.println(environment.getProperty(PRIDGeneratorConstant.SERVER_SERVLET_PATH));
 		// mount all the routers to parent router
 		parentRouter.mountSubRouter(
 				environment.getProperty(PRIDGeneratorConstant.SERVER_SERVLET_PATH) + PRIDGeneratorConstant.PRID,

@@ -38,7 +38,7 @@ import io.mosip.kernel.pridgenerator.constant.HibernatePersistenceConstant;
  */
 
 @Configuration
-@PropertySource({ "classpath:application.properties" })
+@PropertySource({ "classpath:bootstrap.properties" })
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.pridgenerator.repository" })
 @ComponentScan(basePackages = { "io.mosip.kernel.pridgenerator.*","io.mosip.kernel.idgenerator.prid.*","io.mosip.kernel.crypto.*","io.mosip.kernel.auth.adapter.*"})
