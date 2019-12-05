@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +25,7 @@ import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.IdRepoResponseDto;
 import io.mosip.resident.dto.JsonValue;
 import io.mosip.resident.dto.VidGeneratorResponseDto;
+import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.IdRepoAppException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 
@@ -100,7 +103,24 @@ public class Utilitiy {
 			}
 		} catch (IOException e) {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
-					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage());
+					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
+
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+			}
 		}
 		ResidentErrorCode errorCode;
 		if (idType.equals(IdType.UIN))

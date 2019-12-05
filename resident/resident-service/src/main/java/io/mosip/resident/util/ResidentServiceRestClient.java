@@ -37,6 +37,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.LoggerFileConstant;
+import io.mosip.resident.exception.ApisResourceAccessException;
 
 /**
  * The Class RestApiClient.
@@ -82,7 +83,7 @@ public class ResidentServiceRestClient {
 	}
 
 	public Object getApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
-			Class<?> responseType, String token) {
+			Class<?> responseType, String token) throws ApisResourceAccessException {
 
 		Object obj = null;
 		String apiHostIpPort = environment.getProperty(apiName.name());
@@ -115,8 +116,7 @@ public class ResidentServiceRestClient {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw new io.mosip.resident.exception.ApisResourceAccessException(
-						"Exception occured while accessing " + uriComponents.toUri(), e);
+				throw new ApisResourceAccessException("Exception occured while accessing " + uriComponents.toUri(), e);
 
 			}
 		}

@@ -17,6 +17,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -31,6 +33,7 @@ import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.SMSRequestDTO;
 import io.mosip.resident.dto.TemplateDto;
 import io.mosip.resident.dto.TemplateResponseDto;
+import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 
@@ -121,6 +124,23 @@ public class NotificationService {
 		} catch (IOException e) {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
 					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
+
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new ResidentServiceCheckedException(
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+			}
 		}
 
 	}
