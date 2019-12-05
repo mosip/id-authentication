@@ -17,7 +17,7 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+	        <dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-auth-adapter</artifactId>
 			<version>${project.version}</version>
