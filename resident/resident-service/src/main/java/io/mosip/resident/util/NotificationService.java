@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.math3.exception.NullArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -20,14 +21,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.NotificationTemplateCode;
+import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.SMSRequestDTO;
 import io.mosip.resident.dto.TemplateDto;
 import io.mosip.resident.dto.TemplateResponseDto;
+import io.mosip.resident.exception.ResidentServiceCheckedException;
+import io.mosip.resident.exception.ResidentServiceException;
 
 @Component
 public class NotificationService {
@@ -46,6 +51,9 @@ public class NotificationService {
 	@Value("${resident.notification.emails}")
 	private String notificationEmails;
 
+	@Value("${resident.notification.message}")
+	private String notificationMessage;
+
 	@Autowired
 	private Environment env;
 
@@ -60,64 +68,82 @@ public class NotificationService {
 	@Autowired
 	private Utilitiy utility;
 
-	public void sendNotification(NotificationRequestDto dto) {
+	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws ResidentServiceCheckedException {
 		String subject = "";
+		boolean smsStatus = false;
+		boolean emailStatus = false;
+		// try {
+		Map<String, Object> notificationAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
+		if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
+			notificationAttributes.putAll(dto.getAdditionalAttributes());
+		}
+		// added only few cases
+		switch (dto.getTemplateTypeCode().name()) {
+		case "RS_DOW_UIN_Status":
+			subject = "Download e-card request sucessful";
+			break;
+		case "RS_UIN_RPR_Status_EMAIL":
+			subject = "Request for re-print UIN successfull";
+			break;
+		case "RS_AUTH_HIST_Status":
+			subject = "Request for Auth History is successfull";
+			break;
+		case "RS_LOCK_AUTH_Status":
+			subject = "Request for locking AuthTypes";
+			break;
 
+		}
+
+		smsStatus = sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
+		emailStatus = sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null, subject);
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		if (!(smsStatus && emailStatus))
+			throw new NullPointerExceptiozxcn();
+		notificationResponse.setMessage(notificationMessage);
+		return notificationResponse;
+	}
+
+	@SuppressWarnings("unchecked")
+	private String getTemplate(String langCode, String templatetypecode) throws ResidentServiceCheckedException {
+		List<String> pathSegments = new ArrayList<String>();
+		pathSegments.add(langCode);
+		pathSegments.add(templatetypecode);
 		try {
-			Map<String, Object> notificationAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
-			if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
-				notificationAttributes.putAll(dto.getAdditionalAttributes());
+			ResponseWrapper<TemplateResponseDto> resp = (ResponseWrapper<TemplateResponseDto>) restClient.getApi(
+					ApiName.TEMPLATES, pathSegments, null, null, ResponseWrapper.class, tokenGenerator.getToken());
+			if (resp == null || resp.getErrors() != null && !resp.getErrors().isEmpty()) {
+				throw new ResidentServiceException(ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorMessage() + resp.getErrors().get(0));
 			}
-			//added only few cases
-			switch (dto.getTemplateTypeCode().name()) {
-			case "RS_DOW_UIN_Status":
-				subject = "Download e-card request sucessful";
-				break;
-			case "RS_UIN_RPR_Status_EMAIL":
-				subject = "Request for re-print UIN successfull";
-				break;
-			case "RS_AUTH_HIST_Status":
-				subject = "Request for Auth History is successfull";
-				break;
-			case "":
+			List<TemplateDto> response = resp.getResponse().getTemplates();
 
-			}
-
-			sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
-			sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null, subject);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+			return response.get(0).getFileText().replaceAll("^\"|\"$", "");
+		} catch (IOException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
+					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
 		}
 
 	}
 
-	private String getTemplate(String langCode, String templatetypecode) throws IOException {
-		List<String> pathSegments = new ArrayList<String>();
-		pathSegments.add(langCode);
-		pathSegments.add(templatetypecode);
+	public String templateMerge(String fileText, Map<String, Object> mailingAttributes)
+			throws ResidentServiceCheckedException {
+		try {
+			String mergeTemplate = null;
+			InputStream templateInputStream = new ByteArrayInputStream(fileText.getBytes(Charset.forName("UTF-8")));
 
-		TemplateResponseDto resp = (TemplateResponseDto) restClient.getApi(ApiName.TEMPLATES, pathSegments, null, null,
-				TemplateResponseDto.class, tokenGenerator.getToken());
-		List<TemplateDto> response = resp.getResponse().getTemplates();
+			InputStream resultedTemplate = templateManager.merge(templateInputStream, mailingAttributes);
 
-		return response.get(0).getFileText().replaceAll("^\"|\"$", "");
+			mergeTemplate = IOUtils.toString(resultedTemplate, StandardCharsets.UTF_8.name());
 
-	}
-
-	public String templateMerge(String fileText, Map<String, Object> mailingAttributes) throws IOException {
-		String mergeTemplate = null;
-		InputStream templateInputStream = new ByteArrayInputStream(fileText.getBytes(Charset.forName("UTF-8")));
-
-		InputStream resultedTemplate = templateManager.merge(templateInputStream, mailingAttributes);
-
-		mergeTemplate = IOUtils.toString(resultedTemplate, StandardCharsets.UTF_8.name());
-
-		return mergeTemplate;
+			return mergeTemplate;
+		} catch (IOException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.IO_EXCEPTION.getErrorCode(),
+					ResidentErrorCode.IO_EXCEPTION.getErrorMessage(), e);
+		}
 	}
 
 	private boolean sendSMSNotification(Map<String, Object> mailingAttributes,
-			NotificationTemplateCode notificationTemplate) throws Exception {
+			NotificationTemplateCode notificationTemplate) throws ResidentServiceCheckedException {
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_SMS"),
 				mailingAttributes);
 
@@ -133,15 +159,19 @@ public class NotificationService {
 		smsRequestDTO.setNumber((String) mailingAttributes.get("phone"));
 		RequestWrapper<SMSRequestDTO> req = new RequestWrapper<>();
 		req.setRequest(smsRequestDTO);
-		NotificationResponseDTO resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()),
-				MediaType.APPLICATION_JSON, req, NotificationResponseDTO.class, tokenGenerator.getToken());
-
-		NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
-		notifierResponse.setMessage(resp.getResponse().getMessage());
-		notifierResponse.setStatus(resp.getResponse().getStatus());
-		if (resp.getResponse().getStatus().equalsIgnoreCase("success"))
-			return true;
-		return false;
+		ResponseWrapper<NotificationResponseDTO> resp;
+		try {
+			resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()), MediaType.APPLICATION_JSON, req,
+					ResponseWrapper.class, tokenGenerator.getToken());
+			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
+			notifierResponse.setMessage(resp.getResponse().getMessage());
+			notifierResponse.setStatus(resp.getResponse().getStatus());
+			if (resp.getResponse().getStatus().equalsIgnoreCase("success"))
+				return true;
+			return false;
+		} catch (Exception e) {
+			throw new NullArgumentException();
+		}
 	}
 
 	private boolean sendEmailNotification(Map<String, Object> mailingAttributes,
@@ -173,8 +203,8 @@ public class NotificationService {
 		builder.queryParam("mailSubject", subject);
 		builder.queryParam("mailContent", primaryLanguageMergeTemplate);
 		params.add("attachments", attachment);
-		NotificationResponseDTO response = restClient.postApi(builder.build().toUriString(),
-				MediaType.MULTIPART_FORM_DATA, params, NotificationResponseDTO.class, tokenGenerator.getToken());
+		ResponseWrapper<NotificationResponseDTO> response = restClient.postApi(builder.build().toUriString(),
+				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class, tokenGenerator.getToken());
 
 		if (response.getResponse().getStatus().equals("success")) {
 			return true;

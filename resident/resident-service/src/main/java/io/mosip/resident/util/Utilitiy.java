@@ -19,15 +19,17 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.IdRepoResponseDto;
 import io.mosip.resident.dto.JsonValue;
 import io.mosip.resident.dto.VidGeneratorResponseDto;
 import io.mosip.resident.exception.IdRepoAppException;
+import io.mosip.resident.exception.ResidentServiceCheckedException;
 
 /**
  * 
  * @author Girish Yarru
- *
+ * @version 1.0
  */
 
 @Component
@@ -57,50 +59,70 @@ public class Utilitiy {
 	private static final String IDENTITY = "identity";
 	private static final String EMAIL = "email";
 	private static final String PHONE = "phone";
+	private static final String NAME = "name";
+	private static final String VALUE = "value";
 
 	@SuppressWarnings("unchecked")
-	public JSONObject retrieveIdrepoJson(String id, IdType idType) throws IOException, Exception {
+	public JSONObject retrieveIdrepoJson(String id, IdType idType) throws ResidentServiceCheckedException {
 
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(id);
-		IdRepoResponseDto idRepoResponseDto = null;
-		if (IdType.UIN.equals(idType))
-			idRepoResponseDto = (IdRepoResponseDto) residentServiceRestClient.getApi(ApiName.IDREPOGETIDBYUIN,
-					pathsegments, null, null, IdRepoResponseDto.class, tokenGenerator.getToken());
-		else if (IdType.RID.equals(idType))
-			idRepoResponseDto = (IdRepoResponseDto) residentServiceRestClient.getApi(ApiName.IDREPOGETIDBYRID,
-					pathsegments, null, null, IdRepoResponseDto.class, tokenGenerator.getToken());
-		else if (IdType.VID.equals(idType)) {
-			ResponseWrapper<VidGeneratorResponseDto> response = (ResponseWrapper<VidGeneratorResponseDto>) residentServiceRestClient
-					.getApi(ApiName.GETUINBYVID, pathsegments, null, null, ResponseWrapper.class,
-							tokenGenerator.getToken());
-			if (response == null)
-				return null;
-			if (!response.getErrors().isEmpty()) {
-				List<ServiceError> error = response.getErrors();
-				throw new IdRepoAppException(error.get(0).getMessage());
-			}
+		ResponseWrapper<IdRepoResponseDto> response = null;
+		try {
+			if (IdType.UIN.equals(idType))
+				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
+						ApiName.IDREPOGETIDBYUIN, pathsegments, null, null, ResponseWrapper.class,
+						tokenGenerator.getToken());
+			else if (IdType.RID.equals(idType))
+				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
+						ApiName.IDREPOGETIDBYRID, pathsegments, null, null, ResponseWrapper.class,
+						tokenGenerator.getToken());
+			else if (IdType.VID.equals(idType)) {
+				ResponseWrapper<VidGeneratorResponseDto> vidResponse = (ResponseWrapper<VidGeneratorResponseDto>) residentServiceRestClient
+						.getApi(ApiName.GETUINBYVID, pathsegments, null, null, ResponseWrapper.class,
+								tokenGenerator.getToken());
+				if (vidResponse == null)
+					throw new IdRepoAppException(ResidentErrorCode.IN_VALID_VID.getErrorCode(),
+							ResidentErrorCode.IN_VALID_VID.getErrorCode(),
+							"In valid response while requesting from ID Repositary");
+				if (!vidResponse.getErrors().isEmpty()) {
+					List<ServiceError> error = vidResponse.getErrors();
+					throw new IdRepoAppException(ResidentErrorCode.IN_VALID_VID.getErrorCode(),
+							ResidentErrorCode.IN_VALID_VID.getErrorCode(), error.get(0).getMessage());
+				}
 
-			String uin = response.getResponse().getUIN();
-			pathsegments.clear();
-			pathsegments.add(uin);
-			idRepoResponseDto = (IdRepoResponseDto) residentServiceRestClient.getApi(ApiName.IDREPOGETIDBYUIN,
-					pathsegments, null, null, IdRepoResponseDto.class, tokenGenerator.getToken());
+				String uin = vidResponse.getResponse().getUIN();
+				pathsegments.clear();
+				pathsegments.add(uin);
+				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
+						ApiName.IDREPOGETIDBYUIN, pathsegments, null, null, ResponseWrapper.class,
+						tokenGenerator.getToken());
+			}
+		} catch (IOException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
+					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage());
 		}
-		if (idRepoResponseDto == null)
-			return null;
-		if (!idRepoResponseDto.getErrors().isEmpty()) {
-			List<ServiceError> error = idRepoResponseDto.getErrors();
-			throw new IdRepoAppException(error.get(0).getMessage());
+		ResidentErrorCode errorCode;
+		if (idType.equals(IdType.UIN))
+			errorCode = ResidentErrorCode.IN_VALID_UIN;
+		else if (idType.equals(IdType.RID))
+			errorCode = ResidentErrorCode.IN_VALID_RID;
+		else
+			errorCode = ResidentErrorCode.IN_VALID_VID_UIN;
+		if (response == null)
+			throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
+					"In valid response while requesting ID Repositary");
+		if (!response.getErrors().isEmpty()) {
+			List<ServiceError> error = response.getErrors();
+			throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
+					error.get(0).getMessage());
 		}
-		idRepoResponseDto.getResponse().getIdentity();
-		ObjectMapper objMapper = new ObjectMapper();
-		return objMapper.convertValue(idRepoResponseDto.getResponse().getIdentity(), JSONObject.class);
+		return new ObjectMapper().convertValue(response.getResponse().getIdentity(), JSONObject.class);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getMailingAttributes(String id, IdType idType) throws IOException, Exception {
+	public Map<String, Object> getMailingAttributes(String id, IdType idType) throws ResidentServiceCheckedException {
 		Map<String, Object> attributes = new HashMap<>();
 		JSONObject idJson = retrieveIdrepoJson(id, idType);
 		String email = (String) idJson.get(EMAIL);
@@ -108,29 +130,34 @@ public class Utilitiy {
 		attributes.put(EMAIL, email);
 		attributes.put(PHONE, phone);
 		String mappingJsonString = getMappingJson();
-		JSONObject mappingJsonObject = new ObjectMapper().readValue(mappingJsonString, JSONObject.class);
-		LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
-				.get(IDENTITY);
-		LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get("name");
-		String[] names = ((String) nameJson.get("value")).split(",");
-		for (String name : names) {
-			JsonValue[] nameArray = JsonUtil.getJsonValues(idJson, name);
-			if (nameArray != null) {
-				for (JsonValue value : nameArray) {
-					if (languageType.equals("BOTH")) {
-						if (value.getLanguage().equals(primaryLang))
-							attributes.put(name + "_" + primaryLang, value.getValue());
-						if (value.getLanguage().equals(secondaryLang))
-							attributes.put(name + "_" + secondaryLang, value.getValue());
-					} else {
-						if (value.getLanguage().equals(primaryLang))
-							attributes.put(name + "_" + primaryLang, value.getValue());
+		JSONObject mappingJsonObject;
+		try {
+			mappingJsonObject = new ObjectMapper().readValue(mappingJsonString, JSONObject.class);
+			LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
+					.get(IDENTITY);
+			LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get(NAME);
+			String[] names = ((String) nameJson.get(VALUE)).split(",");
+			for (String name : names) {
+				JsonValue[] nameArray = JsonUtil.getJsonValues(idJson, name);
+				if (nameArray != null) {
+					for (JsonValue value : nameArray) {
+						if (languageType.equals("BOTH")) {
+							if (value.getLanguage().equals(primaryLang))
+								attributes.put(name + "_" + primaryLang, value.getValue());
+							if (value.getLanguage().equals(secondaryLang))
+								attributes.put(name + "_" + secondaryLang, value.getValue());
+						} else {
+							if (value.getLanguage().equals(primaryLang))
+								attributes.put(name + "_" + primaryLang, value.getValue());
+						}
 					}
+
 				}
-
 			}
+		} catch (IOException | ReflectiveOperationException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorCode(),
+					ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorMessage(), e);
 		}
-
 		return attributes;
 	}
 
