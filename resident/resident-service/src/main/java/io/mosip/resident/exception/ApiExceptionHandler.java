@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,6 +32,22 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 public class ApiExceptionHandler {
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	Environment env;
+	
+	private static final String CHECK_STATUS="resident.checkstatus.id";
+	private static final String EUIN="resident.euin.id";
+	private static final String PRINT_UIN="resident.printuin.id";
+	private static final String UIN="resident.uin.id";
+	private static final String RID="resident.rid.id";
+	private static final String UPDATE_UIN="resident.updateuin.id";
+	private static final String VID="resident.vid.id";
+	private static final String AUTH_LOCK="resident.authlock.id";
+	private static final String AUTH_UNLOCK="resident.authunlock.id";
+	private static final String AUTH_HISTORY="resident.authhistory.id";
+	private static final String VERSION="1.0";
+	
 
 	@ExceptionHandler(ResidentServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -103,10 +120,43 @@ public class ApiExceptionHandler {
 			return responseWrapper;
 		}
 		objectMapper.registerModule(new JavaTimeModule());
-		JsonNode reqNode = objectMapper.readTree(requestBody);
-		responseWrapper.setId(reqNode.path("id").asText());
-		responseWrapper.setVersion(reqNode.path("version").asText());
+		responseWrapper.setId(setId(httpServletRequest.getRequestURI()));
+		responseWrapper.setVersion(VERSION);
 		return responseWrapper;
+	}
+
+	private String setId(String requestURI) {
+		if(requestURI.contains("/check-status")) {
+			return env.getProperty(CHECK_STATUS);
+		}
+		if(requestURI.contains("/euin")) {
+			return env.getProperty(EUIN);
+		}
+		if(requestURI.contains("/print-uin")) {
+			return env.getProperty(PRINT_UIN);
+		}
+		if(requestURI.contains("/uin")) {
+			return env.getProperty(UIN);
+		}
+		if(requestURI.contains("/rid")) {
+			return env.getProperty(RID);
+		}
+		if(requestURI.contains("/update-uin")) {
+			return env.getProperty(UPDATE_UIN);
+		}
+		if(requestURI.contains("/vid")) {
+			return env.getProperty(VID);
+		}
+		if(requestURI.contains("/auth-lock")) {
+			return env.getProperty(AUTH_LOCK);
+		}
+		if(requestURI.contains("/auth-unlock")) {
+			return env.getProperty(AUTH_UNLOCK);
+		}
+		if(requestURI.contains("/auth-history")) {
+			return env.getProperty(AUTH_HISTORY);
+		}
+		return null;
 	}
 
 }
