@@ -37,8 +37,8 @@ import io.mosip.resident.dto.TemplateResponseDto;
 
 @Component
 public class NotificationService {
-	@Autowired
-	RestTemplate restTemplate;
+//	@Autowired
+//	RestTemplate restTemplate;
 
 	@Autowired
 	private TemplateManager templateManager;
@@ -54,7 +54,7 @@ public class NotificationService {
 	@Value("${mosip.notification.language-type}")
 	private String languageType;
 
-	@Value("${registration.processor.notification.emails}")
+	@Value("${resident.notification.emails}")
 	private String notificationEmails;
 
 	@Autowired
@@ -104,16 +104,20 @@ public class NotificationService {
 
 	}
 
-	private String getTemplate(String langCode, String templatetypecode) {
+	private String getTemplate(String langCode, String templatetypecode) throws IOException {
 
 		String url = ApiName.TEMPLATES + "/" + langCode + "/" + templatetypecode;
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<RequestWrapper<TemplateResponseDto>> httpEntity = new HttpEntity<>(headers);
-		ResponseEntity<ResponseWrapper<TemplateResponseDto>> respEntity = restTemplate.exchange(url, HttpMethod.GET,
-				httpEntity, new ParameterizedTypeReference<ResponseWrapper<TemplateResponseDto>>() {
-				});
+//		HttpHeaders headers = new HttpHeaders();
+//		HttpEntity<RequestWrapper<TemplateResponseDto>> httpEntity = new HttpEntity<>(headers);
+//		ResponseEntity<ResponseWrapper<TemplateResponseDto>> respEntity = restTemplate.exchange(url, HttpMethod.GET,
+//				httpEntity, new ParameterizedTypeReference<ResponseWrapper<TemplateResponseDto>>() {
+//				});
+		
+		ResponseWrapper<TemplateResponseDto> resp= (ResponseWrapper<TemplateResponseDto>) restClient.getApi(ApiName.TEMPLATES, null, null, null, ResponseWrapper.class, tokenGenerator.getToken());
 
-		List<TemplateDto> response = respEntity.getBody().getResponse().getTemplates();
+		//List<TemplateDto> response = respEntity.getBody().getResponse().getTemplates();
+		List<TemplateDto> response = resp.getResponse().getTemplates();
+
 
 		return response.get(0).getFileText().replaceAll("^\"|\"$", "");
 
@@ -131,9 +135,9 @@ public class NotificationService {
 	}
 
 	private boolean sendSMSNotification(Map<String, Object> mailingAttributes,
-			NotificationTemplate notificationTemplate) throws IOException {
+			NotificationTemplate notificationTemplate) throws Exception {
 		// ResponseWrapper<NotificationResponseDTO> response = new ResponseWrapper<>();
-		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
+		//ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_SMS"),
 				mailingAttributes);
@@ -150,20 +154,22 @@ public class NotificationService {
 		smsRequestDTO.setNumber((String) mailingAttributes.get("phone"));
 		RequestWrapper<SMSRequestDTO> req = new RequestWrapper<>();
 		req.setRequest(smsRequestDTO);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		HttpEntity<RequestWrapper<SMSRequestDTO>> httpEntity = new HttpEntity<>(req, headers);
-		resp = restTemplate.exchange(ApiName.SMSNOTIFIER.name(), HttpMethod.POST, httpEntity,
-				new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {
-				});
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//		HttpEntity<RequestWrapper<SMSRequestDTO>> httpEntity = new HttpEntity<>(req, headers);
+//		resp = restTemplate.exchange(ApiName.SMSNOTIFIER.name(), HttpMethod.POST, httpEntity,
+//				new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {
+//				});
+		
+		ResponseWrapper<NotificationResponseDTO> resp = restClient.postApi(ApiName.SMSNOTIFIER.name(), MediaType.APPLICATION_JSON, req, ResponseWrapper.class, tokenGenerator.getToken());
 
 		NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
-		notifierResponse.setMessage(resp.getBody().getResponse().getMessage());
-		notifierResponse.setStatus(resp.getBody().getResponse().getStatus());
+		notifierResponse.setMessage(resp.getResponse().getMessage());
+		notifierResponse.setStatus(resp.getResponse().getStatus());
 //		response.setResponse(notifierResponse);
 //		response.setResponsetime(DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		if (resp.getBody().getResponse().getStatus().equalsIgnoreCase("success"))
+		if (resp.getResponse().getStatus().equalsIgnoreCase("success"))
 			return true;
 		return false;
 	}
