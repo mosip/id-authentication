@@ -1,35 +1,26 @@
 package io.mosip.resident.service.impl;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.config.LoggerConfiguration;
-import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
-import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
-import io.mosip.resident.dto.PrintRequest;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
-import io.mosip.resident.dto.UINCardRequestDTO;
-import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.util.NotificationService;
-import io.mosip.resident.util.ResidentServiceRestClient;
-import io.mosip.resident.util.TokenGenerator;
+import io.mosip.resident.util.UINCardDownloadService;
 
 @Service
 public class ResidentServiceImpl implements ResidentService {
@@ -46,23 +37,14 @@ public class ResidentServiceImpl implements ResidentService {
 	private RidValidator<String> ridValidator;
 	
 	@Autowired
-    private Environment env;
+    private UINCardDownloadService uinCardDownloadService;
 
-    @Autowired
-    private ResidentServiceRestClient residentServiceRestClient;
-
-    @Autowired
-    private TokenGenerator tokenGenerator;
     
     @Autowired
     private IdAuthService idAuthService;
     
     @Autowired
     NotificationService notificationService;
-    
-    private static final String PRINT_ID="mosip.registration.processor.print.id";
-    private static final String PRINT_VERSION="mosip.registration.processor.application.version";
-
 
 	@Override
 	public ResponseDTO getRidStatus(RequestDTO request) {
@@ -77,38 +59,20 @@ public class ResidentServiceImpl implements ResidentService {
 		
 		byte[]	response;
 		
-		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {
+		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {	
 			
 			if(idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
-					dto.getIndividualIdType(), dto.getOtp())) {
+					dto.getIndividualIdType(), dto.getOtp())) {			
 				
-				PrintRequest request=new PrintRequest();
-				UINCardRequestDTO uincardDTO=new UINCardRequestDTO();
-				uincardDTO.setCardType(dto.getCardType());
-				uincardDTO.setIdValue(dto.getIndividualId());
-				IdType idtype=getIdType(dto.getIndividualIdType());
-				uincardDTO.setIdtype(idtype);
-				request.setRequest(uincardDTO);
-				request.setId(env.getProperty(PRINT_ID));
-				request.setVersion(env.getProperty(PRINT_VERSION));
-				request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-				try {
-					response = (byte[]) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()),
-							null,request, byte[].class, tokenGenerator.getToken());
-					if(response !=null) {
-						NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
-						notificationRequestDto.setId(dto.getIndividualId());
-						notificationRequestDto.setIdType(idtype);
-						notificationRequestDto.setRegistrationType("NEW");
-						notificationRequestDto.setTemplateType(NotificationTemplateCode.RS_DOW_UIN_Status);
-						notificationService.sendNotification(notificationRequestDto);
-					}
-					
-				} catch ( Exception e) {
-					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-							dto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
-							+ e.getMessage()+ ExceptionUtils.getStackTrace(e));
-					throw new ApisResourceAccessException("Unable to fetch uin card");
+				IdType idtype=getIdType(dto.getIndividualIdType());	
+				response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), idtype);
+				if(response !=null) {
+					NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
+					notificationRequestDto.setId(dto.getIndividualId());
+					notificationRequestDto.setIdType(idtype);
+					notificationRequestDto.setRegistrationType("NEW");
+					notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
+					notificationService.sendNotification(notificationRequestDto);
 				} 
 			}
 			else {

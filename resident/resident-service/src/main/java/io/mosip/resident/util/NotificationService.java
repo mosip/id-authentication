@@ -69,7 +69,7 @@ public class NotificationService {
 				notificationAttributes.putAll(dto.getAdditionalAttributes());
 			}
 			//added only few cases
-			switch (dto.getTemplateType().name()) {
+			switch (dto.getTemplateTypeCode().name()) {
 			case "RS_DOW_UIN_Status":
 				subject = "Download e-card request sucessful";
 				break;
@@ -83,8 +83,8 @@ public class NotificationService {
 
 			}
 
-			sendSMSNotification(notificationAttributes, dto.getTemplateType());
-			sendEmailNotification(notificationAttributes, dto.getTemplateType(), null, subject);
+			sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
+			sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null, subject);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
