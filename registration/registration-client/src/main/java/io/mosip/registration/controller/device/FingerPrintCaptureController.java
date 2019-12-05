@@ -341,24 +341,65 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
 						public void handle(final MouseEvent mouseEvent) {
 
-							String eventString = mouseEvent.toString();
-							int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
+							FingerprintDetailsDTO fingerprintDetailsDTO = getFingerprintBySelectedPane().findFirst()
+									.orElse(null);
 
-							if (index == -1) {
-								String text = "Text[text=";
-								index = eventString.indexOf(text) + text.length() + 1;
+							if (fingerprintDetailsDTO != null) {
+								String eventString = mouseEvent.toString();
+								int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
 
-							} else {
-								index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
+								if (index == -1) {
+									String text = "Text[text=";
+									index = eventString.indexOf(text) + text.length() + 1;
+
+								} else {
+									index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
+								}
+
+								if (index != -1) {
+									ImageView streamImage;
+									Label qualityText;
+									ProgressBar progressBar;
+									Label qualityScore;
+									if (fingerprintDetailsDTO.getFingerType()
+											.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
+
+										// Set Stream image
+										streamImage = leftHandPalmImageview;
+										// Quality Label
+										qualityText = leftSlapQualityScore;
+									} else if (fingerprintDetailsDTO.getFingerType()
+											.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
+										// Set Stream image
+										streamImage = rightHandPalmImageview;
+										// Quality Label
+										qualityText = rightSlapQualityScore;
+									} else {
+										// Set Stream image
+										streamImage = thumbImageview;
+										// Quality Label
+										qualityText = thumbsQualityScore;
+									}
+
+									// Progress BAr
+									progressBar = fpProgress;
+									// Progress Bar Quality Score
+									qualityScore = qualityText;
+
+									try {
+										updateByAttempt(fingerprintDetailsDTO.getFingerType(),
+												Character.getNumericValue(eventString.charAt(index)), streamImage,
+												qualityText, progressBar, qualityScore);
+									} catch (RuntimeException runtimeException) {
+										LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME,
+												APPLICATION_ID, runtimeException.getMessage()
+														+ ExceptionUtils.getStackTrace(runtimeException));
+
+									}
+								}
+
 							}
-							try {
-								updateByAttempt(getFingerprintBySelectedPane().findFirst().orElse(null).getFingerType(),
-										Character.getNumericValue(eventString.charAt(index)));
-							} catch (RuntimeException runtimeException) {
-								LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-										runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
-							}
 						}
 					};
 					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -1753,41 +1794,4 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	}
 
-	private void updateByAttempt(String bioType, int attempt) {
-
-		double qualityScoreValue = bioService.getBioQualityScores(bioType, attempt);
-		String qualityScore = getQualityScore(qualityScoreValue);
-
-		if (qualityScore != null) {
-			Image streamImage = bioService.getBioStreamImage(bioType, attempt);
-			if (bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
-
-				// Set Stream image
-				leftHandPalmImageview.setImage(streamImage);
-
-				// Quality Label
-				leftSlapQualityScore.setText(qualityScore);
-			} else if (bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
-				// Set Stream image
-				rightHandPalmImageview.setImage(streamImage);
-
-				// Quality Label
-				rightSlapQualityScore.setText(qualityScore);
-			} else {
-				// Set Stream image
-				thumbImageview.setImage(streamImage);
-
-				// Quality Label
-				thumbsQualityScore.setText(qualityScore);
-			}
-
-			// Progress BAr
-			fpProgress.setProgress(qualityScoreValue / 100);
-
-			// Progress Bar Quality Score
-			qualityText.setText(String.valueOf((int) qualityScoreValue).concat(RegistrationConstants.PERCENTAGE));
-
-		}
-
-	}
 }

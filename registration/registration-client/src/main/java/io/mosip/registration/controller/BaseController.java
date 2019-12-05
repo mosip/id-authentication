@@ -61,6 +61,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.operator.UserOnboardService;
@@ -88,10 +89,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -187,6 +190,9 @@ public class BaseController {
 	private List<String> pageDetails = new ArrayList<>();
 
 	private Stage alertStage;
+
+	@Autowired
+	private BioService bioService;
 
 	/**
 	 * Instance of {@link MosipLogger}
@@ -1406,9 +1412,10 @@ public class BaseController {
 	}
 
 	protected void clearBiometrics(String bioType) {
-		
+
 		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Clearing Bio Data (Capture Response,bio scores, bio stream images) of : "+bioType);
+				RegistrationConstants.APPLICATION_ID,
+				"Clearing Bio Data (Capture Response,bio scores, bio stream images) of : " + bioType);
 
 		if (bioType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
 			BioServiceImpl.clearCaptures(RegistrationConstants.LEFT_SLAP);
@@ -1417,26 +1424,51 @@ public class BaseController {
 
 			BioServiceImpl.clearBIOScoreByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
-			
+
 			BioServiceImpl.clearBIOStreamImagesByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
-			
+
 		} else if (bioType.equalsIgnoreCase(RegistrationConstants.IRIS)) {
 			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_IRIS);
 			BioServiceImpl.clearBIOScoreByBioType(RegistrationConstants.TWO_IRIS);
-			
+
 			BioServiceImpl.clearBIOStreamImagesByBioType(RegistrationConstants.TWO_IRIS);
-		
+
 		}
-		
+
 		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Cleared Bio Data (Capture Response,bio scores, bio stream images) of : "+bioType);
+				RegistrationConstants.APPLICATION_ID,
+				"Cleared Bio Data (Capture Response,bio scores, bio stream images) of : " + bioType);
 	}
-	
+
 	protected void clearAllBiometrics() {
 		BioServiceImpl.clearAllCaptures();
-		
+
 	}
-	
-	
+
+	protected void updateByAttempt(String bioType, int attempt, ImageView streamImage, Label qualityText,
+			ProgressBar progressBar, Label progressQualityScore) {
+
+		double qualityScoreValue = bioService.getBioQualityScores(bioType, attempt);
+		String qualityScore = getQualityScore(qualityScoreValue);
+
+		if (qualityScore != null) {
+			Image image = bioService.getBioStreamImage(bioType, attempt);
+			// Set Stream image
+			streamImage.setImage(image);
+
+			// Quality Label
+			qualityText.setText(qualityScore);
+
+			// Progress BAr
+			progressBar.setProgress(qualityScoreValue / 100);
+
+			// Progress Bar Quality Score
+			progressQualityScore
+					.setText(String.valueOf((int) qualityScoreValue).concat(RegistrationConstants.PERCENTAGE));
+
+		}
+
+	}
+
 }

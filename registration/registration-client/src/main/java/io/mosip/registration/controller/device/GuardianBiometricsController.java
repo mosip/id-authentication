@@ -832,7 +832,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 					index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
 				}
 				try {
-					updateByAttempt(bioType, Character.getNumericValue(eventString.charAt(index)));
+					
+					updateByAttempt(bioType, Character.getNumericValue(eventString.charAt(index)),biometricImage,qualityText,bioProgress,qualityScore);
+					
 				} catch (RuntimeException runtimeException) {
 					LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
