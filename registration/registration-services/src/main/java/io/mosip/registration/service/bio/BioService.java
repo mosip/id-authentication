@@ -11,6 +11,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.RequestDetail;
+import javafx.scene.image.Image;
 
 /**
  * This class {@code BioService} handles all the biometric captures and
@@ -231,5 +232,12 @@ public interface BioService {
 	 * @return quality score
 	 */
 	public double getHighQualityScoreByBioType(String bioType);
+	
+	/**
+	 * @param bioType  biometricType
+	 * @param attempt attempt number
+	 * @return
+	 */
+	public Image getBioStreamImage(String bioType, int attempt);
 
 }

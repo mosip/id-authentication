@@ -1759,7 +1759,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		String qualityScore = getQualityScore(qualityScoreValue);
 
 		if (qualityScore != null) {
-			Image streamImage = streamer.getBiometricImage(bioType, attempt);
+			Image streamImage = bioService.getBioStreamImage(bioType, attempt);
 			if (bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 
 				// Set Stream image

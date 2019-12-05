@@ -2,12 +2,14 @@ package io.mosip.registration.service.bio.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_FACADE;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACADE;
+import static io.mosip.registration.constants.LoggerConstants.BIO_SERVICE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import static io.mosip.registration.constants.LoggerConstants.BIO_SERVICE;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.security.AuthenticationService;
+import javafx.scene.image.Image;
 
 /**
  * This class {@code BioServiceImpl} handles all the biometric captures and
@@ -83,6 +86,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	private static HashMap<String, CaptureResponsBioDataDto> BEST_CAPTURES = new HashMap<>();
 
 	private static Map<String, Map<Integer, Double>> BIO_QUALITY_SCORE = new HashMap<String, Map<Integer, Double>>();
+	
+	private static Map<String, Map<Integer, Image>> BIO_STREAM_IMAGES = new HashMap<String, Map<Integer, Image>>();
+
 
 	public static HashMap<String, CaptureResponsBioDataDto> getBestCaptures() {
 		return BEST_CAPTURES;
@@ -98,11 +104,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 	public static void clearAllCaptures() {
 
-		LOGGER.info(LoggerConstants.STREAMER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 				"Clearing All captures");
 		
 		BEST_CAPTURES.clear();
 		BIO_QUALITY_SCORE.clear();
+		BIO_STREAM_IMAGES.clear();
 
 	}
 
@@ -697,7 +704,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 					: rightEyeAttempt;
 
 			setBioQualityScores(captureRespoonse.getBioSubType(), attempt, Integer.parseInt(captureRespoonse.getQualityScore()));
-			
+			setBioStreamImages(convertBytesToImage(captureRespoonse.getBioValue()), captureRespoonse.getBioSubType(), attempt);
+		
 			// Get Best Capture
 			captureRespoonse = getBestCapture(captureRespoonse);
 
@@ -712,6 +720,21 @@ public class BioServiceImpl extends BaseService implements BioService {
 			
 		});
 		detailsDTO.setCaptured(true);
+	}
+
+	/**
+	 * Convert bytes to image.
+	 *
+	 * @param imageBytes
+	 *            the image bytes
+	 * @return the image
+	 */
+	protected Image convertBytesToImage(byte[] imageBytes) {
+		Image image = null;
+		if (imageBytes != null) {
+			image = new Image(new ByteArrayInputStream(imageBytes));
+		}
+		return image;
 	}
 
 	/**
@@ -955,6 +978,66 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		captures.forEach(key -> BIO_QUALITY_SCORE.remove(key));
 		
+	}
+	
+	public static void setBioStreamImages(Image image, String bioType, int attempt) {
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Started Set Stream image of : " + bioType + " for attempt : " + attempt);
+
+		Map<Integer, Image> bioImage = null;
+
+		if (BIO_STREAM_IMAGES.get(bioType) != null) {
+			bioImage = BIO_STREAM_IMAGES.get(bioType);
+
+		} else {
+
+			bioImage = new HashMap<Integer, Image>();
+
+		}
+
+		//image = image == null ? streamImage : image;
+		bioImage.put(attempt, image);
+
+		BIO_STREAM_IMAGES.put(bioType, bioImage);
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Completed Set Stream image of : " + bioType + " for attempt : " + attempt);
+
+	}
+
+	
+	
+	
+public static void clearBIOStreamImagesByBioType(List<String> captures) {
+		
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Clearing Stream images of : " + captures);
+		
+		captures.forEach(key -> BIO_STREAM_IMAGES.remove(key));
+		
+	}
+
+	public static void clearAllStreamImages() {
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Clearing all Stream images");
+
+		BIO_STREAM_IMAGES.clear();
+	}
+
+	public Image getBioStreamImage(String bioType, int attempt) {
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"Get Stream  Quality Score of : " + bioType + " for attempt : " + attempt);
+
+		if (BIO_STREAM_IMAGES.get(bioType) != null) {
+			return BIO_STREAM_IMAGES.get(bioType).get(attempt);
+		}
+
+		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+				"NOT FOUND : Stream image of : " + bioType + " for attempt : " + attempt);
+
+		return null;
+
 	}
 
 }

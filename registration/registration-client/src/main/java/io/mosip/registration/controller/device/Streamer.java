@@ -25,6 +25,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -55,7 +56,6 @@ public class Streamer {
 	// Image View, which UI need to be shown
 	private static ImageView imageView;
 
-	private static Map<String, Map<Integer, Image>> BIO_STREAM_IMAGES = new HashMap<String, Map<Integer, Image>>();
 
 	// Set Streaming image
 	public void setStreamImage(Image streamImage) {
@@ -77,43 +77,17 @@ public class Streamer {
 		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
 				"Started Set Stream image of : " + bioType + " for attempt : " + attempt);
 
-		Map<Integer, Image> bioImage = null;
-
-		if (BIO_STREAM_IMAGES.get(bioType) != null) {
-			bioImage = BIO_STREAM_IMAGES.get(bioType);
-
-		} else {
-
-			bioImage = new HashMap<Integer, Image>();
-
-		}
-
+	
 		image = image == null ? streamImage : image;
-		bioImage.put(attempt, image);
-
-		BIO_STREAM_IMAGES.put(bioType, bioImage);
-
+		
+		BioServiceImpl.setBioStreamImages(image, bioType, attempt);
+	
 		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
 				"Completed Set Stream image of : " + bioType + " for attempt : " + attempt);
 
 	}
 
-	public Image getBiometricImage(String bioType, int attempt) {
-
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
-				"Get Stream image of : " + bioType + " for attempt : " + attempt);
-
-		if (BIO_STREAM_IMAGES.get(bioType) != null) {
-			return BIO_STREAM_IMAGES.get(bioType).get(attempt);
-		}
-
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
-				"NOT FOUND : Stream image of : " + bioType + " for attempt : " + attempt);
-
-		return null;
-
-	}
-
+	
 	public void startStream(RequestDetail requestDetail, ImageView streamImage, ImageView scanImage) {
 
 		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
@@ -321,34 +295,5 @@ public class Streamer {
 		this.isRunning = isRunning;
 	}
 	
-	public static void clearBIOStreamImagesByBioType(List<String> captures) {
-		
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
-				"Clearing Stream images of : " + captures);
-		
-		captures.forEach(key -> BIO_STREAM_IMAGES.remove(key));
-		
-	}
-
-	public static void clearAllStreamImages() {
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Clearing all Stream images");
-
-		BIO_STREAM_IMAGES.clear();
-	}
-
-	public Image getBioQualityScores(String bioType, int attempt) {
-
-//		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
-//				"Get Stream  Quality Score of : " + bioType + " for attempt : " + attempt);
-
-		if (BIO_STREAM_IMAGES.get(bioType) != null) {
-			return BIO_STREAM_IMAGES.get(bioType).get(attempt);
-		}
-
-//		LOGGER.info(BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
-//				"NOT FOUND : Stream image of : " + bioType + " for attempt : " + attempt);
-
-		return null;
-
-	}
+	
 }

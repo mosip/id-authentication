@@ -1418,18 +1418,25 @@ public class BaseController {
 			BioServiceImpl.clearBIOScoreByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
 			
-			Streamer.clearBIOStreamImagesByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+			BioServiceImpl.clearBIOStreamImagesByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
 			
 		} else if (bioType.equalsIgnoreCase(RegistrationConstants.IRIS)) {
 			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_IRIS);
 			BioServiceImpl.clearBIOScoreByBioType(RegistrationConstants.TWO_IRIS);
 			
-			Streamer.clearBIOStreamImagesByBioType(RegistrationConstants.TWO_IRIS);
+			BioServiceImpl.clearBIOStreamImagesByBioType(RegistrationConstants.TWO_IRIS);
 		
 		}
 		
 		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Cleared Bio Data (Capture Response,bio scores, bio stream images) of : "+bioType);
 	}
+	
+	protected void clearAllBiometrics() {
+		BioServiceImpl.clearAllCaptures();
+		
+	}
+	
+	
 }

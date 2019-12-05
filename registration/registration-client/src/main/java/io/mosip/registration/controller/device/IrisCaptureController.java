@@ -319,10 +319,10 @@ public class IrisCaptureController extends BaseController {
 			String qualityScore = getQualityScore(
 					bioservice.getBioQualityScores(capturedIris.getIrisType(), capturedIris.getNumOfIrisRetry()));
 			if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
-				leftIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
+				leftIrisImage.setImage(bioservice.getBioStreamImage(capturedIris.getIrisType(), capturedIris.getNumOfIrisRetry()));
 				leftIrisQualityScore.setText(qualityScore);
 			} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
-				rightIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
+				rightIrisImage.setImage(bioservice.getBioStreamImage(capturedIris.getIrisType(), capturedIris.getNumOfIrisRetry()));
 				rightIrisQualityScore.setText(qualityScore);
 			}
 		}
@@ -624,24 +624,19 @@ public class IrisCaptureController extends BaseController {
 					if (typeIris.contains(RegistrationConstants.LEFT)) {
 						leftIrisCount++;
 						iris.setNumOfIrisRetry(leftIrisCount);
-						leftIrisImage.setImage(convertBytesToImage(iris.getIris()));
+						leftIrisImage.setImage(bioservice.getBioStreamImage(iris.getIrisType(), iris.getNumOfIrisRetry()));
 						leftIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
 						leftIrisQualityScore.setText(getQualityScore(qualityScore));
 						leftIrisAttempts.setText(String.valueOf(iris.getNumOfIrisRetry()));
 
-						streamer.setBioStreamImages(leftIrisImage.getImage(), iris.getIrisType(),
-								iris.getNumOfIrisRetry());
-
+					
 					} else {
 						rightIrisCount++;
 						iris.setNumOfIrisRetry(rightIrisCount);
-						rightIrisImage.setImage(convertBytesToImage(iris.getIris()));
+						rightIrisImage.setImage(bioservice.getBioStreamImage(iris.getIrisType(), iris.getNumOfIrisRetry()));
 						rightIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
 						rightIrisQualityScore.setText(getQualityScore(qualityScore));
 						rightIrisAttempts.setText(String.valueOf(iris.getNumOfIrisRetry()));
-
-						streamer.setBioStreamImages(rightIrisImage.getImage(), iris.getIrisType(),
-								iris.getNumOfIrisRetry());
 
 					}
 
@@ -1090,7 +1085,7 @@ public class IrisCaptureController extends BaseController {
 		String qualityScore = getQualityScore(qualityScoreValue);
 
 		if (qualityScore != null) {
-			Image streamImage = streamer.getBiometricImage(bioType, attempt);
+			Image streamImage = bioservice.getBioStreamImage(bioType, attempt);
 			if (bioType.toUpperCase().contains(RegistrationConstants.IRIS.toUpperCase())) {
 				if (bioType.contains(RegistrationConstants.LEFT)) {
 
