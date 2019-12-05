@@ -1,13 +1,10 @@
 package io.mosip.kernel.pridgenerator.entity;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +12,7 @@ import lombok.NoArgsConstructor;
 /**
  * Entity class for prid bean
  * 
- * @author Urvil Joshi
+ * @author Ajay J
  * @since 1.0.0
  *
  */
@@ -24,7 +21,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "prid", schema = "kernel")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
 public class PridEntity extends BaseEntity {
 
@@ -41,9 +37,4 @@ public class PridEntity extends BaseEntity {
 	@Column(name = "prid_status", nullable = false, length = 16)
 	private String status;
 
-	/**
-	 * The field createdtimes
-	 */
-//	@Column(name = "expiry_dtimes")
-//	private LocalDateTime pridExpiry;
 }

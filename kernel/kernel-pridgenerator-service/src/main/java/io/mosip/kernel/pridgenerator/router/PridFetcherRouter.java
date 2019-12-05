@@ -31,7 +31,7 @@ import io.vertx.ext.web.RoutingContext;
 /**
  * Router for vertx server
  * 
- * @author Urvil Joshi
+ * @author Ajay J
  * @since 1.0.0
  *
  */
@@ -42,8 +42,6 @@ public class PridFetcherRouter {
 	private int workerExecutorPool;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PridFetcherRouter.class);
-
-	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	@Autowired
 	private PridService pridService;
@@ -65,42 +63,18 @@ public class PridFetcherRouter {
 			// send a publish event to prid pool checker
 			vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
 			ResponseWrapper<PridFetchResponseDto> reswrp = new ResponseWrapper<>();
-			WorkerExecutor executor = vertx.createSharedWorkerExecutor("get-vid", workerExecutorPool);
+			WorkerExecutor executor = vertx.createSharedWorkerExecutor("get-prid", workerExecutorPool);
 			executor.executeBlocking(blockingCodeHandler -> {
-//				String expiryDateString = routingContext.request().getParam(PRIDGeneratorConstant.VIDEXPIRY);
-//				LocalDateTime expiryTime = null;
-//				if (expiryDateString != null) {
-//					if (expiryDateString.trim().isEmpty()) {
-//						ServiceError error = new ServiceError(
-//								PRIDGeneratorErrorCode.VID_EXPIRY_DATE_EMPTY.getErrorCode(),
-//								PRIDGeneratorErrorCode.VID_EXPIRY_DATE_EMPTY.getErrorMessage());
-//						setError(routingContext, error,blockingCodeHandler);
-//					}
-//					DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN);
-//					try {
-//					expiryTime = LocalDateTime.parse(expiryDateString, dateTimeFormatter);
-//					}catch(DateTimeParseException exception) {
-//						ServiceError error = new ServiceError(
-//								PRIDGeneratorErrorCode.VID_EXPIRY_DATE_PATTERN_INVALID.getErrorCode(),
-//								PRIDGeneratorErrorCode.VID_EXPIRY_DATE_PATTERN_INVALID.getErrorMessage());
-//						setError(routingContext, error,blockingCodeHandler);
-//					}
-//					if (expiryTime.isBefore(DateUtils.getUTCCurrentDateTime())) {
-//						ServiceError error = new ServiceError(
-//								PRIDGeneratorErrorCode.VID_EXPIRY_DATE_INVALID.getErrorCode(),
-//								PRIDGeneratorErrorCode.VID_EXPIRY_DATE_INVALID.getErrorMessage());
-//						setError(routingContext, error,blockingCodeHandler);
-//					}
-//				}
-				PridFetchResponseDto vidFetchResponseDto = null;
+				PridFetchResponseDto pridFetchResponseDto = null;
 				try {
+					pridFetchResponseDto = pridService.fetchPrid();
 				} catch (PridGeneratorServiceException exception) {
 					ServiceError error = new ServiceError(exception.getErrorCode(), exception.getMessage());
 					setError(routingContext, error, blockingCodeHandler);
 				}
 				String timestamp = DateUtils.getUTCCurrentDateTimeString();
 				reswrp.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
-				reswrp.setResponse(vidFetchResponseDto);
+				reswrp.setResponse(pridFetchResponseDto);
 				reswrp.setErrors(null);
 				blockingCodeHandler.complete();
 			}, false, resultHandler -> {

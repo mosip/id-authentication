@@ -9,7 +9,7 @@ import io.mosip.kernel.pridgenerator.constant.PRIDGeneratorConstant;
 import io.mosip.kernel.pridgenerator.entity.BaseEntity;
 
 /**
- * Utility class for Vid Generator
+ * Utility class for prid Generator
  * 
  * @author Urvil Joshi
  * @since 1.0.0

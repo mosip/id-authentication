@@ -5,7 +5,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 /**
  * Exception class for handling different exceptions in the service.
  * 
- * @author Urvil Joshi
+ * @author Ajay J
  * @since 1.0.0
  *
  */
@@ -20,16 +20,14 @@ public class PridGeneratorServiceException extends BaseUncheckedException {
 	 * Constructor for the exception class with errorCode and errorMessage as the
 	 * argument.
 	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
+	 * @param errorCode    the error code.
+	 * @param errorMessage the error message.
 	 */
 	public PridGeneratorServiceException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
-	
-	public PridGeneratorServiceException(String errorCode, String errorMessage,Throwable cause) {
-		super(errorCode, errorMessage,cause);
+
+	public PridGeneratorServiceException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 }

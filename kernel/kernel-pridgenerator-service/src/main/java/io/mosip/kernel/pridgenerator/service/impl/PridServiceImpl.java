@@ -15,7 +15,6 @@ import io.mosip.kernel.pridgenerator.exception.PridGeneratorServiceException;
 import io.mosip.kernel.pridgenerator.repository.PridRepository;
 import io.mosip.kernel.pridgenerator.service.PridService;
 import io.mosip.kernel.pridgenerator.utils.ExceptionUtils;
-import io.mosip.kernel.pridgenerator.utils.MetaDataUtil;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -24,12 +23,8 @@ public class PridServiceImpl implements PridService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PridServiceImpl.class);
 
-
 	@Autowired
 	private PridRepository pridRepository;
-
-	@Autowired
-	private MetaDataUtil metaDataUtil;
 
 	@Override
 	@Transactional
@@ -82,46 +77,6 @@ public class PridServiceImpl implements PridService {
 		return pridCount;
 
 	}
-
-//	@Override
-//	public void expireAndRenew() {
-//		try {
-//			List<PridEntity> vidAssignedEntities = pridRepository
-//					.findByStatusAndIsDeletedFalse(PridLifecycleStatus.ASSIGNED);
-//			vidAssignedEntities.forEach(this::expireIfEligible);
-//			pridRepository.saveAll(vidAssignedEntities);
-//			List<PridEntity> vidExpiredEntities = pridRepository
-//					.findByStatusAndIsDeletedFalse(PridLifecycleStatus.EXPIRED);
-//			vidExpiredEntities.forEach(this::renewIfEligible);
-//			pridRepository.saveAll(vidExpiredEntities);
-//		} catch (DataAccessException exception) {
-//			LOGGER.error(ExceptionUtils.parseException(exception));
-//		} catch (Exception exception) {
-//			LOGGER.error(ExceptionUtils.parseException(exception));
-//		}
-//
-//	}
-//
-//	private void expireIfEligible(PridEntity entity) {
-//		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime();
-//		LOGGER.debug("currenttime {} for checking entity with expiry time {}", currentTime, entity.getPridExpiry());
-//		if ((entity.getPridExpiry().isBefore(currentTime) || entity.getPridExpiry().isEqual(currentTime))
-//				&& entity.getStatus().equals(PridLifecycleStatus.ASSIGNED)) {
-//			metaDataUtil.setUpdateMetaData(entity);
-//			entity.setStatus(PridLifecycleStatus.EXPIRED);
-//		}
-//	}
-//
-//	private void renewIfEligible(PridEntity entity) {
-//		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime();
-//		LocalDateTime renewElegibleTime = entity.getPridExpiry().plusDays(timeToRenewAfterExpiry);
-//		LOGGER.debug("currenttime {} for checking entity with renew elegible time {}", currentTime, renewElegibleTime);
-//		if ((renewElegibleTime.isBefore(currentTime) || renewElegibleTime.isEqual(currentTime))
-//				&& entity.getStatus().equals(PridLifecycleStatus.EXPIRED)) {
-//			metaDataUtil.setUpdateMetaData(entity);
-//			entity.setStatus(PridLifecycleStatus.AVAILABLE);
-//		}
-//	}
 
 	@Override
 	public boolean savePRID(PridEntity prid) {

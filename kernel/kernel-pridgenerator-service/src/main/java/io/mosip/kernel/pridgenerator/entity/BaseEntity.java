@@ -5,19 +5,17 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Superclass for entities
  * 
- * @author Urvil Joshi
+ * @author Ajay J
  * @since 1.0.0
  *
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
 public class BaseEntity {

@@ -7,9 +7,9 @@ import io.mosip.kernel.pridgenerator.entity.PridEntity;
 import io.mosip.kernel.pridgenerator.service.PridService;
 
 /**
- * This class have functionality to persists the list of vids in database
+ * This class have functionality to persists the list of prids in database
  * 
- * @author Urvil Joshi
+ * @author Ajay J
  * @since 1.0.0
  *
  */
@@ -19,7 +19,7 @@ public class PridWriter {
 	@Autowired
 	private PridService pridService;
 
-	public boolean persistPrids(PridEntity vid) {
-			return this.pridService.savePRID(vid);
+	public boolean persistPrids(PridEntity prid) {
+			return this.pridService.savePRID(prid);
 	}
 }

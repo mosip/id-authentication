@@ -13,14 +13,6 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 
-/**
- * Verticle for fetching PRID
- * 
- * @author Urvil Joshi
- * @since 1.0.0
- *
- */
-
 public class PridFetcherVerticle extends AbstractVerticle {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PridFetcherVerticle.class);

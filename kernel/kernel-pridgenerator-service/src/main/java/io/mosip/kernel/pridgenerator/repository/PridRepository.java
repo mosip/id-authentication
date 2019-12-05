@@ -14,7 +14,7 @@ import io.mosip.kernel.pridgenerator.entity.PridEntity;
 @Repository
 public interface PridRepository extends JpaRepository<PridEntity, String> {
 
-	@Query(value = "select v.prid,v.prid_status,v.expiry_dtimes,v.cr_by, v.cr_dtimes, v.del_dtimes, v.is_deleted, v.upd_by, v.upd_dtimes from kernel.prid v where v.prid_status=? limit 1", nativeQuery = true)
+	@Query(value = "select v.prid,v.prid_status,v.cr_by, v.cr_dtimes, v.del_dtimes, v.is_deleted, v.upd_by, v.upd_dtimes from kernel.prid v where v.prid_status=? limit 1", nativeQuery = true)
 	PridEntity findFirstByStatus(String status);
 
 	long countByStatusAndIsDeletedFalse(String status);
