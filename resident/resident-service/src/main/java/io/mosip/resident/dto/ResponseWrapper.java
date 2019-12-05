@@ -16,7 +16,6 @@ public class ResponseWrapper<T> {
 	private String id;
 	private String version;
 	private String responsetime;
-	private Object metadata;
 	@NotNull
 	@Valid
 	private T response;

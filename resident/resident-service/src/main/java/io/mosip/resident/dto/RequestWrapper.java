@@ -11,8 +11,6 @@ public class RequestWrapper<T> {
 	private String version;
 	private String requesttime;
 
-	private Object metadata;
-
 	@NotNull
 	@Valid
 	private T request;

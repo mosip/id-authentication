@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import javax.validation.Valid;
 
+import io.mosip.resident.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -14,14 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.resident.dto.AuthLockRequestDto;
-import io.mosip.resident.dto.EuinRequestDTO;
-import io.mosip.resident.dto.RequestDTO;
-import io.mosip.resident.dto.ResidentReprintRequestDto;
-import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.validator.RequestValidator;
 
