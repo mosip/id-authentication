@@ -5,30 +5,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.resident.constant.ApiName;
-import io.mosip.resident.constant.NotificationTemplate;
+import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.SMSRequestDTO;
@@ -37,13 +31,8 @@ import io.mosip.resident.dto.TemplateResponseDto;
 
 @Component
 public class NotificationService {
-//	@Autowired
-//	RestTemplate restTemplate;
-
 	@Autowired
 	private TemplateManager templateManager;
-
-	private static final String regType = "RES_UPDATE";
 
 	@Value("${mosip.primary-language}")
 	private String primaryLang;
@@ -68,15 +57,6 @@ public class NotificationService {
 
 	public static final String LINE_SEPARATOR = "" + '\n' + '\n' + '\n';
 
-	// idType
-	// subject
-
-	// ---------dto---
-	// ---need to find email and phone number
-	// regId
-	// uin
-	// vid
-
 	@Autowired
 	private Utilitiy utility;
 
@@ -84,20 +64,28 @@ public class NotificationService {
 		String subject = "";
 
 		try {
-			Map<String, Object> mailingAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
+			Map<String, Object> notificationAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
 			if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
-				mailingAttributes.putAll(dto.getAdditionalAttributes());
+				notificationAttributes.putAll(dto.getAdditionalAttributes());
 			}
+			//added only few cases
 			switch (dto.getTemplateType().name()) {
 			case "RS_DOW_UIN_Status":
-				subject = "Download e-card";
+				subject = "Download e-card request sucessful";
 				break;
 			case "RS_UIN_RPR_Status_EMAIL":
-				subject = "Request for re-print UIN";
+				subject = "Request for re-print UIN successfull";
+				break;
+			case "RS_AUTH_HIST_Status":
+				subject = "Request for Auth History is successfull";
+				break;
+			case "":
+
 			}
 
-			sendSMSNotification(mailingAttributes, dto.getTemplateType());
-			sendEmailNotification(mailingAttributes, dto.getTemplateType(), null, subject);
+			sendSMSNotification(notificationAttributes, dto.getTemplateType());
+			sendEmailNotification(notificationAttributes, dto.getTemplateType(), null, subject);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,19 +93,13 @@ public class NotificationService {
 	}
 
 	private String getTemplate(String langCode, String templatetypecode) throws IOException {
+		List<String> pathSegments = new ArrayList<String>();
+		pathSegments.add(langCode);
+		pathSegments.add(templatetypecode);
 
-		String url = ApiName.TEMPLATES + "/" + langCode + "/" + templatetypecode;
-//		HttpHeaders headers = new HttpHeaders();
-//		HttpEntity<RequestWrapper<TemplateResponseDto>> httpEntity = new HttpEntity<>(headers);
-//		ResponseEntity<ResponseWrapper<TemplateResponseDto>> respEntity = restTemplate.exchange(url, HttpMethod.GET,
-//				httpEntity, new ParameterizedTypeReference<ResponseWrapper<TemplateResponseDto>>() {
-//				});
-		
-		ResponseWrapper<TemplateResponseDto> resp= (ResponseWrapper<TemplateResponseDto>) restClient.getApi(ApiName.TEMPLATES, null, null, null, ResponseWrapper.class, tokenGenerator.getToken());
-
-		//List<TemplateDto> response = respEntity.getBody().getResponse().getTemplates();
+		TemplateResponseDto resp = (TemplateResponseDto) restClient.getApi(ApiName.TEMPLATES, pathSegments, null, null,
+				TemplateResponseDto.class, tokenGenerator.getToken());
 		List<TemplateDto> response = resp.getResponse().getTemplates();
-
 
 		return response.get(0).getFileText().replaceAll("^\"|\"$", "");
 
@@ -135,10 +117,7 @@ public class NotificationService {
 	}
 
 	private boolean sendSMSNotification(Map<String, Object> mailingAttributes,
-			NotificationTemplate notificationTemplate) throws Exception {
-		// ResponseWrapper<NotificationResponseDTO> response = new ResponseWrapper<>();
-		//ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
-
+			NotificationTemplateCode notificationTemplate) throws Exception {
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_SMS"),
 				mailingAttributes);
 
@@ -154,36 +133,25 @@ public class NotificationService {
 		smsRequestDTO.setNumber((String) mailingAttributes.get("phone"));
 		RequestWrapper<SMSRequestDTO> req = new RequestWrapper<>();
 		req.setRequest(smsRequestDTO);
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//		HttpEntity<RequestWrapper<SMSRequestDTO>> httpEntity = new HttpEntity<>(req, headers);
-//		resp = restTemplate.exchange(ApiName.SMSNOTIFIER.name(), HttpMethod.POST, httpEntity,
-//				new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {
-//				});
-		
-		ResponseWrapper<NotificationResponseDTO> resp = restClient.postApi(ApiName.SMSNOTIFIER.name(), MediaType.APPLICATION_JSON, req, ResponseWrapper.class, tokenGenerator.getToken());
+		NotificationResponseDTO resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()),
+				MediaType.APPLICATION_JSON, req, NotificationResponseDTO.class, tokenGenerator.getToken());
 
 		NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
 		notifierResponse.setMessage(resp.getResponse().getMessage());
 		notifierResponse.setStatus(resp.getResponse().getStatus());
-//		response.setResponse(notifierResponse);
-//		response.setResponsetime(DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		if (resp.getResponse().getStatus().equalsIgnoreCase("success"))
 			return true;
 		return false;
 	}
 
 	private boolean sendEmailNotification(Map<String, Object> mailingAttributes,
-			NotificationTemplate notificationTemplate, MultipartFile[] attachment, String subject) throws Exception {
-		// ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
-
-		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_SMS"),
+			NotificationTemplateCode notificationTemplate, MultipartFile[] attachment, String subject)
+			throws Exception {
+		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + "_EMAIL"),
 				mailingAttributes);
-
 		if (languageType.equalsIgnoreCase("both")) {
 			String secondaryLanguageMergeTemplate = templateMerge(
-					getTemplate(secondaryLang, notificationTemplate + "_SMS"), mailingAttributes);
+					getTemplate(secondaryLang, notificationTemplate + "_EMAIL"), mailingAttributes);
 			primaryLanguageMergeTemplate = primaryLanguageMergeTemplate + LINE_SEPARATOR
 					+ secondaryLanguageMergeTemplate;
 		}
@@ -205,15 +173,12 @@ public class NotificationService {
 		builder.queryParam("mailSubject", subject);
 		builder.queryParam("mailContent", primaryLanguageMergeTemplate);
 		params.add("attachments", attachment);
-		ResponseWrapper<NotificationResponseDTO> response = restClient.postApi(builder.build().toUriString(),
-				MediaType.MULTIPART_FORM_DATA, params,
-				new ParameterizedTypeReference<ResponseWrapper<NotificationResponseDTO>>() {
-				}.getClass(), tokenGenerator.getToken());
+		NotificationResponseDTO response = restClient.postApi(builder.build().toUriString(),
+				MediaType.MULTIPART_FORM_DATA, params, NotificationResponseDTO.class, tokenGenerator.getToken());
 
 		if (response.getResponse().getStatus().equals("success")) {
 			return true;
 		}
-
 		return false;
 
 	}

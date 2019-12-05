@@ -3,12 +3,13 @@ package io.mosip.resident.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-
-
-public class TemplateResponseDto implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class TemplateResponseDto extends ResponseWrapper<TemplateResponseDto> implements Serializable {
 	/**
 	 * Default serial version
 	 */

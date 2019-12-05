@@ -14,7 +14,7 @@ import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.LoggerFileConstant;
-import io.mosip.resident.constant.NotificationTemplate;
+import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
@@ -100,7 +100,7 @@ public class ResidentServiceImpl implements ResidentService {
 						notificationRequestDto.setId(dto.getIndividualId());
 						notificationRequestDto.setIdType(idtype);
 						notificationRequestDto.setRegistrationType("NEW");
-						notificationRequestDto.setTemplateType(NotificationTemplate.RS_DOW_UIN_Status);
+						notificationRequestDto.setTemplateType(NotificationTemplateCode.RS_DOW_UIN_Status);
 						notificationService.sendNotification(notificationRequestDto);
 					}
 					
