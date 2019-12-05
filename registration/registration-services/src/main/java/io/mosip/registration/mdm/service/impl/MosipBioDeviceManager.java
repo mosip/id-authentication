@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -90,6 +92,7 @@ public class MosipBioDeviceManager {
 	 * @throws RegBaseCheckedException
 	 *             - generalised exception with errorCode and errorMessage
 	 */
+	@PostConstruct
 	@SuppressWarnings("unchecked")
 	public void init() throws RegBaseCheckedException {
 

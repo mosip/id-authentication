@@ -358,7 +358,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 								if (index != -1) {
 									ImageView streamImage;
-									Label qualityText;
+									Label qualityTextLabel;
 									ProgressBar progressBar;
 									Label qualityScore;
 									if (fingerprintDetailsDTO.getFingerType()
@@ -367,18 +367,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 										// Set Stream image
 										streamImage = leftHandPalmImageview;
 										// Quality Label
-										qualityText = leftSlapQualityScore;
+										qualityTextLabel = leftSlapQualityScore;
 									} else if (fingerprintDetailsDTO.getFingerType()
 											.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 										// Set Stream image
 										streamImage = rightHandPalmImageview;
 										// Quality Label
-										qualityText = rightSlapQualityScore;
+										qualityTextLabel = rightSlapQualityScore;
 									} else {
 										// Set Stream image
 										streamImage = thumbImageview;
 										// Quality Label
-										qualityText = thumbsQualityScore;
+										qualityTextLabel = thumbsQualityScore;
 									}
 
 									// Progress BAr
@@ -389,7 +389,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 									try {
 										updateByAttempt(fingerprintDetailsDTO.getFingerType(),
 												Character.getNumericValue(eventString.charAt(index)), streamImage,
-												qualityText, progressBar, qualityScore);
+												qualityTextLabel, progressBar, qualityScore);
 									} catch (RuntimeException runtimeException) {
 										LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME,
 												APPLICATION_ID, runtimeException.getMessage()
@@ -490,6 +490,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 																			? RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD
 																			: null;
 
+							Label qualityScoreLabel = fpDetailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT) ? leftSlapQualityScore : fpDetailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT) ? rightSlapQualityScore : thumbsQualityScore;
+							
+							qualityScoreLabel.setText(String.valueOf((int) qualityScore));
 							updateRetryBox(fpDetailsDTO, Double.valueOf(
 									getQualityScore(bioService.getBioQualityScores(fpDetailsDTO.getFingerType(),
 											fpDetailsDTO.getNumRetry())).split(RegistrationConstants.PERCENTAGE)[0]),
