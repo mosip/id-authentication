@@ -3,6 +3,7 @@ package io.mosip.resident.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,12 @@ import io.mosip.resident.dto.JsonValue;
 import io.mosip.resident.dto.VidGeneratorResponseDto;
 import io.mosip.resident.exception.IdRepoAppException;
 
+/**
+ * 
+ * @author Girish Yarru
+ *
+ */
+
 @Component
 public class Utilitiy {
 
@@ -33,10 +40,10 @@ public class Utilitiy {
 	private TokenGenerator tokenGenerator;
 
 	@Value("${config.server.file.storage.uri}")
-	private static String configServerFileStorageURL;
+	private String configServerFileStorageURL;
 
 	@Value("${registration.processor.identityjson}")
-	private static String getRegProcessorIdentityJson;
+	private String getRegProcessorIdentityJson;
 
 	@Value("${mosip.primary-language}")
 	private String primaryLang;
@@ -51,6 +58,7 @@ public class Utilitiy {
 	private static final String EMAIL = "email";
 	private static final String PHONE = "phone";
 
+	@SuppressWarnings("unchecked")
 	public JSONObject retrieveIdrepoJson(String id, IdType idType) throws IOException, Exception {
 
 		List<String> pathsegments = new ArrayList<>();
@@ -91,21 +99,22 @@ public class Utilitiy {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMailingAttributes(String id, IdType idType) throws IOException, Exception {
 		Map<String, Object> attributes = new HashMap<>();
 		JSONObject idJson = retrieveIdrepoJson(id, idType);
-		JSONObject identity = (JSONObject) idJson.get(IDENTITY);
-		String email = (String) identity.get(EMAIL);
-		String phone = (String) identity.get(PHONE);
+		String email = (String) idJson.get(EMAIL);
+		String phone = (String) idJson.get(PHONE);
 		attributes.put(EMAIL, email);
 		attributes.put(PHONE, phone);
 		String mappingJsonString = getMappingJson();
 		JSONObject mappingJsonObject = new ObjectMapper().readValue(mappingJsonString, JSONObject.class);
-		JSONObject mappingIdentityJson = (JSONObject) mappingJsonObject.get(IDENTITY);
-		JSONObject nameJson = (JSONObject) mappingIdentityJson.get("name");
+		LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
+				.get(IDENTITY);
+		LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get("name");
 		String[] names = ((String) nameJson.get("value")).split(",");
 		for (String name : names) {
-			JsonValue[] nameArray = JsonUtil.getJsonValues(identity, name);
+			JsonValue[] nameArray = JsonUtil.getJsonValues(idJson, name);
 			if (nameArray != null) {
 				for (JsonValue value : nameArray) {
 					if (languageType.equals("BOTH")) {
@@ -125,7 +134,7 @@ public class Utilitiy {
 		return attributes;
 	}
 
-	private static String getMappingJson() {
+	public String getMappingJson() {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + getRegProcessorIdentityJson, String.class);
 	}

@@ -1,6 +1,7 @@
 package io.mosip.resident.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
@@ -26,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -74,8 +76,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             VidGeneratorResponseDto vidResponse = vidGenerator(requestDto);
             VidResponseDto vidResponseDto = new VidResponseDto();
             vidResponseDto.setVid(vidResponse.getVID());
-            vidResponseDto.setStatus("Success");
-            vidResponseDto.setMessage("Message has been sent to email id");
+            vidResponseDto.setMessage("Notification has been sent to the provided contact detail(s)");
             responseDto.setResponse(vidResponseDto);
         } catch (JsonProcessingException e) {
             throw new VidCreationException(e.getErrorText());
@@ -94,7 +95,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
     private VidGeneratorResponseDto vidGenerator(VidRequestDto requestDto) throws JsonProcessingException, IOException {
         VidGeneratorRequestDto vidRequestDto = new VidGeneratorRequestDto();
         RequestWrapper<VidGeneratorRequestDto> request = new RequestWrapper<>();
-        ResponseWrapper<?> response = null;
+        ResponseWrapper<VidGeneratorResponseDto> response = null;
 
         vidRequestDto.setUIN(requestDto.getIndividualId());
         vidRequestDto.setVidType(requestDto.getVidType());
@@ -123,12 +124,12 @@ public class ResidentVidServiceImpl implements ResidentVidService {
                 "ResidentVidServiceImpl::vidGenerator():: create Vid response :: "+ JsonUtils.javaObjectToJsonString(response));
 
         if (response.getErrors() != null && !response.getErrors().isEmpty()) {
-            response.getErrors().stream().map(err -> err.getErrorCode().equalsIgnoreCase(VID_ALREADY_EXISTS_ERROR_CODE)).collect(Collectors.toList());
-            throw (response.getErrors().size() == 1) ?
+            List<ServiceError> list =  response.getErrors().stream().filter(err -> err.getErrorCode().equalsIgnoreCase(VID_ALREADY_EXISTS_ERROR_CODE)).collect(Collectors.toList());
+            throw (list.size() == 1) ?
                 new VidAlreadyPresentException(ResidentErrorCode.VID_ALREADY_PRESENT.getErrorCode(),
                         ResidentErrorCode.VID_ALREADY_PRESENT.getErrorMessage())
             :
-            new VidCreationException(ResidentErrorCode.VID_CREATION_EXCEPTION.getErrorMessage());
+            new VidCreationException(response.getErrors().get(0).getMessage());
 
         }
 

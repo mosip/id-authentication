@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import io.mosip.resident.constant.IdType;
-import io.mosip.resident.constant.NotificationTemplate;
+import io.mosip.resident.constant.NotificationTemplateCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,6 @@ public class NotificationRequestDto implements Serializable {
 	private String id;
 	private IdType idType;
 	private String registrationType;
-	private NotificationTemplate templateType;
+	private NotificationTemplateCode templateTypeCode;
 	private Map<String, Object> additionalAttributes;
 }

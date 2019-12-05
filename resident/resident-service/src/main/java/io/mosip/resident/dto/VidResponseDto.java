@@ -7,6 +7,5 @@ import java.io.Serializable;
 public class VidResponseDto implements Serializable {
 
     private String vid;
-    private String status;
     private String message;
 }

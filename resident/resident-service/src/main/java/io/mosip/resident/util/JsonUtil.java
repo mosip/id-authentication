@@ -18,7 +18,7 @@ import io.mosip.resident.dto.JsonValue;
 /**
  * This class provides JSON utilites.
  *
- * @author Pranav Kumar
+ * @author Girish Yarru
  * @since 0.0.1
  */
 public class JsonUtil {
@@ -71,8 +71,12 @@ public class JsonUtil {
 	 * @param key        the key
 	 * @return the JSON object
 	 */
+	@SuppressWarnings("unchecked")
 	public static JSONObject getJSONObject(JSONObject jsonObject, Object key) {
-		LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
+		LinkedHashMap<Object, Object> identity = null;
+		if (jsonObject.get(key) instanceof LinkedHashMap) {
+			identity = (LinkedHashMap<Object, Object>) jsonObject.get(key);
+		}
 		return identity != null ? new JSONObject(identity) : null;
 	}
 
@@ -87,6 +91,7 @@ public class JsonUtil {
 	 * @param key        the key
 	 * @return the JSON array
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static JSONArray getJSONArray(JSONObject jsonObject, Object key) {
 		ArrayList value = (ArrayList) jsonObject.get(key);
 		if (value == null)
@@ -106,6 +111,7 @@ public class JsonUtil {
 	 * @param key        the key
 	 * @return the JSON value
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T getJSONValue(JSONObject jsonObject, String key) {
 		T value = (T) jsonObject.get(key);
 		return value;
@@ -118,6 +124,7 @@ public class JsonUtil {
 	 * @param key        the key
 	 * @return the JSON object
 	 */
+	@SuppressWarnings("rawtypes")
 	public static JSONObject getJSONObjectFromArray(JSONArray jsonObject, int key) {
 		LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
 		return identity != null ? new JSONObject(identity) : null;
