@@ -11,6 +11,7 @@ import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.constant.ResidentErrorCode;
+import io.mosip.resident.dto.AuthLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.RequestDTO;
@@ -24,25 +25,25 @@ import io.mosip.resident.util.UINCardDownloadService;
 
 @Service
 public class ResidentServiceImpl implements ResidentService {
-	
+
 	private static final Logger logger = LoggerConfiguration.logConfig(ResidentServiceImpl.class);
 
 	@Autowired
 	private VidValidator<String> vidValidator;
-	
+
 	@Autowired
 	private UinValidator<String> uinValidator;
-	
+
 	@Autowired
 	private RidValidator<String> ridValidator;
-	
+
 	@Autowired
     private UINCardDownloadService uinCardDownloadService;
 
-    
+
     @Autowired
     private IdAuthService idAuthService;
-    
+
     @Autowired
     NotificationService notificationService;
 
@@ -59,12 +60,12 @@ public class ResidentServiceImpl implements ResidentService {
 		
 		byte[]	response;
 		
-		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {	
-			
+		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {
+
 			if(idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
-					dto.getIndividualIdType(), dto.getOtp())) {			
-				
-				IdType idtype=getIdType(dto.getIndividualIdType());	
+					dto.getIndividualIdType(), dto.getOtp())) {
+
+				IdType idtype=getIdType(dto.getIndividualIdType());
 				response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), idtype);
 				if(response !=null) {
 					NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
@@ -79,12 +80,11 @@ public class ResidentServiceImpl implements ResidentService {
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 			}
-		}
-		else {
+		} else {
 			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
 					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
 		}
-		
+
 		return response;
 	}
 
@@ -125,8 +125,28 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAauthLock(RequestDTO dto) {
-		// TODO Auto-generated method stub
+	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) {
+		ResponseDTO response = new ResponseDTO();
+		if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
+			if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+					dto.getOtp())) {
+				boolean isAuthTypeLocked = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
+						dto.getIndividualIdType(), dto.getAuthType(), true);
+				if (isAuthTypeLocked) {
+
+				} else {
+					throw new ResidentServiceException(ResidentErrorCode.AUTH_TYPE_STATUS_UPDATE_FAILED.getErrorCode(),
+							ResidentErrorCode.AUTH_TYPE_STATUS_UPDATE_FAILED.getErrorMessage());
+				}
+			} else {
+				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+			}
+		} else {
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
+		}
+
 		return null;
 	}
 
@@ -141,34 +161,30 @@ public class ResidentServiceImpl implements ResidentService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	private boolean validateIndividualId(String individualId,String individualIdType) {
-		boolean validation=false;
-		if(individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
-			validation= uinValidator.validateId(individualId);
-		}
-		else if(individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
-			validation= vidValidator.validateId(individualId);
-		}
-		else if(individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
-			validation= ridValidator.validateId(individualId);
-		}
-		else {
+
+	private boolean validateIndividualId(String individualId, String individualIdType) {
+		boolean validation = false;
+		if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
+			validation = uinValidator.validateId(individualId);
+		} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
+			validation = vidValidator.validateId(individualId);
+		} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
+			validation = ridValidator.validateId(individualId);
+		} else {
 			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
 					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
 		}
 		return validation;
 	}
+
 	private IdType getIdType(String individualIdType) {
-		IdType idType=null;
-		if(individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
-			idType= IdType.UIN;
-		}
-		else if(individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
-			idType= IdType.VID;
-		}
-		else if(individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
-			idType= IdType.RID;
+		IdType idType = null;
+		if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
+			idType = IdType.UIN;
+		} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
+			idType = IdType.VID;
+		} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
+			idType = IdType.RID;
 		}
 		return idType;
 	}
