@@ -586,6 +586,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 						retries = leftIrisCount;
 
 					}
+					streamer.setBioStreamImages(convertBytesToImage(iris.getIris()), iris.getIrisType(), attempt);
+					
 					scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
 					biometricImage.setImage(bioService.getBioStreamImage(iris.getIrisType(), retries));
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
@@ -1005,9 +1007,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 	 */
 	public void clearCapturedBioData() {
 
+		
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Clearing the captured biometric data");
 
+		clearAllBiometrics();
+		
+		
 		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
 				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
 						&& (Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)))) {

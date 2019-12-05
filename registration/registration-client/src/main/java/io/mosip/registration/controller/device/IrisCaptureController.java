@@ -414,7 +414,7 @@ public class IrisCaptureController extends BaseController {
 								}
 							}
 						} catch (RuntimeException runtimeException) {
-							LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+							LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 									runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 						}
@@ -636,16 +636,16 @@ public class IrisCaptureController extends BaseController {
 					}
 					scanPopUpViewController.getScanImage()
 							.setImage(convertBytesToImage(irisDetailsDTO.getIrises().get(0).getIris()));
-				} else {
-					streamer.setStreamImageToImageView();
-
-				}
+				} 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 				irisDetailsDTO.getIrises().forEach((iris) -> {
 					if (!bioservice.isMdmEnabled())
 						scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
 					String typeIris = iris.getIrisType();
 					int attempt = typeIris.equals(RegistrationConstants.LEFT_EYE) ? leftEyeAttempt : rightEyeAttempt;
+					
+					//Add Bio Stream image
+					streamer.setBioStreamImages(convertBytesToImage(iris.getIris()), iris.getIrisType(), attempt);
 
 					double qualityScore = bioservice.getBioQualityScores(typeIris, attempt);
 					if (typeIris.contains(RegistrationConstants.LEFT)) {

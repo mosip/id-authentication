@@ -1467,8 +1467,29 @@ public class BaseController {
 			progressQualityScore
 					.setText(String.valueOf((int) qualityScoreValue).concat(RegistrationConstants.PERCENTAGE));
 
+			if (qualityScoreValue >= Double
+					.parseDouble(getValueFromApplicationContext(getThresholdKeyByBioType(bioType)))) {
+				progressBar.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
+				progressBar.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
+			} else {
+				progressBar.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
+				progressBar.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
+			}
+
 		}
 
 	}
+
+	protected String getThresholdKeyByBioType(String bioType) {
+		return bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
+				? RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD
+				: bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)
+						? RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD
+						: bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)
+								? RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD
+								: bioType.toLowerCase().contains(RegistrationConstants.IRIS.toLowerCase()) ? RegistrationConstants.IRIS_THRESHOLD
+										: RegistrationConstants.EMPTY;
+	}
+	
 
 }

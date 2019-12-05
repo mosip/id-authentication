@@ -479,19 +479,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							qualityText.setText(
 									String.valueOf((int) qualityScore).concat(RegistrationConstants.PERCENTAGE));
 
-							String fingerprintThreshold = fpDetailsDTO.getFingerType()
+							String fingerprintThreshold = getThresholdKeyByBioType(fpDetailsDTO.getFingerType());
+
+							Label qualityScoreLabel = fpDetailsDTO.getFingerType()
 									.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
-											? RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD
+											? leftSlapQualityScore
 											: fpDetailsDTO.getFingerType()
 													.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)
-															? RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD
-															: fpDetailsDTO.getFingerType().equals(
-																	RegistrationConstants.FINGERPRINT_SLAB_THUMBS)
-																			? RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD
-																			: null;
+															? rightSlapQualityScore
+															: thumbsQualityScore;
 
-							Label qualityScoreLabel = fpDetailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT) ? leftSlapQualityScore : fpDetailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT) ? rightSlapQualityScore : thumbsQualityScore;
-							
 							qualityScoreLabel.setText(String.valueOf((int) qualityScore));
 							updateRetryBox(fpDetailsDTO, Double.valueOf(
 									getQualityScore(bioService.getBioQualityScores(fpDetailsDTO.getFingerType(),
@@ -783,6 +780,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 	public void clearFingerPrintDTO() {
 
+		// Clear All fingerprints images/scores
 		clearBiometrics(RegistrationConstants.FINGERPRINT);
 
 		initializeCaptureCount();
@@ -1267,25 +1265,34 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			} else {
-				streamer.setStreamImageToImageView();
-
+				
 				detailsDTO.setFingerPrint(streamer.imageBytes);
 			}
+			
+			//Add Bio Stream image
+			streamer.setBioStreamImages(null, detailsDTO.getFingerType(), attempt);
+
 			if (detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 				leftSlapCount++;
 				retries = leftSlapCount;
+				leftHandPalmImageview.setImage(bioService.getBioStreamImage(detailsDTO.getFingerType(), retries));
+				
 			} else if (detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 				rightSlapCount++;
 				retries = rightSlapCount;
+				rightHandPalmImageview.setImage(bioService.getBioStreamImage(detailsDTO.getFingerType(), retries));
 			} else {
 				thumbCount++;
 				retries = thumbCount;
+				thumbImageview.setImage(bioService.getBioStreamImage(detailsDTO.getFingerType(), retries));
+				
 			}
+			
+			
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
 				detailsDTO.setNumRetry(retries);
 
-				streamer.setBioStreamImages(null, detailsDTO.getFingerType(), detailsDTO.getNumRetry());
 			}
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 			popupStage.close();
