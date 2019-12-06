@@ -196,12 +196,10 @@ public class BookingService implements BookingServiceIntf {
 						noOfHoliday = getSlot(dateTimeList, noOfHoliday, availableEntity);
 					}
 				}
-
 				availability.setCenterDetails(dateTimeList);
 				availability.setRegCenterId(regID);
 				isSaveSuccess = true;
 			}
-
 		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id", "In getAvailability method of Booking Service- " + ex.getMessage());
@@ -217,7 +215,6 @@ public class BookingService implements BookingServiceIntf {
 						authUserDetails().getUsername(), regID);
 			}
 		}
-
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 		response.setResponse(availability);
 		return response;

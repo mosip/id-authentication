@@ -393,7 +393,7 @@ public class NotificationService {
 						ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getMessage(), response);
 			}
 			return responseEntity;
-		} catch (RestClientException ex) {
+		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getDemographicDetails method of notification service - " + ex.getMessage());
@@ -421,7 +421,7 @@ public class NotificationService {
 				throw new BookingDetailsNotFoundException(respEntity.getErrors(), response);
 			}
 			bookingRegistrationDTO = respEntity.getResponse();
-		} catch (RestClientException ex) {
+		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In getAppointmentDetailsRestService method of notification service - " + ex.getMessage());

@@ -1,5 +1,6 @@
 package io.mosip.preregistration.booking.test.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -20,13 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.validation.BeanPropertyBindingResult;
 
+import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.serviceimpl.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.serviceimpl.dto.BookingStatus;
@@ -38,6 +44,7 @@ import io.mosip.preregistration.booking.serviceimpl.service.BookingService;
 import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.booking.serviceimpl.service.util.BookingServiceUtil;
 import io.mosip.preregistration.booking.test.BookingApplicationTest;
+import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
@@ -71,6 +78,9 @@ public class BookingControllerTest {
 	
 	@Mock
 	private RequestValidator requestValidator;
+	
+	@Autowired
+	private BookingController controller;
 
 	@MockBean
 	private BookingServiceUtil serviceUtil;
@@ -181,11 +191,15 @@ public class BookingControllerTest {
 
 		Mockito.when(service.bookAppointment(bookingDTO,preId)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment/{preRegistrationId}",preId)
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		bookingDTO.setId("mosip.preregistration.booking.book");
+		bookingDTO.setVersion("1.0");
+		bookingDTO.setRequesttime(new Date());
+		bookingDTO.setRequest(bookingRequestDTO);
+		
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(bookingDTO, "MainRequestDTO<OtpRequestDTO>");
+		ResponseEntity<MainResponseDTO<BookingStatusDTO>> responseEntity = controller.bookAppoinment(preId, bookingDTO, errors);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -218,11 +232,14 @@ public class BookingControllerTest {
 
 		Mockito.when(service.bookMultiAppointment(bookingDTO)).thenReturn(responseDto);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").
-				accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObjectMulti.toString());
-
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		bookingDTO.setId("mosip.preregistration.booking.book");
+		bookingDTO.setVersion("1.0");
+		bookingDTO.setRequesttime(new Date());
+		bookingDTO.setRequest(multiBookingRequestDto1);
+		
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(bookingDTO, "MainRequestDTO<MultiBookingRequest>");
+		ResponseEntity<MainResponseDTO<BookingStatusDTO>> responseEntity = controller.bookMultiAppoinment(bookingDTO, errors);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -242,7 +259,7 @@ public class BookingControllerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@WithUserDetails("INDIVIDUAL")
+	@WithUserDetails("PRE_REGISTRATION_ADMIN")
 	public void cancelAppointmentSuccessTest() throws Exception {
 
 		responseDto.setErrors(null);
@@ -252,12 +269,8 @@ public class BookingControllerTest {
 		responseDto.setResponse(cancelBookingResponseDTO);
 
 		Mockito.when(service.cancelAppointment(preId)).thenReturn(responseDto);
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/appointment/{preRegistrationId}",preId)
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
-
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		ResponseEntity<MainResponseDTO<CancelBookingResponseDTO>> responseEntity=controller.cancelAppointmentBatch(preId);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -299,7 +299,7 @@ public class NotificationServiceTest {
 
 	}
 	
-	@Test(expected = MandatoryFieldException.class)
+	@Test(expected = RestCallException.class)
 	public void mandatoryFieldExceptionTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("");
@@ -323,7 +323,7 @@ public class NotificationServiceTest {
 
 	}
 	
-	@Test(expected = DemographicDetailsNotFoundException.class)
+	@Test(expected = RestCallException.class)
 	public void demographicDetailsNotFoundExceptionTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
