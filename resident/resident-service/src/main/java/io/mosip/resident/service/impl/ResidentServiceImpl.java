@@ -1,6 +1,5 @@
 package io.mosip.resident.service.impl;
 
-import io.mosip.resident.exception.OtpValidationFailedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,7 @@ import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
+import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
@@ -75,12 +75,10 @@ public class ResidentServiceImpl implements ResidentService {
 						NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 						notificationRequestDto.setId(dto.getIndividualId());
 						notificationRequestDto.setIdType(idtype);
-						notificationRequestDto.setRegistrationType("NEW");
 						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
 						notificationService.sendNotification(notificationRequestDto);
-					}else {
-						throw new ResidentServiceException(
-								ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
+					} else {
+						throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
 								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 					}
 				} catch (ApisResourceAccessException e) {
@@ -162,8 +160,7 @@ public class ResidentServiceImpl implements ResidentService {
 						response.setMessage(notificationResponseDTO.getMessage());
 
 					} else {
-						throw new ResidentServiceException(
-								ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
+						throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
 								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 					}
 				} catch (ApisResourceAccessException e) {
