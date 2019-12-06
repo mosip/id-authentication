@@ -1,7 +1,7 @@
 -- -------------------------------------------------------------------------------------------------
 -- Database Name: mosip_kernel
--- Release Version 	: 0.10.4
--- Purpose    		: Revoking Database Alter deployement done for release in Kernel DB.       
+-- Release Version 	: 1.0.0
+-- Purpose    		: Database Alter scripts for the release for Kernel DB.       
 -- Create By   		: Sadanandegowda
 -- Created Date		: 28-Nov-2019
 -- 
@@ -10,6 +10,8 @@
 
 \c mosip_kernel sysadmin
 
---------- VID POOL REQUIREMENT DB CHANGES REVOKE -----------
+---------------- VID POOL Requirement DB changes ------------------
 
-DROP TABLE IF EXISTS kernel.vid;
+---------------- DDL DEPLOYMENT  ------------------
+
+\ir ../ddl/kernel-vid.sql
