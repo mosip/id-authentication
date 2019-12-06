@@ -142,8 +142,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 		AuthResponseDTO response;
 		try {
-			response = (AuthResponseDTO) restClient.postApi(environment.getProperty(ApiName.INTERNALAUTH.name()), 
-					authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken(),null);
+			response = (AuthResponseDTO) restClient.postApi(environment.getProperty(ApiName.INTERNALAUTH.name()),
+					authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken(), null);
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
 					"IdAuthServiceImp::internelOtpAuth():: INTERNALAUTH GET service call" + e.getStackTrace());
@@ -198,7 +198,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	@Override
 	public boolean authTypeStatusUpdate(String individualId, String individualIdType, List<String> authType,
-			boolean isLock) {
+			boolean isLock) throws ApisResourceAccessException {
 		boolean isAuthTypeStatusSuccess = false;
 		AuthTypeStatusRequestDto authTypeStatusRequestDto = new AuthTypeStatusRequestDto();
 		authTypeStatusRequestDto.setConsentObtained(true);
@@ -224,8 +224,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 		authTypeStatusRequestDto.setRequest(authTypes);
 		AuthTypeStatusResponseDto response = new AuthTypeStatusResponseDto();
 		try {
-			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()), 
-					authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken(),null);
+			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()),
+					authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken(), null);
 
 			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
 					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call ended with response data "
@@ -234,7 +234,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
 					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call" + e.getStackTrace());
-
+			throw new ApisResourceAccessException("Could not able call auth status api", e);
 		}
 
 		if (response.getErrors() != null && response.getErrors().size() > 0) {

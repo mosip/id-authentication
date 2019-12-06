@@ -21,8 +21,8 @@ public enum ResidentErrorCode {
 	IN_VALID_UIN_OR_VID("RES-SER-013", "In Valid UIN or VID"),
 	//system exceptions
 	RESIDENT_SYS_EXCEPTION("RES-SER-SYS-001","System exception occured"),
-	IO_EXCEPTION("RES-SER-SYS-002","IO Exception occured");
-	
+	IO_EXCEPTION("RES-SER-SYS-002","IO Exception occured"),
+	JSON_PROCESSING_EXCEPTION("RES-SER-SYS-003","JSON Processing Exception occured");
 	private final String errorCode;
 	private final String errorMessage;
 

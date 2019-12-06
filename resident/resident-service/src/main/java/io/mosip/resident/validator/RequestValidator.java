@@ -1,5 +1,13 @@
 package io.mosip.resident.validator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
@@ -9,27 +17,27 @@ import io.mosip.resident.dto.AuthLockRequestDto;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.exception.InvalidInputException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Component
 public class RequestValidator {
 
-    @Autowired
-    private UinValidator uinValidator;
+	@Autowired
+	private UinValidator uinValidator;
 
-    @Autowired
-    private VidValidator vidValidator;
+	@Autowired
+	private VidValidator vidValidator;
 
-    @Value("${resident.vid.id}")
-    private String id;
+	@Value("${resident.vid.id}")
+	private String id;
 
 	@Value("${resident.vid.version}")
 	private String version;
 
 	@Value("${resident.authlock.id}")
 	private String authLockId;
+
+	@Value("${auth.types.allowed}")
+	private String authTypes;
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
 
@@ -47,23 +55,23 @@ public class RequestValidator {
 						&& !requestDto.getRequest().getVidType().equalsIgnoreCase(VidType.TEMPORARY.name())))
 			throw new InvalidInputException("vidType");
 
-        if (requestDto.getRequest().getIndividualIdType() == null
-                || (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
-                && !requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
-            throw new InvalidInputException("individualIdType");
-        else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())) {
-            try {
-                uinValidator.validateId(requestDto.getRequest().getIndividualId());
-            } catch (InvalidIDException e) {
-                throw new InvalidInputException("individualId");
-            }
-        } else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())) {
-            try {
-                vidValidator.validateId(requestDto.getRequest().getIndividualId());
-            } catch (InvalidIDException e) {
-                throw new InvalidInputException("individualId");
-            }
-        }
+		if (requestDto.getRequest().getIndividualIdType() == null
+				|| (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
+						&& !requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
+			throw new InvalidInputException("individualIdType");
+		else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())) {
+			try {
+				uinValidator.validateId(requestDto.getRequest().getIndividualId());
+			} catch (InvalidIDException e) {
+				throw new InvalidInputException("individualId");
+			}
+		} else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())) {
+			try {
+				vidValidator.validateId(requestDto.getRequest().getIndividualId());
+			} catch (InvalidIDException e) {
+				throw new InvalidInputException("individualId");
+			}
+		}
 
 		if (requestDto.getRequest().getOtp() == null)
 			throw new InvalidInputException("otp");
@@ -73,7 +81,7 @@ public class RequestValidator {
 	}
 
 	public void validateAuthLockRequest(RequestWrapper<AuthLockRequestDto> requestDTO) {
-		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(id))
+		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authLockId))
 			throw new InvalidInputException("authLockId");
 
 		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
@@ -93,8 +101,19 @@ public class RequestValidator {
 		if (requestDTO.getRequest().getOtp() == null)
 			throw new InvalidInputException("otp");
 
-		if (requestDTO.getRequest().getAuthType() == null)
-			throw new InvalidInputException("authType");
+		validateAuthType(requestDTO.getRequest().getAuthType());
 
+	}
+
+	public void validateAuthType(List<String> authType) {
+		if (authType == null) {
+			throw new InvalidInputException("authType");
+		}
+		String[] authTypesArray = authTypes.split(",");
+		List<String> authTypesAllowed = new ArrayList<>(Arrays.asList(authTypesArray));
+		for (String type : authType) {
+			if (!authTypesAllowed.contains(type))
+				throw new InvalidInputException("authType");
+		}
 	}
 }

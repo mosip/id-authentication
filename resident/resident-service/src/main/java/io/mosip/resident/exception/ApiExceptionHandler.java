@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -32,22 +31,21 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 public class ApiExceptionHandler {
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	Environment env;
-	
-	private static final String CHECK_STATUS="resident.checkstatus.id";
-	private static final String EUIN="resident.euin.id";
-	private static final String PRINT_UIN="resident.printuin.id";
-	private static final String UIN="resident.uin.id";
-	private static final String RID="resident.rid.id";
-	private static final String UPDATE_UIN="resident.updateuin.id";
-	private static final String VID="resident.vid.id";
-	private static final String AUTH_LOCK="resident.authlock.id";
-	private static final String AUTH_UNLOCK="resident.authunlock.id";
-	private static final String AUTH_HISTORY="resident.authhistory.id";
-	private static final String VERSION="1.0";
-	
+
+	private static final String CHECK_STATUS = "resident.checkstatus.id";
+	private static final String EUIN = "resident.euin.id";
+	private static final String PRINT_UIN = "resident.printuin.id";
+	private static final String UIN = "resident.uin.id";
+	private static final String RID = "resident.rid.id";
+	private static final String UPDATE_UIN = "resident.updateuin.id";
+	private static final String VID = "resident.vid.id";
+	private static final String AUTH_LOCK = "resident.authlock.id";
+	private static final String AUTH_UNLOCK = "resident.authunlock.id";
+	private static final String AUTH_HISTORY = "resident.authhistory.id";
+	private static final String VERSION = "1.0";
 
 	@ExceptionHandler(ResidentServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -76,6 +74,34 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, httpStatus);
+	}
+
+	@ExceptionHandler(InvalidInputException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(HttpServletRequest httpServletRequest,
+			final InvalidInputException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
+		return getErrorResponseEntity(httpServletRequest, e, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(IdRepoAppException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(HttpServletRequest httpServletRequest,
+			final IdRepoAppException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
+		return getErrorResponseEntity(httpServletRequest, e, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(OtpValidationFailedException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(HttpServletRequest httpServletRequest,
+			final OtpValidationFailedException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
+		return getErrorResponseEntity(httpServletRequest, e, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(TokenGenerationFailedException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(HttpServletRequest httpServletRequest,
+			final TokenGenerationFailedException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
+		return getErrorResponseEntity(httpServletRequest, e, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -126,34 +152,34 @@ public class ApiExceptionHandler {
 	}
 
 	private String setId(String requestURI) {
-		if(requestURI.contains("/check-status")) {
+		if (requestURI.contains("/check-status")) {
 			return env.getProperty(CHECK_STATUS);
 		}
-		if(requestURI.contains("/euin")) {
+		if (requestURI.contains("/euin")) {
 			return env.getProperty(EUIN);
 		}
-		if(requestURI.contains("/print-uin")) {
+		if (requestURI.contains("/print-uin")) {
 			return env.getProperty(PRINT_UIN);
 		}
-		if(requestURI.contains("/uin")) {
+		if (requestURI.contains("/uin")) {
 			return env.getProperty(UIN);
 		}
-		if(requestURI.contains("/rid")) {
+		if (requestURI.contains("/rid")) {
 			return env.getProperty(RID);
 		}
-		if(requestURI.contains("/update-uin")) {
+		if (requestURI.contains("/update-uin")) {
 			return env.getProperty(UPDATE_UIN);
 		}
-		if(requestURI.contains("/vid")) {
+		if (requestURI.contains("/vid")) {
 			return env.getProperty(VID);
 		}
-		if(requestURI.contains("/auth-lock")) {
+		if (requestURI.contains("/auth-lock")) {
 			return env.getProperty(AUTH_LOCK);
 		}
-		if(requestURI.contains("/auth-unlock")) {
+		if (requestURI.contains("/auth-unlock")) {
 			return env.getProperty(AUTH_UNLOCK);
 		}
-		if(requestURI.contains("/auth-history")) {
+		if (requestURI.contains("/auth-history")) {
 			return env.getProperty(AUTH_HISTORY);
 		}
 		return null;
