@@ -62,7 +62,8 @@ public class ResidentServiceImpl implements ResidentService {
 
 	@Override
 	public byte[] reqEuin(EuinRequestDTO dto) throws OtpValidationFailedException {
-
+		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqEuin():: entry");
 		byte[] response = null;
 		IdType idtype = getIdType(dto.getIndividualIdType());
 		if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
@@ -84,21 +85,38 @@ public class ResidentServiceImpl implements ResidentService {
 								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 					}
 				} catch (ApisResourceAccessException e) {
+					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+							LoggerFileConstant.APPLICATIONID.toString(),
+							ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
+									+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
+									+ ExceptionUtils.getStackTrace(e));
 					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
 							ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
 				} catch (ResidentServiceCheckedException e) {
+					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+							LoggerFileConstant.APPLICATIONID.toString(),
+							ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode()
+									+ ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage()
+									+ ExceptionUtils.getStackTrace(e));
 					throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
 							ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
 				}
 			} else {
+				logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 			}
 		} else {
+			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
 			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
 					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
 		}
-
+		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: exit");
 		return response;
 	}
 
