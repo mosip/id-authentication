@@ -4,8 +4,9 @@
 package io.mosip.resident.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
-import org.json.simple.JSONArray;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import lombok.Data;
  *
  */
 @Data
+@JsonPropertyOrder({ "transactionID", "individualId", "individualIdType", "otp", "authType" })
 public class AuthLockRequestDto implements Serializable {
 
 	/**
@@ -24,6 +26,6 @@ public class AuthLockRequestDto implements Serializable {
 	private String individualId;
 	private String individualIdType;
 	private String otp;
-	private JSONArray authType;
+	private List<String> authType;
 
 }

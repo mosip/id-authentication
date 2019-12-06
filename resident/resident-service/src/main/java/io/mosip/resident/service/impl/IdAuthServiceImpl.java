@@ -13,7 +13,6 @@ import java.util.List;
 import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
-import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -198,7 +197,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	}
 
 	@Override
-	public boolean authTypeStatusUpdate(String individualId, String individualIdType, JSONArray authType,
+	public boolean authTypeStatusUpdate(String individualId, String individualIdType, List<String> authType,
 			boolean isLock) {
 		boolean isAuthTypeStatusSuccess = false;
 		AuthTypeStatusRequestDto authTypeStatusRequestDto = new AuthTypeStatusRequestDto();
@@ -206,9 +205,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 		authTypeStatusRequestDto.setId(authTypeStatusId);
 		authTypeStatusRequestDto.setIndividualIdType(individualIdType);
 		authTypeStatusRequestDto.setIndividualId(individualId);
+		authTypeStatusRequestDto.setVersion(internalAuthVersion);
+		authTypeStatusRequestDto.setRequestTime(DateUtils.getUTCCurrentDateTimeString());
 		List<AuthTypeStatus> authTypes = new ArrayList<>();
-		for (Object object : authType) {
-			String type = object.toString();
+		for (String type : authType) {
+
 			String[] types = type.split("-");
 			AuthTypeStatus authTypeStatus = new AuthTypeStatus();
 			if (types.length == 1) {
@@ -220,7 +221,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			authTypeStatus.setLocked(isLock);
 			authTypes.add(authTypeStatus);
 		}
-		authTypeStatusRequestDto.setAuthTypes(authTypes);
+		authTypeStatusRequestDto.setRequest(authTypes);
 		AuthTypeStatusResponseDto response = new AuthTypeStatusResponseDto();
 		try {
 			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()), null,

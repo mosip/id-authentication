@@ -17,6 +17,7 @@ import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentService;
@@ -38,14 +39,13 @@ public class ResidentServiceImpl implements ResidentService {
 	private RidValidator<String> ridValidator;
 
 	@Autowired
-    private UINCardDownloadService uinCardDownloadService;
+	private UINCardDownloadService uinCardDownloadService;
 
+	@Autowired
+	private IdAuthService idAuthService;
 
-    @Autowired
-    private IdAuthService idAuthService;
-
-    @Autowired
-    NotificationService notificationService;
+	@Autowired
+	NotificationService notificationService;
 
 	@Override
 	public ResponseDTO getRidStatus(RequestDTO request) {
@@ -56,27 +56,31 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public byte[]  reqEuin(EuinRequestDTO dto) {
-		
-		byte[]	response;
-		
-		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {
+	public byte[] reqEuin(EuinRequestDTO dto) {
 
-			if(idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
-					dto.getIndividualIdType(), dto.getOtp())) {
+		byte[] response;
 
-				IdType idtype=getIdType(dto.getIndividualIdType());
+		if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
+
+			if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+					dto.getOtp())) {
+
+				IdType idtype = getIdType(dto.getIndividualIdType());
 				response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), idtype);
-				if(response !=null) {
-					NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
+				if (response != null) {
+					NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 					notificationRequestDto.setId(dto.getIndividualId());
 					notificationRequestDto.setIdType(idtype);
 					notificationRequestDto.setRegistrationType("NEW");
 					notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
-					notificationService.sendNotification(notificationRequestDto);
-				} 
-			}
-			else {
+					try {
+						notificationService.sendNotification(notificationRequestDto);
+					} catch (ResidentServiceCheckedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} else {
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 			}
@@ -133,7 +137,16 @@ public class ResidentServiceImpl implements ResidentService {
 				boolean isAuthTypeLocked = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
 						dto.getIndividualIdType(), dto.getAuthType(), true);
 				if (isAuthTypeLocked) {
-
+					NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+					notificationRequestDto.setId(dto.getIndividualId());
+					notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
+					notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_LOCK_AUTH_Status);
+					try {
+						notificationService.sendNotification(notificationRequestDto);
+					} catch (ResidentServiceCheckedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				} else {
 					throw new ResidentServiceException(ResidentErrorCode.AUTH_TYPE_STATUS_UPDATE_FAILED.getErrorCode(),
 							ResidentErrorCode.AUTH_TYPE_STATUS_UPDATE_FAILED.getErrorMessage());
