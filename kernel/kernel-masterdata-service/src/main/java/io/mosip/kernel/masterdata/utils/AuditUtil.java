@@ -88,6 +88,9 @@ public class AuditUtil {
 		if (!validateSecurityContextHolder()) {
 			
 		}
+		auditRequestDto.setEventId("KER-AUD-999");
+		auditRequestDto.setId("ID");
+		auditRequestDto.setIdType("IDType");
 		auditRequestDto.setEventName(eventName);
 		auditRequestDto.setEventType(eventType);
 		auditRequestDto.setDescription(description);
