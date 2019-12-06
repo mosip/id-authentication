@@ -21,8 +21,6 @@ public interface ResidentService {
 
 	public ResponseDTO reqUpdateUin(RequestDTO dto);
 
-	public ResponseDTO generatVid(RequestDTO dto);
-
 	public ResponseDTO revokeVid(RequestDTO dto);
 
 	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) throws OtpValidationFailedException;

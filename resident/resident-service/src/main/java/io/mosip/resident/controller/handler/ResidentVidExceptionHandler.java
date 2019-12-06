@@ -34,6 +34,13 @@ public class ResidentVidExceptionHandler {
 
 	private static Logger logger = LoggerConfiguration.logConfig(ResidentVidExceptionHandler.class);
 
+	@ExceptionHandler(ResidentServiceCheckedException.class)
+	public ResponseEntity<Object> residentCheckedException(ResidentServiceCheckedException e) {
+		logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return buildRegStatusExceptionResponse((Exception) e);
+	}
+
 	@ExceptionHandler(VidAlreadyPresentException.class)
 	public ResponseEntity<Object> vidAlreadyPresent(VidAlreadyPresentException e) {
 		logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),

@@ -86,14 +86,6 @@ public class ResidentController {
 	}
 
 	@ResponseFilter
-	@PostMapping(value = "/vid")
-	public ResponseWrapper<ResponseDTO> generatVid(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) {
-		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
-		response.setResponse(residentService.generatVid(requestDTO.getRequest()));
-		return response;
-	}
-
-	@ResponseFilter
 	@PatchMapping(value = "/vid/{vid}")
 	public ResponseWrapper<ResponseDTO> revokeVid(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO,
 			@PathVariable String vid) {
