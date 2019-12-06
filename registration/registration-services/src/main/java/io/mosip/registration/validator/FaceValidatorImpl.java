@@ -70,6 +70,11 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 				"validating face capture details for user registration");
 
 		try {
+			if (!authenticationValidatorDTO.isAuthValidationFlag()) {
+				if ((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_FACE_ENABLE_FLAG)))
+						.equalsIgnoreCase(RegistrationConstants.DISABLE))
+					return false;
+			}
 			userIdValidation(authenticationValidatorDTO.getUserId());
 
 			List<UserBiometric> userFaceDetails = userDetailDAO
