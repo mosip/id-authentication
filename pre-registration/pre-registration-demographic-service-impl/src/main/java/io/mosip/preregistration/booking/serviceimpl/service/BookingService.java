@@ -3,7 +3,6 @@ package io.mosip.preregistration.booking.serviceimpl.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,8 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -57,7 +54,6 @@ import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -157,126 +153,7 @@ public class BookingService implements BookingServiceIntf {
 		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 
-	/**
-	 * It will sync the registration center details
-	 * 
-	 * @return ResponseDto<String>
-	 */
-	@Override
-	public MainResponseDTO<String> addAvailability() {
-		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-		response.setId(idUrlSync);
-		response.setVersion(versionUrl);
-		boolean isSaveSuccess = false;
-		try {
-			LocalDate endDate = LocalDate.now().plusDays(syncDays - 1);
-			List<RegistrationCenterDto> regCenter = serviceUtil.getRegCenterMasterData();
-			List<RegistrationCenterDto> regCenterDtos = regCenter.stream()
-					.filter(regCenterDto -> regCenterDto.getLangCode().equals(primaryLang))
-					.collect(Collectors.toList());
-			List<String> regCenterDumped = bookingDAO.findRegCenter(LocalDate.now());
-			for (RegistrationCenterDto regDto : regCenterDtos) {
-				List<LocalDate> insertedDate = bookingDAO.findDistinctDate(LocalDate.now(), regDto.getId());
-				List<String> holidaylist = serviceUtil.getHolidayListMasterData(regDto);
-				regCenterDumped.remove(regDto.getId());
-				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
-						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
-
-					if (insertedDate.isEmpty()) {
-						serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
-					} else {
-						List<AvailibityEntity> regSlots = bookingDAO.findSlots(sDate, regDto.getId());
-						if (regSlots.size() == 1) {
-							bookingDAO.deleteSlots(regDto.getId(), sDate);
-							serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
-						} else if (holidaylist.contains(sDate.toString())) {
-							List<RegistrationBookingEntity> regBookingEntityList = bookingDAO
-									.findAllPreIds(regDto.getId(), sDate);
-							if (!regBookingEntityList.isEmpty()) {
-								for (int i = 0; i < regBookingEntityList.size(); i++) {
-									if (serviceUtil.getDemographicStatus(
-											regBookingEntityList.get(i).getDemographicEntity().getPreRegistrationId())
-											.equals(StatusCodes.BOOKED.getCode())) {
-										cancelBooking(regBookingEntityList.get(i).getDemographicEntity()
-												.getPreRegistrationId(), true);
-										sendNotification(regBookingEntityList.get(i));
-									}
-								}
-							}
-							bookingDAO.deleteSlots(regDto.getId(), sDate);
-							serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
-						} else if (!insertedDate.contains(sDate)) {
-							serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
-						}
-					}
-				}
-
-			}
-			if (!regCenterDumped.isEmpty()) {
-				for (int i = 0; i < regCenterDumped.size(); i++) {
-					List<RegistrationBookingEntity> entityList = bookingDAO.findAllPreIdsByregID(regCenterDumped.get(i),
-							LocalDate.now());
-					if (!entityList.isEmpty()) {
-						for (int j = 0; j < entityList.size(); j++) {
-							if (serviceUtil
-									.getDemographicStatus(
-											entityList.get(j).getDemographicEntity().getPreRegistrationId())
-									.equals(StatusCodes.BOOKED.getCode())) {
-								cancelBooking(entityList.get(j).getDemographicEntity().getPreRegistrationId(), true);
-								sendNotification(entityList.get(j));
-							}
-						}
-					}
-
-					bookingDAO.deleteAllSlotsByRegId(regCenterDumped.get(i), LocalDate.now());
-				}
-			}
-			isSaveSuccess = true;
-		} catch (Exception ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id", "In addAvailability method of Booking Service- " + ex.getMessage());
-			new BookingExceptionCatcher().handle(ex, response);
-		} finally {
-			response.setResponsetime(serviceUtil.getCurrentResponseTime());
-			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
-						"Availability for booking successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null);
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"addAvailability failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null);
-			}
-		}
-		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		response.setResponse("MASTER_DATA_SYNCED_SUCCESSFULLY");
-		return response;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
-	 * sendNotification(io.mosip.preregistration.core.common.entity.
-	 * RegistrationBookingEntity)
-	 */
-	@Override
-	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) throws JsonProcessingException {
-		log.info("sessionId", "idType", "id", "In sendNotification method of Booking Service");
-		NotificationDTO notification = new NotificationDTO();
-		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
-		notification.setPreRegistrationId(registrationBookingEntity.getDemographicEntity().getPreRegistrationId());
-		String time = LocalTime
-				.parse(registrationBookingEntity.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
-				.format(DateTimeFormatter.ofPattern("hh:mm a"));
-		notification.setAppointmentTime(time);
-		notification.setAdditionalRecipient(false);
-		notification.setIsBatch(true);
-		serviceUtil.emailNotification(notification, primaryLang);
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1040,29 +917,6 @@ public class BookingService implements BookingServiceIntf {
 		response.setVersion(versionUrl);
 		response.setErrors(null);
 		return response;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf#
-	 * prepareRequestParamMap(io.mosip.preregistration.core.common.dto.
-	 * MainRequestDTO)
-	 */
-
-	@Override
-	public Map<String, String> prepareRequestParamMap(MainRequestDTO<?> requestDTO) {
-		Map<String, String> inputValidation = new HashMap<>();
-		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
-		inputValidation.put(RequestCodes.version.getCode(), requestDTO.getVersion());
-		if (!(requestDTO.getRequesttime() == null || requestDTO.getRequesttime().toString().isEmpty())) {
-			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-			inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
-		} else {
-			inputValidation.put(RequestCodes.requesttime.getCode(), null);
-		}
-		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
-		return inputValidation;
 	}
 
 }

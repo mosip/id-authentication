@@ -169,17 +169,6 @@ public class BookingControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	@WithUserDetails("PRE_REGISTRATION_ADMIN")
-	@Test
-	public void saveAvailability() throws Exception {
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-		Mockito.when(service.addAvailability()).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/appointment/availability/sync")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE);
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	}
-
 	@SuppressWarnings("unchecked")
 	@Test
 	@WithUserDetails("INDIVIDUAL")

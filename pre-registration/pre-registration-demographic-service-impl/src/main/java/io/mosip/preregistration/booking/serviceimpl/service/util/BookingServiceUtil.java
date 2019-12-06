@@ -191,53 +191,7 @@ public class BookingServiceUtil {
 		return regCenter;
 	}
 
-	/**
-	 * This method will call kernel service holiday list
-	 * 
-	 * @param regDto
-	 * @return List of string
-	 */
-	public List<String> getHolidayListMasterData(RegistrationCenterDto regDto) {
-		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
-		List<String> holidaylist = null;
-		try {
-
-			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
-					+ LocalDate.now().getYear();
-			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<RequestWrapper<RegistrationCenterHolidayDto>> httpHolidayEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder2.build().encode().toUriString();
-			log.info("sessionId", "idType", "id",
-					"In callGetHolidayListRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> responseEntity2 = restTemplate.exchange(
-					uriBuilder, HttpMethod.GET, httpHolidayEntity,
-					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
-					});
-			if (responseEntity2.getBody().getErrors() != null && !responseEntity2.getBody().getErrors().isEmpty()) {
-				throw new MasterDataNotAvailableException(responseEntity2.getBody().getErrors().get(0).getErrorCode(),
-						responseEntity2.getBody().getErrors().get(0).getMessage());
-			}
-			holidaylist = new ArrayList<>();
-			if (!responseEntity2.getBody().getResponse().getHolidays().isEmpty()) {
-				for (HolidayDto holiday : responseEntity2.getBody().getResponse().getHolidays()) {
-					holidaylist.add(holiday.getHolidayDate());
-				}
-			}
-
-		} catch (HttpClientErrorException ex) {
-			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			log.error("sessionId", "idType", "id",
-					"In callGetHolidayListRestService method of Booking Service Util for HttpClientErrorException- "
-							+ ex.getMessage());
-			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
-					ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
-
-		}
-		return holidaylist;
-	}
-
+	
 	/**
 	 * This method will call demographic service for update status.
 	 * 
@@ -344,71 +298,7 @@ public class BookingServiceUtil {
 
 	}
 
-	/**
-	 * This method will do booking time slots.
-	 * 
-	 * @param regDto
-	 * @param holidaylist
-	 * @param sDate
-	 * @param bookingDAO
-	 */
-	public void timeSlotCalculator(RegistrationCenterDto regDto, List<String> holidaylist, LocalDate sDate,
-			BookingDAO bookingDAO) {
-		log.info("sessionId", "idType", "id", "In timeSlotCalculator method of Booking Service Util");
-		if (holidaylist.contains(sDate.toString())) {
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			String text = "2016-11-09 00:00:00";
-			LocalDateTime localDateTime = LocalDateTime.parse(text, format);
-			LocalTime localTime = localDateTime.toLocalTime();
-			saveAvailability(regDto, sDate, localTime, localTime, bookingDAO);
 
-		} else {
-
-			int window1 = ((regDto.getLunchStartTime().getHour() * 60 + regDto.getLunchStartTime().getMinute())
-					- (regDto.getCenterStartTime().getHour() * 60 + regDto.getCenterStartTime().getMinute()))
-					/ (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
-
-			int window2 = ((regDto.getCenterEndTime().getHour() * 60 + regDto.getCenterEndTime().getMinute())
-					- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-					/ (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
-
-			int extraTime1 = ((regDto.getLunchStartTime().getHour() * 60 + regDto.getLunchStartTime().getMinute())
-					- (regDto.getCenterStartTime().getHour() * 60 + regDto.getCenterStartTime().getMinute()))
-					% (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
-
-			int extraTime2 = ((regDto.getCenterEndTime().getHour() * 60 + regDto.getCenterEndTime().getMinute())
-					- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-					% (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
-
-			LocalTime currentTime1 = regDto.getCenterStartTime();
-			for (int i = 0; i < window1; i++) {
-				if (i == (window1 - 1)) {
-					LocalTime toTime = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
-							.plusMinutes(extraTime1);
-					saveAvailability(regDto, sDate, currentTime1, toTime, bookingDAO);
-
-				} else {
-					LocalTime toTime = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-					saveAvailability(regDto, sDate, currentTime1, toTime, bookingDAO);
-				}
-				currentTime1 = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-			}
-
-			LocalTime currentTime2 = regDto.getLunchEndTime();
-			for (int i = 0; i < window2; i++) {
-				if (i == (window2 - 1)) {
-					LocalTime toTime = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
-							.plusMinutes(extraTime2);
-					saveAvailability(regDto, sDate, currentTime2, toTime, bookingDAO);
-
-				} else {
-					LocalTime toTime = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-					saveAvailability(regDto, sDate, currentTime2, toTime, bookingDAO);
-				}
-				currentTime2 = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-			}
-		}
-	}
 
 	/**
 	 * This method will check mandatory parameter check.
@@ -461,28 +351,6 @@ public class BookingServiceUtil {
 		return false;
 	}
 
-	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime, LocalTime toTime,
-			BookingDAO bookingDAO) {
-		log.info("sessionId", "idType", "id", "In saveAvailability method of Booking Service Util");
-		AvailibityEntity avaEntity = new AvailibityEntity();
-		avaEntity.setRegDate(date);
-		avaEntity.setRegcntrId(regDto.getId());
-		avaEntity.setFromTime(currentTime);
-		avaEntity.setToTime(toTime);
-		avaEntity.setCrBy("Admin");
-		avaEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		if (isNull(regDto.getContactPerson())) {
-			avaEntity.setCrBy("Admin");
-		} else {
-			avaEntity.setCrBy(regDto.getContactPerson());
-		}
-		if (currentTime.equals(toTime)) {
-			avaEntity.setAvailableKiosks(0);
-		} else {
-			avaEntity.setAvailableKiosks(regDto.getNumberOfKiosks());
-		}
-		bookingDAO.saveAvailability(avaEntity);
-	}
 
 	/**
 	 * 

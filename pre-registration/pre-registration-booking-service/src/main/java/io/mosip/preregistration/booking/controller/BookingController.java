@@ -89,20 +89,6 @@ public class BookingController {
 
 	private Logger log = LoggerConfiguration.logConfig(BookingController.class);
 
-	/**
-	 * Get API to save availability.
-	 * 
-	 * @return MainResponseDto .
-	 */
-	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR')")
-	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Sync master Data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful") })
-	public ResponseEntity<MainResponseDTO<String>> saveAvailability() {
-		log.info("sessionId", "idType", "id",
-				"In saveAvailability method of Booking controller for synching master data to get availability ");
-		return ResponseEntity.status(HttpStatus.OK).body(bookingService.addAvailability());
-	}
 
 	/**
 	 * Get API to get availability details.

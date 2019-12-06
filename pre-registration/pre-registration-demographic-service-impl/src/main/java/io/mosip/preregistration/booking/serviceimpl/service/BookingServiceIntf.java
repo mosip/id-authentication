@@ -21,15 +21,6 @@ import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 
 @Service
 public interface BookingServiceIntf {
-	
-	public MainResponseDTO<String> addAvailability();
-
-	/**
-	 * 
-	 * @param registrationBookingEntity
-	 * @throws JsonProcessingException
-	 */
-	void sendNotification(RegistrationBookingEntity registrationBookingEntity) throws JsonProcessingException;
 
 	/**
 	 * Gives the availability details
@@ -139,16 +130,5 @@ public interface BookingServiceIntf {
 
 	MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getBookedPreRegistrationByDate(String fromDateStr,
 			String toDateStr, String regCenterId);
-
-	/**
-	 * This method is used to add the initial request values into a map for input
-	 * validations.
-	 * 
-	 * @param MainRequestDTO
-	 *            pass requestDTO
-	 * @return a map for request input validation
-	 */
-
-	Map<String, String> prepareRequestParamMap(MainRequestDTO<?> requestDTO);
 
 }
