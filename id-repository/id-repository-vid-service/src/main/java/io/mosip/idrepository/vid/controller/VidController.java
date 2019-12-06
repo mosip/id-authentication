@@ -122,6 +122,7 @@ public class VidController {
 		try {
 			validator.validateId(request.getId(), CREATE);
 			DataValidationUtil.validate(errors);
+			request.getRequest().setVidType(request.getRequest().getVidType().toUpperCase());
 			return new ResponseEntity<>(vidService.generateVid(request.getRequest()), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
