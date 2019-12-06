@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_prereg
--- Release Version 	: 0.10.4
--- Purpose    		: Revoking Database Alter deployement done for release in Pre registration DB.       
+-- Database Name: mosip_ida
+-- Release Version 	: 1.0.0
+-- Purpose    		: Database Alter scripts for the release for ID Authentication DB.       
 -- Create By   		: Sadanandegowda
--- Created Date		: 23-Sep-2019
+-- Created Date		: 06-Sep-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 
-\c mosip_prereg sysadmin
+\c mosip_ida sysadmin

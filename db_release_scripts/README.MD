@@ -92,7 +92,7 @@ Once completed with sourcing the database release files, Follow the DB release d
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database_release/ </em>
 
-<em> **Enter:-bash-4.2$** sh mosip_release_db_deployment.sh <release_version_number> </em>
+<em> **Enter:-bash-4.2$** bash mosip_release_db_deployment.sh <release_version_number> </em>
 
 **Step 3** -> Please observe <em> Post Release Deployment Validation </em>  steps below
 
@@ -105,7 +105,7 @@ Once completed with sourcing the database release files, Follow the DB release d
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database_release/ </em>
 
-<em> **Enter:-bash-4.2$** sh mosip_revoke_db_deployment.sh <release_version_number> </em>
+<em> **Enter:-bash-4.2$** bash mosip_revoke_db_deployment.sh <release_version_number> </em>
 
 **Step 2** -> Please observe <em> Post Release Deployment Validation </em>  steps below
 
