@@ -13,6 +13,7 @@ import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
 import io.mosip.preregistration.notification.exception.BookingDetailsNotFoundException;
@@ -85,6 +86,10 @@ public class NotificationExceptionCatcher {
 		}
 		else if (ex instanceof ParseException) {
 			throw new InvalidRequestParameterException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_003.getCode(), io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), mainResponseDto);
+
+		}
+		else if (ex instanceof RecordNotFoundException) {
+			throw new RecordNotFoundException(((RecordNotFoundException) ex).getErrorCode(),((RecordNotFoundException) ex).getErrorText());
 
 		}
 	}

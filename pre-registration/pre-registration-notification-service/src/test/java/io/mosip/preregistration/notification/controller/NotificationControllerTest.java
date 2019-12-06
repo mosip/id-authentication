@@ -52,6 +52,7 @@ public class NotificationControllerTest {
 	@Autowired
 	private ObjectMapper mapper;
 	
+
 	@Mock
 	private RequestValidator requestValidator;
 
@@ -116,7 +117,7 @@ public class NotificationControllerTest {
 				.andExpect(status().isOk());
 
 	}
-
+}
 	// /**
 	// * This test method is for success qrCodeGeneration
 	// * @throws Exception
@@ -132,4 +133,4 @@ public class NotificationControllerTest {
 	// .content(stringjson)).andExpect(status().isOk());
 	//
 	// }
-}
+
