@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import javax.validation.Valid;
 
 import io.mosip.resident.dto.*;
+import io.mosip.resident.exception.OtpValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -39,7 +40,7 @@ public class ResidentController {
 
 	
 	@PostMapping(value = "/req/euin")
-	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO) {
+	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO) throws OtpValidationFailedException {
 
 		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
 
@@ -104,7 +105,7 @@ public class ResidentController {
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-lock")
 	public ResponseWrapper<ResponseDTO> reqAauthLock(
-			@Valid @RequestBody RequestWrapper<AuthLockRequestDto> requestDTO) {
+			@Valid @RequestBody RequestWrapper<AuthLockRequestDto> requestDTO) throws OtpValidationFailedException {
 		validator.validateAuthLockRequest(requestDTO);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthLock(requestDTO.getRequest()));

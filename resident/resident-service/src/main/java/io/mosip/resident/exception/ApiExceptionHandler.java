@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.mosip.kernel.core.exception.BaseCheckedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -76,6 +77,14 @@ public class ApiExceptionHandler {
 		return new ResponseEntity<>(errorResponse, httpStatus);
 	}
 
+	private ResponseEntity<ResponseWrapper<ServiceError>> getCheckedErrorEntity(HttpServletRequest httpServletRequest,
+																				BaseCheckedException e, HttpStatus httpStatus) throws IOException {
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, httpStatus);
+	}
+
 	@ExceptionHandler(InvalidInputException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(HttpServletRequest httpServletRequest,
 			final InvalidInputException e) throws IOException {
@@ -94,7 +103,7 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(HttpServletRequest httpServletRequest,
 			final OtpValidationFailedException e) throws IOException {
 		ExceptionUtils.logRootCause(e);
-		return getErrorResponseEntity(httpServletRequest, e, HttpStatus.OK);
+		return getCheckedErrorEntity(httpServletRequest, e, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(TokenGenerationFailedException.class)

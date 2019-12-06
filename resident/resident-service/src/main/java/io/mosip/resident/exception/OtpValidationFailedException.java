@@ -1,9 +1,11 @@
 package io.mosip.resident.exception;
 
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.resident.constant.ResidentErrorCode;
 
-public class OtpValidationFailedException extends BaseUncheckedException {
+import static io.mosip.kernel.core.exception.BaseUncheckedException.EMPTY_SPACE;
+
+public class OtpValidationFailedException extends BaseCheckedException {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -23,6 +25,14 @@ public class OtpValidationFailedException extends BaseUncheckedException {
      */
     public OtpValidationFailedException(String errorMessage) {
         super(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode() + EMPTY_SPACE, errorMessage);
+    }
+
+    /**
+     *
+     * @param errorMessage
+     */
+    public OtpValidationFailedException(String errorCode, String errorMessage) {
+        super(errorCode, errorMessage);
     }
 
     /**

@@ -12,10 +12,12 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import io.mosip.resident.exception.OtpValidationFailedException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -77,7 +79,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> encryptor;
 
 	@Override
-	public boolean validateOtp(String transactionID, String individualId, String individualIdType, String otp) {
+	public boolean validateOtp(String transactionID, String individualId, String individualIdType, String otp) throws OtpValidationFailedException {
 		AuthResponseDTO response = null;
 		try {
 			response = internelOtpAuth(transactionID, individualId, individualIdType, otp);
@@ -85,11 +87,14 @@ public class IdAuthServiceImpl implements IdAuthService {
 				| JsonProcessingException e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
 					"IdAuthServiceImpl::validateOtp():: validate otp method call" + e.getStackTrace());
+			throw new OtpValidationFailedException(e.getMessage());
 		}
 		if (response.getErrors() != null && response.getErrors().size() > 0) {
 			response.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
-			return Boolean.FALSE;
+			OtpValidationFailedException e = new OtpValidationFailedException(
+					response.getErrors().get(0).getErrorCode(), response.getErrors().get(0).getErrorMessage());
+			throw e;
 		}
 
 		return response != null && response.getResponse().isAuthStatus();
@@ -143,7 +148,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		AuthResponseDTO response;
 		try {
 			response = (AuthResponseDTO) restClient.postApi(environment.getProperty(ApiName.INTERNALAUTH.name()),
-					authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken(), null);
+					MediaType.APPLICATION_JSON, authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken());
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
 					"IdAuthServiceImp::internelOtpAuth():: INTERNALAUTH GET service call" + e.getStackTrace());
@@ -225,7 +230,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		AuthTypeStatusResponseDto response = new AuthTypeStatusResponseDto();
 		try {
 			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()),
-					authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken(), null);
+					MediaType.APPLICATION_JSON, authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken());
 
 			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
 					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call ended with response data "

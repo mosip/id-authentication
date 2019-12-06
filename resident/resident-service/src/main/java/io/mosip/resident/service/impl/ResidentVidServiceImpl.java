@@ -62,7 +62,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
     private IdAuthService idAuthService;
 
     @Override
-    public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) {
+    public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) throws OtpValidationFailedException {
 
         ResponseWrapper<VidResponseDto> responseDto = new ResponseWrapper<>();
 
@@ -113,7 +113,8 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 
         try {
             response = (ResponseWrapper) residentServiceRestClient
-                    .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()), request, ResponseWrapper.class, tokenGenerator.getRegprocToken(),MediaType.APPLICATION_JSON);
+                    .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()),
+                            MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getRegprocToken());
         } catch (Exception e) {
             logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode() + e.getMessage()

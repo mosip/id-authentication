@@ -3,6 +3,7 @@ package io.mosip.resident.util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -44,7 +45,7 @@ public class UINCardDownloadService {
 		byte[]	response;
 		try {
 			response = (byte[]) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()),
-					request, byte[].class, tokenGenerator.getToken(),null);
+					null, request, byte[].class, tokenGenerator.getToken());
 		
 		} catch ( Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

@@ -1,5 +1,6 @@
 package io.mosip.resident.service.impl;
 
+import io.mosip.resident.exception.OtpValidationFailedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public byte[] reqEuin(EuinRequestDTO dto) {
+	public byte[] reqEuin(EuinRequestDTO dto) throws OtpValidationFailedException {
 
 		byte[] response = null;
 		IdType idtype = getIdType(dto.getIndividualIdType());
@@ -138,7 +139,7 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) {
+	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) throws OtpValidationFailedException {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: entry");
 

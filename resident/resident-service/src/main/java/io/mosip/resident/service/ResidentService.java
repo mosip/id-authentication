@@ -5,12 +5,13 @@ import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.exception.OtpValidationFailedException;
 
 public interface ResidentService {
 
 	public ResponseDTO getRidStatus(RequestDTO dto);
 
-	public byte[] reqEuin(EuinRequestDTO euinRequestDTO);
+	public byte[] reqEuin(EuinRequestDTO euinRequestDTO) throws OtpValidationFailedException;
 
 	public ResponseDTO reqPrintUin(ResidentReprintRequestDto dto);
 
@@ -24,7 +25,7 @@ public interface ResidentService {
 
 	public ResponseDTO revokeVid(RequestDTO dto);
 
-	public ResponseDTO reqAauthLock(AuthLockRequestDto dto);
+	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) throws OtpValidationFailedException;
 
 	public ResponseDTO reqAuthUnlock(RequestDTO dto);
 

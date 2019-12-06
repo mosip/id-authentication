@@ -5,6 +5,7 @@ import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.dto.VidResponseDto;
+import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.service.ResidentVidService;
 import io.mosip.resident.validator.RequestValidator;
 import io.swagger.annotations.Api;
@@ -41,7 +42,7 @@ public class ResidentVidController {
     @ApiOperation(value = "Generate new VID", response = ResidentVidRequestDto.class)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "VID successfully generated"),
             @ApiResponse(code = 400, message = "Unable to generate VID") })
-    public ResponseEntity<Object> generateVid(@RequestBody(required = true) ResidentVidRequestDto requestDto) {
+    public ResponseEntity<Object> generateVid(@RequestBody(required = true) ResidentVidRequestDto requestDto) throws OtpValidationFailedException {
         validator.validateVidCreateRequest(requestDto);
         ResponseWrapper<VidResponseDto> vidResponseDto = residentVidService.generateVid(requestDto.getRequest());
         return ResponseEntity.ok().body(vidResponseDto);
