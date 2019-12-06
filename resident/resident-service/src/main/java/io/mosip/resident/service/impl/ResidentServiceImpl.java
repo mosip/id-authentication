@@ -17,6 +17,7 @@ import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
@@ -58,27 +59,28 @@ public class ResidentServiceImpl implements ResidentService {
 	@Override
 	public byte[] reqEuin(EuinRequestDTO dto) {
 
-		byte[] response;
-
+		byte[] response =null;
+		IdType idtype = getIdType(dto.getIndividualIdType());
 		if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
 
 			if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
 					dto.getOtp())) {
-
-				IdType idtype = getIdType(dto.getIndividualIdType());
-				response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), idtype);
-				if (response != null) {
-					NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-					notificationRequestDto.setId(dto.getIndividualId());
-					notificationRequestDto.setIdType(idtype);
-					notificationRequestDto.setRegistrationType("NEW");
-					notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
-					try {
+				try {
+					response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), idtype);
+					if (response != null) {
+						NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+						notificationRequestDto.setId(dto.getIndividualId());
+						notificationRequestDto.setIdType(idtype);
+						notificationRequestDto.setRegistrationType("NEW");
+						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
 						notificationService.sendNotification(notificationRequestDto);
-					} catch (ResidentServiceCheckedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+				} catch (ApisResourceAccessException e) {
+					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
+							ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(),e);
+				}catch (ResidentServiceCheckedException e) {
+					throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+							ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(),e);	
 				}
 			} else {
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),

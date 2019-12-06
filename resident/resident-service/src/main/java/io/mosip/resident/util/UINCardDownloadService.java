@@ -31,7 +31,7 @@ public class UINCardDownloadService {
     private static final String PRINT_ID="mosip.registration.processor.print.id";
     private static final String PRINT_VERSION="mosip.registration.processor.application.version";
     
-    public byte[] getUINCard(String individualId,String cardType,IdType idType) {
+    public byte[] getUINCard(String individualId,String cardType,IdType idType) throws ApisResourceAccessException {
     	PrintRequest request=new PrintRequest();
 		UINCardRequestDTO uincardDTO=new UINCardRequestDTO();
 		uincardDTO.setCardType(cardType);
@@ -44,7 +44,7 @@ public class UINCardDownloadService {
 		byte[]	response;
 		try {
 			response = (byte[]) residentServiceRestClient.postApi(env.getProperty(ApiName.REGPROCPRINT.name()),
-					null,request, byte[].class, tokenGenerator.getToken());
+					request, byte[].class, tokenGenerator.getToken(),null);
 		
 		} catch ( Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

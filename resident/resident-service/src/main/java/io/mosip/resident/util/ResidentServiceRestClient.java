@@ -167,6 +167,30 @@ public class ResidentServiceRestClient {
 			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
 	}
+	public <T> T postApi(String uri, Object requestType, Class<?> responseClass,
+			String token,MediaType mediaType) throws ApisResourceAccessException {
+		RestTemplate restTemplate;
+		try {
+			restTemplate = getRestTemplate();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			ResponseEntity<T> response = restTemplate.exchange(uri, HttpMethod.POST,
+					setRequestHeader(requestType, mediaType, token),
+					new ParameterizedTypeReference<T>() {
+						public Type getType() {
+							return new ResidentParameterizedTypeImpl((ParameterizedType) super.getType(),
+									new Type[] { responseClass });
+						}
+					});
+			return response.getBody();
+
+		} catch (Exception e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
+		}
+	}
 
 	/**
 	 * Patch api.

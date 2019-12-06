@@ -142,8 +142,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 		AuthResponseDTO response;
 		try {
-			response = (AuthResponseDTO) restClient.postApi(environment.getProperty(ApiName.INTERNALAUTH.name()), null,
-					authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken());
+			response = (AuthResponseDTO) restClient.postApi(environment.getProperty(ApiName.INTERNALAUTH.name()), 
+					authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken(),null);
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
 					"IdAuthServiceImp::internelOtpAuth():: INTERNALAUTH GET service call" + e.getStackTrace());
@@ -224,8 +224,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 		authTypeStatusRequestDto.setRequest(authTypes);
 		AuthTypeStatusResponseDto response = new AuthTypeStatusResponseDto();
 		try {
-			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()), null,
-					authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken());
+			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()), 
+					authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken(),null);
 
 			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
 					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call ended with response data "

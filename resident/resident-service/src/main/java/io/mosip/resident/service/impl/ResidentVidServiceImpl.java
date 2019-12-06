@@ -82,7 +82,9 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             throw new VidCreationException(e.getErrorText());
         } catch (IOException e) {
             throw new VidCreationException(e.getMessage());
-        }
+        } catch (ApisResourceAccessException e) {
+        	throw new VidCreationException(e.getMessage());
+		}
 
         responseDto.setId(id);
         responseDto.setVersion(version);
@@ -92,7 +94,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 
     }
 
-    private VidGeneratorResponseDto vidGenerator(VidRequestDto requestDto) throws JsonProcessingException, IOException {
+    private VidGeneratorResponseDto vidGenerator(VidRequestDto requestDto) throws JsonProcessingException, IOException, ApisResourceAccessException {
         VidGeneratorRequestDto vidRequestDto = new VidGeneratorRequestDto();
         RequestWrapper<VidGeneratorRequestDto> request = new RequestWrapper<>();
         ResponseWrapper<VidGeneratorResponseDto> response = null;
@@ -111,7 +113,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 
         try {
             response = (ResponseWrapper) residentServiceRestClient
-                    .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()), MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getRegprocToken());
+                    .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()), request, ResponseWrapper.class, tokenGenerator.getRegprocToken(),MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode() + e.getMessage()
