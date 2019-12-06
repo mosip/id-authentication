@@ -883,8 +883,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
-					syncAndUploadPacket();
 				}
+				/*sync the packet to server irrespective of eod enable/disable */
+				syncAndUploadPacket();
 
 				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
@@ -1018,11 +1019,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
 
-			if (response.equals(RegistrationConstants.EMPTY)) {
+			// modified as per the story MOS-29831
+			if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				if (response.equals(RegistrationConstants.EMPTY)) {
 
-				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
-			} else {
-				generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
+					packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+				} else {
+					generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
+				}
 			}
 
 		}
