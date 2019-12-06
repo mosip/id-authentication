@@ -167,6 +167,7 @@ public class ResidentServiceRestClient {
 			throw new ApisResourceAccessException("Exception occured while accessing " + uri, e);
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public <T> T postApi(String uri, Object requestType, Class<?> responseClass,
 			String token,MediaType mediaType) throws ApisResourceAccessException {
 		RestTemplate restTemplate;
@@ -174,15 +175,8 @@ public class ResidentServiceRestClient {
 			restTemplate = getRestTemplate();
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), uri);
-			ResponseEntity<T> response = restTemplate.exchange(uri, HttpMethod.POST,
-					setRequestHeader(requestType, mediaType, token),
-					new ParameterizedTypeReference<T>() {
-						public Type getType() {
-							return new ResidentParameterizedTypeImpl((ParameterizedType) super.getType(),
-									new Type[] { responseClass });
-						}
-					});
-			return response.getBody();
+			T response = (T) restTemplate.postForObject(uri, setRequestHeader(requestType, mediaType, token),responseClass);
+			return response;
 
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
