@@ -38,7 +38,7 @@ public class ResidentController {
 	}
 
 	
-	@PostMapping(value = "/req/euin",produces = MediaType.APPLICATION_PDF_VALUE)
+	@PostMapping(value = "/req/euin")
 	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO) {
 
 		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
