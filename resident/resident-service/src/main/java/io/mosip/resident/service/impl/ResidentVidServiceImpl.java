@@ -8,15 +8,14 @@ import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
+import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.*;
-import io.mosip.resident.exception.ApisResourceAccessException;
-import io.mosip.resident.exception.OtpValidationFailedException;
-import io.mosip.resident.exception.VidAlreadyPresentException;
-import io.mosip.resident.exception.VidCreationException;
+import io.mosip.resident.exception.*;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentVidService;
+import io.mosip.resident.util.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -27,7 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -56,13 +57,16 @@ public class ResidentVidServiceImpl implements ResidentVidService {
     private ResidentServiceRestClient residentServiceRestClient;
 
     @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
     private TokenGenerator tokenGenerator;
 
     @Autowired
     private IdAuthService idAuthService;
 
     @Override
-    public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) throws OtpValidationFailedException {
+    public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) throws OtpValidationFailedException, ResidentServiceCheckedException {
 
         ResponseWrapper<VidResponseDto> responseDto = new ResponseWrapper<>();
 
@@ -73,18 +77,30 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             throw new OtpValidationFailedException();
 
         try {
+            // generate vid
             VidGeneratorResponseDto vidResponse = vidGenerator(requestDto);
+
+            // send notification
+            NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+            notificationRequestDto.setId(requestDto.getIndividualId());
+            notificationRequestDto.setIdType(IdType.valueOf(requestDto.getIndividualIdType()));
+            Map<String, Object> additionalAttributes = new HashMap<>();
+            additionalAttributes.put("vid", vidResponse.getVID());
+            notificationRequestDto.setAdditionalAttributes(additionalAttributes);
+            // notificationRequestDto.setTemplateTypeCode();
+
+            NotificationResponseDTO notificationResponseDTO = notificationService.sendNotification(notificationRequestDto);
+
+            // create response dto
             VidResponseDto vidResponseDto = new VidResponseDto();
             vidResponseDto.setVid(vidResponse.getVID());
-            vidResponseDto.setMessage("Notification has been sent to the provided contact detail(s)");
+            vidResponseDto.setMessage(notificationResponseDTO.getMessage());
             responseDto.setResponse(vidResponseDto);
         } catch (JsonProcessingException e) {
             throw new VidCreationException(e.getErrorText());
-        } catch (IOException e) {
+        } catch (IOException | ApisResourceAccessException e) {
             throw new VidCreationException(e.getMessage());
-        } catch (ApisResourceAccessException e) {
-        	throw new VidCreationException(e.getMessage());
-		}
+        }
 
         responseDto.setId(id);
         responseDto.setVersion(version);

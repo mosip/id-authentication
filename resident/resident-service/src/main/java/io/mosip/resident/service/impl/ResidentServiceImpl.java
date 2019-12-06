@@ -145,12 +145,6 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO generatVid(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ResponseDTO revokeVid(RequestDTO dto) {
 		// TODO Auto-generated method stub
 		return null;
