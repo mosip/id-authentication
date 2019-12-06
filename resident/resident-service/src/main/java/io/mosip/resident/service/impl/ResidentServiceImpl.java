@@ -77,6 +77,10 @@ public class ResidentServiceImpl implements ResidentService {
 						notificationRequestDto.setRegistrationType("NEW");
 						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
 						notificationService.sendNotification(notificationRequestDto);
+					}else {
+						throw new ResidentServiceException(
+								ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
+								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 					}
 				} catch (ApisResourceAccessException e) {
 					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
@@ -158,8 +162,8 @@ public class ResidentServiceImpl implements ResidentService {
 
 					} else {
 						throw new ResidentServiceException(
-								ResidentErrorCode.AUTH_TYPE_STATUS_UPDATE_FAILED.getErrorCode(),
-								ResidentErrorCode.AUTH_TYPE_STATUS_UPDATE_FAILED.getErrorMessage());
+								ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
+								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 					}
 				} catch (ApisResourceAccessException e) {
 					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
