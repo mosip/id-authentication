@@ -235,18 +235,6 @@ public class BaseAuthFilterTest {
 
 	@SuppressWarnings("static-access")
 	@Test
-	public void encodeTest() throws IdAuthenticationAppException {
-		assertNull(baseAuthFilter.encode(null));
-	}
-
-	@SuppressWarnings("static-access")
-	@Test
-	public void encodeTest2() throws IdAuthenticationAppException {
-		baseAuthFilter.encode(new String("~!@@&^#&^&*(**&*&~?><::KJHIJ"));
-	}
-
-	@SuppressWarnings("static-access")
-	@Test
 	public void decodeTest() throws IdAuthenticationAppException {
 		assertNull(baseAuthFilter.decode(null));
 	}
