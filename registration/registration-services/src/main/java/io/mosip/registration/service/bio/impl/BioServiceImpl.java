@@ -124,6 +124,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		AuthenticationValidatorDTO authenticationValidatorDTO = null;
 		CaptureResponseDto captureResponseDto = null;
 		CaptureResponsBioDataDto captureResponseData = null;
+		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 		String bioType = "Right little";
 		if (isMdmEnabled()) {
 			captureResponseDto = mosipBioDeviceManager.authScan(requestDetail);
@@ -132,32 +133,33 @@ public class BioServiceImpl extends BaseService implements BioService {
 			if (captureResponseDto.getError().getErrorCode().matches("101|202|403|404|409"))
 				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(),
 						captureResponseDto.getError().getErrorInfo());
-			captureResponseData = captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
-			bioType = captureResponseData.getBioSubType();
-			isoImage = Base64.getDecoder().decode(captureResponseData.getBioExtract());
+			
+			
+			
+			captureResponseDto.getMosipBioDeviceDataResponses().forEach(auth -> {
+				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
+				fingerprintDetailsDTO.setFingerPrintISOImage(
+						Base64.getDecoder().decode(auth.getCaptureResponseData().getBioExtract()));
+				fingerprintDetailsDTO.setFingerType(auth.getCaptureResponseData().getBioSubType());
+				fingerprintDetailsDTO.setForceCaptured(true);
+				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
+			});
+			
+			LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
+					"Calling for finger print validation through authService");
+			authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+			authenticationValidatorDTO.setUserId(userId);
+			authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.SINGLE);
+			authenticationValidatorDTO.setAuthValidationFlag(true);
+			validateFingerPrint(authenticationValidatorDTO);
+			
+			
 		} else {
 			isoImage = IOUtils.toByteArray(
 					this.getClass().getResourceAsStream("/UserOnboard/rightHand/rightLittle/ISOTemplate.iso"));
 		}
 
-		if (isoImage == null) {
-			return null;
-		} else {
-			LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
-					"Calling for finger print validation through authService");
-
-			authenticationValidatorDTO = new AuthenticationValidatorDTO();
-			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
-			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-			fingerprintDetailsDTO.setFingerPrintISOImage(isoImage);
-			fingerprintDetailsDTO.setFingerType(bioType);
-			fingerprintDetailsDTO.setForceCaptured(true);
-			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-			authenticationValidatorDTO.setUserId(userId);
-			authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-			validateFingerPrint(authenticationValidatorDTO);
-		}
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "End FingerPrint validator");
 
 		return authenticationValidatorDTO;
@@ -213,6 +215,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		irisDetailsDTOs.add(irisDetailsDTO);
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
+		authenticationValidatorDTO.setAuthValidationFlag(true);
 		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.SINGLE);
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Iris scan done");
@@ -603,6 +606,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		}
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
+		authenticationValidatorDTO.setAuthValidationFlag(true);
 		return authenticationValidatorDTO;
 	}
 
