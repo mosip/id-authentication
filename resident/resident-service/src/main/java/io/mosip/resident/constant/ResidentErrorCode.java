@@ -22,7 +22,8 @@ public enum ResidentErrorCode {
 	//system exceptions
 	RESIDENT_SYS_EXCEPTION("RES-SER-SYS-001","System exception occured"),
 	IO_EXCEPTION("RES-SER-SYS-002","IO Exception occured"),
-	JSON_PROCESSING_EXCEPTION("RES-SER-SYS-003","JSON Processing Exception occured");
+	JSON_PROCESSING_EXCEPTION("RES-SER-SYS-003","JSON Processing Exception occured"), 
+	INVALID_RID_EXCEPTION("RES-TUG-001", "RID entered is not valid");
 	private final String errorCode;
 	private final String errorMessage;
 

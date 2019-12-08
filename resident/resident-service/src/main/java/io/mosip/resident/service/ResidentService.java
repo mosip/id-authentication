@@ -2,14 +2,16 @@ package io.mosip.resident.service;
 
 import io.mosip.resident.dto.AuthLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
+import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 
 public interface ResidentService {
 
-	public ResponseDTO getRidStatus(RequestDTO dto);
+	public RegStatusCheckResponseDTO getRidStatus(RequestDTO dto) throws ApisResourceAccessException;
 
 	public byte[] reqEuin(EuinRequestDTO euinRequestDTO) throws OtpValidationFailedException;
 

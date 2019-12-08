@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import javax.validation.Valid;
 
 import io.mosip.resident.dto.*;
+import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -32,8 +33,8 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/rid/check-status")
-	public ResponseWrapper<ResponseDTO> getRidStatus(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) {
-		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
+	public ResponseWrapper<RegStatusCheckResponseDTO> getRidStatus(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) throws ApisResourceAccessException {
+		ResponseWrapper<RegStatusCheckResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.getRidStatus(requestDTO.getRequest()));
 		return response;
 	}
