@@ -93,7 +93,10 @@ public enum PlatformSuccessMessages {
 
 	RPR_PRINT_SERVICE_SUCCESS(PlatformConstants.RPR_PRINTING_MODULE + "002", "Pdf generated and sent to print stage"),
 
-	RPR_SYNC_REGISTRATION_SERVICE_SUCCESS(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "000", "SYNC successfull");
+	RPR_SYNC_REGISTRATION_SERVICE_SUCCESS(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "000", "SYNC successfull"),
+
+	RPR_REQUEST_HANDLER_LOST_PACKET_SUCCESS(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "000",
+			"Lost packet id value fetched successfully");
 
 	/** The success message. */
 	private final String successMessage;

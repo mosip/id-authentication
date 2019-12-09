@@ -93,10 +93,7 @@ public class AlertController extends BaseController implements Initializable {
 			header.setText(RegistrationUIConstants.ALERT_NOTE_LABEL);
 			alertImage.setDisable(false);
 			alertImage.setVisible(false);
-			alertImage.setManaged(false);
-			alertHbox.setManaged(false);
 			imageVbox.setVisible(false);
-			imageVbox.setManaged(false);
 			contextSecondMsg = gettingSecondErrorMessage(split, RegistrationConstants.INFO);
 		}
 		context.setText(split[0].trim() + contextSecondMsg);

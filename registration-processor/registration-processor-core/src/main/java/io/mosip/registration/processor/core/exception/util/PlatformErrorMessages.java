@@ -1,6 +1,7 @@
 
 package io.mosip.registration.processor.core.exception.util;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -167,11 +168,14 @@ public enum PlatformErrorMessages {
 	/** The rpr rgs decryption failed. */
 	RPR_RGS_DECRYPTION_FAILED(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "028", "Request Decryption Failed"),
 
+	/** The rpr rgs registration sync service failed. */
 	RPR_RGS_REGISTRATION_SYNC_SERVICE_FAILED(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "029", "SYNC Failed"),
 
+	/** The rpr rgs data access exception. */
 	RPR_RGS_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "030",
 			"DataAccessLayerException while syncing Registartion Id's"),
 
+	/** The rpr rgs rid not found. */
 	RPR_RGS_RID_NOT_FOUND(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "031", "RID Not Found"),
 
 	/** The rpr pis registration table not accessible. */
@@ -285,6 +289,7 @@ public enum PlatformErrorMessages {
 	BIOMETRIC_QUALITY_CHECK_FAILED(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "010",
 			"Quality Score of Biometrics Captured is Below the Threshold"),
 
+	/** The rpr qcr packet store not accessible. */
 	RPR_QCR_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "011",
 			"The Packet store set by the System is not accessible"),
 
@@ -321,6 +326,7 @@ public enum PlatformErrorMessages {
 	RPR_PVM_BASE_UNCHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007",
 			"ID Schema Validation Failed"),
 
+	/** The rpr pvm base checked exception. */
 	RPR_PVM_BASE_CHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "013",
 			"ID Schema Validation Failed"),
 
@@ -328,6 +334,7 @@ public enum PlatformErrorMessages {
 	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
 			"Mandatory Field Validation Failed"),
 
+	/** The rpr pvm record not matched from sync table. */
 	RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "011",
 			"RID or Registration Type Mismatch"),
 
@@ -361,6 +368,7 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
 			"Unable to Access API Resource"),
 
+	/** The osi validation bio type exception. */
 	OSI_VALIDATION_BIO_TYPE_EXCEPTION(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "007", "Bio Type Exception"),
 
 	/** The packet demo dedupe failed. */
@@ -374,9 +382,11 @@ public enum PlatformErrorMessages {
 	PACKET_BIO_DEDUPE_CBEFF_NOT_PRESENT(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "001",
 			"Unable to Find Applicant CBEFF for Adult"),
 
+	/** The registration id not found. */
 	REGISTRATION_ID_NOT_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "002",
 			"RegistrationId not found for given bio ref Id"),
 
+	/** The rpr bio lost packet multiple match found. */
 	RPR_BIO_LOST_PACKET_MULTIPLE_MATCH_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "003",
 			"Multiple Match was Found for the Biometrics Received"),
 
@@ -401,8 +411,10 @@ public enum PlatformErrorMessages {
 	/** ABIS_BATCH_ID_NOT_FOUND. */
 	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006", "Unable to Find ABIS Batch ID"),
 
+	/** The abis queue not found. */
 	ABIS_QUEUE_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "007", "Unable to Connect with ABIS Queue"),
 
+	/** The system exception occured. */
 	SYSTEM_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "008", "Internal error occured"),
 
 	/** The packet bio dedupe failed. */
@@ -424,6 +436,7 @@ public enum PlatformErrorMessages {
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse Data Sync Failed"),
 
+	/** The reverse data sync success. */
 	REVERSE_DATA_SYNC_SUCCESS("", "Reverse Data Sync Success"),
 
 	/** The Biometric-Authentication stage failed. */
@@ -482,6 +495,7 @@ public enum PlatformErrorMessages {
 	RPR_PDS_IO_EXCEPTION(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "004",
 			"Exception while reading packet inputStream"),
 
+	/** The rpr pds date time exception. */
 	RPR_PDS_DATE_TIME_EXCEPTION(PlatformConstants.RPR_PACKET_DECRYPTION_MODULE + "005",
 			"Error while parsing packet timestamp"),
 
@@ -544,21 +558,26 @@ public enum PlatformErrorMessages {
 	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014",
 			"User Id does not exists master list"),
 
+	/** The rpr mvs no user id should not empty or null. */
 	RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "017",
 			"User Id should not empty or null "),
 
+	/** The rpr mvs user status not active. */
 	RPR_MVS_USER_STATUS_NOT_ACTIVE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015",
 			"User is not in ACTIVE status"),
 
 	/** The rpr mvs no match type present. */
 	RPR_MVS_NO_MATCH_TYPE_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "020", "Match Type is Invalid"),
 
+	/** The rpr mvs reg id should not empty or null. */
 	RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "016",
 			"Reg Id should not be null or empty"),
 
+	/** The rpr manual verification rejected. */
 	RPR_MANUAL_VERIFICATION_REJECTED(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "021",
 			"Manual verification rejected"),
 
+	/** The rpr table not accessible. */
 	RPR_TABLE_NOT_ACCESSIBLE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "022",
 			"TablenotAccessibleException in Manual verification"),
 
@@ -586,20 +605,26 @@ public enum PlatformErrorMessages {
 	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
 			"The Configuration and Language code not found"),
 
+	/** The rpr notification failed for lost. */
 	RPR_NOTIFICATION_FAILED_FOR_LOST(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "004",
 			"Unable to Send Notification - UIN was not found for the Lost Packet"),
 
+	/** The rpr template configuration not found. */
 	RPR_TEMPLATE_CONFIGURATION_NOT_FOUND(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "005",
 			"Template configuration and language not found"),
 
+	/** The rpr message sender stage failed. */
 	RPR_MESSAGE_SENDER_STAGE_FAILED(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "006",
 			"Message Sender Stage failed"),
 
+	/** The rpr email phone template notification missing. */
 	RPR_EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "007",
 			"Email ID or Phone or Template or Notification Type is Missing"),
 
+	/** The rpr message sender email failed. */
 	RPR_MESSAGE_SENDER_EMAIL_FAILED(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "008", "Email Failed"),
 
+	/** The rpr message sender sms failed. */
 	RPR_MESSAGE_SENDER_SMS_FAILED(PlatformConstants.RPR_MESSAGE_SENDER_TEMPLATE + "009", "SMS failed"),
 
 	/** The rpr pum packet not found exception. */
@@ -637,9 +662,11 @@ public enum PlatformErrorMessages {
 	RPR_PUM_PACKET_DECRYPTION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "009",
 			"Registration packet decryption failed"),
 
+	/** The rpr pum packet deletion failed. */
 	RPR_PUM_PACKET_DELETION_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "010",
 			"packet upload failed during cleanup"),
 
+	/** The rpr pum packet archival failed. */
 	RPR_PUM_PACKET_ARCHIVAL_FAILED(PlatformConstants.RPR_PACKET_UPLOADER_MODULE + "010",
 			"packet upload failed during archival"),
 
@@ -663,6 +690,7 @@ public enum PlatformErrorMessages {
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
 
+	/** The unknown exception. */
 	UNKNOWN_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005",
 			"un expected exception occured in biodedupe service"),
 
@@ -813,20 +841,27 @@ public enum PlatformErrorMessages {
 	/** The print validation failed. */
 	RPR_PRT_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "011", "Error while print data validation"),
 
+	/** The rpr prt cardtype validation failed. */
 	RPR_PRT_CARDTYPE_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "012",
 			"Invalid CardType : Enter UIN or MASKED_UIN"),
 
+	/** The rpr prt idtype validation failed. */
 	RPR_PRT_IDTYPE_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "013",
 			"Invalid IdType : Enter UIN or VID or RID"),
 
+	/** The rpr prt uin validation failed. */
 	RPR_PRT_UIN_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "014", "UIN is not valid"),
 
+	/** The rpr prt vid validation failed. */
 	RPR_PRT_VID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "015", "VID is not valid"),
 
+	/** The rpr prt rid validation failed. */
 	RPR_PRT_RID_VALIDATION_FAILED(PlatformConstants.RPR_PRINTING_MODULE + "016", "RID is not valid"),
 
+	/** The rpr prt vid not generated. */
 	RPR_PRT_VID_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "017", "Error while creating VID"),
 
+	/** The rpr prt vid exception. */
 	RPR_PRT_VID_EXCEPTION(PlatformConstants.RPR_PRINTING_MODULE + "018",
 			"Could not generate/regenerate VID as per policy,Please use existing VID"),
 
@@ -843,8 +878,10 @@ public enum PlatformErrorMessages {
 	/** The missing input parameter. */
 	RPR_PRT_RESEND_UIN_CARD(PlatformConstants.RPR_PRINTING_MODULE + "021", "Re-Send uin card for printing"),
 
+	/** The rpr prt qr code generation error. */
 	RPR_PRT_QR_CODE_GENERATION_ERROR(PlatformConstants.RPR_PRINTING_MODULE + "022", "Error while QR Code Generation"),
 
+	/** The rpr prt vid creation error. */
 	RPR_PRT_VID_CREATION_ERROR(PlatformConstants.RPR_PRINTING_MODULE + "023", "Error while creating VID"),
 
 	/** The rpr rgs registration connector not accessible. */
@@ -856,31 +893,40 @@ public enum PlatformErrorMessages {
 
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "001",
-			"The Packet store set by the System is not accessible"), RPR_UGS_JSON__PARSER_ERROR(
-					PlatformConstants.RPR_UIN_GENERATOR_STAGE + "002",
-					"Error while parsing Json"), RPR_UGS_API_RESOURCE_EXCEPTION(
-							PlatformConstants.RPR_UIN_GENERATOR_STAGE + "003",
-							"Not able to access the API resource"), RPR_UGS_IO_EXCEPTION(
-									PlatformConstants.RPR_UIN_GENERATOR_STAGE + "004",
-									"IO exception"), RPR_UGS_VID_EXCEPTION(
-											PlatformConstants.RPR_UIN_GENERATOR_STAGE + "005",
-											"VID status is not active"),
+			"The Packet store set by the System is not accessible"),
+	/** The rpr ugs json parser error. */
+	RPR_UGS_JSON__PARSER_ERROR(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "002", "Error while parsing Json"),
+	/** The rpr ugs api resource exception. */
+	RPR_UGS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "003",
+			"Not able to access the API resource"),
+	/** The rpr ugs io exception. */
+	RPR_UGS_IO_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "004", "IO exception"),
+	/** The rpr ugs vid exception. */
+	RPR_UGS_VID_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "005", "VID status is not active"),
 
+	/** The rpr ugs uin update failure. */
 	RPR_UGS_UIN_UPDATE_FAILURE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "006", "UIN updation failure"),
 
+	/** The uin already activated. */
 	UIN_ALREADY_ACTIVATED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "007", "UIN is already Activated"),
 
+	/** The uin already deactivated. */
 	UIN_ALREADY_DEACTIVATED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "008", "UIN already deactivated"),
 
+	/** The uin activated failed. */
 	UIN_ACTIVATED_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "009", "UIN Activation Failed"),
 
+	/** The uin reactivation failed. */
 	UIN_REACTIVATION_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "010", "UIN Reactivation  failed"),
 
+	/** The uin deactivation failed. */
 	UIN_DEACTIVATION_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "011", "UIN Deactivation  failed"),
 
+	/** The link rid for lost packet failed. */
 	LINK_RID_FOR_LOST_PACKET_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "012",
 			"UIn not found the the matched RID"),
 
+	/** The uin generation failed. */
 	UIN_GENERATION_FAILED(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "013", "UIN Generation failed"),
 
 	/** The rpr pgs file not present. */
@@ -929,12 +975,48 @@ public enum PlatformErrorMessages {
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
 
+	/** The rpr pgs vid exception. */
 	RPR_PGS_VID_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "013",
 			"Could not generate/regenerate VID as per policy,Please use existing VID"),
 
+	/** The rpr pgs vid creation exception. */
 	RPR_PGS_VID_CREATION_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "014", "VID creation Exception"),
 
+	/** The rpr pgs id object exception. */
 	RPR_PGS_ID_OBJECT_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "015", "ID Object Validation failed"),
+
+	/** The rpr pgs id type exception. */
+	RPR_PGS_ID_TYPE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "016",
+			"Invalid Input Value - ID Type: Enter UIN or RID"),
+
+	/** The rpr pgs contact type exception. */
+	RPR_PGS_CONTACT_TYPE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "017",
+			"Invalid Input Value - Contact Type : Enter Email or Phone"),
+	/** The rpr pgs name exception. */
+	RPR_PGS_NAME_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "018",
+			"Invalid Input Value - Name cannot be NULL or Empty"),
+	/** The rpr pgs contactvalue exception. */
+	RPR_PGS_CONTACTVALUE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "019",
+			"Invalid Input Value - contactValue cannot be NULL or Empty"),
+	/** The rpr pgs postalcode exception. */
+	RPR_PGS_POSTALCODE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "020",
+			"Invalid Input Value - postalCode cannot be NULL or Empty"),
+
+	/** The rpr pgs no records exception. */
+	RPR_PGS_NO_RECORDS_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "021", "No Records Found"),
+
+	/** The rpr pgs no records exception. */
+	RPR_PGS_MULTIPLE_RECORDS_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "022", "Multiple Records Found"),
+
+	/** The rpr ugs api resource exception. */
+	RPR_PGS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "023",
+			"Not able to access the API resource"),
+	/** The rpr ugs io exception. */
+	RPR_PGS_IO_EXCEPTION(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "024", "IO exception"),
+
+	/** The rpr pis identity not found. */
+	RPR_PGS_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "025",
+			"Unable to Find Identity Field in ID JSON"),
 
 	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
@@ -972,26 +1054,35 @@ public enum PlatformErrorMessages {
 	/** The missing mandatory fields. */
 	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing"),
 
+	/** The transactions not available. */
 	TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "001", "RID Not Found"),
 
+	/** The rpr rts unknown exception. */
 	RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "002", "Unknown Exception Occured"),
 
+	/** The rpr rts invalid request. */
 	RPR_RTS_INVALID_REQUEST(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "003", "Invalid request"),
 
+	/** The rpr rts data population exception. */
 	RPR_RTS_DATA_POPULATION_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE + "004",
 			"globalMessages not found for input langCode"),
 
+	/** The rpr rhs reg base exception. */
 	RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
 			"reg Based checked exception"),
 
+	/** The rpr details not found. */
 	RPR_DETAILS_NOT_FOUND(PlatformConstants.RPR_ABIS_HANDLER + "001", "Abis Queue details not found"),
 
+	/** The rpr no record found. */
 	RPR_NO_RECORD_FOUND(PlatformConstants.RPR_ABIS_HANDLER + "002",
 			"Potential Match Records are Not Found for Demo Dedupe Potential Match"),
 
+	/** The rpr error in abis handler identify request. */
 	RPR_ERROR_IN_ABIS_HANDLER_IDENTIFY_REQUEST(PlatformConstants.RPR_ABIS_HANDLER + "004",
 			"Internal Error occured in Abis Handler identify request"),
 
+	/** The rpr demo sending for manual. */
 	RPR_DEMO_SENDING_FOR_MANUAL(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "001",
 			"ABIS response Details found. Hence sending to manual adjudication");
 	;

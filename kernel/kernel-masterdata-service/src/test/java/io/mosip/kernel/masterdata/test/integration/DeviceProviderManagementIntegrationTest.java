@@ -123,7 +123,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setMake("make-updated");
 		registeredDevice.setModel("model-updated");
 		registeredDevice.setSerialNo("GV3434343M");
-		
+
 		registeredDevice.setDeviceTypeCode("Face");
 		registeredDevice.setDevicesTypeCode("Slab");
 		registeredDevice.setStatusCode("registered");
@@ -183,6 +183,9 @@ public class DeviceProviderManagementIntegrationTest {
 		deviceServiceHistory.setSwVersion("0.1v");
 		deviceServiceHistory.setEffectDateTime(LocalDateTime.now(ZoneOffset.UTC));
 
+	}
+
+	public void mockSuccessTestCases() {
 		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersion(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(deviceService);
 		when(deviceProviderRepository.findByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(deviceProvider);
@@ -197,12 +200,27 @@ public class DeviceProviderManagementIntegrationTest {
 				Mockito.any())).thenReturn(Arrays.asList(deviceServiceHistory));
 		when(registeredDeviceHistoryRepository.findRegisteredDeviceHistoryByIdAndEffTimes(Mockito.anyString(),
 				Mockito.any())).thenReturn(registeredDeviceHistory);
+		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString())).thenReturn(registeredDevice);
+		when(deviceServiceRepository.findByDeviceDetail(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
+		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
 
+	}
+	
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void mockSuccess() throws Exception {
+		mockSuccessTestCases();
+		requestWrapper.setRequest(validateDeviceDto);
+		String req = objectMapper.writeValueAsString(requestWrapper);
+		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProvider() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
@@ -211,7 +229,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenRegisteredDeviceNull() throws Exception {
-
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString())).thenReturn(null);
@@ -221,6 +239,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenRegisteredDeviceDataBaseException() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString()))
@@ -232,6 +251,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenUnRegistered() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		registeredDevice.setStatusCode("UnRegistered");
@@ -242,6 +262,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceProviderNull() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(deviceProviderRepository.findByIdAndIsActiveIsTrue(Mockito.anyString())).thenReturn(null);
@@ -251,6 +272,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceProviderDbException() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(deviceProviderRepository.findByIdAndIsActiveIsTrue(Mockito.anyString()))
@@ -262,6 +284,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceserviceNull() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(deviceServiceRepository.findBySwVersionAndIsActiveIsTrue(Mockito.anyString()))
@@ -272,6 +295,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceServiceDbException() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		when(deviceServiceRepository.findBySwVersionAndIsActiveIsTrue(Mockito.anyString()))
@@ -283,6 +307,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceserviceVersionMismatch() throws Exception {
+		mockSuccessTestCases();
 		deviceService.setSwVersion("0.3v");
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
@@ -294,19 +319,21 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenMappingNull() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
-		when(deviceServiceRepository.findByDeviceCode(Mockito.anyString())).thenReturn(null);
+		when(deviceServiceRepository.findByDeviceDetail(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
 	}
 
 	@WithUserDetails("zonal-admin")
 	@Test
-	@Ignore
 	public void validateDeviceProviderWhenMappingDatabaseException() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
-		when(deviceServiceRepository.findByDeviceCode(Mockito.anyString()))
+		when(regDeviceRepository.findByCodeAndIsActiveIsTrue(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req))
 				.andExpect(status().isInternalServerError());
@@ -315,10 +342,12 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenMappingDBException() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
-		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+						.thenThrow(DataRetrievalFailureException.class);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req))
 				.andExpect(status().isInternalServerError());
 	}
@@ -326,10 +355,12 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenDeviceCodeIsNull() throws Exception {
+		mockSuccessTestCases();
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
-		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+						.thenThrow(DataRetrievalFailureException.class);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req))
 				.andExpect(status().isInternalServerError());
 	}
@@ -337,6 +368,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenMappingDeviceServiceDetails() throws Exception {
+		mockSuccessTestCases();
 		registeredDevice.setDeviceId("1001");
 		registeredDevice.setStatusCode("Registered");
 		registeredDevice.setDpId("111");
@@ -352,7 +384,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistory() throws Exception {
-
+		mockSuccessTestCases();
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);
 		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req))
@@ -362,6 +394,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithDeviceServiceHistoryNull() throws Exception {
+		mockSuccessTestCases();
 		when(deviceServiceHistoryRepository.findByIdAndIsActiveIsTrueAndByEffectiveTimes(Mockito.anyString(),
 				Mockito.any())).thenReturn(new ArrayList<>());
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
@@ -373,6 +406,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithDeviceServiceHistoryDBException() throws Exception {
+		mockSuccessTestCases();
 		when(deviceServiceHistoryRepository.findByIdAndIsActiveIsTrueAndByEffectiveTimes(Mockito.anyString(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
@@ -384,6 +418,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithDeviceProviderHistoryNull() throws Exception {
+		mockSuccessTestCases();
 		when(deviceProviderHistoryRepository.findDeviceProviderHisByIdAndEffTimes(Mockito.anyString(), Mockito.any()))
 				.thenReturn(null);
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
@@ -395,6 +430,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithDeviceProviderHistoryDBException() throws Exception {
+		mockSuccessTestCases();
 		when(deviceProviderHistoryRepository.findDeviceProviderHisByIdAndEffTimes(Mockito.anyString(), Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
@@ -406,6 +442,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithRegisteredDevicesHistoryNull() throws Exception {
+		mockSuccessTestCases();
 		when(registeredDeviceHistoryRepository.findRegisteredDeviceHistoryByIdAndEffTimes(Mockito.anyString(),
 				Mockito.any())).thenReturn(null);
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
@@ -418,6 +455,7 @@ public class DeviceProviderManagementIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithRegisteredDevicesHistoryDBException() throws Exception {
+		mockSuccessTestCases();
 		when(registeredDeviceHistoryRepository.findRegisteredDeviceHistoryByIdAndEffTimes(Mockito.anyString(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
@@ -425,20 +463,22 @@ public class DeviceProviderManagementIntegrationTest {
 		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void validateHistoryWithRegisteredDevicesHistoryRevokedStatus() throws Exception {
+		mockSuccessTestCases();
 		registeredDeviceHistory.setStatusCode("Revoked");
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);
 		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req))
 				.andExpect(status().isOk());
 	}
-	
+
 	@WithUserDetails("zonal-admin")
 	@Test
 	public void validateDeviceProviderWhenMappingDeviceServiceHistoryDetails() throws Exception {
+		mockSuccessTestCases();
 		registeredDeviceHistory.setDeviceId("1001");
 		registeredDeviceHistory.setStatusCode("Registered");
 		registeredDeviceHistory.setDpId("111");
@@ -448,6 +488,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setSerialNo("GV343434");
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);
-		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
+		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req))
+				.andExpect(status().isOk());
 	}
 }

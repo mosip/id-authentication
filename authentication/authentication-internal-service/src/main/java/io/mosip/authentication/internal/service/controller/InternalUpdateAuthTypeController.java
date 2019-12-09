@@ -75,7 +75,7 @@ public class InternalUpdateAuthTypeController {
 	 * @return the response entity
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PostMapping(path = "authtypes/status", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
