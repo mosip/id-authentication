@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.pdf.BidiOrder;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -337,7 +336,7 @@ public class MosipBioDeviceManager {
 
 		String constructedDeviceType = constructDeviceType(deviceType);
 
-		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
+		if (deviceRegistry.isEmpty() || deviceRegistry.get(constructedDeviceType) == null) {
 			initByDeviceType(constructedDeviceType);
 		}
 		BioDevice bioDevice = deviceRegistry.get(constructedDeviceType);

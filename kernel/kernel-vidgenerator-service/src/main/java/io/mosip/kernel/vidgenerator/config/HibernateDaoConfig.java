@@ -51,7 +51,7 @@ public class HibernateDaoConfig implements EnvironmentAware {
 	@Autowired
 	private Environment env;
 
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${mosip.kernel.vid.hikari_maximumPoolSize:400}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
 	private int validationTimeout;

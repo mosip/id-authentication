@@ -91,6 +91,10 @@ public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
@@ -99,7 +103,7 @@ public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 	MosipRouter router;
 
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIOMETRIC_AUTHENTICATION_BUS_IN,
 				MessageBusAddress.BIOMETRIC_AUTHENTICATION_BUS_OUT);
 	}

@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -41,6 +40,7 @@ import lombok.Data;
  * Request and Entity info's
  * 
  * @author Dinesh Karuppiah.T
+ * @author Manoj SP
  */
 @Component
 public class BioMatcherUtil {

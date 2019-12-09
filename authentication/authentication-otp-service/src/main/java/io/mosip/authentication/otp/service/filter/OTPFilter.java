@@ -68,5 +68,5 @@ public class OTPFilter extends IdAuthFilter {
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		// Nothing to do
 	}
-
+	
 }

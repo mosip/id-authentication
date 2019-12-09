@@ -63,14 +63,14 @@ public enum IdAuthenticationErrorConstants {
 
 	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
 	DUPLICATE_FINGER("IDA-BIA-002", "Duplicate fingers in request", "Please try again with distinct fingers"),
-	FINGER_EXCEEDING("IDA-BIA-003", "Number of Fingers should not exceed 2"),
+	FINGER_EXCEEDING("IDA-BIA-003", "Number of Fingers should not exceed %s"),
 	INVALID_DEVICEID("IDA-BIA-004", "Device not registered with MOSIP"),
 	INVALID_PROVIDERID("IDA-BIA-005", "Device provider not registered with MOSIP"),
 	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
 			"Your Biometric data is not available in MOSIP"),
 	DUPLICATE_IRIS("IDA-BIA-007", "Duplicate Irises in request", "Please try again with distinct Irises"),
 	IRIS_EXCEEDING("IDA-BIA-008", "Number of IIR should not exceed 2"),
-	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
+	FACE_EXCEEDING("IDA-BIA-009", "Number of FACE records should not exceed 1"),
 	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
 	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
 	INVALID_MDS("IDA-BIA-012", "MDS verification failed"),
@@ -114,7 +114,12 @@ public enum IdAuthenticationErrorConstants {
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
 	
-	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed")
+	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed"),
+	
+	// Device verification validation
+	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
+	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
+	PROVIDER_ID_VERIFICATION_FAILED("IDA-DPM-003", "Device Provider is not registered with MOSIP")
 
 	;
 

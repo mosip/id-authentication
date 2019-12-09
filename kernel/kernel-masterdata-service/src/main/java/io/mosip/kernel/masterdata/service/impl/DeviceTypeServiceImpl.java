@@ -92,8 +92,8 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 			DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
 			renDeviceType = deviceTypeRepository.create(entity);
 		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException | IllegalArgumentException | SecurityException  e) {
-			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()
+			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

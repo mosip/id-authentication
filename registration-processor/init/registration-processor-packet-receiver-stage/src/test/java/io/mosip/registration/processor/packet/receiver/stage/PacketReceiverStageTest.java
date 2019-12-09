@@ -57,6 +57,7 @@ public class PacketReceiverStageTest {
 	private File file;
 	private String id = "2018782130000113112018183001.zip";
 	private String newId = "2018782130000113112018183000.zip";
+	private String deletePath = "deleteTest\folder";
 	public FileUpload fileUpload;
 	@Mock
 	public PacketReceiverService<File, MessageDTO> packetReceiverService;
@@ -94,10 +95,17 @@ public class PacketReceiverStageTest {
 		public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
 
 		}
+		
+		@Override
+		public void deleteFile(File f ) {
+			
+		}
 	};
 
 	@Before
 	public void setup() throws IOException, io.mosip.kernel.core.exception.IOException {
+		ReflectionTestUtils.setField(packetReceiverStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(packetReceiverStage, "clusterManagerUrl", "/dummyPath");
 		ReflectionTestUtils.setField(packetReceiverStage, "port", "8080");
 		ReflectionTestUtils.setField(packetReceiverStage, "contextPath", "/registrationprocessor/v1/packetreceiver");
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern"))
@@ -158,7 +166,7 @@ public class PacketReceiverStageTest {
 		Mockito.when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
 		packetReceiverStage.failure(ctx);
 	}
-
+	
 	private FileUpload setFileUpload() {
 		return new FileUpload() {
 

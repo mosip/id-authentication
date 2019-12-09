@@ -76,7 +76,7 @@ public class InternalRetrieveAuthTypeController {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IDDataValidationException    the ID data validation exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@ApiOperation(value = "Authtype Status Request", response = IdAuthenticationAppException.class)
 	@GetMapping(path = "/authtypes/status/individualIdType/{IDType}/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
@@ -115,7 +115,7 @@ public class InternalRetrieveAuthTypeController {
 	 */
 	private String getResponseTime() {
 		return DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+				DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
 						environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),

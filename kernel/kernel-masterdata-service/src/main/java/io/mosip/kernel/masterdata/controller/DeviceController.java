@@ -19,10 +19,12 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DevicePutReqDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -30,7 +32,6 @@ import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -113,13 +114,13 @@ public class DeviceController {
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
-	 * @param deviceRequestDto
-	 *            input parameter deviceRequestDto
+	 * @param deviceDto
+	 *            input parameter deviceDto
 	 * 
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id")
@@ -127,10 +128,9 @@ public class DeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
 	public ResponseWrapper<Device> createDevice(
-			@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
-
+			@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
+		responseWrapper.setResponse(deviceService.createDevice(deviceDto.getRequest()));
 		return responseWrapper;
 
 	}
@@ -144,19 +144,19 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is updated successfully
 	 *         {@link ResponseEntity}
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
-	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id")
+	@ApiOperation(value = "Service to update Device", notes = "Update Device and return updated Device")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Device updated successfully"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When Device is not found"),
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
-	public ResponseWrapper<IdAndLanguageCodeID> updateDevice(
-			@Valid @RequestBody RequestWrapper<DeviceDto> deviceRequestDto) {
+	public ResponseWrapper<DeviceExtnDto> updateDevice(
+			@Valid @RequestBody RequestWrapper<DevicePutReqDto> devicePutReqDto) {
 
-		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.updateDevice(deviceRequestDto.getRequest()));
+		ResponseWrapper<DeviceExtnDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.updateDevice(devicePutReqDto.getRequest()));
 		return responseWrapper;
 	}
 
@@ -221,7 +221,7 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
@@ -239,6 +239,7 @@ public class DeviceController {
 	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> deviceFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -256,12 +257,11 @@ public class DeviceController {
 	@ResponseFilter
 	@ApiOperation(value = "Decommission Device")
 	@PutMapping("/decommission/{deviceId}")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.decommissionDevice(deviceId));
 		return responseWrapper;
 	}
 
-	
 }

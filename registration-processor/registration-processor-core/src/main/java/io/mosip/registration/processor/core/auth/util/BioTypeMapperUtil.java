@@ -26,7 +26,7 @@ public class BioTypeMapperUtil {
 	private static Map<BioType, AuthBioType> statusMapper() {
 
 		statusMap.put(BioType.FINGER, AuthBioType.FIR);
-		statusMap.put(BioType.FACE, AuthBioType.FID);
+		statusMap.put(BioType.FACE, AuthBioType.FACE);
 		statusMap.put(BioType.IRIS, AuthBioType.IIR);
 
 		return unmodifiableMap;

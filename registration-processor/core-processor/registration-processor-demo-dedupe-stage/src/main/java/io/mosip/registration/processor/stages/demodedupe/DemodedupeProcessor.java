@@ -234,7 +234,10 @@ public class DemodedupeProcessor {
 									jsonValueList.add(nameArray);
 							});
 				}
-				demoDedupeData.setName(jsonValueList.isEmpty() ? null : jsonValueList);
+				if(demographicData.getName() == null || demographicData.getName().isEmpty())
+					demoDedupeData.setName(jsonValueList.isEmpty() ? null : jsonValueList);
+				else
+					demoDedupeData.setName(demographicData.getName());
 				demoDedupeData.setDateOfBirth(demographicData.getDateOfBirth() == null
 						? JsonUtil.getJSONValue(jsonObject, regProcessorIdentityJson.getIdentity().getDob().getValue())
 						: demographicData.getDateOfBirth());

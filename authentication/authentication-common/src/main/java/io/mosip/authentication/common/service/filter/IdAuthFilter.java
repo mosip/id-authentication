@@ -3,7 +3,6 @@ package io.mosip.authentication.common.service.filter;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ACTIVE_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TIMESTAMP_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
@@ -90,9 +89,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			if (null == requestBody.get(REQUEST)) {
-				throwMissingInputParameter(REQUEST);
-			} else {
+			if (null != requestBody.get(REQUEST)) {
 				requestBody.replace(REQUEST,
 						decode((String) requestBody.get(REQUEST)));
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
@@ -119,6 +116,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				
 				requestBody.replace(REQUEST, request);
 			}
+			
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -178,10 +176,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 			
 			if(!getStringValue(data, TIMESTAMP).isPresent()) {
 				throwMissingInputParameter(String.format(BIO_TIMESTAMP_INPUT_PARAM, index));
-			}
-			
-			if(!getStringValue(data, DIGITAL_ID).isPresent()) {
-				throwMissingInputParameter(String.format(BIO_DIGITALID_INPUT_PARAM, index));
 			}
 			
 			Object bioValue = data.get(BIO_VALUE);

@@ -64,8 +64,8 @@ public class IdObjectValidatorFromConfigServerTest {
 		ReflectionTestUtils.setField(idValidator, "configServerFileStorageURL", "http://1.1.1.1:51000/");
 		ReflectionTestUtils.setField(idValidator, "schemaName", "schemaName");
 		MockEnvironment env = new MockEnvironment();
-		env.setProperty(APPLICATION_ID.getValue(), "reg-client");
-		env.setProperty(String.format(FIELD_LIST.getValue(), "reg-client", "new-registration"), "firstName");
+		env.setProperty(APPLICATION_ID, "reg-client");
+		env.setProperty(String.format(FIELD_LIST, "reg-client", "new-registration"), "firstName");
 		ReflectionTestUtils.setField(idValidator, "env", env);
 		ReflectionTestUtils.setField(idValidator, "mapper", new ObjectMapper());
 	}

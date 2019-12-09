@@ -320,9 +320,10 @@ public class SessionContext {
 						new RequestDetail("Staging", "Registration", RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 								(String) io.mosip.registration.context.ApplicationContext.map()
 										.get(RegistrationConstants.CAPTURE_TIME_OUT),
-								1, "60", Arrays.asList("LF_LITTLE", "LF_RING", "LF_MIDDLE"))))) {
+								1, "60", null)))) {
 			createSessionContext();
 			SessionContext.authTokenDTO().setLoginMode(loginMethod);
+			
 			validAuthModes.add(loginMethod);
 			createSecurityContext(userDTO);
 			return true;

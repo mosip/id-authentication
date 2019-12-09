@@ -24,11 +24,11 @@ public interface DeviceRegisterService {
 	/**
 	 * Method to de register Device.
 	 * 
-	 * @param request
+	 * @param deviceCode
 	 *            the {@link DeRegisterDeviceRequestDto}.
 	 * @return the {@link DeviceRegisterResponseDto}.
 	 */
-	public DeviceRegisterResponseDto deRegisterDevice(DeRegisterDeviceRequestDto request);
+	public DeviceRegisterResponseDto deRegisterDevice(String deviceCode);
 	
 	/**
 	 * Update status.

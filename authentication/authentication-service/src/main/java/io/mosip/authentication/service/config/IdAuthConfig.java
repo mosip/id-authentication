@@ -2,8 +2,6 @@ package io.mosip.authentication.service.config;
 
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

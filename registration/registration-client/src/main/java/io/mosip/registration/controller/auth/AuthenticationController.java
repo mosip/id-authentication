@@ -350,7 +350,7 @@ public class AuthenticationController extends BaseController implements Initiali
 								new RequestDetail("Staging", "Registration",
 										RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 										(String) getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT),
-										1, "60", Arrays.asList("LF_LITTLE", "LF_RING", "LF_MIDDLE")))) {
+										1, "60", null))) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = fpUserId.getText();
 							if (!isEODAuthentication) {
@@ -374,7 +374,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (captureAndValidateFP(fpUserId.getText(), new RequestDetail("Staging", "Registration",
 						RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 						(String) getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT),
-						1, "60", Arrays.asList("LF_LITTLE", "LF_RING", "LF_MIDDLE")))) {
+						1, "60", null))) {
 					userAuthenticationTypeListValidation.remove(0);
 					loadNextScreen();
 				} else {

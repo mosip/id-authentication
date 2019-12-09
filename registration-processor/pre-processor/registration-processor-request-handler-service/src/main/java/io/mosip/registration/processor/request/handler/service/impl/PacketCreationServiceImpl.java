@@ -82,7 +82,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public byte[] create(final RegistrationDTO registrationDTO)
+	public byte[] create(final RegistrationDTO registrationDTO , JSONObject demoJsonObject)
 			throws RegBaseCheckedException, IdObjectValidationFailedException, IdObjectIOException, JsonParseException,
 			JsonMappingException, IOException {
 		String rid = registrationDTO.getRegistrationId();
@@ -96,11 +96,20 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
 			// Packet Meta-Data and Audit
 			Map<String, byte[]> filesGeneratedForPacket = new HashMap<>();
+			JSONObject idObject = null;
+			String idJsonAsString = null;
+			
+			if(demoJsonObject != null) {
+				idObject = demoJsonObject;
+				idJsonAsString = idObject.toJSONString();
+			}else {
+				// Generating Demographic JSON as byte array
+				idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
+				ObjectMapper mapper = new ObjectMapper();
+				idObject = mapper.readValue(idJsonAsString, JSONObject.class);
+			}
 
-			// Generating Demographic JSON as byte array
-			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			ObjectMapper mapper = new ObjectMapper();
-			JSONObject idObject = mapper.readValue(idJsonAsString, JSONObject.class);
+
 			idObjectSchemaValidator.validateIdObject(idObject, IdObjectValidatorSupportedOperations.UPDATE_UIN);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
