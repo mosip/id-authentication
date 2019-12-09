@@ -12,8 +12,8 @@ public enum DeviceRegisterErrorCode {
 	INVALID_STATUS_CODE("ADM-DPM-037","Invalid status received"),
 	DEVICE_REGISTER_UPDATE_EXCEPTION("ADM-DPM-038","Error occured while updating Device Register details"),
 	DEVICE_REGISTER_CREATE_EXCEPTION("ADM-DPM-038","Error occured while create Device Register details"),
-	DATA_NOT_FOUND_EXCEPTION("ADM-DPM-038","Data not found for provided device code");
-	
+	DATA_NOT_FOUND_EXCEPTION("ADM-DPM-038","Data not found for provided device code"),
+	STATUS_CODE_ALREADY_EXISTS("ADM-DPM-039","Status code already exists for the device");
 
 	private final String errorCode;
 	private final String errorMessage;
