@@ -106,13 +106,13 @@ public class GPSFacade extends GPSBU343Connector {
 					double distance = actualDistance(deviceLat, deviceLongi, centerLat, centerLngt);
 
 					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-							"Distance between GPS Device and Registartion Stationin meters ====>" + distance / 1000);
+							"Distance between GPS Device and Registartion Stationin meters ====>" + Math.round(distance / 1000));
 
 					if (deviceLat != 0 && deviceLongi != 0 && distance != 0) {
 
 						gpsResponseMap.put(RegistrationConstants.LATITUDE, deviceLat);
 						gpsResponseMap.put(RegistrationConstants.LONGITUDE, deviceLongi);
-						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, distance / 1000);
+						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, Math.round(distance / 1000));
 						gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
 								RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
