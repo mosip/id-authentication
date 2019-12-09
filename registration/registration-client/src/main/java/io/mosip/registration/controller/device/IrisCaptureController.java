@@ -946,9 +946,10 @@ public class IrisCaptureController extends BaseController {
 
 		if (anyIrisException(RegistrationConstants.LEFT) && anyIrisException(RegistrationConstants.RIGHT)) {
 			continueBtn.setDisable(false);
+		}else {
+			populateException();
 		}
 
-		populateException();
 	}
 
 	private void singleBiometricCaptureCheck() {

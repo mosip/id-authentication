@@ -192,27 +192,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Encode method is used to encode the string which
-	 * is passed through it.
-	 *
-	 * @param stringToEncode the string to be encoded
-	 * @return the string the encoded string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	protected static String encode(String stringToEncode) throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(stringToEncode)) {
-				return CryptoUtil.encodeBase64String(stringToEncode.getBytes());
-			} else {
-				return stringToEncode;
-			}
-		} catch (IllegalArgumentException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
-		}
-	}
-
-	/**
 	 * decipherRequest method is used to get the deciphered request
 	 * from the encoded and enciphered request passed by the 
 	 * authenticating partner.

@@ -3,6 +3,7 @@ package io.mosip.idrepository.vid.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -27,8 +28,11 @@ import org.springframework.transaction.TransactionException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
@@ -54,9 +58,7 @@ import io.mosip.idrepository.vid.repository.UinHashSaltRepo;
 import io.mosip.idrepository.vid.repository.VidRepo;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idgenerator.vid.exception.VidException;
 
 /**
  * 
@@ -91,9 +93,6 @@ public class VidServiceImplTest {
 	@Mock
 	private WebClient webClient;
 
-	@Mock
-	private VidGenerator<String> vidGenerator;
-
 	/** The security manager. */
 	@Mock
 	private IdRepoSecurityManager securityManager;
@@ -125,7 +124,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testCreateVid() throws IdRepoAppException {
+	public void testCreateVid() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
 				.thenReturn(new RestRequestDTO());
@@ -147,13 +146,20 @@ public class VidServiceImplTest {
 		request.setUin(2953190571L);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
+		RestRequestDTO restReq = new RestRequestDTO();
+		when(restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class)).thenReturn(restReq);
+		ResponseWrapper<Object> responseWrapper = new ResponseWrapper<>();
+		ObjectNode node = mapper.createObjectNode();
+		node.put("vid", "12345");
+		responseWrapper.setResponse(mapper.readValue(node.toString(), Object.class));
+		when(restHelper.requestSync(restReq)).thenReturn(responseWrapper);
 		ResponseWrapper<VidResponseDTO> vidResponse = service.generateVid(request);
 		assertEquals(vidResponse.getResponse().getVid().toString(), vid.getVid());
 		assertEquals(vidResponse.getResponse().getVidStatus(), vid.getStatusCode());
 	}
 
 	@Test
-	public void testCreateVidInstanceFail() throws RestServiceException, IdRepoDataValidationException {
+	public void testCreateVidInstanceFail() throws RestServiceException, IdRepoDataValidationException, JsonParseException, JsonMappingException, IOException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
 				.thenReturn(new RestRequestDTO());
@@ -175,6 +181,13 @@ public class VidServiceImplTest {
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setUin(2953190571L);
+		RestRequestDTO restReq = new RestRequestDTO();
+		when(restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class)).thenReturn(restReq);
+		ResponseWrapper<Object> responseWrapper = new ResponseWrapper<>();
+		ObjectNode node = mapper.createObjectNode();
+		node.put("vid", "12345");
+		responseWrapper.setResponse(mapper.readValue(node.toString(), Object.class));
+		when(restHelper.requestSync(restReq)).thenReturn(responseWrapper);
 		try {
 			service.generateVid(request);
 		} catch (IdRepoAppException e) {
@@ -207,7 +220,6 @@ public class VidServiceImplTest {
 		VidRequestDTO request = new VidRequestDTO();
 		request.setUin(2953190571L);
 		request.setVidType("Perpetual");
-		when(vidGenerator.generateId()).thenThrow(new VidException("", "", null));
 		try {
 			service.generateVid(request);
 		} catch (IdRepoAppException e) {
@@ -342,7 +354,9 @@ public class VidServiceImplTest {
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setUin(2953190571L);
-		when(vidGenerator.generateId()).thenThrow(new VidException("", "", null));
+		RestRequestDTO restReq = new RestRequestDTO();
+		when(restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class)).thenReturn(restReq);
+		when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(IdRepoErrorConstants.VID_GENERATION_FAILED));
 		try {
 			service.generateVid(request);
 		} catch (IdRepoAppException e) {
@@ -641,7 +655,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVidvalidREVOKE() throws IdRepoAppException {
+	public void testUpdateVidvalidREVOKE() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -674,6 +688,13 @@ public class VidServiceImplTest {
 		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any())).thenReturn("3920450236".getBytes());
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("REVOKE");
+		RestRequestDTO restReq = new RestRequestDTO();
+		when(restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class)).thenReturn(restReq);
+		ResponseWrapper<Object> response = new ResponseWrapper<>();
+		ObjectNode node = mapper.createObjectNode();
+		node.put("vid", "12345");
+		response.setResponse(mapper.readValue(node.toString(), Object.class));
+		when(restHelper.requestSync(restReq)).thenReturn(response);
 		service.updateVid("12345678", request);
 	}
 
@@ -694,7 +715,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testRegenerate_Valid() throws IdRepoAppException {
+	public void testRegenerate_Valid() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -725,6 +746,13 @@ public class VidServiceImplTest {
 		Mockito.when(securityManager.hash(Mockito.any()))
 				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
 		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any())).thenReturn("3920450236".getBytes());
+		RestRequestDTO restReq = new RestRequestDTO();
+		when(restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class)).thenReturn(restReq);
+		ResponseWrapper<Object> responseWrapper = new ResponseWrapper<>();
+		ObjectNode node = mapper.createObjectNode();
+		node.put("vid", "12345");
+		responseWrapper.setResponse(mapper.readValue(node.toString(), Object.class));
+		when(restHelper.requestSync(restReq)).thenReturn(responseWrapper);
 		ResponseWrapper<VidResponseDTO> regenerateVid = service.regenerateVid("12345678");
 		assertEquals(vidValue, String.valueOf(regenerateVid.getResponse().getVid()));
 		assertEquals("INVALIDATED", regenerateVid.getResponse().getVidStatus());

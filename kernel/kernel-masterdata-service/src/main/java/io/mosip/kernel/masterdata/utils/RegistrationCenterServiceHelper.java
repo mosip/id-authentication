@@ -13,8 +13,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.util.Node;
-import io.mosip.kernel.core.util.UBtree;
+import io.mosip.kernel.core.masterdata.util.model.Node;
+import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;

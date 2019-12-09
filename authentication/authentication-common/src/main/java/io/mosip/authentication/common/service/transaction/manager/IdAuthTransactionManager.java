@@ -84,7 +84,7 @@ public class IdAuthTransactionManager {
 			baseRequest.setVersion(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
 			request.put("applicationId", environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			request.put("timeStamp", DateUtils.getUTCCurrentDateTimeString());
+			request.put("timeStamp", DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
 			request.put("salt", CryptoUtil.encodeBase64(saltToEncrypt));
 			baseRequest.setRequest(request);

@@ -98,4 +98,12 @@ public class RegistrationStatusDaoTest {
 		int count = registrationStatusDao.getUnProcessedPacketsCount(6000, 4, statusList);
 		assertEquals(count, entityCount);
 	}
+
+	@Test
+	public void getByIdsAndTimestamp() {
+		List<String> idList = new ArrayList<>();
+		idList.add("1000");
+		List<RegistrationStatusEntity> rEntityList = registrationStatusDao.getByIdsAndTimestamp(idList);
+		assertEquals(list, rEntityList);
+	}
 }
