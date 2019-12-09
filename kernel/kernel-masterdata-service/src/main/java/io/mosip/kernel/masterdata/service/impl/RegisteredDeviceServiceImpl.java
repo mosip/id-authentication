@@ -204,7 +204,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	
 	@Transactional
 	@Override
-	public ResponseDto updateStatus(String deviceCode, String statusCode) {
+	public DeviceDeRegisterResponse updateStatus(String deviceCode, String statusCode) {
 		RegisteredDevice deviceRegister = null;
 		try {
 			deviceRegister = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
@@ -224,7 +224,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		deviceRegister.setStatusCode(statusCode);
 		updateRegisterDetails(deviceRegister);
 		createHistoryDetails(deviceRegister);
-		ResponseDto responseDto = new ResponseDto();
+		DeviceDeRegisterResponse responseDto = new DeviceDeRegisterResponse();
 		responseDto.setMessage(MasterDataConstant.DEVICE_REGISTER_UPDATE_MESSAGE);
 		responseDto.setStatus(MasterDataConstant.SUCCESS);
 		return responseDto;

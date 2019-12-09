@@ -36,6 +36,10 @@ import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.vid.entity.Vid;
 import io.mosip.idrepository.vid.interceptor.IdRepoVidEntityInterceptor;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -82,30 +86,6 @@ public class IdRepoVidEntityInterceptorTest {
 		vid.setUin("461_7329815461_7C9JlRD32RnFTzAmeTfIzg");
 		try {
 			interceptor.onSave(vid, null, new Object[] { "461_7329815461_7C9JlRD32RnFTzAmeTfIzg" }, new String[] { "uin" }, null);
-		} catch (IdRepoAppUncheckedException e) {
-			assertEquals(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorCode(), e.getErrorCode());
-			assertEquals(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorMessage(), e.getErrorText());
-		}
-	}
-
-	@Test
-	@Ignore
-	public void testOnLoad() throws IdRepoAppException {
-		when(securityManager.decrypt(Mockito.any())).thenReturn("".getBytes());
-		when(securityManager.hash(Mockito.any())).thenReturn("");
-		Vid vid = new Vid();
-		vid.setUin("");
-		assertFalse(interceptor.onLoad(vid, null, new Object[] { "", "" }, new String[] { "uin", "uinHash" }, null));
-	}
-
-	@Test
-	@Ignore
-	public void testOnLoadDecryptionFailed() throws IdRepoAppException {
-		when(securityManager.decrypt(Mockito.any())).thenThrow(new IdRepoAppException());
-		Vid vid = new Vid();
-		vid.setUin("");
-		try {
-			interceptor.onLoad(vid, null, new Object[] { "", "" }, new String[] { "uin", "uinHash" }, null);
 		} catch (IdRepoAppUncheckedException e) {
 			assertEquals(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorMessage(), e.getErrorText());

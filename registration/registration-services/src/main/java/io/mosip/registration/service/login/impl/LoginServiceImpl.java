@@ -367,16 +367,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		if (null != masterResponseDTO && null != masterResponseDTO.getSuccessResponseDTO()) {
 			userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-			if (null != userResponseDTO.getSuccessResponseDTO()) {
-				userSaltResponse = userSaltDetailsService
-						.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-			}
+			userSaltResponse = getUserSaltResponse(userResponseDTO, userSaltResponse);
 		}
-		if ((((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
+		if ((null != masterResponseDTO && masterResponseDTO.getErrorResponseDTOs() != null)
 				|| userResponseDTO.getErrorResponseDTOs() != null
-				|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
-				|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
+				|| userSaltResponse.getErrorResponseDTOs() != null || responseDTO.getErrorResponseDTOs() != null
+				|| publicKeySyncResponse.getErrorResponseDTOs() != null) {
 			if (isAuthTokeEmptyError(masterResponseDTO, userResponseDTO, userSaltResponse, publicKeySyncResponse)) {
 				val.add(RegistrationConstants.AUTH_TOKEN_NOT_RECEIVED_ERROR);
 			} else {
@@ -385,6 +381,24 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		} else {
 			val.add(RegistrationConstants.SUCCESS);
 		}
+	}
+
+	/**
+	 * Gets the user salt response.
+	 *
+	 * @param userResponseDTO the user response DTO
+	 * @param userSaltResponse the user salt response
+	 * @return the user salt response
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	private ResponseDTO getUserSaltResponse(ResponseDTO userResponseDTO, ResponseDTO userSaltResponse)
+			throws RegBaseCheckedException {
+		if (null != userResponseDTO.getSuccessResponseDTO()) {
+			userSaltResponse = userSaltDetailsService
+					.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		}
+		return userSaltResponse;
 	}
 
 	/*
@@ -540,6 +554,14 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return responseDTO;
 	}
 	
+	/**
+	 * Gets the modes of login validation.
+	 *
+	 * @param authType the auth type
+	 * @param roleList the role list
+	 * @return the modes of login validation
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	private void getModesOfLoginValidation(String authType, Set<String> roleList) throws RegBaseCheckedException {
 		
 		if(isStringEmpty(authType)) {			
@@ -556,6 +578,14 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		}
 	}
 	
+	/**
+	 * Gets the registration center details validation.
+	 *
+	 * @param centerId the center id
+	 * @param langCode the lang code
+	 * @return the registration center details validation
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	private void getRegistrationCenterDetailsValidation(String centerId, String langCode) throws RegBaseCheckedException {
 		
 		if(isStringEmpty(centerId)) {
@@ -578,6 +608,15 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		} 
 	}
 
+	/**
+	 * Checks if is auth toke empty error.
+	 *
+	 * @param masterSync the master sync
+	 * @param userSync the user sync
+	 * @param saltSync the salt sync
+	 * @param publicKeySync the public key sync
+	 * @return true, if is auth toke empty error
+	 */
 	private boolean isAuthTokeEmptyError(ResponseDTO masterSync, ResponseDTO userSync, ResponseDTO saltSync,
 			ResponseDTO publicKeySync) {
 		return (isAuthTokenEmptyError(masterSync) || isAuthTokenEmptyError(userSync) || isAuthTokenEmptyError(saltSync)

@@ -49,6 +49,9 @@ import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The Class IdRepoController - Controller class for Identity service.
+ * These services is used by Registration Processor to store/update during 
+ * registration process and ID Authentication to retrieve Identity of an 
+ * Individual for their authentication.
  *
  * @author Manoj SP
  */
@@ -129,7 +132,8 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Adds the identity.
+	 * This service will create a new ID record in ID repository and store corresponding demographic 
+	 * and bio-metric documents.
 	 *
 	 * @param request the request
 	 * @param errors  the errors
@@ -156,7 +160,7 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Retrieve identity.
+	 * This service will retrieve an ID record from ID repository for a given UIN and identity type as bio/demo/all.
 	 *
 	 * @param uin  the uin
 	 * @param type the type
@@ -164,7 +168,7 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'ID_AUTHENTICATION','RESIDENT')")
 	@GetMapping(path = "/uin/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByUin(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -179,15 +183,14 @@ public class IdRepoController {
 	}
 
 	/**
-	 * This Method will accept rid and type,it will return an response of
-	 * IdResponseDTO.
+	 * This operation will retrieve an ID record from ID repository for a given RID and identity type as bio/demo/all.
 	 *
 	 * @param rid the rid
 	 * @param type the type
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT')")
 	@GetMapping(path = "/rid/{rid}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByRid(@PathVariable String rid,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -206,7 +209,7 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Update identity.
+	 * This operation will update an existing ID record in the ID repository for a given UIN.
 	 *
 	 * @param request the request
 	 * @param errors  the errors
@@ -233,13 +236,13 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Validate type.
+	 * Validate type query parameter.
 	 *
 	 * @param type the type
 	 * @return the string
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	public String validateType(String type) throws IdRepoAppException {
+	private String validateType(String type) throws IdRepoAppException {
 		if (Objects.nonNull(type)) {
 			List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
 			if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {

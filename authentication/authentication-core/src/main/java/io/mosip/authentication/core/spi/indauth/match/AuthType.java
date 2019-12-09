@@ -155,4 +155,8 @@ public interface AuthType {
 	public default Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
 		return getAuthTypeImpl().getAuthTypePredicate();
 	}
+
+	public default String getDisplayName(AuthRequestDTO authReq, IdInfoFetcher helper) {
+		return getDisplayName();
+	}
 }

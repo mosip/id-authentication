@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.10.4</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>kernel-vidgenerator-service</artifactId>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-vid</artifactId>
-			<version>0.10.4</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -96,7 +96,13 @@
 			<artifactId>kernel-templatemanager-velocity</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-			<dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-unit</artifactId>
+			<version>${vertx.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<!-- Ceylon lang dependency is required to have CeylonVerticleFactory 
 				which is used to instantiate Ceylon verticles -->
 			<groupId>io.vertx</groupId>
@@ -114,7 +120,7 @@
 			<groupId>org.ceylon-lang</groupId>
 			<artifactId>ceylon-complete</artifactId>
 			<version>1.3.2</version>
-		</dependency>	
+		</dependency>
 	</dependencies>
 
 	<build>

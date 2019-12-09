@@ -1,7 +1,6 @@
 package io.mosip.idrepository.vid.provider;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
@@ -73,8 +70,8 @@ public class VidPolicyProvider {
 				READ_LIST_OPTIONS);
 		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH.getValue())
 				.read(policyJson.toString(), READ_LIST_OPTIONS);
-		vidPolicies = IntStream.range(0, vidType.size()).parallel().boxed()
-				.collect(Collectors.toMap(vidType::get, i -> mapper.convertValue(vidPolicy.get(i), VidPolicy.class)));
+		vidPolicies = IntStream.range(0, vidType.size()).boxed().collect(Collectors
+				.toMap(i -> vidType.get(i).toUpperCase(), i -> mapper.convertValue(vidPolicy.get(i), VidPolicy.class)));
 	}
 
 	/**
