@@ -257,7 +257,7 @@ public class ResidentServiceImpl implements ResidentService {
 					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
 		}
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: exit");
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqEuin():: exit");
 		return response;
 	}
 
