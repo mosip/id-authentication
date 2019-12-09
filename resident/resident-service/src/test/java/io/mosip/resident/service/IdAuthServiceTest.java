@@ -1,8 +1,6 @@
 package io.mosip.resident.service;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,7 +58,7 @@ public class IdAuthServiceTest {
 	@Test
 	public void testAuthTypeStatusUpdateSuccess() throws ApisResourceAccessException, ResidentServiceCheckedException {
 		AuthTypeStatusResponseDto authTypeStatusResponseDto = new AuthTypeStatusResponseDto();
-		Mockito.when(restClient.postApi(any(), any(), any(), any(), any())).thenReturn(authTypeStatusResponseDto);
+		Mockito.when(restClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(authTypeStatusResponseDto);
 		List<String> authTypes = new ArrayList<>();
 		authTypes.add("bio-FIR");
 		boolean isUpdated = idAuthService.authTypeStatusUpdate("1234567891", "UIN", authTypes, true);
@@ -70,7 +68,7 @@ public class IdAuthServiceTest {
 	@Test(expected = ApisResourceAccessException.class)
 	public void testAuthTypeStatusUpdateFailure() throws ApisResourceAccessException, ResidentServiceCheckedException {
 
-		Mockito.when(restClient.postApi(any(), any(), any(), any(), any()))
+		Mockito.when(restClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new ApisResourceAccessException());
 		List<String> authTypes = new ArrayList<>();
 		authTypes.add("bio-FIR");

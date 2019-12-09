@@ -1,14 +1,13 @@
 package io.mosip.resident.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 
 import io.mosip.resident.constant.IdType;
@@ -29,12 +28,12 @@ public class UINCardDownloadTest {
 	byte[] arr= new byte[10];
 	@Test
 	public void testgetUINCard() throws ApisResourceAccessException {
-		Mockito.when(residentServiceRestClient.postApi(any(), any(), any(), any(), any())).thenReturn(arr);
+		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(arr);
 		assertEquals(arr,uinCardDownloadService.getUINCard("123456789", "UIN", IdType.UIN));
 	}
 	@Test(expected=ApisResourceAccessException.class)
 	public void testgetUINCardFailure() throws ApisResourceAccessException {
-		Mockito.when(residentServiceRestClient.postApi(any(), any(), any(), any(), any())).thenThrow(new ApisResourceAccessException());
+		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new ApisResourceAccessException());
 		uinCardDownloadService.getUINCard("123456789", "UIN", IdType.UIN);
 	}
 
