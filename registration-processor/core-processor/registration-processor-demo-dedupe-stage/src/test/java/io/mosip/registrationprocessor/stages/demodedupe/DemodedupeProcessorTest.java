@@ -237,9 +237,6 @@ public class DemodedupeProcessorTest {
 
 		individualDemoDedupe.setName(jsonArrayList);
 		individualDemoDedupe.setDateOfBirth("dateOfBirth");
-		individualDemoDedupe.setPhone("phone");
-		individualDemoDedupe.setEmail("email");
-		individualDemoDedupe.setPostalCode("postalCode");
 		individualDemoDedupe.setGender(jsonArray1);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 

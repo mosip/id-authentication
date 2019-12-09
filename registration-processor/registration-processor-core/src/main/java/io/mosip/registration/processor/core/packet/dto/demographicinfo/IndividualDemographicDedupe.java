@@ -1,12 +1,8 @@
 package io.mosip.registration.processor.core.packet.dto.demographicinfo;
-
+	
 import java.util.List;
 
 import lombok.Data;
-
-/**
- * Instantiates a new individual demographic dedupe.
- */
 
 /**
  * Instantiates a new individual demographic dedupe.
@@ -21,14 +17,5 @@ public class IndividualDemographicDedupe {
 	private JsonValue[] gender;
 	/** The pheonitic name. */
 	private String pheoniticName;
-
-	/** The phone. */
-	private String phone;
-
-	/** The email. */
-	private String email;
-
-	/** The postal code. */
-	private String postalCode;
 
 }

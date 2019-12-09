@@ -50,7 +50,5 @@ public enum ModuleName {
 
 	QUALITY_CHECK,
 
-	ABIS_MIDDLEWARE,
-
-	REQUEST_HANDLER
+	ABIS_MIDDLEWARE;
 }

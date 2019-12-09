@@ -61,7 +61,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * @author Manoj SP
+ * 
  * @author Prem Kumar
  *
  */

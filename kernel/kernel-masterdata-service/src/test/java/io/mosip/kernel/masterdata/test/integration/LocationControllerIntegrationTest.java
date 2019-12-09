@@ -46,6 +46,7 @@ public class LocationControllerIntegrationTest {
 	private Location location3;
 	private LocationDto dto1;
 	private LocationDto dto2;
+	private LocationDto dto3;
 	private List<Location> parentLocList;
 
 	@Autowired
@@ -62,6 +63,7 @@ public class LocationControllerIntegrationTest {
 		location3 = new Location("", "LOCATION NAME", (short) 3, "City", "XYZ", "eng", null);
 		dto1 = new LocationDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng", false);
 		dto2 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
+		dto3 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "fra", false);
 		request = new RequestWrapper<>();
 		request.setId("1.0");
 		request.setRequesttime(LocalDateTime.now());
@@ -86,6 +88,8 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createActiveLocationSuccess() throws Exception {
 		location1.setIsActive(true);
+		location2.setIsActive(true);
+		location3.setIsActive(true);
 		when(repo.save(Mockito.any())).thenReturn(Arrays.asList(location1));
 		dto1.setIsActive(true);
 		request.setRequest(dto1);
@@ -142,17 +146,6 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createInvalidLangCode() throws Exception {
 		dto2.setLangCode("ABC");
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
-		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
-		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	@WithUserDetails("global-admin")
-	public void createEmptyLangCode() throws Exception {
-		dto2.setLangCode("");
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);

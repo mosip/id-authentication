@@ -77,22 +77,12 @@ public class RegisteredDeviceController {
 		return response;
 	}
 	
-	/**
-	 * Api to update status of Device.
-	 * 
-	 * @param request
-	 *            the request DTO.
-	 * @return the {@link DeviceDeRegisterResponse}.
-	 */
-	
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
-	@PutMapping("/status")
-	public ResponseWrapper<DeviceDeRegisterResponse> deRegisterDevice(@NotBlank @RequestParam(value="devicecode",required=true) String deviceCode,
+	@PutMapping("/update/status")
+	public ResponseEntity<ResponseDto> deRegisterDevice(@NotBlank @RequestParam(value="devicecode",required=true) String deviceCode,
 			@NotBlank @RequestParam(value="statuscode",required=true) String statusCode) {
-		ResponseWrapper<DeviceDeRegisterResponse> response = new ResponseWrapper<>();
-		response.setResponse(registeredDeviceService.updateStatus(deviceCode, statusCode));
-		return response;
+		return new ResponseEntity<>(registeredDeviceService.updateStatus(deviceCode, statusCode), HttpStatus.OK);
 	}
 
 }

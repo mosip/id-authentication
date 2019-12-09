@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
@@ -69,11 +68,6 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator {
 
 		LOGGER.info(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Stubbing iris details for user registration");
-		
-		if (ibioApi instanceof BioApiImpl) {
-			ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_IRIS_ENABLE_FLAG,
-					RegistrationConstants.DISABLE);
-		}
 		if (!authenticationValidatorDTO.isAuthValidationFlag()) {
 		if ((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_IRIS_ENABLE_FLAG)))
 				.equalsIgnoreCase(RegistrationConstants.DISABLE))

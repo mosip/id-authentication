@@ -435,7 +435,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream()
-				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioType"))));
 	}
 
 	@Test
@@ -448,7 +448,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream()
-				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioType"))));
 	}
 
 	@Test
@@ -485,7 +485,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream().forEach(
-				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
 	}
 
 	@Test
@@ -498,7 +498,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream().forEach(
-				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
 	}
 
 	@Test
@@ -511,7 +511,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
 		errors.getAllErrors().stream().forEach(err -> assertTrue(
-				Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType - XYZ for bioType FACE"))));
+				Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType - XYZ"))));
 	}
 
 	@Test

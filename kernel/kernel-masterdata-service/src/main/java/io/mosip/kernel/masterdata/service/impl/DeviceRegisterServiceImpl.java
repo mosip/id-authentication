@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 
-import org.bouncycastle.asn1.cms.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,7 @@ import io.mosip.kernel.masterdata.service.DeviceRegisterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+
 
 /**
  * Service class to register and de register Device.
@@ -162,26 +162,18 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 			deviceRegister = deviceRegisterRepository.findById(DeviceRegister.class, deviceCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorCode(),
-					DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
+					DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 
 		if (deviceRegister == null) {
 			throw new DataNotFoundException(DeviceRegisterErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceRegisterErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-
-		if (statusCode.equals(deviceRegister.getStatusCode())) {
-			throw new RequestException(DeviceRegisterErrorCode.STATUS_CODE_ALREADY_EXISTS.getErrorCode(),
-					DeviceRegisterErrorCode.STATUS_CODE_ALREADY_EXISTS.getErrorMessage());
-		}
 		if (!Arrays.asList(REGISTERED, REVOKED, RETIRED).contains(statusCode)) {
 			throw new RequestException(DeviceRegisterErrorCode.INVALID_STATUS_CODE.getErrorCode(),
 					DeviceRegisterErrorCode.INVALID_STATUS_CODE.getErrorMessage());
 		}
-		deviceRegister.setStatusCode(statusCode);
 		updateRegisterDetails(deviceRegister);
-		
 		createHistoryDetails(deviceRegister);
 		ResponseDto responseDto = new ResponseDto();
 		responseDto.setMessage(MasterDataConstant.DEVICE_REGISTER_UPDATE_MESSAGE);
@@ -201,8 +193,6 @@ public class DeviceRegisterServiceImpl implements DeviceRegisterService {
 		deviceRegisterHistory.setCreatedDateTime(deviceRegister.getCreatedDateTime());
 		deviceRegisterHistory.setCreatedBy(MetaDataUtils.getContextUser());
 		deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
-		deviceRegisterHistory.setUpdatedBy(MetaDataUtils.getContextUser());
-		deviceRegisterHistory.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		try {
 			deviceRegisterHistoryRepository.create(deviceRegisterHistory);
 		} catch (DataAccessException | DataAccessLayerException e) {

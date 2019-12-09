@@ -128,6 +128,7 @@ public class MosipBioDeviceManager {
 
 			String url;
 			ObjectMapper mapper = new ObjectMapper();
+			DeviceInfoResponseData deviceInfoResponse = null;
 
 			url = buildUrl(availablePort, MosipBioDeviceConstants.DEVICE_INFO_ENDPOINT);
 			/* check if the service is available for the current port */
@@ -142,7 +143,7 @@ public class MosipBioDeviceManager {
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
-					getDeviceInfoResponse(mapper, availablePort, deviceInfoResponseDtos, deviceType);
+					deviceInfoResponse = getDeviceInfoResponse(mapper, availablePort, deviceInfoResponseDtos, deviceType);
 
 				}
 			} else {
@@ -210,10 +211,10 @@ public class MosipBioDeviceManager {
 	 */
 	private void creationOfBioDeviceObject(DeviceInfoResponseData deviceInfoResponse, int port, String deviceType) {
 
-		if ((deviceType == null || (null != deviceInfoResponse && deviceType
+		if ((deviceType == null || deviceType
 				.equals((deviceInfoResponse.getType().toUpperCase() + RegistrationConstants.UNDER_SCORE
 						+ deviceInfoResponse.getSubType().toUpperCase()))
-				 && StringUtils.isNotEmpty(deviceInfoResponse.getType())))) {
+				&& (null != deviceInfoResponse && StringUtils.isNotEmpty(deviceInfoResponse.getType())))) {
 
 			/*
 			 * Creating new bio device object for each device from service

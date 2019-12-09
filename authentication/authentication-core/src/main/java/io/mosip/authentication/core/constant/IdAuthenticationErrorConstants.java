@@ -114,12 +114,7 @@ public enum IdAuthenticationErrorConstants {
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
 	
-	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed"),
-	
-	// Device verification validation
-	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
-	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
-	PROVIDER_ID_VERIFICATION_FAILED("IDA-DPM-003", "Device Provider is not registered with MOSIP")
+	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed")
 
 	;
 

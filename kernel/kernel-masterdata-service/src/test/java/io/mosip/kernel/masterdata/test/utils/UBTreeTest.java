@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import io.mosip.kernel.core.masterdata.util.model.Node;
-import io.mosip.kernel.core.masterdata.util.spi.UBtree;
+import io.mosip.kernel.core.util.Node;
+import io.mosip.kernel.core.util.UBtree;
 import io.mosip.kernel.masterdata.entity.Zone;
 
 @RunWith(JUnit4.class)

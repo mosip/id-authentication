@@ -54,7 +54,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
- * The Class VidServiceImpl - service implementation for {@code VidService}.
+ * The Class VidServiceImpl - service implementation for VID service.
  *
  * @author Manoj SP
  * @author Prem Kumar
@@ -204,7 +204,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * Generate vid.
 	 *
-	 * @return the vid
+	 * @return the string
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -219,7 +219,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorText());
 		} catch (RestServiceException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED);
+			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED, e);
 		}
 	}
 
@@ -227,8 +227,10 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * Fetch details of the provided uin from Id Repository identity service and
 	 * check if the uin is active or not. If not, Exception will be thrown.
 	 *
-	 * @param uin the uin
-	 * @throws IdRepoAppException the id repo app exception
+	 * @param uin
+	 *            the uin
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private void checkUinStatus(String uin) throws IdRepoAppException {
 		try {
@@ -500,8 +502,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This Method will accepts vid as parameter and will return Vid Object from DB.
 	 *
-	 * @param vid the vid
-	 * @return the vid
+	 * @param vid
+	 *            the vid
+	 * @return The Vid Object
 	 */
 	private Vid retrieveVidEntity(String vid) {
 		return vidRepo.findByVid(vid);
@@ -511,8 +514,10 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * This method will check expiry date of the vid, if vid is expired then it will
 	 * throw IdRepoAppException.
 	 *
-	 * @param expiryDTimes the expiry D times
-	 * @throws IdRepoAppException the id repo app exception
+	 * @param expiryDTimes
+	 *            the expiry D times
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
 		if (!DateUtils.after(expiryDTimes, DateUtils.getUTCCurrentDateTime())) {
@@ -526,8 +531,10 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This method will check Status of the vid.
 	 *
-	 * @param statusCode the status code
-	 * @throws IdRepoAppException the id repo app exception
+	 * @param statusCode
+	 *            the status code
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private void checkStatus(String statusCode) throws IdRepoAppException {
 		if (!statusCode.equalsIgnoreCase(env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()))) {
@@ -544,7 +551,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @param uin the uin
 	 * @param uinHash the uin hash
 	 * @return the string
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException             the id repo app exception
 	 */
 	private String decryptUin(String uin, String uinHash) throws IdRepoAppException {
 		List<String> uinDetails = Arrays.stream(uin.split(IdRepoConstants.SPLITTER.getValue()))
@@ -566,9 +573,11 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This Method will build the Vid Response.
 	 *
-	 * @param response the response
-	 * @param id the id
-	 * @return the response wrapper
+	 * @param response
+	 *            the response
+	 * @param id
+	 *            the id
+	 * @return The Vid Response
 	 */
 	private ResponseWrapper<VidResponseDTO> buildResponse(VidResponseDTO response, String id) {
 		ResponseWrapper<VidResponseDTO> responseDto = new ResponseWrapper<>();
