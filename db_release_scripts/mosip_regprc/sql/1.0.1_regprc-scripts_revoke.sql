@@ -2,7 +2,7 @@
 -- Database Name: mosip_regprc
 -- Release Version 	: 1.0.1
 -- Purpose    		: Revoking Database Alter deployement done for release in Registration ProcessorDB.       
--- Create By   		: Sadanandegowda
+-- Create By   		: Sadanandegowda DM
 -- Created Date		: 09-Dec-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
