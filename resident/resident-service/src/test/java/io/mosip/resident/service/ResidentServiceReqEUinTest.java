@@ -1,8 +1,6 @@
 package io.mosip.resident.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
@@ -52,11 +50,11 @@ public class ResidentServiceReqEUinTest {
 	
 	@Before
 	public void setup() throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
-		Mockito.when(vidValidator.validateId(anyString())).thenReturn(true);
-		Mockito.when(uinValidator.validateId(anyString())).thenReturn(true);
-		Mockito.when(idAuthService.validateOtp(anyString(),anyString(),anyString(),anyString())).thenReturn(true);
-		Mockito.when(uinCardDownloadService.getUINCard(anyString(), anyString(), any())).thenReturn(card);
-		Mockito.when(notificationService.sendNotification(any())).thenReturn(mock(NotificationResponseDTO.class));
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(true);
+		Mockito.when(uinCardDownloadService.getUINCard(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(card);
+		Mockito.when(notificationService.sendNotification(Mockito.any())).thenReturn(mock(NotificationResponseDTO.class));
 	}
 	
 	@Test
@@ -81,7 +79,7 @@ public class ResidentServiceReqEUinTest {
 	}
 	@Test(expected=ResidentServiceException.class)
 	public void testReqEuinNull() throws OtpValidationFailedException, ApisResourceAccessException {
-		Mockito.when(uinCardDownloadService.getUINCard(anyString(), anyString(), any())).thenReturn(null);
+		Mockito.when(uinCardDownloadService.getUINCard(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
@@ -92,7 +90,7 @@ public class ResidentServiceReqEUinTest {
 	}
 	@Test(expected=ResidentServiceException.class)
 	public void testReqEuinUINCardFetchFailed() throws OtpValidationFailedException, ApisResourceAccessException {
-		Mockito.when(uinCardDownloadService.getUINCard(anyString(), anyString(), any())).thenThrow(new ApisResourceAccessException("Unable to fetch uin card"));
+		Mockito.when(uinCardDownloadService.getUINCard(Mockito.anyString(),Mockito.anyString(), Mockito.any())).thenThrow(new ApisResourceAccessException("Unable to fetch uin card"));
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
@@ -103,7 +101,7 @@ public class ResidentServiceReqEUinTest {
 	}
 	@Test(expected=ResidentServiceException.class)
 	public void testReqEuinSendNotificationFailed() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		Mockito.when(notificationService.sendNotification(any())).thenThrow(new ResidentServiceCheckedException());
+		Mockito.when(notificationService.sendNotification(Mockito.any())).thenThrow(new ResidentServiceCheckedException());
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
@@ -126,7 +124,7 @@ public class ResidentServiceReqEUinTest {
 	}
 	@Test(expected=ResidentServiceException.class)
 	public void testReqEuininvalidId() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		Mockito.when(vidValidator.validateId(anyString())).thenReturn(false);
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(false);
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
@@ -137,7 +135,7 @@ public class ResidentServiceReqEUinTest {
 	}
 	@Test(expected=ResidentServiceException.class)
 	public void testReqEuininotpvalidationfailed() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		Mockito.when(idAuthService.validateOtp(anyString(),anyString(),anyString(),anyString())).thenReturn(false);
+		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(false);
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
