@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
--- Release Version 	: 0.10.4
--- Purpose    		: Revoking Database Alter deployement done for release in ID Authentication DB.       
+-- Database Name: mosip_audit
+-- Release Version 	: 1.0.0
+-- Purpose    		: Database Alter scripts for the release for Audit DB.       
 -- Create By   		: Sadanandegowda
--- Created Date		: 23-Sep-2019
+-- Created Date		: 06-Sep-2019
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 
-\c mosip_ida sysadmin
+\c mosip_audit sysadmin
