@@ -27,6 +27,15 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	@Column(name = "gender")
 	private String gender;
 
+	@Column(name = "mobile_number")
+	private String phone;
+
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "pincode")
+	private String postalCode;
+
 	@Column(name = "is_active")
 	private Boolean isActive;
 
@@ -74,6 +83,30 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 
 	public void setGender(String genderCode) {
 		this.gender = genderCode;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
 
 	public Boolean getIsActive() {

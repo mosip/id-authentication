@@ -39,6 +39,10 @@ public interface RegistrationStatusService<T, U, D> {
 	 *
 	 * @param registrationStatusDto
 	 *            the registration status dto
+	 * @param moduleId
+	 *            the module id
+	 * @param moduleName
+	 *            the module name
 	 */
 	public void addRegistrationStatus(U registrationStatusDto, String moduleId, String moduleName);
 
@@ -47,6 +51,10 @@ public interface RegistrationStatusService<T, U, D> {
 	 *
 	 * @param registrationStatusDto
 	 *            the registration status dto
+	 * @param moduleId
+	 *            the module id
+	 * @param moduleName
+	 *            the module name
 	 */
 	public void updateRegistrationStatus(U registrationStatusDto, String moduleId, String moduleName);
 
@@ -98,9 +106,20 @@ public interface RegistrationStatusService<T, U, D> {
 	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status);
 
 	/**
-	 * Check Rid if uin is available
+	 * Check Rid if uin is available.
 	 *
-	 * 
+	 * @param rid
+	 *            the rid
+	 * @return the boolean
 	 */
 	public Boolean checkUinAvailabilityForRid(String rid);
+
+	/**
+	 * Gets the by ids and timestamp.
+	 *
+	 * @param ids
+	 *            the ids
+	 * @return the by ids and timestamp
+	 */
+	public List<U> getByIdsAndTimestamp(List<String> ids);
 }

@@ -187,6 +187,9 @@ public class PacketInfoMapper {
 				}
 			}
 			entity.setGender(getHMACHashCode(getJsonValues(demoDto.getGender(), languageArray[i])));
+			entity.setPhone(getHMACHashCode(demoDto.getPhone()));
+			entity.setEmail(getHMACHashCode(demoDto.getEmail()));
+			entity.setPostalCode(getHMACHashCode(demoDto.getPostalCode()));
 			demogrphicDedupeEntities.add(entity);
 
 		}

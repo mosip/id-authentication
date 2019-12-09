@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.status.dao;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +55,10 @@ public class RegistrationStatusDao {
 	public static final String ISDELETED_COLON = ".isDeleted=:";
 
 	public static final String SELECT_COUNT = "SELECT COUNT(*)";
+
+	public static final String ORDER_BY = "order by ";
+
+	public static final String CREATED_DATE_TIME = "createDateTime";
 
 	/**
 	 * Save.
@@ -227,6 +230,30 @@ public class RegistrationStatusDao {
 		}
 		return uinAvailable;
 
+	}
+
+	/**
+	 * Gets the by ids.
+	 *
+	 * @param ids
+	 *            the ids
+	 * @return the by ids
+	 */
+	public List<RegistrationStatusEntity> getByIdsAndTimestamp(List<String> ids) {
+
+		Map<String, Object> params = new HashMap<>();
+		String className = RegistrationStatusEntity.class.getSimpleName();
+
+		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
+		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
+				+ ".id IN :ids" + EMPTY_STRING + AND + EMPTY_STRING + alias + ISACTIVE_COLON + ISACTIVE + EMPTY_STRING
+				+ AND + EMPTY_STRING + alias + ISDELETED_COLON + ISDELETED + EMPTY_STRING + ORDER_BY + EMPTY_STRING
+				+ CREATED_DATE_TIME;
+		params.put("ids", ids);
+		params.put(ISACTIVE, Boolean.TRUE);
+		params.put(ISDELETED, Boolean.FALSE);
+
+		return registrationStatusRepositary.createQuerySelect(queryStr, params);
 	}
 
 }
