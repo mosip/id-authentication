@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.ZoneNameResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ZoneExtnDto;
@@ -79,7 +78,6 @@ public class ZoneController {
 
 	@GetMapping("/authorize")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','REGISTRATION_ADMIN')")
-	@ResponseFilter
 	public ResponseWrapper<Boolean> authorizeZone(@NotBlank @RequestParam("rid") String rId){
 		ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(zoneService.authorizeZone(rId));

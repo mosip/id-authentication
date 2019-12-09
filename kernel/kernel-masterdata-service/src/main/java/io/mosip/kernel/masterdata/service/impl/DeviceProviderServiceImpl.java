@@ -82,8 +82,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		isValidServiceSoftwareVersion(validateDeviceDto.getDeviceServiceVersion());
 		checkMappingBetweenProviderAndService(validateDeviceDto.getDigitalId().getDpId(),
 				validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDigitalId());
-		//checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
-		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDeviceCode());
+		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
 		validateDeviceCodeAndDigitalId(validateDeviceDto.getDeviceCode(), validateDeviceDto.getDigitalId());
 		responseDto.setStatus(MasterDataConstant.VALID);
 		responseDto.setMessage("Device  details validated successfully");
@@ -172,21 +171,16 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 	 *            the device code
 	 * @return true, if successful
 	 */
-	private boolean checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(String swVersion,String deviceCode) {
-	    RegisteredDevice registeredDevice = null;
-		MOSIPDeviceService mosipDeviceService=null;
+	private boolean checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(String deviceCode) {
+		List<MOSIPDeviceService> mosipDeviceServices = null;
 		try {
-			registeredDevice = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
-			
-			mosipDeviceService=deviceServiceRepository.findByDeviceDetail(swVersion, registeredDevice.getDeviceTypeCode(),
-					registeredDevice.getDevicesTypeCode(), registeredDevice.getMake(), registeredDevice.getModel(),
-					registeredDevice.getDpId());
+			mosipDeviceServices = deviceServiceRepository.findByDeviceCode(deviceCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
 		}
 
-		if (mosipDeviceService == null) {
+		if (mosipDeviceServices == null) {
 			throw new DataNotFoundException(
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorMessage());
@@ -263,8 +257,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		isValidServiceVersionFromHistory(validateDeviceDto.getDeviceServiceVersion(), effTimes);
 		/*checkMappingBetweenProviderAndDeviceCodeHistory(validateDeviceDto.getDeviceCode(),
 				validateDeviceDto.getDigitalId().getDp(), effTimes);*/
-		//checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
-		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDeviceCode());
+		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
 		validateDigitalIdWithRegisteredDeviceHistory(registeredDeviceHistory,validateDeviceDto.getDigitalId());
 		responseDto.setStatus(MasterDataConstant.VALID);
 		responseDto.setMessage("Device details history validated successfully");

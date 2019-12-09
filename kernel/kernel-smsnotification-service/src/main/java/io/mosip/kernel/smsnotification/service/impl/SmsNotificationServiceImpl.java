@@ -93,13 +93,20 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 				infoBipSmsGateway(contactNumber, contentMessage);
 				break;
 			default:
-				
+				System.out.println("-----No SmsGateway configured-----");
 				break;
 			}
-		} 
+		} else {
+			System.out.println("-----Sms notification not enabled-----");
+		}
 
 		result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
+		// result.setStatus(response.getType());
 		result.setStatus("success");
+		// } else {
+		// result.setMessage("SMS Request Failed");
+		// result.setStatus("Failed");
+		// }
 		return result;
 
 	}
@@ -129,6 +136,22 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 			System.out.println("HttpErrorException: " + e.getMessage());
 			System.out.println(e.getResponseBodyAsString());
 			// throw new RuntimeException(e.getResponseBodyAsString());
+		}
+		if (responseEnt != null && responseEnt.getStatusCode() != HttpStatus.OK) {
+			// throw new RuntimeException(responseEnt.getBody());
+			System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
+			System.out.println(responseEnt.getBody());
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		SmsServerResponseDto response = null;
+		try {
+			if (responseEnt != null) {
+				System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
+				System.out.println(responseEnt.getBody());
+				response = mapper.readValue(responseEnt.getBody(), SmsServerResponseDto.class);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

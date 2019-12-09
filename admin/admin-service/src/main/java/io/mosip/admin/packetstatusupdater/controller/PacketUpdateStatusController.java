@@ -18,7 +18,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  * @author Srinivasan
  */
 @RestController
-@RequestMapping("/packetstatusupdate")
+@RequestMapping("/packetStatusUpdate")
 public class PacketUpdateStatusController {
 
 	/** The packet update status service. */

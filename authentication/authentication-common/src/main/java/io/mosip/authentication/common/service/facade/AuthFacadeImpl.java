@@ -143,45 +143,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
-		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
-				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
-		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
-			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
-				if (authTypeStatus.getLocked()) {
-					if (authRequestDTO.getRequestedAuth().isDemo()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.DEMO.getType()));
-					}
-
-					else if (authRequestDTO.getRequestedAuth().isBio()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.BIO.getType()));
-					}
-
-					else if (authRequestDTO.getRequestedAuth().isOtp()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.OTP.getType()));
-					}
-
-					else if (authRequestDTO.getRequestedAuth().isPin()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.SPIN.getType()));
-					}
-				}
-			}
-		}
+		validateAuthTypeStatus(authRequestDTO);
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
@@ -213,6 +175,53 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
+	}
+
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
+				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
+		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
+			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
+				validateAuthTypeStatus(authRequestDTO, authTypeStatus);
+			}
+		}
+	}
+
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, AuthtypeStatus authTypeStatus)
+			throws IdAuthenticationBusinessException {
+		if (authTypeStatus.getLocked()) {
+			if (authRequestDTO.getRequestedAuth().isDemo()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.DEMO.getType()));
+			}
+
+			else if (authRequestDTO.getRequestedAuth().isBio()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.BIO.getType()));
+			}
+
+			else if (authRequestDTO.getRequestedAuth().isOtp()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.OTP.getType()));
+			}
+
+			else if (authRequestDTO.getRequestedAuth().isPin()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.SPIN.getType()));
+			}
+		}
 	}
 
 	/**

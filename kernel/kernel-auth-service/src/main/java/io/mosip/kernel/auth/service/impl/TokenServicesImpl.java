@@ -34,20 +34,20 @@ public class TokenServicesImpl implements TokenService {
 
 	public static final String INSERT_TOKEN = "insert into iam.oauth_access_token(user_id,auth_token,refresh_token,expiration_time,cr_dtimes,is_active,cr_by) values(:userName,:token,:refreshToken,:expTime,:crdTimes,true,'Admin')";
 
-	public static final String SELECT_TOKEN = "select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where auth_token = :token ";
+	public static final String SELECT_TOKEN = "select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where auth_token like :token ";
 
 	public static final String UPDATE_TOKEN = "update iam.oauth_access_token set user_id=:userName,auth_token=:token,refresh_token=:refreshToken,expiration_time=:expTime,cr_dtimes=:crdTimes "
 			+ " where user_id = :userName";
 
-	public static final String CHECK_USER = "select user_id from iam.oauth_access_token where user_id = :userName";
+	public static final String CHECK_USER = "select user_id from iam.oauth_access_token where user_id like :userName";
 
-	public static final String UPDATE_NEW_TOKEN = "update iam.oauth_access_token set auth_token=:token,expiration_time=:expTime where user_id = :userName ";
+	public static final String UPDATE_NEW_TOKEN = "update iam.oauth_access_token set auth_token=:token,expiration_time=:expTime where user_id like :userName ";
 
-	public static final String SELECT_TOKEN_NAME = "select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where user_id = :userName ";
+	public static final String SELECT_TOKEN_NAME = "select user_id,auth_token,refresh_token,expiration_time from iam.oauth_access_token where user_id like :userName ";
 
-	public static final String DELETE_ACCESS_TOKEN = "delete from iam.oauth_access_token where user_id = :userName";
+	public static final String DELETE_ACCESS_TOKEN = "delete from iam.oauth_access_token where user_id like :userName";
 
-	public static final String DELETE_REFRESH_TOKEN = "delete from iam.oauth_access_token where user_id = :userName";
+	public static final String DELETE_REFRESH_TOKEN = "delete from iam.oauth_access_token where user_id like :userName";
 
 	private final String insertTokenSQL = INSERT_TOKEN;
 

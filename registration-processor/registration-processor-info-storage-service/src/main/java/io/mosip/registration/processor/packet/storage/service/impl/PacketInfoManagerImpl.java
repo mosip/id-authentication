@@ -228,12 +228,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					regProcessorIdentityJson.getIdentity().getDob().getValue()));
 			demographicData.setGender(JsonUtil.getJsonValues(demographicIdentity,
 					regProcessorIdentityJson.getIdentity().getGender().getValue()));
-			demographicData.setPhone((String) JsonUtil.getJSONValue(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getPhone().getValue()));
-			demographicData.setPostalCode((String) JsonUtil.getJSONValue(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getPostalCode().getValue()));
-			demographicData.setEmail((String) JsonUtil.getJSONValue(demographicIdentity,
-					regProcessorIdentityJson.getIdentity().getEmail().getValue()));
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
