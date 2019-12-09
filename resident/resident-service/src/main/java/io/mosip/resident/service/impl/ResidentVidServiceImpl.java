@@ -7,10 +7,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.resident.config.LoggerConfiguration;
-import io.mosip.resident.constant.ApiName;
-import io.mosip.resident.constant.IdType;
-import io.mosip.resident.constant.LoggerFileConstant;
-import io.mosip.resident.constant.ResidentErrorCode;
+import io.mosip.resident.constant.*;
 import io.mosip.resident.dto.*;
 import io.mosip.resident.exception.*;
 import io.mosip.resident.service.IdAuthService;
@@ -87,7 +84,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             Map<String, Object> additionalAttributes = new HashMap<>();
             additionalAttributes.put("vid", vidResponse.getVID());
             notificationRequestDto.setAdditionalAttributes(additionalAttributes);
-            // notificationRequestDto.setTemplateTypeCode();
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_Status);
 
             NotificationResponseDTO notificationResponseDTO = notificationService.sendNotification(notificationRequestDto);
 

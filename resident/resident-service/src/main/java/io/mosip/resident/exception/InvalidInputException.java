@@ -10,10 +10,10 @@ public class InvalidInputException extends BaseUncheckedException {
     }
 
     public InvalidInputException(String errorMessage) {
-        super(ResidentErrorCode.INVALID_INPUT.getErrorCode() + EMPTY_SPACE, ResidentErrorCode.INVALID_INPUT.getErrorMessage() + errorMessage);
+        super(ResidentErrorCode.INVALID_INPUT.getErrorCode(), ResidentErrorCode.INVALID_INPUT.getErrorMessage() + errorMessage);
     }
 
     public InvalidInputException(String message, Throwable cause) {
-        super(ResidentErrorCode.INVALID_INPUT.getErrorCode() + EMPTY_SPACE, message, cause);
+        super(ResidentErrorCode.INVALID_INPUT.getErrorCode(), message, cause);
     }
 }

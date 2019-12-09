@@ -38,7 +38,6 @@ public class ResidentVidController {
     @Autowired
     private RequestValidator validator;
 
-    //@PreAuthorize("hasAnyRole('INDIVIDUAL')")
     @PostMapping(path = "/vid", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Generate new VID", response = ResidentVidRequestDto.class)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "VID successfully generated"),
