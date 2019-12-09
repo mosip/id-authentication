@@ -1,15 +1,16 @@
 package io.mosip.authentication.common.service.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_DOES_NOT_EXIST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_PROVIDER_INACTIVE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_PROVIDER_NOT_EXIST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEVICE_REVOKED_OR_RETIRED;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MDS_DOES_NOT_EXIST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MDS_INACTIVE_STATE;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SOFTWARE_VERSION_IS_NOT_A_MATCH;
-import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DP_ID_VERIFICATION_FAILED;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SW_ID_VERIFICATION_FAILED;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.PROVIDER_ID_VERIFICATION_FAILED;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.SERVER_ERROR;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.UNABLE_TO_PROCESS;
 
@@ -138,30 +139,18 @@ public class BioAuthServiceImpl implements BioAuthService {
 					if (e.getResponseBody().isPresent()) {
 						ResponseWrapper response = (ResponseWrapper) e.getResponseBody().get();
 						response.getErrors().forEach(error -> {
-							if (((ServiceError) error).getErrorCode().equals(DEVICE_DOES_NOT_EXIST)
-									|| ((ServiceError) error).getErrorCode().equals(DEVICE_REVOKED_OR_RETIRED)) {
-								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-												String.format(BIO_PATH, index, "deviceCode")));
-							} else if (((ServiceError) error).getErrorCode().equals(DEVICE_PROVIDER_NOT_EXIST)
-									|| ((ServiceError) error).getErrorCode().equals(DEVICE_PROVIDER_INACTIVE)) {
-								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-												String.format(BIO_PATH, index, "digitalId/deviceProvider")));
-							} else if (((ServiceError) error).getErrorCode().equals(MDS_DOES_NOT_EXIST)
-									|| ((ServiceError) error).getErrorCode().equals(MDS_INACTIVE_STATE)) {
-								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-												String.format(BIO_PATH, index, "digitalId/deviceServiceID")));
-							} else if (((ServiceError) error).getErrorCode().equals(SOFTWARE_VERSION_IS_NOT_A_MATCH)) {
-								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-												String.format(BIO_PATH, index, "deviceServiceVersion")));
-							} else if (((ServiceError) error).getErrorCode()
-									.equals(PROVIDER_AND_DEVICE_CODE_NOT_MAPPED)) {
-								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-												String.format(BIO_PATH, index, "digitalId/deviceProviderId")));
+							ServiceError serviceError = (ServiceError) error;
+							if (serviceError.getErrorCode().equals(DEVICE_DOES_NOT_EXIST)
+									|| serviceError.getErrorCode().equals(DEVICE_REVOKED_OR_RETIRED)
+									|| serviceError.getErrorCode().equals(DEVICE_PROVIDER_NOT_EXIST)
+									|| serviceError.getErrorCode().equals(DEVICE_PROVIDER_INACTIVE)) {
+								throw new IdAuthUncheckedException(DEVICE_VERIFICATION_FAILED);
+							} else if (serviceError.getErrorCode().equals(MDS_DOES_NOT_EXIST)
+									|| serviceError.getErrorCode().equals(MDS_INACTIVE_STATE)
+									|| serviceError.getErrorCode().equals(SW_ID_VERIFICATION_FAILED)) {
+								throw new IdAuthUncheckedException(MDS_VERIFICATION_FAILED);
+							} else if (serviceError.getErrorCode().equals(DP_ID_VERIFICATION_FAILED)) {
+								throw new IdAuthUncheckedException(PROVIDER_ID_VERIFICATION_FAILED);
 							} else {
 								throw new IdAuthUncheckedException(UNABLE_TO_PROCESS);
 							}
