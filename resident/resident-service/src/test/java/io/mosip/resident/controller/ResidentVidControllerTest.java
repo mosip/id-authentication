@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -97,7 +96,7 @@ public class ResidentVidControllerTest {
         responseWrapper.setResponse(dto);
 
         Mockito.when(
-                residentVidService.generateVid(any(VidRequestDto.class)))
+                residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
                 .thenReturn(responseWrapper);
 
 
@@ -113,7 +112,7 @@ public class ResidentVidControllerTest {
     public void otpValidationFailureTest() throws Exception {
 
         Mockito.when(
-                residentVidService.generateVid(any(VidRequestDto.class)))
+                residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
                 .thenThrow(new OtpValidationFailedException());
 
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -127,7 +126,7 @@ public class ResidentVidControllerTest {
     public void vidCreationFailureTest() throws Exception {
 
         Mockito.when(
-                residentVidService.generateVid(any(VidRequestDto.class)))
+                residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
                 .thenThrow(new VidCreationException());
 
         Gson gson = new GsonBuilder().serializeNulls().create();
