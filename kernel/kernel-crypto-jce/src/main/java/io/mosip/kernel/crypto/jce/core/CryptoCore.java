@@ -94,8 +94,6 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	@Value("${mosip.kernel.crypto.hash-iteration:100000}")
 	private int iterations;
 
-	//private Map<String, Cipher> cipherRegistry;
-
 	private SecureRandom secureRandom;
 
 	private SecretKeyFactory secretKeyFactory;
