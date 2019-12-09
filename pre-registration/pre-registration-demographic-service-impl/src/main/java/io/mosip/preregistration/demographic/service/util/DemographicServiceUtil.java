@@ -22,16 +22,29 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.booking.serviceimpl.dto.RegistrationCenterResponseDto;
+import io.mosip.preregistration.booking.serviceimpl.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.serviceimpl.exception.RestCallException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
@@ -71,6 +84,10 @@ public class DemographicServiceUtil {
 	@Autowired
 	@Qualifier("restTemplateConfig")
 	private RestTemplate restTemplate;
+	
+	
+	@Value("${mosip.io.prid.url}")
+	private String pridURl;
 
 	@Value("${preregistartion.config.identityjson}")
 	private String preregistrationIdJson;
@@ -454,6 +471,43 @@ public class DemographicServiceUtil {
 			throw new SystemFileIOException(ErrorCodes.PRG_PAM_APP_018.getCode(),
 					ErrorMessages.UBALE_TO_READ_IDENTITY_JSON.getMessage(), null);
 		}
+	}
+	
+	public String generateId() {
+		String prid=null;
+		try {
+			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(pridURl);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<RequestWrapper<RegistrationCenterResponseDto>> entity = new HttpEntity<>(headers);
+			String uriBuilder = regbuilder.build().encode().toUriString();
+			log.info("sessionId", "idType", "id",
+					"In callRegCenterDateRestService method of Booking Service URL- " + uriBuilder);
+			ResponseEntity<ResponseWrapper<String>> responseEntity = restTemplate.exchange(
+					uriBuilder, HttpMethod.GET, entity,
+					new ParameterizedTypeReference<ResponseWrapper<String>>() {
+					});
+			if (responseEntity.getBody().getErrors() != null && !responseEntity.getBody().getErrors().isEmpty()) {
+				throw new RestCallException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
+						responseEntity.getBody().getErrors().get(0).getMessage());
+			}
+			prid = responseEntity.getBody().getResponse();
+			if (prid == null || prid.isEmpty()) {
+				throw new RestCallException(ErrorCodes.PRG_PAM_APP_020.getCode(),
+						ErrorMessages.PRID_RESTCALL_FAIL.getMessage());
+			}
+
+		} catch (HttpClientErrorException ex) {
+			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
+			log.error("sessionId", "idType", "id",
+					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_PAM_APP_020.getCode(),
+					ErrorMessages.PRID_RESTCALL_FAIL.getMessage());
+		}
+		return prid;
+
+		
 	}
 
 }

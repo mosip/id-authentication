@@ -159,6 +159,11 @@ public enum ErrorMessages {
 	UBALE_TO_READ_IDENTITY_JSON("Failed to read the identity json from the server"),
 	
 	/**
+	 * PRG_PAM_APP_020
+	 */
+	PRID_RESTCALL_FAIL("Rest call to get prid failed"),
+	
+	/**
 	 * PRG_PAM_APP_019
 	 */
 	INVALID_PAGE_INDEX_VALUE("Invalid page index value");
