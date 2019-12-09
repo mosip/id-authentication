@@ -117,7 +117,8 @@ public class NotificationServiceImpl implements NotificationService {
 						Stream.<AuthType>of(PinAuthType.values()))
 				.flatMap(Function.identity())
 				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
-				.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(","));
+				.peek(System.out::println)
+				.map(authType -> authType.getDisplayName(authRequestDTO, idInfoFetcher)).distinct().collect(Collectors.joining(","));
 		values.put(AUTH_TYPE, authTypeStr);
 		if (authResponseDTO.getResponse().isAuthStatus()) {
 			values.put(IdAuthCommonConstants.STATUS, "Passed");

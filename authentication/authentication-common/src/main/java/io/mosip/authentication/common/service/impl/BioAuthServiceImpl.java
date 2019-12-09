@@ -163,7 +163,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 				}
 			});
 		} catch (IdAuthUncheckedException e) {
-			throw new IdAuthenticationBusinessException(e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(e.getErrorCode(), e.getErrorText(), e);
 		}
 		return true;
 	}
