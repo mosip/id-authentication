@@ -1,4 +1,4 @@
-package io.mosip.kernel.core.util;
+package io.mosip.kernel.core.masterdata.util.spi;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import io.mosip.kernel.core.masterdata.util.model.Node;
 
 /**
  * Unbalanced tree implementation to manage hierarchy data
