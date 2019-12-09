@@ -2,9 +2,12 @@ package io.mosip.kernel.auth.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,13 +25,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.dto.AccessTokenResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
-import io.mosip.kernel.auth.dto.BasicTokenDto;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.otp.OtpEmailSendResponseDto;
@@ -92,6 +96,35 @@ public class OTPServiceImpl implements OTPService {
 	@Autowired
 	private OtpValidator authOtpValidator;
 
+	@Value("${mosip.kernel.open-id-url}")
+	private String keycloakOpenIdUrl;
+
+	@Value("${mosip.kernel.realm-id}")
+	private String realmId;
+
+	@Value("${mosip.kernel.auth.client.id}")
+	private String authClientID;
+
+	@Value("${mosip.kernel.auth.secret.key}")
+	private String authSecret;
+
+	@Value("${mosip.kernel.ida.client.id}")
+	private String idaClientID;
+
+	@Value("${mosip.kernel.ida.secret.key}")
+	private String idaSecret;
+	
+	@Value("${mosip.admin.clientid}")
+	private String mosipAdminClientID;
+
+	@Value("${mosip.admin.clientsecret}")
+	private String mosipAdminSecret;
+	
+
+	@Value("${mosip.admin.pre-reg_user_password}")
+	private String preRegUserPassword;
+	
+
 	@Override
 	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
 		AuthNResponseDto authNResponseDto = null;
@@ -100,7 +133,10 @@ public class OTPServiceImpl implements OTPService {
 		String emailMessage = null, mobileMessage = null;
 		String token = null;
 		try {
-			token = tokenService.getInternalTokenGenerationService();
+			// token = tokenService.getInternalTokenGenerationService();
+			AccessTokenResponse accessTokenResponse = getAuthAccessToken(authClientID,
+					"050c7e61-e415-4390-a1ac-03e1624e2b1d");
+			token = AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX + accessTokenResponse.getAccess_token();
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
@@ -323,8 +359,13 @@ public class OTPServiceImpl implements OTPService {
 		ResponseEntity<String> response = null;
 		final String url = mosipEnvironment.getVerifyOtpUserApi();
 		String token = null;
+		AccessTokenResponse accessTokenResponse = null;
+		AccessTokenResponse responseAccessTokenResponse = null;
 		try {
-			token = tokenService.getInternalTokenGenerationService();
+			// token = tokenService.getInternalTokenGenerationService();
+			accessTokenResponse = getAuthAccessToken(authClientID, authSecret);
+
+			token = accessTokenResponse.getAccess_token();
 		} catch (Exception e) {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 		}
@@ -342,6 +383,7 @@ public class OTPServiceImpl implements OTPService {
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
+			responseAccessTokenResponse = getUserAccessToken(mosipUser.getUserId());
 			OtpValidatorResponseDto otpResponse = null;
 			ResponseWrapper<?> responseObject;
 			try {
@@ -352,9 +394,11 @@ public class OTPServiceImpl implements OTPService {
 				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 			if (otpResponse.getStatus() != null && otpResponse.getStatus().equals("success")) {
-				BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
-				mosipUserDtoToken = new MosipUserTokenDto(mosipUser, basicToken.getAuthToken(),
-						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null, null);
+				// BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser,
+				// true);
+				String expTime = accessTokenResponse.getExpires_in();
+				mosipUserDtoToken = new MosipUserTokenDto(mosipUser, responseAccessTokenResponse.getAccess_token(),
+						responseAccessTokenResponse.getRefresh_token(), Long.parseLong(expTime), null, null);
 				mosipUserDtoToken.setMessage(otpResponse.getMessage());
 				mosipUserDtoToken.setStatus(otpResponse.getStatus());
 			} else {
@@ -374,8 +418,11 @@ public class OTPServiceImpl implements OTPService {
 		SmsResponseDto otpSmsSendResponseDto = null;
 		String emailMessage = null, mobileMessage = null;
 		String token = null;
+		AccessTokenResponse accessTokenResponse = null;
 		try {
-			token = tokenService.getInternalTokenGenerationService();
+			// token = tokenService.getInternalTokenGenerationService();
+			accessTokenResponse = getAuthAccessToken(idaClientID, idaSecret);
+			token = accessTokenResponse.getAccess_token();
 		} catch (Exception e) {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 		}
@@ -404,10 +451,11 @@ public class OTPServiceImpl implements OTPService {
 		SmsResponseDto otpSmsSendResponseDto = null;
 		String mobileMessage = null;
 		OTPEmailTemplate emailTemplate = null;
-		String token = null;
+		AccessTokenResponse accessTokenResponse = null;
 		authOtpValidator.validateOTPUser(otpUser);
 		try {
-			token = tokenService.getInternalTokenGenerationService();
+			// token = tokenService.getInternalTokenGenerationService();
+			accessTokenResponse = getAuthAccessToken(authClientID, authSecret);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
@@ -432,7 +480,8 @@ public class OTPServiceImpl implements OTPService {
 				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
 		}
-		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser, token);
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser,
+				accessTokenResponse.getAccess_token());
 		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
 			authNResponseDto = new AuthNResponseDto();
 			authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
@@ -442,12 +491,16 @@ public class OTPServiceImpl implements OTPService {
 		for (String channel : otpUser.getOtpChannel()) {
 			switch (channel.toLowerCase()) {
 			case AuthConstant.EMAIL:
-				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser, token);
-				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(), token);
+				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser,
+						accessTokenResponse.getAccess_token());
+				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getUserId(),
+						accessTokenResponse.getAccess_token());
 				break;
 			case AuthConstant.PHONE:
-				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser, token);
-				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(), token);
+				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser,
+						accessTokenResponse.getAccess_token());
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(),
+						accessTokenResponse.getAccess_token());
 				break;
 			}
 		}
@@ -524,5 +577,51 @@ public class OTPServiceImpl implements OTPService {
 			}
 		}
 		return otpEmailSendResponseDto;
+	}
+
+	private AccessTokenResponse getUserAccessToken(String username) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> tokenRequestBody = null;
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put(AuthConstant.REALM_ID, realmId);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
+		tokenRequestBody = getAdminValueMap(username);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
+		ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(
+				uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);
+		return response.getBody();
+	}
+
+	private AccessTokenResponse getAuthAccessToken(String clientID, String clientSecret) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> tokenRequestBody = null;
+		Map<String, String> pathParams = new HashMap<>();
+		pathParams.put(AuthConstant.REALM_ID, realmId);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakOpenIdUrl + "/token");
+		tokenRequestBody = getClientValueMap(clientID, clientSecret);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(tokenRequestBody, headers);
+		ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(
+				uriComponentsBuilder.buildAndExpand(pathParams).toUriString(), request, AccessTokenResponse.class);
+		return response.getBody();
+	}
+
+	private MultiValueMap<String, String> getAdminValueMap(String username) {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.PASSWORDCONSTANT);
+		map.add(AuthConstant.USER_NAME, username);
+		map.add(AuthConstant.PASSWORDCONSTANT, preRegUserPassword);
+		map.add(AuthConstant.CLIENT_ID, mosipAdminClientID);
+		map.add(AuthConstant.CLIENT_SECRET, mosipAdminSecret);
+		return map;
+	}
+
+	private MultiValueMap<String, String> getClientValueMap(String clientID, String clientSecret) {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add(AuthConstant.GRANT_TYPE, AuthConstant.CLIENT_CREDENTIALS);
+		map.add(AuthConstant.CLIENT_ID, clientID);
+		map.add(AuthConstant.CLIENT_SECRET, clientSecret);
+		return map;
 	}
 }
