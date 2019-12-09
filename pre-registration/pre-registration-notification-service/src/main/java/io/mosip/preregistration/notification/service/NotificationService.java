@@ -197,6 +197,7 @@ public class NotificationService {
 					&& validationUtil.langvalidation(langCode)) {
 				MainResponseDTO<DemographicResponseDTO> demoDetail = notificationDtoValidation(notificationDto);
 				if (notificationDto.isAdditionalRecipient()) {
+					log.info("sessionId", "idType", "id", "In notification service of sendNotification if additionalRecipient is"+ notificationDto.isAdditionalRecipient());
 					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {
 						if (ValidationUtil.phoneValidator(notificationDto.getMobNum())) {
 							notificationUtil.notify(RequestCodes.SMS.getCode(), notificationDto, langCode, file);
@@ -223,7 +224,7 @@ public class NotificationService {
 					}
 					notificationResponse.setMessage(RequestCodes.MESSAGE.getCode());
 				} else {
-					
+					log.info("sessionId", "idType", "id", "In notification service of sendNotification if additionalRecipient is"+ notificationDto.isAdditionalRecipient());
 					resp = getDemographicDetailsWithPreId(demoDetail,notificationDto, langCode, file);
 					notificationResponse.setMessage(resp);
 				}
