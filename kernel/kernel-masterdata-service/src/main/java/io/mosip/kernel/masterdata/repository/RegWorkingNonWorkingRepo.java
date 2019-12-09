@@ -23,4 +23,7 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true")
 	List<RegWorkingNonWorking> findByRegCenterIdAndlanguagecode(String registrationCenterId,String languagecode);
 
+	@Query("From RegWorkingNonWorking where languagecode=?1 and (isDeleted is null or isDeleted = false) and isActive = true")
+	List<RegWorkingNonWorking> findByLanguagecode(String languageCode);
+
 }
