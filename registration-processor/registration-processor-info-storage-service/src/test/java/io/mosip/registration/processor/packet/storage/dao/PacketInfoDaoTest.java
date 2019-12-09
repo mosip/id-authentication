@@ -1,13 +1,13 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import static org.mockito.Matchers.any;
-import io.mosip.registration.processor.packet.storage.entity.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +16,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
+import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
 /**
@@ -44,10 +49,10 @@ public class PacketInfoDaoTest {
 	@Mock
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
 
-
 	/** The applicant document entity. */
-	//@Mock
-	//private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentEntity;
+	// @Mock
+	// private BasePacketRepository<ApplicantDocumentEntity, String>
+	// applicantDocumentEntity;
 
 	/** The dedupe entity. */
 	private IndividualDemographicDedupeEntity dedupeEntity;
@@ -69,6 +74,9 @@ public class PacketInfoDaoTest {
 		dedupeEntity.setDob(date.toString());
 		dedupeEntity.setName("Ibrahim");
 		dedupeEntity.setGender("mâle");
+		dedupeEntity.setPhone("9876543211");
+		dedupeEntity.setPostalCode("12345");
+		dedupeEntity.setEmail("ibrahim@gmail.com");
 		dedupeEntity.setIsActive(true);
 
 	}
@@ -78,51 +86,51 @@ public class PacketInfoDaoTest {
 	 *
 	 * @return the packetsfor QC user test
 	 */
-	/*@Test
-	public void getPacketsforQCUserTest() {
-		List<QcuserRegistrationIdEntity> assignedPackets = new ArrayList<>();
-		QcuserRegistrationIdEntity qcUserEntity = new QcuserRegistrationIdEntity();
-		QcuserRegistrationIdPKEntity qcUserPKEntity = new QcuserRegistrationIdPKEntity();
-		qcUserPKEntity.setRegId("2018782130000224092018121229");
-		qcUserPKEntity.setUsrId("Q1234");
-		qcUserEntity.setId(qcUserPKEntity);
-		qcUserEntity.setIsActive(true);
-		qcUserEntity.setLang_code("fr");
-		qcUserEntity.setStatus_code("Assigned");
-		assignedPackets.add(qcUserEntity);
-
-		IndividualDemographicDedupeEntity[] dedupeArray = new IndividualDemographicDedupeEntity[1];
-		dedupeArray[0] = dedupeEntity;
-
-		ApplicantPhotographEntity[] applicantphotoArray = new ApplicantPhotographEntity[1];
-		ApplicantPhotographEntity applicantPhotoEntity = new ApplicantPhotographEntity();
-		ApplicantPhotographPKEntity applicantPhotoPKEntity = new ApplicantPhotographPKEntity();
-		applicantPhotoPKEntity.setRegId("2018782130000224092018121229");
-		applicantPhotoEntity.setId(applicantPhotoPKEntity);
-		applicantPhotoEntity.setExcpPhotoName("ExpPhoto");
-		applicantPhotoEntity.setHasExcpPhotograph(false);
-		applicantPhotoEntity.setImageName("PhotoImageName");
-		String docValue = "dGVzdA";
-		byte[] docStore = docValue.getBytes();
-		applicantPhotoEntity.setExcpPhotoStore(docStore);
-		applicantPhotoEntity.setImageStore(docStore);
-
-		applicantphotoArray[0] = applicantPhotoEntity;
-
-		List<Object[]> applicantInfo = new ArrayList<>();
-		applicantInfo.add(applicantphotoArray);
-		applicantInfo.add(dedupeArray);
-
-		Mockito.when(qcuserRegRepositary.findByUserId(anyString())).thenReturn(assignedPackets);
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(anyString())).thenReturn(applicantInfo);
-
-		List<ApplicantInfoDto> applicantInfoList = packetInfodao.getPacketsforQCUser("2018782130000224092018121229");
-
-		assertEquals("2018782130000224092018121229", applicantInfoList.get(0).getApplicantPhotograph().getRegId());
-
-	}*/
-
-
+	/*
+	 * @Test public void getPacketsforQCUserTest() {
+	 * List<QcuserRegistrationIdEntity> assignedPackets = new ArrayList<>();
+	 * QcuserRegistrationIdEntity qcUserEntity = new QcuserRegistrationIdEntity();
+	 * QcuserRegistrationIdPKEntity qcUserPKEntity = new
+	 * QcuserRegistrationIdPKEntity();
+	 * qcUserPKEntity.setRegId("2018782130000224092018121229");
+	 * qcUserPKEntity.setUsrId("Q1234"); qcUserEntity.setId(qcUserPKEntity);
+	 * qcUserEntity.setIsActive(true); qcUserEntity.setLang_code("fr");
+	 * qcUserEntity.setStatus_code("Assigned"); assignedPackets.add(qcUserEntity);
+	 * 
+	 * IndividualDemographicDedupeEntity[] dedupeArray = new
+	 * IndividualDemographicDedupeEntity[1]; dedupeArray[0] = dedupeEntity;
+	 * 
+	 * ApplicantPhotographEntity[] applicantphotoArray = new
+	 * ApplicantPhotographEntity[1]; ApplicantPhotographEntity applicantPhotoEntity
+	 * = new ApplicantPhotographEntity(); ApplicantPhotographPKEntity
+	 * applicantPhotoPKEntity = new ApplicantPhotographPKEntity();
+	 * applicantPhotoPKEntity.setRegId("2018782130000224092018121229");
+	 * applicantPhotoEntity.setId(applicantPhotoPKEntity);
+	 * applicantPhotoEntity.setExcpPhotoName("ExpPhoto");
+	 * applicantPhotoEntity.setHasExcpPhotograph(false);
+	 * applicantPhotoEntity.setImageName("PhotoImageName"); String docValue =
+	 * "dGVzdA"; byte[] docStore = docValue.getBytes();
+	 * applicantPhotoEntity.setExcpPhotoStore(docStore);
+	 * applicantPhotoEntity.setImageStore(docStore);
+	 * 
+	 * applicantphotoArray[0] = applicantPhotoEntity;
+	 * 
+	 * List<Object[]> applicantInfo = new ArrayList<>();
+	 * applicantInfo.add(applicantphotoArray); applicantInfo.add(dedupeArray);
+	 * 
+	 * Mockito.when(qcuserRegRepositary.findByUserId(anyString())).thenReturn(
+	 * assignedPackets);
+	 * Mockito.when(qcuserRegRepositary.getApplicantInfo(anyString())).thenReturn(
+	 * applicantInfo);
+	 * 
+	 * List<ApplicantInfoDto> applicantInfoList =
+	 * packetInfodao.getPacketsforQCUser("2018782130000224092018121229");
+	 * 
+	 * assertEquals("2018782130000224092018121229",
+	 * applicantInfoList.get(0).getApplicantPhotograph().getRegId());
+	 * 
+	 * }
+	 */
 
 	/**
 	 * Find demo by id test.
@@ -139,7 +147,7 @@ public class PacketInfoDaoTest {
 	}
 
 	@Test
-	public void testgetAbisRequestsByBioRefId(){
+	public void testgetAbisRequestsByBioRefId() {
 		List<AbisRequestEntity> abisRequestEntityList = new ArrayList<>();
 		AbisRequestEntity abisRequestEntity = new AbisRequestEntity();
 		abisRequestEntity.setAbisAppCode("Abis");
@@ -150,7 +158,7 @@ public class PacketInfoDaoTest {
 	}
 
 	@Test
-	public void testgetDemoListByTransactionId(){
+	public void testgetDemoListByTransactionId() {
 		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList = new ArrayList<>();
 		RegDemoDedupeListEntity regDemoDedupeListEntity = new RegDemoDedupeListEntity();
 		regDemoDedupeListEntity.setRegId("1234567890");
@@ -161,7 +169,7 @@ public class PacketInfoDaoTest {
 	}
 
 	@Test
-	public void testgetBioRefIdByRegId(){
+	public void testgetBioRefIdByRegId() {
 		List<RegBioRefEntity> regBioRefEntityList = new ArrayList<>();
 		RegBioRefEntity entity = new RegBioRefEntity();
 		entity.setBioRefId("abc-efg");
@@ -172,7 +180,7 @@ public class PacketInfoDaoTest {
 	}
 
 	@Test
-	public void testgetIdentifyByTransactionId(){
+	public void testgetIdentifyByTransactionId() {
 		List<AbisRequestEntity> abisRequestEntityList = new ArrayList<>();
 		AbisRequestEntity entity = new AbisRequestEntity();
 		entity.setAbisAppCode("Abis");
