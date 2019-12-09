@@ -15,8 +15,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.resident.constant.ApiName;
@@ -74,7 +72,7 @@ public class Utilitiy {
 		try {
 			if (IdType.UIN.equals(idType))
 				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
-						ApiName.IDREPOGETIDBYUIN, pathsegments, null, null, IdRepoResponseDto.class,
+						ApiName.IDREPOGETIDBYUIN, pathsegments, null, null, ResponseWrapper.class,
 						tokenGenerator.getToken());
 			else if (IdType.RID.equals(idType))
 				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
@@ -137,28 +135,36 @@ public class Utilitiy {
 			throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
 					error.get(0).getMessage());
 		}
-		return new ObjectMapper().convertValue(response.getResponse().getIdentity(), JSONObject.class);
+		String jsonResponse;
+		try {
+			jsonResponse = JsonUtil.objectMapperObjectToJson(response.getResponse());
+			JSONObject json = JsonUtil.objectMapperReadValue(jsonResponse, JSONObject.class);
 
+			return JsonUtil.getJSONObject(json, "identity");
+		} catch (IOException e) {
+			throw new ResidentServiceCheckedException(ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorCode(),
+					ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorMessage(), e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMailingAttributes(String id, IdType idType) throws ResidentServiceCheckedException {
 		Map<String, Object> attributes = new HashMap<>();
-		JSONObject idJson = retrieveIdrepoJson(id, idType);
-		String email = (String) idJson.get(EMAIL);
-		String phone = (String) idJson.get(PHONE);
+		JSONObject identityJson = retrieveIdrepoJson(id, idType);
+		String email = (String) identityJson.get(EMAIL);
+		String phone = (String) identityJson.get(PHONE);
 		attributes.put(EMAIL, email);
 		attributes.put(PHONE, phone);
 		String mappingJsonString = getMappingJson();
 		JSONObject mappingJsonObject;
 		try {
-			mappingJsonObject = new ObjectMapper().readValue(mappingJsonString, JSONObject.class);
+			mappingJsonObject = JsonUtil.objectMapperReadValue(mappingJsonString, JSONObject.class);
 			LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
 					.get(IDENTITY);
 			LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get(NAME);
 			String[] names = ((String) nameJson.get(VALUE)).split(",");
 			for (String name : names) {
-				JsonValue[] nameArray = JsonUtil.getJsonValues(idJson, name);
+				JsonValue[] nameArray = JsonUtil.getJsonValues(identityJson, name);
 				if (nameArray != null) {
 					for (JsonValue value : nameArray) {
 						if (languageType.equals("BOTH")) {

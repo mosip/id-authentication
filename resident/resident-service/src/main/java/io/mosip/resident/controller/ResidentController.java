@@ -55,9 +55,9 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/print-uin")
-	public ResponseWrapper<ResponseDTO> reqPrintUin(
+	public ResponseWrapper<ResidentReprintResponseDto> reqPrintUin(
 			@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO) {
-		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
+		ResponseWrapper<ResidentReprintResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqPrintUin(requestDTO.getRequest()));
 		return response;
 	}

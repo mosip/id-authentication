@@ -1,5 +1,6 @@
 package io.mosip.resident.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -8,9 +9,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -29,12 +35,16 @@ import io.mosip.resident.dto.AuthLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
+import io.mosip.resident.dto.RegProcRePrintRequestDto;
+import io.mosip.resident.dto.RegProcRePrintResponseDto;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RegistrationStatusDTO;
 import io.mosip.resident.dto.RegistrationStatusRequestDTO;
 import io.mosip.resident.dto.RegistrationStatusSubRequestDto;
 import io.mosip.resident.dto.RequestDTO;
+import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
+import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
@@ -89,6 +99,12 @@ public class ResidentServiceImpl implements ResidentService {
 	
 	@Autowired
 	Environment env;
+	
+	@Value("${resident.center.id}")
+	private String centerId;
+
+	@Value("${resident.machine.id}")
+	private String machineId;
 	/************** to fetch UIN status for particular RID ******************/
 
 	@Override
@@ -246,9 +262,84 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqPrintUin(ResidentReprintRequestDto dto) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResidentReprintResponseDto reqPrintUin(ResidentReprintRequestDto dto) {
+		ResidentReprintResponseDto reprintResponse = new ResidentReprintResponseDto();
+		if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType().name())) {
+
+			try {
+				if (!idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
+						dto.getIndividualIdType().name(), dto.getOtp())) {
+					throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+				}
+				RegProcRePrintRequestDto rePrintReq = new RegProcRePrintRequestDto();
+				rePrintReq.setCardType(dto.getIndividualIdType().name());
+				rePrintReq.setCenterId(centerId);
+				rePrintReq.setMachineId(machineId);
+				rePrintReq.setId(dto.getIndividualId());
+				rePrintReq.setIdType(dto.getIndividualIdType().name());
+				rePrintReq.setReason("resident");
+				rePrintReq.setRegistrationType("RES_REPRINT");
+				RequestWrapper<RegProcRePrintRequestDto> request = new RequestWrapper<>();
+				request.setRequest(rePrintReq);
+				request.setId("mosip.uincard.reprint");
+				request.setVersion("1.0");
+				request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+
+				ResponseWrapper<RegProcRePrintResponseDto> response = residentServiceRestClient.postApi(
+						env.getProperty(ApiName.REPRINTUIN.name()), MediaType.APPLICATION_JSON, request,
+						ResponseWrapper.class, tokenGenerator.getRegprocToken());
+				ObjectMapper mapper = new ObjectMapper();
+				if (response == null
+						|| response != null && response.getErrors() != null && !response.getErrors().isEmpty())
+					throw new ResidentServiceException(ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorCode(),
+							ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorMessage() + response != null
+									? response.getErrors().get(0).toString()
+									: null);
+				RegProcRePrintResponseDto responseDto = mapper
+						.readValue(mapper.writeValueAsString(response.getResponse()), RegProcRePrintResponseDto.class);
+				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+				notificationRequestDto.setId(dto.getIndividualId());
+				notificationRequestDto.setIdType(dto.getIndividualIdType());
+				notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UIN_RPR_Status);
+				Map<String, Object> additionalAttributes = new HashMap<String, Object>();
+				additionalAttributes.put("RID", responseDto.getRegistrationId());
+				notificationRequestDto.setAdditionalAttributes(additionalAttributes);
+				NotificationResponseDTO notificationResponseDTO = notificationService
+						.sendNotification(notificationRequestDto);
+				reprintResponse.setRegistrationId(responseDto.getRegistrationId());
+				reprintResponse.setMessage(notificationResponseDTO.getMessage());
+
+			}
+			catch (OtpValidationFailedException e) {
+				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
+			}
+			catch (ApisResourceAccessException e) {
+				if (e.getCause() instanceof HttpClientErrorException) {
+					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+							httpClientException.getResponseBodyAsString());
+
+				} else if (e.getCause() instanceof HttpServerErrorException) {
+					HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+							httpServerException.getResponseBodyAsString());
+				} else {
+					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+							ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+				}
+			} catch (IOException e) {
+				throw new ResidentServiceException(ResidentErrorCode.IO_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.IO_EXCEPTION.getErrorMessage(), e);
+			} catch (ResidentServiceCheckedException e) {
+				throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+						ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
+			}
+
+		}
+
+		return reprintResponse;
 	}
 
 	@Override

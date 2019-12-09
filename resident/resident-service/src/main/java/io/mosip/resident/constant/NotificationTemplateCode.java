@@ -20,8 +20,8 @@ public enum NotificationTemplateCode {
 	
 	public String templateCode;
 
-	private NotificationTemplateCode(String regType) {
-		this.templateCode = regType;
+	private NotificationTemplateCode(String templateCode) {
+		this.templateCode = templateCode;
 	}
 
 	@Override

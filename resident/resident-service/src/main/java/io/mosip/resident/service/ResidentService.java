@@ -5,6 +5,7 @@ import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
+import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
@@ -15,7 +16,7 @@ public interface ResidentService {
 
 	public byte[] reqEuin(EuinRequestDTO euinRequestDTO) throws OtpValidationFailedException;
 
-	public ResponseDTO reqPrintUin(ResidentReprintRequestDto dto);
+	public ResidentReprintResponseDto reqPrintUin(ResidentReprintRequestDto dto);
 
 	public ResponseDTO reqUin(RequestDTO dto);
 

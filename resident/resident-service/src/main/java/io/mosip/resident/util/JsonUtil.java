@@ -19,44 +19,17 @@ import io.mosip.resident.dto.JsonValue;
  * This class provides JSON utilites.
  *
  * @author Girish Yarru
- * @since 0.0.1
+ * @since 1.0
  */
 public class JsonUtil {
 
-	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
-
-	/** The Constant VALUE. */
 	private static final String VALUE = "value";
+	private static ObjectMapper objectMapper = new ObjectMapper();
 
-	/**
-	 * Instantiates a new json util.
-	 */
 	private JsonUtil() {
 
 	}
-
-	/**
-	 * This method converts InputStream to JavaObject.
-	 *
-	 * @param stream The stream that needs to be converted
-	 * @param clazz  The class to which conversion is required
-	 * @return The converted Java object
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
-	 * @throws JsonSyntaxException          the json syntax exception
-	 * @throws JsonIOException              the json IO exception
-	 */
-//	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz)
-//			throws UnsupportedEncodingException {
-//		JsonParser jsonParser = new JsonParser();
-//		Gson gson = new Gson();
-//		JsonObject jsonObject = (JsonObject) jsonParser.parse(new InputStreamReader(stream, "UTF-8"));
-//		try {
-//			return gson.fromJson(jsonObject, clazz);
-//		} catch (Exception e) {
-//			throw new UnsupportedEncodingException(PlatformErrorMessages.RPR_CMB_UNSUPPORTED_ENCODING.getMessage());
-//		}
-//	}
 
 	/**
 	 * This method returns the Json Object as value from identity.json
@@ -143,7 +116,6 @@ public class JsonUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T objectMapperReadValue(String jsonString, Class<?> clazz) throws IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
 		return (T) objectMapper.readValue(jsonString, clazz);
 	}
 
@@ -218,7 +190,6 @@ public class JsonUtil {
 	}
 
 	public static String objectMapperObjectToJson(Object obj) throws IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.writeValueAsString(obj);
 	}
 
