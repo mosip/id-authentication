@@ -36,6 +36,10 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.dto.VidPolicy;
 import io.mosip.idrepository.vid.provider.VidPolicyProvider;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -47,7 +51,7 @@ public class VidPolicyProviderTest {
 
 	@Mock
 	private ObjectMapper mapper;
-	
+
 	@InjectMocks
 	private VidPolicyProvider policyProvider;
 
@@ -60,19 +64,19 @@ public class VidPolicyProviderTest {
 	@Test
 	public void testPolicyDetails() throws IOException, ProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		ObjectNode policy = objectMapper
-				.readValue(this.getClass().getClassLoader().getResource("vid_policy.json"), ObjectNode.class);
-		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH.getValue())
-				.read(policy.toString(), Configuration.defaultConfiguration()
-						.addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
+		ObjectNode policy = objectMapper.readValue(this.getClass().getClassLoader().getResource("vid_policy.json"),
+				ObjectNode.class);
+		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH.getValue()).read(policy.toString(),
+				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
 		when(mapper.readValue(Mockito.any(URL.class), Mockito.any(Class.class))).thenReturn(policy);
 		when(mapper.convertValue(vidPolicy.get(0), VidPolicy.class))
 				.thenReturn(objectMapper.convertValue(vidPolicy.get(0), VidPolicy.class));
 		when(mapper.convertValue(vidPolicy.get(1), VidPolicy.class))
-		.thenReturn(objectMapper.convertValue(vidPolicy.get(1), VidPolicy.class));
+				.thenReturn(objectMapper.convertValue(vidPolicy.get(1), VidPolicy.class));
 		policyProvider.loadPolicyDetails();
-		assertTrue(policyProvider.getPolicy("Perpetual").getAutoRestoreAllowed());
-		assertFalse(policyProvider.getPolicy("Temporary").getAutoRestoreAllowed());
-		assertTrue(policyProvider.getAllVidTypes().containsAll(Lists.newArrayList("Perpetual", "Temporary")));
+		assertTrue(policyProvider.getPolicy("Perpetual".toUpperCase()).getAutoRestoreAllowed());
+		assertFalse(policyProvider.getPolicy("Temporary".toUpperCase()).getAutoRestoreAllowed());
+		assertTrue(policyProvider.getAllVidTypes()
+				.containsAll(Lists.newArrayList("Perpetual".toUpperCase(), "Temporary".toUpperCase())));
 	}
 }
