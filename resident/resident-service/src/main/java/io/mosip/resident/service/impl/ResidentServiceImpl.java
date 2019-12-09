@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -53,11 +51,11 @@ import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentService;
+import io.mosip.resident.util.JsonUtil;
 import io.mosip.resident.util.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 import io.mosip.resident.util.UINCardDownloadService;
-
 
 @Service
 public class ResidentServiceImpl implements ResidentService {
@@ -90,21 +88,22 @@ public class ResidentServiceImpl implements ResidentService {
 
 	@Autowired
 	NotificationService notificationService;
-	
+
 	@Autowired
 	private TokenGenerator tokenGenerator;
 
 	@Autowired
 	private ResidentServiceRestClient residentServiceRestClient;
-	
+
 	@Autowired
 	Environment env;
-	
+
 	@Value("${resident.center.id}")
 	private String centerId;
 
 	@Value("${resident.machine.id}")
 	private String machineId;
+
 	/************** to fetch UIN status for particular RID ******************/
 
 	@Override
@@ -114,7 +113,7 @@ public class ResidentServiceImpl implements ResidentService {
 		validateRID(request.getIndividualId());
 
 		RegStatusCheckResponseDTO response = null;
-		ResponseWrapper<RegistrationStatusDTO> responseWrapper =null;
+		ResponseWrapper<RegistrationStatusDTO> responseWrapper = null;
 
 		RegistrationStatusRequestDTO dto = new RegistrationStatusRequestDTO();
 		List<RegistrationStatusSubRequestDto> rids = new ArrayList<RegistrationStatusSubRequestDto>();
@@ -127,11 +126,12 @@ public class ResidentServiceImpl implements ResidentService {
 		dto.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 
 		try {
-			responseWrapper =(ResponseWrapper) residentServiceRestClient
-                    .postApi(env.getProperty(ApiName.REGISTRATIONSTATUSSEARCH.name()), MediaType.APPLICATION_JSON, dto, ResponseWrapper.class, tokenGenerator.getToken());
+			responseWrapper = (ResponseWrapper) residentServiceRestClient.postApi(
+					env.getProperty(ApiName.REGISTRATIONSTATUSSEARCH.name()), MediaType.APPLICATION_JSON, dto,
+					ResponseWrapper.class, tokenGenerator.getToken());
 		} catch (Exception e) {
-			logger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(), "", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+					e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException(e.getMessage(), e);
 		}
 		response = new RegStatusCheckResponseDTO();
@@ -144,7 +144,8 @@ public class ResidentServiceImpl implements ResidentService {
 			throw new ResidentServiceException(responseWrapper.getErrors().get(0).getErrorCode(),
 					responseWrapper.getErrors().get(0).getMessage());
 		} else {
-			List<LinkedHashMap<String,String>> statusResponse = (List<LinkedHashMap<String,String>>) responseWrapper.getResponse();
+			List<LinkedHashMap<String, String>> statusResponse = (List<LinkedHashMap<String, String>>) responseWrapper
+					.getResponse();
 
 			String statusCode = validateResponse(statusResponse.get(0).get("statusCode"));
 			sendNotification(request, statusCode);
@@ -155,10 +156,10 @@ public class ResidentServiceImpl implements ResidentService {
 		return response;
 	}
 
-	private void sendNotification(RequestDTO request, String statusCode)  {
+	private void sendNotification(RequestDTO request, String statusCode) {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::sendNotification():: entry");
-		NotificationRequestDto notificationRequestDto=new NotificationRequestDto();
+		NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 		notificationRequestDto.setId(request.getIndividualId());
 		notificationRequestDto.setIdType(getIdType(request.getIndividualIdType()));
 		notificationRequestDto.setRegistrationType("NEW");
@@ -168,11 +169,11 @@ public class ResidentServiceImpl implements ResidentService {
 		notificationRequestDto.setAdditionalAttributes(attribute);
 		try {
 			NotificationResponseDTO notificationResponse = notificationService.sendNotification(notificationRequestDto);
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), request.getIndividualId(),
-					notificationResponse.getStatus()+notificationResponse.getMessage());
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					request.getIndividualId(), notificationResponse.getStatus() + notificationResponse.getMessage());
 		} catch (ResidentServiceCheckedException e) {
-			logger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(),"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+					e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::sendNotification():: exit");
@@ -289,15 +290,13 @@ public class ResidentServiceImpl implements ResidentService {
 				ResponseWrapper<RegProcRePrintResponseDto> response = residentServiceRestClient.postApi(
 						env.getProperty(ApiName.REPRINTUIN.name()), MediaType.APPLICATION_JSON, request,
 						ResponseWrapper.class, tokenGenerator.getRegprocToken());
-				ObjectMapper mapper = new ObjectMapper();
 				if (response == null
 						|| response != null && response.getErrors() != null && !response.getErrors().isEmpty())
 					throw new ResidentServiceException(ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorCode(),
-							ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorMessage() + response != null
-									? response.getErrors().get(0).toString()
-									: null);
-				RegProcRePrintResponseDto responseDto = mapper
-						.readValue(mapper.writeValueAsString(response.getResponse()), RegProcRePrintResponseDto.class);
+							ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorMessage()
+									+ (response != null ? response.getErrors().get(0).toString() : ""));
+				RegProcRePrintResponseDto responseDto = JsonUtil.objectMapperReadValue(
+						JsonUtil.objectMapperObjectToJson(response.getResponse()), RegProcRePrintResponseDto.class);
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 				notificationRequestDto.setId(dto.getIndividualId());
 				notificationRequestDto.setIdType(dto.getIndividualIdType());
@@ -310,12 +309,10 @@ public class ResidentServiceImpl implements ResidentService {
 				reprintResponse.setRegistrationId(responseDto.getRegistrationId());
 				reprintResponse.setMessage(notificationResponseDTO.getMessage());
 
-			}
-			catch (OtpValidationFailedException e) {
+			} catch (OtpValidationFailedException e) {
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
-			}
-			catch (ApisResourceAccessException e) {
+			} catch (ApisResourceAccessException e) {
 				if (e.getCause() instanceof HttpClientErrorException) {
 					HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),

@@ -4,9 +4,6 @@ import java.io.ByteArrayInputStream;
 
 import javax.validation.Valid;
 
-import io.mosip.resident.dto.*;
-import io.mosip.resident.exception.ApisResourceAccessException;
-import io.mosip.resident.exception.OtpValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -19,6 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.EuinRequestDTO;
+import io.mosip.resident.dto.RegStatusCheckResponseDTO;
+import io.mosip.resident.dto.RequestDTO;
+import io.mosip.resident.dto.RequestWrapper;
+import io.mosip.resident.dto.ResidentReprintRequestDto;
+import io.mosip.resident.dto.ResidentReprintResponseDto;
+import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.exception.ApisResourceAccessException;
+import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.validator.RequestValidator;
 
@@ -33,15 +40,16 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/rid/check-status")
-	public ResponseWrapper<RegStatusCheckResponseDTO> getRidStatus(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) throws ApisResourceAccessException {
+	public ResponseWrapper<RegStatusCheckResponseDTO> getRidStatus(
+			@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) throws ApisResourceAccessException {
 		ResponseWrapper<RegStatusCheckResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.getRidStatus(requestDTO.getRequest()));
 		return response;
 	}
 
-	
 	@PostMapping(value = "/req/euin")
-	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO) throws OtpValidationFailedException {
+	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO)
+			throws OtpValidationFailedException {
 
 		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
 
@@ -97,8 +105,8 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-lock")
-	public ResponseWrapper<ResponseDTO> reqAauthLock(
-			@Valid @RequestBody RequestWrapper<AuthLockRequestDto> requestDTO) throws OtpValidationFailedException {
+	public ResponseWrapper<ResponseDTO> reqAauthLock(@Valid @RequestBody RequestWrapper<AuthLockRequestDto> requestDTO)
+			throws OtpValidationFailedException {
 		validator.validateAuthLockRequest(requestDTO);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthLock(requestDTO.getRequest()));
