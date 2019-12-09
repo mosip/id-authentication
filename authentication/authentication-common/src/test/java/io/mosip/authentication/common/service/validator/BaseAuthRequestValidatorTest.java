@@ -2181,7 +2181,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		bioInfo.setDigitalId(digitalId);
 		bioInfo.setBioType("FINGER");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioType", error, allowedType, bioInfo);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioType", error, allowedType, bioInfo, 0);
 		assertTrue(error.hasErrors());
 	}
 
