@@ -38,7 +38,7 @@ public class RequestValidator {
 	private String authLockId;
 
 	@Value("${resident.euin.id}")
-	private String autheuinId;
+	private String euinId;
 
 	@Value("${auth.types.allowed}")
 	private String authTypes;
@@ -110,8 +110,8 @@ public class RequestValidator {
 	}
 
 	public void validateEuinRequest(RequestWrapper<EuinRequestDTO> requestDTO) {
-		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(autheuinId))
-			throw new InvalidInputException("autheuinId");
+		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(euinId))
+			throw new InvalidInputException("euinId");
 
 		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
 			throw new InvalidInputException("version");
