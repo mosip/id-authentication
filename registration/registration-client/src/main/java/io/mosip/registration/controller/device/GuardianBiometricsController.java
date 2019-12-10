@@ -935,8 +935,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the quality score of the captured fingers");
+		double qualityScore = bioService.isMdmEnabled() ?  bioService.getHighQualityScoreByBioType(fingerprintDetailsDTO.getFingerType()) : fingerprintDetailsDTO.getQualityScore();
 
-		return fingerprintDetailsDTO.getQualityScore() >= handThreshold
+		return qualityScore  >= handThreshold
 				|| (fingerprintDetailsDTO.getQualityScore() < handThreshold)
 						&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
 								getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))

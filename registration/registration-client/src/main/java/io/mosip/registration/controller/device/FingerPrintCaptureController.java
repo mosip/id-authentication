@@ -500,10 +500,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 															: thumbsQualityScore;
 
 							qualityScoreLabel.setText(String.valueOf((int) qualityScore));
-							updateRetryBox(fpDetailsDTO,
-									Double.valueOf(
-											getQualityScore(qualityScore).split(RegistrationConstants.PERCENTAGE)[0]),
-									Double.parseDouble(getValueFromApplicationContext(fingerprintThreshold)));
+							updateRetryBox(fpDetailsDTO,Double.parseDouble(getValueFromApplicationContext(fingerprintThreshold)));
 						} else {
 							qualityText.setText(RegistrationConstants.EMPTY);
 						}
@@ -590,7 +587,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)));
 	}
 
-	private void updateRetryBox(FingerprintDetailsDTO fpDetailsDTO, double quality, double threshold) {
+	private void updateRetryBox(FingerprintDetailsDTO fpDetailsDTO, double threshold) {
 
 		int retries = fpDetailsDTO.getNumRetry();
 
