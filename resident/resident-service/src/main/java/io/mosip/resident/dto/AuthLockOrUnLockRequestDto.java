@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @JsonPropertyOrder({ "transactionID", "individualId", "individualIdType", "otp", "authType" })
-public class AuthLockRequestDto implements Serializable {
+public class AuthLockOrUnLockRequestDto implements Serializable {
 
 	/**
 	 * 

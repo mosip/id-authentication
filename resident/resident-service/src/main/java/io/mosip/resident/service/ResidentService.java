@@ -1,6 +1,6 @@
 package io.mosip.resident.service;
 
-import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RequestDTO;
@@ -26,9 +26,9 @@ public interface ResidentService {
 
 	public ResponseDTO revokeVid(RequestDTO dto);
 
-	public ResponseDTO reqAauthLock(AuthLockRequestDto dto);
+	public ResponseDTO reqAauthLock(AuthLockOrUnLockRequestDto dto);
 
-	public ResponseDTO reqAuthUnlock(RequestDTO dto);
+	public ResponseDTO reqAuthUnlock(AuthLockOrUnLockRequestDto dto);
 
 	public ResponseDTO reqAuthHistory(RequestDTO dto);
 

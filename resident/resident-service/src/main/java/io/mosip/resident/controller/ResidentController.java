@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RequestDTO;
@@ -105,8 +105,8 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-lock")
-	public ResponseWrapper<ResponseDTO> reqAauthLock(@Valid @RequestBody RequestWrapper<AuthLockRequestDto> requestDTO)
-			throws OtpValidationFailedException {
+	public ResponseWrapper<ResponseDTO> reqAauthLock(
+			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
 		validator.validateAuthLockRequest(requestDTO);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthLock(requestDTO.getRequest()));
@@ -115,7 +115,9 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-unlock")
-	public ResponseWrapper<ResponseDTO> reqAuthUnlock(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) {
+	public ResponseWrapper<ResponseDTO> reqAuthUnlock(
+			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
+		validator.validateAuthUnLockRequest(requestDTO);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAuthUnlock(requestDTO.getRequest()));
 		return response;

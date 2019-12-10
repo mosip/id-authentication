@@ -30,7 +30,7 @@ import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.constant.RegistrationExternalStatusCode;
 import io.mosip.resident.constant.ResidentErrorCode;
-import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
@@ -365,7 +365,7 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) {
+	public ResponseDTO reqAauthLock(AuthLockOrUnLockRequestDto dto) {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: entry");
 
@@ -432,9 +432,70 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAuthUnlock(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseDTO reqAuthUnlock(AuthLockOrUnLockRequestDto dto) {
+		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthUnlock():: entry");
+
+		ResponseDTO response = new ResponseDTO();
+		try {
+			if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
+				if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+						dto.getOtp())) {
+
+					boolean isAuthTypeUnLocked = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
+							dto.getIndividualIdType(), dto.getAuthType(), false);
+					if (isAuthTypeUnLocked) {
+						NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+						notificationRequestDto.setId(dto.getIndividualId());
+						notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
+						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UNLOCK_AUTH_Status);
+
+						NotificationResponseDTO notificationResponseDTO = notificationService
+								.sendNotification(notificationRequestDto);
+						response.setMessage(notificationResponseDTO.getMessage());
+
+					} else {
+						throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
+								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
+					}
+				} else {
+					logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+							LoggerFileConstant.APPLICATIONID.toString(),
+							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+					throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+				}
+			} else {
+				logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(),
+						ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+						ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+			}
+		} catch (ApisResourceAccessException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
+							+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
+					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
+		} catch (ResidentServiceCheckedException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode()
+							+ ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
+		} catch (OtpValidationFailedException e) {
+			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
+		}
+
+		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthUnlock():: exit");
+		return response;
 	}
 
 	@Override

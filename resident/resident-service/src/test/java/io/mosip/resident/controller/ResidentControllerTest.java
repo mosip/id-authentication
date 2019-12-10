@@ -29,7 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.mosip.resident.ResidentTestBootApplication;
-import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.service.ResidentService;
@@ -55,7 +55,7 @@ public class ResidentControllerTest {
 	@InjectMocks
 	ResidentController residentController;
 
-	RequestWrapper<AuthLockRequestDto> authLockRequest;
+	RequestWrapper<AuthLockOrUnLockRequestDto> authLockRequest;
 
 	/** The array to json. */
 	private String regStatusToJson;
@@ -67,8 +67,8 @@ public class ResidentControllerTest {
 
 	@Before
 	public void setUp() {
-		authLockRequest = new RequestWrapper<AuthLockRequestDto>();
-		authLockRequest.setRequest(new AuthLockRequestDto());
+		authLockRequest = new RequestWrapper<AuthLockOrUnLockRequestDto>();
+		authLockRequest.setRequest(new AuthLockOrUnLockRequestDto());
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		regStatusToJson = gson.toJson(authLockRequest);

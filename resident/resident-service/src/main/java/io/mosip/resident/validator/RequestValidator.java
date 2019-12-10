@@ -13,7 +13,7 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.VidType;
-import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
@@ -42,6 +42,9 @@ public class RequestValidator {
 
 	@Value("${auth.types.allowed}")
 	private String authTypes;
+
+	@Value("${resident.authunlock.id}")
+	private String authUnLockId;
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
 
@@ -84,9 +87,9 @@ public class RequestValidator {
 			throw new InvalidInputException("transactionId");
 	}
 
-	public void validateAuthLockRequest(RequestWrapper<AuthLockRequestDto> requestDTO) {
+	public void validateAuthLockRequest(RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
 		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authLockId))
-			throw new InvalidInputException("authLockId");
+			throw new InvalidInputException("id");
 
 		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
 			throw new InvalidInputException("version");
@@ -111,7 +114,7 @@ public class RequestValidator {
 
 	public void validateEuinRequest(RequestWrapper<EuinRequestDTO> requestDTO) {
 		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(autheuinId))
-			throw new InvalidInputException("autheuinId");
+			throw new InvalidInputException("id");
 
 		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
 			throw new InvalidInputException("version");
@@ -135,5 +138,30 @@ public class RequestValidator {
 			if (!authTypesAllowed.contains(type))
 				throw new InvalidInputException("authType");
 		}
+	}
+
+	public void validateAuthUnLockRequest(RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
+		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authUnLockId))
+			throw new InvalidInputException("id");
+
+		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
+			throw new InvalidInputException("version");
+
+		if (requestDTO.getRequest() == null)
+			throw new InvalidInputException("request");
+
+		if (requestDTO.getRequest().getTransactionID() == null)
+			throw new InvalidInputException("transactionId");
+
+		if (requestDTO.getRequest().getIndividualIdType() == null
+				|| (!requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
+						&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
+			throw new InvalidInputException("individualIdType");
+
+		if (requestDTO.getRequest().getOtp() == null)
+			throw new InvalidInputException("otp");
+
+		validateAuthType(requestDTO.getRequest().getAuthType());
+
 	}
 }

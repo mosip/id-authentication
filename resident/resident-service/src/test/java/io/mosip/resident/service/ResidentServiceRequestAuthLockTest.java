@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
-import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
@@ -78,7 +78,7 @@ public class ResidentServiceRequestAuthLockTest {
 				.thenReturn(true);
 		ResponseDTO response = new ResponseDTO();
 		response.setMessage("Notification success");
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
@@ -97,7 +97,7 @@ public class ResidentServiceRequestAuthLockTest {
 			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(false);
 
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
@@ -112,7 +112,7 @@ public class ResidentServiceRequestAuthLockTest {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(false);
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
@@ -128,7 +128,7 @@ public class ResidentServiceRequestAuthLockTest {
 		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(true);
 
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
@@ -147,7 +147,7 @@ public class ResidentServiceRequestAuthLockTest {
 		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(true);
 
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
@@ -168,7 +168,7 @@ public class ResidentServiceRequestAuthLockTest {
 		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(true);
 
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
@@ -187,7 +187,7 @@ public class ResidentServiceRequestAuthLockTest {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new OtpValidationFailedException());
-		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
 		authLockRequestDto.setOtp("1234");
