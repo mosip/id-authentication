@@ -2,6 +2,7 @@ package io.mosip.registration.controller.device;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -341,6 +342,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
 						public void handle(final MouseEvent mouseEvent) {
 
+							LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+									"Mouse Event by attempt Started");
+							
 							if (bioService.isMdmEnabled()) {
 								FingerprintDetailsDTO fingerprintDetailsDTO = getFingerprintBySelectedPane().findFirst()
 										.orElse(null);
@@ -391,6 +395,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 											updateByAttempt(fingerprintDetailsDTO.getFingerType(),
 													Character.getNumericValue(eventString.charAt(index)), streamImage,
 													qualityTextLabel, progressBar, qualityScore);
+											
+											LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+													"Mouse Event by attempt Ended");
 										} catch (RuntimeException runtimeException) {
 											LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME,
 													APPLICATION_ID, runtimeException.getMessage()

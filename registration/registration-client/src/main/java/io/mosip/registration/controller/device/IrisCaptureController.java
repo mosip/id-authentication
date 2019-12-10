@@ -1,6 +1,7 @@
 package io.mosip.registration.controller.device;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -365,7 +366,8 @@ public class IrisCaptureController extends BaseController {
 
 				final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
 					public void handle(final MouseEvent mouseEvent) {
-
+						LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+								"Mouse Event by attempt Started");
 						try {
 							if (bioservice.isMdmEnabled()) {
 								IrisDetailsDTO detailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
@@ -413,6 +415,9 @@ public class IrisCaptureController extends BaseController {
 
 										updateByAttempt(getIrisBySelectedPane().findFirst().get().getIrisType(),
 												attempt, streamImage, qualityText, progressBar, qualityScore);
+										
+										LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+												"Mouse Event by attempt Ended");
 									}
 								}
 							}

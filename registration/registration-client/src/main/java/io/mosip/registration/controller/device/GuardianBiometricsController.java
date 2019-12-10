@@ -578,33 +578,37 @@ public class GuardianBiometricsController extends BaseController implements Init
 			detailsDTO.getIrises().forEach((iris) -> {
 
 				if (iris.getIrisType().contains(RegistrationConstants.RIGHT)) {
-						rightIrisCount++;
-						retries = rightIrisCount;
-					} else {
-						leftIrisCount++;
-						retries = leftIrisCount;
+					rightIrisCount++;
+					retries = rightIrisCount;
+				} else {
+					leftIrisCount++;
+					retries = leftIrisCount;
 
-					}
-					streamer.setBioStreamImages(convertBytesToImage(iris.getIris()), iris.getIrisType(), attempt);
+				}
+				streamer.setBioStreamImages(convertBytesToImage(iris.getIris()), iris.getIrisType(), attempt);
 
-					scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
-					biometricImage.setImage(bioService.isMdmEnabled() ? bioService.getBioStreamImage(iris.getIrisType(), retries) : convertBytesToImage(iris.getIris()));
- 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-					setCapturedValues(bioService.isMdmEnabled() ? bioService.getBioQualityScores(iris.getIrisType(), retries) : iris.getQualityScore(), retries,
-							thresholdValue);
-					iris.setNumOfIrisRetry(retries);
+				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
+				biometricImage
+						.setImage(bioService.isMdmEnabled() ? bioService.getBioStreamImage(iris.getIrisType(), retries)
+								: convertBytesToImage(iris.getIris()));
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
+				setCapturedValues(
+						bioService.isMdmEnabled() ? bioService.getBioQualityScores(iris.getIrisType(), retries)
+								: iris.getQualityScore(),
+						retries, thresholdValue);
+				iris.setNumOfIrisRetry(retries);
 
-					if (validateIrisQulaity(iris, new Double(thresholdValue))) {
-						if (retries == Integer
-								.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
-							scanBtn.setDisable(true);
-						continueBtn.setDisable(false);
-					} else {
-						scanBtn.setDisable(false);
-						continueBtn.setDisable(true);
-					}
-					irisDetailsDTOs.add(iris);
-				
+				if (validateIrisQulaity(iris, new Double(thresholdValue))) {
+					if (retries == Integer
+							.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
+						scanBtn.setDisable(true);
+					continueBtn.setDisable(false);
+				} else {
+					scanBtn.setDisable(false);
+					continueBtn.setDisable(true);
+				}
+				irisDetailsDTOs.add(iris);
+
 			});
 
 			popupStage.close();
@@ -617,9 +621,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}
 		} else
 
-	{
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
-	}LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER,APPLICATION_NAME,APPLICATION_ID,"Iris scanning is completed");
+		{
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+		}
+		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				"Iris scanning is completed");
 
 	}
 
@@ -825,26 +831,35 @@ public class GuardianBiometricsController extends BaseController implements Init
 		final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
 			public void handle(final MouseEvent mouseEvent) {
 
-				String eventString = mouseEvent.toString();
-				int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
+				LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+						"Mouse Event by attempt Started");
 
-				if (index == -1) {
-					String text = "Text[text=";
-					index = eventString.indexOf(text) + text.length() + 1;
+				if (bioService.isMdmEnabled()) {
+					String eventString = mouseEvent.toString();
+					int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
 
-				} else {
-					index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
+					if (index == -1) {
+						String text = "Text[text=";
+						index = eventString.indexOf(text) + text.length() + 1;
+
+					} else {
+						index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
+					}
+					try {
+
+						updateByAttempt(bioType, Character.getNumericValue(eventString.charAt(index)), biometricImage,
+								qualityText, bioProgress, qualityScore);
+
+						LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+								"Mouse Event by attempt Ended");
+
+					} catch (RuntimeException runtimeException) {
+						LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+								runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+					}
 				}
-				try {
 
-					updateByAttempt(bioType, Character.getNumericValue(eventString.charAt(index)), biometricImage,
-							qualityText, bioProgress, qualityScore);
-
-				} catch (RuntimeException runtimeException) {
-					LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-
-				}
 			}
 
 		};
@@ -1001,7 +1016,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		double qualityScore = bioService.isMdmEnabled()
 				? bioService.getHighQualityScoreByBioType(irisDetailsDTO.getIrisType())
 				: irisDetailsDTO.getQualityScore();
-				
+
 		return qualityScore >= irisThreshold || (Double.compare(qualityScore, irisThreshold) < 0
 				&& irisDetailsDTO.getNumOfIrisRetry() == Integer
 						.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT))
