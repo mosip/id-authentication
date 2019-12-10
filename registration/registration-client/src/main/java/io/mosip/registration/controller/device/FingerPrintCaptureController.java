@@ -341,63 +341,65 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
 						public void handle(final MouseEvent mouseEvent) {
 
-							FingerprintDetailsDTO fingerprintDetailsDTO = getFingerprintBySelectedPane().findFirst()
-									.orElse(null);
+							if (bioService.isMdmEnabled()) {
+								FingerprintDetailsDTO fingerprintDetailsDTO = getFingerprintBySelectedPane().findFirst()
+										.orElse(null);
 
-							if (fingerprintDetailsDTO != null) {
-								String eventString = mouseEvent.toString();
-								int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
+								if (fingerprintDetailsDTO != null) {
+									String eventString = mouseEvent.toString();
+									int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
 
-								if (index == -1) {
-									String text = "Text[text=";
-									index = eventString.indexOf(text) + text.length() + 1;
+									if (index == -1) {
+										String text = "Text[text=";
+										index = eventString.indexOf(text) + text.length() + 1;
 
-								} else {
-									index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
-								}
-
-								if (index != -1) {
-									ImageView streamImage;
-									Label qualityTextLabel;
-									ProgressBar progressBar;
-									Label qualityScore;
-									if (fingerprintDetailsDTO.getFingerType()
-											.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
-
-										// Set Stream image
-										streamImage = leftHandPalmImageview;
-										// Quality Label
-										qualityTextLabel = leftSlapQualityScore;
-									} else if (fingerprintDetailsDTO.getFingerType()
-											.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
-										// Set Stream image
-										streamImage = rightHandPalmImageview;
-										// Quality Label
-										qualityTextLabel = rightSlapQualityScore;
 									} else {
-										// Set Stream image
-										streamImage = thumbImageview;
-										// Quality Label
-										qualityTextLabel = thumbsQualityScore;
+										index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
 									}
 
-									// Progress BAr
-									progressBar = fpProgress;
-									// Progress Bar Quality Score
-									qualityScore = qualityText;
+									if (index != -1) {
+										ImageView streamImage;
+										Label qualityTextLabel;
+										ProgressBar progressBar;
+										Label qualityScore;
+										if (fingerprintDetailsDTO.getFingerType()
+												.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 
-									try {
-										updateByAttempt(fingerprintDetailsDTO.getFingerType(),
-												Character.getNumericValue(eventString.charAt(index)), streamImage,
-												qualityTextLabel, progressBar, qualityScore);
-									} catch (RuntimeException runtimeException) {
-										LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME,
-												APPLICATION_ID, runtimeException.getMessage()
-														+ ExceptionUtils.getStackTrace(runtimeException));
+											// Set Stream image
+											streamImage = leftHandPalmImageview;
+											// Quality Label
+											qualityTextLabel = leftSlapQualityScore;
+										} else if (fingerprintDetailsDTO.getFingerType()
+												.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
+											// Set Stream image
+											streamImage = rightHandPalmImageview;
+											// Quality Label
+											qualityTextLabel = rightSlapQualityScore;
+										} else {
+											// Set Stream image
+											streamImage = thumbImageview;
+											// Quality Label
+											qualityTextLabel = thumbsQualityScore;
+										}
 
+										// Progress BAr
+										progressBar = fpProgress;
+										// Progress Bar Quality Score
+										qualityScore = qualityText;
+
+										try {
+											updateByAttempt(fingerprintDetailsDTO.getFingerType(),
+													Character.getNumericValue(eventString.charAt(index)), streamImage,
+													qualityTextLabel, progressBar, qualityScore);
+										} catch (RuntimeException runtimeException) {
+											LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME,
+													APPLICATION_ID, runtimeException.getMessage()
+															+ ExceptionUtils.getStackTrace(runtimeException));
+
+										}
 									}
+
 								}
-
 							}
 
 						}
@@ -472,8 +474,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 						if (fpDetailsDTO != null) {
 
-							double qualityScore = bioService.getBioQualityScores(fpDetailsDTO.getFingerType(),
-									fpDetailsDTO.getNumRetry());
+							double qualityScore= bioService.isMdmEnabled() ? bioService.getBioQualityScores(fpDetailsDTO.getFingerType(),
+										fpDetailsDTO.getNumRetry()) : fpDetailsDTO.getQualityScore();
+							
 							fpProgress.setProgress(fpDetailsDTO != null ? qualityScore / 100 : 0);
 
 							qualityText.setText(
@@ -490,9 +493,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 															: thumbsQualityScore;
 
 							qualityScoreLabel.setText(String.valueOf((int) qualityScore));
-							updateRetryBox(fpDetailsDTO, Double.valueOf(
-									getQualityScore(bioService.getBioQualityScores(fpDetailsDTO.getFingerType(),
-											fpDetailsDTO.getNumRetry())).split(RegistrationConstants.PERCENTAGE)[0]),
+							updateRetryBox(fpDetailsDTO,
+									Double.valueOf(
+											getQualityScore(qualityScore).split(RegistrationConstants.PERCENTAGE)[0]),
 									Double.parseDouble(getValueFromApplicationContext(fingerprintThreshold)));
 						} else {
 							qualityText.setText(RegistrationConstants.EMPTY);
@@ -585,7 +588,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		int retries = fpDetailsDTO.getNumRetry();
 
 		for (int attempt = 1; attempt <= retries; attempt++) {
-			if (bioService.getBioQualityScores(fpDetailsDTO.getFingerType(), attempt) >= threshold) {
+			if ((bioService.isMdmEnabled() ? bioService.getBioQualityScores(fpDetailsDTO.getFingerType(), attempt) : fpDetailsDTO.getQualityScore()) >= threshold) {
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, attempt);
 				fpProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
@@ -1260,35 +1263,34 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if (detailsDTO.isCaptured()) {
 
-			int retries = 0;
+			int retries = detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
+					? ++leftSlapCount
+					: detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT) ? ++rightSlapCount
+							: ++thumbCount;
+
 			if (!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			} else {
-				
 				detailsDTO.setFingerPrint(streamer.imageBytes);
-			}
-			
-			//Add Bio Stream image
-			streamer.setBioStreamImages(null, detailsDTO.getFingerType(), attempt);
+				// Add Bio Stream image
+				streamer.setBioStreamImages(null, detailsDTO.getFingerType(), attempt);
 
-			if (detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
-				leftSlapCount++;
-				retries = leftSlapCount;
-				leftHandPalmImageview.setImage(bioService.getBioStreamImage(detailsDTO.getFingerType(), retries));
-				
-			} else if (detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
-				rightSlapCount++;
-				retries = rightSlapCount;
-				rightHandPalmImageview.setImage(bioService.getBioStreamImage(detailsDTO.getFingerType(), retries));
-			} else {
-				thumbCount++;
-				retries = thumbCount;
-				thumbImageview.setImage(bioService.getBioStreamImage(detailsDTO.getFingerType(), retries));
-				
+				if (detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
+
+					leftHandPalmImageview.setImage((bioService.getBioStreamImage(detailsDTO.getFingerType(), retries)));
+
+				} else if (detailsDTO.getFingerType().equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
+
+					rightHandPalmImageview
+							.setImage((bioService.getBioStreamImage(detailsDTO.getFingerType(), retries)));
+				} else {
+
+					thumbImageview.setImage((bioService.getBioStreamImage(detailsDTO.getFingerType(), retries)));
+
+				}
 			}
-			
-			
+
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 
 				detailsDTO.setNumRetry(retries);
@@ -1299,13 +1301,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			parentPane.getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
 
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				double qualityScore = Double
-						.valueOf(getQualityScore((double) bioService.getBioQualityScores(fingerType, attempt))
-								.split(RegistrationConstants.PERCENTAGE)[0])
-						/ 100;
-				fpProgress.setProgress(qualityScore);
-				String qualityScoreLabelText = getQualityScore(
-						(double) bioService.getBioQualityScores(fingerType, attempt));
+
+				double qualityScore= bioService.isMdmEnabled() ? bioService.getBioQualityScores(fingerType, attempt) : detailsDTO.getQualityScore();
+	
+				fpProgress.setProgress(qualityScore/100);
+				String qualityScoreLabelText = 
+						String.valueOf((int) qualityScore).concat(RegistrationConstants.PERCENTAGE);
 				qualityText.setText(qualityScoreLabelText);
 				qualityScoreLabel.setText(qualityScoreLabelText);
 				attemptSlap.setText(String.valueOf(detailsDTO.getNumRetry()));
@@ -1639,8 +1640,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * @return boolean
 	 */
 	private Boolean validate(FingerprintDetailsDTO fingerprintDetailsDTO, String handThreshold) {
-		double qualityScore = bioService.getHighQualityScoreByBioType(fingerprintDetailsDTO.getFingerType());
 
+		double qualityScore;
+		if (!bioService.isMdmEnabled()) {
+			qualityScore = fingerprintDetailsDTO.getQualityScore();
+		} else {
+			qualityScore = bioService.getHighQualityScoreByBioType(fingerprintDetailsDTO.getFingerType());
+		}
 		return qualityScore >= Double.parseDouble(getValueFromApplicationContext(handThreshold))
 				|| (qualityScore < Double.parseDouble(getValueFromApplicationContext(handThreshold))
 						&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
