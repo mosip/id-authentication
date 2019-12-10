@@ -163,7 +163,6 @@ public class ResidentServiceImpl implements ResidentService {
 		NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 		notificationRequestDto.setId(request.getIndividualId());
 		notificationRequestDto.setIdType(getIdType(request.getIndividualIdType()));
-		notificationRequestDto.setRegistrationType("NEW");
 		notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_NO_MOB_MAIL_ID);
 		Map<String, Object> attribute = new HashMap<String, Object>();
 		attribute.put("statusCode", statusCode);
