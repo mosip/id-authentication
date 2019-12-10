@@ -26,7 +26,7 @@ import io.mosip.kernel.idobjectvalidator.impl.IdObjectCompositeValidator;
 @Configuration
 public class TestConfig {
 	@Bean
-	@Qualifier("restTemplateConfig")
+	@Qualifier("restTemplate")
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		

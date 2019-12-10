@@ -82,7 +82,6 @@ public class DemographicServiceUtil {
 	private Environment env;
 
 	@Autowired
-	@Qualifier("restTemplateConfig")
 	private RestTemplate restTemplate;
 	
 	

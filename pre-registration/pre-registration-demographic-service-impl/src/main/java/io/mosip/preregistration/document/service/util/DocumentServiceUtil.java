@@ -89,7 +89,6 @@ public class DocumentServiceUtil {
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
 	@Autowired
-	@Qualifier("restTemplateConfig")
 	RestTemplate restTemplate;
 
 	@Autowired

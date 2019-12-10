@@ -105,7 +105,6 @@ public class BookingServiceUtil {
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */
 	@Autowired
-	@Qualifier("restTemplateConfig")
 	RestTemplate restTemplate;
 	
 	@Autowired

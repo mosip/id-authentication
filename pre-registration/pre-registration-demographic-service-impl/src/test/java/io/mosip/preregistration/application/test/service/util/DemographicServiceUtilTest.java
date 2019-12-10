@@ -52,7 +52,7 @@ public class DemographicServiceUtilTest {
 	@MockBean(name="idObjectValidator")
 	private IdObjectValidator jsonValidator;
 	
-	@MockBean(name = "restTemplateConfig")
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 	
 	@MockBean
