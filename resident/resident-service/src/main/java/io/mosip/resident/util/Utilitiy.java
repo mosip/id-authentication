@@ -92,7 +92,9 @@ public class Utilitiy {
 							ResidentErrorCode.IN_VALID_VID.getErrorCode(), error.get(0).getMessage());
 				}
 
-				String uin = vidResponse.getResponse().getUIN();
+				VidGeneratorResponseDto vidGeneratorResponseDto = JsonUtil.objectMapperReadValue(
+						JsonUtil.objectMapperObjectToJson(vidResponse.getResponse()), VidGeneratorResponseDto.class);
+				String uin = String.valueOf(vidGeneratorResponseDto.getUIN());
 				pathsegments.clear();
 				pathsegments.add(uin);
 				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(

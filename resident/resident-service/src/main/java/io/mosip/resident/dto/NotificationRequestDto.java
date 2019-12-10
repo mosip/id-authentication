@@ -16,7 +16,6 @@ public class NotificationRequestDto implements Serializable {
 	static final long serialVersionUID = 3726544930055329455L;
 	private String id;
 	private IdType idType;
-	private String registrationType;
 	private NotificationTemplateCode templateTypeCode;
 	private Map<String, Object> additionalAttributes;
 }
