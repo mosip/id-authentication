@@ -3,7 +3,6 @@ package io.mosip.registration.validator;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_FACADE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static org.hamcrest.CoreMatchers.instanceOf;
 
 import java.util.ArrayList;
 import java.util.Collections;
