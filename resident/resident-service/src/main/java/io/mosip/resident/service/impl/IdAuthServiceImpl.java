@@ -64,6 +64,9 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private String authTypeStatusId;
 
 	@Autowired
+	ObjectMapper mapper;
+
+	@Autowired
 	private KeyGenerator keyGenerator;
 
 	@Autowired
@@ -123,7 +126,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		OtpAuthRequestDTO request = new OtpAuthRequestDTO();
 		request.setOtp(otp);
 		request.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-		ObjectMapper mapper = new ObjectMapper();
+
 		String identityBlock = mapper.writeValueAsString(request);
 
 		final SecretKey secretKey = keyGenerator.getSymmetricKey();
@@ -132,7 +135,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		// rbase64 encoded for request
 		authRequestDTO.setRequest(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
 		// encrypted with MOSIP public key and encoded session key
-		byte[] encryptedSessionKeyByte = encryptRSA(secretKey.getEncoded(), "INTERNAL", mapper);
+		byte[] encryptedSessionKeyByte = encryptRSA(secretKey.getEncoded(), "INTERNAL");
 		authRequestDTO.setRequestSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
 
 		// sha256 of the request block before encryption and the hash is encrypted
@@ -162,7 +165,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	}
 
-	private byte[] encryptRSA(final byte[] sessionKey, String refId, ObjectMapper mapper)
+	private byte[] encryptRSA(final byte[] sessionKey, String refId)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
 			IOException, JsonProcessingException {
 
