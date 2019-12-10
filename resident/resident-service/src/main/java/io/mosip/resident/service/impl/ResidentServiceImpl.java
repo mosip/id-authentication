@@ -46,7 +46,6 @@ import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
-import io.mosip.resident.exception.InvalidInputException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.RIDInvalidException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
@@ -366,16 +365,16 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) throws OtpValidationFailedException {
+	public ResponseDTO reqAauthLock(AuthLockRequestDto dto) {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: entry");
 
 		ResponseDTO response = new ResponseDTO();
-		if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
-			if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
-					dto.getOtp())) {
+		try {
+			if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
+				if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+						dto.getOtp())) {
 
-				try {
 					boolean isAuthTypeLocked = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
 							dto.getIndividualIdType(), dto.getAuthType(), true);
 					if (isAuthTypeLocked) {
@@ -392,37 +391,41 @@ public class ResidentServiceImpl implements ResidentService {
 						throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
 								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 					}
-				} catch (ApisResourceAccessException e) {
-					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				} else {
+					logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 							LoggerFileConstant.APPLICATIONID.toString(),
-							ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
-									+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
-									+ ExceptionUtils.getStackTrace(e));
-					throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
-							ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
-				} catch (ResidentServiceCheckedException e) {
-					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-							LoggerFileConstant.APPLICATIONID.toString(),
-							ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode()
-									+ ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage()
-									+ ExceptionUtils.getStackTrace(e));
-					throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
-							ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
+							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+					throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 				}
 			} else {
 				logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 						LoggerFileConstant.APPLICATIONID.toString(),
-						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
-				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
-						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+						ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+						ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
 			}
-		} else {
-			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+		} catch (ApisResourceAccessException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
-			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
+							+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
+					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
+		} catch (ResidentServiceCheckedException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode()
+							+ ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
+		} catch (OtpValidationFailedException e) {
+			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
 		}
+
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: exit");
 		return response;
@@ -443,17 +446,16 @@ public class ResidentServiceImpl implements ResidentService {
 	private boolean validateIndividualId(String individualId, String individualIdType) {
 		boolean validation = false;
 		try {
-		if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
-			validation = uinValidator.validateId(individualId);
-		} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
-			validation = vidValidator.validateId(individualId);
-		} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
-			validation = ridValidator.validateId(individualId);
-		} 
-		}
-		catch(InvalidIDException e) {
+			if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
+				validation = uinValidator.validateId(individualId);
+			} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
+				validation = vidValidator.validateId(individualId);
+			} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
+				validation = ridValidator.validateId(individualId);
+			}
+		} catch (InvalidIDException e) {
 			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage(),e);
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage(), e);
 		}
 		return validation;
 	}
