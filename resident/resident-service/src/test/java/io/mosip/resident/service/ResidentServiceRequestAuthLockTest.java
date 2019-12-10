@@ -74,7 +74,8 @@ public class ResidentServiceRequestAuthLockTest {
 			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 
-		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
 		ResponseDTO response = new ResponseDTO();
 		response.setMessage("Notification success");
 		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
@@ -109,7 +110,8 @@ public class ResidentServiceRequestAuthLockTest {
 	public void testReqAauthLockOTPFailed()
 			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
-		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(false);
+		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(false);
 		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
 		authLockRequestDto.setIndividualIdType("UIN");
@@ -123,7 +125,8 @@ public class ResidentServiceRequestAuthLockTest {
 	public void testReqAauthLockFailed()
 			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
-		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
 
 		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
@@ -141,7 +144,8 @@ public class ResidentServiceRequestAuthLockTest {
 			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
-		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
 
 		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
@@ -150,7 +154,8 @@ public class ResidentServiceRequestAuthLockTest {
 		authLockRequestDto.setTransactionID("1234567898");
 		Mockito.when(idAuthService.authTypeStatusUpdate(authLockRequestDto.getIndividualId(),
 				authLockRequestDto.getIndividualIdType(), authLockRequestDto.getAuthType(), true)).thenReturn(true);
-		Mockito.when(notificationService.sendNotification(Mockito.any())).thenThrow(new ResidentServiceCheckedException());
+		Mockito.when(notificationService.sendNotification(Mockito.any()))
+				.thenThrow(new ResidentServiceCheckedException());
 		residentService.reqAauthLock(authLockRequestDto);
 
 	}
@@ -160,7 +165,8 @@ public class ResidentServiceRequestAuthLockTest {
 			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
-		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
 
 		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
 		authLockRequestDto.setIndividualId("1234567889");
@@ -175,4 +181,18 @@ public class ResidentServiceRequestAuthLockTest {
 
 	}
 
+	@Test(expected = ResidentServiceException.class)
+	public void testReqAauthLockOTPFailedException()
+			throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
+		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
+		Mockito.when(idAuthService.validateOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new OtpValidationFailedException());
+		AuthLockRequestDto authLockRequestDto = new AuthLockRequestDto();
+		authLockRequestDto.setIndividualId("1234567889");
+		authLockRequestDto.setIndividualIdType("UIN");
+		authLockRequestDto.setOtp("1234");
+		authLockRequestDto.setTransactionID("1234567898");
+		residentService.reqAauthLock(authLockRequestDto);
+
+	}
 }
