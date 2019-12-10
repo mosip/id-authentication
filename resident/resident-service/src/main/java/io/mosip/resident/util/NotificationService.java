@@ -124,7 +124,8 @@ public class NotificationService {
 					ApiName.TEMPLATES, pathSegments, null, null, ResponseWrapper.class, tokenGenerator.getToken());
 			if (resp == null || resp.getErrors() != null && !resp.getErrors().isEmpty()) {
 				throw new ResidentServiceException(ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorCode(),
-						ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorMessage() + resp.getErrors().get(0));
+						ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorMessage()
+								+ (resp != null ? resp.getErrors().get(0) : ""));
 			}
 			TemplateResponseDto templateResponse = JsonUtil.objectMapperReadValue(
 					JsonUtil.objectMapperObjectToJson(resp.getResponse()), TemplateResponseDto.class);
@@ -155,7 +156,7 @@ public class NotificationService {
 
 	}
 
-	public String templateMerge(String fileText, Map<String, Object> mailingAttributes)
+	private String templateMerge(String fileText, Map<String, Object> mailingAttributes)
 			throws ResidentServiceCheckedException {
 		try {
 			String mergeTemplate = null;
