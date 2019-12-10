@@ -291,8 +291,8 @@ public class DemographicService implements DemographicServiceIntf {
 					"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 			log.info("sessionId", "idType", "id",
 					"Pre ID generation start time : " + DateUtils.getUTCCurrentDateTimeString());
-			String preId = pridGenerator.generateId();
-			//String preId = serviceUtil.generateId();
+			//String preId = pridGenerator.generateId();
+			String preId = serviceUtil.generateId();
 			log.info("sessionId", "idType", "id",
 					"Pre ID generation end time : " + DateUtils.getUTCCurrentDateTimeString());
 			DemographicEntity demographicEntity = demographicRepository
