@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
@@ -254,9 +255,9 @@ public class ResidentServiceImpl implements ResidentService {
 		} else {
 			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
-			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
 		}
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqEuin():: exit");
@@ -418,9 +419,9 @@ public class ResidentServiceImpl implements ResidentService {
 		} else {
 			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
-			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
 		}
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: exit");
@@ -441,6 +442,7 @@ public class ResidentServiceImpl implements ResidentService {
 
 	private boolean validateIndividualId(String individualId, String individualIdType) {
 		boolean validation = false;
+		try {
 		if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
 			validation = uinValidator.validateId(individualId);
 		} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
@@ -448,6 +450,11 @@ public class ResidentServiceImpl implements ResidentService {
 		} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
 			validation = ridValidator.validateId(individualId);
 		} 
+		}
+		catch(InvalidIDException e) {
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage(),e);
+		}
 		return validation;
 	}
 
