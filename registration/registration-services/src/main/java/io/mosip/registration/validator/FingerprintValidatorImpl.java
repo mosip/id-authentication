@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.Score;
@@ -61,7 +62,10 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		LOGGER.info(LoggerConstants.FINGER_PRINT_AUTHENTICATION, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Scanned Finger");
-
+		if (ibioApi instanceof BioApiImpl) {
+			ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG,
+					RegistrationConstants.DISABLE);
+		}
 		if (!authenticationValidatorDTO.isAuthValidationFlag()) {
 			if ((String
 					.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG)))
