@@ -29,10 +29,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.ResidentTestBootApplication;
+import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
+import io.mosip.resident.dto.ResidentReprintRequestDto;
+import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.validator.RequestValidator;
@@ -57,13 +62,13 @@ public class ResidentControllerTest {
 	@InjectMocks
 	ResidentController residentController;
 
-    RequestWrapper<AuthLockOrUnLockRequestDto> authLockRequest;
+	RequestWrapper<AuthLockOrUnLockRequestDto> authLockRequest;
 	RequestWrapper<EuinRequestDTO> euinRequest;
 
 	/** The array to json. */
 	private String authLockRequestToJson;
 	private String euinRequestToJson;
-	
+	private Gson gson;
 
 	/** The mock mvc. */
 	@Autowired
@@ -71,13 +76,13 @@ public class ResidentControllerTest {
 
 	@Before
 	public void setUp() {
-        authLockRequest = new RequestWrapper<AuthLockOrUnLockRequestDto>();
-        authLockRequest.setRequest(new AuthLockOrUnLockRequestDto());
-		euinRequest=new  RequestWrapper<EuinRequestDTO>();
+		authLockRequest = new RequestWrapper<AuthLockOrUnLockRequestDto>();
+		authLockRequest.setRequest(new AuthLockOrUnLockRequestDto());
+		euinRequest = new RequestWrapper<EuinRequestDTO>();
 		euinRequest.setRequest(new EuinRequestDTO("1234567890", "1234567890", "UIN", "UIN", "4567"));
-		Gson gson = new GsonBuilder().serializeNulls().create();
+		gson = new GsonBuilder().serializeNulls().create();
 		authLockRequestToJson = gson.toJson(authLockRequest);
-		euinRequestToJson=gson.toJson(euinRequest);
+		euinRequestToJson = gson.toJson(euinRequest);
 	}
 
 	@Test
@@ -87,17 +92,19 @@ public class ResidentControllerTest {
 		doNothing().when(validator).validateAuthLockRequest(Mockito.any());
 		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(Mockito.any());
 
-		this.mockMvc.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(authLockRequestToJson))
+		this.mockMvc
+				.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(authLockRequestToJson))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("success")));
 	}
-	
+
 	@Test
 	public void testRequestAuthLockBadRequest() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
 		doNothing().when(validator).validateAuthLockRequest(Mockito.any());
 		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(Mockito.any());
 
-		MvcResult result=this.mockMvc.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(""))
+		MvcResult result = this.mockMvc
+				.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(""))
 				.andExpect(status().isOk()).andReturn();
 		assertTrue(result.getResponse().getContentAsString().contains("RES-500"));
 	}
@@ -107,18 +114,46 @@ public class ResidentControllerTest {
 		doNothing().when(validator).validateEuinRequest(Mockito.any());
 		Mockito.doReturn(new byte[10]).when(residentService).reqEuin(Mockito.any());
 
-		MvcResult result=this.mockMvc.perform(post("/req/euin").contentType(MediaType.APPLICATION_JSON).content(euinRequestToJson))
+		MvcResult result = this.mockMvc
+				.perform(post("/req/euin").contentType(MediaType.APPLICATION_JSON).content(euinRequestToJson))
 				.andExpect(status().isOk()).andReturn();
-		assertEquals("application/pdf",result.getResponse().getContentType());
+		assertEquals("application/pdf", result.getResponse().getContentType());
 	}
 
 	@Test
 	public void testRequestEuinBadRequest() throws Exception {
 
-		MvcResult result=this.mockMvc.perform(post("/req/euin").contentType(MediaType.APPLICATION_JSON).content(""))
+		MvcResult result = this.mockMvc.perform(post("/req/euin").contentType(MediaType.APPLICATION_JSON).content(""))
 				.andExpect(status().isOk()).andReturn();
 		assertTrue(result.getResponse().getContentAsString().contains("RES-500"));
 	}
 
-	
+	@Test
+	public void testReprintUINSuccess() throws Exception {
+		ResidentReprintResponseDto reprintResp = new ResidentReprintResponseDto();
+		reprintResp.setRegistrationId("123456789");
+		reprintResp.setMessage("Notification sent");
+		ResponseWrapper<ResidentReprintResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(reprintResp);
+
+		Mockito.when(residentService.reqPrintUin(Mockito.any())).thenReturn(reprintResp);
+
+		RequestWrapper<ResidentReprintRequestDto> requestWrapper = new RequestWrapper<>();
+		ResidentReprintRequestDto request = new ResidentReprintRequestDto();
+		request.setIndividualId("3527812406");
+		request.setIndividualIdType(IdType.UIN);
+		request.setOtp("1234");
+		request.setTransactionID("9876543210");
+		requestWrapper.setRequest(request);
+		requestWrapper.setId(",osip.resident.reprint");
+		requestWrapper.setVersion("1.0");
+		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String requestAsString = gson.toJson(requestWrapper);
+
+		this.mockMvc.perform(post("/req/print-uin").contentType(MediaType.APPLICATION_JSON).content(requestAsString))
+				.andExpect(status().isOk());
+	}
+
 }

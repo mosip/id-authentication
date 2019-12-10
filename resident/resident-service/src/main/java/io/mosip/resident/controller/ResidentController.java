@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -63,11 +64,11 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/print-uin")
-	public ResponseWrapper<ResidentReprintResponseDto> reqPrintUin(
+	public ResponseEntity<Object> reqPrintUin(
 			@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO) {
 		ResponseWrapper<ResidentReprintResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqPrintUin(requestDTO.getRequest()));
-		return response;
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@ResponseFilter
