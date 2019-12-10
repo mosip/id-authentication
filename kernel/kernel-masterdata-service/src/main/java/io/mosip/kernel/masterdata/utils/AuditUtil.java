@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
@@ -57,6 +58,8 @@ public class AuditUtil {
 
 	private String hostName = null;
 
+	private volatile int eventCounter;
+
 	@Value("${mosip.kernel.masterdata.audit-url}")
 	private String auditUrl;
 
@@ -72,9 +75,9 @@ public class AuditUtil {
 	 * @param auditRequestDto
 	 *            the audit request dto
 	 */
-	public void auditRequest(String eventName,String eventType,String description) {
+	public void auditRequest(String eventName, String eventType, String description) {
 
-		setAuditRequestDto(eventName,eventType,description);
+		setAuditRequestDto(eventName, eventType, description);
 	}
 
 	/**
@@ -83,16 +86,19 @@ public class AuditUtil {
 	 * @param auditRequestDto
 	 *            the new audit request dto
 	 */
-	private void setAuditRequestDto(String eventName,String eventType,String description) {
-		AuditRequestDto auditRequestDto= new AuditRequestDto();
+	private void setAuditRequestDto(String eventName, String eventType, String description) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		if (!validateSecurityContextHolder()) {
-			
+
 		}
-		auditRequestDto.setEventId("KER-AUD-999");
-		auditRequestDto.setId("ID");
-		auditRequestDto.setIdType("IDType");
+
+		auditRequestDto.setEventId("ADM-" + eventCounter++);
+		auditRequestDto.setId("NO_ID");
+		auditRequestDto.setIdType("NO_ID_TYPE");
 		auditRequestDto.setEventName(eventName);
 		auditRequestDto.setEventType(eventType);
+		auditRequestDto.setModuleId("KER-MSD");
+		auditRequestDto.setModuleName("Kernel masterdata");
 		auditRequestDto.setDescription(description);
 		auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 		auditRequestDto.setHostIp(hostIpAddress);
@@ -155,8 +161,6 @@ public class AuditUtil {
 		hostIpAddress = getServerIp();
 		hostName = getServerName();
 	}
-
-	
 
 	/**
 	 * For Auditing Login Services
@@ -224,6 +228,5 @@ public class AuditUtil {
 		throw new MasterDataServiceException("KER-MSD-111", "Audit Exception", ex);
 
 	}
-	
 
 }

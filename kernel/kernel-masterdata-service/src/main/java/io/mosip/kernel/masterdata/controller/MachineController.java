@@ -18,6 +18,9 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
@@ -30,6 +33,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.MachineService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -57,6 +61,9 @@ public class MachineController {
 	 */
 	@Autowired
 	private MachineService machineService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * 
@@ -216,8 +223,10 @@ public class MachineController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<MachineSearchDto>> searchMachine(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED+MachineSearchDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SEARCH_API_IS_CALLED+MachineSearchDto.class.getCanonicalName());
 		ResponseWrapper<PageResponseDto<MachineSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.searchMachine(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,MachineSearchDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM,String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,MachineSearchDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -233,8 +242,10 @@ public class MachineController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> machineFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+MachineDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+MachineDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.machineFilterValues(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,MachineDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,MachineDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -250,8 +261,10 @@ public class MachineController {
 	@PutMapping("/machines/decommission/{machineId}")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
+		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DECOMMISION_API_CALLED+DeviceDto.class.getCanonicalName());
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.decommissionMachine(machineId));
+		auditUtil.auditRequest(MasterDataConstant.DECOMMISSION_SUCCESS+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DECOMMISSION_SUCCESS_DESC+DeviceDto.class.getCanonicalName());
 		return responseWrapper;
 	}
 
@@ -273,8 +286,10 @@ public class MachineController {
 			@ApiResponse(code = 404, message = "When No Machine found"),
 			@ApiResponse(code = 500, message = "While creating Machine any error occured") })
 	public ResponseWrapper<MachineExtnDto> createMachine(@Valid @RequestBody RequestWrapper<MachinePostReqDto> machineRequest) {
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED+MachinePostReqDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.CREATE_API_IS_CALLED+MachinePostReqDto.class.getCanonicalName());
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.createMachine(machineRequest.getRequest()));
+		
 		return responseWrapper;
 	}
 
@@ -295,7 +310,7 @@ public class MachineController {
 			@ApiResponse(code = 500, message = "While updating Machine any error occured") })
 	public ResponseWrapper<MachineExtnDto> updateMachienAdmin(
 			@RequestBody @Valid RequestWrapper<MachinePutReqDto> machineCenterDto) {
-
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+MachinePutReqDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+MachinePutReqDto.class.getCanonicalName());
 		ResponseWrapper<MachineExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.updateMachine(machineCenterDto.getRequest()));
 		return responseWrapper;

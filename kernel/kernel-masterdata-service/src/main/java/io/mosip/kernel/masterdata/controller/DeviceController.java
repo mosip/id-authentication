@@ -254,7 +254,7 @@ public class DeviceController {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+DeviceDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+DeviceDto.class.getCanonicalName());
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,DeviceDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,DeviceDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 

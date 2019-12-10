@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
@@ -33,6 +34,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 
@@ -61,6 +63,9 @@ public class RegistrationCenterController {
 	 */
 	@Autowired
 	RegistrationCenterService registrationCenterService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * Function to fetch registration centers list using location code and language
@@ -286,8 +291,10 @@ public class RegistrationCenterController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SEARCH_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()));
 		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,RegistrationCenterSearchDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -303,8 +310,10 @@ public class RegistrationCenterController {
 	@PostMapping("/registrationcenters/filtervalues")
 	public ResponseWrapper<FilterResponseDto> registrationCenterFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FILTER_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()));
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.registrationCenterFilterValues(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC,RegistrationCenterSearchDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -321,9 +330,11 @@ public class RegistrationCenterController {
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterExtnDto> createRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<RegCenterPostReqDto> reqRegistrationCenterDto) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.CREATE_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.CREATE_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()));
 		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenter(reqRegistrationCenterDto.getRequest()));
+		
 		return responseWrapper;
 	}
 	
@@ -339,7 +350,7 @@ public class RegistrationCenterController {
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterExtnDto> updateRegistrationCenterAdmin(
 			@RequestBody @Valid RequestWrapper<RegCenterPutReqDto> reqRegistrationCenterDto) {
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.UPDATE_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.UPDATE_API_IS_CALLED,RegistrationCenterSearchDto.class.getSimpleName()));
 		ResponseWrapper<RegistrationCenterExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterService.updateRegistrationCenter(reqRegistrationCenterDto.getRequest()));
@@ -359,6 +370,7 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PutMapping("/registrationcenters/decommission/{regCenterID}")
 	public ResponseWrapper<IdResponseDto> decommissionRegCenter(@PathVariable("regCenterID") String regCenterID) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.DECOMMISION_API_CALLED,RegistrationCenterSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DECOMMISION_API_CALLED,RegistrationCenterSearchDto.class.getSimpleName()));
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.decommissionRegCenter(regCenterID));
 		return responseWrapper;

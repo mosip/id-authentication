@@ -45,6 +45,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
@@ -71,6 +72,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.service.ZoneService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -103,6 +105,9 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Autowired
 	MachineRepository machineRepository;
+
+	@Autowired
+	private AuditUtil auditUtil;
 
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
@@ -145,28 +150,27 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private ZoneService zoneService;
-	
+
 	@Autowired
 	private MachineHistoryRepository machineHistoryRepository;
-	
+
 	@Autowired
 	private RegistrationCenterValidator registrationCenterValidator;
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
+
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
-	
+
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
-	
+
 	/**
 	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
 	@Value("${mosip.primary-language}")
 	private String primaryLang;
-
 
 	@Value("${mosip.primary-language}")
 	private String primaryLangCode;
@@ -257,7 +261,6 @@ public class MachineServiceImpl implements MachineService {
 		return machineResponseDto;
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -379,7 +382,7 @@ public class MachineServiceImpl implements MachineService {
 		boolean isAssigned = true;
 		String typeName = null;
 		String langCode = null;
-		
+
 		if (dto.getLanguageCode().equals("all")) {
 			langCode = primaryLangCode;
 		} else {
@@ -417,6 +420,12 @@ public class MachineServiceImpl implements MachineService {
 							return pageDto;
 						}
 					} else {
+						auditUtil.auditRequest(
+								String.format(MasterDataConstant.SEARCH_FAILED, MachineSearchDto.class.getSimpleName()),
+								MasterDataConstant.AUDIT_SYSTEM,
+								String.format(MasterDataConstant.FAILURE_DESC,
+										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
+										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage()));
 						throw new RequestException(
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage());
@@ -443,10 +452,17 @@ public class MachineServiceImpl implements MachineService {
 			if (zones != null && !zones.isEmpty())
 				zoneFilter.addAll(buildZoneFilter(zones));
 			else
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.SEARCH_FAILED, MachineSearchDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
+								MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage()));
+
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
-		pageUtils.validateSortField(MachineSearchDto.class,Machine.class, dto.getSort());
+		pageUtils.validateSortField(MachineSearchDto.class, Machine.class, dto.getSort());
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
@@ -752,37 +768,59 @@ public class MachineServiceImpl implements MachineService {
 
 		// machine is not in DB
 		if (renMachines.isEmpty()) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
+							String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId)));
 			throw new RequestException(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
 					String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId));
 		}
-		
+
 		// check the given device and registration center zones are come under user zone
 		if (!zoneIds.contains(renMachines.get(0).getZoneCode())) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
+							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()));
 			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
 					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
 		}
-		try {		
-			if(!registrationCenterMachineRepository.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(machineId).isEmpty()){
+		try {
+			if (!registrationCenterMachineRepository.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(machineId)
+					.isEmpty()) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
+								MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()));
 				throw new RequestException(MachineErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
 						MachineErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
 			}
-			decommissionedMachine = machineRepository.decommissionMachine(machineId,MetaDataUtils.getContextUser(), 
+			decommissionedMachine = machineRepository.decommissionMachine(machineId, MetaDataUtils.getContextUser(),
 					MetaDataUtils.getCurrentDateTime());
-			
-			// create Machine history	
-			for(Machine machine : renMachines) {
-			MachineHistory machineHistory = new MachineHistory();
-			MapperUtils.map(machine, machineHistory);
-			MapperUtils.setBaseFieldValue(machine, machineHistory);
-			machineHistory.setIsActive(false);
-			machineHistory.setIsDeleted(true);
-			machineHistory.setUpdatedBy(MetaDataUtils.getContextUser());
-			machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			machineHistory.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-			machineHistoryRepository.create(machineHistory);
+
+			// create Machine history
+			for (Machine machine : renMachines) {
+				MachineHistory machineHistory = new MachineHistory();
+				MapperUtils.map(machine, machineHistory);
+				MapperUtils.setBaseFieldValue(machine, machineHistory);
+				machineHistory.setIsActive(false);
+				machineHistory.setIsDeleted(true);
+				machineHistory.setUpdatedBy(MetaDataUtils.getContextUser());
+				machineHistory.setEffectDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineHistory.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				machineHistoryRepository.create(machineHistory);
 			}
 
 		} catch (DataAccessException | DataAccessLayerException exception) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()));
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause());
 		}
@@ -791,8 +829,7 @@ public class MachineServiceImpl implements MachineService {
 		}
 		return idResponseDto;
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -818,7 +855,7 @@ public class MachineServiceImpl implements MachineService {
 
 			machineEntity = MetaDataUtils.setCreateMetaData(machinePostReqDto, Machine.class);
 
-			if(StringUtils.isNotEmpty(primaryLang)&&primaryLang.equals(machinePostReqDto.getLangCode())){
+			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(machinePostReqDto.getLangCode())) {
 				// MachineId from the mid_Seq Table,MachineId get by calling MachineIdGenerator
 				// API method generateMachineId()
 				uniqueId = registrationCenterValidator.generateMachineIdOrvalidateWithDB(uniqueId);
@@ -836,10 +873,19 @@ public class MachineServiceImpl implements MachineService {
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, MachineDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()));
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						MachineDto.class.getSimpleName(), crtMachine.getId()));
 		return MapperUtils.map(crtMachine, MachineExtnDto.class);
 
 	}
@@ -906,15 +952,30 @@ public class MachineServiceImpl implements MachineService {
 
 			} else {
 				// if given Id and language code is not present in DB
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, MachinePutReqDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage()));
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, MachinePutReqDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception)));
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						MachineDto.class.getSimpleName(), updMachine.getId()));
 		return MapperUtils.map(updMachine, MachineExtnDto.class);
 
 	}
@@ -928,7 +989,7 @@ public class MachineServiceImpl implements MachineService {
 
 		// given machine id is attached to regCenter center or not
 		if (!regCenterMachines.isEmpty()) {
-            String regCenterId = regCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
+			String regCenterId = regCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
 			List<RegistrationCenter> renRegistrationCenters = registrationCenterRepository
 					.findByRegIdAndIsDeletedFalseOrNull(regCenterId);
 

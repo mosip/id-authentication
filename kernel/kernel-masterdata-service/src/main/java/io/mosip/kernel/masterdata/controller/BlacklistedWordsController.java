@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
+import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
@@ -28,9 +32,11 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -50,6 +56,9 @@ import io.swagger.annotations.ApiResponses;
 public class BlacklistedWordsController {
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;
+
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * Fetch the list of blacklisted words based on language code.
@@ -85,6 +94,7 @@ public class BlacklistedWordsController {
 			@ApiResponse(code = 200, message = "Invalid Word") })
 	public ResponseWrapper<CodeResponseDto> validateWords(
 			@RequestBody RequestWrapper<BlacklistedWordListRequestDto> blacklistedwords) {
+
 		String isValid = "Valid";
 		if (!blacklistedWordsService.validateWord(blacklistedwords.getRequest().getBlacklistedwords())) {
 			isValid = "Invalid";
@@ -110,7 +120,10 @@ public class BlacklistedWordsController {
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
 			@RequestBody @Valid RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-
+		auditUtil.auditRequest(
+				MasterDataConstant.CREATE_API_IS_CALLED + BlacklistedWordListRequestDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + BlacklistedWordListRequestDto.class.getCanonicalName());
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(blacklistedWordsService.createBlackListedWord(blackListedWordsRequestDto.getRequest()));
@@ -131,7 +144,7 @@ public class BlacklistedWordsController {
 	@ApiOperation(value = "update the blacklisted word")
 	public ResponseWrapper<WordAndLanguageCodeID> updateBlackListedWord(
 			@Valid @RequestBody RequestWrapper<BlackListedWordsUpdateDto> blackListedWordsRequestDto) {
-
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+BlackListedWordsUpdateDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+BlackListedWordsUpdateDto.class.getCanonicalName());
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(blacklistedWordsService.updateBlackListedWord(blackListedWordsRequestDto.getRequest()));
@@ -144,7 +157,7 @@ public class BlacklistedWordsController {
 	@ApiOperation(value = "update the blacklisted word details except word")
 	public ResponseWrapper<WordAndLanguageCodeID> updateBlackListedWordExceptWord(
 			@Valid @RequestBody RequestWrapper<BlacklistedWordsDto> blackListedWordsRequestDto) {
-
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+BlackListedWordsUpdateDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+BlackListedWordsUpdateDto.class.getCanonicalName());
 		ResponseWrapper<WordAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				blacklistedWordsService.updateBlackListedWordExceptWord(blackListedWordsRequestDto.getRequest()));
@@ -206,8 +219,10 @@ public class BlacklistedWordsController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> searchBlackListedWords(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED+BlacklistedWordsExtnDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SEARCH_API_IS_CALLED+BlacklistedWordsExtnDto.class.getCanonicalName());
 		ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(blacklistedWordsService.searchBlackListedWords(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,BlacklistedWordsExtnDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM,String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,MachineSearchDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -225,8 +240,10 @@ public class BlacklistedWordsController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> blackListedWordsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+BlacklistedWordsExtnDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+BlacklistedWordsExtnDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(blacklistedWordsService.blackListedWordsFilterValues(requestWrapper.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER+BlacklistedWordsExtnDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SUCCESSFUL_FILTER_DESC+BlacklistedWordsExtnDto.class.getCanonicalName());
 		return responseWrapper;
 	}
 }

@@ -17,19 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
+import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -50,6 +56,9 @@ import io.swagger.annotations.ApiResponses;
 public class GenderTypeController {
 	@Autowired
 	private GenderTypeService genderTypeService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * Get API to fetch all gender types
@@ -94,8 +103,13 @@ public class GenderTypeController {
 	@PostMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveGenderType(
 			@Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
+		auditUtil.auditRequest(
+				MasterDataConstant.CREATE_API_IS_CALLED + GenderTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + GenderTypeDto.class.getCanonicalName());
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.saveGenderType(gender.getRequest()));
+		
 		return responseWrapper;
 
 	}
@@ -113,6 +127,7 @@ public class GenderTypeController {
 	@PutMapping("/gendertypes")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateGenderType(
 			@ApiParam("Data to update with metadata") @Valid @RequestBody RequestWrapper<GenderTypeDto> gender) {
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+GenderTypeDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+GenderTypeDto.class.getCanonicalName());
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.updateGenderType(gender.getRequest()));
 		return responseWrapper;
@@ -197,8 +212,10 @@ public class GenderTypeController {
 	@PostMapping("/gendertypes/search")
 	public ResponseWrapper<PageResponseDto<GenderExtnDto>> searchGenderTypes(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED+GenderExtnDto.class.getSimpleName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SEARCH_API_IS_CALLED+GenderExtnDto.class.getSimpleName());
 		ResponseWrapper<PageResponseDto<GenderExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.searchGenderTypes(request.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_SEARCH+BlacklistedWordsExtnDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SUCCESSFUL_SEARCH_DESC+BlacklistedWordsExtnDto.class.getCanonicalName());
 		return responseWrapper;
 	}
 	
@@ -216,8 +233,10 @@ public class GenderTypeController {
 	@PostMapping("/gendertypes/filtervalues")
 	public ResponseWrapper<FilterResponseDto> genderFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+GenderTypeDto.class.getSimpleName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+GenderTypeDto.class.getSimpleName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.genderFilterValues(requestWrapper.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,GenderTypeDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM,String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC,GenderTypeDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 }

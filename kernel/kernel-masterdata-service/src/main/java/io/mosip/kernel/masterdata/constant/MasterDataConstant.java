@@ -43,13 +43,17 @@ public class MasterDataConstant {
     public static final String INVALID_REG_CENTER_TYPE="Invalid centerTypeCode";
     public static final String INVALID_LOCATION_CODE="Invalid Location Code";
 	public static final String SEARCH_API_IS_CALLED = "Search API called::";
-	public static final String SUCCESSFUL_SEARCH=" System successfully searched List of %s";
+	public static final String SUCCESSFUL_SEARCH=" %s Search Success";
+	public static final String SUCCESSFUL_SEARCH_DESC=" System successfully searched List of %s";
 	public static final String SEARCH_FAILED="%s - Search Failure";
 	public static final String FILTER_API_IS_CALLED = "Filter API called::";
 	public static final String SUCCESSFUL_FILTER=" %s - Filter Success";
+	public static final String SUCCESSFUL_FILTER_DESC=" System successfully searched filter values for %s";
 	public static final String FILTER_FAILED="%s - Filter Failure";
 	public static final String CREATE_API_IS_CALLED = "Create API called::";
 	public static final String SUCCESSFUL_CREATE="Create %s - Success";
+	public static final String SUCCESSFUL_CREATE_DESC="System successfully created a %s %d";
+	public static final String SUCCESSFUL_UPDATE_DESC="System successfully updated a %s %d";
 	public static final String CREATE_ERROR_AUDIT="Create %s - Failure";
 	public static final String UPDATE_API_IS_CALLED= "%s Update API called";
 	public static final String SUCCESSFUL_UPDATE="Update %s - Success";
@@ -58,7 +62,7 @@ public class MasterDataConstant {
 	public static final String DECOMMISSION_SUCCESS="Decommission %s - Success";
 	public static final String DECOMMISSION_SUCCESS_DESC="System successfully decommissioned a %s %d";
 	public static final String DECOMMISSION_FAILURE="Decommission %s - Failure";
-	public static final String DECOMMISSION_FAILURE_DESC="%s_%d";
+	public static final String FAILURE_DESC="%s_%d";
 	
 	
 	public static final String AUDIT_SYSTEM = "SYSTEM";
