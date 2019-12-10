@@ -303,7 +303,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			fpDetailsDTO.getSegmentedFingerprints().add(fingerPrintDetail);
 		}
 
-		setBioQualityScores(fpDetailsDTO.getFingerType(), attempt,
+		setBioQualityScores(requestDetail.getType(), attempt,
 				currentCaptureQualityScore / mosipBioDeviceDataResponses.size());
 
 		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream()
