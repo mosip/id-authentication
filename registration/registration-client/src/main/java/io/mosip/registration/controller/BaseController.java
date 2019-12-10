@@ -332,11 +332,11 @@ public class BaseController {
 		if (context.contains(RegistrationConstants.INFO) || (!context.contains(RegistrationConstants.INFO)
 				&& !context.contains(RegistrationConstants.SUCCESS.toUpperCase())
 				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
-			alertStage.show();
 			if (SessionContext.isSessionContextAvailable()) {
 				SessionContext.map().put(ALERT_STAGE, alertStage);
 			}
 			alertController.generateAlertResponse(title, context);
+			alertStage.showAndWait();
 		} else {
 			if (SessionContext.isSessionContextAvailable()) {
 				SessionContext.map().put(ALERT_STAGE, alertStage);
@@ -344,6 +344,7 @@ public class BaseController {
 			alertController.generateAlertResponse(title, context);
 			alertStage.showAndWait();
 		}
+		alertController.alertWindowExit();
 	}
 
 	/**
@@ -1062,7 +1063,7 @@ public class BaseController {
 
 			String message = RegistrationUIConstants.REMAP_NO_ACCESS_MESSAGE;
 
-			if (isPacketsPendingForEOD()) {
+			if (isPacketsPendingForEODOrReRegister()) {
 				message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_EOD_PROCESS_MESSAGE;
 			}
 			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
@@ -1141,6 +1142,21 @@ public class BaseController {
 	protected boolean isPacketsPendingForEOD() {
 
 		return centerMachineReMapService.isPacketsPendingForEOD();
+	}
+
+	protected boolean isPacketsPendingForEODOrReRegister() {
+
+		return isPacketsPendingForEOD() || isPacketsPendingForReRegister();
+	}
+	
+	/**
+	 * Checks if is packets pending for ReRegister.
+	 *
+	 * @return true, if is packets pending for ReRegister
+	 */
+	protected boolean isPacketsPendingForReRegister() {
+
+		return centerMachineReMapService.isPacketsPendingForReRegister();
 	}
 
 	/**

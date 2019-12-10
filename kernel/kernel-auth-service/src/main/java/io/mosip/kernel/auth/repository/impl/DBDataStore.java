@@ -35,7 +35,6 @@ import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
-import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -58,23 +57,11 @@ public class DBDataStore implements DataStore {
 
 	private static final String NEW_USER_OTP = "INSERT INTO iam.user_detail(id,name,email,mobile,lang_code,cr_dtimes,is_active,status_code,cr_by)VALUES ( :userName,:name,:email,:phone,:langcode,NOW(),true,'ACT','Admin')";
 
-	//private static final String GET_USER = "select use.id,use.name,use.email,use.mobile,use.lang_code,role.code from iam.user_detail use left outer join iam.user_role userrole on use.id=userrole.usr_id left outer join iam.role_list role on role.code =userrole.role_code where use.id like :userName ";
-	
-	
-	private static final String GET_USER = ""
-			+ "SELECT use.id, "
-			+ "       use.name, "
-			+ "       use.email, "
-			+ "       use.mobile, "
-			+ "       use.lang_code, "
-			+ "       userrole.role_code code "
-			+ "  FROM iam.user_detail use "
-			+ "       JOIN iam.user_role userrole ON use.id = userrole.usr_id "
-			+ " WHERE use.id = :userName ";
+	private static final String GET_USER = "select use.id,use.name,use.email,use.mobile,use.lang_code,role.code from iam.user_detail use left outer join iam.user_role userrole on use.id=userrole.usr_id left outer join iam.role_list role on role.code =userrole.role_code where use.id like :userName ";
 
-	private static final String GET_PASSWORD = "select pwd from iam.user_pwd where usr_id = :userName ";
+	private static final String GET_PASSWORD = "select pwd from iam.user_pwd where usr_id like :userName ";
 
-	private static final String GET_ROLE = "select code from iam.role_list where code = :role ";
+	private static final String GET_ROLE = "select code from iam.role_list where code like :role ";
 
 	private static final String NEW_ROLE_OTP = "insert into iam.role_list(code,descr,lang_code,cr_dtimes,is_active,cr_by) values(:role,:description,:langCode,NOW(),true,'Admin')";
 
@@ -291,7 +278,7 @@ public class DBDataStore implements DataStore {
 	}
 
 	@Override
-	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) {
+	public MosipUserDto registerUser(UserRegistrationRequestDto userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

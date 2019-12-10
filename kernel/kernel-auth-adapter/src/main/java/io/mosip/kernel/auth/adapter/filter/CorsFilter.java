@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
+
 /***********************************************************************************************************************
  * AUTH HEADERS FILTER This filter is going to act as a CORS filter. It is
  * assigned before AuthFilter in the filter chain.
@@ -26,16 +28,19 @@ public class CorsFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		String origin = request.getHeader("Origin");
+		System.out.println("Origin ::"+origin);
 		if (origin != null && !origin.isEmpty()) {
 			response.setHeader("Access-Control-Allow-Origin", origin);
 		}
+		//response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, PATCH");
 		response.setHeader("Access-Control-Allow-Headers",
 				"Date, Content-Type, Accept, X-Requested-With, Authorization, From, X-Auth-Token, Request-Id");
 		response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
-
+		System.out.println("Token inside the CORS filter "+request.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE));
 		if (!"OPTIONS".equalsIgnoreCase(request.getMethod())) {
+			System.out.println("<--- Inside filter --->");
 			filterChain.doFilter(request, response);
 		}
 	}

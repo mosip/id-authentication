@@ -6,6 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -351,5 +352,16 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		return registrationRepository.findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(clientStatus,
 				serverStatus);
+	}
+	
+	@Override
+	public List<Registration> fetchReRegisterPendingPackets() {
+
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"fetchReRegisterPendingPackets -Retrieving Registrations based on client and server status codes");
+
+		return registrationRepository.findByClientStatusCodeNotInAndServerStatusCodeIn(
+				Arrays.asList(RegistrationClientStatusCode.RE_REGISTER.getCode()),
+				Arrays.asList(RegistrationConstants.PACKET_STATUS_CODE_REREGISTER));
 	}
 }

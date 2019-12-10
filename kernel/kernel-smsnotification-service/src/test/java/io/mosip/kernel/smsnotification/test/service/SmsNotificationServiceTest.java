@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -92,6 +93,17 @@ public class SmsNotificationServiceTest {
 	@Test(expected = InvalidNumberException.class)
 	public void contactNumberMaximumThresholdTest() {
 		service.sendSmsNotification("7897897458673484376", "hello your otp is 45373");
+	}
+	
+	@Test
+	public void validGateWayTest() {
+		service.sendSmsNotification("1234567890", "hello your otp is 45373");
+	}
+	
+	@Test
+	public void validInfoBibTest() {
+		ReflectionTestUtils.setField(service, "smsGateway", "infobip");
+		service.sendSmsNotification("1234567890", "hello your otp is 45373");
 	}
 
 }

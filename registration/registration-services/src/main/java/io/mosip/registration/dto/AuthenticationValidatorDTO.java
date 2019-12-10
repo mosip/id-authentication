@@ -18,5 +18,6 @@ public class AuthenticationValidatorDTO {
 	private String authValidationType;
 	private List<IrisDetailsDTO> irisDetails;
 	private FaceDetailsDTO faceDetail;
+	private boolean authValidationFlag;
 	
 }
