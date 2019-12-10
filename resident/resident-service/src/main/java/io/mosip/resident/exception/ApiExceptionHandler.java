@@ -46,7 +46,7 @@ public class ApiExceptionHandler {
 	private static final String AUTH_LOCK = "resident.authlock.id";
 	private static final String AUTH_UNLOCK = "resident.authunlock.id";
 	private static final String AUTH_HISTORY = "resident.authhistory.id";
-	private static final String VERSION = "1.0";
+	private static final String RESIDENT_VERSION = "resident.vid.version";
 
 	@ExceptionHandler(ResidentServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
@@ -156,7 +156,7 @@ public class ApiExceptionHandler {
 		}
 		objectMapper.registerModule(new JavaTimeModule());
 		responseWrapper.setId(setId(httpServletRequest.getRequestURI()));
-		responseWrapper.setVersion(VERSION);
+		responseWrapper.setVersion(env.getProperty(RESIDENT_VERSION));
 		return responseWrapper;
 	}
 
