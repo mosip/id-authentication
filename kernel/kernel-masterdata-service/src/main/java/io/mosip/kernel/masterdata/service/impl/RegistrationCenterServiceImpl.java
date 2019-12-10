@@ -37,12 +37,15 @@ import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
@@ -55,8 +58,11 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
+import io.mosip.kernel.masterdata.entity.DaysOfWeek;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.RegExceptionalHoliday;
+import io.mosip.kernel.masterdata.entity.RegWorkingNonWorking;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
@@ -69,8 +75,11 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.RegExceptionalHolidayRepository;
+import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
@@ -217,6 +226,15 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private DaysOfWeekListRepo daysOfWeekListRepo;
+	
+	@Autowired
+	private RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
+	
+   @Autowired
+   private RegExceptionalHolidayRepository regExceptionalHolidayRepository;
 
 	/**
 	 * Constructing regex for matching the Latitude and Longitude format
@@ -788,6 +806,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
+		
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters()) && flag) {
 			// searching registration center
 			pageDto = serviceHelper.searchCenter(dto, locationFilter, zoneFilter, zones, locations);
@@ -906,6 +925,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		RegistrationCenter registrationCenter = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
+		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
 
 		// List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
@@ -972,9 +992,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			// registrationCenterDto);
 
 			/*
-			 * RegistrationCenterID from the rcid_Seq Table,
-			 * RegistrationCenterID get by calling RegistrationCenterIdGenerator
-			 * API method generateRegistrationCenterId().
+			 * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
+			 * calling RegistrationCenterIdGenerator API method
+			 * generateRegistrationCenterId().
 			 * 
 			 */
 
@@ -984,18 +1004,44 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					registrationCenterEntity.setId(uniqueId);
 				}
 				/*
-				 * at the time of creation of new Registration Center Number of
-				 * Kiosks value will be Zero always
+				 * at the time of creation of new Registration Center Number of Kiosks value
+				 * will be Zero always
 				 */
 				registrationCenterEntity.setNumberOfKiosks((short) 0);
 
-				/*
-				 * Deactivate a Center during first time creation since there
-				 * will be no machines initially mapped to the Center
-				 */
 				// registrationCenterEntity.setIsActive(false);
 				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-				// registrationCenterList.add(registrationCenter);
+				
+				registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
+			}
+			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
+				// insert 7 rows in reg_working_non_working table
+				try {
+					if (regCenterPostReqDto.getWorkingNonWorkingDays() != null) {
+						createRegWorkingNonWorking(regCenterPostReqDto.getWorkingNonWorkingDays(), registrationCenterEntity);
+					}
+				} catch (NullPointerException e) {
+					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
+				}
+				try {
+					if (!regCenterPostReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
+						// Exceptional holiday create
+						createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
+					}
+				} catch (NullPointerException e) {
+					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
+				}
+			}
+				
+			if((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode())  ){
+				//set response for working_non_working for both primary and sencodary language
+				setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
+			}
+				//set ExpHoliday Dto
+				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
+				
 
 				// creating registration center history
 				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
@@ -1003,9 +1049,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
 				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
 				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-
-				registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
-			}
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
@@ -1017,6 +1060,127 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterExtnDto;
 
 	}
+
+	@Transactional
+	private void setRegExpHolidayDto(RegistrationCenter registrationCenter,
+			RegistrationCenterExtnDto registrationCenterExtnDto,
+			List<ExceptionalHolidayPutPostDto> exceptionalHolidayDtoList) {
+		List<RegExceptionalHoliday> dbRegExpHolidays=regExceptionalHolidayRepository.findByRegIdAndLangcode(registrationCenter.getId(),primaryLang);
+		if(!dbRegExpHolidays.isEmpty()) {
+			for(RegExceptionalHoliday regExceptionalHoliday : dbRegExpHolidays) {
+				ExceptionalHolidayPutPostDto exceptionalHolidayDto = MapperUtils.map(regExceptionalHoliday,
+						ExceptionalHolidayPutPostDto.class);
+				exceptionalHolidayDtoList.add(exceptionalHolidayDto);
+			}
+			registrationCenterExtnDto.setExceptionalHolidayPutPostDto(exceptionalHolidayDtoList);
+			
+		}
+	}
+
+	//set response for working_non_working for both primary and sencodary language
+	@Transactional
+	private void setResponseDtoWorkingNonWorking(RegistrationCenter registrationCenter,
+			RegistrationCenterExtnDto registrationCenterExtnDto) {
+		//if((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode())  ){
+		List<RegWorkingNonWorking> workingNonWorkingDays =regWorkingNonWorkingRepo.findByRegCenterIdAndlanguagecode(registrationCenter.getId(), primaryLang);
+		WorkingNonWorkingDaysDto workDays = new WorkingNonWorkingDaysDto();
+		if(!workingNonWorkingDays.isEmpty()) {
+		for( RegWorkingNonWorking working : workingNonWorkingDays)
+
+			 switch (working.getDayCode()) { 
+		        case "101": 
+		        	workDays.setSun(working.isWorking());
+		            break; 
+		        case "102": 
+		        	workDays.setMon(working.isWorking());
+		            break; 
+		        case "103": 
+		        	workDays.setTue(working.isWorking());
+		            break; 
+		        case "104": 
+		        	workDays.setWed(working.isWorking());
+		            break; 
+		        case "105": 
+		        	workDays.setThu(working.isWorking());
+		            break; 
+		        case "106": 
+		        	workDays.setFri(working.isWorking());
+		            break; 
+		        case "107": 
+		        	workDays.setSat(working.isWorking());
+		            break; 
+		        default: 
+		  
+		            break; 
+		        } 
+		}
+		
+		registrationCenterExtnDto.setWorkingNonWorkingDays(workDays);
+		//end of if }
+	}
+
+	@Transactional
+	private void createExpHoliday(List<ExceptionalHolidayPutPostDto> reqExceptionalHolidayDtos,  String holidayLocationCode, RegistrationCenter registrationCenterEntity) {
+		if(!reqExceptionalHolidayDtos.isEmpty()) {
+		List<LocalDate> dbHolidayList = holidayRepository
+				.findHolidayByLocationCode1(holidayLocationCode, primaryLang);
+
+		if (!dbHolidayList.isEmpty()) {
+			//List<ExceptionalHolidayDto> exceptionalHolidayDtos = reqExceptionalHolidayDto;
+			if(!reqExceptionalHolidayDtos.isEmpty()) { //***
+			for (ExceptionalHolidayPutPostDto expHoliday : reqExceptionalHolidayDtos) {
+				if (dbHolidayList.contains(expHoliday.getExceptionHolidayDate())) {
+					throw new MasterDataServiceException(RegistrationCenterErrorCode.EXP_HOLIDAY_DATE.getErrorCode(),
+							RegistrationCenterErrorCode.EXP_HOLIDAY_DATE.getErrorMessage());
+
+				}
+				RegExceptionalHoliday regExceptionalHoliday = new RegExceptionalHoliday();
+				regExceptionalHoliday = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+						RegExceptionalHoliday.class);
+				regExceptionalHoliday.setRegistrationCenterId(registrationCenterEntity.getId());
+				regExceptionalHoliday.setExceptionHolidayDate(expHoliday.getExceptionHolidayDate());
+				regExceptionalHoliday.setExceptionHolidayName(expHoliday.getExceptionHolidayName());
+				regExceptionalHoliday.setExceptionHolidayReson(expHoliday.getExceptionHolidayReson());
+				regExceptionalHoliday.setIsActive(true);
+				regExceptionalHolidayRepository.create(regExceptionalHoliday);
+			}
+			}
+		   }
+		}
+	}
+
+	@Transactional
+	private void createRegWorkingNonWorking(WorkingNonWorkingDaysDto workingNonWorkingDays,
+			RegistrationCenter registrationCenterEntity) {
+		List<String> dayCodes;
+		List<DaysOfWeek> daysOfWeek = daysOfWeekListRepo.findBylangCode(primaryLang);
+		dayCodes =daysOfWeek.parallelStream().map(DaysOfWeek::getCode).collect(Collectors.toList());
+		
+		//WorkingNonWorkingDaysDto workingNonWorkingDays = regCenterPostReqDto.getWorkingNonWorkingDays();
+		if(workingNonWorkingDays != null) {
+		Boolean[] working = {workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(), workingNonWorkingDays.getTue(),workingNonWorkingDays.getWed(),
+				workingNonWorkingDays.getThu(), workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat()};
+
+		List<RegWorkingNonWorking> regWorkingNonWorkingEntityList = new ArrayList<>();
+		int i=0;
+		for(String dayCode : dayCodes) {
+			RegWorkingNonWorking regWorkingNonWorkingEntity = new RegWorkingNonWorking();
+			regWorkingNonWorkingEntity.setRegistrationCenterId(registrationCenterEntity.getId());
+			regWorkingNonWorkingEntity.setDayCode(dayCode);
+			regWorkingNonWorkingEntity.setWorking(working[i]); i++;
+			regWorkingNonWorkingEntity.setLanguagecode(registrationCenterEntity.getLangCode());
+			regWorkingNonWorkingEntity.setIsActive(true);
+			regWorkingNonWorkingEntity.setCreatedBy(registrationCenterEntity.getCreatedBy());
+			regWorkingNonWorkingEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+			regWorkingNonWorkingEntityList.add(regWorkingNonWorkingEntity);
+		}
+		
+		regWorkingNonWorkingRepo.saveAll(regWorkingNonWorkingEntityList);
+		}
+		
+		
+	}
+	
 
 	// -----------------------------------------update----------------------------------------
 	/*
@@ -1033,7 +1197,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		List<ServiceError> errors = new ArrayList<>();
-
+		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
+		
 		try {
 
 			registrationCenterValidator.validateRegCenterUpdate(regCenterPutReqDto, errors);
@@ -1090,6 +1255,22 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							renRegistrationCenter, false);
 					updRegistrationCenterEntity.setIsActive(regCenterPutReqDto.getIsActive());
 					updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
+					
+					//New code start ****
+					//update operation for WNW and ExpHoliday only for primary langCode
+					if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPutReqDto.getLangCode())) {
+						updateWorkingNonWorking(updRegistrationCenter,regCenterPutReqDto, errors);
+					
+						updateExpHoliday(updRegistrationCenter,regCenterPutReqDto, errors);
+					}
+					
+					if((primaryLang.equals(regCenterPutReqDto.getLangCode()) || regCenterPutReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPutReqDto.getLangCode())  ){
+						//set response for working_non_working for both primary and sencodary language
+						setResponseDtoWorkingNonWorking(updRegistrationCenter, registrationCenterExtnDto);
+						
+						//set expHolidayDto 
+						setRegExpHolidayDto(updRegistrationCenter,registrationCenterExtnDto,exceptionalHolidayPutPostDtoList);
+					}
 
 					// creating registration center history
 					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
@@ -1113,6 +1294,142 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return registrationCenterExtnDto;
 
 	}
+	
+	//update expHoliday
+	@Transactional
+	private void updateExpHoliday(RegistrationCenter updRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto,
+			List<ServiceError> errors) {
+		try {
+			Set<LocalDate> dbRegExceptionalHolidays = new HashSet<>();
+			Set<LocalDate> reqHolidayDates = new HashSet<>();
+			// get data from DB for the ID			
+			List<RegExceptionalHoliday> dbRegExcpHoliday = regExceptionalHolidayRepository
+					.findByRegIdAndLangcode(updRegistrationCenter.getId(), primaryLang);
+
+			dbRegExceptionalHolidays = dbRegExcpHoliday.stream().map(date -> date.getExceptionHolidayDate())
+					.collect(Collectors.toSet());
+
+			if (regCenterPutReqDto.getExceptionalHolidayPutPostDto() != null
+					&& !regCenterPutReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
+				if (!dbRegExceptionalHolidays.isEmpty()) {
+					//db is not empty and req is not empty
+					createReqExpHolidayAndBDNotEmpt(updRegistrationCenter, regCenterPutReqDto, dbRegExceptionalHolidays,
+							reqHolidayDates);
+
+					for (LocalDate dbHoliday : dbRegExceptionalHolidays) {
+						if (reqHolidayDates.contains(dbHoliday)) {
+
+						} else {
+							// delete the Holiday Date from DB which is not present in request list
+							deleteExpHoliday(updRegistrationCenter, dbHoliday);
+						}
+					}
+				} else {
+					// db is empty and req has data, so create new entry with req data
+					createReqExpHoldayAndDBEmpty(updRegistrationCenter, regCenterPutReqDto);
+
+				}
+			} else if (dbRegExceptionalHolidays != null && !dbRegExceptionalHolidays.isEmpty()) {
+				// req empty and db has data, so delete Db data
+				for (LocalDate dbHoliday : dbRegExceptionalHolidays) {
+					deleteExpHoliday(updRegistrationCenter, dbHoliday);
+				}
+			}
+		} catch (NullPointerException exp) {
+			errors.add(new ServiceError(RegistrationCenterErrorCode.EXP_HOLIDAY_NULL.getErrorCode(),
+					RegistrationCenterErrorCode.EXP_HOLIDAY_NULL.getErrorMessage()));
+		}
+	}
+
+	// db is empty and req has data, so create new entry with req data
+	private void createReqExpHoldayAndDBEmpty(RegistrationCenter updRegistrationCenter,
+			RegCenterPutReqDto regCenterPutReqDto) {
+		for (ExceptionalHolidayPutPostDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayPutPostDto()) {
+			List<ExceptionalHolidayPutPostDto> addExpHoliday = new ArrayList<>();
+			addExpHoliday.add(reqExpHoliday);
+			// create new expHoliday in DB for the Id with new expHoliday date from request
+			createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
+					updRegistrationCenter);
+		}
+	}
+
+	//db is not empty and req is not empty
+	private void createReqExpHolidayAndBDNotEmpt(RegistrationCenter updRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto,
+			Set<LocalDate> dbRegExceptionalHolidays, Set<LocalDate> reqHolidayDates) {
+		for (ExceptionalHolidayPutPostDto reqExpHoliday : regCenterPutReqDto.getExceptionalHolidayPutPostDto()) {
+			if (dbRegExceptionalHolidays.contains(reqExpHoliday.getExceptionHolidayDate())) {
+				reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
+			} else {
+				List<ExceptionalHolidayPutPostDto> addExpHoliday = new ArrayList<>();
+				addExpHoliday.add(reqExpHoliday);
+				// create new expHoliday in DB for the Id with new expHoliday date from request
+				createExpHoliday(addExpHoliday, regCenterPutReqDto.getHolidayLocationCode(),
+						updRegistrationCenter);
+			}
+			reqHolidayDates.add(reqExpHoliday.getExceptionHolidayDate());
+		}
+	}
+	
+	@Transactional
+	private void deleteExpHoliday(RegistrationCenter updRegistrationCenter, LocalDate dbHoliday) {
+
+		RegExceptionalHoliday renEntity = regExceptionalHolidayRepository
+				.findByRegIdAndLangcodeAndExpHoliday(updRegistrationCenter.getId(), primaryLang, dbHoliday);
+		RegExceptionalHoliday regExceptionalHoliday = MetaDataUtils.setDeleteMetaData(renEntity);
+		regExceptionalHolidayRepository.update(regExceptionalHoliday);
+
+	}
+	
+	//create and update Working_Non_Working
+	@Transactional
+	private void updateWorkingNonWorking(RegistrationCenter updRegistrationCenter, RegCenterPutReqDto regCenterPutReqDto,
+			List<ServiceError> errors) {
+		try {
+			// check WorkingNonWorking is present in request or not
+			if (regCenterPutReqDto.getWorkingNonWorkingDays() != null) {
+				// check workingNonWorking is present in DB or not for the given regCenter Id
+				// request
+				List<RegWorkingNonWorking> dbRegWorkingNonWorkings = regWorkingNonWorkingRepo
+						.findByRegCenterIdAndlanguagecode(regCenterPutReqDto.getId(), primaryLang);
+				if(!dbRegWorkingNonWorkings.isEmpty()) {
+					// in Data present , update operation
+					updateRegWorkingNonWorking(regCenterPutReqDto,updRegistrationCenter, dbRegWorkingNonWorkings);
+				}else {
+					// in No data, create new record
+					createRegWorkingNonWorking(regCenterPutReqDto.getWorkingNonWorkingDays(),updRegistrationCenter);
+				}
+
+			}
+		} catch (NullPointerException exp) {
+			errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+					RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
+		}
+
+	}
+	
+	// update the WorkingNonWorking table
+	@Transactional
+	private void updateRegWorkingNonWorking(RegCenterPutReqDto regCenterPutReqDto,RegistrationCenter updRegistrationCenter, List<RegWorkingNonWorking> dbRegWorkingNonWorkings) {
+	
+		WorkingNonWorkingDaysDto workingNonWorkingDays = regCenterPutReqDto.getWorkingNonWorkingDays();
+		
+		Boolean[] working = {workingNonWorkingDays.getSun(), workingNonWorkingDays.getMon(), workingNonWorkingDays.getTue(),workingNonWorkingDays.getWed(),
+				workingNonWorkingDays.getThu(), workingNonWorkingDays.getFri(), workingNonWorkingDays.getSat()};
+
+		int i=0;
+		for(RegWorkingNonWorking regWorkingNonWorking : dbRegWorkingNonWorkings) {
+			regWorkingNonWorking.setRegistrationCenterId(updRegistrationCenter.getId());
+			regWorkingNonWorking.setWorking(working[i]); i++;
+			regWorkingNonWorking.setLanguagecode(updRegistrationCenter.getLangCode());
+			regWorkingNonWorking.setIsActive(true);
+			regWorkingNonWorking.setUpdatedBy(updRegistrationCenter.getUpdatedBy());
+			regWorkingNonWorking.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
+			regWorkingNonWorkingRepo.update(regWorkingNonWorking);
+		}	
+	}
+	
+	
+	
 
 	private void validateZoneMachineDevice(RegistrationCenter regRegistrationCenter,
 			RegCenterPutReqDto regCenterPutReqDto) {
