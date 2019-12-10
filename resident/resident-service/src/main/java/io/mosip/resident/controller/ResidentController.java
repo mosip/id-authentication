@@ -50,7 +50,7 @@ public class ResidentController {
 	@PostMapping(value = "/req/euin")
 	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO)
 			throws OtpValidationFailedException {
-
+		validator.validateEuinRequest(requestDTO);
 		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
 
 		InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfbytes));

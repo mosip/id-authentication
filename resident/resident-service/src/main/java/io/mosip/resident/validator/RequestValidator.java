@@ -14,6 +14,7 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.VidType;
 import io.mosip.resident.dto.AuthLockRequestDto;
+import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.exception.InvalidInputException;
@@ -35,6 +36,9 @@ public class RequestValidator {
 
 	@Value("${resident.authlock.id}")
 	private String authLockId;
+	
+	@Value("${resident.euin.id}")
+	private String autheuinId;
 
 	@Value("${auth.types.allowed}")
 	private String authTypes;
@@ -103,6 +107,26 @@ public class RequestValidator {
 
 		validateAuthType(requestDTO.getRequest().getAuthType());
 
+	}
+	
+	public void validateEuinRequest(RequestWrapper<EuinRequestDTO> requestDTO) {
+		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(autheuinId))
+			throw new InvalidInputException("autheuinId");
+
+		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
+			throw new InvalidInputException("version");
+		
+		if (requestDTO.getRequesttime() == null)
+			throw new InvalidInputException("requesttime");
+
+		if (requestDTO.getRequest() == null)
+			throw new InvalidInputException("request");
+
+
+		if (!requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
+						&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name()))
+			throw new InvalidInputException("individualIdType");
+		
 	}
 
 	public void validateAuthType(List<String> authType) {

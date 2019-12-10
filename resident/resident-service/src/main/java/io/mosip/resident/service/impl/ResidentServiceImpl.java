@@ -45,6 +45,7 @@ import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
+import io.mosip.resident.exception.InvalidInputException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.RIDInvalidException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
@@ -446,10 +447,7 @@ public class ResidentServiceImpl implements ResidentService {
 			validation = vidValidator.validateId(individualId);
 		} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
 			validation = ridValidator.validateId(individualId);
-		} else {
-			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorCode(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID.getErrorMessage());
-		}
+		} 
 		return validation;
 	}
 
