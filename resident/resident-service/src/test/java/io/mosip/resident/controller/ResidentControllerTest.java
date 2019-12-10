@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +79,7 @@ public class ResidentControllerTest {
 		ResponseDTO responseDto = new ResponseDTO();
 		responseDto.setStatus("success");
 		doNothing().when(validator).validateAuthLockRequest(authLockRequest);
-		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(ArgumentMatchers.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(Mockito.any());
 
 		this.mockMvc.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(regStatusToJson))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("success")));
@@ -90,7 +89,7 @@ public class ResidentControllerTest {
 	public void testRequestAuthLockBadRequest() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
 		doNothing().when(validator).validateAuthLockRequest(authLockRequest);
-		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(ArgumentMatchers.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(Mockito.any());
 
 		MvcResult result=this.mockMvc.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(""))
 				.andExpect(status().isOk()).andReturn();
