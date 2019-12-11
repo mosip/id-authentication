@@ -89,7 +89,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
@@ -184,27 +184,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 				return CryptoUtil.decodeBase64(stringToDecode);
 			} else {
 				return stringToDecode;
-			}
-		} catch (IllegalArgumentException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
-		}
-	}
-
-	/**
-	 * Encode method is used to encode the string which
-	 * is passed through it.
-	 *
-	 * @param stringToEncode the string to be encoded
-	 * @return the string the encoded string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	protected static String encode(String stringToEncode) throws IdAuthenticationAppException {
-		try {
-			if (Objects.nonNull(stringToEncode)) {
-				return CryptoUtil.encodeBase64String(stringToEncode.getBytes());
-			} else {
-				return stringToEncode;
 			}
 		} catch (IllegalArgumentException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());

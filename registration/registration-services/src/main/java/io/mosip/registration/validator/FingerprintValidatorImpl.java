@@ -4,10 +4,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRIN
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
@@ -23,7 +22,6 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -49,7 +47,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private UserDetailDAO userDetailDAO;
 
 	@Autowired
-	@Qualifier("finger")	
+	@Qualifier("finger")
 	IBioApi ibioApi;
 
 	/**
@@ -64,13 +62,23 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		LOGGER.info(LoggerConstants.FINGER_PRINT_AUTHENTICATION, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Scanned Finger");
+		if (ibioApi instanceof BioApiImpl) {
+			ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG,
+					RegistrationConstants.DISABLE);
+		}
+		if (!authenticationValidatorDTO.isAuthValidationFlag()) {
+			if ((String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG)))
+							.equalsIgnoreCase(RegistrationConstants.DISABLE))
+				return false;
+		}
 
 		if (RegistrationConstants.SINGLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
 			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
 					authenticationValidatorDTO.getFingerPrintDetails().get(0));
-		} else if (RegistrationConstants.MULTIPLE
-				.equals(authenticationValidatorDTO.getAuthValidationType())) {
-			return validateManyToManyFP(authenticationValidatorDTO.getFingerPrintDetails());
+		} else if (RegistrationConstants.MULTIPLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
+			return validateManyToManyFP(authenticationValidatorDTO.getUserId(),
+					authenticationValidatorDTO.getFingerPrintDetails());
 		}
 		return false;
 	}
@@ -85,7 +93,9 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO capturedFingerPrintDto) {
 		List<UserBiometric> userFingerprintDetails = userDetailDAO.getUserSpecificBioDetails(userId,
 				RegistrationConstants.FIN);
-		return validateFpWithBioApi(capturedFingerPrintDto, userFingerprintDetails);
+		List<FingerprintDetailsDTO> fingerList = new ArrayList<FingerprintDetailsDTO>();
+		fingerList.add(capturedFingerPrintDto);
+		return validateFpWithBioApi(fingerList, userFingerprintDetails);
 	}
 
 	/*
@@ -95,38 +105,53 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 * io.mosip.registration.service.bio.BioService#validateFpWithBioApi(io.mosip.
 	 * registration.dto.biometric.FingerprintDetailsDTO, java.util.List)
 	 */
-	private boolean validateFpWithBioApi(FingerprintDetailsDTO capturedFingerPrintDto,
+	private boolean validateFpWithBioApi(List<FingerprintDetailsDTO> capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
+		boolean flag = true;
 
-		BIR capturedBir = new BIRBuilder().withBdb(capturedFingerPrintDto.getFingerPrintISOImage()).withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FINGER)).build()).build();
+		BIR[] capturedBir = new BIR[capturedFingerPrintDto.size()];
+
+		int i = 0;
+		for (FingerprintDetailsDTO userBiometric : capturedFingerPrintDto) {
+			capturedBir[i] = new BIRBuilder().withBdb(userBiometric.getFingerPrintISOImage())
+					.withBdbInfo(
+							new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FINGER)).build())
+					.build();
+			i++;
+		}
+
 		BIR[] registeredBir = new BIR[userFingerprintDetails.size()];
 		Score[] scores = null;
-		boolean flag = false;
-		int i = 0;
+		flag = false;
+		i = 0;
 		ApplicationContext.map().remove("IDENTY_SDK");
 		for (UserBiometric userBiometric : userFingerprintDetails) {
-			registeredBir[i] = new BIRBuilder().withBdb(userBiometric.getBioIsoImage()).withBdbInfo(new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FINGER)).build()).build();
+			registeredBir[i] = new BIRBuilder().withBdb(userBiometric.getBioIsoImage())
+					.withBdbInfo(
+							new BDBInfo.BDBInfoBuilder().withType(Collections.singletonList(SingleType.FINGER)).build())
+					.build();
 			i++;
 		}
 		try {
-			scores = ibioApi.match(capturedBir,registeredBir, null);
+			CompositeScore compositeScore = ibioApi.compositeMatch(capturedBir, registeredBir, null);
+			scores = compositeScore.getIndividualScores();
 			int reqScore = 80;
 			for (Score score : scores) {
 				if (score.getScaleScore() >= reqScore) {
 					flag = true;
+					break;
 				}
 			}
 		} catch (BiometricException exception) {
-			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
-					"Exception while validating the finger print with bio api: %s caused by %s",
-					exception.getMessage(), exception.getCause()));
+			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+					String.format("Exception while validating the finger print with bio api: %s caused by %s",
+							exception.getMessage(), exception.getCause()));
 			ApplicationContext.map().put("IDENTY_SDK", "FAILED");
 			return false;
 		}
-		
+
 		return flag;
-		
-	
+
 	}
 
 	/**
@@ -136,16 +161,11 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 * @param capturedFingerPrintDetails
 	 * @return
 	 */
-	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> capturedFingerPrintDetails) {
+	private boolean validateManyToManyFP(String userId, List<FingerprintDetailsDTO> capturedFingerPrintDetails) {
 		Boolean isMatchFound = false;
-		for (FingerprintDetailsDTO fingerprintDetailsDTO : capturedFingerPrintDetails) {
-			isMatchFound = validateFpWithBioApi(fingerprintDetailsDTO,
-					userDetailDAO.getAllActiveUsers("FingerPrint "+ fingerprintDetailsDTO.getFingerType()));
-			if (isMatchFound) {
-				SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
-				break;
-			}
-		}
+			isMatchFound = validateFpWithBioApi(capturedFingerPrintDetails,
+					userDetailDAO.getUserSpecificBioDetails(userId, RegistrationConstants.FIN));
+				SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, "Duplicate found");
 		return isMatchFound;
 
 	}
@@ -153,5 +173,5 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	@Override
 	public AuthTokenDTO validate(String userId, String otp, boolean haveToSaveAuthToken) {
 		return null;
-	}	
+	}
 }

@@ -89,6 +89,8 @@ public class AbisHandlerStageTest {
 	public void setUp() throws RegistrationProcessorCheckedException {
 		ReflectionTestUtils.setField(abisHandlerStage, "maxResults", 30);
 		ReflectionTestUtils.setField(abisHandlerStage, "targetFPIR", 30);
+		ReflectionTestUtils.setField(abisHandlerStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(abisHandlerStage, "clusterManagerUrl", "/dummyPath");
 
 		AbisApplicationDto dto = new AbisApplicationDto();
 		dto.setCode("ABIS1");

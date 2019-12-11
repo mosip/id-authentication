@@ -30,7 +30,7 @@ The key solution considerations are
 
 
 **2.1.	Class Diagram**   
-![Class Diagram](_images/kernel-salt-generator-cd.PNG)   
+![Class Diagram](_images/kernel-salt-generator-cd.png)   
 
 
 **2.2.	Sequence Diagram**   
@@ -45,4 +45,4 @@ Any module can use kernel-salt-generator job to create and store random salt aga
 6. 	If data was already present in the table, Job throws an exception and exits
 
 Below sequence diagram shows the above sequence of operations in order to create and store salts in the database.   
-![Salt Generator Sequence Diagram](_images/kernel-salt-generator-sd.PNG)   
+![Salt Generator Sequence Diagram](_images/kernel-salt-generator-sd.png)   

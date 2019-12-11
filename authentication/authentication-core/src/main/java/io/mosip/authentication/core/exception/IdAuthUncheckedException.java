@@ -51,4 +51,8 @@ public class IdAuthUncheckedException extends BaseUncheckedException {
 	public IdAuthUncheckedException(IdAuthenticationErrorConstants exceptionConstant) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
 	}
+	
+	public IdAuthUncheckedException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
+		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
+	}
 }

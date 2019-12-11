@@ -283,7 +283,7 @@ public class RegistrationCenterController {
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcenters/search")
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
@@ -298,7 +298,7 @@ public class RegistrationCenterController {
 	 *            the request DTO.
 	 * @return the {@link FilterResponseDto}.
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters/filtervalues")
 	public ResponseWrapper<FilterResponseDto> registrationCenterFilterValues(
@@ -316,7 +316,7 @@ public class RegistrationCenterController {
 	 * @return RegistrationCenterPostResponseDto return the created registration
 	 *         center DTO.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterExtnDto> createRegistrationCenter(
@@ -334,7 +334,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterExtnDto> updateRegistrationCenterAdmin(
@@ -355,7 +355,7 @@ public class RegistrationCenterController {
 	 * @return ID Response : returns the ID in response, if the reg-center gets
 	 *         decommissioned
 	 */
-	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters/decommission/{regCenterID}")
 	public ResponseWrapper<IdResponseDto> decommissionRegCenter(@PathVariable("regCenterID") String regCenterID) {

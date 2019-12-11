@@ -268,11 +268,14 @@ public class RestHelperImpl implements RestHelper {
 				.syncBody(request).exchange().block();
 		if (response.statusCode() == HttpStatus.OK) {
 			ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-			if (responseBody != null && responseBody.get("response").get("status").asText().contentEquals("success")) {
+			if (responseBody != null && responseBody.get("response").get("status").asText().equalsIgnoreCase("success")) {
 				ResponseCookie responseCookie = response.cookies().get("Authorization").get(0);
 				authToken = responseCookie.getValue();
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
 						"Auth token generated successfully and set");
+			} else {
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
+						"Auth token generation failed: " + response);
 			}
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,

@@ -11,8 +11,6 @@ public class RequestDTO {
 
 	private List<BioInfo> biometrics;
 	
-	private String otp;
-	
 	private String timestamp;
 
 }

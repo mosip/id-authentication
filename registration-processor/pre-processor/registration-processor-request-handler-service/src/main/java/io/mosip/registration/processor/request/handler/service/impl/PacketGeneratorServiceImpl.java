@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,23 +18,23 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.request.handler.service.PacketCreationService;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
 import io.mosip.registration.processor.request.handler.service.dto.PackerGeneratorFailureDto;
@@ -47,12 +48,14 @@ import io.mosip.registration.processor.request.handler.service.dto.demographic.M
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService;
 import io.mosip.registration.processor.request.handler.upload.validator.RequestHandlerRequestValidator;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 /**
  * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
 @Service
-public class PacketGeneratorServiceImpl implements PacketGeneratorService {
+@Qualifier("packetGeneratorService")
+public class PacketGeneratorServiceImpl implements PacketGeneratorService<PacketGeneratorDto> {
 
 	/** The packet creation service. */
 	@Autowired
@@ -70,26 +73,17 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
-	@Autowired
-	private UinValidator<String> uinValidatorImpl;
-
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
-
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	@Autowired
-	private ObjectMapper mapper = new ObjectMapper();
-
-	@Autowired
-	private Utilities utilities;
-
-	@Autowired
 	RequestHandlerRequestValidator validator;
+
+	@Autowired
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/*
 	 * (non-Javadoc)
@@ -100,58 +94,70 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 */
 	@Override
 	public PacketGeneratorResDto createPacket(PacketGeneratorDto request) throws RegBaseCheckedException, IOException {
-
+		boolean isTransactional = false;
 		PacketGeneratorResDto packerGeneratorResDto = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PacketGeneratorServiceImpl ::createPacket()::entry");
 		byte[] packetZipBytes = null;
-		if (validator.isValidCenter(request.getCenterId()) && validator.isValidMachine(request.getMachineId())
-				&& validator.isValidRegistrationTypeAndUin(request.getRegistrationType(), request.getUin())) {
-			try {
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", "Packet Generator Validation successfull");
-				RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
-						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
-				packetZipBytes = packetCreationService.create(registrationDTO);
-				String rid = registrationDTO.getRegistrationId();
-				String packetCreatedDateTime = rid.substring(rid.length() - 14);
-				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
-						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
-				LocalDateTime ldt = LocalDateTime.parse(formattedDate,
-						DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
-				String creationTime = ldt.toString() + ".000Z";
+		try {
+			if (validator.isValidCenter(request.getCenterId()) && validator.isValidMachine(request.getMachineId())
+					&& validator.isValidRegistrationTypeAndUin(request.getRegistrationType(), request.getUin())) {
+				try {
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "",
+							"Packet Generator Validation successfull");
+					RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
+							request.getRegistrationType(), request.getCenterId(), request.getMachineId());
+					packetZipBytes = packetCreationService.create(registrationDTO, null);
+					String rid = registrationDTO.getRegistrationId();
+					String packetCreatedDateTime = rid.substring(rid.length() - 14);
+					String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
+							+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
+					LocalDateTime ldt = LocalDateTime.parse(formattedDate,
+							DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+					String creationTime = ldt.toString() + ".000Z";
 
-				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
-						creationTime, request.getRegistrationType(), packetZipBytes);
+					packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(
+							registrationDTO.getRegistrationId(), creationTime, request.getRegistrationType(),
+							packetZipBytes);
+					isTransactional = true;
+					return packerGeneratorResDto;
+				} catch (Exception e) {
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(),
+							PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage(),
+							ExceptionUtils.getStackTrace(e));
+					if (e instanceof RegBaseCheckedException) {
+						throw (RegBaseCheckedException) e;
+					}
+					throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
-				return packerGeneratorResDto;
-			} catch (Exception e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(),
-						PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage(), ExceptionUtils.getStackTrace(e));
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						ExceptionUtils.getStackTrace(e), e);
-
-			}
-		} else {
-			return dto;
+				}
+			} else
+				return dto;
+		} finally {
+			String eventId = isTransactional ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = isTransactional ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
+			String eventType = isTransactional ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
+			String message = isTransactional ? StatusUtil.RESIDENT_UPDATE_SUCCES.getMessage()
+					: StatusUtil.RESIDENT_UPDATE_FAILED.getMessage();
+			String moduleName = ModuleName.REQUEST_HANDLER_SERVICE.toString();
+			String moduleId = isTransactional ? StatusUtil.PACKET_GENERATION_SUCCESS.getCode()
+					: StatusUtil.PACKET_GENERATION_FAILED.getCode();
+			auditLogRequestBuilder.createAuditRequestBuilder(message, eventId, eventName, eventType, moduleId,
+					moduleName, dto.getRegistrationId());
 		}
 	}
 
 	/**
 	 * Creates the registration DTO object.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param registrationType
-	 *            the registration type
-	 * @param applicantType
-	 *            the applicant type
-	 * @param centerId
-	 *            the center id
-	 * @param machineId
-	 *            the machine id
+	 * @param uin              the uin
+	 * @param registrationType the registration type
+	 * @param applicantType    the applicant type
+	 * @param centerId         the center id
+	 * @param machineId        the machine id
 	 * @return the registration DTO
 	 * @throws RegBaseCheckedException
 	 */
@@ -172,8 +178,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	/**
 	 * Gets the demographic DTO.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param uin the uin
 	 * @return the demographic DTO
 	 */
 	private DemographicDTO getDemographicDTO(String uin) {
@@ -190,16 +195,11 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	/**
 	 * Gets the registration meta data DTO.
 	 *
-	 * @param registrationType
-	 *            the registration type
-	 * @param applicantType
-	 *            the applicant type
-	 * @param uin
-	 *            the uin
-	 * @param centerId
-	 *            the center id
-	 * @param machineId
-	 *            the machine id
+	 * @param registrationType the registration type
+	 * @param applicantType    the applicant type
+	 * @param uin              the uin
+	 * @param centerId         the center id
+	 * @param machineId        the machine id
 	 * @return the registration meta data DTO
 	 */
 	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String registrationType, String uin, String centerId,

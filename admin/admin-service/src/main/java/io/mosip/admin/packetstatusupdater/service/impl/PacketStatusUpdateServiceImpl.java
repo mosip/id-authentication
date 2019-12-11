@@ -1,15 +1,7 @@
 package io.mosip.admin.packetstatusupdater.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +35,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
-import io.mosip.kernel.core.util.DateUtils;
+
 
 /**
  * Packet Status Update service.
@@ -53,7 +45,7 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService {
-
+ 
 	/** The packet update status url. */
 	@Value("${mosip.kernel.packet-status-update-url}")
 	private String packetUpdateStatusUrl;
@@ -61,7 +53,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/** The zone validation url. */
 	@Value("${mosip.kernel.zone-validation-url}")
 	private String zoneValidationUrl;
-
+	
 	@Value("${mosip.primary-language:eng}")
 	private String primaryLang;
 
@@ -72,18 +64,15 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/** The object mapper. */
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	private static final String SLASH="/";
 
-	private static final String SLASH = "/";
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService#
-	 * getStatus(java.lang.String)
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.packetstatusupdater.service.PacketStatusUpdateService#getStatus(java.lang.String)
 	 */
 	@Override
 	public PacketStatusUpdateResponseDto getStatus(String rId) {
-
+		
 		authorizeRidWithZone(rId);
 		return getPacketStatus(rId);
 	}
@@ -91,35 +80,23 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Gets the packet status.
 	 *
-	 * @param rId
-	 *            the r id
+	 * @param rId the r id
 	 * @return the packet status
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked"})
 	private PacketStatusUpdateResponseDto getPacketStatus(String rId) {
 		try {
 
 			HttpHeaders packetHeaders = new HttpHeaders();
 			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
-			StringBuilder urlBuilder = new StringBuilder();
+			StringBuilder urlBuilder= new StringBuilder();
 			urlBuilder.append(packetUpdateStatusUrl).append(SLASH).append(primaryLang).append(SLASH).append(rId);
-			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(), HttpMethod.GET, null,
-					String.class);
+			ResponseEntity<String> response = restTemplate.exchange(urlBuilder.toString(),HttpMethod.GET,null,String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
-				List<PacketStatusUpdateDto> packetStatusUpdateDtos = getPacketResponse(ArrayList.class,
-						response.getBody());
-				PacketStatusUpdateResponseDto regProcPacketStatusRequestDto = new PacketStatusUpdateResponseDto();
-				// packetStatusUpdateDtos.stream().sorted(Comparator.comparing(PacketStatusUpdateDto::getCreatedDateTimes).reversed());
-				List<PacketStatusUpdateDto> packStautsDto = objectMapper.convertValue(
-					    packetStatusUpdateDtos, 
-					    new TypeReference<List<PacketStatusUpdateDto>>(){}
-					);
-				packStautsDto.sort(createdDateTimesComparator);
-				packStautsDto=packStautsDto.stream().filter(distinctTypeCode(PacketStatusUpdateDto::getTransactionTypeCode)).collect(Collectors.toList());
-				//packStautsDto.sort(createdDateTimesComparator);
-				
-				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packStautsDto);
-				return regProcPacketStatusRequestDto;
+				List<PacketStatusUpdateDto> packetStatusUpdateDtos= getPacketResponse(ArrayList.class, response.getBody());
+				PacketStatusUpdateResponseDto regProcPacketStatusRequestDto=new PacketStatusUpdateResponseDto();
+				regProcPacketStatusRequestDto.setPacketStatusUpdateList(packetStatusUpdateDtos);
+                return regProcPacketStatusRequestDto;
 			}
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			throwRestExceptions(ex);
@@ -131,8 +108,7 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Throw rest exceptions.
 	 *
-	 * @param ex
-	 *            the ex
+	 * @param ex the ex
 	 */
 	private void throwRestExceptions(HttpStatusCodeException ex) {
 		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
@@ -159,18 +135,18 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Authorize rid with zone.
 	 *
-	 * @param rId
-	 *            the r id
+	 * @param rId the r id
 	 * @return true, if successful
 	 */
 	private boolean authorizeRidWithZone(String rId) {
 		try {
 			HttpHeaders packetHeaders = new HttpHeaders();
+			packetHeaders.set("Cookie","Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTAwMDYiLCJtb2JpbGUiOiI3OTE4MzA5ODYiLCJtYWlsIjoiYXVkcmEuYW1lenF1aXRhQHh5ei5jb20iLCJyb2xlIjoiUkVHSVNUUkFUSU9OX0FETUlOLFJFR0lTVFJBVElPTl9PRkZJQ0VSLFpPTkFMX0FETUlOLFJFR0lTVFJBVElPTl9TVVBFUlZJU09SLEdMT0JBTF9BRE1JTiIsIm5hbWUiOiJ0ZXN0IiwicklkIjoiMjc4NDc2NTczNjAwMDI1MjAxOTA4MjAxMDQ5NTciLCJpYXQiOjE1NzQ1OTkxNzIsImV4cCI6MTU3NDYwNTE3Mn0.va8-7sfCL1XlUcI4soQfy9ulNvFsjjI-H6jna7AMvFFoAPwgb3kYzxwBuFXzJcPHnLXaBBziiJXTHqOUwSph5g");
+			packetHeaders.setContentType(MediaType.APPLICATION_JSON);
 			UriComponentsBuilder uribuilder = UriComponentsBuilder.fromUriString(zoneValidationUrl).queryParam("rid",
 					rId);
 			HttpEntity<RequestWrapper<String>> httpReq = new HttpEntity<>(null, packetHeaders);
-			ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(), HttpMethod.GET, httpReq,
-					String.class);
+			ResponseEntity<String> response = restTemplate.exchange(uribuilder.toUriString(),HttpMethod.GET,httpReq,String.class);
 			if (response.getStatusCode().is2xxSuccessful()) {
 				boolean isAuthorized = getPacketResponse(Boolean.class, response.getBody());
 				return isAuthorized;
@@ -185,15 +161,12 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 	/**
 	 * Gets the packet response.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            the clazz
-	 * @param responseBody
-	 *            the response body
+	 * @param <T> the generic type
+	 * @param clazz the clazz
+	 * @param responseBody the response body
 	 * @return the packet response
 	 */
-
+	
 	private <T> T getPacketResponse(Class<T> clazz, String responseBody) {
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -213,32 +186,6 @@ public class PacketStatusUpdateServiceImpl implements PacketStatusUpdateService 
 
 		}
 		return packetStatusUpdateDto;
-	}
-
-	Comparator<PacketStatusUpdateDto> createdDateTimesComparator = new Comparator<PacketStatusUpdateDto>() {
-
-		@Override
-		public int compare(PacketStatusUpdateDto o1, PacketStatusUpdateDto o2) {
-			LocalDateTime o1CreatedDateTimes = DateUtils.parseToLocalDateTime(o1.getCreatedDateTimes());
-			LocalDateTime o2CreatedDateTimes = DateUtils.parseToLocalDateTime(o2.getCreatedDateTimes());
-			return o2CreatedDateTimes.compareTo(o1CreatedDateTimes);
-		}
-	};
-	
-	private static <T> Predicate<T> distinctTypeCode(Function<? super T, Object>... keyRetrievers) {
-
-	    final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
-
-	    return t -> {
-
-	        final List<?> keys = Arrays.stream(keyRetrievers)
-	            .map(key -> key.apply(t))
-	            .collect(Collectors.toList());
-
-	        return seen.putIfAbsent(keys, Boolean.TRUE) == null;
-
-	    };
-
 	}
 
 }

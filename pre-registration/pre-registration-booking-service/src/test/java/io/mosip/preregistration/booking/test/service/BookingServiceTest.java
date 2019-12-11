@@ -241,17 +241,17 @@ public class BookingServiceTest {
 		oldBooking.setRegistrationCenterId("1");
 		oldBooking.setSlotFromTime("09:00");
 		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2019-12-06");
+		oldBooking.setRegDate("2020-12-12");
 
 		newBooking.setRegistrationCenterId("1");
 		newBooking.setSlotFromTime("09:00");
 		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2019-12-12");
+		newBooking.setRegDate("2020-12-12");
 
 		oldBooking_success.setRegistrationCenterId("1");
 		oldBooking_success.setSlotFromTime("09:00");
 		oldBooking_success.setSlotToTime("09:13");
-		oldBooking_success.setRegDate("2019-12-05");
+		oldBooking_success.setRegDate("2020-12-12");
 
 		statusDTOA.setBookingMessage("Appointment booked successfully");
 
@@ -272,7 +272,7 @@ public class BookingServiceTest {
 		cancelRequestdto.setRequest(cancelbookingDto);
 		cancelRequestdto.setId("mosip.pre-registration.booking.book");
 		cancelRequestdto.setVersion("1.0");
-		cancelbookingDto.setRegDate("2019-12-04");
+		cancelbookingDto.setRegDate("2020-12-12");
 		cancelbookingDto.setRegistrationCenterId("1");
 		cancelbookingDto.setSlotFromTime("09:00");
 		cancelbookingDto.setSlotToTime("09:13");
@@ -284,7 +284,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(4);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-04"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(localTime2);
 		availableEntity.setFromTime(localTime1);
 		availableEntity.setCrBy("987654321");
@@ -359,7 +359,7 @@ public class BookingServiceTest {
 
 		availableEntity1.setAvailableKiosks(4);
 		availableEntity1.setRegcntrId("1");
-		availableEntity1.setRegDate(LocalDate.parse("2019-12-04"));
+		availableEntity1.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity1.setToTime(localTime2);
 		availableEntity1.setFromTime(localTime1);
 		availableEntity1.setCrBy("987654321");
@@ -460,7 +460,7 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("1");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -469,7 +469,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -505,7 +505,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -539,7 +539,7 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("1");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -548,7 +548,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -584,7 +584,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -617,7 +617,7 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("1");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -626,7 +626,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -662,7 +662,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -691,7 +691,7 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("1");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -700,7 +700,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -736,7 +736,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -787,7 +787,7 @@ public class BookingServiceTest {
 		successBookDto1.setRegistrationCenterId("1");
 		successBookDto1.setSlotFromTime("09:00");
 		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -797,7 +797,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -833,7 +833,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -884,7 +884,7 @@ public class BookingServiceTest {
 		successBookDto1.setRegistrationCenterId("1");
 		successBookDto1.setSlotFromTime("09:00");
 		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -894,7 +894,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -930,7 +930,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -981,7 +981,7 @@ public class BookingServiceTest {
 		successBookDto1.setRegistrationCenterId("1");
 		successBookDto1.setSlotFromTime("09:00");
 		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -991,7 +991,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -1027,7 +1027,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -1082,7 +1082,7 @@ public class BookingServiceTest {
 		successBookDto1.setRegistrationCenterId("1");
 		successBookDto1.setSlotFromTime("09:00");
 		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -1092,7 +1092,7 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setRegDate(LocalDate.parse("2020-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
@@ -1126,7 +1126,7 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
@@ -1513,16 +1513,19 @@ public class BookingServiceTest {
 	@Test
 	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
-		String date5 = "2019-11-09 14:20:00";
-		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
 		PreRegistartionStatusDTO bookedStatusDTO = new PreRegistartionStatusDTO();
 		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		bookedStatusDTO.setPreRegistartionId("23587986034785");
 		preRegResponse.setResponse(bookedStatusDTO);
+		bookingEntity=new RegistrationBookingEntity();
+		RegistrationBookingPK bookingPK = new RegistrationBookingPK();
+		bookingPK.setBookingDateTime(LocalDateTime.now());
+		bookingEntity.setBookingPK(bookingPK);
+		bookingEntity.setRegDate(LocalDate.now().plusDays(2));
+		bookingEntity.setSlotFromTime(LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute()));
+		bookingEntity.setSlotToTime(LocalTime.of(LocalTime.now().getHour(), LocalTime.now().plusMinutes(15).getMinute()));
 
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
@@ -1537,7 +1540,6 @@ public class BookingServiceTest {
 
 		Mockito.when(bookingDAO.findByPreRegistrationId(Mockito.any())).thenReturn(bookingEntity);
 
-		// Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
 		Mockito.when(bookingDAO.deleteByPreRegistrationId(Mockito.anyString())).thenReturn(1);
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
@@ -1567,7 +1569,7 @@ public class BookingServiceTest {
 		bookingRequestDTO.setRegistrationCenterId("1");
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:15");
-		bookingRequestDTO.setRegDate("2019-12-06");
+		bookingRequestDTO.setRegDate("2020-12-12");
 
 		/*
 		 * newBookingRegistrationDTO.setRegistrationCenterId("10005");
@@ -1608,7 +1610,7 @@ public class BookingServiceTest {
 		bookingEntityRebook.setLangCode("12L");
 		bookingEntityRebook.setCrBy("987654321");
 		bookingEntityRebook.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntityRebook.setRegDate(LocalDate.parse("2019-12-06"));
+		bookingEntityRebook.setRegDate(LocalDate.parse("2020-12-12"));
 		bookingEntityRebook.setSlotFromTime(LocalTime.parse("09:00"));
 		bookingEntityRebook.setSlotToTime(LocalTime.parse("09:15"));
 		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntityRebook);
@@ -1684,7 +1686,7 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("1");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.pre-registration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -1974,14 +1976,14 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("10001");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 
 		AvailablityNotFoundException exception = new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.getCode(),
 				ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.getMessage());
 		AvailibityEntity availableEntityNull = new AvailibityEntity();
 		availableEntityNull.setAvailableKiosks(0);
 		availableEntityNull.setRegcntrId("1");
-		availableEntityNull.setRegDate(LocalDate.parse("2018-12-04"));
+		availableEntityNull.setRegDate(LocalDate.parse("2018-12-12"));
 		availableEntityNull.setCrBy("987654321");
 		availableEntityNull.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntityNull.setDeleted(false);
@@ -2020,7 +2022,7 @@ public class BookingServiceTest {
 		successBookDto.setRegistrationCenterId("1");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setRegDate("2020-12-12");
 		AvailablityNotFoundException exception = new AvailablityNotFoundException(
 				ErrorCodes.PRG_BOOK_RCI_002.toString(),
 				ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());

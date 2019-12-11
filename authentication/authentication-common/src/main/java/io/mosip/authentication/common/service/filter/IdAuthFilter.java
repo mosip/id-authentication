@@ -1,9 +1,33 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ACTIVE_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TIMESTAMP_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VALUE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VALUE_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_AAD_LAST_BYTES_NUM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_SALT_LAST_BYTES_NUM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EKYC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EXPIRY_DT;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISPLICENSE_KEY;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISP_ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.POLICY_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_HMAC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SESSION_KEY;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -34,6 +60,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -52,74 +79,6 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
-
-	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
-	private static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
-
-	/** The Constant DEFAULT_SALT_LAST_BYTES_NUM. */
-	private static final int DEFAULT_SALT_LAST_BYTES_NUM = 12;
-
-	/** The Constant TIMESTAMP. */
-	private static final String TIMESTAMP = "timestamp";
-
-	/** The Constant BIO_VALUE. */
-	private static final String BIO_VALUE = "bioValue";
-	
-	/** The Constant SESSION_KEY. */
-	private static final String SESSION_KEY = "sessionKey";
-	
-	private static final String REQUEST_BIOMETRICS_PARAM = REQUEST + "/" + BIOMETRICS;
-
-	/** The Constant BIO_DATA_INPUT_PARAM. */
-	private static final String BIO_DATA_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + DATA;
-	
-	private static final String BIO_SESSIONKEY_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + SESSION_KEY;
-
-	/** The Constant HASH_INPUT_PARAM. */
-	private static final String HASH_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + HASH;
-	
-	private static final String BIO_VALUE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_VALUE;
-	
-	private static final String BIO_TIMESTAMP_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + TIMESTAMP;
-
-	
-
-	/** The Constant EKYC. */
-	private static final String EKYC = "ekyc";
-
-	/** The Constant BIO_TYPE. */
-	private static final String BIO_TYPE = "bioType";
-
-	/** The Constant UTF_8. */
-	private static final String UTF_8 = "UTF-8";
-
-	/** The Constant REQUEST_HMAC. */
-	private static final String REQUEST_HMAC = "requestHMAC";
-
-	/** The Constant MISPLICENSE_KEY. */
-	private static final String MISPLICENSE_KEY = "misplicenseKey";
-
-	/** The Constant PARTNER_ID. */
-	private static final String PARTNER_ID = "partnerId";
-
-	/** The Constant MISP_ID. */
-	private static final String MISP_ID = "mispId";
-
-	/** The Constant POLICY_ID. */
-	private static final String POLICY_ID = "policyId";
-
-	/** The Constant ACTIVE_STATUS. */
-	private static final String ACTIVE_STATUS = "active";
-
-	/** The Constant EXPIRY_DT. */
-	private static final String EXPIRY_DT = "expiryDt";
-
-	/** The Constant KYC. */
-	private static final String KYC = null;
-
-	/** The Constant SESSION_KEY. */
-	private static final String REQUEST_SESSION_KEY = "requestSessionKey";
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -130,9 +89,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			if (null == requestBody.get(REQUEST)) {
-				throwMissingInputParameter(REQUEST);
-			} else {
+			if (null != requestBody.get(REQUEST)) {
 				requestBody.replace(REQUEST,
 						decode((String) requestBody.get(REQUEST)));
 				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
@@ -159,6 +116,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				
 				requestBody.replace(REQUEST, request);
 			}
+			
 			return requestBody;
 		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -221,6 +179,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 			
 			Object bioValue = data.get(BIO_VALUE);
+			DigitalId digitalId = Objects.nonNull(data.get(DIGITAL_ID)) ? mapper.readValue(CryptoUtil.decodeBase64((String) data.get(DIGITAL_ID)), DigitalId.class) : null;
+			data.replace(DIGITAL_ID, digitalId);
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
 			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
@@ -647,17 +607,19 @@ public class IdAuthFilter extends BaseAuthFilter {
 				new TypeReference<List<BioIdentityInfoDTO>>() {
 				});
 
-		boolean noBioType = listBioInfo.stream()
-				.anyMatch(s -> Objects.nonNull(s.getData()) && StringUtils.isEmpty(s.getData().getBioType()));
-		if (noBioType) {
-			throw new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), BIO_TYPE));
+		OptionalInt noBioTypeIndex = IntStream.range(0, listBioInfo.size())
+										.filter(i -> {
+											BioIdentityInfoDTO bioIdInfoDto = listBioInfo.get(i);
+											return Objects.nonNull(bioIdInfoDto.getData())
+													&& StringUtils.isEmpty(bioIdInfoDto.getData().getBioType());
+										}).findFirst();
+		if (noBioTypeIndex.isPresent()) {
+			throwMissingInputParameter(String.format(BIO_TYPE_INPUT_PARAM, noBioTypeIndex.getAsInt()));
 		}
 
 		List<String> bioTypeList = listBioInfo.stream()
-				.filter(s -> Objects.nonNull(s.getData()) && !StringUtils.isEmpty(s.getData().getBioType()))
-				.map(s -> s.getData().getBioType()).collect(Collectors.toList());
+									.map(s -> s.getData().getBioType())
+									.collect(Collectors.toList());
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(

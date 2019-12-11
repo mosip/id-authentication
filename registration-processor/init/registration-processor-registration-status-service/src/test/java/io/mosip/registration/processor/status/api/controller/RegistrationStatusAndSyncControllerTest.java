@@ -41,7 +41,6 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.status.api.config.RegistrationStatusConfigTest;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
@@ -52,8 +51,6 @@ import io.mosip.registration.processor.status.dto.SyncResponseFailDto;
 import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
 import io.mosip.registration.processor.status.dto.SyncResponseSuccessDto;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
 import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
@@ -97,7 +94,10 @@ public class RegistrationStatusAndSyncControllerTest {
 	private MockMvc mockMvc;
 
 	/** The registration dto list. */
-	private List<InternalRegistrationStatusDto> registrationDtoList;
+	private List<RegistrationStatusDto> registrationDtoList;
+
+	/** The registration dto list. */
+	private List<RegistrationStatusDto> registrationDtoList1;
 
 	/** The array to json. */
 	private String regStatusToJson;
@@ -142,10 +142,13 @@ public class RegistrationStatusAndSyncControllerTest {
 		List<RegistrationStatusSubRequestDto> request = new ArrayList<>();
 		RegistrationStatusSubRequestDto regitrationid1 = new RegistrationStatusSubRequestDto();
 		RegistrationStatusSubRequestDto regitrationid2 = new RegistrationStatusSubRequestDto();
+		RegistrationStatusSubRequestDto regitrationid3 = new RegistrationStatusSubRequestDto();
 		regitrationid1.setRegistrationId("1001");
 		regitrationid2.setRegistrationId("1002");
+		regitrationid3.setRegistrationId("1003");
 		request.add(regitrationid1);
 		request.add(regitrationid2);
+		request.add(regitrationid3);
 		registrationStatusRequestDTO = new RegistrationStatusRequestDTO();
 		registrationStatusRequestDTO.setRequest(request);
 		registrationStatusRequestDTO.setId("mosip.registration.status");
@@ -154,22 +157,15 @@ public class RegistrationStatusAndSyncControllerTest {
 				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		regStatusToJson = gson.toJson(registrationStatusRequestDTO);
 		registrationDtoList = new ArrayList<>();
-		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
+		registrationDtoList1 = new ArrayList<>();
+		RegistrationStatusDto registrationStatusDto1 = new RegistrationStatusDto();
 		registrationStatusDto1.setRegistrationId("1001");
-		registrationStatusDto1.setRegistrationType("NEW");
-		registrationStatusDto1.setLangCode("EN");
-		registrationStatusDto1.setIsActive(true);
-		registrationStatusDto1.setCreatedBy("MOSIP_SYSTEM");
 
-		InternalRegistrationStatusDto registrationStatusDto2 = new InternalRegistrationStatusDto();
+		RegistrationStatusDto registrationStatusDto2 = new RegistrationStatusDto();
 		registrationStatusDto2.setRegistrationId("1002");
-		registrationStatusDto2.setRegistrationType("NEW");
-		registrationStatusDto2.setLangCode("EN");
-		registrationStatusDto2.setIsActive(true);
-		registrationStatusDto2.setCreatedBy("MOSIP_SYSTEM");
 
 		registrationDtoList.add(registrationStatusDto1);
-		registrationDtoList.add(registrationStatusDto2);
+		registrationDtoList1.add(registrationStatusDto2);
 		SyncResponseSuccessDto syncResponseDto = new SyncResponseSuccessDto();
 		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 		syncResponseDto.setRegistrationId("1001");
@@ -198,6 +194,7 @@ public class RegistrationStatusAndSyncControllerTest {
 				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 
 		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
+		Mockito.doReturn(registrationDtoList1).when(syncRegistrationService).getByIds(ArgumentMatchers.any());
 		Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
 		signresponse.setSignature("abcd");
 		dto.setResponse(signresponse);
@@ -257,15 +254,16 @@ public class RegistrationStatusAndSyncControllerTest {
 		registrationSyncController.buildRegistrationSyncResponse(syncResponseDtoList);
 
 	}
+
 	@Test
 	public void testBuildRegistrationSyncResponse1() throws JsonProcessingException {
 		List<SyncResponseDto> syncResponseDtoList = new ArrayList<>();
 		SyncResponseFailDto syncResponseFailDto = new SyncResponseFailDto();
 		SyncResponseFailureDto syncResponseDto = new SyncResponseFailureDto();
-		
+
 		syncResponseDto.setStatus("Fail");
 		syncResponseDtoList.add(syncResponseDto);
-		
+
 		syncResponseFailDto.setStatus("Fail");
 		syncResponseDtoList.add(syncResponseFailDto);
 		registrationSyncController.buildRegistrationSyncResponse(syncResponseDtoList);

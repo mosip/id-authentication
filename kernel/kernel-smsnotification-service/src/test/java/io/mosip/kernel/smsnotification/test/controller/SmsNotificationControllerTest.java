@@ -68,5 +68,31 @@ public class SmsNotificationControllerTest {
 		mockMvc.perform(post("/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("success")));
 	}
+	
+	@WithUserDetails("individual")
+	@Test
+	public void controllerExpTest() throws Exception {
+
+		SmsResponseDto responseDto = new SmsResponseDto();
+
+		responseDto.setStatus("success");
+
+		SmsRequestDto requestDto = new SmsRequestDto();
+		requestDto.setMessage("hello..your otp is 342891");
+		requestDto.setNumber("8987672fff341");
+
+		RequestWrapper<SmsRequestDto> reqWrapperDTO = new RequestWrapper<>();
+		reqWrapperDTO.setId("ID");
+		reqWrapperDTO.setMetadata(null);
+		reqWrapperDTO.setRequest(requestDto);
+		reqWrapperDTO.setRequesttime(LocalDateTime.now());
+		reqWrapperDTO.setVersion("v1.0");
+		String json = objectMapper.writeValueAsString(reqWrapperDTO);
+
+		when(service.sendSmsNotification("898767234f1", "hello..your otp is 342891")).thenReturn(responseDto);
+
+		mockMvc.perform(post("/sms/send").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 
 }

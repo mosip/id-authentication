@@ -81,6 +81,7 @@ import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorSta
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import org.springframework.test.util.ReflectionTestUtils;
 import io.vertx.core.Vertx;
 
 @RunWith(PowerMockRunner.class)
@@ -180,6 +181,8 @@ public class UinGeneratorStageTest {
 
 	@Before
 	public void setup() throws Exception {
+		ReflectionTestUtils.setField(uinGeneratorStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(uinGeneratorStage, "clusterManagerUrl", "/dummyPath");
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("EXCEPTION");
 		Mockito.doNothing().when(description).setCode(Mockito.anyString());
 		Mockito.doNothing().when(description).setMessage(Mockito.anyString());

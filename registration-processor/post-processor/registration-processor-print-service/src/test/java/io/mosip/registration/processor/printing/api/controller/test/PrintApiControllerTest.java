@@ -30,8 +30,11 @@ import org.springframework.validation.Errors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
+import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.dto.RequestDTO;
@@ -59,6 +62,8 @@ public class PrintApiControllerTest {
 	@Mock
 	private PrintServiceRequestValidator validator;
 
+	@Autowired
+	private RidValidator<String> ridValidator;
 	@Mock
 	private Errors errors;
 
@@ -67,7 +72,7 @@ public class PrintApiControllerTest {
 	private String json;
 
 	@Before
-	public void setup() {
+	public void setup() throws RegPrintAppException {
 		when(env.getProperty("mosip.registration.processor.print.service.id")).thenReturn("mosip.registration.print");
 		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
 				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -78,14 +83,18 @@ public class PrintApiControllerTest {
 		RequestDTO dto = new RequestDTO();
 		dto.setIdtype(IdType.RID);
 		dto.setIdValue("10003100030000720190416061449");
+		dto.setCardType("UIN");
 		request.setRequest(dto);
-		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		String time = DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		request.setRequesttime(time);
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
 
 		byte[] pdfbyte = "pdf bytes".getBytes();
 		map.put("uinPdf", pdfbyte);
+		Mockito.when(ridValidator.validateId(any())).thenReturn(Boolean.TRUE);
 	}
 
 	@WithUserDetails("reg-admin")
@@ -114,7 +123,9 @@ public class PrintApiControllerTest {
 		RequestDTO dto = new RequestDTO();
 		dto.setIdValue("10003100030000720190416061449");
 		request.setRequest(dto);
-		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		String time = DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		request.setRequesttime(time);
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
@@ -130,7 +141,9 @@ public class PrintApiControllerTest {
 		RequestDTO dto = new RequestDTO();
 		dto.setIdtype(IdType.RID);
 		request.setRequest(dto);
-		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		String time = DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		request.setRequesttime(time);
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
@@ -150,7 +163,9 @@ public class PrintApiControllerTest {
 		dto.setIdtype(IdType.UIN);
 		dto.setIdValue("2812936908");
 		request.setRequest(dto);
-		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		String time = DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		request.setRequesttime(time);
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
@@ -163,7 +178,9 @@ public class PrintApiControllerTest {
 	public void testPdfRequestMissing() throws Exception {
 		PrintRequest request = new PrintRequest();
 		request.setId("mosip.registration.print");
-		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		String time = DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		request.setRequesttime(time);
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);

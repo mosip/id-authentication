@@ -1,3 +1,13 @@
+### -- ---------------------------------------------------------------------------------------------------------
+### -- Script Name		: PMP DB Artifacts deploy
+### -- Deploy Module 	: MOSIP PMP
+### -- Purpose    		: To deploy MOSIP PMP Database DB Artifacts.       
+### -- Create By   		: Sadanandegowda DM
+### -- Created Date		: 
+### -- 
+### -- Modified Date        Modified By         Comments / Remarks
+### -- -----------------------------------------------------------------------------------------------------------
+
 #########Properties file #############
 set -e
 properties_file="$1"

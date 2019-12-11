@@ -30,6 +30,8 @@ public class RegWorkingNonWorking extends BaseEntity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -5192880804937801240L;
+	
+
 
 	@Id
 	@Column(name="regcntr_id",nullable=false,length=10)
@@ -52,12 +54,12 @@ public class RegWorkingNonWorking extends BaseEntity implements Serializable{
 	})
 	private DaysOfWeek daysOfWeek;
 	
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name="id",referencedColumnName="id",insertable=false,updatable=false),
-		@JoinColumn(name="lang_code",referencedColumnName="lang_code",insertable=false,updatable=false)
-	})
-	private RegistrationCenter registrationCenter;
+//	@ManyToOne
+//	@JoinColumns({
+//		@JoinColumn(name="id",referencedColumnName="id",insertable=false,updatable=false),
+//		@JoinColumn(name="lang_code",referencedColumnName="lang_code",insertable=false,updatable=false)
+//	})
+//	private RegistrationCenter registrationCenter;
 	
 
 }

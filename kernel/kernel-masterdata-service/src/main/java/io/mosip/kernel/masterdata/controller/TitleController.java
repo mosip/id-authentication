@@ -89,6 +89,7 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@PostMapping("/title")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
@@ -176,9 +177,10 @@ public class TitleController {
 	 *            the request
 	 * @return response wrapper
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	
 	@ResponseFilter
 	@PostMapping("title/search")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "Search title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
 			@ApiResponse(code = 500, message = "Error occured while searching title") })
@@ -197,6 +199,7 @@ public class TitleController {
 	 */
 	@ResponseFilter
 	@PostMapping("title/filtervalues")
+	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "filter title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })

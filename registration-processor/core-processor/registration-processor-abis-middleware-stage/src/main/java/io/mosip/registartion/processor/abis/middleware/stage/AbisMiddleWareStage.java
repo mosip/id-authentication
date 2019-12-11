@@ -122,6 +122,10 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
+	
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
 
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
@@ -143,7 +147,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 		try {
-			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+			mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 			this.consume(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			abisQueueDetails = utility.getAbisQueueDetails();
 			for (AbisQueueDetails abisQueue : abisQueueDetails) {
@@ -594,6 +598,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		abisResponseEntity.setUpdBy(abisResponseDto.getUpdBy());
 		abisResponseEntity.setUpdDtimes(abisResponseDto.getUpdDtimes());
 		abisResponseEntity.setIsDeleted(abisResponseDto.getIsDeleted());
+		abisResponseEntity.setRespDtimes(LocalDateTime.now(ZoneId.of("UTC")));
 
 		return abisResponseEntity;
 

@@ -45,4 +45,6 @@ public interface CenterMachineReMapService {
 	 * starts the remap process if the remap flag is enabled
 	 */
 	void startRemapProcess();
+
+	boolean isPacketsPendingForReRegister();
 }

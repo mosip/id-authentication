@@ -3,7 +3,6 @@ package io.mosip.registration.device.gps;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -46,12 +45,9 @@ public class GPSFacade extends GPSBU343Connector {
 	/**
 	 * This method gets the latitude and longitude details from GPS device.
 	 *
-	 * @param centerLat
-	 *            the center latitude
-	 * @param centerLngt
-	 *            the center longitude
-	 * @param gpsConnectionDevice
-	 *            the GPS connection device
+	 * @param centerLat           the center latitude
+	 * @param centerLngt          the center longitude
+	 * @param gpsConnectionDevice the GPS connection device
 	 * @return the latitude and longitude details from GPS device
 	 */
 	public Map<String, Object> getLatLongDtls(double centerLat, double centerLngt, String gpsConnectionDevice) {
@@ -100,27 +96,23 @@ public class GPSFacade extends GPSBU343Connector {
 				if (null != gpsdata && !gpsdata.getResponse().equals("failure")) {
 
 					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-							RegistrationConstants.LATITUDE + " =====>" + gpsdata.getLat()
-									+ RegistrationConstants.LONGITUDE + " ====>" + gpsdata.getLon()
+							RegistrationConstants.LATITUDE + " =====>" + gpsdata.getLat() / 100
+									+ RegistrationConstants.LONGITUDE + " ====>" + gpsdata.getLon() / 100
 									+ RegistrationConstants.GPS_DISTANCE + " =====>" + gpsdata.getResponse());
 
-					double deviceLat = gpsdata.getLat();
-					double deviceLongi = gpsdata.getLon();
+					double deviceLat = gpsdata.getLat() / 100;
+					double deviceLongi = gpsdata.getLon() / 100;
 
-					BigDecimal deviceLatitute = BigDecimal.valueOf(deviceLat);
-					BigDecimal deviceLongitude = BigDecimal.valueOf(deviceLongi);
-
-					double distance = actualDistance(deviceLatitute, deviceLongitude, centerLat, centerLngt);
+					double distance = actualDistance(deviceLat, deviceLongi, centerLat, centerLngt);
 
 					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-							"Distance between GPS Device and Registartion Station ====>" + distance);
+							"Distance between GPS Device and Registartion Stationin meters ====>" + Math.round(distance / 1000));
 
-					if ((BigDecimal.ZERO.compareTo(deviceLatitute) != 0)
-							&& (BigDecimal.ZERO.compareTo(deviceLongitude) != 0)) {
+					if (deviceLat != 0 && deviceLongi != 0 && distance != 0) {
 
-						gpsResponseMap.put(RegistrationConstants.LATITUDE, deviceLatitute);
-						gpsResponseMap.put(RegistrationConstants.LONGITUDE, deviceLongitude);
-						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, distance);
+						gpsResponseMap.put(RegistrationConstants.LATITUDE, deviceLat);
+						gpsResponseMap.put(RegistrationConstants.LONGITUDE, deviceLongi);
+						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, Math.round(distance / 1000));
 						gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
 								RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
@@ -132,6 +124,9 @@ public class GPSFacade extends GPSBU343Connector {
 					gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
 							RegistrationConstants.GPS_CAPTURE_FAILURE_MSG);
 					gpsResponseMap.put(RegistrationConstants.GPS_ERROR_CODE, RegistrationConstants.GPS_REG_LGE‌_002);
+
+					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+							"Unable to Calculate Distance");
 				}
 
 			}
@@ -149,10 +144,13 @@ public class GPSFacade extends GPSBU343Connector {
 		// TODO: Hard codded because if gps device and signa is not connected and weak
 		// it wont allow for new registarion
 
-		gpsResponseMap.put(RegistrationConstants.LATITUDE, 12.9913);
-		gpsResponseMap.put(RegistrationConstants.LONGITUDE, 80.2457);
-		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
-		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+		/*
+		 * gpsResponseMap.put(RegistrationConstants.LATITUDE, 12.9913);
+		 * gpsResponseMap.put(RegistrationConstants.LONGITUDE, 80.2457);
+		 * gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
+		 * gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
+		 * RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+		 */
 
 		return gpsResponseMap;
 	}
@@ -161,47 +159,56 @@ public class GPSFacade extends GPSBU343Connector {
 	 * This method is used to calculate the distance between the given latitudes and
 	 * longitudes.
 	 *
-	 * @param fromlat
-	 *            from latitude
-	 * @param fromlng
-	 *            from longitude
-	 * @param tolat
-	 *            to latitude
-	 * @param tolng
-	 *            to longitude
+	 * @param fromlat from latitude
+	 * @param fromlng from longitude
+	 * @param tolat   to latitude
+	 * @param tolng   to longitude
 	 * @return the distance between given latitudes and longitudes
 	 */
-	private double actualDistance(BigDecimal fromlat, BigDecimal fromlng, double centerLat, double centerLngt) {
+	private double actualDistance(double fromlat, double fromlng, double centerLat, double centerLngt) {
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Calculation of distance between the geo location of machine and registration center started");
 
-		double earthRadius = RegistrationConstants.OPT_TO_REG_EARTH_RADIUS;
-		double machineLat = fromlat.doubleValue();
-		double machineLong = fromlng.doubleValue();
-		double distanceLat = Math.toRadians(centerLat - machineLat);
-		double distanceLng = Math.toRadians(centerLngt - machineLong);
-		double tempDist = Math.sin(distanceLat / 2) * Math.sin(distanceLat / 2) + Math.cos(Math.toRadians(machineLat))
-				* Math.cos(Math.toRadians(centerLat)) * Math.sin(distanceLng / 2) * Math.sin(distanceLng / 2);
-		double radius = 2 * Math.atan2(Math.sqrt(tempDist), Math.sqrt(1 - tempDist));
-
-		double rounding = earthRadius * radius * RegistrationConstants.OPT_TO_REG_METER_CONVERSN / 1000;
+		double a = (fromlat - centerLat) * distPerLat(fromlat);
+		double b = (fromlng - centerLngt) * distPerLng(fromlat);
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Calculation of distance between the geo location of machine and registration center started");
 
-		return Math.round(rounding * 10000.0) / 10000.0;
+		return Math.sqrt(a * a + b * b);
 
+	}
+
+	/**
+	 * Distance per longitude.
+	 *
+	 * @param lat the lat
+	 * @return the double
+	 */
+	private static double distPerLng(double lat) {
+		return 0.0003121092 * Math.pow(lat, 4) + 0.0101182384 * Math.pow(lat, 3) - 17.2385140059 * lat * lat
+				+ 5.5485277537 * lat + 111301.967182595;
+	}
+
+	/**
+	 * Distance per latitude.
+	 * 
+	 * @param lat
+	 * @return
+	 */
+	private static double distPerLat(double lat) {
+		return -0.000000487305676 * Math.pow(lat, 4) - 0.0033668574 * Math.pow(lat, 3) + 0.4601181791 * lat * lat
+				- 1.4558127346 * lat + 110579.25662316;
 	}
 
 	/**
 	 * This method gets the geo location.
 	 *
-	 * @param gpsData
-	 *            - the GPS data
+	 * @param gpsData - the GPS data
 	 * @return the {@link GPSPosition}
-	 * @throws RegBaseCheckedException
-	 *             - the exception class that handles all the checked exceptions
+	 * @throws RegBaseCheckedException - the exception class that handles all the
+	 *                                 checked exceptions
 	 */
 	private GPSPosition getGPRMCLatLong(String[] gpsData) throws RegBaseCheckedException {
 

@@ -37,7 +37,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.util.CryptoUtils;
-import lombok.Synchronized;
 
 /**
  * This class provided <b> Basic and Core Cryptographic functionalities </b>.
@@ -95,8 +94,6 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 	@Value("${mosip.kernel.crypto.hash-iteration:100000}")
 	private int iterations;
 
-	//private Map<String, Cipher> cipherRegistry;
-
 	private SecureRandom secureRandom;
 
 	private SecretKeyFactory secretKeyFactory;
@@ -105,19 +102,6 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 
 	@PostConstruct
 	public void init() {
-		//cipherRegistry = new ConcurrentHashMap<>();
-		/*try {
-			//cipherRegistry.put(symmetricAlgorithm, Cipher.getInstance(symmetricAlgorithm));
-			//cipherRegistry.put(asymmetricAlgorithm, Cipher.getInstance(asymmetricAlgorithm));
-			//cipherRegistry.put(RSA_ECB_NO_PADDING, Cipher.getInstance(RSA_ECB_NO_PADDING));
-			secretKeyFactory = SecretKeyFactory.getInstance(passwordAlgorithm);
-			signature = Signature.getInstance(signAlgorithm);
-		
-		} catch (java.security.NoSuchAlgorithmException e) {
-			throw new NoSuchAlgorithmException(
-					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
-					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(), e);
-		}*/
 		secureRandom = new SecureRandom();
 	}
 	
@@ -163,7 +147,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
 		if (iv == null) {
-			symmetricEncrypt(key, data, aad);
+			return symmetricEncrypt(key, data, aad);
 		}
 		Cipher cipher;
 		try {
@@ -233,7 +217,7 @@ public class CryptoCore implements CryptoCoreSpec<byte[], byte[], SecretKey, Pub
 		Objects.requireNonNull(key, SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		CryptoUtils.verifyData(data);
 		if (iv == null) {
-			symmetricDecrypt(key, data, aad);
+			return symmetricDecrypt(key, data, aad);
 		}
 		Cipher cipher;
 		try {

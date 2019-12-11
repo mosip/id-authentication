@@ -35,7 +35,6 @@ import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
-import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -279,7 +278,7 @@ public class DBDataStore implements DataStore {
 	}
 
 	@Override
-	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) {
+	public MosipUserDto registerUser(UserRegistrationRequestDto userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

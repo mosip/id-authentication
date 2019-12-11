@@ -143,45 +143,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
-		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
-				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
-		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
-			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
-				if (authTypeStatus.getLocked()) {
-					if (authRequestDTO.getRequestedAuth().isDemo()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.DEMO.getType()));
-					}
-
-					else if (authRequestDTO.getRequestedAuth().isBio()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.BIO.getType()));
-					}
-
-					else if (authRequestDTO.getRequestedAuth().isOtp()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.OTP.getType()));
-					}
-
-					else if (authRequestDTO.getRequestedAuth().isPin()
-							&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-										MatchType.Category.SPIN.getType()));
-					}
-				}
-			}
-		}
+		validateAuthTypeStatus(authRequestDTO);
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
@@ -213,6 +175,53 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
+	}
+
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
+				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
+		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
+			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
+				validateAuthTypeStatus(authRequestDTO, authTypeStatus);
+			}
+		}
+	}
+
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, AuthtypeStatus authTypeStatus)
+			throws IdAuthenticationBusinessException {
+		if (authTypeStatus.getLocked()) {
+			if (authRequestDTO.getRequestedAuth().isDemo()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.DEMO.getType()));
+			}
+
+			else if (authRequestDTO.getRequestedAuth().isBio()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.BIO.getType()));
+			}
+
+			else if (authRequestDTO.getRequestedAuth().isOtp()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.OTP.getType()));
+			}
+
+			else if (authRequestDTO.getRequestedAuth().isPin()
+					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								MatchType.Category.SPIN.getType()));
+			}
+		}
 	}
 
 	/**
@@ -247,7 +256,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processBioAuth(authRequestDTO, idInfo, uin, authStatusList, idType, staticTokenId, partnerId);
+		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
 		processPinAuth(authRequestDTO, uin, authStatusList, idType, staticTokenId, partnerId);
 
@@ -306,6 +315,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the id info
 	 * @param uin
 	 *            the uin
+	 * @param isAuth 
 	 * @param authStatusList
 	 *            the auth status list
 	 * @param idType
@@ -318,13 +328,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *             the id authentication business exception
 	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isBio()) {
 			AuthStatusInfo bioValidationStatus;
 			try {
-				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId);
+				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId, isAuth);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
 			} finally {

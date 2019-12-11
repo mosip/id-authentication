@@ -17,14 +17,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 public class BaseAuthFilterStaticTest {
 
 	@Test(expected=IdAuthenticationAppException.class)
-	public void encodetest() throws IdAuthenticationAppException {
-		PowerMockito.mockStatic(CryptoUtil.class);
-		String stringToDecode = "assad";
-		Mockito.when(CryptoUtil.encodeBase64String(stringToDecode.getBytes())).thenThrow(new IllegalArgumentException());
-		BaseAuthFilter.encode(stringToDecode);
-	}
-	
-	@Test(expected=IdAuthenticationAppException.class)
 	public void decodetest() throws IdAuthenticationAppException {
 		PowerMockito.mockStatic(CryptoUtil.class);
 		String stringToDecode = "assad";

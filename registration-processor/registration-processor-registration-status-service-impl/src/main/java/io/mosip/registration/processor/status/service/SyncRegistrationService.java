@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -62,5 +64,14 @@ public interface SyncRegistrationService<T, U> {
 	 */
 	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(Object encryptedSyncMetaInfo, String referenceId,
 			String timeStamp, List<SyncResponseDto> syncResponseList);
+
+	/**
+	 * Gets the by ids.
+	 *
+	 * @param requestIds
+	 *            the request ids
+	 * @return the by ids
+	 */
+	public List<RegistrationStatusDto> getByIds(List<RegistrationStatusSubRequestDto> requestIds);
 
 }

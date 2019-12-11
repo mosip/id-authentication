@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +26,7 @@ import io.mosip.kernel.vidgenerator.exception.VidGeneratorServiceException;
 import io.mosip.kernel.vidgenerator.service.VidService;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.WorkerExecutor;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
@@ -39,6 +41,9 @@ import io.vertx.ext.web.RoutingContext;
  */
 @Component
 public class VidFetcherRouter {
+	
+	@Value("${mosip.kernel.vid.get_executor_pool:400}")
+	private int workerExecutorPool;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VidFetcherRouter.class);
 
@@ -57,13 +62,16 @@ public class VidFetcherRouter {
 	 * @return Router
 	 */
 	public Router createRouter(Vertx vertx) {
+		LOGGER.info("worker executor pool {}",workerExecutorPool);
 		Router router = Router.router(vertx);
 		router.get().handler(routingContext -> {
 			LOGGER.info("publishing event to CHECKPOOL");
 			// send a publish event to vid pool checker
 			vertx.eventBus().publish(EventType.CHECKPOOL, EventType.CHECKPOOL);
+			routingContext.response().headers().add("Content-Type","application/json");
 			ResponseWrapper<VidFetchResponseDto> reswrp = new ResponseWrapper<>();
-			vertx.executeBlocking(blockingCodeHandler -> {
+			WorkerExecutor executor=vertx.createSharedWorkerExecutor("get-vid", workerExecutorPool);
+			executor.executeBlocking(blockingCodeHandler -> {
 				String expiryDateString = routingContext.request().getParam(VIDGeneratorConstant.VIDEXPIRY);
 				LocalDateTime expiryTime = null;
 				if (expiryDateString != null) {
@@ -101,7 +109,7 @@ public class VidFetcherRouter {
 				reswrp.setResponse(vidFetchResponseDto);
 				reswrp.setErrors(null);
 				blockingCodeHandler.complete();
-			}, resultHandler -> {
+			},false, resultHandler -> {
 				if(resultHandler.succeeded()) {
 				try {
 					routingContext.response().end(objectMapper.writeValueAsString(reswrp));
