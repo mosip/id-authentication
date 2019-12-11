@@ -101,6 +101,9 @@ public class NotificationService {
 		case "RS_LOCK_AUTH_Status":
 			subject = "Request for locking AuthTypes";
 			break;
+		case "RS_VIN_GEN_Status":
+			subject = "Request for VID creation successful";
+			break;
 
 		}
 
