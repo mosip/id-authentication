@@ -75,11 +75,15 @@ public class NotificationService {
 
 	@Autowired
 	private Utilitiy utility;
+	
+	@Autowired
+	private RequestValidator requestValidator;
 
 	private static final String LINE_SEPARATOR = "" + '\n' + '\n' + '\n';
 	private static final String BOTH = "both";
 	private static final String EMAIL = "_EMAIL";
 	private static final String SMS = "_SMS";
+	private static final String SUBJECT = "_SUB";
 	private static final String SMS_EMAIL_SUCCESS = "Notification has been sent to the provided contact detail(s)";
 	private static final String SMS_SUCCESS = "Notification has been sent to the provided contact phone number";
 	private static final String EMAIL_SUCCESS = "Notification has been sent to the provided email ";
@@ -88,87 +92,14 @@ public class NotificationService {
 	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendNotification()::entry");
-		String subject = "";
 		boolean smsStatus = false;
 		boolean emailStatus = false;
 		Map<String, Object> notificationAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
 		if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
 			notificationAttributes.putAll(dto.getAdditionalAttributes());
 		}
-		switch (dto.getTemplateTypeCode().name()) {
-		case "RS_DOW_UIN_SUCCESS":
-			subject = "request for download e-card is sucessfull";
-			break;
-		case "RS_DOW_UIN_FAILURE":
-			subject = "request for download e-card is sucessfull";
-			break;
-		case "RS_UIN_RPR_SUCCESS":
-			subject = "Request for re-print UIN successfull";
-			break;
-		case "RS_UIN_RPR_FAILURE":
-			subject = "Request for re-print UIN successfull";
-			break;
-		case "RS_AUTH_HIST_SUCCESS":
-			subject = "Request for Auth History status is successfull";
-			break;
-		case "RS_AUTH_HIST_FAILURE":
-			subject = "Request for Auth History status is successfull";
-			break;
-		case "RS_LOCK_AUTH_SUCCESS":
-			subject = "Request for locking AuthTypes is successfull ";
-			break;
-		case "RS_LOCK_AUTH_FAILURE":
-			subject = "Request for locking AuthTypes is successfull ";
-			break;
-//		case "RS_INV_DATA_NOT":
-//			subject = "Data entered is invalid";
-//			break;
-//		case "RS_INV_RID_NOT":
-//			subject = "Invalid RID";
-//			break;
-//		case "RS_INV_UIN-VID_NOT":
-//			subject = "UIN/VID entered is invalid";
-//			break;
-//		case "RS_LOST_RID_Status":
-//			subject = "Request for lost RID is successful";
-//			break;
-//		case "RS_NO_MOB-MAIL-ID":
-//			subject = "Registered mobile number/email not found";
-//			break;
-//		case "RS_UIN_GEN_Status":
-//			subject = "UIN status for requestewd RID";
-//			break;
-//		case "RS_UIN_UPD_REQ":
-//			subject = "Request for UIN update is successfull";
-//			break;
-//		case "RS_UIN_UPD_Status":
-//			subject = "UIN update status for requested RID";
-//			break;
-//		case "RS_UIN_UPD_VAL":
-//			subject = "Uploaded document validation failed";
-//			break;
-		case "RS_UNLOCK_AUTH_SUCCESS":
-			subject = "Request for unlocking Auth(s) is successfull";
-			break;
-		case "RS_UNLOCK_AUTH_FAILURE":
-			subject = "Request for unlocking Auth(s) is successfull";
-			break;
-		case "RS_VIN_GEN_SUCCESS":
-			subject = "VID generated for the requested RID";
-			break;
-		case "RS_VIN_GEN_FAILURE":
-			subject = "VID generated for the requested RID";
-			break;
-		case "RS_VIN_REV_SUCCESS":
-			subject = "VID revoked successfully";
-			break;
-		case "RS_VIN_REV_FAILURE":
-			subject = "VID revoked successfully";
-			break;
-		}
-
 		smsStatus = sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
-		emailStatus = sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null, subject);
+		emailStatus = sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null);
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendSMSNotification()::isSuccess?::" + smsStatus);
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
@@ -264,7 +195,7 @@ public class NotificationService {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 				"NotificationService::sendSMSNotification()::entry");
 		String phone = (String) mailingAttributes.get("phone");
-		if (phone == null || phone.isEmpty() || !(RequestValidator.phoneValidator(phone))) {
+		if (phone == null || phone.isEmpty() || !(requestValidator.phoneValidator(phone))) {
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 					"NotificationService::sendSMSNotification()::phoneValidatio::" + "false :: invalid phone number");
 			return false;
@@ -339,16 +270,17 @@ public class NotificationService {
 	}
 
 	private boolean sendEmailNotification(Map<String, Object> mailingAttributes,
-			NotificationTemplateCode notificationTemplate, MultipartFile[] attachment, String subject)
+			NotificationTemplateCode notificationTemplate, MultipartFile[] attachment)
 			throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 				"NotificationService::sendEmailNotification()::entry");
 		String email = String.valueOf(mailingAttributes.get("email"));
-		if (email == null || email.isEmpty() || !(RequestValidator.emailValidator(email))) {
+		if (email == null || email.isEmpty() || !(requestValidator.emailValidator(email))) {
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 					"NotificationService::sendEmailNotification()::emailValidation::" + "false :: invalid email");
 			return false;
 		}
+		String emailSubject = getTemplate(primaryLang, notificationTemplate + EMAIL + SUBJECT);
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + EMAIL),
 				mailingAttributes);
 		if (languageType.equalsIgnoreCase(BOTH)) {
@@ -372,14 +304,13 @@ public class NotificationService {
 			}
 		}
 		try {
-			builder.queryParam("mailSubject", subject);
+			builder.queryParam("mailSubject", emailSubject);
 			builder.queryParam("mailContent", primaryLanguageMergeTemplate);
 			params.add("attachments", attachment);
 			ResponseWrapper<NotificationResponseDTO> response;
 
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
-			// ObjectMapper mapper = new ObjectMapper();
 			NotificationResponseDTO notifierResponse = JsonUtil
 					.readValue(JsonUtil.writeValueAsString(response.getResponse()), NotificationResponseDTO.class);
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",

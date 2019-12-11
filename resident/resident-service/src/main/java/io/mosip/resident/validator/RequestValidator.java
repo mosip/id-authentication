@@ -54,10 +54,10 @@ public class RequestValidator {
 	private String authUnLockId;
 	
 	@Value("${mosip.id.validation.identity.phone}")
-	private static String phoneRegex;
+	private String phoneRegex;
 	
 	@Value("${mosip.id.validation.identity.email}")
-	private static String emailRegex;
+	private String emailRegex;
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
 
@@ -180,10 +180,10 @@ public class RequestValidator {
 		}
 	}
 	
-	public static boolean phoneValidator(String phone) {
+	public boolean phoneValidator(String phone) {
 		return phone.matches(phoneRegex);
 	}
-	public static boolean emailValidator(String email) {
+	public boolean emailValidator(String email) {
 		return email.matches(emailRegex);
 	}
 
