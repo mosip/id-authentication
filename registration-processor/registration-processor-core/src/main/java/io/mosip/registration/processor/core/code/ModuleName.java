@@ -52,5 +52,5 @@ public enum ModuleName {
 
 	ABIS_MIDDLEWARE,
 
-	REQUEST_HANDLER
+	REQUEST_HANDLER_SERVICE;
 }
