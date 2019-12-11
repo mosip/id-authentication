@@ -94,7 +94,7 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void getUinSuccessTest(TestContext context) {
+	public void getTest(TestContext context) {
 		LOGGER.info("getVidSuccessTest execution...");
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
@@ -120,7 +120,7 @@ public class IntegrationTest {
 	}
 	
 	@Test
-	public void getUinSuccessViDExpiryEmptyTest(TestContext context) {
+	public void getViDExpiryEmptyTest(TestContext context) {
 		LOGGER.info("getVidSuccessTest execution...");
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
@@ -146,7 +146,7 @@ public class IntegrationTest {
 	}
 	
 	@Test
-	public void getUinSuccessViDExpiryInvalidPatternTest(TestContext context) {
+	public void getViDExpiryInvalidPatternTest(TestContext context) {
 		LOGGER.info("getVidSuccessTest execution...");
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
@@ -174,7 +174,7 @@ public class IntegrationTest {
 	
 	@Ignore
 	@Test
-	public void getUinSuccessViDExpiryInvalidExpiryDateTest(TestContext context) {
+	public void getViDExpiryInvalidExpiryDateTest(TestContext context) {
 		LOGGER.info("getVidSuccessTest execution...");
 		Async async = context.async();
 		WebClient client = WebClient.create(vertx);
