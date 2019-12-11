@@ -2,6 +2,7 @@ package io.mosip.resident.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import lombok.Data;
 
@@ -19,7 +20,9 @@ public class AuthHistoryRequestDTO {
 	@NotBlank(message = "otp should not be empty")
 	@NotNull(message = "otp should not be null")
 	private String otp;
-	private String pageStart;
-	private String pageFetch;
+	@Positive
+	private Integer pageStart;
+	@Positive
+	private Integer pageFetch;
 	
 }

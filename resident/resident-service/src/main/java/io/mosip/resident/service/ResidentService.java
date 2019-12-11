@@ -1,6 +1,8 @@
 package io.mosip.resident.service;
 
 import io.mosip.resident.constant.AuthTypeStatus;
+import io.mosip.resident.dto.AuthHistoryRequestDTO;
+import io.mosip.resident.dto.AuthHistoryResponseDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
@@ -29,6 +31,6 @@ public interface ResidentService {
 
 	public ResponseDTO reqAauthTypeStatusUpdate(AuthLockOrUnLockRequestDto dto, AuthTypeStatus authTypeStatus);
 
-	public ResponseDTO reqAuthHistory(RequestDTO dto);
+	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto);
 
 }

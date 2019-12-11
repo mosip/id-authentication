@@ -13,6 +13,6 @@ public class AutnTxnDto {
 	String statusComment;
 	String referenceIdType;
 	String entityName;
-	String authResponse;
-	String responseCode;
+	
+	
 }
