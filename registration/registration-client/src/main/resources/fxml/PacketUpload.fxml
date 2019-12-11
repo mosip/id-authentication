@@ -41,11 +41,12 @@
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" percentHeight="12.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="500.0" minHeight="10.0" prefHeight="450.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="195.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <GridPane.margin>
-                        <Insets bottom="50.0" left="25.0" right="50.0" />
+                        <Insets bottom="50.0" left="21.0" right="50.0" />
                      </GridPane.margin>
                      <children>
                         <TableView fx:id="table" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
@@ -84,6 +85,11 @@
                               </ImageView>
                            </children>
                         </HBox>
+                        <Label styleClass="headerLabel" text="%saveToDevice" GridPane.rowIndex="3">
+                           <padding>
+                              <Insets bottom="-15.0" left="2.0" />
+                           </padding>
+                        </Label>
                      </children>
                   </GridPane>
                </children>
