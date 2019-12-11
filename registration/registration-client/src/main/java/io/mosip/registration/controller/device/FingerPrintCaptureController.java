@@ -486,8 +486,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							
 							fpProgress.setProgress(fpDetailsDTO != null ? qualityScore / 100 : 0);
 
-							qualityText.setText(
-									String.valueOf((int) qualityScore).concat(RegistrationConstants.PERCENTAGE));
+							qualityText.setText(getQualityScore(qualityScore));
 
 							String fingerprintThreshold = getThresholdKeyByBioType(fpDetailsDTO.getFingerType());
 
@@ -499,7 +498,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 															? rightSlapQualityScore
 															: thumbsQualityScore;
 
-							qualityScoreLabel.setText(String.valueOf((int) qualityScore));
+							qualityScoreLabel.setText(getQualityScore(qualityScore));
 							updateRetryBox(fpDetailsDTO,Double.parseDouble(getValueFromApplicationContext(fingerprintThreshold)));
 						} else {
 							qualityText.setText(RegistrationConstants.EMPTY);
@@ -1309,10 +1308,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				double qualityScore= bioService.isMdmEnabled() ? bioService.getBioQualityScores(fingerType, attempt) : detailsDTO.getQualityScore();
 	
 				fpProgress.setProgress(qualityScore/100);
-				String qualityScoreLabelText = 
-						String.valueOf((int) qualityScore).concat(RegistrationConstants.PERCENTAGE);
-				qualityText.setText(qualityScoreLabelText);
-				qualityScoreLabel.setText(qualityScoreLabelText);
+				qualityText.setText(getQualityScore(qualityScore));
+				qualityScoreLabel.setText(getQualityScore(qualityScore));
 				attemptSlap.setText(String.valueOf(detailsDTO.getNumRetry()));
 				if (qualityScore >= thresholdValue) {
 					clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, detailsDTO.getNumRetry());

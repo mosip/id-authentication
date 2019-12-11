@@ -1032,7 +1032,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Clearing the captured biometric data");
 
-		clearAllBiometrics();
+		//clearAllBiometrics();
 
 		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
 				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null

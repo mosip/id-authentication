@@ -475,7 +475,7 @@ public class IrisCaptureController extends BaseController {
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				irisProgress.setProgress(irisDetailsDTO != null ? qualityScore / 100 : 0);
 				irisQuality.setText(irisDetailsDTO != null
-						? String.valueOf((int) qualityScore).concat(RegistrationConstants.PERCENTAGE)
+						? getQualityScore(qualityScore)
 						: RegistrationConstants.EMPTY);
 
 				if (irisDetailsDTO != null) {

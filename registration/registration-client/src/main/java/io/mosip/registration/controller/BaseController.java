@@ -1465,7 +1465,7 @@ public class BaseController {
 
 			// Progress Bar Quality Score
 			progressQualityScore
-					.setText(String.valueOf((int) qualityScoreValue).concat(RegistrationConstants.PERCENTAGE));
+					.setText(qualityScore);
 
 			if (qualityScoreValue >= Double
 					.parseDouble(getValueFromApplicationContext(getThresholdKeyByBioType(bioType)))) {
