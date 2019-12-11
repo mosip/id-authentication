@@ -23,8 +23,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
+import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.NotificationRequestDto;
@@ -43,6 +46,7 @@ import io.mosip.resident.exception.ResidentServiceException;
  */
 @Component
 public class NotificationService {
+	private static final Logger logger = LoggerConfiguration.logConfig(NotificationService.class);
 	@Autowired
 	private TemplateManager templateManager;
 
@@ -79,6 +83,7 @@ public class NotificationService {
 	private static final String SMS = "_SMS";
 
 	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws ResidentServiceCheckedException {
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(), "NotificationService::sendNotification()::entry");
 		String subject = "";
 		boolean smsStatus = false;
 		boolean emailStatus = false;
@@ -87,21 +92,55 @@ public class NotificationService {
 		if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
 			notificationAttributes.putAll(dto.getAdditionalAttributes());
 		}
-		// added only few cases
 		switch (dto.getTemplateTypeCode().name()) {
 		case "RS_DOW_UIN_Status":
-			subject = "Download e-card request sucessful";
+			subject = "request for download e-card is sucessfull";
 			break;
 		case "RS_UIN_RPR_Status":
 			subject = "Request for re-print UIN successfull";
 			break;
 		case "RS_AUTH_HIST_Status":
-			subject = "Request for Auth History is successfull";
+			subject = "Request for Auth History status is successfull";
 			break;
 		case "RS_LOCK_AUTH_Status":
-			subject = "Request for locking AuthTypes";
+			subject = "Request for locking AuthTypes is successfull ";
 			break;
-
+		case "RS_INV_DATA_NOT":
+			subject = "Data entered is invalid";
+			break;
+		case "RS_INV_RID_NOT":
+			subject = "Invalid RID";
+			break;
+		case "RS_INV_UIN-VID_NOT":
+			subject = "UIN/VID entered is invalid";
+			break;
+		case "RS_LOST_RID_Status":
+			subject = "Request for lost RID is successful";
+			break;
+		case "RS_NO_MOB-MAIL-ID":
+			subject = "Registered mobile number/email not found";
+			break;
+		case "RS_UIN_GEN_Status":
+			subject = "UIN status for requestewd RID";
+			break;
+		case "RS_UIN_UPD_REQ":
+			subject = "Request for UIN update is successfull";
+			break;
+		case "RS_UIN_UPD_Status":
+			subject = "UIN update status for requested RID";
+			break;
+		case "RS_UIN_UPD_VAL":
+			subject = "Uploaded document validation failed";
+			break;
+		case "RS_UNLOCK_AUTH_Status":
+			subject = "Request for unlocking Auth(s) is successfull";
+			break;
+		case "RS_VIN_GEN_Status":
+			subject = "VID generated for the requested RID";
+			break;
+		case "RS_VIN_REV_Status":
+			subject = "VID revoked successfully";
+			break;
 		}
 
 		smsStatus = sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
