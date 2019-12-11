@@ -26,7 +26,7 @@ public class JsonUtilTest {
 		jsonString = "{\"identity\":{\"fullName\":[{\"language\":\"eng\",\"value\":\"firstName\"},{\"language\":\"ara\",\"value\":\"lastName\"}],\"dateOfBirth\":\"1996/01/01\",\"referenceIdentityNumber\":\"2323232323232323\",\"proofOfIdentity\":{\"value\":\"POI_Passport\",\"type\":\"DOC001\",\"format\":\"jpg\"},\"IDSchemaVersion\":1,\"phone\":\"9898989899\",\"age\":23,\"email\":\"sdf@sdf.co\"}}\r\n"
 				+ "";
 
-		jsonObject = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+		jsonObject = JsonUtil.readValue(jsonString, JSONObject.class);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class JsonUtilTest {
 
 	@Test
 	public void testJsonUtilWriteValue() throws IOException {
-		String result = JsonUtil.objectMapperObjectToJson(jsonObject);
+		String result = JsonUtil.writeValueAsString(jsonObject);
 		System.out.println(result);
 		assertTrue(jsonString.trim().equals(result));
 	}

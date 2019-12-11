@@ -92,8 +92,8 @@ public class Utilitiy {
 							ResidentErrorCode.IN_VALID_VID.getErrorCode(), error.get(0).getMessage());
 				}
 
-				VidGeneratorResponseDto vidGeneratorResponseDto = JsonUtil.objectMapperReadValue(
-						JsonUtil.objectMapperObjectToJson(vidResponse.getResponse()), VidGeneratorResponseDto.class);
+				VidGeneratorResponseDto vidGeneratorResponseDto = JsonUtil.readValue(
+						JsonUtil.writeValueAsString(vidResponse.getResponse()), VidGeneratorResponseDto.class);
 				String uin = String.valueOf(vidGeneratorResponseDto.getUIN());
 				pathsegments.clear();
 				pathsegments.add(uin);
@@ -139,8 +139,8 @@ public class Utilitiy {
 		}
 		String jsonResponse;
 		try {
-			jsonResponse = JsonUtil.objectMapperObjectToJson(response.getResponse());
-			JSONObject json = JsonUtil.objectMapperReadValue(jsonResponse, JSONObject.class);
+			jsonResponse = JsonUtil.writeValueAsString(response.getResponse());
+			JSONObject json = JsonUtil.readValue(jsonResponse, JSONObject.class);
 
 			return JsonUtil.getJSONObject(json, "identity");
 		} catch (IOException e) {
@@ -160,7 +160,7 @@ public class Utilitiy {
 		String mappingJsonString = getMappingJson();
 		JSONObject mappingJsonObject;
 		try {
-			mappingJsonObject = JsonUtil.objectMapperReadValue(mappingJsonString, JSONObject.class);
+			mappingJsonObject = JsonUtil.readValue(mappingJsonString, JSONObject.class);
 			LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
 					.get(IDENTITY);
 			LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get(NAME);

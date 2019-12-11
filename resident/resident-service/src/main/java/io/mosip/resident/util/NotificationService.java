@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -83,7 +84,8 @@ public class NotificationService {
 	private static final String SMS = "_SMS";
 
 	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws ResidentServiceCheckedException {
-		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(), "NotificationService::sendNotification()::entry");
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
+				"NotificationService::sendNotification()::entry");
 		String subject = "";
 		boolean smsStatus = false;
 		boolean emailStatus = false;
@@ -166,8 +168,8 @@ public class NotificationService {
 						ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorMessage()
 								+ (resp != null ? resp.getErrors().get(0) : ""));
 			}
-			TemplateResponseDto templateResponse = JsonUtil.objectMapperReadValue(
-					JsonUtil.objectMapperObjectToJson(resp.getResponse()), TemplateResponseDto.class);
+			TemplateResponseDto templateResponse = JsonUtil.readValue(
+					JsonUtil.writeValueAsString(resp.getResponse()), TemplateResponseDto.class);
 			List<TemplateDto> response = templateResponse.getTemplates();
 
 			return response.get(0).getFileText().replaceAll("^\"|\"$", "");
@@ -214,6 +216,8 @@ public class NotificationService {
 
 	private boolean sendSMSNotification(Map<String, Object> mailingAttributes,
 			NotificationTemplateCode notificationTemplate) throws ResidentServiceCheckedException {
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+				"NotificationService::sendSMSNotification()::entry");
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + SMS),
 				mailingAttributes);
 
@@ -233,33 +237,46 @@ public class NotificationService {
 		try {
 			resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()), MediaType.APPLICATION_JSON, req,
 					ResponseWrapper.class, tokenGenerator.getToken());
-			NotificationResponseDTO notifierResponse = JsonUtil.objectMapperReadValue(
-					JsonUtil.objectMapperObjectToJson(resp.getResponse()), NotificationResponseDTO.class);
+			NotificationResponseDTO notifierResponse = JsonUtil.readValue(
+					JsonUtil.writeValueAsString(resp.getResponse()), NotificationResponseDTO.class);
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+					"NotificationService::sendSMSNotification()::response:" + notifierResponse.getStatus());
+
 			if (notifierResponse.getStatus().equalsIgnoreCase("success"))
 				return true;
 		} catch (ApisResourceAccessException e) {
 
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + httpClientException.getResponseBodyAsString());
 				throw new ResidentServiceCheckedException(
 						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
 						httpClientException.getResponseBodyAsString());
 
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + httpServerException.getResponseBodyAsString());
 				throw new ResidentServiceCheckedException(
 						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
 						httpServerException.getResponseBodyAsString());
 			} else {
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
 				throw new ResidentServiceCheckedException(
 						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
 						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
 			}
 
 		} catch (IOException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+					e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
 					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
 		}
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+				"NotificationService::sendSMSNotification()::exit");
 
 		return false;
 
@@ -299,8 +316,8 @@ public class NotificationService {
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
 			// ObjectMapper mapper = new ObjectMapper();
-			NotificationResponseDTO notifierResponse = JsonUtil.objectMapperReadValue(
-					JsonUtil.objectMapperObjectToJson(response.getResponse()), NotificationResponseDTO.class);
+			NotificationResponseDTO notifierResponse = JsonUtil.readValue(
+					JsonUtil.writeValueAsString(response.getResponse()), NotificationResponseDTO.class);
 
 			if (notifierResponse.getStatus().equals("success")) {
 				return true;

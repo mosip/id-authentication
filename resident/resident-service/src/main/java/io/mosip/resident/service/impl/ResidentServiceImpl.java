@@ -296,8 +296,8 @@ public class ResidentServiceImpl implements ResidentService {
 					throw new ResidentServiceException(ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorCode(),
 							ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorMessage()
 									+ (response != null ? response.getErrors().get(0).toString() : ""));
-				RegProcRePrintResponseDto responseDto = JsonUtil.objectMapperReadValue(
-						JsonUtil.objectMapperObjectToJson(response.getResponse()), RegProcRePrintResponseDto.class);
+				RegProcRePrintResponseDto responseDto = JsonUtil.readValue(
+						JsonUtil.writeValueAsString(response.getResponse()), RegProcRePrintResponseDto.class);
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 				notificationRequestDto.setId(dto.getIndividualId());
 				notificationRequestDto.setIdType(dto.getIndividualIdType());
