@@ -130,6 +130,7 @@ public class ResidentController {
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-history")
 	public ResponseWrapper<AuthHistoryResponseDTO> reqAuthHistory(@Valid @RequestBody RequestWrapper<AuthHistoryRequestDTO> requestDTO) {
+		validator.validateAuthHistoryRequest(requestDTO);
 		ResponseWrapper<AuthHistoryResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAuthHistory(requestDTO.getRequest()));
 		return response;
