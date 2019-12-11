@@ -344,30 +344,6 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqUin(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResponseDTO reqRid(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResponseDTO reqUpdateUin(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResponseDTO revokeVid(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ResponseDTO reqAauthTypeStatusUpdate(AuthLockOrUnLockRequestDto dto, AuthTypeStatus authTypeStatus) {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthTypeStatusUpdate():: entry");
