@@ -1,4 +1,4 @@
-package io.mosip.kernel.core.util;
+package io.mosip.kernel.core.masterdata.util.model;
 
 import java.util.ArrayList;
 import java.util.List;

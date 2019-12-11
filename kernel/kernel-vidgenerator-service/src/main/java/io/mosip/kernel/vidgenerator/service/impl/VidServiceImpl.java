@@ -128,6 +128,7 @@ public class VidServiceImpl implements VidService {
 		LOGGER.debug("currenttime {} for checking entity with renew elegible time {}", currentTime, renewElegibleTime);
 		if ((renewElegibleTime.isBefore(currentTime) || renewElegibleTime.isEqual(currentTime))
 				&& entity.getStatus().equals(VidLifecycleStatus.EXPIRED)) {
+			entity.setVidExpiry(null);
 			metaDataUtil.setUpdateMetaData(entity);
 			entity.setStatus(VidLifecycleStatus.AVAILABLE);
 		}
