@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
@@ -110,7 +111,7 @@ public class ResidentController {
 			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
 		validator.validateAuthLockRequest(requestDTO);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
-		response.setResponse(residentService.reqAauthLock(requestDTO.getRequest()));
+		response.setResponse(residentService.reqAauthTypeStatusUpdate(requestDTO.getRequest(), AuthTypeStatus.LOCK));
 		return response;
 	}
 
@@ -120,7 +121,7 @@ public class ResidentController {
 			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
 		validator.validateAuthUnLockRequest(requestDTO);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
-		response.setResponse(residentService.reqAuthUnlock(requestDTO.getRequest()));
+		response.setResponse(residentService.reqAauthTypeStatusUpdate(requestDTO.getRequest(), AuthTypeStatus.UNLOCK));
 		return response;
 	}
 

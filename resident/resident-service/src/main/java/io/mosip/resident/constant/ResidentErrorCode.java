@@ -18,7 +18,7 @@ public enum ResidentErrorCode {
 	REQUEST_FAILED("RES-SER-014", "Your request is not successful, please try again later."),
 	TEMPLATE_EXCEPTION("RES-SER-015","Template exception"),
 	NOTIFICATION_FAILURE("RES-SER-016","Sending notification(Email and SMS) to resident failed"),
-	IN_VALID_UIN_OR_VID_OR_RID("RES-SER-017", "Invalid ID"),
+	IN_VALID_UIN_OR_VID_OR_RID("RES-SER-017", "Invalid individualId"),
 	RE_PRINT_REQUEST_FAILED("RES-SER-018","Re print UIN request failed"),
 	//system exceptions
 	RESIDENT_SYS_EXCEPTION("RES-SER-SYS-001","System exception occured"),

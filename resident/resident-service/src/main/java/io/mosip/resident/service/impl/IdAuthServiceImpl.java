@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
-import io.mosip.resident.exception.OtpValidationFailedException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +44,7 @@ import io.mosip.resident.dto.AuthTypeStatusResponseDto;
 import io.mosip.resident.dto.OtpAuthRequestDTO;
 import io.mosip.resident.dto.PublicKeyResponseDto;
 import io.mosip.resident.exception.ApisResourceAccessException;
+import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
@@ -82,7 +82,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> encryptor;
 
 	@Override
-	public boolean validateOtp(String transactionID, String individualId, String individualIdType, String otp) throws OtpValidationFailedException {
+	public boolean validateOtp(String transactionID, String individualId, String individualIdType, String otp)
+			throws OtpValidationFailedException {
 		AuthResponseDTO response = null;
 		try {
 			response = internelOtpAuth(transactionID, individualId, individualIdType, otp);
@@ -165,9 +166,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	}
 
-	private byte[] encryptRSA(final byte[] sessionKey, String refId)
-			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
-			IOException, JsonProcessingException {
+	private byte[] encryptRSA(final byte[] sessionKey, String refId) throws ApisResourceAccessException,
+			InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException, JsonProcessingException {
 
 		// encrypt AES Session Key using RSA public key
 		ResponseWrapper<?> responseWrapper = null;
@@ -206,7 +206,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	@Override
 	public boolean authTypeStatusUpdate(String individualId, String individualIdType, List<String> authType,
-			boolean isLock) throws ApisResourceAccessException {
+			io.mosip.resident.constant.AuthTypeStatus authTypeStatusConstant) throws ApisResourceAccessException {
 		boolean isAuthTypeStatusSuccess = false;
 		AuthTypeStatusRequestDto authTypeStatusRequestDto = new AuthTypeStatusRequestDto();
 		authTypeStatusRequestDto.setConsentObtained(true);
@@ -226,14 +226,20 @@ public class IdAuthServiceImpl implements IdAuthService {
 				authTypeStatus.setAuthType(types[0]);
 				authTypeStatus.setAuthSubType(types[1]);
 			}
-			authTypeStatus.setLocked(isLock);
+			if (authTypeStatusConstant.equals(io.mosip.resident.constant.AuthTypeStatus.LOCK)) {
+				authTypeStatus.setLocked(true);
+			} else {
+				authTypeStatus.setLocked(false);
+			}
+
 			authTypes.add(authTypeStatus);
 		}
 		authTypeStatusRequestDto.setRequest(authTypes);
 		AuthTypeStatusResponseDto response = new AuthTypeStatusResponseDto();
 		try {
 			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()),
-					MediaType.APPLICATION_JSON, authTypeStatusRequestDto, AuthTypeStatusResponseDto.class, tokenGenerator.getToken());
+					MediaType.APPLICATION_JSON, authTypeStatusRequestDto, AuthTypeStatusResponseDto.class,
+					tokenGenerator.getToken());
 
 			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
 					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call ended with response data "

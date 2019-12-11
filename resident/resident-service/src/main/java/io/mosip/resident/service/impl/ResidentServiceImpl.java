@@ -25,6 +25,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
+import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.NotificationTemplateCode;
@@ -364,9 +365,9 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAauthLock(AuthLockOrUnLockRequestDto dto) {
+	public ResponseDTO reqAauthTypeStatusUpdate(AuthLockOrUnLockRequestDto dto, AuthTypeStatus authTypeStatus) {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: entry");
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthTypeStatusUpdate():: entry");
 
 		ResponseDTO response = new ResponseDTO();
 		try {
@@ -374,16 +375,11 @@ public class ResidentServiceImpl implements ResidentService {
 				if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
 						dto.getOtp())) {
 
-					boolean isAuthTypeLocked = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
-							dto.getIndividualIdType(), dto.getAuthType(), true);
-					if (isAuthTypeLocked) {
-						NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-						notificationRequestDto.setId(dto.getIndividualId());
-						notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
-						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_LOCK_AUTH_Status);
-
-						NotificationResponseDTO notificationResponseDTO = notificationService
-								.sendNotification(notificationRequestDto);
+					boolean isAuthTypeStatusUpdated = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
+							dto.getIndividualIdType(), dto.getAuthType(), authTypeStatus);
+					if (isAuthTypeStatusUpdated) {
+						NotificationResponseDTO notificationResponseDTO = sentNotificationForAuthTypeStatusUpdate(dto,
+								authTypeStatus);
 						response.setMessage(notificationResponseDTO.getMessage());
 
 					} else {
@@ -426,75 +422,22 @@ public class ResidentServiceImpl implements ResidentService {
 		}
 
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthLock():: exit");
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAauthTypeStatusUpdate():: exit");
 		return response;
 	}
 
-	@Override
-	public ResponseDTO reqAuthUnlock(AuthLockOrUnLockRequestDto dto) {
-		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthUnlock():: entry");
-
-		ResponseDTO response = new ResponseDTO();
-		try {
-			if (validateIndividualId(dto.getIndividualId(), dto.getIndividualIdType())) {
-				if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
-						dto.getOtp())) {
-
-					boolean isAuthTypeUnLocked = idAuthService.authTypeStatusUpdate(dto.getIndividualId(),
-							dto.getIndividualIdType(), dto.getAuthType(), false);
-					if (isAuthTypeUnLocked) {
-						NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-						notificationRequestDto.setId(dto.getIndividualId());
-						notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
-						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UNLOCK_AUTH_Status);
-
-						NotificationResponseDTO notificationResponseDTO = notificationService
-								.sendNotification(notificationRequestDto);
-						response.setMessage(notificationResponseDTO.getMessage());
-
-					} else {
-						throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
-								ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
-					}
-				} else {
-					logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-							LoggerFileConstant.APPLICATIONID.toString(),
-							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
-					throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
-							ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
-				}
-			} else {
-				logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-						LoggerFileConstant.APPLICATIONID.toString(),
-						ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
-				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
-						ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
-			}
-		} catch (ApisResourceAccessException e) {
-			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(),
-					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
-							+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
-					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
-		} catch (ResidentServiceCheckedException e) {
-			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(),
-					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode()
-							+ ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
-					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
-		} catch (OtpValidationFailedException e) {
-			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
-					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
+	private NotificationResponseDTO sentNotificationForAuthTypeStatusUpdate(AuthLockOrUnLockRequestDto dto,
+			AuthTypeStatus authTypeStatus) throws ResidentServiceCheckedException {
+		NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+		notificationRequestDto.setId(dto.getIndividualId());
+		notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
+		if (authTypeStatus.equals(io.mosip.resident.constant.AuthTypeStatus.LOCK)) {
+			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_LOCK_AUTH_Status);
+		} else {
+			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UNLOCK_AUTH_Status);
 		}
 
-		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthUnlock():: exit");
-		return response;
+		return notificationService.sendNotification(notificationRequestDto);
 	}
 
 	@Override

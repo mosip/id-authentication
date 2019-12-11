@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.ResidentTestBootApplication;
 import io.mosip.resident.constant.IdType;
@@ -39,6 +38,7 @@ import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.validator.RequestValidator;
 
@@ -90,7 +90,7 @@ public class ResidentControllerTest {
 		ResponseDTO responseDto = new ResponseDTO();
 		responseDto.setStatus("success");
 		doNothing().when(validator).validateAuthLockRequest(Mockito.any());
-		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(Mockito.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAauthTypeStatusUpdate(Mockito.any(), Mockito.any());
 
 		this.mockMvc
 				.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(authLockRequestToJson))
@@ -101,7 +101,7 @@ public class ResidentControllerTest {
 	public void testRequestAuthLockBadRequest() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
 		doNothing().when(validator).validateAuthLockRequest(Mockito.any());
-		Mockito.doReturn(responseDto).when(residentService).reqAauthLock(Mockito.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAauthTypeStatusUpdate(Mockito.any(), Mockito.any());
 
 		MvcResult result = this.mockMvc
 				.perform(post("/req/auth-lock").contentType(MediaType.APPLICATION_JSON).content(""))
