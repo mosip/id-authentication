@@ -52,17 +52,17 @@ public class MasterDataConstant {
 	public static final String FILTER_FAILED="%s - Filter Failure";
 	public static final String CREATE_API_IS_CALLED = "Create API called::";
 	public static final String SUCCESSFUL_CREATE="Create %s - Success";
-	public static final String SUCCESSFUL_CREATE_DESC="System successfully created a %s %d";
-	public static final String SUCCESSFUL_UPDATE_DESC="System successfully updated a %s %d";
-	public static final String CREATE_ERROR_AUDIT="Create %s - Failure";
-	public static final String UPDATE_API_IS_CALLED= "%s Update API called";
+	public static final String SUCCESSFUL_CREATE_DESC="System successfully created a %s";
+	public static final String SUCCESSFUL_UPDATE_DESC="System successfully updated a %s";
+	public static final String FAILURE_CREATE="Create %s - Failure";
+	public static final String UPDATE_API_IS_CALLED= "Update API called::";
 	public static final String SUCCESSFUL_UPDATE="Update %s - Success";
 	public static final String FAILURE_UPDATE="Update %s - Failure";
 	public static final String DECOMMISION_API_CALLED="%s Decommission API called";
 	public static final String DECOMMISSION_SUCCESS="Decommission %s - Success";
-	public static final String DECOMMISSION_SUCCESS_DESC="System successfully decommissioned a %s %d";
-	public static final String DECOMMISSION_FAILURE="Decommission %s - Failure";
-	public static final String FAILURE_DESC="%s_%d";
+	public static final String DECOMMISSION_SUCCESS_DESC="System successfully decommissioned a %s";
+	public static final String FAILURE_DECOMMISSION="Decommission %s - Failure";
+	public static final String FAILURE_DESC="%s_%s";
 	
 	
 	public static final String AUDIT_SYSTEM = "SYSTEM";

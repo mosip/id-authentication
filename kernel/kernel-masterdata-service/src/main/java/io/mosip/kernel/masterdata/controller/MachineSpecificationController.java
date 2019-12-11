@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -27,6 +28,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,6 +47,9 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "MachineSpecification" })
 public class MachineSpecificationController {
+
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * Reference to MachineSpecificationService.
@@ -69,10 +74,17 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 500, message = "While creating Machine Specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> createMachineSpecification(
 			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
-
+		auditUtil.auditRequest(
+				MasterDataConstant.CREATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(machineSpecificationService.createMachineSpecification(machineSpecification.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						MachineSpecificationDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -93,10 +105,17 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 500, message = "While updating Machine Specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> updateMachineSpecification(
 			@Valid @RequestBody RequestWrapper<MachineSpecificationDto> machineSpecification) {
-
+		auditUtil.auditRequest(
+				MasterDataConstant.UPDATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(machineSpecificationService.updateMachineSpecification(machineSpecification.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						MachineSpecificationDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -115,9 +134,19 @@ public class MachineSpecificationController {
 			@ApiResponse(code = 404, message = "When No Machine Specification found"),
 			@ApiResponse(code = 500, message = "While deleting Machine Specification any error occured") })
 	public ResponseWrapper<IdResponseDto> deleteMachineSpecification(@Valid @PathVariable("id") String id) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.DECOMMISION_API_CALLED,
+						MachineSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DECOMMISION_API_CALLED,
+						MachineSpecificationDto.class.getCanonicalName()));
 
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.deleteMachineSpecification(id));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.DECOMMISSION_SUCCESS,
+						MachineSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DECOMMISSION_SUCCESS,
+						MachineSpecificationDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -150,7 +179,7 @@ public class MachineSpecificationController {
 				machineSpecificationService.getAllMachineSpecfication(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Api to search machine specification based on filters provided.
 	 * 
@@ -164,11 +193,19 @@ public class MachineSpecificationController {
 	@ApiOperation(value = "Retrieve all machine specifications for the given Filter parameters", notes = "Retrieve all machine specifications for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> searchMachineSpecification(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(
+				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
 		ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.searchMachineSpecification(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, MachineSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
+						MachineSpecificationDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Api to filter machine specification based on column and type provided.
 	 * 
@@ -181,9 +218,16 @@ public class MachineSpecificationController {
 	@PostMapping("/machinespecifications/filtervalues")
 	public ResponseWrapper<FilterResponseDto> machineSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(
+				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.machineSpecificationFilterValues(request.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + MachineSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + MachineSpecificationDto.class.getCanonicalName());
 		return responseWrapper;
 	}
-	
+
 }
