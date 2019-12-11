@@ -1,4 +1,4 @@
-+package io.mosip.kernel.bioapi.impl;
+package io.mosip.kernel.bioapi.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
