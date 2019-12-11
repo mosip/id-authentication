@@ -147,16 +147,26 @@ public class NotificationService {
 
 		smsStatus = sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
 		emailStatus = sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null, subject);
+		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
+				"NotificationService::sendSMSNotification()::isSuccess?::" + smsStatus);
+		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
+				"NotificationService::sendSMSNotification()::isSuccess?::" + emailStatus);
 		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
 		if (!(smsStatus && emailStatus))
 			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
 					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage());
 		notificationResponse.setMessage(notificationMessage);
+		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
+				"NotificationService::sendSMSNotification()::isSuccess?::" + notificationMessage);
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
+				"NotificationService::sendNotification()::exit");
 		return notificationResponse;
 	}
 
 	@SuppressWarnings("unchecked")
 	private String getTemplate(String langCode, String templatetypecode) throws ResidentServiceCheckedException {
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), "Template code", templatetypecode,
+				"NotificationService::getTemplate()::entry");
 		List<String> pathSegments = new ArrayList<String>();
 		pathSegments.add(langCode);
 		pathSegments.add(templatetypecode);
@@ -168,10 +178,13 @@ public class NotificationService {
 						ResidentErrorCode.TEMPLATE_EXCEPTION.getErrorMessage()
 								+ (resp != null ? resp.getErrors().get(0) : ""));
 			}
-			TemplateResponseDto templateResponse = JsonUtil.readValue(
-					JsonUtil.writeValueAsString(resp.getResponse()), TemplateResponseDto.class);
+			TemplateResponseDto templateResponse = JsonUtil.readValue(JsonUtil.writeValueAsString(resp.getResponse()),
+					TemplateResponseDto.class);
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), "Template code", templatetypecode,
+					"NotificationService::getTemplate()::getTemplateResponse::" + JsonUtil.writeValueAsString(resp));
 			List<TemplateDto> response = templateResponse.getTemplates();
-
+			logger.debug(LoggerFileConstant.APPLICATIONID.toString(), "Template code", templatetypecode,
+					"NotificationService::getTemplate()::exit");
 			return response.get(0).getFileText().replaceAll("^\"|\"$", "");
 		} catch (IOException e) {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
@@ -199,6 +212,8 @@ public class NotificationService {
 
 	private String templateMerge(String fileText, Map<String, Object> mailingAttributes)
 			throws ResidentServiceCheckedException {
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), "",
+				"NotificationService::templateMerge()::entry");
 		try {
 			String mergeTemplate = null;
 			InputStream templateInputStream = new ByteArrayInputStream(fileText.getBytes(Charset.forName("UTF-8")));
@@ -206,7 +221,8 @@ public class NotificationService {
 			InputStream resultedTemplate = templateManager.merge(templateInputStream, mailingAttributes);
 
 			mergeTemplate = IOUtils.toString(resultedTemplate, StandardCharsets.UTF_8.name());
-
+			logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), "",
+					"NotificationService::templateMerge()::exit");
 			return mergeTemplate;
 		} catch (IOException e) {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.IO_EXCEPTION.getErrorCode(),
@@ -237,13 +253,17 @@ public class NotificationService {
 		try {
 			resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()), MediaType.APPLICATION_JSON, req,
 					ResponseWrapper.class, tokenGenerator.getToken());
-			NotificationResponseDTO notifierResponse = JsonUtil.readValue(
-					JsonUtil.writeValueAsString(resp.getResponse()), NotificationResponseDTO.class);
+			NotificationResponseDTO notifierResponse = JsonUtil
+					.readValue(JsonUtil.writeValueAsString(resp.getResponse()), NotificationResponseDTO.class);
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
-					"NotificationService::sendSMSNotification()::response:" + notifierResponse.getStatus());
+					"NotificationService::sendSMSNotification()::response::"
+							+ JsonUtil.writeValueAsString(notifierResponse));
 
-			if (notifierResponse.getStatus().equalsIgnoreCase("success"))
+			if (notifierResponse.getStatus().equalsIgnoreCase("success")) {
+				logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+						"NotificationService::sendSMSNotification()::exit");
 				return true;
+			}
 		} catch (ApisResourceAccessException e) {
 
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -285,6 +305,8 @@ public class NotificationService {
 	private boolean sendEmailNotification(Map<String, Object> mailingAttributes,
 			NotificationTemplateCode notificationTemplate, MultipartFile[] attachment, String subject)
 			throws ResidentServiceCheckedException {
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+				"NotificationService::sendEmailNotification()::entry");
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + EMAIL),
 				mailingAttributes);
 		if (languageType.equalsIgnoreCase(BOTH)) {
@@ -316,10 +338,15 @@ public class NotificationService {
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
 			// ObjectMapper mapper = new ObjectMapper();
-			NotificationResponseDTO notifierResponse = JsonUtil.readValue(
-					JsonUtil.writeValueAsString(response.getResponse()), NotificationResponseDTO.class);
+			NotificationResponseDTO notifierResponse = JsonUtil
+					.readValue(JsonUtil.writeValueAsString(response.getResponse()), NotificationResponseDTO.class);
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+					"NotificationService::sendEmailNotification()::response::"
+							+ JsonUtil.writeValueAsString(notifierResponse));
 
 			if (notifierResponse.getStatus().equals("success")) {
+				logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+						"NotificationService::sendEmailNotification()::exit");
 				return true;
 			}
 		} catch (ApisResourceAccessException e) {
@@ -344,7 +371,8 @@ public class NotificationService {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorCode(),
 					ResidentErrorCode.TOKEN_GENERATION_FAILED.getErrorMessage(), e);
 		}
-
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+				"NotificationService::sendEmailNotification()::exit");
 		return false;
 
 	}
