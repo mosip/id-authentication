@@ -13,6 +13,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.redhat.ceylon.compiler.java.metadata.Ignore;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -171,6 +172,7 @@ public class IntegrationTest {
 		});
 	}
 	
+	@Ignore
 	@Test
 	public void getUinSuccessViDExpiryInvalidExpiryDateTest(TestContext context) {
 		LOGGER.info("getVidSuccessTest execution...");
