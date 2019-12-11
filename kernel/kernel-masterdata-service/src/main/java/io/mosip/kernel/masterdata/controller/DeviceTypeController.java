@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -23,6 +24,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -41,6 +43,10 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DeviceType" })
 public class DeviceTypeController {
+	
+	
+	@Autowired
+	AuditUtil auditUtil;
 
 	/**
 	 * Reference to deviceTypeService.
@@ -66,9 +72,15 @@ public class DeviceTypeController {
 			@ApiResponse(code = 500, message = "While creating Device Type any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> createDeviceType(
 			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
-
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName());
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.createDeviceType(deviceTypes.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DeviceTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -114,8 +126,15 @@ public class DeviceTypeController {
 	@ApiOperation(value = "Retrieve all Device Types for the given Filter parameters", notes = "Retrieve all Device Types for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> deviceTypeSearch(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName());
 		ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.deviceTypeSearch(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 	
@@ -131,8 +150,15 @@ public class DeviceTypeController {
 	@PreAuthorize("hasRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> deviceTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.deviceTypeFilterValues(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER, DeviceTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DeviceTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 

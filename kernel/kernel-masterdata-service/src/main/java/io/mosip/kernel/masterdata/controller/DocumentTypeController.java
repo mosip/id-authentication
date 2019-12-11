@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
@@ -31,6 +32,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,6 +53,10 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DocumentType" })
 public class DocumentTypeController {
+
+	@Autowired
+	AuditUtil auditUtil;
+	
 	@Autowired
 	DocumentTypeService documentTypeService;
 
@@ -92,9 +98,15 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to create document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
-
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.createDocumentType(types.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DocumentTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DocumentTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -111,9 +123,16 @@ public class DocumentTypeController {
 	@ApiOperation(value = "Service to update document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentType(
 			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
-
+		auditUtil.auditRequest(
+				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.updateDocumentType(types.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						DocumentTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -178,8 +197,15 @@ public class DocumentTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> documentTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.documentTypeFilterValues(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER, DocumentTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -193,13 +219,20 @@ public class DocumentTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
 		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DocumentTypeDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DocumentTypeDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
-	
+
 	/**
-	 * API to fetch all Document type  details based on language code
+	 * API to fetch all Document type details based on language code
 	 * 
 	 * @param langCode
 	 *            the language code

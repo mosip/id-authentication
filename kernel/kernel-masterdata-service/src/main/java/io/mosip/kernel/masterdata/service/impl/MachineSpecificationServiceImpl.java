@@ -42,6 +42,7 @@ import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineSpecificationService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -95,6 +96,9 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 	@Autowired
 	private PageUtils pageUtils;
 
+	@Autowired
+	private AuditUtil auditUtil;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,6 +114,12 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		try {
 			renMachineSpecification = machineSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, MachineSpecification.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()));
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
@@ -142,11 +152,24 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 				MetaDataUtils.setUpdateMetaData(machineSpecification, renMachineSpecification, false);
 				updMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 			} else {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, MachineSpecification.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION
+										.getErrorMessage()));
 				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, MachineSpecification.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()));
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
@@ -180,17 +203,41 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 						MetaDataUtils.setDeleteMetaData(renMachineSpecification);
 						delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 					} else {
+						auditUtil
+								.auditRequest(
+										String.format(MasterDataConstant.FAILURE_DECOMMISSION,
+												MachineSpecification.class.getCanonicalName()),
+										MasterDataConstant.AUDIT_SYSTEM,
+										String.format(MasterDataConstant.FAILURE_DESC,
+												MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION
+														.getErrorCode(),
+												MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION
+														.getErrorMessage()));
 						throw new MasterDataServiceException(
 								MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
 								MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 					}
 				}
 			} else {
+				auditUtil.auditRequest(
+						String.format(
+								MasterDataConstant.FAILURE_DECOMMISSION, MachineSpecification.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION
+										.getErrorMessage()));
 				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSpecification.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage()));
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage()

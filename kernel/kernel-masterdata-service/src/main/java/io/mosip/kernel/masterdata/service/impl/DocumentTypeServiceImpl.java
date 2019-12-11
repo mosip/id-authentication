@@ -16,8 +16,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
+import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -29,6 +30,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -38,6 +40,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -60,6 +63,9 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 @Service
 @Transactional
 public class DocumentTypeServiceImpl implements DocumentTypeService {
+	
+	@Autowired
+	AuditUtil auditUtil;
 
 	/**
 	 * Reference to DocumentTypeRepository.
@@ -129,8 +135,15 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			documentType = documentTypeRepository.create(entity);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
+							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()));
+			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorMessage()
+							+ " " + ExceptionUtils.parseException(e));
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
@@ -154,11 +167,25 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			if (documentType != null) {
 
 				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
+									DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION
+											.getErrorMessage()));
 					throw new RequestException(
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
 				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
 						&& (documentType.getIsActive() == Boolean.FALSE)) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
+									DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION
+											.getErrorMessage()));
 					throw new RequestException(
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
@@ -167,11 +194,25 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, false);
 				documentTypeRepository.update(documentType);
 			} else {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION
+										.getErrorMessage()));
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION
+									.getErrorMessage()));
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
