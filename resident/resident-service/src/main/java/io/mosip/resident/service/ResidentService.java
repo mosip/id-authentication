@@ -21,14 +21,6 @@ public interface ResidentService {
 
 	public ResidentReprintResponseDto reqPrintUin(ResidentReprintRequestDto dto);
 
-	public ResponseDTO reqUin(RequestDTO dto);
-
-	public ResponseDTO reqRid(RequestDTO dto);
-
-	public ResponseDTO reqUpdateUin(RequestDTO dto);
-
-	public ResponseDTO revokeVid(RequestDTO dto);
-
 	public ResponseDTO reqAauthTypeStatusUpdate(AuthLockOrUnLockRequestDto dto, AuthTypeStatus authTypeStatus);
 
 	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto);

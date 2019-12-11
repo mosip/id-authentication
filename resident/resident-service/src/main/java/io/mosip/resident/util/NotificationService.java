@@ -39,6 +39,7 @@ import io.mosip.resident.dto.TemplateResponseDto;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
+import io.mosip.resident.validator.RequestValidator;
 
 /**
  * 
@@ -63,9 +64,6 @@ public class NotificationService {
 	@Value("${resident.notification.emails}")
 	private String notificationEmails;
 
-	@Value("${resident.notification.message}")
-	private String notificationMessage;
-
 	@Autowired
 	private Environment env;
 
@@ -82,6 +80,10 @@ public class NotificationService {
 	private static final String BOTH = "both";
 	private static final String EMAIL = "_EMAIL";
 	private static final String SMS = "_SMS";
+	private static final String SMS_EMAIL_SUCCESS = "Notification has been sent to the provided contact detail(s)";
+	private static final String SMS_SUCCESS = "Notification has been sent to the provided contact phone number";
+	private static final String EMAIL_SUCCESS = "Notification has been sent to the provided email ";
+	private static final String SMS_EMAIL_FAILED = "Invalid phone number and email";
 
 	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
@@ -89,7 +91,6 @@ public class NotificationService {
 		String subject = "";
 		boolean smsStatus = false;
 		boolean emailStatus = false;
-		// try {
 		Map<String, Object> notificationAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
 		if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
 			notificationAttributes.putAll(dto.getAdditionalAttributes());
@@ -152,12 +153,19 @@ public class NotificationService {
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendSMSNotification()::isSuccess?::" + emailStatus);
 		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
-		if (!(smsStatus && emailStatus))
+		if (!(smsStatus && emailStatus)) {
 			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
-					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage());
-		notificationResponse.setMessage(notificationMessage);
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage() + SMS_EMAIL_FAILED);
+		} else if (smsStatus && emailStatus) {
+			notificationResponse.setMessage(SMS_EMAIL_SUCCESS);
+		} else if (smsStatus) {
+			notificationResponse.setMessage(SMS_SUCCESS);
+		} else {
+			notificationResponse.setMessage(EMAIL_SUCCESS);
+		}
+
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
-				"NotificationService::sendSMSNotification()::isSuccess?::" + notificationMessage);
+				"NotificationService::sendSMSNotification()::isSuccess?::" + notificationResponse.getMessage());
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendNotification()::exit");
 		return notificationResponse;
@@ -234,6 +242,13 @@ public class NotificationService {
 			NotificationTemplateCode notificationTemplate) throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 				"NotificationService::sendSMSNotification()::entry");
+		String phone = (String) mailingAttributes.get("phone");
+		if (phone == null || phone.isEmpty() || !(RequestValidator.phoneValidator(phone))) {
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+					"NotificationService::sendSMSNotification()::phoneValidatio::" + "false :: invalid phone number");
+			return false;
+		}
+
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + SMS),
 				mailingAttributes);
 
@@ -246,7 +261,7 @@ public class NotificationService {
 
 		SMSRequestDTO smsRequestDTO = new SMSRequestDTO();
 		smsRequestDTO.setMessage(primaryLanguageMergeTemplate);
-		smsRequestDTO.setNumber((String) mailingAttributes.get("phone"));
+		smsRequestDTO.setNumber(phone);
 		RequestWrapper<SMSRequestDTO> req = new RequestWrapper<>();
 		req.setRequest(smsRequestDTO);
 		ResponseWrapper<NotificationResponseDTO> resp;
@@ -307,6 +322,12 @@ public class NotificationService {
 			throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 				"NotificationService::sendEmailNotification()::entry");
+		String email = String.valueOf(mailingAttributes.get("email"));
+		if (email == null || email.isEmpty() || !(RequestValidator.emailValidator(email))) {
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
+					"NotificationService::sendEmailNotification()::emailValidation::" + "false :: invalid email");
+			return false;
+		}
 		String primaryLanguageMergeTemplate = templateMerge(getTemplate(primaryLang, notificationTemplate + EMAIL),
 				mailingAttributes);
 		if (languageType.equalsIgnoreCase(BOTH)) {
