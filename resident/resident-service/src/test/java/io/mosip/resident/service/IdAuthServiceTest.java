@@ -1,6 +1,7 @@
 package io.mosip.resident.service;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,8 +12,12 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -35,8 +40,11 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.dto.AuthError;
 import io.mosip.resident.dto.AuthResponseDTO;
 import io.mosip.resident.dto.AuthTypeStatusResponseDto;
+import io.mosip.resident.dto.AutnTxnDto;
+import io.mosip.resident.dto.AutnTxnResponseDto;
 import io.mosip.resident.dto.ErrorDTO;
 import io.mosip.resident.dto.IdAuthResponseDto;
 import io.mosip.resident.dto.PublicKeyResponseDto;
@@ -211,5 +219,38 @@ public class IdAuthServiceTest {
 		when(restClient.postApi(any(), any(), any(), any(Class.class), any())).thenReturn(response);
 
 		idAuthService.validateOtp(transactionID, individualId, individualIdType, otp);
+	}
+	
+	@Test
+	public void testGetAuthHistoryDetailsSuccess() throws ApisResourceAccessException {
+		AutnTxnResponseDto response= new AutnTxnResponseDto();
+		AutnTxnDto autnTxnDto=new AutnTxnDto();
+		autnTxnDto.setAuthtypeCode("OTP-AUTH");
+		autnTxnDto.setEntityName("ida_app_user");
+		autnTxnDto.setReferenceIdType("UIN");
+		autnTxnDto.setRequestdatetime(LocalDateTime.now());
+		autnTxnDto.setStatusCode("N");
+		autnTxnDto.setStatusComment("OTP Authentication Failed");
+		autnTxnDto.setTransactionID("1111122222");
+		Map<String, List<AutnTxnDto>> responsemap=new HashMap<>();
+		responsemap.put("authTransactions", Arrays.asList(autnTxnDto));
+		response.setResponse(responsemap);
+		when(restClient.getApi(any(), any(),any(), any(), any(Class.class), any())).thenReturn(response);
+		assertEquals("OTP-AUTH",idAuthService.getAuthHistoryDetails("1234", "WN", null, null).get(0).getAuthModality());
+	}
+	
+	@Test
+	public void testGetAuthHistoryDetailsServiceErrors() throws ApisResourceAccessException {
+		AutnTxnResponseDto response= new AutnTxnResponseDto();
+		AuthError error=new AuthError("e","e");
+		response.setErrors(Arrays.asList(error));
+		when(restClient.getApi(any(), any(),any(), any(), any(Class.class), any())).thenReturn(response);
+		idAuthService.getAuthHistoryDetails("1234", "WN", null, null);
+	}
+	
+	@Test(expected = ApisResourceAccessException.class)
+	public void testGetAuthHistoryDetailsFetchFailure() throws ApisResourceAccessException {
+		when(restClient.getApi(any(), any(),any(), any(), any(Class.class), any())).thenThrow(new ApisResourceAccessException() );
+		idAuthService.getAuthHistoryDetails("1234", "WN", 1, 10);
 	}
 }

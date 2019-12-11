@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.resident.constant.AuthTypeStatus;
+import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
@@ -30,6 +31,7 @@ public class RequestValidatorTest {
 	public void setup() {
 		ReflectionTestUtils.setField(requestValidator, "authLockId", "mosip.resident.authlock");
 		ReflectionTestUtils.setField(requestValidator, "euinId", "mosip.resident.euin");
+		ReflectionTestUtils.setField(requestValidator, "authHstoryId", "mosip.resident.authhistory");
 		ReflectionTestUtils.setField(requestValidator, "authTypes", "bio-FIR,bio-IIR");
 		ReflectionTestUtils.setField(requestValidator, "version", "v1");
 	}
@@ -62,6 +64,17 @@ public class RequestValidatorTest {
 		requestValidator.validateEuinRequest(requestWrapper);
 
 	}
+	
+	@Test(expected = InvalidInputException.class)
+	public void testValidAuthHistoryId() throws Exception {
+		AuthHistoryRequestDTO authHistoryRequestDTO = new AuthHistoryRequestDTO();
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(authHistoryRequestDTO);
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.authlock");
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
+
+	}
 
 	@Test(expected = InvalidInputException.class)
 	public void testValidVersion() throws Exception {
@@ -73,6 +86,17 @@ public class RequestValidatorTest {
 
 	}
 
+	@Test(expected = InvalidInputException.class)
+	public void testValidAuthHistoryVersion() throws Exception {
+		AuthHistoryRequestDTO authHistoryRequestDTO = new AuthHistoryRequestDTO();
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(authHistoryRequestDTO);
+		requestWrapper.setVersion("v2");
+		requestWrapper.setId("mosip.resident.authhistory");
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
+
+	}
+	
 	@Test(expected = InvalidInputException.class)
 	public void testValideuinVersion() throws Exception {
 		EuinRequestDTO euinRequestDTO = new EuinRequestDTO();
@@ -96,11 +120,23 @@ public class RequestValidatorTest {
 	}
 
 	@Test(expected = InvalidInputException.class)
+	public void testValidAuthHistoryRequest() throws Exception {
+
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.authhistory");
+		requestWrapper.setRequest(null);
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
+
+	}
+	
+	@Test(expected = InvalidInputException.class)
 	public void testValideuinRequest() throws Exception {
 
 		RequestWrapper<EuinRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setVersion("v1");
 		requestWrapper.setId("mosip.resident.euin");
+		requestWrapper.setRequest(null);
 		requestValidator.validateEuinRequest(requestWrapper);
 
 	}
@@ -139,6 +175,18 @@ public class RequestValidatorTest {
 		requestWrapper.setVersion("v1");
 		requestWrapper.setId("mosip.resident.euin");
 		requestValidator.validateEuinRequest(requestWrapper);
+
+	}
+	
+	@Test(expected = InvalidInputException.class)
+	public void testAuthHistoryValidIndividualType() throws Exception {
+		AuthHistoryRequestDTO euinRequestDTO = new AuthHistoryRequestDTO();
+		euinRequestDTO.setIndividualIdType("RID");
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(euinRequestDTO);
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.authhistory");
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
 

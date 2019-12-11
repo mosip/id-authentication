@@ -287,26 +287,26 @@ public class IdAuthServiceImpl implements IdAuthService {
 		try {
 			autnTxnResponseDto=(AutnTxnResponseDto) restClient.getApi(ApiName.INTERNALAUTHTRANSACTIONS,
 					pathsegments, queryParamName, queryParamValue, AutnTxnResponseDto.class, tokenGenerator.getToken());
-			if (autnTxnResponseDto.getErrors() != null && autnTxnResponseDto.getErrors().size() > 0) {
-				autnTxnResponseDto.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
-
-			}
-			if(autnTxnResponseDto.getResponse().get("authTransactions") != null ) {
-				details=new ArrayList<AuthTxnDetailsDTO>();
-				if(!autnTxnResponseDto.getResponse().get("authTransactions").isEmpty()) {
-					for(AutnTxnDto autnTxnDto :autnTxnResponseDto.getResponse().get("authTransactions")) {
-						details.add(getDetails(autnTxnDto, count));
-						count++;
-					}
-				}
-			}
+			
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
 					"IdAuthServiceImp::getAuthHistoryDetails():: AUTHTransactions GET service call" + e.getStackTrace());
 			throw new ApisResourceAccessException("Could not able call auth transactions api", e);
 		}
-		
+		if (autnTxnResponseDto.getErrors() != null && autnTxnResponseDto.getErrors().size() > 0) {
+			autnTxnResponseDto.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
+
+		}
+		else if(autnTxnResponseDto.getResponse().get("authTransactions") != null ) {
+			details=new ArrayList<AuthTxnDetailsDTO>();
+			if(!autnTxnResponseDto.getResponse().get("authTransactions").isEmpty()) {
+				for(AutnTxnDto autnTxnDto :autnTxnResponseDto.getResponse().get("authTransactions")) {
+					details.add(getDetails(autnTxnDto, count));
+					count++;
+				}
+			}
+		}
 		return details;
 	}
 

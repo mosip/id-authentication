@@ -32,6 +32,8 @@ import com.google.gson.GsonBuilder;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.ResidentTestBootApplication;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.dto.AuthHistoryRequestDTO;
+import io.mosip.resident.dto.AuthHistoryResponseDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
@@ -64,10 +66,12 @@ public class ResidentControllerTest {
 
 	RequestWrapper<AuthLockOrUnLockRequestDto> authLockRequest;
 	RequestWrapper<EuinRequestDTO> euinRequest;
+	RequestWrapper<AuthHistoryRequestDTO> authHistoryRequest;
 
 	/** The array to json. */
 	private String authLockRequestToJson;
 	private String euinRequestToJson;
+	private String historyRequestToJson;
 	private Gson gson;
 
 	/** The mock mvc. */
@@ -80,9 +84,11 @@ public class ResidentControllerTest {
 		authLockRequest.setRequest(new AuthLockOrUnLockRequestDto());
 		euinRequest = new RequestWrapper<EuinRequestDTO>();
 		euinRequest.setRequest(new EuinRequestDTO("1234567890", "1234567890", "UIN", "UIN", "4567"));
+		
 		gson = new GsonBuilder().serializeNulls().create();
 		authLockRequestToJson = gson.toJson(authLockRequest);
 		euinRequestToJson = gson.toJson(euinRequest);
+		
 	}
 
 	@Test
@@ -177,6 +183,38 @@ public class ResidentControllerTest {
 
 		MvcResult result = this.mockMvc
 				.perform(post("/req/auth-unlock").contentType(MediaType.APPLICATION_JSON).content(""))
+				.andExpect(status().isOk()).andReturn();
+		assertTrue(result.getResponse().getContentAsString().contains("RES-500"));
+	}
+	
+	@Test
+	public void testRequestAuthHistorySuccess() throws Exception {
+		authHistoryRequest=new RequestWrapper<AuthHistoryRequestDTO>();
+		AuthHistoryRequestDTO hisdto=new AuthHistoryRequestDTO();
+		hisdto.setIndividualId("1234");
+		hisdto.setIndividualIdType("UIN");
+		hisdto.setOtp("1234");
+		hisdto.setTransactionID("1234");
+		authHistoryRequest.setRequest(hisdto);
+		authHistoryRequest.setId("id");
+		authHistoryRequest.setRequesttime("12-12-2009");
+		authHistoryRequest.setVersion("v1");
+		historyRequestToJson=gson.toJson(authHistoryRequest);
+		AuthHistoryResponseDTO responseDto = new AuthHistoryResponseDTO();
+		responseDto.setMessage("success");
+		doNothing().when(validator).validateAuthHistoryRequest(Mockito.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAuthHistory(Mockito.any());
+
+		this.mockMvc
+				.perform(post("/req/auth-history").contentType(MediaType.APPLICATION_JSON).content(historyRequestToJson))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.message", is("success")));
+	}
+
+	@Test
+	public void testRequestAuthHistoryBadRequest() throws Exception {
+
+		MvcResult result = this.mockMvc
+				.perform(post("/req/auth-history").contentType(MediaType.APPLICATION_JSON).content(""))
 				.andExpect(status().isOk()).andReturn();
 		assertTrue(result.getResponse().getContentAsString().contains("RES-500"));
 	}
