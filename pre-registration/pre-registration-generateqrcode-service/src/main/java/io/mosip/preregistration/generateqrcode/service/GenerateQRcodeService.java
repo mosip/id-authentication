@@ -46,8 +46,8 @@ public class GenerateQRcodeService {
 	
 	Map<String, String> requiredRequestMap = new HashMap<>();
 	
-	@Value("${mosip.pre-registration.qrcode.generate.id}")
-	private String Id;
+	@Value("${mosip.pre-registration.qrcode.id.generate}")
+	private String id;
 	
 	@Value("${mosip.pre-registration.qrcode.service.version}")
 	private String version;
@@ -61,7 +61,7 @@ public class GenerateQRcodeService {
 	@PostConstruct
 	public void setupBookingService() {
 		requiredRequestMap.put("version", version);
-		requiredRequestMap.put("id", Id);
+		requiredRequestMap.put("id", id);
 
 	}
 	
@@ -81,7 +81,7 @@ public class GenerateQRcodeService {
 		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
 		
-		response.setId(Id);
+		response.setId(id);
 		response.setVersion(version);
 		try {
 			response.setId(data.getId());

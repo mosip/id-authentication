@@ -20,7 +20,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
@@ -30,7 +29,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,8 +37,6 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.serviceimpl.dto.RegistrationCenterResponseDto;
-import io.mosip.preregistration.booking.serviceimpl.exception.MasterDataNotAvailableException;
-import io.mosip.preregistration.booking.serviceimpl.exception.RestCallException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -54,9 +51,11 @@ import io.mosip.preregistration.demographic.code.RequestCodes;
 import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
 import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
+import io.mosip.preregistration.demographic.dto.PridFetchResponseDto;
 import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
 import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
 import io.mosip.preregistration.demographic.exception.OperationNotAllowedException;
+import io.mosip.preregistration.demographic.exception.RestCallException;
 import io.mosip.preregistration.demographic.exception.system.DateParseException;
 import io.mosip.preregistration.demographic.exception.system.JsonParseException;
 import io.mosip.preregistration.demographic.exception.system.SystemFileIOException;
@@ -82,7 +81,6 @@ public class DemographicServiceUtil {
 	private Environment env;
 
 	@Autowired
-	@Qualifier("restTemplateConfig")
 	private RestTemplate restTemplate;
 	
 	
@@ -483,21 +481,21 @@ public class DemographicServiceUtil {
 			String uriBuilder = regbuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<ResponseWrapper<String>> responseEntity = restTemplate.exchange(
+			ResponseEntity<ResponseWrapper<PridFetchResponseDto>> responseEntity = restTemplate.exchange(
 					uriBuilder, HttpMethod.GET, entity,
-					new ParameterizedTypeReference<ResponseWrapper<String>>() {
+					new ParameterizedTypeReference<ResponseWrapper<PridFetchResponseDto>>() {
 					});
 			if (responseEntity.getBody().getErrors() != null && !responseEntity.getBody().getErrors().isEmpty()) {
 				throw new RestCallException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity.getBody().getErrors().get(0).getMessage());
 			}
-			prid = responseEntity.getBody().getResponse();
+			prid = responseEntity.getBody().getResponse().getPrid();
 			if (prid == null || prid.isEmpty()) {
 				throw new RestCallException(ErrorCodes.PRG_PAM_APP_020.getCode(),
 						ErrorMessages.PRID_RESTCALL_FAIL.getMessage());
 			}
 
-		} catch (HttpClientErrorException ex) {
+		} catch (RestClientException ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "

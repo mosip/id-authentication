@@ -101,6 +101,7 @@ import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
 import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
 import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.demographic.dto.DemographicViewDTO;
+import io.mosip.preregistration.demographic.dto.PridFetchResponseDto;
 import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
 import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
 import io.mosip.preregistration.demographic.exception.BookingDeletionFailedException;
@@ -147,8 +148,7 @@ public class DemographicServiceTest {
 	/**
 	 * Mocking the RestTemplateBuilder bean
 	 */
-	@MockBean
-	@Qualifier("restTemplateConfig")
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 
 	/**
@@ -432,9 +432,10 @@ public class DemographicServiceTest {
 		requestMap.put("id", createId);
 		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
-
+        PridFetchResponseDto dto=new PridFetchResponseDto();
+        dto.setPrid("67547447647457");
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
+		Mockito.when(serviceUtil.generateId()).thenReturn("67547447647457");
 		Mockito.when(jsonValidator.validateIdObject(jsonObject.toString(),
 				IdObjectValidatorSupportedOperations.NEW_REGISTRATION)).thenReturn(true);
 		Mockito.when(demographicRepository.save(Mockito.any())).thenReturn(preRegistrationEntity);
@@ -449,12 +450,12 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setLangCode("fra");
 		request.setRequest(createPreRegistrationDTO);
 		List<DemographicCreateResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
-		ResponseWrapper<String> pridRes = new ResponseWrapper<>();
-		pridRes.setResponse("98746563542672");
-		ResponseEntity<ResponseWrapper<String>> res = new ResponseEntity<>(pridRes,
+		ResponseWrapper<PridFetchResponseDto> pridRes = new ResponseWrapper<>();
+		pridRes.setResponse(dto);
+		ResponseEntity<ResponseWrapper<PridFetchResponseDto>> res = new ResponseEntity<>(pridRes,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<String>>() {
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<PridFetchResponseDto>>() {
 				}))).thenReturn(res);
 		Mockito.when(serviceUtil.generateId()).thenReturn("98746563542672");
 	
@@ -480,7 +481,7 @@ public class DemographicServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any())).thenReturn(encryptedDemographicDetails);
 
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
-		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
+		Mockito.when(serviceUtil.generateId()).thenReturn("67547447647457");
 		Mockito.when(jsonValidator.validateIdObject(jsonObject.toString(),
 				IdObjectValidatorSupportedOperations.NEW_REGISTRATION)).thenReturn(true);
 		Mockito.when(demographicRepository.save(Mockito.any())).thenThrow(errorException);
@@ -497,12 +498,14 @@ public class DemographicServiceTest {
 		List<DemographicCreateResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseForCreateDTO);
 		responseCreateDTO.setResponse(demographicResponseForCreateDTO);
-		ResponseWrapper<String> pridRes = new ResponseWrapper<>();
-		pridRes.setResponse("98746563542672");
-		ResponseEntity<ResponseWrapper<String>> res = new ResponseEntity<>(pridRes,
+		ResponseWrapper<PridFetchResponseDto> pridRes = new ResponseWrapper<>();
+		PridFetchResponseDto dto= new PridFetchResponseDto();
+		dto.setPrid("98746563542672");
+		pridRes.setResponse(dto);
+		ResponseEntity<ResponseWrapper<PridFetchResponseDto>> res = new ResponseEntity<>(pridRes,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<String>>() {
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<PridFetchResponseDto>>() {
 				}))).thenReturn(res);
 		Mockito.when(serviceUtil.generateId()).thenReturn("98746563542672");
 
@@ -526,12 +529,14 @@ public class DemographicServiceTest {
 		preRegistrationEntity.setApplicantDetailJson(encryptedDemographicDetails);
 		Mockito.when(jsonValidator.validateIdObject(Mockito.any(), Mockito.any())).thenReturn(true);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
-		ResponseWrapper<String> pridRes = new ResponseWrapper<>();
-		pridRes.setResponse("98746563542672");
-		ResponseEntity<ResponseWrapper<String>> res = new ResponseEntity<>(pridRes,
+		ResponseWrapper<PridFetchResponseDto> pridRes = new ResponseWrapper<>();
+		PridFetchResponseDto dto= new PridFetchResponseDto();
+		dto.setPrid("98746563542672");
+		pridRes.setResponse(dto);
+		ResponseEntity<ResponseWrapper<PridFetchResponseDto>> res = new ResponseEntity<>(pridRes,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<String>>() {
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<PridFetchResponseDto>>() {
 				}))).thenReturn(res);
 		Mockito.when(serviceUtil.generateId()).thenReturn("98746563542672");
 		Mockito.when(demographicRepository.save(Mockito.any())).thenThrow(exception);

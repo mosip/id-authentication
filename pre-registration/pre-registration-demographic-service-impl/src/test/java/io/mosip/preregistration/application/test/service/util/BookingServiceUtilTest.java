@@ -96,8 +96,7 @@ public class BookingServiceUtilTest {
 	@MockBean
 	private RegistrationBookingRepository registrationBookingRepository;
 
-	@MockBean
-	@Qualifier("restTemplateConfig")
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 
 	@MockBean

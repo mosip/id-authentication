@@ -122,8 +122,7 @@ public class BookingServiceTest {
 	/**
 	 * Mocking the RestTemplateBuilder bean
 	 */
-	@MockBean
-	@Qualifier("restTemplateConfig")
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 
 	@MockBean
