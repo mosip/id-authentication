@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.dto;
 
 import java.io.Serializable;
@@ -55,3 +56,4 @@ public class ExceptionalHolidayDto implements Serializable{
 	private Boolean isActive;
 
 }
+

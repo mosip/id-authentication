@@ -50,7 +50,6 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
 
-	/** The registration repositary. */
 	@Autowired
 	private RegistrationRepositary<BaseRegistrationEntity, String> registrationRepositary;
 
@@ -133,9 +132,7 @@ public class PacketInfoDao {
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-		demo.setPhone(object.getPhone());
-		demo.setEmail(object.getEmail());
-		demo.setPostalcode(object.getPostalCode());
+
 		return demo;
 	}
 
@@ -236,10 +233,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the reg id by UIN.
 	 *
-	 * @param bioRefId
-	 *            the bio ref id
-	 * @param refRegtrnId
-	 *            the ref regtrn id
+	 * @param uin
+	 *            the uin
 	 * @return the reg id by UIN
 	 */
 
@@ -260,8 +255,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the reference id by batch id.
 	 *
-	 * @param batchId
-	 *            the batch id
+	 * @param batchId the batch id
 	 * @return the reference id by batch id
 	 */
 	public List<String> getReferenceIdByBatchId(String batchId) {
@@ -528,12 +522,9 @@ public class PacketInfoDao {
 	/**
 	 * Gets the abis processed requests app code by bio ref id.
 	 *
-	 * @param bioRefId
-	 *            the bio ref id
-	 * @param requestType
-	 *            the request type
-	 * @param processed
-	 *            the processed
+	 * @param bioRefId the bio ref id
+	 * @param requestType the request type
+	 * @param processed the processed
 	 * @return the abis processed requests app code by bio ref id
 	 */
 	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
@@ -545,10 +536,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the processed or processing reg ids.
 	 *
-	 * @param matchedRegIds
-	 *            the matched reg ids
-	 * @param statusCode
-	 *            the status code
+	 * @param matchedRegIds the matched reg ids
+	 * @param statusCode the status code
 	 * @return the processed or processing reg ids
 	 */
 	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds, String statusCode) {
@@ -558,8 +547,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the abis response det records list.
 	 *
-	 * @param abisResponseDto
-	 *            the abis response dto
+	 * @param abisResponseDto the abis response dto
 	 * @return the abis response det records list
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
@@ -567,92 +555,5 @@ public class PacketInfoDao {
 		List<AbisResponseDetEntity> abisResEntity = abisRequestRepository.getAbisResponseDetailsList(abisResponseDto);
 		abisResponseDetDtoList.addAll(PacketInfoMapper.convertAbisResponseDetEntityListToDto(abisResEntity));
 		return abisResponseDetDtoList;
-	}
-
-	/**
-	 * Gets the matched demographic dtos by email.
-	 *
-	 * @param name
-	 *            the name
-	 * @param postalCode
-	 *            the postal code
-	 * @param email
-	 *            the email
-	 * @return the matched demographic dtos by email
-	 */
-	public List<DemographicInfoDto> getMatchedDemographicDtosByEmail(String name, String postalCode, String email) {
-		Map<String, Object> params = new HashMap<>();
-		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
-		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
-		StringBuilder query = new StringBuilder();
-		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
-		if (name != null) {
-			query.append(alias + ".name=:name ").append(AND);
-			params.put("name", name);
-		}
-		if (postalCode != null) {
-			query.append(alias + ".postalCode=:postalCode ").append(AND);
-			params.put("postalCode", postalCode);
-		}
-		if (email != null) {
-			query.append(alias + ".email=:email ").append(AND);
-			params.put("email", email);
-		}
-
-		query.append(alias + ".isActive=:isActive");
-		params.put("isActive", IS_ACTIVE_TRUE);
-		return convertEntityToDemographicDto(demographicDedupeRepository.createQuerySelect(query.toString(), params));
-	}
-
-	/**
-	 * Gets the matched demographic dtos by phone.
-	 *
-	 * @param name
-	 *            the name
-	 * @param postalCode
-	 *            the postal code
-	 * @param phone
-	 *            the phone
-	 * @return the matched demographic dtos by phone
-	 */
-	public List<DemographicInfoDto> getMatchedDemographicDtosByPhone(String name, String postalCode, String phone) {
-		Map<String, Object> params = new HashMap<>();
-		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
-		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
-		StringBuilder query = new StringBuilder();
-		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
-		if (name != null) {
-			query.append(alias + ".name=:name ").append(AND);
-			params.put("name", name);
-		}
-		if (postalCode != null) {
-			query.append(alias + ".postalCode=:postalCode ").append(AND);
-			params.put("postalCode", postalCode);
-		}
-		if (phone != null) {
-			query.append(alias + ".phone=:phone ").append(AND);
-			params.put("phone", phone);
-		}
-
-		query.append(alias + ".isActive=:isActive");
-		params.put("isActive", IS_ACTIVE_TRUE);
-		return convertEntityToDemographicDto(demographicDedupeRepository.createQuerySelect(query.toString(), params));
-	}
-
-	/**
-	 * Convert entity to demographic dto.
-	 *
-	 * @param demographicInfoEntities
-	 *            the demographic info entities
-	 * @return the list
-	 */
-	private List<DemographicInfoDto> convertEntityToDemographicDto(
-			List<IndividualDemographicDedupeEntity> demographicInfoEntities) {
-		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-
-		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
-			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
-		}
-		return demographicInfoDtos;
 	}
 }

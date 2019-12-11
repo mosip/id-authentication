@@ -3,6 +3,8 @@ package io.mosip.registration.processor.request.handler.service.controller;
 import java.io.IOException;
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
@@ -97,7 +100,7 @@ public class PacketGeneratorController {
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
-			@RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
+			@RequestBody(required = true) @Valid PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@CookieValue(value = "Authorization", required = true) String token)
 			throws RegBaseCheckedException, IOException {
 		tokenValidator.validate("Authorization=" + token, "requesthandler");
@@ -116,8 +119,11 @@ public class PacketGeneratorController {
 				return ResponseEntity.ok().headers(headers).body(response);
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-		} catch (RequestHandlerValidationException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
+		}catch (RegBaseCheckedException | IOException e) {
+			if (e instanceof RegBaseCheckedException) {
+				throw e;
+			}
+			throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
 		}
 	}

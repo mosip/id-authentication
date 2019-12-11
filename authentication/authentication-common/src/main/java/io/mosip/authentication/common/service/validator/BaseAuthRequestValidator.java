@@ -69,17 +69,11 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
 
-	/** The Constant BIO_SUB_TYPE. */
-	private static final String BIO_SUB_TYPE = "bioSubType";
-
 	/** The Constant OTP2. */
 	private static final String OTP2 = "OTP";
 
 	/** The Constant PIN. */
 	private static final String PIN = "PIN";
-
-	/** The Constant BIO_TYPE. */
-	private static final String BIO_TYPE = "bioType";
 
 	/** The Final Constant For PIN_VALUE. */
 	private static final String PIN_VALUE = "pinValue";
@@ -319,12 +313,13 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}).map(BioAuthType::getTypeForConfigNameValue).filter(Optional::isPresent).map(Optional::get)
 				.collect(Collectors.toSet());
 
-		for (DataDTO bioInfo : bioInfos) {
+		for (int i = 0; i < bioInfos.size(); i++) {
+			DataDTO bioInfo = bioInfos.get(i);
 			String bioType = bioInfo.getBioType();
 			if (StringUtils.isEmpty(bioType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { BIO_TYPE },
+						new Object[] { String.format(IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM, i) },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else if (!allowedAvailableAuthTypes.contains(bioType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -332,7 +327,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { MatchType.Category.BIO.getType() + "-" + bioType },
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			} else {
-				validateBioType(errors, allowedAvailableAuthTypes, bioInfo);
+				validateBioType(errors, allowedAvailableAuthTypes, bioInfo, i);
 			}
 		}
 
@@ -347,12 +342,14 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the available auth type infos
 	 * @param bioInfo
 	 *            the bio info
+	 * @param bioIndex 
 	 */
-	private void validateBioType(Errors errors, Set<String> availableAuthTypeInfos, DataDTO bioInfo) {
+	private void validateBioType(Errors errors, Set<String> availableAuthTypeInfos, DataDTO bioInfo, int bioIndex) {
 		String bioType = bioInfo.getBioType();
 		if (!availableAuthTypeInfos.contains(bioType)) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] { BIO_TYPE },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
+					new Object[] { String.format(IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM, bioIndex) + " - " + bioType },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			String bioSubType = bioInfo.getBioSubType();
@@ -370,7 +367,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 					if (invalidBioType) {
 						errors.rejectValue(IdAuthCommonConstants.REQUEST,
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { BIO_SUB_TYPE + " - " + bioSubType + " for bioType " + bioType },
+								new Object[] { String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) + " - " + bioSubType },
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 					}
 
@@ -379,7 +376,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			} else {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { BIO_SUB_TYPE },
+						new Object[] {  String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			}
 		}

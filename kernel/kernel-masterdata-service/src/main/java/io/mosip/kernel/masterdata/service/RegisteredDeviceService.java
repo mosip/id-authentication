@@ -26,6 +26,6 @@ public interface RegisteredDeviceService {
 
 	public DeviceDeRegisterResponse deRegisterDevice(@Valid String deviceCode);
 
-	public DeviceDeRegisterResponse updateStatus(@NotBlank String deviceCode, @NotBlank String statusCode);
+	public ResponseDto updateStatus(@NotBlank String deviceCode, @NotBlank String statusCode);
 
 }

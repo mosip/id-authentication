@@ -1,13 +1,10 @@
 package io.mosip.kernel.smsnotification.service.impl;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,15 +12,12 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 import io.mosip.kernel.smsnotification.constant.SmsPropertyConstant;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
-import io.mosip.kernel.smsnotification.dto.SmsServerResponseDto;
 import io.mosip.kernel.smsnotification.dto.SmsVendorRequestDto;
 import io.mosip.kernel.smsnotification.exception.InvalidNumberException;
 

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -1355,7 +1356,7 @@ public class BioAuthServiceTest {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	
@@ -1382,7 +1383,7 @@ public class BioAuthServiceTest {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 
@@ -1409,7 +1410,7 @@ public class BioAuthServiceTest {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	
@@ -1436,7 +1437,7 @@ public class BioAuthServiceTest {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	
@@ -1463,7 +1464,7 @@ public class BioAuthServiceTest {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	
@@ -1490,7 +1491,7 @@ public class BioAuthServiceTest {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	
@@ -1510,14 +1511,14 @@ public class BioAuthServiceTest {
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.SW_ID_VERIFICATION_FAILED, null)));
+				Collections.singletonList(new ServiceError(IdAuthCommonConstants.SOFTWARE_VERSION_IS_NOT_A_MATCH, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	
@@ -1537,14 +1538,14 @@ public class BioAuthServiceTest {
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DP_ID_VERIFICATION_FAILED, null)));
+				Collections.singletonList(new ServiceError(IdAuthCommonConstants.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED, null)));
 		when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
 		try {
 			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
 		} catch (UndeclaredThrowableException e) {
 			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.PROVIDER_ID_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
 		}
 	}
 	

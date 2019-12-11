@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -99,4 +100,10 @@ public class RegCenterPostReqDto {
 	@NotNull
 	@Size(min = 0, max = 36)
 	private String zoneCode;
+	
+	private WorkingNonWorkingDaysDto workingNonWorkingDays;
+	
+	private List<ExceptionalHolidayPutPostDto>	 exceptionalHolidayPutPostDto;
+	
+	
 }

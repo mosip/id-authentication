@@ -239,8 +239,8 @@ public class VidRequestValidatorTest {
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
 		req.setRequest(request);
 		HashSet<String> value = new HashSet<String>();
-		value.add("Perpetual".toUpperCase());
-		value.add("Temporary".toUpperCase());
+		value.add("Perpetual");
+		value.add("Temporary");
 		Mockito.when(policyProvider.getAllVidTypes()).thenReturn(value);
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);

@@ -214,7 +214,6 @@ public class VidControllerTest {
 		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		VidRequestDTO request = new VidRequestDTO();
 		request.setUin(2953190571L);
-		request.setVidType("");
 		req.setRequest(request);
 		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
 		Mockito.when(vidService.generateVid(Mockito.any())).thenReturn(value);
@@ -230,7 +229,6 @@ public class VidControllerTest {
 			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 			VidRequestDTO request = new VidRequestDTO();
 			request.setUin(2953190571L);
-			request.setVidType("");
 			req.setRequest(request);
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
 			Mockito.when(vidService.generateVid(Mockito.any()))

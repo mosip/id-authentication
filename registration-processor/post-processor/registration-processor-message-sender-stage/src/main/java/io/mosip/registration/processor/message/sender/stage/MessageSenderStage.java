@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import io.mosip.registration.processor.message.sender.constants.NotificationTypeEnum;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +58,7 @@ import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.constants.MessageSenderConstant;
+import io.mosip.registration.processor.message.sender.constants.NotificationTypeEnum;
 import io.mosip.registration.processor.message.sender.dto.MessageSenderDto;
 import io.mosip.registration.processor.message.sender.exception.ConfigurationNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
@@ -396,13 +396,17 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getCode());
 			return isNotificationSuccess;
 		}
-		for (String notificationType : allNotificationTypes) {
-			if (notificationType.equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isTemplateAvailable(messageSenderDto)) {
-				isSMSSuccess = SendSms(id, attributes, regType, messageSenderDto, description);
-			} else if (notificationType.equalsIgnoreCase(NotificationTypeEnum.EMAIL.name()) && isTemplateAvailable(messageSenderDto)) {
-				isEmailSuccess = sendEmail(id, attributes, ccEMailList, regType, messageSenderDto, description);
-			} else {
-				throw new TemplateNotFoundException(MessageSenderStatusMessage.TEMPLATE_NOT_FOUND);
+		if (allNotificationTypes != null) {
+			for (String notificationType : allNotificationTypes) {
+				if (notificationType.equalsIgnoreCase(NotificationTypeEnum.SMS.name())
+						&& isTemplateAvailable(messageSenderDto)) {
+					isSMSSuccess = SendSms(id, attributes, regType, messageSenderDto, description);
+				} else if (notificationType.equalsIgnoreCase(NotificationTypeEnum.EMAIL.name())
+						&& isTemplateAvailable(messageSenderDto)) {
+					isEmailSuccess = sendEmail(id, attributes, ccEMailList, regType, messageSenderDto, description);
+				} else {
+					throw new TemplateNotFoundException(MessageSenderStatusMessage.TEMPLATE_NOT_FOUND);
+				}
 			}
 		}
 
@@ -417,11 +421,12 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
 			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getCode());
-		} else if (allNotificationTypes.length == 1 &&
-				((allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isSMSSuccess) ||
-						(allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.EMAIL.name()) && isEmailSuccess))) {
+		} else if (allNotificationTypes.length == 1
+				&& ((allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isSMSSuccess)
+						|| (allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.EMAIL.name())
+								&& isEmailSuccess))) {
 			// if only one notification type is set and that is successful
-					isNotificationSuccess = true;
+			isNotificationSuccess = true;
 		} else if (!isEmailSuccess || !isSMSSuccess) {
 			isNotificationSuccess = false;
 			String failedMessage = "Failed to send Notification for type : "
@@ -492,7 +497,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
-		}catch (PhoneNumberNotFoundException e) {
+		} catch (PhoneNumberNotFoundException e) {
 			description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
 			description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());

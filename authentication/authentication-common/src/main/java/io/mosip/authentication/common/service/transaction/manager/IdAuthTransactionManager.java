@@ -33,6 +33,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdAuthTransactionManager {
 	
+	private static final String AUTH = "auth";
+
 	/** The Constant ENCRYPT_DECRYPT_DATA. */
 	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
 
@@ -81,7 +83,7 @@ public class IdAuthTransactionManager {
 			RequestWrapper<ObjectNode> baseRequest = new RequestWrapper<>();
 			baseRequest.setId("string");
 			baseRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
-			baseRequest.setVersion(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION));
+			baseRequest.setVersion(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION + AUTH));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
 			request.put("applicationId", environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			request.put("timeStamp", DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));

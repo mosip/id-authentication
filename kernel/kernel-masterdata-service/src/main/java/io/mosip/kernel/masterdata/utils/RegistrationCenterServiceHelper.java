@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,8 @@ import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
+import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
@@ -27,11 +30,15 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.RegExceptionalHoliday;
+import io.mosip.kernel.masterdata.entity.RegWorkingNonWorking;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.RegExceptionalHolidayRepository;
+import io.mosip.kernel.masterdata.repository.RegWorkingNonWorkingRepo;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
@@ -81,6 +88,12 @@ public class RegistrationCenterServiceHelper {
 
 	@Autowired
 	private UBtree<Location> locationTree;
+	
+	@Autowired
+	private RegWorkingNonWorkingRepo regWorkingNonWorkingRepo;
+	
+	@Autowired
+	private RegExceptionalHolidayRepository regExceptionalHolidayRepository;
 
 	/**
 	 * Method to search center
@@ -107,15 +120,83 @@ public class RegistrationCenterServiceHelper {
 		List<SearchSort> sort = dto.getSort();
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
+		List<RegWorkingNonWorking> workingNonWorkingDays =regWorkingNonWorkingRepo.findByLanguagecode(dto.getLanguageCode());
+		List<RegExceptionalHoliday> exceptionalHoliday = regExceptionalHolidayRepository.findByLangcode(dto.getLanguageCode());
 		Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
 				new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
 			registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterSearchDto.class);
 			setCenterMetadata(registrationCenters, locations, zones);
+			setWorkingNonWorking(registrationCenters,workingNonWorkingDays);
+			setExceptionalHoliday(registrationCenters,exceptionalHoliday);
 			pageDto = pageUtils.sortPage(registrationCenters, sort, pagination);
 		}
 
 		return pageDto;
+	}
+	
+	private void setExceptionalHoliday(List<RegistrationCenterSearchDto> registrationCenters,
+			List<RegExceptionalHoliday> exceptionalHoliday) {
+		registrationCenters.forEach(i->setExceptionalHoliday(i,exceptionalHoliday));
+		
+	}
+
+	private void setExceptionalHoliday(RegistrationCenterSearchDto registrationCenterSearchDto,
+			List<RegExceptionalHoliday> exceptionalHoliday) {
+		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
+		for(RegExceptionalHoliday regExceptionalHoliday : exceptionalHoliday) {		
+			if(registrationCenterSearchDto.getId().equals(regExceptionalHoliday.getRegistrationCenterId()))
+			{
+				ExceptionalHolidayPutPostDto exceptionalHolidayDto = MapperUtils.map(regExceptionalHoliday,
+						ExceptionalHolidayPutPostDto.class);
+				exceptionalHolidayPutPostDtoList.add(exceptionalHolidayDto);
+			}
+		}
+		registrationCenterSearchDto.setExceptionalHolidayPutPostDto(exceptionalHolidayPutPostDtoList);
+	}
+
+	private void setWorkingNonWorking(List<RegistrationCenterSearchDto> registrationCenters,
+			List<RegWorkingNonWorking> workingNonWorkingDays) {
+		
+		registrationCenters.stream().forEach(i->setWorking(i,workingNonWorkingDays));
+	}
+
+	private void setWorking(RegistrationCenterSearchDto registrationCenterSearchDto,List<RegWorkingNonWorking> workingNonWorkingDays) {
+		
+		WorkingNonWorkingDaysDto workDays = new WorkingNonWorkingDaysDto();
+		if(!workingNonWorkingDays.isEmpty()) {
+		for( RegWorkingNonWorking working : workingNonWorkingDays)
+			if(working.getRegistrationCenterId().equals(registrationCenterSearchDto.getId()))
+			{
+				 switch (working.getDayCode()) { 
+			        case "101": 
+			        	workDays.setSun(working.isWorking());
+			            break; 
+			        case "102": 
+			        	workDays.setMon(working.isWorking());
+			            break; 
+			        case "103": 
+			        	workDays.setTue(working.isWorking());
+			            break; 
+			        case "104": 
+			        	workDays.setWed(working.isWorking());
+			            break; 
+			        case "105": 
+			        	workDays.setThu(working.isWorking());
+			            break; 
+			        case "106": 
+			        	workDays.setFri(working.isWorking());
+			            break; 
+			        case "107": 
+			        	workDays.setSat(working.isWorking());
+			            break; 
+			        default: 
+			  
+			            break; 
+			        } 
+			}
+		}
+		registrationCenterSearchDto.setWorkingNonWorkingDays(workDays);
 	}
 
 	/**
@@ -214,6 +295,8 @@ public class RegistrationCenterServiceHelper {
 		}
 		return null;
 	}
+	
+	
 
 	/**
 	 * Method to find out the hierrachy level from the column name
