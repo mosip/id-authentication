@@ -12,6 +12,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
@@ -38,7 +39,16 @@ public class RequestValidatorTest {
 		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
+
+	}
+
+	@Test(expected = InvalidInputException.class)
+	public void testValidUnlockId() throws Exception {
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
+		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(authLockRequestDto);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.UNLOCK);
 
 	}
 
@@ -59,7 +69,7 @@ public class RequestValidatorTest {
 		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
 
@@ -78,8 +88,10 @@ public class RequestValidatorTest {
 	public void testValidRequest() throws Exception {
 
 		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
-
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestWrapper.setId("mosip.resident.authlock");
+		requestWrapper.setVersion("v1");
+		requestWrapper.setRequest(null);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
 
@@ -101,7 +113,7 @@ public class RequestValidatorTest {
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
 		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
 
@@ -114,7 +126,7 @@ public class RequestValidatorTest {
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
 		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
 
@@ -140,7 +152,7 @@ public class RequestValidatorTest {
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
 		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
 
@@ -157,7 +169,22 @@ public class RequestValidatorTest {
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
 		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockRequest(requestWrapper);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
+
+	}
+
+	@Test(expected = InvalidInputException.class)
+	public void testValidEmptyAuthTypes() throws Exception {
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
+		authLockRequestDto.setTransactionID("12345");
+		authLockRequestDto.setIndividualIdType("UIN");
+		authLockRequestDto.setOtp("1232354");
+
+		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId("mosip.resident.authlock");
+		requestWrapper.setVersion("v1");
+		requestWrapper.setRequest(authLockRequestDto);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
 }

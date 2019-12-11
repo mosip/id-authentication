@@ -109,7 +109,7 @@ public class ResidentController {
 	@PostMapping(value = "/req/auth-lock")
 	public ResponseWrapper<ResponseDTO> reqAauthLock(
 			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
-		validator.validateAuthLockRequest(requestDTO);
+		validator.validateAuthLockOrUnlockRequest(requestDTO, AuthTypeStatus.LOCK);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthTypeStatusUpdate(requestDTO.getRequest(), AuthTypeStatus.LOCK));
 		return response;
@@ -119,7 +119,7 @@ public class ResidentController {
 	@PostMapping(value = "/req/auth-unlock")
 	public ResponseWrapper<ResponseDTO> reqAuthUnlock(
 			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
-		validator.validateAuthUnLockRequest(requestDTO);
+		validator.validateAuthLockOrUnlockRequest(requestDTO, AuthTypeStatus.UNLOCK);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthTypeStatusUpdate(requestDTO.getRequest(), AuthTypeStatus.UNLOCK));
 		return response;

@@ -89,7 +89,7 @@ public class ResidentControllerTest {
 	public void testRequestAuthLockSuccess() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
 		responseDto.setStatus("success");
-		doNothing().when(validator).validateAuthLockRequest(Mockito.any());
+		doNothing().when(validator).validateAuthLockOrUnlockRequest(Mockito.any(), Mockito.any());
 		Mockito.doReturn(responseDto).when(residentService).reqAauthTypeStatusUpdate(Mockito.any(), Mockito.any());
 
 		this.mockMvc
@@ -100,7 +100,7 @@ public class ResidentControllerTest {
 	@Test
 	public void testRequestAuthLockBadRequest() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
-		doNothing().when(validator).validateAuthLockRequest(Mockito.any());
+		doNothing().when(validator).validateAuthLockOrUnlockRequest(Mockito.any(), Mockito.any());
 		Mockito.doReturn(responseDto).when(residentService).reqAauthTypeStatusUpdate(Mockito.any(), Mockito.any());
 
 		MvcResult result = this.mockMvc
@@ -156,4 +156,28 @@ public class ResidentControllerTest {
 				.andExpect(status().isOk());
 	}
 
+	@Test
+	public void testRequestAuthUnLockSuccess() throws Exception {
+		ResponseDTO responseDto = new ResponseDTO();
+		responseDto.setStatus("success");
+		doNothing().when(validator).validateAuthLockOrUnlockRequest(Mockito.any(), Mockito.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAauthTypeStatusUpdate(Mockito.any(), Mockito.any());
+
+		this.mockMvc
+				.perform(
+						post("/req/auth-unlock").contentType(MediaType.APPLICATION_JSON).content(authLockRequestToJson))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.status", is("success")));
+	}
+
+	@Test
+	public void testRequestAuthUnLockBadRequest() throws Exception {
+		ResponseDTO responseDto = new ResponseDTO();
+		doNothing().when(validator).validateAuthLockOrUnlockRequest(Mockito.any(), Mockito.any());
+		Mockito.doReturn(responseDto).when(residentService).reqAauthTypeStatusUpdate(Mockito.any(), Mockito.any());
+
+		MvcResult result = this.mockMvc
+				.perform(post("/req/auth-unlock").contentType(MediaType.APPLICATION_JSON).content(""))
+				.andExpect(status().isOk()).andReturn();
+		assertTrue(result.getResponse().getContentAsString().contains("RES-500"));
+	}
 }
