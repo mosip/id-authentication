@@ -24,8 +24,6 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +76,6 @@ import io.mosip.preregistration.booking.serviceimpl.exception.TimeSpanException;
 import io.mosip.preregistration.booking.serviceimpl.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.serviceimpl.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.serviceimpl.repository.impl.BookingDAO;
-import io.mosip.preregistration.booking.serviceimpl.service.BookingService;
 import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.booking.serviceimpl.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.code.AuditLogVariables;
@@ -96,7 +93,6 @@ import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
-import io.mosip.preregistration.core.exception.AppointmentReBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
@@ -176,11 +172,11 @@ public class BookingServiceTest {
 
 	private SlotDto slots = new SlotDto();
 
-	// MainListRequestDTO bookingDTO = new MainListRequestDTO();
 	AvailibityEntity availableEntity = new AvailibityEntity();
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 	List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
 	PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
+	@SuppressWarnings("rawtypes")
 	MainResponseDTO preRegResponse = new MainResponseDTO();
 
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
@@ -231,6 +227,8 @@ public class BookingServiceTest {
 	String reBookingPreId = "23587986034785";
 	// booking
 	String bookingPreId = "23587986034785";
+	RegistrationCenterDto centerDto = new RegistrationCenterDto();
+	List<RegistrationCenterDto> centerList = new ArrayList<>();
 
 	LocalTime startTime;
 	LocalTime endTime;
@@ -238,40 +236,31 @@ public class BookingServiceTest {
 	LocalTime LunchStartTime;
 	LocalTime LunchEndTime;
 
-	// private BookingService service;
-
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws URISyntaxException, FileNotFoundException, ParseException, java.io.FileNotFoundException,
 			IOException, org.json.simple.parser.ParseException {
-
-		// serviceSpy=Mockito.spy(service);
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 09:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
+		
+		LocalDateTime localDateTime1 = LocalDateTime.now();
+		LocalDateTime localDateTime2 = localDateTime1.plusMinutes(15);
 		localTime1 = localDateTime1.toLocalTime();
 		localTime2 = localDateTime2.toLocalTime();
 		slots.setAvailability(4);
 		slots.setFromTime(localTime1);
 		slots.setToTime(localTime2);
 		slotsList.add(slots);
-		dateDto.setDate("2018-12-04");
+		dateDto.setDate(LocalDate.now().toString());
 		dateDto.setHoliday(false);
 		dateDto.setTimeSlots(slotsList);
 		dateList.add(dateDto);
 		availability.setCenterDetails(dateList);
 		availability.setRegCenterId("1");
 
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
 		startTime = localDateTime1.toLocalTime();
 		endTime = localDateTime2.toLocalTime();
-		perKioskTime = localDateTime3.toLocalTime();
-		LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
+		perKioskTime = LocalTime.MIDNIGHT.plusMinutes(15);
+		LunchStartTime = LocalTime.NOON.plusHours(1);
+		LunchEndTime = LunchStartTime.plusHours(1);
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		JSONParser parser = new JSONParser();
@@ -280,16 +269,16 @@ public class BookingServiceTest {
 				classLoader.getResource("booking.json").getFile().trim().replaceAll("\\u0020", "%20"));
 		File file = new File(dataSyncUri.getPath());
 		parser.parse(new FileReader(file));
-
+		
 		oldBooking.setRegistrationCenterId("1");
-		oldBooking.setSlotFromTime("09:00");
-		oldBooking.setSlotToTime("09:13");
-		oldBooking.setRegDate("2019-12-06");
+		oldBooking.setSlotFromTime(LocalTime.of(9,0).toString());
+		oldBooking.setSlotToTime(LocalTime.of(9,15).toString());
+		oldBooking.setRegDate(LocalDate.now().toString());
 
 		newBooking.setRegistrationCenterId("1");
-		newBooking.setSlotFromTime("09:00");
-		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2019-12-12");
+		newBooking.setSlotFromTime(LocalTime.of(9,0).toString());
+		newBooking.setSlotToTime(LocalTime.of(9,15).toString());
+		newBooking.setRegDate(LocalDate.now().plusDays(5).toString());
 
 		oldBooking_success.setRegistrationCenterId("1");
 		oldBooking_success.setSlotFromTime("09:00");
@@ -315,10 +304,10 @@ public class BookingServiceTest {
 		cancelRequestdto.setRequest(cancelbookingDto);
 		cancelRequestdto.setId("mosip.pre-registration.booking.book");
 		cancelRequestdto.setVersion("1.0");
-		cancelbookingDto.setRegDate("2019-12-04");
+		cancelbookingDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		cancelbookingDto.setRegistrationCenterId("1");
-		cancelbookingDto.setSlotFromTime("09:00");
-		cancelbookingDto.setSlotToTime("09:13");
+		cancelbookingDto.setSlotFromTime(LocalTime.of(9,0).toString());
+		cancelbookingDto.setSlotToTime(LocalTime.of(9,15).toString());
 		requestMap1.put("id", cancelRequestdto.getId());
 		requestMap1.put("version", cancelRequestdto.getVersion());
 		requestMap1.put("reqTime",
@@ -327,15 +316,15 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(4);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-04"));
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
 		availableEntity.setToTime(localTime2);
 		availableEntity.setFromTime(localTime1);
-		availableEntity.setCrBy("987654321");
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		preRegistrationEntity = new DemographicEntity();
 		preRegistrationEntity.setCreateDateTime(LocalDateTime.now());
-		preRegistrationEntity.setCreatedBy("Jagadishwari");
+		preRegistrationEntity.setCreatedBy("John Doe");
 		preRegistrationEntity.setStatusCode("Pending_Appointment");
 		preRegistrationEntity.setUpdateDateTime(LocalDateTime.now());
 		preRegistrationEntity.setPreRegistrationId("48690172097499");
@@ -343,7 +332,7 @@ public class BookingServiceTest {
 		bookingEntity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
 		bookingEntity.setLangCode("12L");
-		bookingEntity.setCrBy("987654321");
+		bookingEntity.setCrBy("John Doe");
 		bookingEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		bookingEntity.setRegDate(LocalDate.parse(oldBooking.getRegDate()));
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
@@ -368,13 +357,11 @@ public class BookingServiceTest {
 		bookingDto.setId("mosip.pre-registration.booking.book");
 		bookingDto.setRequesttime(new Date());
 		bookingDto.setVersion("1.0");
-		// bookingDto.setRequest(request);;
 
 		// Rebook
 		reBookingDto.setId("mosip.pre-registration.booking.book");
 		reBookingDto.setRequesttime(new Date());
 		reBookingDto.setVersion("1.0");
-		// reBookingDto.setRequest(rebookingList);
 
 		AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
 		Authentication authentication = Mockito.mock(Authentication.class);
@@ -392,6 +379,17 @@ public class BookingServiceTest {
 		auditRequestDto.setIdType(AuditLogVariables.PRE_REGISTRATION_ID.toString());
 		auditRequestDto.setSessionUserId(AuditLogVariables.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(AuditLogVariables.SYSTEM.toString());
+		
+		//Get valid reg center list
+		centerDto.setId("1");
+		centerDto.setLangCode("eng");
+		centerDto.setCenterStartTime(startTime);
+		centerDto.setCenterEndTime(endTime);
+		centerDto.setPerKioskProcessTime(perKioskTime);
+		centerDto.setLunchStartTime(LunchStartTime);
+		centerDto.setLunchEndTime(LunchEndTime);
+		centerDto.setNumberOfKiosks((short) 4);
+		centerList.add(centerDto);
 	}
 
 	@Test
@@ -402,10 +400,10 @@ public class BookingServiceTest {
 
 		availableEntity1.setAvailableKiosks(4);
 		availableEntity1.setRegcntrId("1");
-		availableEntity1.setRegDate(LocalDate.parse("2019-12-04"));
+		availableEntity1.setRegDate(LocalDate.now());
 		availableEntity1.setToTime(localTime2);
 		availableEntity1.setFromTime(localTime1);
-		availableEntity1.setCrBy("987654321");
+		availableEntity1.setCrBy("John Doe");
 		availableEntity1.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity1.setDeleted(false);
 		List<LocalDate> date = new ArrayList<>();
@@ -429,15 +427,12 @@ public class BookingServiceTest {
 		regCenDto.setRegistrationCenters(centerList);
 		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
 		resp.setResponse(regCenDto);
-		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		Mockito.when(serviceUtil.mandatoryParameterCheck(Mockito.anyString(), Mockito.any())).thenReturn(true);
 		Mockito.when(serviceUtil.isValidRegCenter(Mockito.any())).thenReturn(true);
 		Mockito.when(serviceUtil.isKiosksAvailable(Mockito.any())).thenReturn(true);
 		Mockito.when(serviceUtil.getDemographicStatus(Mockito.anyString())).thenReturn("Booked");
 		Mockito.when(serviceUtil.getRegCenterMasterData()).thenReturn(centerList);
-		// Mockito.when(bookingDAO.findDate(Mockito.anyString(), Mockito.any(),
-		// Mockito.any())).thenReturn(date);
 		Mockito.when(bookingDAO.findAvailability(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(entityList);
 		MainResponseDTO<AvailabilityDto> responseDto = service.getAvailability("10001");
@@ -463,9 +458,9 @@ public class BookingServiceTest {
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9,0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9,15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -474,10 +469,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9,15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -494,17 +489,6 @@ public class BookingServiceTest {
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("10001");
-		centerDto.setLangCode("eng");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		Mockito.when(serviceUtil.mandatoryParameterCheck(Mockito.anyString(), Mockito.any())).thenReturn(true);
 		Mockito.when(serviceUtil.validateAppointmentDate(Mockito.any())).thenReturn(true);
@@ -515,39 +499,34 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
 		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setLangCode("eng");
+		bookingEntity2.setCrBy("John Doe");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9,15));
 
+		@SuppressWarnings("rawtypes")
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
-		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
-
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
 		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void successBookAppointmentPendingAppointment() {
-
-		// Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(),
-		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9,0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9,15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -556,10 +535,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9,15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -574,27 +553,22 @@ public class BookingServiceTest {
 		preRegResponseRebook.setResponse(preRegistartionStatus);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
-
-		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
-				}), Mockito.anyMap())).thenReturn(respEntity);
-
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		Mockito.when(serviceUtil.mandatoryParameterCheck(Mockito.anyString(), Mockito.any())).thenReturn(true);
+		Mockito.when(serviceUtil.validateAppointmentDate(Mockito.any())).thenReturn(true);
+		Mockito.when(serviceUtil.isKiosksAvailable(Mockito.any())).thenReturn(true);
+		Mockito.when(serviceUtil.getDemographicStatus(Mockito.anyString())).thenReturn("Pending_Appointment");
+		Mockito.when(serviceUtil.getRegCenterMasterData()).thenReturn(centerList);
 		// Update status
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
 		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setLangCode("eng");
+		bookingEntity2.setCrBy("John Doe");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9,15));
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
@@ -608,24 +582,21 @@ public class BookingServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
 				}), Mockito.anyMap())).thenReturn(resp2);
 
-		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
+		MainResponseDTO<BookingStatusDTO> response=service.bookAppointment(bookingRequestDTOs, bookingPreId);
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test(expected = RecordNotFoundException.class)
 	public void bookAppointmentFailureTest() {
-
-		// Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(),
-		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
+		
 		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9,0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9,15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -634,10 +605,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9,15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -652,68 +623,40 @@ public class BookingServiceTest {
 		preRegResponseRebook.setResponse(preRegistartionStatus);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
-
-		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
-				}), Mockito.anyMap())).thenReturn(null);
+		Mockito.when(serviceUtil.validateAppointmentDate(Mockito.any())).thenReturn(true);
+		Mockito.when(serviceUtil.mandatoryParameterCheck(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
 		// Update status
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
 		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setLangCode("eng");
+		bookingEntity2.setCrBy("John Doe");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9,15));
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
-		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
 
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(null);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
-
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
-				}), Mockito.anyMap())).thenReturn(resp2);
-
-		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
+		service.bookAppointment(bookingRequestDTOs, bookingPreId);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void successExpiredAppointment() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
 
 		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9,0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9,15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -722,10 +665,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9,15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -760,16 +703,15 @@ public class BookingServiceTest {
 		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
 		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setCrBy("John Doe");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9,15));
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
-		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
 
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
@@ -784,7 +726,7 @@ public class BookingServiceTest {
 		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void successMultiBookAppointment() {
 
@@ -795,7 +737,6 @@ public class BookingServiceTest {
 		multiBookingRequest.setBookingRequest(multiBookingListDto);
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
-		BookingStatus bookingStatus = new BookingStatus();
 		BookingStatusDTO bookingStatusDTO1 = new BookingStatusDTO();
 		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
 
@@ -812,9 +753,9 @@ public class BookingServiceTest {
 		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
 		successBookDto1.setPreRegistrationId("23587986034785");
 		successBookDto1.setRegistrationCenterId("1");
-		successBookDto1.setSlotFromTime("09:00");
-		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setSlotFromTime(LocalTime.of(9,0).toString());
+		successBookDto1.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto1.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -824,10 +765,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9,15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -850,11 +791,11 @@ public class BookingServiceTest {
 		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
 		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setCrBy("John Doe");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9,15));
 
 		RegistrationCenterDto centerDto = new RegistrationCenterDto();
 		List<RegistrationCenterDto> centerList = new ArrayList<>();
@@ -887,121 +828,10 @@ public class BookingServiceTest {
 				response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
 	}
 
-	@SuppressWarnings("unchecked")
-	// @Test
-	public void successPendingMultiBookAppointment() {
 
-		multiBookingListDto.add(multiBookingRequestDto1);
-		multiBookingListDto.add(multiBookingRequestDto2);
-
-		MultiBookingRequest multiBookingRequest = new MultiBookingRequest();
-		multiBookingRequest.setBookingRequest(multiBookingListDto);
-		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-
-		BookingStatus bookingStatus = new BookingStatus();
-		BookingStatusDTO bookingStatusDTO1 = new BookingStatusDTO();
-		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
-
-		BookingStatusDTO bookingStatusDTO2 = new BookingStatusDTO();
-		bookingStatusDTO2.setBookingMessage("Appointment booked successfully");
-
-		List<BookingStatusDTO> bookingStatusDTOs = new ArrayList<>();
-		bookingStatusDTOs.add(bookingStatusDTO1);
-		bookingStatusDTOs.add(bookingStatusDTO2);
-
-		MainRequestDTO<MultiBookingRequest> bookingRequestDTOs = new MainRequestDTO<>();
-		MultiBookingRequest bookingRequest = new MultiBookingRequest();
-		List<MultiBookingRequestDTO> successBookDtoList = new ArrayList<>();
-		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
-		successBookDto1.setPreRegistrationId("23587986034785");
-		successBookDto1.setRegistrationCenterId("1");
-		successBookDto1.setSlotFromTime("09:00");
-		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
-		successBookDtoList.add(successBookDto1);
-		bookingRequest.setBookingRequest(successBookDtoList);
-		bookingRequestDTOs.setRequest(bookingRequest);
-		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
-		bookingRequestDTOs.setVersion("1.0");
-		bookingRequestDTOs.setRequesttime(new Date());
-
-		availableEntity.setAvailableKiosks(3);
-		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
-		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		availableEntity.setDeleted(false);
-		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
-
-		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
-		preRegistartionStatus.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
-		preRegistartionStatus.setPreRegistartionId(bookingPreId);
-		preRegResponse.setResponse(preRegistartionStatus);
-		statusListrebook.add(preRegistartionStatus);
-		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
-		preRegResponseRebook.setErrors(null);
-		preRegResponseRebook.setResponse(preRegistartionStatus);
-		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
-				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
-
-		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
-				}), Mockito.anyMap())).thenReturn(respEntity);
-
-		// Update status
-		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
-		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
-		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
-		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
-
-		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
-		mainResponseDTO.setErrors(null);
-		mainResponseDTO.setResponse(bookingEntity2);
-		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
-
-		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
-		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
-
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
-				}), Mockito.anyMap())).thenReturn(resp2);
-
-		MainResponseDTO<BookingStatus> response = service.bookMultiAppointment(bookingRequestDTOs);
-		assertEquals("Appointment booked successfully",
-				response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
-	}
-
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void successExpiredMultiBookAppointment() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-
 		multiBookingListDto.add(multiBookingRequestDto1);
 		multiBookingListDto.add(multiBookingRequestDto2);
 
@@ -1009,7 +839,6 @@ public class BookingServiceTest {
 		multiBookingRequest.setBookingRequest(multiBookingListDto);
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
-		BookingStatus bookingStatus = new BookingStatus();
 		BookingStatusDTO bookingStatusDTO1 = new BookingStatusDTO();
 		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
 
@@ -1037,9 +866,9 @@ public class BookingServiceTest {
 		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
 		successBookDto1.setPreRegistrationId("23587986034785");
 		successBookDto1.setRegistrationCenterId("1");
-		successBookDto1.setSlotFromTime("09:00");
-		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto1.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto1.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -1049,10 +878,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9,15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -1079,16 +908,16 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9,15));
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
 		Mockito.when(serviceUtil.getDemographicStatus("23587986034785")).thenReturn("Pending_Appointment");
 		BookingRequestDTO bookingreq = new BookingRequestDTO();
-		bookingreq.setRegDate("2019-12-12");
+		bookingreq.setRegDate(LocalDate.now().plusDays(30).toString());
 		Mockito.when(serviceUtil.mandatoryParameterCheck(Mockito.anyString(), Mockito.any())).thenReturn(true);
 		Mockito.when(serviceUtil.validateAppointmentDate(Mockito.any())).thenReturn(true);
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
@@ -1111,7 +940,6 @@ public class BookingServiceTest {
 		multiBookingRequest.setBookingRequest(multiBookingListDto);
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
-		BookingStatus bookingStatus = new BookingStatus();
 		BookingStatusDTO bookingStatusDTO1 = new BookingStatusDTO();
 		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
 
@@ -1128,9 +956,9 @@ public class BookingServiceTest {
 		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
 		successBookDto1.setPreRegistrationId("23587986034785");
 		successBookDto1.setRegistrationCenterId("1");
-		successBookDto1.setSlotFromTime("09:00");
-		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto1.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto1.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -1140,10 +968,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9, 0));
+		availableEntity.setFromTime(LocalTime.of(9, 15));
+		availableEntity.setCrBy("JOhn Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -1174,9 +1002,9 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9,0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9, 15));
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
@@ -1195,374 +1023,11 @@ public class BookingServiceTest {
 		// response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
 	}
 
-	// @Test
-	public void addAvailabilityServiceTest() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<AvailibityEntity> availablityList = new ArrayList<>();
-		AvailibityEntity entity = new AvailibityEntity();
-		entity.setAvailableKiosks(3);
-		entity.setRegcntrId("10001");
-		availablityList.add(entity);
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("10001");
-		centerDto.setLangCode("eng");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
-		regCenDto.setRegistrationCenters(centerList);
-		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
-		HolidayDto holiday = new HolidayDto();
-		List<HolidayDto> holidayList = new ArrayList<>();
-		holiday.setHolidayDate("2018-12-12");
-		holidayList.add(holiday);
-		CenholidayDto.setHolidays(holidayList);
-		List<String> regCenterList = new ArrayList<>();
-		regCenterList.add("10001");
-		List<LocalDate> insertedDate = new ArrayList<>();
-		insertedDate.add(localDateTime1.toLocalDate());
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-
-		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
-		resp.setResponse(regCenDto);
-		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
-				}))).thenReturn(res);
-		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
-		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
-		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(null);
-		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
-		Mockito.when(bookingDAO.deleteSlots(Mockito.any(), Mockito.any())).thenReturn(1);
-		RegistrationCenterHolidayDto preRegResponseHoliday = new RegistrationCenterHolidayDto();
-		preRegResponseHoliday.setHolidays(holidayList);
-		ResponseWrapper<RegistrationCenterHolidayDto> respholiday = new ResponseWrapper<>();
-		respholiday.setResponse(preRegResponseHoliday);
-
-		ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> resHoli = new ResponseEntity<>(respholiday,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
-				}))).thenReturn(resHoli);
-		// response = service.addAvailability();
-
-		assertEquals("MASTER_DATA_SYNCED_SUCCESSFULLY", response.getResponse());
-	}
-
-	// @Test
-	public void addAvailabilityHolydayServiceTest() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<AvailibityEntity> availablityList = new ArrayList<>();
-		AvailibityEntity entity = new AvailibityEntity();
-		entity.setAvailableKiosks(3);
-		entity.setRegcntrId("10001");
-		availablityList.add(entity);
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("10001");
-		centerDto.setLangCode("eng");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
-		regCenDto.setRegistrationCenters(centerList);
-		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
-		HolidayDto holiday = new HolidayDto();
-		List<HolidayDto> holidayList = new ArrayList<>();
-		holiday.setHolidayDate("2018-12-12");
-		holidayList.add(holiday);
-		CenholidayDto.setHolidays(holidayList);
-		List<String> regCenterList = new ArrayList<>();
-		regCenterList.add("10001");
-		List<LocalDate> insertedDate = new ArrayList<>();
-		insertedDate.add(localDateTime1.toLocalDate());
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-
-		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
-		resp.setResponse(regCenDto);
-		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
-				}))).thenReturn(res);
-		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
-		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
-		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(insertedDate);
-		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
-		Mockito.when(bookingDAO.deleteSlots(Mockito.any(), Mockito.any())).thenReturn(1);
-		RegistrationCenterHolidayDto preRegResponseHoliday = new RegistrationCenterHolidayDto();
-		preRegResponseHoliday.setHolidays(holidayList);
-		ResponseWrapper<RegistrationCenterHolidayDto> respholiday = new ResponseWrapper<>();
-		respholiday.setResponse(preRegResponseHoliday);
-
-		ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> resHoli = new ResponseEntity<>(respholiday,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
-				}))).thenReturn(resHoli);
-		// response = service.addAvailability();
-
-		assertEquals("MASTER_DATA_SYNCED_SUCCESSFULLY", response.getResponse());
-	}
-
-	// @Test
-	public void addAvailabilityRegCenterServiceTest() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<AvailibityEntity> availablityList = new ArrayList<>();
-		AvailibityEntity entity = new AvailibityEntity();
-		entity.setAvailableKiosks(3);
-		entity.setRegcntrId("10001");
-		availablityList.add(entity);
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("10001");
-		centerDto.setLangCode("eng");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
-		regCenDto.setRegistrationCenters(centerList);
-		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
-		HolidayDto holiday = new HolidayDto();
-		List<HolidayDto> holidayList = new ArrayList<>();
-		holiday.setHolidayDate("2018-12-12");
-		holidayList.add(holiday);
-		CenholidayDto.setHolidays(holidayList);
-		List<String> regCenterList = new ArrayList<>();
-		regCenterList.add("10001");
-		regCenterList.add("10002");
-
-		List<RegistrationBookingEntity> regBookingEntityList = new ArrayList<>();
-		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
-		RegistrationBookingPK bookingPK = new RegistrationBookingPK();
-		bookingPK.setBookingDateTime(LocalDateTime.now());
-		bookingEntity.setBookingPK(bookingPK);
-		bookingEntity.setRegDate(LocalDate.now());
-		bookingEntity.setSlotFromTime(LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute()));
-		regBookingEntityList.add(bookingEntity);
-		List<LocalDate> insertedDate = new ArrayList<>();
-		insertedDate.add(localDateTime1.toLocalDate());
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-
-		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
-		resp.setResponse(regCenDto);
-		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
-				}))).thenReturn(res);
-		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
-		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
-		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(insertedDate);
-		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
-		Mockito.when(bookingDAO.deleteSlots(Mockito.any(), Mockito.any())).thenReturn(1);
-		Mockito.when(bookingDAO.findAllPreIdsByregID(Mockito.any(), Mockito.any())).thenReturn(regBookingEntityList);
-
-		RegistrationCenterHolidayDto preRegResponseHoliday = new RegistrationCenterHolidayDto();
-		preRegResponseHoliday.setHolidays(holidayList);
-		ResponseWrapper<RegistrationCenterHolidayDto> respholiday = new ResponseWrapper<>();
-		respholiday.setResponse(preRegResponseHoliday);
-
-		ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> resHoli = new ResponseEntity<>(respholiday,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
-				}))).thenReturn(resHoli);
-		// response = service.addAvailability();
-
-		assertEquals("MASTER_DATA_SYNCED_SUCCESSFULLY", response.getResponse());
-	}
-
-	// @Test
-	public void addAvailabilityHolidayServiceTest2() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<AvailibityEntity> availablityList = new ArrayList<>();
-		AvailibityEntity entity1 = new AvailibityEntity();
-		AvailibityEntity entity2 = new AvailibityEntity();
-		entity1.setAvailableKiosks(3);
-		entity1.setRegcntrId("10001");
-		availablityList.add(entity1);
-		entity2.setAvailableKiosks(4);
-		entity2.setRegcntrId("10002");
-		availablityList.add(entity2);
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("10001");
-		centerDto.setLangCode("eng");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
-		regCenDto.setRegistrationCenters(centerList);
-		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
-		HolidayDto holiday = new HolidayDto();
-		List<HolidayDto> holidayList = new ArrayList<>();
-		holiday.setHolidayDate(LocalDate.now().toString());
-		holidayList.add(holiday);
-		CenholidayDto.setHolidays(holidayList);
-		List<String> regCenterList = new ArrayList<>();
-		regCenterList.add("10001");
-		List<LocalDate> insertedDate = new ArrayList<>();
-		insertedDate.add(localDateTime1.toLocalDate());
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-		List<RegistrationBookingEntity> regBookingEntityList = new ArrayList<>();
-		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
-		RegistrationBookingPK bookingPK = new RegistrationBookingPK();
-		bookingPK.setBookingDateTime(LocalDateTime.now());
-		bookingEntity.setBookingPK(bookingPK);
-		bookingEntity.setRegDate(LocalDate.now());
-		bookingEntity.setSlotFromTime(LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute()));
-		regBookingEntityList.add(bookingEntity);
-		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
-		resp.setResponse(regCenDto);
-		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
-				}))).thenReturn(res);
-		Mockito.when(serviceUtil.getDemographicStatus(Mockito.any())).thenReturn("Booked");
-		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
-		Mockito.when(bookingDAO.findDistinctDate(Mockito.any(), Mockito.any())).thenReturn(insertedDate);
-		Mockito.when(bookingDAO.findSlots(Mockito.any(), Mockito.any())).thenReturn(availablityList);
-		Mockito.when(bookingDAO.deleteSlots(Mockito.any(), Mockito.any())).thenReturn(1);
-		Mockito.when(bookingDAO.findAllPreIds(Mockito.anyString(), Mockito.any())).thenReturn(regBookingEntityList);
-		RegistrationCenterHolidayDto preRegResponseHoliday = new RegistrationCenterHolidayDto();
-		preRegResponseHoliday.setHolidays(holidayList);
-		ResponseWrapper<RegistrationCenterHolidayDto> respholiday = new ResponseWrapper<>();
-		respholiday.setResponse(preRegResponseHoliday);
-
-		ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> resHoli = new ResponseEntity<>(respholiday,
-				HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
-				}))).thenReturn(resHoli);
-		// response = service.addAvailability();
-
-		assertEquals("MASTER_DATA_SYNCED_SUCCESSFULLY", response.getResponse());
-	}
-
-	// @Test
-	public void addAvailabilityServiceFailTest() {
-
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("1");
-		centerDto.setLangCode("LOC01");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
-		regCenDto.setRegistrationCenters(centerList);
-		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
-		HolidayDto holiday = new HolidayDto();
-		List<HolidayDto> holidayList = new ArrayList<>();
-		holiday.setHolidayDate("2018-12-12");
-		holidayList.add(holiday);
-		CenholidayDto.setHolidays(holidayList);
-
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-
-		ResponseEntity<RegistrationCenterResponseDto> rescenter = new ResponseEntity<>(regCenDto, HttpStatus.OK);
-		ResponseEntity<RegistrationCenterHolidayDto> resHoliday = new ResponseEntity<>(CenholidayDto, HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(RegistrationCenterResponseDto.class))).thenReturn(rescenter);
-		/*
-		 * Mockito.when(restTemplate.exchange(Mockito.anyString(),
-		 * Mockito.eq(HttpMethod.GET), Mockito.any(),
-		 * Mockito.eq(RegistrationCenterHolidayDto.class))).thenReturn(resHoliday);
-		 */
-		// response = service.addAvailability();
-		assertEquals("1.0", response.getVersion());
-	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
-		String date5 = "2019-11-09 14:20:00";
-		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
 		PreRegistartionStatusDTO bookedStatusDTO = new PreRegistartionStatusDTO();
 		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		bookedStatusDTO.setPreRegistartionId("23587986034785");
@@ -1582,17 +1047,15 @@ public class BookingServiceTest {
 
 		Mockito.when(bookingDAO.findByPreRegistrationId(Mockito.any())).thenReturn(bookingEntity);
 
-		// Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
 		Mockito.when(bookingDAO.deleteByPreRegistrationId(Mockito.anyString())).thenReturn(1);
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity);
 		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("1");
-		bookingRequestDTO.setSlotFromTime("09:00");
-		bookingRequestDTO.setSlotToTime("09:15");
-		bookingRequestDTO.setRegDate("2019-12-06");
-		MainResponseDTO<String> updatePreRegistrationStatus = new MainResponseDTO<>();
+		bookingRequestDTO.setSlotFromTime(LocalTime.of(9, 0).toString());
+		bookingRequestDTO.setSlotToTime(LocalTime.of(9, 15).toString());
+		bookingRequestDTO.setRegDate(LocalDate.now().plusDays(30).toString());
 		Mockito.when(serviceUtil.mandatoryParameterCheckforCancel("23587986034785")).thenReturn(true);
 		Mockito.when(serviceUtil.getDemographicStatusForCancel("23587986034785")).thenReturn(true);
 		Mockito.when(demographicServiceIntf.updatePreRegistrationStatus("23587986034785", "Pending_Appointment", null))
@@ -1609,24 +1072,11 @@ public class BookingServiceTest {
 	public void getAppointmentDetailsTest() {
 		MainRequestDTO<BookingRequestDTO> reBookingMainDto = new MainRequestDTO<>();
 		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
-		// BookingRegistrationDTO oldBookingRegistrationDTO = new
-		// BookingRegistrationDTO();
-		// BookingRegistrationDTO newBookingRegistrationDTO = new
-		// BookingRegistrationDTO();
 		bookingRequestDTO.setRegistrationCenterId("1");
-		bookingRequestDTO.setSlotFromTime("09:00");
-		bookingRequestDTO.setSlotToTime("09:15");
-		bookingRequestDTO.setRegDate("2019-12-06");
-
-		/*
-		 * newBookingRegistrationDTO.setRegistrationCenterId("10005");
-		 * newBookingRegistrationDTO.setSlotFromTime("09:00");
-		 * newBookingRegistrationDTO.setSlotToTime("09:15");
-		 * newBookingRegistrationDTO.setRegDate("2019-12-12");
-		 */
-		// bookingRequestDTO.setPreRegistrationId("12345678909876");
-		// bookingRequestDTO.setNewBookingDetails(newBookingRegistrationDTO);
-		// bookingRequestDTO.setOldBookingDetails(oldBookingRegistrationDTO);
+		bookingRequestDTO.setSlotFromTime(LocalTime.of(9, 0).toString());
+		bookingRequestDTO.setSlotToTime(LocalTime.of(9, 15).toString());
+		bookingRequestDTO.setRegDate(LocalDate.now().plusDays(30).toString());
+		
 		List<BookingRequestDTO> rebookingReqList = new ArrayList<>();
 		rebookingReqList.add(bookingRequestDTO);
 
@@ -1654,15 +1104,13 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntityRebook = new RegistrationBookingEntity();
 		bookingEntityRebook.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntityRebook.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntityRebook.setLangCode("12L");
-		bookingEntityRebook.setCrBy("987654321");
+		bookingEntityRebook.setLangCode("eng");
+		bookingEntityRebook.setCrBy("John Doe");
 		bookingEntityRebook.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntityRebook.setRegDate(LocalDate.parse("2019-12-06"));
-		bookingEntityRebook.setSlotFromTime(LocalTime.parse("09:00"));
-		bookingEntityRebook.setSlotToTime(LocalTime.parse("09:15"));
+		bookingEntityRebook.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntityRebook.setSlotFromTime(LocalTime.of(9, 0));
+		bookingEntityRebook.setSlotToTime(LocalTime.of(9, 15));
 		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntityRebook);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
 				preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
@@ -1687,8 +1135,6 @@ public class BookingServiceTest {
 		BookingDataNotFoundException exception = new BookingDataNotFoundException(
 				ErrorCodes.PRG_BOOK_RCI_013.toString(), ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenThrow(exception);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
@@ -1696,15 +1142,13 @@ public class BookingServiceTest {
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
-		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
+		service.getAppointmentDetails("23587986034785");
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test(expected = TableNotAccessibleException.class)
 	public void getAppointmentDetailsFailureTest() {
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		PreRegistartionStatusDTO bookedStatusDTO = new PreRegistartionStatusDTO();
 		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		bookedStatusDTO.setPreRegistartionId("23587986034785");
@@ -1729,9 +1173,9 @@ public class BookingServiceTest {
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.pre-registration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -1751,8 +1195,8 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 		bookingEntity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity.setLangCode("12L");
-		bookingEntity.setCrBy("987654321");
+		bookingEntity.setLangCode("eng");
+		bookingEntity.setCrBy("John Doe");
 		bookingEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
@@ -1771,39 +1215,9 @@ public class BookingServiceTest {
 		MainResponseDTO<CancelBookingResponseDTO> response = service.cancelAppointmentBatch("23587986034785");
 	}
 
-	// @SuppressWarnings("unchecked")
-	// @Test(expected = TableNotAccessibleException.class)
-	public void cancelBookingFailureTest() throws java.text.ParseException {
-
-		String date5 = "2016-11-09 14:20:00";
-		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
-		PreRegistartionStatusDTO bookedStatusDTO = new PreRegistartionStatusDTO();
-		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
-		bookedStatusDTO.setPreRegistartionId("23587986034785");
-		preRegResponse.setResponse(bookedStatusDTO);
-
-		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
-				}), Mockito.anyMap())).thenReturn(res);
-
-		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
-				Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
-		service.cancelBooking("23587986034785", false);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Test(expected = TimeSpanException.class)
 	public void cancelTimeSpanFailureTest() throws java.text.ParseException {
-		AppointmentReBookException exception = new AppointmentReBookException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-				ErrorMessages.CANCEL_BOOKING_CANNOT_BE_DONE.getMessage());
 
 		TimeSpanException ex = new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
 				ErrorMessages.CANCEL_BOOKING_CANNOT_BE_DONE.getMessage() + " " + 24 + "hours");
@@ -1812,10 +1226,9 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 		bookingEntity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity.setLangCode("12L");
-		bookingEntity.setCrBy("987654321");
+		bookingEntity.setLangCode("eng");
+		bookingEntity.setCrBy("John Doe");
 		bookingEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		System.out.println(LocalDate.now());
 		bookingEntity.setRegDate(LocalDate.now());
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
 		bookingEntity.setSlotToTime(LocalTime.parse(oldBooking.getSlotToTime()));
@@ -1829,7 +1242,7 @@ public class BookingServiceTest {
 		cancelbookingDto2.setRegDate(LocalDate.now().toString());
 		cancelbookingDto2.setRegistrationCenterId("1");
 		cancelbookingDto2.setSlotFromTime(LocalTime.now().toString());
-		cancelbookingDto2.setSlotToTime("09:13");
+		cancelbookingDto2.setSlotToTime(LocalTime.of(9, 13).toString());
 
 		PreRegistartionStatusDTO bookedStatusDTO = new PreRegistartionStatusDTO();
 		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
@@ -1858,9 +1271,6 @@ public class BookingServiceTest {
 		Mockito.when(serviceUtil.getRegCenterMasterData()).thenReturn(centerList);
 		Mockito.when(serviceUtil.timeSpanCheckForCancle(Mockito.any())).thenThrow(ex);
 
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
-				HttpStatus.OK);
-
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity);
 
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
@@ -1877,8 +1287,8 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 		bookingEntity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity.setLangCode("12L");
-		bookingEntity.setCrBy("987654321");
+		bookingEntity.setLangCode("eng");
+		bookingEntity.setCrBy("John Doe");
 		bookingEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		bookingEntity.setRegDate(LocalDate.parse(oldBooking.getRegDate()));
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
@@ -1888,7 +1298,7 @@ public class BookingServiceTest {
 		registrationEntityList.add(bookingEntity);
 
 		Mockito.when(bookingDAO.findByPreRegistrationId(Mockito.anyString())).thenReturn(bookingEntity);
-		deleteDto.setDeletedBy("987654321");
+		deleteDto.setDeletedBy("John Doe");
 		deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 		deleteDto.setPreRegistrationId("23587986034785");
 		deleteList.add(deleteDto);
@@ -1916,8 +1326,8 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 		bookingEntity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity.setLangCode("12L");
-		bookingEntity.setCrBy("987654321");
+		bookingEntity.setLangCode("eng");
+		bookingEntity.setCrBy("John Doe");
 		bookingEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		bookingEntity.setRegDate(LocalDate.parse(oldBooking.getRegDate()));
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
@@ -1925,7 +1335,7 @@ public class BookingServiceTest {
 		registrationEntityList.add(bookingEntity);
 
 		Mockito.when(bookingDAO.findByPreregistrationId(Mockito.anyString())).thenReturn(null);
-		deleteDto.setDeletedBy("987654321");
+		deleteDto.setDeletedBy("John Doe");
 		deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 		deleteDto.setPreRegistrationId("12345678909876");
 		deleteList.add(deleteDto);
@@ -1950,24 +1360,15 @@ public class BookingServiceTest {
 		preIds.add("98746563542672");
 		response.setResponse("98746563542672");
 		response.setVersion("1.0");
-		// response.setStatus(true);
 
-		String fromDateStr = "2019-01-01";
-		String toDateStr = "2019-03-31";
+		LocalDate fromDate = LocalDate.now();
 
-		LocalDate fromDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd"))
-				.toLocalDate();
+		LocalDate toDate = LocalDate.now().plusDays(30);
 
-		LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
-				.toLocalDate();
-
-		// LocalDateTime fromLocaldate = fromDate.atStartOfDay();
-		//
-		// LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
 		Mockito.when(bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, "10001")).thenReturn(details);
 
 		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> actualRes = service
-				.getBookedPreRegistrationByDate(fromDateStr, toDateStr, "10001");
+				.getBookedPreRegistrationByDate(fromDate.toString(), toDate.toString(), "10001");
 		assertEquals(actualRes.getVersion(), response.getVersion());
 
 	}
@@ -1976,27 +1377,19 @@ public class BookingServiceTest {
 	public void getApplicationByDateFailureTest() {
 		List<String> preids = new ArrayList<>();
 		preids.add("");
-		String fromDateStr = "2019-01-01";
-		String toDateStr = "2019-03-29";
-
-		LocalDate fromDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd"))
-				.toLocalDate();
-
-		LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
-				.toLocalDate();
+		LocalDate fromDate = LocalDate.now();
+		LocalDate toDate = LocalDate.now().plusDays(30);
 		Mockito.when(
 				serviceUtil.validateFromDateAndToDate(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		Mockito.when(bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, "10001"))
 				.thenThrow(new BookingDataNotFoundException("", "", new Throwable()));
-		service.getBookedPreRegistrationByDate(fromDateStr, toDateStr, "10001");
+		service.getBookedPreRegistrationByDate(fromDate.toString(), toDate.toString(), "10001");
 
 	}
 
 	@Test(expected = AvailablityNotFoundException.class)
 	public void checkSlotAvailabilityTest() {
-		String date1 = "2016-11-09 09:00:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
 		RegistrationCenterDto centerDto = new RegistrationCenterDto();
 		List<AvailibityEntity> availablityList = new ArrayList<>();
 		AvailibityEntity entity = new AvailibityEntity();
@@ -2017,33 +1410,28 @@ public class BookingServiceTest {
 		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
 		HolidayDto holiday = new HolidayDto();
 		List<HolidayDto> holidayList = new ArrayList<>();
-		holiday.setHolidayDate("2018-12-12");
+		holiday.setHolidayDate(LocalDate.now().plusDays(30).toString());
 		holidayList.add(holiday);
 		CenholidayDto.setHolidays(holidayList);
 		List<String> regCenterList = new ArrayList<>();
 		regCenterList.add("10001");
 		List<LocalDate> insertedDate = new ArrayList<>();
-		insertedDate.add(localDateTime1.toLocalDate());
-		MainResponseDTO<String> response = new MainResponseDTO<>();
+		insertedDate.add(LocalDate.now().plusDays(20));
 
 		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
 		resp.setResponse(regCenDto);
 
-		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
-		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("10001");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 
-		AvailablityNotFoundException exception = new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_002.getCode(),
-				ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.getMessage());
 		AvailibityEntity availableEntityNull = new AvailibityEntity();
 		availableEntityNull.setAvailableKiosks(0);
 		availableEntityNull.setRegcntrId("1");
-		availableEntityNull.setRegDate(LocalDate.parse("2018-12-04"));
-		availableEntityNull.setCrBy("987654321");
+		availableEntityNull.setRegDate(LocalDate.now().plusDays(20));
+		availableEntityNull.setCrBy("John Doe");
 		availableEntityNull.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntityNull.setDeleted(false);
 
@@ -2082,13 +1470,12 @@ public class BookingServiceTest {
 
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		AvailablityNotFoundException exception = new AvailablityNotFoundException(
 				ErrorCodes.PRG_BOOK_RCI_002.toString(),
 				ErrorMessages.AVAILABILITY_NOT_FOUND_FOR_THE_SELECTED_TIME.toString());
-		AvailibityEntity available = new AvailibityEntity();
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.anyString())).thenThrow(exception);
 		service.increaseAvailability(successBookDto);
@@ -2107,9 +1494,9 @@ public class BookingServiceTest {
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9, 0).toString().toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -2132,10 +1519,10 @@ public class BookingServiceTest {
 		Mockito.when(serviceUtil.validateAppointmentDate(Mockito.any())).thenThrow(ex);
 		
 
-		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
+		service.bookAppointment(bookingRequestDTOs, bookingPreId);
 
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void successBookAppointmentForExpired() {
 
@@ -2143,9 +1530,9 @@ public class BookingServiceTest {
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
-		successBookDto.setSlotFromTime("09:00");
-		successBookDto.setSlotToTime("09:15");
-		successBookDto.setRegDate("2019-12-12");
+		successBookDto.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto);
 		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
@@ -2154,10 +1541,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9, 0));
+		availableEntity.setFromTime(LocalTime.of(9, 0));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -2198,22 +1585,21 @@ public class BookingServiceTest {
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9, 0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9, 0));
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
-		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
 
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
-		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage()); 
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void successMultiBookAppointmentExpired() {
 
@@ -2224,7 +1610,6 @@ public class BookingServiceTest {
 		multiBookingRequest.setBookingRequest(multiBookingListDto);
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
-		BookingStatus bookingStatus = new BookingStatus();
 		BookingStatusDTO bookingStatusDTO1 = new BookingStatusDTO();
 		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
 
@@ -2241,9 +1626,9 @@ public class BookingServiceTest {
 		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
 		successBookDto1.setPreRegistrationId("23587986034785");
 		successBookDto1.setRegistrationCenterId("1");
-		successBookDto1.setSlotFromTime("09:00");
-		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto1.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto1.setRegDate(LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -2253,10 +1638,10 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9, 0));
+		availableEntity.setFromTime(LocalTime.of(9, 15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
@@ -2278,12 +1663,12 @@ public class BookingServiceTest {
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
 		bookingEntity2.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity2.setLangCode("12L");
-		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setLangCode("eng");
+		bookingEntity2.setCrBy("John Doe");
 		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
-		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
-		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+		bookingEntity2.setRegDate(LocalDate.now().plusDays(30));
+		bookingEntity2.setSlotFromTime(LocalTime.of(9, 0));
+		bookingEntity2.setSlotToTime(LocalTime.of(9, 15));
 
 		RegistrationCenterDto centerDto = new RegistrationCenterDto();
 		List<RegistrationCenterDto> centerList = new ArrayList<>();
@@ -2317,7 +1702,6 @@ public class BookingServiceTest {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected=InvalidRequestParameterException.class)
 	public void successMultiBookAppointmentException() {
 		InvalidRequestParameterException ex=new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
@@ -2331,7 +1715,6 @@ public class BookingServiceTest {
 		multiBookingRequest.setBookingRequest(multiBookingListDto);
 		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 
-		BookingStatus bookingStatus = new BookingStatus();
 		BookingStatusDTO bookingStatusDTO1 = new BookingStatusDTO();
 		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
 
@@ -2348,9 +1731,9 @@ public class BookingServiceTest {
 		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
 		successBookDto1.setPreRegistrationId("23587986034785");
 		successBookDto1.setRegistrationCenterId("1");
-		successBookDto1.setSlotFromTime("09:00");
-		successBookDto1.setSlotToTime("09:15");
-		successBookDto1.setRegDate("2019-12-12");
+		successBookDto1.setSlotFromTime(LocalTime.of(9, 0).toString());
+		successBookDto1.setSlotToTime(LocalTime.of(9, 15).toString());
+		successBookDto1.setRegDate(org.joda.time.LocalDate.now().plusDays(30).toString());
 		successBookDtoList.add(successBookDto1);
 		bookingRequest.setBookingRequest(successBookDtoList);
 		bookingRequestDTOs.setRequest(bookingRequest);
@@ -2360,19 +1743,18 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
-		availableEntity.setToTime(LocalTime.parse("09:00:00"));
-		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
-		availableEntity.setCrBy("987654321");
+		availableEntity.setRegDate(LocalDate.now().plusDays(30));
+		availableEntity.setToTime(LocalTime.of(9,0));
+		availableEntity.setFromTime(LocalTime.of(9, 15));
+		availableEntity.setCrBy("John Doe");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
-		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
 
 		Mockito.when(serviceUtil.validateAppointmentDate(Mockito.any())).thenThrow(ex);
 
 
-		MainResponseDTO<BookingStatus> response = service.bookMultiAppointment(bookingRequestDTOs);
+		service.bookMultiAppointment(bookingRequestDTOs);
 		
 	}
 	
