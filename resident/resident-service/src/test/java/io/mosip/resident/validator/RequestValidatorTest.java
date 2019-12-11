@@ -180,10 +180,10 @@ public class RequestValidatorTest {
 	
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidIndividualType() throws Exception {
-		AuthHistoryRequestDTO euinRequestDTO = new AuthHistoryRequestDTO();
-		euinRequestDTO.setIndividualIdType("RID");
+		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
+		authRequestDTO.setIndividualIdType("RID");
 		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setRequest(euinRequestDTO);
+		requestWrapper.setRequest(authRequestDTO);
 		requestWrapper.setVersion("v1");
 		requestWrapper.setId("mosip.resident.authhistory");
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
@@ -233,6 +233,32 @@ public class RequestValidatorTest {
 		requestWrapper.setVersion("v1");
 		requestWrapper.setRequest(authLockRequestDto);
 		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
+
+	}
+	
+	@Test(expected = InvalidInputException.class)
+	public void testAuthHistoryValidPageFetch() throws Exception {
+		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
+		authRequestDTO.setIndividualIdType("VID");
+		authRequestDTO.setPageStart(1);
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(authRequestDTO);
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.authhistory");
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
+
+	}
+	
+	@Test(expected = InvalidInputException.class)
+	public void testAuthHistoryValidPageStart() throws Exception {
+		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
+		authRequestDTO.setIndividualIdType("VID");
+		authRequestDTO.setPageFetch(1);
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(authRequestDTO);
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.authhistory");
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
 }

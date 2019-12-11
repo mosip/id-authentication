@@ -161,6 +161,11 @@ public class RequestValidator {
 				&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
 		
+		if(requestDTO.getRequest().getPageFetch()==null &&requestDTO.getRequest().getPageStart()!=null)
+			throw new InvalidInputException("please provide Page size to be Fetched");
+		
+		if(requestDTO.getRequest().getPageStart()==null &&requestDTO.getRequest().getPageFetch()!=null)
+			throw new InvalidInputException("please provide Page numer to be Fetched");
 	}
 
 	public void validateAuthType(List<String> authType) {
