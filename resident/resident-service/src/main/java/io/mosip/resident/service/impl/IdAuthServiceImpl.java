@@ -7,6 +7,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -317,8 +319,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 		authTxnDetailsDTO.setPartnerName(autnTxnDto.getEntityName());
 		authTxnDetailsDTO.setPartnerTransactionId(autnTxnDto.getTransactionID());
 		authTxnDetailsDTO.setResponseCode(autnTxnDto.getStatusCode());
-		authTxnDetailsDTO.setDate(autnTxnDto.getRequestdatetime().toLocalDate());
-		authTxnDetailsDTO.setTime(autnTxnDto.getRequestdatetime().toLocalTime());
+		authTxnDetailsDTO.setDate(autnTxnDto.getRequestdatetime().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		authTxnDetailsDTO.setTime(autnTxnDto.getRequestdatetime().format(DateTimeFormatter.ISO_LOCAL_TIME));
 		return authTxnDetailsDTO;
 	}
 }
