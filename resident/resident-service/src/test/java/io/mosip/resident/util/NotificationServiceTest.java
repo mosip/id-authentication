@@ -79,7 +79,7 @@ public class NotificationServiceTest {
 		reqDto = new NotificationRequestDto();
 		reqDto.setId("3527812406");
 		reqDto.setIdType(IdType.UIN);
-		reqDto.setTemplateTypeCode(NotificationTemplateCode.RS_UIN_RPR_Status);
+		reqDto.setTemplateTypeCode(NotificationTemplateCode.RS_UIN_RPR_SUCCESS);
 		reqDto.setAdditionalAttributes(additionalAttributes);
 		ResponseWrapper<TemplateResponseDto> primaryLangResp = new ResponseWrapper<>();
 		TemplateResponseDto primaryTemplateResp = new TemplateResponseDto();

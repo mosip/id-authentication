@@ -96,52 +96,73 @@ public class NotificationService {
 			notificationAttributes.putAll(dto.getAdditionalAttributes());
 		}
 		switch (dto.getTemplateTypeCode().name()) {
-		case "RS_DOW_UIN_Status":
+		case "RS_DOW_UIN_SUCCESS":
 			subject = "request for download e-card is sucessfull";
 			break;
-		case "RS_UIN_RPR_Status":
+		case "RS_DOW_UIN_FAILURE":
+			subject = "request for download e-card is sucessfull";
+			break;
+		case "RS_UIN_RPR_SUCCESS":
 			subject = "Request for re-print UIN successfull";
 			break;
-		case "RS_AUTH_HIST_Status":
+		case "RS_UIN_RPR_FAILURE":
+			subject = "Request for re-print UIN successfull";
+			break;
+		case "RS_AUTH_HIST_SUCCESS":
 			subject = "Request for Auth History status is successfull";
 			break;
-		case "RS_LOCK_AUTH_Status":
+		case "RS_AUTH_HIST_FAILURE":
+			subject = "Request for Auth History status is successfull";
+			break;
+		case "RS_LOCK_AUTH_SUCCESS":
 			subject = "Request for locking AuthTypes is successfull ";
 			break;
-		case "RS_INV_DATA_NOT":
-			subject = "Data entered is invalid";
+		case "RS_LOCK_AUTH_FAILURE":
+			subject = "Request for locking AuthTypes is successfull ";
 			break;
-		case "RS_INV_RID_NOT":
-			subject = "Invalid RID";
-			break;
-		case "RS_INV_UIN-VID_NOT":
-			subject = "UIN/VID entered is invalid";
-			break;
-		case "RS_LOST_RID_Status":
-			subject = "Request for lost RID is successful";
-			break;
-		case "RS_NO_MOB-MAIL-ID":
-			subject = "Registered mobile number/email not found";
-			break;
-		case "RS_UIN_GEN_Status":
-			subject = "UIN status for requestewd RID";
-			break;
-		case "RS_UIN_UPD_REQ":
-			subject = "Request for UIN update is successfull";
-			break;
-		case "RS_UIN_UPD_Status":
-			subject = "UIN update status for requested RID";
-			break;
-		case "RS_UIN_UPD_VAL":
-			subject = "Uploaded document validation failed";
-			break;
-		case "RS_UNLOCK_AUTH_Status":
+//		case "RS_INV_DATA_NOT":
+//			subject = "Data entered is invalid";
+//			break;
+//		case "RS_INV_RID_NOT":
+//			subject = "Invalid RID";
+//			break;
+//		case "RS_INV_UIN-VID_NOT":
+//			subject = "UIN/VID entered is invalid";
+//			break;
+//		case "RS_LOST_RID_Status":
+//			subject = "Request for lost RID is successful";
+//			break;
+//		case "RS_NO_MOB-MAIL-ID":
+//			subject = "Registered mobile number/email not found";
+//			break;
+//		case "RS_UIN_GEN_Status":
+//			subject = "UIN status for requestewd RID";
+//			break;
+//		case "RS_UIN_UPD_REQ":
+//			subject = "Request for UIN update is successfull";
+//			break;
+//		case "RS_UIN_UPD_Status":
+//			subject = "UIN update status for requested RID";
+//			break;
+//		case "RS_UIN_UPD_VAL":
+//			subject = "Uploaded document validation failed";
+//			break;
+		case "RS_UNLOCK_AUTH_SUCCESS":
 			subject = "Request for unlocking Auth(s) is successfull";
 			break;
-		case "RS_VIN_GEN_Status":
+		case "RS_UNLOCK_AUTH_FAILURE":
+			subject = "Request for unlocking Auth(s) is successfull";
+			break;
+		case "RS_VIN_GEN_SUCCESS":
 			subject = "VID generated for the requested RID";
 			break;
-		case "RS_VIN_REV_Status":
+		case "RS_VIN_GEN_FAILURE":
+			subject = "VID generated for the requested RID";
+			break;
+		case "RS_VIN_REV_SUCCESS":
+			subject = "VID revoked successfully";
+			break;
+		case "RS_VIN_REV_FAILURE":
 			subject = "VID revoked successfully";
 			break;
 		}
