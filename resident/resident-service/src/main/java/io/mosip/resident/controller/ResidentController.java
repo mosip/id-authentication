@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.resident.constant.AuthTypeStatus;
+import io.mosip.resident.dto.AuthHistoryRequestDTO;
+import io.mosip.resident.dto.AuthHistoryResponseDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
@@ -127,8 +129,9 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-history")
-	public ResponseWrapper<ResponseDTO> reqAuthHistory(@Valid @RequestBody RequestWrapper<RequestDTO> requestDTO) {
-		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
+	public ResponseWrapper<AuthHistoryResponseDTO> reqAuthHistory(@Valid @RequestBody RequestWrapper<AuthHistoryRequestDTO> requestDTO) {
+		validator.validateAuthHistoryRequest(requestDTO);
+		ResponseWrapper<AuthHistoryResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAuthHistory(requestDTO.getRequest()));
 		return response;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import io.mosip.resident.constant.AuthTypeStatus;
+import io.mosip.resident.dto.AuthTxnDetailsDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 
@@ -16,4 +17,7 @@ public interface IdAuthService {
 
 	public boolean authTypeStatusUpdate(String individualId, String individualIdType, List<String> authType,
 			AuthTypeStatus authTypeStatus) throws ApisResourceAccessException;
+	
+	public List<AuthTxnDetailsDTO> getAuthHistoryDetails(String individualId, String individualIdType,
+			Integer pageStart,Integer pageFetch) throws ApisResourceAccessException;
 }

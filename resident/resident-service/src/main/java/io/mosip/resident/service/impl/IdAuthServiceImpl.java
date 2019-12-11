@@ -7,6 +7,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +39,13 @@ import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.dto.AuthRequestDTO;
 import io.mosip.resident.dto.AuthResponseDTO;
+import io.mosip.resident.dto.AuthTxnDetailsDTO;
 import io.mosip.resident.dto.AuthTypeDTO;
 import io.mosip.resident.dto.AuthTypeStatus;
 import io.mosip.resident.dto.AuthTypeStatusRequestDto;
 import io.mosip.resident.dto.AuthTypeStatusResponseDto;
+import io.mosip.resident.dto.AutnTxnDto;
+import io.mosip.resident.dto.AutnTxnResponseDto;
 import io.mosip.resident.dto.OtpAuthRequestDTO;
 import io.mosip.resident.dto.PublicKeyResponseDto;
 import io.mosip.resident.exception.ApisResourceAccessException;
@@ -261,5 +266,61 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 		return isAuthTypeStatusSuccess;
 	}
+	@Override
+	public List<AuthTxnDetailsDTO> getAuthHistoryDetails(String individualId, String individualIdType,
+			Integer pageStart, Integer pageFetch) throws ApisResourceAccessException {
+		List<AuthTxnDetailsDTO> details=null;
+		int count=1;
+		AutnTxnResponseDto autnTxnResponseDto= new AutnTxnResponseDto();
+		List<String> pathsegments=new ArrayList<>();
+		pathsegments.add(0,"individualIdType");
+		pathsegments.add(1,individualIdType);
+		pathsegments.add(2,"individualId");
+		pathsegments.add(3,individualId);
+		String queryParamName=null;
+		String queryParamValue=null;
+		if(pageStart != null && pageFetch !=null) {
+		 queryParamName="pageFetch,pageStart";
+		 queryParamValue=pageFetch.toString()+","+pageStart.toString();
+		 count=count+pageFetch*(pageStart-1);
+		}
+		try {
+			autnTxnResponseDto=(AutnTxnResponseDto) restClient.getApi(ApiName.INTERNALAUTHTRANSACTIONS,
+					pathsegments, queryParamName, queryParamValue, AutnTxnResponseDto.class, tokenGenerator.getToken());
+			if (autnTxnResponseDto.getErrors() != null && autnTxnResponseDto.getErrors().size() > 0) {
+				autnTxnResponseDto.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
 
+			}
+			if(autnTxnResponseDto.getResponse().get("authTransactions") != null ) {
+				details=new ArrayList<AuthTxnDetailsDTO>();
+				if(!autnTxnResponseDto.getResponse().get("authTransactions").isEmpty()) {
+					for(AutnTxnDto autnTxnDto :autnTxnResponseDto.getResponse().get("authTransactions")) {
+						details.add(getDetails(autnTxnDto, count));
+						count++;
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
+					"IdAuthServiceImp::getAuthHistoryDetails():: AUTHTransactions GET service call" + e.getStackTrace());
+			throw new ApisResourceAccessException("Could not able call auth transactions api", e);
+		}
+		
+		return details;
+	}
+
+	private AuthTxnDetailsDTO getDetails(AutnTxnDto autnTxnDto,int count) {
+		AuthTxnDetailsDTO authTxnDetailsDTO=new AuthTxnDetailsDTO();
+		authTxnDetailsDTO.setSerialNumber(count);
+		authTxnDetailsDTO.setAuthModality(autnTxnDto.getAuthtypeCode());
+		authTxnDetailsDTO.setAuthResponse(autnTxnDto.getStatusComment());
+		authTxnDetailsDTO.setIdUsed(autnTxnDto.getReferenceIdType());
+		authTxnDetailsDTO.setPartnerName(autnTxnDto.getEntityName());
+		authTxnDetailsDTO.setPartnerTransactionId(autnTxnDto.getTransactionID());
+		authTxnDetailsDTO.setResponseCode(autnTxnDto.getStatusCode());
+		authTxnDetailsDTO.setDate(autnTxnDto.getRequestdatetime().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		authTxnDetailsDTO.setTime(autnTxnDto.getRequestdatetime().format(DateTimeFormatter.ISO_LOCAL_TIME));
+		return authTxnDetailsDTO;
+	}
 }

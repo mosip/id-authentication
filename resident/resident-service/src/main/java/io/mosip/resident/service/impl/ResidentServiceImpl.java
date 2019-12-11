@@ -31,7 +31,10 @@ import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.NotificationTemplateCode;
 import io.mosip.resident.constant.RegistrationExternalStatusCode;
 import io.mosip.resident.constant.ResidentErrorCode;
+import io.mosip.resident.dto.AuthHistoryRequestDTO;
+import io.mosip.resident.dto.AuthHistoryResponseDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
+import io.mosip.resident.dto.AuthTxnDetailsDTO;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
@@ -296,8 +299,8 @@ public class ResidentServiceImpl implements ResidentService {
 					throw new ResidentServiceException(ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorCode(),
 							ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorMessage()
 									+ (response != null ? response.getErrors().get(0).toString() : ""));
-				RegProcRePrintResponseDto responseDto = JsonUtil.objectMapperReadValue(
-						JsonUtil.objectMapperObjectToJson(response.getResponse()), RegProcRePrintResponseDto.class);
+				RegProcRePrintResponseDto responseDto = JsonUtil.readValue(
+						JsonUtil.writeValueAsString(response.getResponse()), RegProcRePrintResponseDto.class);
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 				notificationRequestDto.setId(dto.getIndividualId());
 				notificationRequestDto.setIdType(dto.getIndividualIdType());
@@ -441,9 +444,73 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public ResponseDTO reqAuthHistory(RequestDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
+	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto) {
+		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthHistory():: entry");
+		
+		AuthHistoryResponseDTO response=new AuthHistoryResponseDTO();
+		try {
+		if(validateIndividualId(dto.getIndividualId(),dto.getIndividualIdType())) {
+		if(idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+								dto.getOtp())) {
+			List<AuthTxnDetailsDTO> details=idAuthService.getAuthHistoryDetails(dto.getIndividualId(), dto.getIndividualIdType(),
+					dto.getPageStart(), dto.getPageFetch());
+			if(details !=null ) {
+			response.setAuthHistory(details);
+			NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+			notificationRequestDto.setId(dto.getIndividualId());
+			notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
+			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_AUTH_HIST_Status);
+
+			NotificationResponseDTO notificationResponseDTO = notificationService
+					.sendNotification(notificationRequestDto);
+			response.setMessage(notificationResponseDTO.getMessage());
+		}else {
+			throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
+					ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
+		}
+		}else {
+			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+		}
+		}else {
+			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage());
+		}
+		} catch (OtpValidationFailedException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode()
+							+ ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
+		} catch (ResidentServiceCheckedException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode()
+							+ ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
+		} catch (ApisResourceAccessException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
+							+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
+					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
+		}
+		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthHistory():: exit");
+		return response;
 	}
 
 	private boolean validateIndividualId(String individualId, String individualIdType) {

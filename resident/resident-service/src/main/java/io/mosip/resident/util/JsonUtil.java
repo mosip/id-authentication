@@ -115,7 +115,7 @@ public class JsonUtil {
 	 * @throws IOException          Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T objectMapperReadValue(String jsonString, Class<?> clazz) throws IOException {
+	public static <T> T readValue(String jsonString, Class<?> clazz) throws IOException {
 		return (T) objectMapper.readValue(jsonString, clazz);
 	}
 
@@ -189,7 +189,7 @@ public class JsonUtil {
 
 	}
 
-	public static String objectMapperObjectToJson(Object obj) throws IOException {
+	public static String writeValueAsString(Object obj) throws IOException {
 		return objectMapper.writeValueAsString(obj);
 	}
 

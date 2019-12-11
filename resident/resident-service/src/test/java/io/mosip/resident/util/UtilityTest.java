@@ -54,7 +54,7 @@ public class UtilityTest {
 		File idJson = new File(classLoader.getResource("ID.json").getFile());
 		InputStream is = new FileInputStream(idJson);
 		String idJsonString = IOUtils.toString(is, "UTF-8");
-		identity = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
+		identity = JsonUtil.readValue(idJsonString, JSONObject.class);
 		ResponseWrapper<IdRepoResponseDto> response = new ResponseWrapper<>();
 		IdRepoResponseDto idRepoResponseDto = new IdRepoResponseDto();
 		idRepoResponseDto.setStatus("Activated");
@@ -180,7 +180,7 @@ public class UtilityTest {
 		Mockito.doReturn(JsonUtil.getJSONObject(identity, "identity")).when(utilitySpy)
 				.retrieveIdrepoJson(Mockito.anyString(), Mockito.any());
 		PowerMockito.mockStatic(JsonUtil.class);
-		PowerMockito.when(JsonUtil.objectMapperReadValue(mappingJson, JSONObject.class)).thenThrow(new IOException());
+		PowerMockito.when(JsonUtil.readValue(mappingJson, JSONObject.class)).thenThrow(new IOException());
 		utilitySpy.getMailingAttributes("3527812406", IdType.UIN);
 
 	}

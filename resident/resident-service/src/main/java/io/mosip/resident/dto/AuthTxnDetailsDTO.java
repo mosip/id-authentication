@@ -1,18 +1,20 @@
 package io.mosip.resident.dto;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 @Data
+@Getter
+@Setter
 public class AuthTxnDetailsDTO {
-	String serialNumber;
-	String idUsed;
-	String authModality;
-	LocalDate date;
-	LocalTime time;
-	String partnerName;
-	String partnerTransactionId;
-	String authResponse;
-	String responseCode;
+	private int serialNumber;
+	private String idUsed;
+	private String authModality;
+	private String date;
+	private String time;
+	private String partnerName;
+	private String partnerTransactionId;
+	private String authResponse;
+	private String responseCode;
 }
+

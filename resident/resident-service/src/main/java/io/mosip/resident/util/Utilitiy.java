@@ -17,8 +17,11 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.dto.IdRepoResponseDto;
 import io.mosip.resident.dto.JsonValue;
@@ -35,6 +38,8 @@ import io.mosip.resident.exception.ResidentServiceCheckedException;
 
 @Component
 public class Utilitiy {
+
+	private static final Logger logger = LoggerConfiguration.logConfig(Utilitiy.class);
 
 	@Autowired
 	private ResidentServiceRestClient residentServiceRestClient;
@@ -65,7 +70,8 @@ public class Utilitiy {
 
 	@SuppressWarnings("unchecked")
 	public JSONObject retrieveIdrepoJson(String id, IdType idType) throws ResidentServiceCheckedException {
-
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+				"Utilitiy::retrieveIdrepoJson()::entry");
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(id);
 		ResponseWrapper<IdRepoResponseDto> response = null;
@@ -82,6 +88,8 @@ public class Utilitiy {
 				ResponseWrapper<VidGeneratorResponseDto> vidResponse = (ResponseWrapper<VidGeneratorResponseDto>) residentServiceRestClient
 						.getApi(ApiName.GETUINBYVID, pathsegments, null, null, ResponseWrapper.class,
 								tokenGenerator.getToken());
+				logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+						"Utilitiy::retrieveIdrepoJson()::vidResponse::" + JsonUtil.writeValueAsString(vidResponse));
 				if (vidResponse == null)
 					throw new IdRepoAppException(ResidentErrorCode.IN_VALID_VID.getErrorCode(),
 							ResidentErrorCode.IN_VALID_VID.getErrorCode(),
@@ -92,8 +100,8 @@ public class Utilitiy {
 							ResidentErrorCode.IN_VALID_VID.getErrorCode(), error.get(0).getMessage());
 				}
 
-				VidGeneratorResponseDto vidGeneratorResponseDto = JsonUtil.objectMapperReadValue(
-						JsonUtil.objectMapperObjectToJson(vidResponse.getResponse()), VidGeneratorResponseDto.class);
+				VidGeneratorResponseDto vidGeneratorResponseDto = JsonUtil.readValue(
+						JsonUtil.writeValueAsString(vidResponse.getResponse()), VidGeneratorResponseDto.class);
 				String uin = String.valueOf(vidGeneratorResponseDto.getUIN());
 				pathsegments.clear();
 				pathsegments.add(uin);
@@ -129,19 +137,24 @@ public class Utilitiy {
 			errorCode = ResidentErrorCode.IN_VALID_RID;
 		else
 			errorCode = ResidentErrorCode.IN_VALID_VID_UIN;
-		if (response == null)
-			throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
-					"In valid response while requesting ID Repositary");
-		if (!response.getErrors().isEmpty()) {
-			List<ServiceError> error = response.getErrors();
-			throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
-					error.get(0).getMessage());
-		}
-		String jsonResponse;
 		try {
-			jsonResponse = JsonUtil.objectMapperObjectToJson(response.getResponse());
-			JSONObject json = JsonUtil.objectMapperReadValue(jsonResponse, JSONObject.class);
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+					"Utilitiy::retrieveIdrepoJson()::id repo response for given id::"
+							+ JsonUtil.writeValueAsString(response));
+			if (response == null)
+				throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
+						"In valid response while requesting ID Repositary");
+			if (!response.getErrors().isEmpty()) {
+				List<ServiceError> error = response.getErrors();
+				throw new IdRepoAppException(errorCode.getErrorCode(), errorCode.getErrorMessage(),
+						error.get(0).getMessage());
+			}
+			String jsonResponse;
 
+			jsonResponse = JsonUtil.writeValueAsString(response.getResponse());
+			JSONObject json = JsonUtil.readValue(jsonResponse, JSONObject.class);
+			logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+					"Utilitiy::retrieveIdrepoJson()::exit");
 			return JsonUtil.getJSONObject(json, "identity");
 		} catch (IOException e) {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorCode(),
@@ -151,6 +164,8 @@ public class Utilitiy {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMailingAttributes(String id, IdType idType) throws ResidentServiceCheckedException {
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+				"Utilitiy::getMailingAttributes()::entry");
 		Map<String, Object> attributes = new HashMap<>();
 		JSONObject identityJson = retrieveIdrepoJson(id, idType);
 		String email = (String) identityJson.get(EMAIL);
@@ -160,7 +175,7 @@ public class Utilitiy {
 		String mappingJsonString = getMappingJson();
 		JSONObject mappingJsonObject;
 		try {
-			mappingJsonObject = JsonUtil.objectMapperReadValue(mappingJsonString, JSONObject.class);
+			mappingJsonObject = JsonUtil.readValue(mappingJsonString, JSONObject.class);
 			LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
 					.get(IDENTITY);
 			LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get(NAME);
@@ -182,10 +197,14 @@ public class Utilitiy {
 
 				}
 			}
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+					"Utilitiy::getMailingAttributes()::mailingAttributes::" + attributes);
 		} catch (IOException | ReflectiveOperationException e) {
 			throw new ResidentServiceCheckedException(ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorCode(),
 					ResidentErrorCode.RESIDENT_SYS_EXCEPTION.getErrorMessage(), e);
 		}
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
+				"Utilitiy::getMailingAttributes()::exit");
 		return attributes;
 	}
 
