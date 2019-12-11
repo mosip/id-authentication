@@ -1,4 +1,4 @@
-package io.mosip.preregistration.booking.serviceimpl.exception;
+package io.mosip.preregistration.core.exception;
 
 import java.util.List;
 

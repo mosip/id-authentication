@@ -1,8 +1,9 @@
+
 /* 
  * Copyright
  * 
  */
-package io.mosip.preregistration.transliteration.exception;
+package io.mosip.preregistration.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -11,19 +12,16 @@ import lombok.Getter;
 /**
  * This class defines the IllegalParamException
  * 
- * @author Kishan Rathore
+ * @author Sanober Noor
  * @since 1.0.0
  *
  */
-
 @Getter
 public class IllegalParamException extends BaseUncheckedException{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6810058264320216283L;
-	
 	private MainResponseDTO<?> mainResponseDto;
-	
 	/**
 	 * @param msg
 	 */
@@ -52,3 +50,4 @@ public class IllegalParamException extends BaseUncheckedException{
 	}
 
 }
+

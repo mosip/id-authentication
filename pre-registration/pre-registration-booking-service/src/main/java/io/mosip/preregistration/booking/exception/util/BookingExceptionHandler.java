@@ -55,17 +55,17 @@ import io.mosip.preregistration.booking.serviceimpl.exception.DemographicStatusU
 import io.mosip.preregistration.booking.serviceimpl.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.serviceimpl.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.serviceimpl.exception.JsonException;
-import io.mosip.preregistration.booking.serviceimpl.exception.MasterDataNotAvailableException;
-import io.mosip.preregistration.booking.serviceimpl.exception.NotificationException;
 import io.mosip.preregistration.booking.serviceimpl.exception.OperationNotAllowedException;
-import io.mosip.preregistration.booking.serviceimpl.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.serviceimpl.exception.RecordNotFoundException;
-import io.mosip.preregistration.booking.serviceimpl.exception.RestCallException;
 import io.mosip.preregistration.booking.serviceimpl.exception.TimeSpanException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.core.exception.NotificationException;
+import io.mosip.preregistration.core.exception.RecordFailedToDeleteException;
+import io.mosip.preregistration.core.exception.RestCallException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
 

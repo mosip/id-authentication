@@ -26,9 +26,9 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.IllegalParamException;
 import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
-import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 
 

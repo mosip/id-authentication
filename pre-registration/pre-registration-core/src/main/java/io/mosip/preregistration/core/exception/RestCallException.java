@@ -1,4 +1,4 @@
-package io.mosip.preregistration.booking.serviceimpl.exception;
+package io.mosip.preregistration.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;

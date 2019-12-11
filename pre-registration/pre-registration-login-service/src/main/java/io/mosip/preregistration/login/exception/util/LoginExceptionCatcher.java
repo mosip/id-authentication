@@ -6,6 +6,7 @@ import org.springframework.web.client.RestClientException;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.util.ParseResponseException;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
 import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
@@ -13,7 +14,6 @@ import io.mosip.preregistration.login.exception.InvalidOtpOrUseridException;
 import io.mosip.preregistration.login.exception.InvalidateTokenException;
 import io.mosip.preregistration.login.exception.LoginServiceException;
 import io.mosip.preregistration.login.exception.NoAuthTokenException;
-import io.mosip.preregistration.login.exception.ParseResponseException;
 import io.mosip.preregistration.login.exception.SendOtpFailedException;
 import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
 

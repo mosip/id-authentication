@@ -58,6 +58,7 @@ import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
+import io.mosip.preregistration.core.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -75,7 +76,6 @@ import io.mosip.preregistration.demographic.exception.BookingDeletionFailedExcep
 import io.mosip.preregistration.demographic.exception.DemographicServiceException;
 import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.demographic.exception.PreIdInvalidForUserIdException;
-import io.mosip.preregistration.demographic.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.demographic.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
 import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsException;

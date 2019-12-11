@@ -39,7 +39,6 @@ import io.mosip.preregistration.batchjob.code.ErrorCodes;
 import io.mosip.preregistration.batchjob.code.ErrorMessages;
 import io.mosip.preregistration.batchjob.entity.AvailibityEntity;
 import io.mosip.preregistration.batchjob.exception.NoRecordFoundException;
-import io.mosip.preregistration.batchjob.exception.NotificationException;
 import io.mosip.preregistration.batchjob.exception.RestCallException;
 import io.mosip.preregistration.batchjob.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjob.model.ExceptionalHolidayDto;
@@ -66,6 +65,7 @@ import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.NotificationException;
 
 /**
  * @author Kishan Rathore

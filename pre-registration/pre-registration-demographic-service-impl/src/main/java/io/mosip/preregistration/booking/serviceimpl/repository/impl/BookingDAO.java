@@ -22,13 +22,13 @@ import io.mosip.preregistration.booking.serviceimpl.exception.AvailabilityUpdati
 import io.mosip.preregistration.booking.serviceimpl.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.serviceimpl.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.serviceimpl.exception.CancelAppointmentFailedException;
-import io.mosip.preregistration.booking.serviceimpl.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.serviceimpl.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.serviceimpl.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.serviceimpl.repository.DemographicRepository;
 import io.mosip.preregistration.booking.serviceimpl.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**

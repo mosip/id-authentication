@@ -9,9 +9,9 @@ import java.text.ParseException;
 
 import org.springframework.web.client.HttpServerErrorException;
 
-import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.IllegalParamException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
@@ -19,7 +19,6 @@ import io.mosip.preregistration.notification.error.ErrorMessages;
 import io.mosip.preregistration.notification.exception.BookingDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.DemographicDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.IOException;
-import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.JsonValidationException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.MissingRequestParameterException;
