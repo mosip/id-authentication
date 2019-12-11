@@ -34,21 +34,11 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.preregistration</groupId>
-			<artifactId>pre-registration-core</artifactId>
-			<version>${project.version}</version>
-			  <exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-dataaccess-hibernate</artifactId>
-				</exclusion>
-			</exclusions> 
-		</dependency>
+		<!-- <dependency> <groupId>io.mosip.preregistration</groupId> <artifactId>pre-registration-core</artifactId> 
+			<version>${project.version}</version> <exclusions> <exclusion> <groupId>org.hibernate</groupId> 
+			<artifactId>hibernate-core</artifactId> </exclusion> <exclusion> <groupId>io.mosip.kernel</groupId> 
+			<artifactId>kernel-dataaccess-hibernate</artifactId> </exclusion> </exclusions> 
+			</dependency> -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
@@ -96,11 +86,8 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idobjectvalidator</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
+		<!-- <dependency> <groupId>io.mosip.kernel</groupId> <artifactId>kernel-idobjectvalidator</artifactId> 
+			<version>${kernel.core.version}</version> </dependency> -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-auth-adapter</artifactId>
@@ -114,30 +101,27 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.preregistration</groupId>
 			<artifactId>pre-registration-demographic-service-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
+		<!-- <dependency> <groupId>io.mosip.kernel</groupId> <artifactId>kernel-idgenerator-prid</artifactId> 
+			<version>${kernel.core.version}</version> </dependency> -->
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-prid</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-		 <dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>antlr</groupId>
-		    <artifactId>antlr</artifactId>
-		    <version>2.7.7</version>
-		</dependency> 
-		
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>2.7.7</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
