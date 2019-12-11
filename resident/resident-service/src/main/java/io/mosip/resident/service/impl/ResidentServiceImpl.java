@@ -167,7 +167,8 @@ public class ResidentServiceImpl implements ResidentService {
 		NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 		notificationRequestDto.setId(request.getIndividualId());
 		notificationRequestDto.setIdType(getIdType(request.getIndividualIdType()));
-		notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_NO_MOB_MAIL_ID);
+		//temporarily commented --> need to be removed later
+		//notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_NO_MOB_MAIL_ID);
 		Map<String, Object> attribute = new HashMap<String, Object>();
 		attribute.put("statusCode", statusCode);
 		notificationRequestDto.setAdditionalAttributes(attribute);
@@ -224,7 +225,7 @@ public class ResidentServiceImpl implements ResidentService {
 						NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 						notificationRequestDto.setId(dto.getIndividualId());
 						notificationRequestDto.setIdType(idtype);
-						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_Status);
+						notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_SUCCESS);
 						notificationService.sendNotification(notificationRequestDto);
 					} else {
 						throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
@@ -304,7 +305,7 @@ public class ResidentServiceImpl implements ResidentService {
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 				notificationRequestDto.setId(dto.getIndividualId());
 				notificationRequestDto.setIdType(dto.getIndividualIdType());
-				notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UIN_RPR_Status);
+				notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UIN_RPR_SUCCESS);
 				Map<String, Object> additionalAttributes = new HashMap<String, Object>();
 				additionalAttributes.put("RID", responseDto.getRegistrationId());
 				notificationRequestDto.setAdditionalAttributes(additionalAttributes);
@@ -411,9 +412,9 @@ public class ResidentServiceImpl implements ResidentService {
 		notificationRequestDto.setId(dto.getIndividualId());
 		notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
 		if (authTypeStatus.equals(io.mosip.resident.constant.AuthTypeStatus.LOCK)) {
-			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_LOCK_AUTH_Status);
+			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_LOCK_AUTH_SUCCESS);
 		} else {
-			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UNLOCK_AUTH_Status);
+			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_UNLOCK_AUTH_SUCCESS);
 		}
 
 		return notificationService.sendNotification(notificationRequestDto);
@@ -436,7 +437,7 @@ public class ResidentServiceImpl implements ResidentService {
 			NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 			notificationRequestDto.setId(dto.getIndividualId());
 			notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
-			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_AUTH_HIST_Status);
+			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_AUTH_HIST_SUCCESS);
 
 			NotificationResponseDTO notificationResponseDTO = notificationService
 					.sendNotification(notificationRequestDto);
