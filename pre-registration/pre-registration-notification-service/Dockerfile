@@ -23,6 +23,8 @@ ENV spring_config_url_env=${spring_config_url}
 
 copy ./target/pre-registration-notification-service-*.jar pre-registration-notification-service.jar
 
+ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/kernel/kernel-ref-idobjectvalidator/0.9.1/kernel-ref-idobjectvalidator-0.9.1.jar kernel-ref-idobjectvalidator-0.9.1.jar
+
 EXPOSE 9099
 
 CMD if [ "$active_profile_env" = "preprod" ]; then \
