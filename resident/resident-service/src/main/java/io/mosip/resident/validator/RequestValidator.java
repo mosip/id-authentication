@@ -52,6 +52,12 @@ public class RequestValidator {
 
 	@Value("${resident.authunlock.id}")
 	private String authUnLockId;
+	
+	@Value("${mosip.id.validation.identity.phone}")
+	private static String phoneRegex;
+	
+	@Value("${mosip.id.validation.identity.email}")
+	private static String emailRegex;
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
 
@@ -167,6 +173,13 @@ public class RequestValidator {
 			if (!authTypesAllowed.contains(type))
 				throw new InvalidInputException("authType");
 		}
+	}
+	
+	public static boolean phoneValidator(String phone) {
+		return phone.matches(phoneRegex);
+	}
+	public static boolean emailValidator(String email) {
+		return email.matches(emailRegex);
 	}
 
 	
