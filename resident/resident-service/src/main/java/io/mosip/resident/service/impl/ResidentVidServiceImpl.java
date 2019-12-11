@@ -84,7 +84,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             Map<String, Object> additionalAttributes = new HashMap<>();
             additionalAttributes.put(TemplateEnum.VID.name(), vidResponse.getVID());
             notificationRequestDto.setAdditionalAttributes(additionalAttributes);
-            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_Status);
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_SUCCESS);
 
             NotificationResponseDTO notificationResponseDTO = notificationService.sendNotification(notificationRequestDto);
 
