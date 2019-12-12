@@ -17,6 +17,7 @@ import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
+import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
@@ -182,7 +183,7 @@ public class RequestValidatorTest {
 	@Test(expected = InvalidInputException.class)
 	public void testeuinValidIndividualType() throws Exception {
 		EuinRequestDTO euinRequestDTO = new EuinRequestDTO();
-		euinRequestDTO.setIndividualIdType("RID");
+		euinRequestDTO.setIndividualIdType(IdType.RID);
 		RequestWrapper<EuinRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(euinRequestDTO);
 		requestWrapper.setVersion("v1");
@@ -194,7 +195,7 @@ public class RequestValidatorTest {
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidIndividualType() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
-		authRequestDTO.setIndividualIdType("RID");
+		authRequestDTO.setIndividualIdType(IdType.RID);
 		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(authRequestDTO);
 		requestWrapper.setVersion("v1");
@@ -252,7 +253,7 @@ public class RequestValidatorTest {
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidPageFetch() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
-		authRequestDTO.setIndividualIdType("VID");
+		authRequestDTO.setIndividualIdType(IdType.VID);
 		authRequestDTO.setPageStart(1);
 		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(authRequestDTO);
@@ -265,7 +266,7 @@ public class RequestValidatorTest {
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidPageStart() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
-		authRequestDTO.setIndividualIdType("VID");
+		authRequestDTO.setIndividualIdType(IdType.VID);
 		authRequestDTO.setPageFetch(1);
 		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(authRequestDTO);

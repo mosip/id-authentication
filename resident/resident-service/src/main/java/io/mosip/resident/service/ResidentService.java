@@ -18,12 +18,12 @@ public interface ResidentService {
 
 	public RegStatusCheckResponseDTO getRidStatus(RequestDTO dto) throws ApisResourceAccessException;
 
-	public byte[] reqEuin(EuinRequestDTO euinRequestDTO) throws OtpValidationFailedException;
+	public byte[] reqEuin(EuinRequestDTO euinRequestDTO) throws ResidentServiceCheckedException;
 
 	public ResidentReprintResponseDto reqPrintUin(ResidentReprintRequestDto dto) throws ResidentServiceCheckedException;
 
 	public ResponseDTO reqAauthTypeStatusUpdate(AuthLockOrUnLockRequestDto dto, AuthTypeStatus authTypeStatus);
 
-	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto);
+	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto) throws ResidentServiceCheckedException;
 
 }

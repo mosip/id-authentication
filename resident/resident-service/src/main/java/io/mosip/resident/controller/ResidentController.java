@@ -54,7 +54,7 @@ public class ResidentController {
 
 	@PostMapping(value = "/req/euin")
 	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO)
-			throws OtpValidationFailedException {
+			throws  ResidentServiceCheckedException {
 		validator.validateEuinRequest(requestDTO);
 		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
 
@@ -97,7 +97,7 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-history")
-	public ResponseWrapper<AuthHistoryResponseDTO> reqAuthHistory(@Valid @RequestBody RequestWrapper<AuthHistoryRequestDTO> requestDTO) {
+	public ResponseWrapper<AuthHistoryResponseDTO> reqAuthHistory(@Valid @RequestBody RequestWrapper<AuthHistoryRequestDTO> requestDTO) throws ResidentServiceCheckedException {
 		validator.validateAuthHistoryRequest(requestDTO);
 		ResponseWrapper<AuthHistoryResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAuthHistory(requestDTO.getRequest()));

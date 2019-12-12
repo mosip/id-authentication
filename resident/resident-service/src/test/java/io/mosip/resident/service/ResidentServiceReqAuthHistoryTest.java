@@ -18,6 +18,7 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
+import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthTxnDetailsDTO;
 import io.mosip.resident.dto.NotificationResponseDTO;
@@ -32,18 +33,6 @@ import io.mosip.resident.util.UINCardDownloadService;
 public class ResidentServiceReqAuthHistoryTest {
 	@InjectMocks
 	ResidentServiceImpl residentServiceImpl;
-	
-	@Mock
-	private VidValidator<String> vidValidator;
-
-	@Mock
-	private UinValidator<String> uinValidator;
-
-	@Mock
-	private RidValidator<String> ridValidator;
-
-	@Mock
-	private UINCardDownloadService uinCardDownloadService;
 
 	@Mock
 	private IdAuthService idAuthService;
@@ -57,91 +46,69 @@ public class ResidentServiceReqAuthHistoryTest {
 		dto.setAuthModality("OTP_AUTH");
 		details=new ArrayList<>();
 		details.add(dto);
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(true);
 		Mockito.when(idAuthService.getAuthHistoryDetails(Mockito.anyString(), Mockito.anyString(),Mockito.any(), Mockito.any())).thenReturn(details);
 		Mockito.when(notificationService.sendNotification(Mockito.any())).thenReturn(mock(NotificationResponseDTO.class));
 	}
 	@Test
-	public void testReqAuthHistorySuccess() throws OtpValidationFailedException {
+	public void testReqAuthHistorySuccess() throws  ResidentServiceCheckedException {
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("UIN");
+		dto.setIndividualIdType(IdType.UIN);
 		dto.setIndividualId("123456789");
 		
 		assertEquals("OTP_AUTH", residentServiceImpl.reqAuthHistory(dto).getAuthHistory().get(0).getAuthModality());
 	}
 	@Test
-	public void testReqAuthHistorywithVID() throws OtpValidationFailedException {
+	public void testReqAuthHistorywithVID() throws  ResidentServiceCheckedException {
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		
 		assertEquals("OTP_AUTH", residentServiceImpl.reqAuthHistory(dto).getAuthHistory().get(0).getAuthModality());
 	}
 	@Test(expected=ResidentServiceException.class)
-	public void testReqAuthHistoryNull() throws OtpValidationFailedException, ApisResourceAccessException {
+	public void testReqAuthHistoryNull() throws  ApisResourceAccessException, ResidentServiceCheckedException {
 		Mockito.when(idAuthService.getAuthHistoryDetails(Mockito.anyString(), Mockito.anyString(),Mockito.any(), Mockito.any())).thenReturn(null);
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		
 		residentServiceImpl.reqAuthHistory(dto);
 	}
 	@Test(expected=ResidentServiceException.class)
-	public void testReqAuthHistoryDetailsFetchFailed() throws OtpValidationFailedException, ApisResourceAccessException {
+	public void testReqAuthHistoryDetailsFetchFailed() throws  ApisResourceAccessException, ResidentServiceCheckedException {
 		Mockito.when(idAuthService.getAuthHistoryDetails(Mockito.anyString(), Mockito.anyString(),Mockito.any(), Mockito.any())).thenThrow(new ApisResourceAccessException());
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		residentServiceImpl.reqAuthHistory(dto);
 	}
 	@Test(expected=ResidentServiceException.class)
-	public void testReqAuthHistorySendNotificationFailed() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
+	public void testReqAuthHistorySendNotificationFailed() throws  ApisResourceAccessException, ResidentServiceCheckedException {
 		Mockito.when(notificationService.sendNotification(Mockito.any())).thenThrow(new ResidentServiceCheckedException());
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		residentServiceImpl.reqAuthHistory(dto);
 	}
 	
 	@Test(expected=ResidentServiceException.class)
-	public void testReqAuthHistoryinvalidIdType() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		
-		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
-		dto.setOtp("1235");
-		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VI");
-		dto.setIndividualId("123456789");
-		residentServiceImpl.reqAuthHistory(dto);
-	}
-	@Test(expected=ResidentServiceException.class)
-	public void testReqAuthHistoryinvalidId() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("",""));
-		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
-		dto.setOtp("1235");
-		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
-		dto.setIndividualId("123456789");
-		residentServiceImpl.reqAuthHistory(dto);
-	}
-	@Test(expected=ResidentServiceException.class)
-	public void testReqAuthHistoryinotpvalidationfailed() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
+	public void testReqAuthHistoryinotpvalidationfailed() throws  ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(false);
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		residentServiceImpl.reqAuthHistory(dto);
 	}
@@ -151,7 +118,7 @@ public class ResidentServiceReqAuthHistoryTest {
 		AuthHistoryRequestDTO dto=new AuthHistoryRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		residentServiceImpl.reqAuthHistory(dto);
 	}

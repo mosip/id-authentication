@@ -83,7 +83,7 @@ public class ResidentControllerTest {
 		authLockRequest = new RequestWrapper<AuthLockOrUnLockRequestDto>();
 		authLockRequest.setRequest(new AuthLockOrUnLockRequestDto());
 		euinRequest = new RequestWrapper<EuinRequestDTO>();
-		euinRequest.setRequest(new EuinRequestDTO("1234567890", "1234567890", "UIN", "UIN", "4567"));
+		euinRequest.setRequest(new EuinRequestDTO("1234567890", "1234567890", IdType.UIN, "UIN", "4567"));
 		
 		gson = new GsonBuilder().serializeNulls().create();
 		authLockRequestToJson = gson.toJson(authLockRequest);
@@ -192,7 +192,7 @@ public class ResidentControllerTest {
 		authHistoryRequest=new RequestWrapper<AuthHistoryRequestDTO>();
 		AuthHistoryRequestDTO hisdto=new AuthHistoryRequestDTO();
 		hisdto.setIndividualId("1234");
-		hisdto.setIndividualIdType("UIN");
+		hisdto.setIndividualIdType(IdType.UIN);
 		hisdto.setOtp("1234");
 		hisdto.setTransactionID("1234");
 		authHistoryRequest.setRequest(hisdto);

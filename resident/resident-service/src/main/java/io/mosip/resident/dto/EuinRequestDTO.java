@@ -6,6 +6,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.mosip.resident.constant.IdType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,8 @@ public class EuinRequestDTO implements Serializable {
 	@NotBlank(message = "individualId should not be empty")
 	@NotNull(message = "individualId should not be null")
 	private String individualId;
-	@NotBlank(message = "individualIdType should not be empty")
 	@NotNull(message = "individualIdType should not be null")
-	private String individualIdType;
+	private IdType individualIdType;
 	@NotBlank(message = "cardType should not be empty")
 	@NotNull(message = "cardType should not be null")
 	private String cardType;

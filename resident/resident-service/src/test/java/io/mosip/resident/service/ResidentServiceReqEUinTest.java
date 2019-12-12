@@ -15,6 +15,7 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
+import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
@@ -29,15 +30,6 @@ import io.mosip.resident.util.UINCardDownloadService;
 public class ResidentServiceReqEUinTest {
 	@InjectMocks
 	ResidentServiceImpl residentServiceImpl;
-	
-	@Mock
-	private VidValidator<String> vidValidator;
-
-	@Mock
-	private UinValidator<String> uinValidator;
-
-	@Mock
-	private RidValidator<String> ridValidator;
 
 	@Mock
 	private UINCardDownloadService uinCardDownloadService;
@@ -51,96 +43,72 @@ public class ResidentServiceReqEUinTest {
 	
 	@Before
 	public void setup() throws ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(true);
 		Mockito.when(uinCardDownloadService.getUINCard(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(card);
 		Mockito.when(notificationService.sendNotification(Mockito.any())).thenReturn(mock(NotificationResponseDTO.class));
 	}
 	
 	@Test
-	public void testReqEuin() throws OtpValidationFailedException {
+	public void testReqEuin() throws  ResidentServiceCheckedException {
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("UIN");
+		dto.setIndividualIdType(IdType.UIN);
 		dto.setIndividualId("123456789");
 		dto.setCardType("UIN");
 		assertEquals(card, residentServiceImpl.reqEuin(dto));
 	}
 	@Test
-	public void testReqEuinwithVID() throws OtpValidationFailedException {
+	public void testReqEuinwithVID() throws ResidentServiceCheckedException {
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		dto.setCardType("MASKED_UIN");
 		assertEquals(card, residentServiceImpl.reqEuin(dto));
 	}
 	@Test(expected=ResidentServiceException.class)
-	public void testReqEuinNull() throws OtpValidationFailedException, ApisResourceAccessException {
+	public void testReqEuinNull() throws ResidentServiceCheckedException, ApisResourceAccessException {
 		Mockito.when(uinCardDownloadService.getUINCard(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		dto.setCardType("MASKED_UIN");
 		 residentServiceImpl.reqEuin(dto);
 	}
 	@Test(expected=ResidentServiceException.class)
-	public void testReqEuinUINCardFetchFailed() throws OtpValidationFailedException, ApisResourceAccessException {
+	public void testReqEuinUINCardFetchFailed() throws ResidentServiceCheckedException, ApisResourceAccessException {
 		Mockito.when(uinCardDownloadService.getUINCard(Mockito.anyString(),Mockito.anyString(), Mockito.any())).thenThrow(new ApisResourceAccessException("Unable to fetch uin card"));
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		dto.setCardType("MASKED_UIN");
 		assertEquals(card, residentServiceImpl.reqEuin(dto));
 	}
 	@Test(expected=ResidentServiceException.class)
-	public void testReqEuinSendNotificationFailed() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
+	public void testReqEuinSendNotificationFailed() throws ResidentServiceCheckedException, ApisResourceAccessException, ResidentServiceCheckedException {
 		Mockito.when(notificationService.sendNotification(Mockito.any())).thenThrow(new ResidentServiceCheckedException());
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		dto.setCardType("MASKED_UIN");
 		assertEquals(card, residentServiceImpl.reqEuin(dto));
 	}
 	
 	@Test(expected=ResidentServiceException.class)
-	public void testReqEuininvalidIdType() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		
-		EuinRequestDTO dto=new EuinRequestDTO();
-		dto.setOtp("1235");
-		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VI");
-		dto.setIndividualId("123456789");
-		dto.setCardType("MASKED_UIN");
-		residentServiceImpl.reqEuin(dto);
-	}
-	@Test(expected=ResidentServiceException.class)
-	public void testReqEuininvalidId() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("",""));
-		EuinRequestDTO dto=new EuinRequestDTO();
-		dto.setOtp("1235");
-		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
-		dto.setIndividualId("123456789");
-		dto.setCardType("MASKED_UIN");
-		residentServiceImpl.reqEuin(dto);
-	}
-	@Test(expected=ResidentServiceException.class)
-	public void testReqEuininotpvalidationfailed() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
+	public void testReqEuininotpvalidationfailed() throws ResidentServiceCheckedException, ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(false);
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
-		dto.setIndividualIdType("VID");
+		dto.setIndividualIdType(IdType.VID);
 		dto.setIndividualId("123456789");
 		dto.setCardType("MASKED_UIN");
 		residentServiceImpl.reqEuin(dto);

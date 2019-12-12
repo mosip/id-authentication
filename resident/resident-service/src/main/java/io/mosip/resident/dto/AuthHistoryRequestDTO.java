@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import io.mosip.resident.constant.IdType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,8 @@ public class AuthHistoryRequestDTO {
 	@NotBlank(message = "individualId should not be empty")
 	@NotNull(message = "individualId should not be null")
 	private String individualId;
-	@NotBlank(message = "individualIdType should not be empty")
 	@NotNull(message = "individualIdType should not be null")
-	private String individualIdType;
+	private IdType individualIdType;
 	@NotBlank(message = "otp should not be empty")
 	@NotNull(message = "otp should not be null")
 	private String otp;

@@ -28,10 +28,10 @@ import io.mosip.resident.exception.InvalidInputException;
 public class RequestValidator {
 
 	@Autowired
-	private UinValidator uinValidator;
+	private UinValidator<String> uinValidator;
 
 	@Autowired
-	private VidValidator vidValidator;
+	private VidValidator<String> vidValidator;
 
 	@Autowired
 	private RidValidator<String> ridValidator;
@@ -140,8 +140,8 @@ public class RequestValidator {
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
 
-		if (!requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
-				&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name()))
+		if (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
+				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
 
 	}
@@ -156,8 +156,8 @@ public class RequestValidator {
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
 
-		if (!requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
-				&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name()))
+		if (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
+				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
 
 		if (requestDTO.getRequest().getPageFetch() == null && requestDTO.getRequest().getPageStart() != null)

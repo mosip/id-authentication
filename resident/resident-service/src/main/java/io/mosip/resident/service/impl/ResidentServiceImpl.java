@@ -194,30 +194,38 @@ public class ResidentServiceImpl implements ResidentService {
 
 	}
 
-	/********************** end of RID status check *************/
+	/********************** end of RID status check 
+	 * @throws ResidentServiceCheckedException *************/
 
 	@Override
-	public byte[] reqEuin(EuinRequestDTO dto) throws OtpValidationFailedException {
+	public byte[] reqEuin(EuinRequestDTO dto) throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqEuin():: entry");
 		byte[] response = null;
-		IdType idtype = getIdType(dto.getIndividualIdType());
-
-		if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+		
+		try {
+		if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType().name(),
 				dto.getOtp())) {
-			try {
-				response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), idtype);
+			
+				response = uinCardDownloadService.getUINCard(dto.getIndividualId(), dto.getCardType(), dto.getIndividualIdType());
 				if (response != null) {
-					NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-					notificationRequestDto.setId(dto.getIndividualId());
-					notificationRequestDto.setIdType(idtype);
-					notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_DOW_UIN_SUCCESS);
-					notificationService.sendNotification(notificationRequestDto);
+					sendNotification(dto.getIndividualId(),dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_SUCCESS,null);
+							
 				} else {
+					sendNotification(dto.getIndividualId(),dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
 					throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
 							ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 				}
+		}else {
+			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+			sendNotification(dto.getIndividualId(),dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
+			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+		}
 			} catch (ApisResourceAccessException e) {
+				sendNotification(dto.getIndividualId(),dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
 				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 						LoggerFileConstant.APPLICATIONID.toString(),
 						ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
@@ -233,14 +241,18 @@ public class ResidentServiceImpl implements ResidentService {
 								+ ExceptionUtils.getStackTrace(e));
 				throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
 						ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage(), e);
+			} catch (OtpValidationFailedException e) {
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode()
+								+ ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage()
+								+ ExceptionUtils.getStackTrace(e));
+				 sendNotification(dto.getIndividualId(),
+						dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
+				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
 			}
-		} else {
-			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(),
-					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
-			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
-					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
-		}
+		 
 
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqEuin():: exit");
@@ -394,28 +406,26 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
-	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto) {
+	public AuthHistoryResponseDTO reqAuthHistory(AuthHistoryRequestDTO dto) throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthHistory():: entry");
 
 		AuthHistoryResponseDTO response = new AuthHistoryResponseDTO();
 		try {
 
-			if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType(),
+			if (idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(), dto.getIndividualIdType().name(),
 					dto.getOtp())) {
 				List<AuthTxnDetailsDTO> details = idAuthService.getAuthHistoryDetails(dto.getIndividualId(),
-						dto.getIndividualIdType(), dto.getPageStart(), dto.getPageFetch());
+						dto.getIndividualIdType().name(), dto.getPageStart(), dto.getPageFetch());
 				if (details != null) {
 					response.setAuthHistory(details);
-					NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-					notificationRequestDto.setId(dto.getIndividualId());
-					notificationRequestDto.setIdType(getIdType(dto.getIndividualIdType()));
-					notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_AUTH_HIST_SUCCESS);
 
-					NotificationResponseDTO notificationResponseDTO = notificationService
-							.sendNotification(notificationRequestDto);
+					NotificationResponseDTO notificationResponseDTO = sendNotification(dto.getIndividualId(),
+							dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_SUCCESS,null);
 					response.setMessage(notificationResponseDTO.getMessage());
 				} else {
+					 sendNotification(dto.getIndividualId(),
+							dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
 					throw new ResidentServiceException(ResidentErrorCode.REQUEST_FAILED.getErrorCode(),
 							ResidentErrorCode.REQUEST_FAILED.getErrorMessage());
 				}
@@ -423,6 +433,8 @@ public class ResidentServiceImpl implements ResidentService {
 				logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 						LoggerFileConstant.APPLICATIONID.toString(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+				sendNotification(dto.getIndividualId(),
+						dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 			}
@@ -433,6 +445,8 @@ public class ResidentServiceImpl implements ResidentService {
 					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode()
 							+ ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			 sendNotification(dto.getIndividualId(),
+					dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
 			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
 		} catch (ResidentServiceCheckedException e) {
@@ -449,6 +463,8 @@ public class ResidentServiceImpl implements ResidentService {
 					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()
 							+ ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage()
 							+ ExceptionUtils.getStackTrace(e));
+			sendNotification(dto.getIndividualId(),
+					dto.getIndividualIdType(), NotificationTemplateCode.RS_DOW_UIN_FAILURE,null);
 			throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode(),
 					ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorMessage(), e);
 		}

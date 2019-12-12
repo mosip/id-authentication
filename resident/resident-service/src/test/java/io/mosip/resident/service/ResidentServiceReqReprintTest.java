@@ -96,7 +96,7 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void validateOtpException() throws OtpValidationFailedException, IOException {
+	public void validateOtpException() throws OtpValidationFailedException, IOException, ResidentServiceCheckedException {
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(false);
 		residentServiceImpl.reqPrintUin(residentReqDto);
@@ -104,7 +104,7 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void reprintApiException() throws OtpValidationFailedException, IOException, ApisResourceAccessException {
+	public void reprintApiException() throws OtpValidationFailedException, IOException, ApisResourceAccessException, ResidentServiceCheckedException {
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenReturn(null);
 		residentServiceImpl.reqPrintUin(residentReqDto);
@@ -112,7 +112,7 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void testOtpValidationException() throws OtpValidationFailedException {
+	public void testOtpValidationException() throws OtpValidationFailedException, ResidentServiceCheckedException {
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenThrow(OtpValidationFailedException.class);
 		residentServiceImpl.reqPrintUin(residentReqDto);
@@ -120,7 +120,7 @@ public class ResidentServiceReqReprintTest {
 
 	@Test(expected = ResidentServiceException.class)
 	public void testApiResourceAccessException()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException {
+			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
 		HttpClientErrorException exp = new HttpClientErrorException(HttpStatus.BAD_GATEWAY);
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenThrow(new ApisResourceAccessException("badgateway", exp));
@@ -129,7 +129,7 @@ public class ResidentServiceReqReprintTest {
 
 	@Test(expected = ResidentServiceException.class)
 	public void testApiResourceAccessExceptionServer()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException {
+			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
 		HttpServerErrorException exp = new HttpServerErrorException(HttpStatus.BAD_GATEWAY);
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenThrow(new ApisResourceAccessException("badgateway", exp));
@@ -138,7 +138,7 @@ public class ResidentServiceReqReprintTest {
 
 	@Test(expected = ResidentServiceException.class)
 	public void testApiResourceAccessExceptionUnknown()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException {
+			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenThrow(new ApisResourceAccessException("badgateway", new RuntimeException()));
 		residentServiceImpl.reqPrintUin(residentReqDto);
@@ -146,14 +146,14 @@ public class ResidentServiceReqReprintTest {
 
 	@Test(expected = ResidentServiceException.class)
 	public void testTokenGeneratorIOException()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException {
+			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
 		Mockito.when(tokenGenerator.getRegprocToken()).thenThrow(new IOException());
 		Mockito.when(env.getProperty(ApiName.REPRINTUIN.name()))
 				.thenReturn("https://int.mosip.io/registrationprocessor/v1/requesthandler/reprint");
 		residentServiceImpl.reqPrintUin(residentReqDto);
 	}
 
-	@Test(expected = ResidentServiceException.class)
+	@Test(expected = ResidentServiceCheckedException.class)
 	public void notificationServiceException() throws ApisResourceAccessException, OtpValidationFailedException,
 			IOException, ResidentServiceCheckedException {
 		ResponseWrapper<RegProcRePrintResponseDto> response = new ResponseWrapper<>();
