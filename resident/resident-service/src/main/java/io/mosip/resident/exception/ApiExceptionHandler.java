@@ -119,7 +119,7 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError("RES-500", x.getField() + ": " + x.getDefaultMessage());
+			ServiceError error = new ServiceError("RES-SER-020", x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
@@ -129,7 +129,7 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError("RES-500", e.getMessage());
+		ServiceError error = new ServiceError("RES-SER-020", e.getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
@@ -138,7 +138,7 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(HttpServletRequest httpServletRequest,
 			Exception exception) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError("RES-500", exception.getMessage());
+		ServiceError error = new ServiceError("RES-SER-020", exception.getMessage());
 		errorResponse.getErrors().add(error);
 		ExceptionUtils.logRootCause(exception);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
