@@ -22,6 +22,7 @@ import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
+import io.mosip.resident.dto.VidRevokeRequestDTO;
 import io.mosip.resident.exception.InvalidInputException;
 
 @Component
@@ -38,6 +39,9 @@ public class RequestValidator {
 
 	@Value("${resident.vid.id}")
 	private String id;
+	
+	@Value("${resident.revokevid.id}")
+	private String revokeVidId;
 
 	@Value("${resident.vid.version}")
 	private String version;
@@ -207,4 +211,36 @@ public class RequestValidator {
 		return validation;
 	}
 
+	public void validateVidRevokeRequest(RequestWrapper<VidRevokeRequestDTO> requestDto) {
+
+		if (requestDto.getId() == null || !requestDto.getId().equalsIgnoreCase(revokeVidId))
+			throw new InvalidInputException("id");
+
+		if (requestDto.getVersion() == null || !requestDto.getVersion().equalsIgnoreCase(version))
+			throw new InvalidInputException("version");
+
+		if (requestDto.getRequest() == null)
+			throw new InvalidInputException("request");
+
+		if (requestDto.getRequest().getVidStatus() == null)
+			throw new InvalidInputException("vidStatus");
+
+		if (requestDto.getRequest().getIndividualIdType() == null
+				|| (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
+			throw new InvalidInputException("individualIdType");
+		else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())) {
+			try {
+				vidValidator.validateId(requestDto.getRequest().getIndividualId());
+			} catch (InvalidIDException e) {
+				throw new InvalidInputException("individualId");
+			}
+		}
+
+		if (requestDto.getRequest().getOtp() == null)
+			throw new InvalidInputException("otp");
+
+		if (requestDto.getRequest().getTransactionID() == null)
+			throw new InvalidInputException("transactionId");
+	}
+	
 }

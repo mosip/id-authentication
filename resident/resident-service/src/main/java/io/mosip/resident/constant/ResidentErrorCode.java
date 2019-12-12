@@ -21,6 +21,7 @@ public enum ResidentErrorCode {
 	NOTIFICATION_FAILURE("RES-SER-017","Sending notification(Email and SMS) to resident failed"),
 	IN_VALID_UIN_OR_VID_OR_RID("RES-SER-018", "Invalid individualId"),
 	RE_PRINT_REQUEST_FAILED("RES-SER-019","Re print UIN request failed"),
+	VID_REVOCATION_EXCEPTION("RES-RID-005","VID revocation request failed. Please visit the nearest registration center for assistance."),
 	//system exceptions
 	RESIDENT_SYS_EXCEPTION("RES-SER-SYS-001","System exception occured"),
 	IO_EXCEPTION("RES-SER-SYS-002","IO Exception occured"),

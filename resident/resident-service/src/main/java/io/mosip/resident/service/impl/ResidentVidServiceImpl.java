@@ -12,10 +12,14 @@ import io.mosip.resident.dto.*;
 import io.mosip.resident.exception.*;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentVidService;
+import io.mosip.resident.util.JsonUtil;
 import io.mosip.resident.util.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
+import io.mosip.resident.util.Utilitiy;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -43,6 +47,9 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 
     @Value("${vid.create.id}")
     private String vidCreateId;
+    
+    @Value("${vid.revoke.id}")
+    private String vidRevokeId;
 
     @Autowired
     private ObjectMapper mapper;
@@ -61,6 +68,9 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 
     @Autowired
     private IdAuthService idAuthService;
+    
+    @Autowired
+    private Utilitiy utilitiy;
 
     @Override
     public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) throws OtpValidationFailedException, ResidentServiceCheckedException {
@@ -154,4 +164,98 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 
         return vidResponse;
     }
+    
+    
+    @Override
+    public ResponseWrapper<VidRevokeResponseDTO> revokeVid(VidRevokeRequestDTO requestDto,String vid) throws OtpValidationFailedException, ResidentServiceCheckedException {
+		
+    	ResponseWrapper<VidRevokeResponseDTO> responseDto = new ResponseWrapper<>();
+
+        boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(),
+                requestDto.getIndividualId(), requestDto.getIndividualIdType(), requestDto.getOtp());
+
+        if (!isAuthenticated)
+            throw new OtpValidationFailedException();
+        
+        try {
+        	JSONObject jsonObject=utilitiy.retrieveIdrepoJson(vid, IdType.VID);
+            Long uin = JsonUtil.getJSONValue(jsonObject, "UIN");
+        	
+            // revoke vid
+            VidGeneratorResponseDto vidResponse = vidDeactivator(requestDto,uin);
+
+            // send notification
+            NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+            notificationRequestDto.setId(uin.toString());
+            notificationRequestDto.setIdType(IdType.UIN);
+            Map<String, Object> additionalAttributes = new HashMap<>();
+            additionalAttributes.put("vid", vid);
+            notificationRequestDto.setAdditionalAttributes(additionalAttributes);
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_REV_SUCCESS);
+
+            NotificationResponseDTO notificationResponseDTO = notificationService.sendNotification(notificationRequestDto);
+
+            // create response dto
+            VidRevokeResponseDTO vidRevokeResponseDto = new VidRevokeResponseDTO();
+            vidRevokeResponseDto.setMessage(notificationResponseDTO.getMessage());
+            responseDto.setResponse(vidRevokeResponseDto);
+        } catch (JsonProcessingException e) {
+            throw new VidRevocationException(e.getErrorText());
+        } catch (IOException | ApisResourceAccessException e) {
+            throw new VidRevocationException(e.getMessage());
+        }
+
+        responseDto.setId(id);
+        responseDto.setVersion(version);
+        responseDto.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
+
+        return responseDto;
+    }
+    
+    private VidGeneratorResponseDto vidDeactivator(VidRevokeRequestDTO requestDto,Long uin) throws JsonProcessingException, IOException, ApisResourceAccessException, ResidentServiceCheckedException {
+    	 VidGeneratorRequestDto vidRequestDto = new VidGeneratorRequestDto();
+         RequestWrapper<VidGeneratorRequestDto> request = new RequestWrapper<>();
+         ResponseWrapper<VidGeneratorResponseDto> response = null;
+         
+         
+         vidRequestDto.setUIN(uin.toString());
+         vidRequestDto.setVidStatus(requestDto.getVidStatus());
+         vidRequestDto.setVidType(VidType.PERPETUAL.name());
+         request.setId(vidRevokeId);
+         request.setVersion(version);
+         request.setRequest(vidRequestDto);
+         request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+
+         logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                 requestDto.getIndividualIdType(),
+                 "ResidentVidServiceImpl::vidDeactivator():: post REVOKEVID service call started with request data : "
+                         + JsonUtils.javaObjectToJsonString(request));
+
+         try {
+             response = (ResponseWrapper) residentServiceRestClient
+                     .postApi(env.getProperty(ApiName.IDAUTHREVOKEVID.name()),
+                             MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getRegprocToken());
+         } catch (Exception e) {
+             logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                     requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode() + e.getMessage()
+                             + ExceptionUtils.getStackTrace(e));
+             throw new ApisResourceAccessException("Your request is not successful, please visit the nearest registration center for assistance.");
+         }
+
+         logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                 requestDto.getIndividualIdType(),
+                 "ResidentVidServiceImpl::vidDeactivator():: revoke Vid response :: "+ JsonUtils.javaObjectToJsonString(response));
+
+         if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+            throw new VidRevocationException(ResidentErrorCode.VID_REVOCATION_EXCEPTION.getErrorMessage());
+
+         }
+
+         VidGeneratorResponseDto vidResponse = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
+                 VidGeneratorResponseDto.class);
+
+         return vidResponse;
+    	
+    }
+    
 }

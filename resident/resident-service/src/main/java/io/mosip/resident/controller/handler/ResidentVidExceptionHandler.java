@@ -75,6 +75,13 @@ public class ResidentVidExceptionHandler {
 				e.getErrorCode(), e.getMessage());
 		return buildRegStatusExceptionResponse((Exception) e);
 	}
+	
+	@ExceptionHandler(VidRevocationException.class)
+	public ResponseEntity<Object> vidRevocationFailed(VidRevocationException e) {
+		logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return buildRegStatusExceptionResponse((Exception) e);
+	}
 
 	private ResponseEntity<Object> buildRegStatusExceptionResponse(Exception ex) {
 
