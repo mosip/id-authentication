@@ -11,6 +11,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,14 +84,23 @@ public class ResidentControllerTest {
 	@Before
 	public void setUp() {
 		authLockRequest = new RequestWrapper<AuthLockOrUnLockRequestDto>();
-		authLockRequest.setRequest(new AuthLockOrUnLockRequestDto());
+
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
+		authLockRequestDto.setIndividualId("1234567889");
+		authLockRequestDto.setIndividualIdType(IdType.UIN);
+		authLockRequestDto.setOtp("1234");
+		authLockRequestDto.setTransactionID("1234567898");
+		List<String> authTypes = new ArrayList<>();
+		authTypes.add("bio-FIR");
+		authLockRequestDto.setAuthType(authTypes);
+		authLockRequest.setRequest(authLockRequestDto);
 		euinRequest = new RequestWrapper<EuinRequestDTO>();
 		euinRequest.setRequest(new EuinRequestDTO("1234567890", "1234567890", IdType.UIN, "UIN", "4567"));
-		
+
 		gson = new GsonBuilder().serializeNulls().create();
 		authLockRequestToJson = gson.toJson(authLockRequest);
 		euinRequestToJson = gson.toJson(euinRequest);
-		
+
 	}
 
 	@Test
@@ -186,11 +198,11 @@ public class ResidentControllerTest {
 				.andExpect(status().isOk()).andReturn();
 		assertTrue(result.getResponse().getContentAsString().contains("RES-500"));
 	}
-	
+
 	@Test
 	public void testRequestAuthHistorySuccess() throws Exception {
-		authHistoryRequest=new RequestWrapper<AuthHistoryRequestDTO>();
-		AuthHistoryRequestDTO hisdto=new AuthHistoryRequestDTO();
+		authHistoryRequest = new RequestWrapper<AuthHistoryRequestDTO>();
+		AuthHistoryRequestDTO hisdto = new AuthHistoryRequestDTO();
 		hisdto.setIndividualId("1234");
 		hisdto.setIndividualIdType(IdType.UIN);
 		hisdto.setOtp("1234");
@@ -199,14 +211,15 @@ public class ResidentControllerTest {
 		authHistoryRequest.setId("id");
 		authHistoryRequest.setRequesttime("12-12-2009");
 		authHistoryRequest.setVersion("v1");
-		historyRequestToJson=gson.toJson(authHistoryRequest);
+		historyRequestToJson = gson.toJson(authHistoryRequest);
 		AuthHistoryResponseDTO responseDto = new AuthHistoryResponseDTO();
 		responseDto.setMessage("success");
 		doNothing().when(validator).validateAuthHistoryRequest(Mockito.any());
 		Mockito.doReturn(responseDto).when(residentService).reqAuthHistory(Mockito.any());
 
 		this.mockMvc
-				.perform(post("/req/auth-history").contentType(MediaType.APPLICATION_JSON).content(historyRequestToJson))
+				.perform(
+						post("/req/auth-history").contentType(MediaType.APPLICATION_JSON).content(historyRequestToJson))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.response.message", is("success")));
 	}
 

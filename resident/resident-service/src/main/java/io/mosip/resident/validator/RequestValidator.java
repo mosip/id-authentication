@@ -115,12 +115,12 @@ public class RequestValidator {
 			throw new InvalidInputException("transactionId");
 
 		if (requestDTO.getRequest().getIndividualIdType() == null
-				|| (!requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
-						&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
+				|| (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
+						&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
 
 		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
-				requestDTO.getRequest().getIndividualIdType())) {
+				requestDTO.getRequest().getIndividualIdType().name())) {
 			throw new InvalidInputException("individualId");
 		}
 		if (requestDTO.getRequest().getOtp() == null)

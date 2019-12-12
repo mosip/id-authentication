@@ -9,8 +9,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,6 @@ import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
-import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.validator.RequestValidator;
@@ -54,7 +51,7 @@ public class ResidentController {
 
 	@PostMapping(value = "/req/euin")
 	public ResponseEntity<Object> reqEuin(@Valid @RequestBody RequestWrapper<EuinRequestDTO> requestDTO)
-			throws  ResidentServiceCheckedException {
+			throws ResidentServiceCheckedException {
 		validator.validateEuinRequest(requestDTO);
 		byte[] pdfbytes = residentService.reqEuin(requestDTO.getRequest());
 
@@ -68,8 +65,8 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/print-uin")
-	public ResponseEntity<Object> reqPrintUin(
-			@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO) throws ResidentServiceCheckedException {
+	public ResponseEntity<Object> reqPrintUin(@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO)
+			throws ResidentServiceCheckedException {
 		ResponseWrapper<ResidentReprintResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqPrintUin(requestDTO.getRequest()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -78,7 +75,8 @@ public class ResidentController {
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-lock")
 	public ResponseWrapper<ResponseDTO> reqAauthLock(
-			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
+			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO)
+			throws ResidentServiceCheckedException {
 		validator.validateAuthLockOrUnlockRequest(requestDTO, AuthTypeStatus.LOCK);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthTypeStatusUpdate(requestDTO.getRequest(), AuthTypeStatus.LOCK));
@@ -88,7 +86,8 @@ public class ResidentController {
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-unlock")
 	public ResponseWrapper<ResponseDTO> reqAuthUnlock(
-			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO) {
+			@Valid @RequestBody RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO)
+			throws ResidentServiceCheckedException {
 		validator.validateAuthLockOrUnlockRequest(requestDTO, AuthTypeStatus.UNLOCK);
 		ResponseWrapper<ResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAauthTypeStatusUpdate(requestDTO.getRequest(), AuthTypeStatus.UNLOCK));
@@ -97,7 +96,9 @@ public class ResidentController {
 
 	@ResponseFilter
 	@PostMapping(value = "/req/auth-history")
-	public ResponseWrapper<AuthHistoryResponseDTO> reqAuthHistory(@Valid @RequestBody RequestWrapper<AuthHistoryRequestDTO> requestDTO) throws ResidentServiceCheckedException {
+	public ResponseWrapper<AuthHistoryResponseDTO> reqAuthHistory(
+			@Valid @RequestBody RequestWrapper<AuthHistoryRequestDTO> requestDTO)
+			throws ResidentServiceCheckedException {
 		validator.validateAuthHistoryRequest(requestDTO);
 		ResponseWrapper<AuthHistoryResponseDTO> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqAuthHistory(requestDTO.getRequest()));

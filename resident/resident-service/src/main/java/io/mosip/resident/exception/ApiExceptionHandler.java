@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -78,7 +78,7 @@ public class ApiExceptionHandler {
 	}
 
 	private ResponseEntity<ResponseWrapper<ServiceError>> getCheckedErrorEntity(HttpServletRequest httpServletRequest,
-																				BaseCheckedException e, HttpStatus httpStatus) throws IOException {
+			BaseCheckedException e, HttpStatus httpStatus) throws IOException {
 		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().add(error);

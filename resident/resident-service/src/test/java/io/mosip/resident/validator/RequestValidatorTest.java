@@ -40,6 +40,8 @@ public class RequestValidatorTest {
 
 	@Before
 	public void setup() {
+		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
+
 		ReflectionTestUtils.setField(requestValidator, "authLockId", "mosip.resident.authlock");
 		ReflectionTestUtils.setField(requestValidator, "euinId", "mosip.resident.euin");
 		ReflectionTestUtils.setField(requestValidator, "authHstoryId", "mosip.resident.authhistory");
@@ -48,7 +50,7 @@ public class RequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(ridValidator.validateId(Mockito.anyString())).thenReturn(true);
-		
+
 	}
 
 	@Test(expected = InvalidInputException.class)
@@ -172,7 +174,22 @@ public class RequestValidatorTest {
 	public void testValidIndividualType() throws Exception {
 		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setTransactionID("12345");
-		authLockRequestDto.setIndividualIdType("RID");
+		authLockRequestDto.setIndividualIdType(IdType.RID);
+		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId("mosip.resident.authlock");
+		requestWrapper.setVersion("v1");
+		requestWrapper.setRequest(authLockRequestDto);
+		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
+
+	}
+
+	@Test(expected = InvalidInputException.class)
+	public void testValidIndividualId() throws Exception {
+		Mockito.when(vidValidator.validateId(Mockito.any())).thenReturn(true);
+		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
+		authLockRequestDto.setTransactionID("12345");
+		authLockRequestDto.setIndividualIdType(IdType.VID);
+		authLockRequestDto.setIndividualId("12345");
 		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
@@ -209,8 +226,8 @@ public class RequestValidatorTest {
 	public void testValidOtp() throws Exception {
 		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setTransactionID("12345");
-		authLockRequestDto.setIndividualIdType("UIN");
-
+		authLockRequestDto.setIndividualIdType(IdType.UIN);
+		authLockRequestDto.setIndividualId("12344567");
 		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
@@ -223,8 +240,9 @@ public class RequestValidatorTest {
 	public void testValidAuthTypes() throws Exception {
 		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setTransactionID("12345");
-		authLockRequestDto.setIndividualIdType("UIN");
+		authLockRequestDto.setIndividualIdType(IdType.UIN);
 		authLockRequestDto.setOtp("1232354");
+		authLockRequestDto.setIndividualId("12344567");
 		List<String> authTypes = new ArrayList<String>();
 		authTypes.add("bio-FMR");
 		authLockRequestDto.setAuthType(authTypes);
@@ -240,9 +258,9 @@ public class RequestValidatorTest {
 	public void testValidEmptyAuthTypes() throws Exception {
 		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
 		authLockRequestDto.setTransactionID("12345");
-		authLockRequestDto.setIndividualIdType("UIN");
+		authLockRequestDto.setIndividualIdType(IdType.UIN);
 		authLockRequestDto.setOtp("1232354");
-
+		authLockRequestDto.setIndividualId("12344567");
 		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId("mosip.resident.authlock");
 		requestWrapper.setVersion("v1");
@@ -278,7 +296,7 @@ public class RequestValidatorTest {
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidIndividualId() throws Exception {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(false);
@@ -293,7 +311,7 @@ public class RequestValidatorTest {
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testeuinValidIndividualId() throws Exception {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(false);
