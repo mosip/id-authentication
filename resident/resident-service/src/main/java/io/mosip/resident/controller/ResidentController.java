@@ -30,6 +30,7 @@ import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
+import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.validator.RequestValidator;
 
@@ -68,7 +69,7 @@ public class ResidentController {
 	@ResponseFilter
 	@PostMapping(value = "/req/print-uin")
 	public ResponseEntity<Object> reqPrintUin(
-			@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO) {
+			@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO) throws ResidentServiceCheckedException {
 		ResponseWrapper<ResidentReprintResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqPrintUin(requestDTO.getRequest()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
