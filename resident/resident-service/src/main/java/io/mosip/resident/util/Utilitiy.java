@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,9 +64,6 @@ public class Utilitiy {
 	private String languageType;
 
 	private static final String IDENTITY = "identity";
-	private static final String EMAIL = "email";
-	private static final String PHONE = "phone";
-	private static final String NAME = "name";
 	private static final String VALUE = "value";
 
 	@SuppressWarnings("unchecked")
@@ -167,36 +165,38 @@ public class Utilitiy {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
 				"Utilitiy::getMailingAttributes()::entry");
 		Map<String, Object> attributes = new HashMap<>();
-		JSONObject identityJson = retrieveIdrepoJson(id, idType);
-		String email = (String) identityJson.get(EMAIL);
-		String phone = (String) identityJson.get(PHONE);
-		attributes.put(EMAIL, email);
-		attributes.put(PHONE, phone);
 		String mappingJsonString = getMappingJson();
 		JSONObject mappingJsonObject;
 		try {
+			JSONObject demographicIdentity = retrieveIdrepoJson(id, idType);
 			mappingJsonObject = JsonUtil.readValue(mappingJsonString, JSONObject.class);
-			LinkedHashMap<Object, Object> mappingIdentityJson = (LinkedHashMap<Object, Object>) mappingJsonObject
-					.get(IDENTITY);
-			LinkedHashMap<Object, Object> nameJson = (LinkedHashMap<Object, Object>) mappingIdentityJson.get(NAME);
-			String[] names = ((String) nameJson.get(VALUE)).split(",");
-			for (String name : names) {
-				JsonValue[] nameArray = JsonUtil.getJsonValues(identityJson, name);
-				if (nameArray != null) {
-					for (JsonValue value : nameArray) {
-						if (languageType.equals("BOTH")) {
-							if (value.getLanguage().equals(primaryLang))
-								attributes.put(name + "_" + primaryLang, value.getValue());
-							if (value.getLanguage().equals(secondaryLang))
-								attributes.put(name + "_" + secondaryLang, value.getValue());
-						} else {
-							if (value.getLanguage().equals(primaryLang))
-								attributes.put(name + "_" + primaryLang, value.getValue());
-						}
-					}
+			JSONObject mapperIdentity = JsonUtil.getJSONObject(mappingJsonObject, IDENTITY);
+			List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
+			for (String key : mapperJsonKeys) {
+				LinkedHashMap<String, String> jsonObject = JsonUtil.getJSONValue(mapperIdentity, key);
+				String values = jsonObject.get(VALUE);
+				for (String value : values.split(",")) {
+					Object object = demographicIdentity.get(value);
+					if (object instanceof ArrayList) {
+						JSONArray node = JsonUtil.getJSONArray(demographicIdentity, value);
+						JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+						for (JsonValue jsonValue : jsonValues) {
+							if (jsonValue.getLanguage().equals(primaryLang))
+								attributes.put(value + "_" + primaryLang, jsonValue.getValue());
+							if (jsonValue.getLanguage().equals(secondaryLang))
+								attributes.put(value + "_" + secondaryLang, jsonValue.getValue());
 
+						}
+
+					} else if (object instanceof LinkedHashMap) {
+						JSONObject json = JsonUtil.getJSONObject(demographicIdentity, value);
+						attributes.put(value, (String) json.get(VALUE));
+					} else {
+						attributes.put(value, String.valueOf(object));
+					}
 				}
 			}
+
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
 					"Utilitiy::getMailingAttributes()::mailingAttributes::" + attributes);
 		} catch (IOException | ReflectiveOperationException e) {
