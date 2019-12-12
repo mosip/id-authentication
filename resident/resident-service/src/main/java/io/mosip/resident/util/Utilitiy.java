@@ -185,9 +185,7 @@ public class Utilitiy {
 								attributes.put(value + "_" + primaryLang, jsonValue.getValue());
 							if (jsonValue.getLanguage().equals(secondaryLang))
 								attributes.put(value + "_" + secondaryLang, jsonValue.getValue());
-
 						}
-
 					} else if (object instanceof LinkedHashMap) {
 						JSONObject json = JsonUtil.getJSONObject(demographicIdentity, value);
 						attributes.put(value, (String) json.get(VALUE));

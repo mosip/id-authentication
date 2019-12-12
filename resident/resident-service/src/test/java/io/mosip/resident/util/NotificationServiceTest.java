@@ -1,5 +1,7 @@
 package io.mosip.resident.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +38,7 @@ import io.mosip.resident.dto.TemplateResponseDto;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
+import io.mosip.resident.validator.RequestValidator;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JsonUtil.class, IOUtils.class })
@@ -56,9 +59,16 @@ public class NotificationServiceTest {
 
 	@Mock
 	private TemplateManager templateManager;
+
+	@Mock
+	private RequestValidator requestValidator;
 	private Map<String, Object> mailingAttributes;
 	private NotificationRequestDto reqDto;
 	private ResponseWrapper<NotificationResponseDTO> smsNotificationResponse;
+
+	private static final String SMS_EMAIL_SUCCESS = "Notification has been sent to the provided contact detail(s)";
+	private static final String SMS_SUCCESS = "Notification has been sent to the provided contact phone number";
+	private static final String EMAIL_SUCCESS = "Notification has been sent to the provided email ";
 
 	@Before
 	public void setUp() throws ResidentServiceCheckedException, IOException, ApisResourceAccessException {
@@ -76,6 +86,8 @@ public class NotificationServiceTest {
 		ReflectionTestUtils.setField(notificationService, "notificationEmails", "test@test.com|test1@test1.com");
 		Mockito.when(tokenGenerator.getToken()).thenReturn("sbfdsafuadfkbdsf");
 		Mockito.when(env.getProperty(ApiName.EMAILNOTIFIER.name())).thenReturn("https://int.mosip.io/template/email");
+		Mockito.when(requestValidator.emailValidator(Mockito.anyString())).thenReturn(true);
+		Mockito.when(requestValidator.phoneValidator(Mockito.anyString())).thenReturn(true);
 		reqDto = new NotificationRequestDto();
 		reqDto.setId("3527812406");
 		reqDto.setIdType(IdType.UIN);
@@ -110,7 +122,25 @@ public class NotificationServiceTest {
 	@Test
 	public void sendNotificationTest()
 			throws ApisResourceAccessException, ResidentServiceCheckedException, IOException {
-		notificationService.sendNotification(reqDto);
+		NotificationResponseDTO response = notificationService.sendNotification(reqDto);
+		assertEquals(SMS_EMAIL_SUCCESS, response.getMessage());
+
+	}
+
+	@Test
+	public void smsFailedAndEmailSuccessTest() throws ResidentServiceCheckedException {
+		Mockito.when(requestValidator.phoneValidator(Mockito.anyString())).thenReturn(false);
+		NotificationResponseDTO response = notificationService.sendNotification(reqDto);
+		assertEquals(EMAIL_SUCCESS, response.getMessage());
+
+	}
+
+	@Test
+	public void emailFailedAndSMSSuccessTest() throws ResidentServiceCheckedException {
+		Mockito.when(requestValidator.emailValidator(Mockito.anyString())).thenReturn(false);
+		NotificationResponseDTO response = notificationService.sendNotification(reqDto);
+		assertEquals(SMS_SUCCESS, response.getMessage());
+
 	}
 
 	@Test(expected = ResidentServiceException.class)

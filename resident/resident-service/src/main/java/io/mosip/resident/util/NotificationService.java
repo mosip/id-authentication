@@ -75,7 +75,7 @@ public class NotificationService {
 
 	@Autowired
 	private Utilitiy utility;
-	
+
 	@Autowired
 	private RequestValidator requestValidator;
 
@@ -105,7 +105,7 @@ public class NotificationService {
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendSMSNotification()::isSuccess?::" + emailStatus);
 		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
-		if (!(smsStatus && emailStatus)) {
+		if ((smsStatus == false && emailStatus == false)) {
 			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
 					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage() + SMS_EMAIL_FAILED);
 		} else if (smsStatus && emailStatus) {
