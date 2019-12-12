@@ -11,10 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationResponseDTO;
@@ -105,6 +101,18 @@ public class ResidentServiceReqEUinTest {
 	@Test(expected=ResidentServiceException.class)
 	public void testReqEuininotpvalidationfailed() throws ResidentServiceCheckedException, ApisResourceAccessException, ResidentServiceCheckedException, OtpValidationFailedException {
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenReturn(false);
+		EuinRequestDTO dto=new EuinRequestDTO();
+		dto.setOtp("1235");
+		dto.setTransactionID("1234567890");
+		dto.setIndividualIdType(IdType.VID);
+		dto.setIndividualId("123456789");
+		dto.setCardType("MASKED_UIN");
+		residentServiceImpl.reqEuin(dto);
+	}
+	
+	@Test(expected=ResidentServiceException.class)
+	public void testReqEuininotpvalidationException() throws OtpValidationFailedException, ApisResourceAccessException, ResidentServiceCheckedException {
+		Mockito.when(idAuthService.validateOtp(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString())).thenThrow(new OtpValidationFailedException());
 		EuinRequestDTO dto=new EuinRequestDTO();
 		dto.setOtp("1235");
 		dto.setTransactionID("1234567890");
