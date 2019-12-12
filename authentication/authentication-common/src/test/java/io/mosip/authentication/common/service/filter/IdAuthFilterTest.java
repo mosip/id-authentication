@@ -50,16 +50,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class IdAuthFilterTest.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class })
 @WebMvcTest
 @AutoConfigureMockMvc
 public class IdAuthFilterTest {
@@ -81,6 +83,9 @@ public class IdAuthFilterTest {
 	/** The response body. */
 	Map<String, Object> responseBody = new HashMap<>();
 
+	@Autowired
+	PartnerService partnerService;
+
 	/**
 	 * Before.
 	 */
@@ -88,6 +93,7 @@ public class IdAuthFilterTest {
 	public void before() {
 		ReflectionTestUtils.setField(filter, "mapper", mapper);
 		ReflectionTestUtils.setField(filter, "env", env);
+		ReflectionTestUtils.setField(filter, "partnerService", partnerService);
 	}
 
 	/**
@@ -273,7 +279,7 @@ public class IdAuthFilterTest {
 	}
 
 	/**
-	 * Policy unmapped partner id test.
+	 * Policies unmapped partner id test.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */

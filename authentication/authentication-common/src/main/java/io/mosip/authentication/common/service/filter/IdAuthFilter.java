@@ -21,7 +21,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISPLICENSE_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISP_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.POLICY_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_HMAC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SESSION_KEY;
@@ -43,25 +42,32 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
-import io.mosip.authentication.common.service.policy.dto.KYCAttributes;
-import io.mosip.authentication.common.service.policy.dto.Policies;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
+import io.mosip.authentication.core.partner.dto.AuthPolicy;
+import io.mosip.authentication.core.partner.dto.KYCAttributes;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -78,6 +84,16 @@ import io.mosip.kernel.core.util.StringUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+	
+	protected PartnerService partnerService;
+	
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		super.init(filterConfig);
+		WebApplicationContext context = WebApplicationContextUtils
+				.getRequiredWebApplicationContext(filterConfig.getServletContext());
+		partnerService = context.getBean(PartnerService.class);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -254,7 +270,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 		if (partnerId != null && licenseKey != null) {
 			String mispId = licenseKeyMISPMapping(licenseKey);
-			validPartnerId(partnerId);
+			PartnerDTO partner = checkValidPartnerId(partnerId);
 			String policyId = validMISPPartnerMapping(partnerId, mispId);
 			checkAllowedAuthTypeBasedOnPolicy(policyId, requestBody);
 		}
@@ -429,7 +445,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@SuppressWarnings("unchecked")
 	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
 		String mispId;
-		String licensekeyMappingJson = env.getProperty(IdAuthConfigKeyConstants.LICENSE_KEY + licenseKey);
+		String licensekeyMappingJson = getLicense(licenseKey);
 		if (Objects.nonNull(licensekeyMappingJson)) {
 			Map<String, Object> licenseKeyMap;
 			try {
@@ -452,35 +468,44 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return mispId;
 	}
 
+	private String getLicense(String licenseKey) {
+		return env.getProperty(IdAuthConfigKeyConstants.LICENSE_KEY + licenseKey);
+	}
+
 	/**
 	 * this method checks whether partner id is valid.
 	 *
 	 * @param partnerId
 	 *            the partner id
+	 * @return 
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	@SuppressWarnings("unchecked")
-	private void validPartnerId(String partnerId) throws IdAuthenticationAppException {
-		String partnerIdJson = env.getProperty(IdAuthConfigKeyConstants.PARTNER_KEY + partnerId);
-		if (null == partnerIdJson) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
-		} else {
-			Map<String, String> partnerIdMap;
-			try {
-				partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
-			} catch (IOException e) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+	private PartnerDTO checkValidPartnerId(String partnerId) throws IdAuthenticationAppException {
+		try {
+			Optional<PartnerDTO> partnerOptional = getPartnerInfo(partnerId);
+			if (!partnerOptional.isPresent()) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
+			} else {
+				PartnerDTO partner = partnerOptional.get();
+				String policyId = partner.getPolicyId();
+				if (null == policyId || policyId.equalsIgnoreCase("")) {
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED);
+				}
+				String partnerStatus = partner.getStatus();
+				if (partnerStatus != null && !partnerStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED);
+				}
+				
+				return partner;
 			}
-			String policyId = partnerIdMap.get(POLICY_ID);
-			if (null == policyId || policyId.equalsIgnoreCase("")) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED);
-			}
-			String partnerStatus = partnerIdMap.get(IdAuthCommonConstants.STATUS);
-			if (partnerStatus != null && !partnerStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED);
-			}
+		} catch (IdAuthenticationBusinessException e) {
+			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
+	}
+
+	private Optional<PartnerDTO> getPartnerInfo(String partnerId) throws IdAuthenticationBusinessException {
+		return partnerService.getPartner(partnerId);
 	}
 
 	/**
@@ -494,23 +519,23 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	@SuppressWarnings("unchecked")
 	private String validMISPPartnerMapping(String partnerId, String mispId) throws IdAuthenticationAppException {
-		Map<String, String> partnerIdMap = null;
-		String policyId = null;
-		Boolean mispPartnerMappingJson = env
-				.getProperty(IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class);
-		if (null == mispPartnerMappingJson || !mispPartnerMappingJson) {
+		boolean mispPartnerMappingJson = hasMispPartnerMapping(partnerId, mispId);
+		if (!mispPartnerMappingJson) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
 		}
-		String partnerIdJson = env.getProperty(IdAuthConfigKeyConstants.PARTNER_KEY + partnerId);
+		
 		try {
-			partnerIdMap = mapper.readValue(partnerIdJson.getBytes(UTF_8), Map.class);
-			policyId = partnerIdMap.get(POLICY_ID);
-		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			PartnerDTO partner = getPartnerInfo(partnerId);
+			return partner.getPolicyId();
+		} catch (IdAuthenticationBusinessException e) {
+			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
-		return policyId;
+	}
+
+	private boolean hasMispPartnerMapping(String partnerId, String mispId) {
+		return env
+				.getProperty(IdAuthConfigKeyConstants.MISP_PARTNER_MAPPING + mispId + "." + partnerId, boolean.class, false);
 	}
 
 	/**
@@ -526,8 +551,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected void checkAllowedAuthTypeBasedOnPolicy(String policyId, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		try {
-			String policyJson = getPolicy(policyId);
-			Policies policies = mapper.readValue(policyJson.getBytes(UTF_8), Policies.class);
+			PolicyDTO policies = getPolicy(policyId);
 			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 			List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired)
@@ -540,8 +564,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(AuthPolicy::isMandatory)
 					.collect(Collectors.toList());
 			checkMandatoryAuthTypeBasedOnPolicy(requestBody, mandatoryAuthPolicies);
-		} catch (IOException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		} catch (IdAuthenticationBusinessException e) {
+			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
 
@@ -795,9 +819,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param policyId
 	 *            the policy id
 	 * @return the policy
+	 * @throws IdAuthenticationAppException 
 	 */
-	private String getPolicy(String policyId) {
-		return env.getProperty(IdAuthConfigKeyConstants.POLICY + policyId);
+	private Optional<PolicyDTO> getPolicy(String policyId) throws IdAuthenticationBusinessException {
+		return partnerService.getPolicy(policyId);
 	}
 
 	/**

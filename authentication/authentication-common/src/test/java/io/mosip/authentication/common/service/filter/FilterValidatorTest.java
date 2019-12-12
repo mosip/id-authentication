@@ -25,11 +25,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class })
 public class FilterValidatorTest {
 
 	@Autowired
@@ -55,6 +57,9 @@ public class FilterValidatorTest {
 		}
 	};
 	
+	@Autowired
+	PartnerService partnerService;
+	
 	@InjectMocks
 	IdAuthFilter idAuthFilter;
 	
@@ -63,6 +68,7 @@ public class FilterValidatorTest {
 		ReflectionTestUtils.setField(baseIDAFilter, "env", env);
 		ReflectionTestUtils.setField(idAuthFilter, "env", env);
 		ReflectionTestUtils.setField(idAuthFilter, "mapper", mapper);
+		ReflectionTestUtils.setField(idAuthFilter, "partnerService", partnerService);
 	}
 
 	@Test
