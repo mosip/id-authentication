@@ -20,8 +20,9 @@ public class MosipUserDto {
 	private String mobile;
 	private String mail;
 	private String langCode;
-	private byte[] userPassword;
+	private String userPassword;
 	private String name;
 	private String role;
 	private String rId;
+	private String token;
 }

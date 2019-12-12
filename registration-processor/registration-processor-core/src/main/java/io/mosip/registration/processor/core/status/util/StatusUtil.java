@@ -130,9 +130,21 @@ public enum StatusUtil {
 	LINK_RID_FOR_LOST_PACKET_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "008","UIn not found the the matched RID"),
 	
 	//Request handler service
+	//1)Resident UIN update
+	RESIDENT_UPDATE_SUCCES(StatusConstants.REQUEST_HANDLER_MODULE_SUCCESS + "001" , "Resident Uin data updated sucessfully"),
+	RESIDENT_UPDATE_FAILED(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "001" , "Resident Uin update failed"),
 	INVALID_REQUEST(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "001" , "Invalid Request Value - "),
 	INVALID_CENTER(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "002" , "Invalid Request Value - "),
-	INVALID_MACHINE(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "002" , "Invalid Request Value - "),
+	INVALID_MACHINE(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "003" , "Invalid Request Value - "),
+	
+	//2)PacketGeneration
+	PACKET_GENERATION_SUCCESS(StatusConstants.REQUEST_HANDLER_MODULE_SUCCESS + "001" , "Packet generated sucessfully"),
+	PACKET_GENERATION_FAILED(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "001" , "Packet generated failed"),
+	
+	//3)Uin card reprint
+	UIN_CARD_REPRINT_SUCCESS(StatusConstants.REQUEST_HANDLER_MODULE_SUCCESS + "001" , "UIN card reprint success"),
+	UIN_CARD_REPRINT_FAILED(StatusConstants.REQUEST_HANDLER_MODULE_FAILED + "001" , "UIN card reprint failed"),
+
 
 	// System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE,"Virus Scanner Service is not accessible"), 

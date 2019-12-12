@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -884,8 +883,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
-					syncAndUploadPacket();
 				}
+				/*sync the packet to server irrespective of eod enable/disable */
+				syncAndUploadPacket();
 
 				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
@@ -962,7 +962,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			LOGGER.info("REGISTRATION - LOAD_RE_REGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
+			/*
+			 * check if there is no pending re register packets and blocks the user to
+			 * proceed further
+			 */
+			if (!isPacketsPendingForReRegister())
+				return;
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
@@ -1014,11 +1019,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
 
-			if (response.equals(RegistrationConstants.EMPTY)) {
+			// modified as per the story MOS-29831
+			if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				if (response.equals(RegistrationConstants.EMPTY)) {
 
-				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
-			} else {
-				generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
+					packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+				} else {
+					generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
+				}
 			}
 
 		}

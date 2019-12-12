@@ -1,1 +1,0 @@
-UIN $uin: OTP Request

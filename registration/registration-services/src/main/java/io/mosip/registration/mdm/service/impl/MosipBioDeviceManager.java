@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.pdf.BidiOrder;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -129,7 +128,6 @@ public class MosipBioDeviceManager {
 
 			String url;
 			ObjectMapper mapper = new ObjectMapper();
-			DeviceInfoResponseData deviceInfoResponse = null;
 
 			url = buildUrl(availablePort, MosipBioDeviceConstants.DEVICE_INFO_ENDPOINT);
 			/* check if the service is available for the current port */
@@ -144,7 +142,7 @@ public class MosipBioDeviceManager {
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
-					deviceInfoResponse = getDeviceInfoResponse(mapper, availablePort, deviceInfoResponseDtos, deviceType);
+					getDeviceInfoResponse(mapper, availablePort, deviceInfoResponseDtos, deviceType);
 
 				}
 			} else {
@@ -212,10 +210,10 @@ public class MosipBioDeviceManager {
 	 */
 	private void creationOfBioDeviceObject(DeviceInfoResponseData deviceInfoResponse, int port, String deviceType) {
 
-		if ((deviceType == null || deviceType
+		if ((deviceType == null || (null != deviceInfoResponse && deviceType
 				.equals((deviceInfoResponse.getType().toUpperCase() + RegistrationConstants.UNDER_SCORE
 						+ deviceInfoResponse.getSubType().toUpperCase()))
-				&& (null != deviceInfoResponse && StringUtils.isNotEmpty(deviceInfoResponse.getType())))) {
+				 && StringUtils.isNotEmpty(deviceInfoResponse.getType())))) {
 
 			/*
 			 * Creating new bio device object for each device from service

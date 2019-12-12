@@ -22,9 +22,9 @@ import org.springframework.util.CollectionUtils;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.masterdata.util.model.Node;
+import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.core.util.Node;
-import io.mosip.kernel.core.util.UBtree;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
@@ -50,6 +50,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -62,6 +63,9 @@ import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
+
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -107,6 +111,9 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+	
+	@Autowired
+	private ZoneUtils zoneUtils;
 
 	/**
 	 * This method will all location details from the Database. Refers to
@@ -628,6 +635,7 @@ public class LocationServiceImpl implements LocationService {
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
 		String active = null;
+		List<Zone> zones = null;
 		boolean isActive = true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 

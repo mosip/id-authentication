@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.Score;
@@ -61,6 +62,16 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		LOGGER.info(LoggerConstants.FINGER_PRINT_AUTHENTICATION, APPLICATION_NAME, APPLICATION_ID,
 				"Validating Scanned Finger");
+		if (ibioApi instanceof BioApiImpl) {
+			ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG,
+					RegistrationConstants.DISABLE);
+		}
+		if (!authenticationValidatorDTO.isAuthValidationFlag()) {
+			if ((String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG)))
+							.equalsIgnoreCase(RegistrationConstants.DISABLE))
+				return false;
+		}
 
 		if (RegistrationConstants.SINGLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
 			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
@@ -97,8 +108,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private boolean validateFpWithBioApi(List<FingerprintDetailsDTO> capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
 		boolean flag = true;
-		if((String.valueOf(ApplicationContext.map().get(RegistrationConstants.DEDUPLICATION_ENABLE_FLAG))).equalsIgnoreCase(RegistrationConstants.DISABLE))
-		return false;
+
 		BIR[] capturedBir = new BIR[capturedFingerPrintDto.size()];
 
 		int i = 0;

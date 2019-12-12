@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -14,11 +15,11 @@ import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 
 /**
  * The Enum BioAuthType.
@@ -34,7 +35,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_MIDDLE, BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE,
 					BioMatchType.FGRMIN_RIGHT_THUMB, BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE,
 					BioMatchType.FGRMIN_RIGHT_RING, BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
-			getFingerprint(), count -> count == 1, "bio-FMR", "fmr") {
+			getFingerprintName(), count -> count == 1, "bio-FMR", "fmr") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
@@ -59,7 +60,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_LEFT_MIDDLE, BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE,
 					BioMatchType.FGRIMG_RIGHT_THUMB, BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE,
 					BioMatchType.FGRIMG_RIGHT_RING, BioMatchType.FGRIMG_RIGHT_LITTLE, BioMatchType.FGRIMG_UNKNOWN),
-			getFingerprint(), value -> value == 1, "bio-FIR", "fir") {
+			getFingerprintName(), value -> value == 1, "bio-FIR", "fir") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -81,7 +82,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 	//TODO to be removed
-	FGR_MIN_COMPOSITE("FMR", AuthType.setOf(BioMatchType.FGRMIN_COMPOSITE), getFingerprint(), value -> value == 2,
+	FGR_MIN_COMPOSITE("FMR", AuthType.setOf(BioMatchType.FGRMIN_COMPOSITE), getFingerprintName(), value -> value == 2,
 			"bio-FIR", "bio") {
 
 		@Override
@@ -109,7 +110,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 
-	FGR_IMG_COMPOSITE("FIR", AuthType.setOf(BioMatchType.FGRIMG_COMPOSITE), getFingerprint(), 
+	FGR_IMG_COMPOSITE("FIR", AuthType.setOf(BioMatchType.FGRIMG_COMPOSITE), getFingerprintName(), 
 			value -> value >= 2 && value <= 10,
 			"bio-FIR", "bio") {
 
@@ -138,7 +139,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 
-	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), "Iris", value -> value == 2, "bio-IIR", "bio") {
+	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), getIrisName(), value -> value == 2, "bio-IIR", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -165,7 +166,7 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris",
+	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), getIrisName(),
 			value -> value == 1, "bio-IIR", "iir") {
 
 		@Override
@@ -192,7 +193,7 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FACE", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), "face", value -> value == 1,
+	FACE_IMG("FACE", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), getFaceName(), value -> value == 1,
 			"bio-FACE", "fid") {
 
 		@Override
@@ -221,7 +222,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 	
-	MULTI_MODAL("bio", AuthType.setOf(BioMatchType.MULTI_MODAL), getFingerprint(), null, "bio-composite-dummyConfigKey", "bio") {
+	MULTI_MODAL("bio", AuthType.setOf(BioMatchType.MULTI_MODAL), getBiometricsName(), null, "bio-composite-dummyConfigKey", "bio") {
 
 		@Override
 		public String[] getTypes() {
@@ -251,16 +252,28 @@ public enum BioAuthType implements AuthType {
 		public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
 			return authReq.getRequestedAuth().isBio() && hasMultiModalBiometrics(authReq, helper);
 		}
+		
+		@Override
+		public String getDisplayName(AuthRequestDTO authReq, IdInfoFetcher helper) {
+			return getMultiModalBiometrics(authReq, helper)
+					.stream()
+					.map(BioAuthType::getDisplayName)
+					.collect(Collectors.joining(","));
+		}
 
 		private boolean hasMultiModalBiometrics(AuthRequestDTO authReq, IdInfoFetcher helper) {
+			return getMultiModalBiometrics(authReq, helper).size() > 1;
+		}
+		
+		private Set<BioAuthType> getMultiModalBiometrics(AuthRequestDTO authReq, IdInfoFetcher helper) {
 			boolean hasFingerType = BioAuthType.getFPValuesCountInIdentity(authReq, helper, BioMatchType.FGRIMG_COMPOSITE) > 0;
 			boolean hasIrisType = BioAuthType.getIrisValuesCountInIdentity(authReq, helper) > 0;
 			boolean hasFaceType = BioAuthType.getFaceValuesCountInIdentity(authReq, helper) > 0;
-			int count = 0;
-			if(hasFingerType) count++;
-			if(hasIrisType) count++;
-			if(hasFaceType) count++;
-			return count > 1;
+			Set<BioAuthType> authTypes = new LinkedHashSet<>();
+			if(hasFingerType) authTypes.add(FGR_IMG);
+			if(hasIrisType) authTypes.add(IRIS_IMG);
+			if(hasFaceType) authTypes.add(FACE_IMG);
+			return authTypes;
 		}
 
 		@Override
@@ -271,6 +284,12 @@ public enum BioAuthType implements AuthType {
 		}
 		
 	};
+
+	private static final String FACE = "Face";
+
+	private static final String BIOMETRICS = "biometrics";
+
+	private static final String IRIS = "Iris";
 
 	/** The Constant SINGLE_THRESHOLD. */
 	private static final String SINGLE_THRESHOLD = ".single.threshold";
@@ -387,8 +406,20 @@ public enum BioAuthType implements AuthType {
 				.isPresent();
 	}
 
-	public static String getFingerprint() {
+	private static String getFingerprintName() {
 		return FINGERPRINT;
+	}
+	
+	private static String getIrisName() {
+		return IRIS;
+	}
+	
+	private static String getFaceName() {
+		return FACE;
+	}
+	
+	private static String getBiometricsName() {
+		return BIOMETRICS;
 	}
 	
 

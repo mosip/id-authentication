@@ -71,4 +71,30 @@ public class AuthConstant {
 	
 	public static final String EMAIL_NOTIFYTYPE = "EMAIL";
 
+	public static final String CLIENT_CREDENTIALS = "client_credentials";
+
+	public static final String CLIENT_SECRET = "client_secret";
+
+	public static final String CLIENT_ID = "client_id";
+
+	public static final String PASSWORDCONSTANT = "password";
+
+	public static final String GRANT_TYPE = "grant_type";
+
+	public static final String USER_NAME = "username";
+
+	public static final String COMMA = ",";
+
+	public static final String RID = "rid";
+
+	public static final String MOBILE = "mobile";
+
+	public static final String PREFERRED_USERNAME = "preferred_username";
+
+	public static final String REALM_ACCESS = "realm_access";
+
+	public static final String REALM_ID = "realmId";
+
+	public static final String REFRESH_TOKEN = "refresh_token";
+
 }

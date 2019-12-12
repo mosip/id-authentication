@@ -112,7 +112,7 @@ Once we complete with sourcing the database files, we need to follow the below D
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database/ </em>
 
-<em> **Enter:-bash-4.2$** sh mosip_all_db_deployment.sh </em>
+<em> **Enter:-bash-4.2$** bash mosip_all_db_deployment.sh </em>
 
 **Step 3** -> Please observe <em> Post Deployment Validation </em>  steps below
 
@@ -135,7 +135,7 @@ This should be the path if we are performing deployment for the database name **
 
 **Step 5** -> After prior modifications to the properties file, run the below deployment shell script as given:
 
-**Enter:-bash-4.2$** sh mosip_<schema_name>_db_deploy.sh mosip_<schema_name>_deploy.properties
+**Enter:-bash-4.2$** bash mosip_<schema_name>_db_deploy.sh mosip_<schema_name>_deploy.properties
 
 **Step 6** -> Please observe <em> Post Deployment Validation </em>  steps below
 

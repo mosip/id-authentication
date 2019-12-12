@@ -11,10 +11,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
 import io.mosip.kernel.masterdata.entity.RegWorkingNonWorking;
 import io.mosip.kernel.masterdata.entity.id.RegWorkingNonWorkingId;
 
-/**
- * @author Kishan rathore
- *
- */
 @Repository("workingDaysRepo")
 public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWorking, RegWorkingNonWorkingId>{
 	
@@ -23,5 +19,11 @@ public interface RegWorkingNonWorkingRepo extends BaseRepository<RegWorkingNonWo
 	
 	@Query("SELECT new io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto(d.name,w.dayCode,w.languagecode,w.isActive) "+"FROM RegWorkingNonWorking w RIGHT JOIN w.daysOfWeek d "+"where w.registrationCenterId=?1 and w.dayCode=?2 and w.isWorking=true and w.isActive = true")
 	List<WorkingDaysDto> findByregistrationCenterIdAnddayCode(String regCenterId,String daycode);
+	
+	@Query("From RegWorkingNonWorking where registrationCenterId=?1 and languagecode=?2 and (isDeleted is null or isDeleted = false) and isActive = true")
+	List<RegWorkingNonWorking> findByRegCenterIdAndlanguagecode(String registrationCenterId,String languagecode);
+
+	@Query("From RegWorkingNonWorking where languagecode=?1 and (isDeleted is null or isDeleted = false) and isActive = true")
+	List<RegWorkingNonWorking> findByLanguagecode(String languageCode);
 
 }
