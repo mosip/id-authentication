@@ -85,7 +85,7 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <Label styleClass="headerLabel" text="%saveToDevice" GridPane.rowIndex="3">
+                        <Label styleClass="headerLabel" text="%saveToDeviceLable" GridPane.rowIndex="3">
                            <padding>
                               <Insets bottom="-15.0" left="2.0" />
                            </padding>
