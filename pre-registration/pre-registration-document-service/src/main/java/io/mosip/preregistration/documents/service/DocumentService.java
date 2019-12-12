@@ -49,6 +49,7 @@ import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.AuthTokenUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -172,7 +173,7 @@ public class DocumentService {
 	ValidationUtil validationUtil;
 	
 	@Autowired
-	private io.mosip.preregistration.documents.config.AuthTokenUtil tokenUtil;
+	private AuthTokenUtil tokenUtil;
 
 	/**
 	 * Logger configuration for document service

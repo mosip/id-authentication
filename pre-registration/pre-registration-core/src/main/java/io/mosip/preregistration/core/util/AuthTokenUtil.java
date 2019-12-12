@@ -1,4 +1,4 @@
-package io.mosip.preregistration.documents.config;
+package io.mosip.preregistration.core.util;
 
 import java.time.LocalDateTime;
 
@@ -17,10 +17,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.LoginUser;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.documents.dto.LoginUser;
-import io.mosip.preregistration.documents.exception.LoginServiceException;
+import io.mosip.preregistration.core.exception.LoginServiceException;
 
 /**
  * @author Kishan Rathore
@@ -67,7 +67,7 @@ public class AuthTokenUtil {
 			HttpHeaders tokenHeader = new HttpHeaders();
 			tokenHeader.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RequestWrapper<LoginUser>> tokenEntity = new HttpEntity<>(requestWrapper, tokenHeader);
-                        System.out.println("tokenUrl "+tokenUrl+"  appId =  "+appId+" userName "+userName+" password "+password);
+
 			String tokenUriBuilder = authBuilder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In BookingTasklet to get token with URL- " + tokenUriBuilder);
 			ResponseEntity<ResponseWrapper<AuthNResponse>> tokenResponse = restTemplate.exchange(tokenUriBuilder,
@@ -82,7 +82,6 @@ public class AuthTokenUtil {
 			/* Call to availability sync Util */
 
 			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
-			System.out.println("token "+ tokenResponse.getHeaders().get("Set-Cookie").get(0));
 
 		} catch (Exception e) {
 			log.error("Sync master ", " Tasklet ", " encountered exception ", e.getMessage());
