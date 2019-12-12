@@ -76,21 +76,26 @@ public class ResidentVidServiceImpl implements ResidentVidService {
     public ResponseWrapper<VidResponseDto> generateVid(VidRequestDto requestDto) throws OtpValidationFailedException, ResidentServiceCheckedException {
 
         ResponseWrapper<VidResponseDto> responseDto = new ResponseWrapper<>();
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+        notificationRequestDto.setId(requestDto.getIndividualId());
+        notificationRequestDto.setIdType(IdType.valueOf(requestDto.getIndividualIdType()));
 
-        boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(),
-                requestDto.getIndividualId(), requestDto.getIndividualIdType(), requestDto.getOtp());
-
-        if (!isAuthenticated)
-            throw new OtpValidationFailedException();
+        try {
+            boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(),
+                    requestDto.getIndividualId(), requestDto.getIndividualIdType(), requestDto.getOtp());
+            if (!isAuthenticated)
+                throw new OtpValidationFailedException();
+        } catch (OtpValidationFailedException e) {
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_FAILURE);
+            notificationService.sendNotification(notificationRequestDto);
+            throw e;
+        }
 
         try {
             // generate vid
             VidGeneratorResponseDto vidResponse = vidGenerator(requestDto);
 
             // send notification
-            NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-            notificationRequestDto.setId(requestDto.getIndividualId());
-            notificationRequestDto.setIdType(IdType.valueOf(requestDto.getIndividualIdType()));
             Map<String, Object> additionalAttributes = new HashMap<>();
             additionalAttributes.put(TemplateEnum.VID.name(), vidResponse.getVID());
             notificationRequestDto.setAdditionalAttributes(additionalAttributes);
@@ -104,9 +109,17 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             vidResponseDto.setMessage(notificationResponseDTO.getMessage());
             responseDto.setResponse(vidResponseDto);
         } catch (JsonProcessingException e) {
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_FAILURE);
+            notificationService.sendNotification(notificationRequestDto);
             throw new VidCreationException(e.getErrorText());
-        } catch (IOException | ApisResourceAccessException e) {
+        } catch (IOException | ApisResourceAccessException | VidCreationException e) {
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_FAILURE);
+            notificationService.sendNotification(notificationRequestDto);
             throw new VidCreationException(e.getMessage());
+        } catch (VidAlreadyPresentException e) {
+            notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_GEN_FAILURE);
+            notificationService.sendNotification(notificationRequestDto);
+            throw e;
         }
 
         responseDto.setId(id);
@@ -114,10 +127,10 @@ public class ResidentVidServiceImpl implements ResidentVidService {
         responseDto.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
 
         return responseDto;
-
     }
 
-    private VidGeneratorResponseDto vidGenerator(VidRequestDto requestDto) throws JsonProcessingException, IOException, ApisResourceAccessException {
+    private VidGeneratorResponseDto vidGenerator(VidRequestDto requestDto)
+            throws JsonProcessingException, IOException, ApisResourceAccessException {
         VidGeneratorRequestDto vidRequestDto = new VidGeneratorRequestDto();
         RequestWrapper<VidGeneratorRequestDto> request = new RequestWrapper<>();
         ResponseWrapper<VidGeneratorResponseDto> response = null;
@@ -142,20 +155,20 @@ public class ResidentVidServiceImpl implements ResidentVidService {
             logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode() + e.getMessage()
                             + ExceptionUtils.getStackTrace(e));
-            throw new ApisResourceAccessException("Unable to create vid");
+            throw new ApisResourceAccessException("Unable to create vid : " + e.getMessage());
         }
 
         logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                 requestDto.getIndividualIdType(),
-                "ResidentVidServiceImpl::vidGenerator():: create Vid response :: "+ JsonUtils.javaObjectToJsonString(response));
+                "ResidentVidServiceImpl::vidGenerator():: create Vid response :: " + JsonUtils.javaObjectToJsonString(response));
 
         if (response.getErrors() != null && !response.getErrors().isEmpty()) {
-            List<ServiceError> list =  response.getErrors().stream().filter(err -> err.getErrorCode().equalsIgnoreCase(VID_ALREADY_EXISTS_ERROR_CODE)).collect(Collectors.toList());
+            List<ServiceError> list = response.getErrors().stream().filter(err -> err.getErrorCode().equalsIgnoreCase(VID_ALREADY_EXISTS_ERROR_CODE)).collect(Collectors.toList());
             throw (list.size() == 1) ?
-                new VidAlreadyPresentException(ResidentErrorCode.VID_ALREADY_PRESENT.getErrorCode(),
-                        ResidentErrorCode.VID_ALREADY_PRESENT.getErrorMessage())
-            :
-            new VidCreationException(response.getErrors().get(0).getMessage());
+                    new VidAlreadyPresentException(ResidentErrorCode.VID_ALREADY_PRESENT.getErrorCode(),
+                            ResidentErrorCode.VID_ALREADY_PRESENT.getErrorMessage())
+                    :
+                    new VidCreationException(response.getErrors().get(0).getMessage());
 
         }
 
