@@ -111,20 +111,14 @@ public class RequestValidator {
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
 
-		if (requestDTO.getRequest().getTransactionID() == null)
-			throw new InvalidInputException("transactionId");
-
-		if (requestDTO.getRequest().getIndividualIdType() == null
-				|| (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
-						&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name())))
+		if ((!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
+				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
 
 		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
 				requestDTO.getRequest().getIndividualIdType().name())) {
 			throw new InvalidInputException("individualId");
 		}
-		if (requestDTO.getRequest().getOtp() == null)
-			throw new InvalidInputException("otp");
 
 		validateAuthType(requestDTO.getRequest().getAuthType());
 
@@ -143,7 +137,7 @@ public class RequestValidator {
 		if (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
 				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
-		
+
 		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
 				requestDTO.getRequest().getIndividualIdType().name())) {
 			throw new InvalidInputException("individualId");
@@ -164,7 +158,7 @@ public class RequestValidator {
 		if (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
 				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
-		
+
 		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
 				requestDTO.getRequest().getIndividualIdType().name())) {
 			throw new InvalidInputException("individualId");
