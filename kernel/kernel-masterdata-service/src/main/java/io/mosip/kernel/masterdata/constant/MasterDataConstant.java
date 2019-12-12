@@ -64,6 +64,11 @@ public class MasterDataConstant {
 	public static final String DECOMMISSION_SUCCESS_DESC="System successfully decommissioned a %s";
 	public static final String FAILURE_DECOMMISSION="Decommission %s - Failure";
 	public static final String FAILURE_DESC="%s_%s";
+	public static final String CREATE_ERROR_AUDIT="Create Error %s ";
+	public static final String GET_ALL="GET ALL %s ";
+	public static final String GET_ALL_SUCCESS="GET ALL Success %s ";
+	public static final String GET_ALL_SUCCESS_DESC="System successfully get all %s ";
+	public static final String GET_LANG="System successfully get all %s ";
 	
 	
 	public static final String AUDIT_SYSTEM = "SYSTEM";
