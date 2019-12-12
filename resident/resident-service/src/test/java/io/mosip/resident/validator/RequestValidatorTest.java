@@ -7,10 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.test.context.ContextConfiguration;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -24,22 +23,20 @@ import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.exception.InvalidInputException;
 
-@RunWith(MockitoJUnitRunner.class)
-@RefreshScope
-@ContextConfiguration
+@RunWith(SpringRunner.class)
 public class RequestValidatorTest {
 
-	@MockBean
-	private UinValidator uinValidator;
+	@Mock
+	private UinValidator<String> uinValidator;
 
-	@MockBean
-	private VidValidator vidValidator;
+	@Mock
+	private VidValidator<String> vidValidator;
 
-	@MockBean
+	@Mock
 	private RidValidator<String> ridValidator;
 
 	@InjectMocks
-	private RequestValidator requestValidator = new RequestValidator();
+	private RequestValidator requestValidator ;
 
 	@Before
 	public void setup() {
@@ -48,6 +45,10 @@ public class RequestValidatorTest {
 		ReflectionTestUtils.setField(requestValidator, "authHstoryId", "mosip.resident.authhistory");
 		ReflectionTestUtils.setField(requestValidator, "authTypes", "bio-FIR,bio-IIR");
 		ReflectionTestUtils.setField(requestValidator, "version", "v1");
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
+		Mockito.when(ridValidator.validateId(Mockito.anyString())).thenReturn(true);
+		
 	}
 
 	@Test(expected = InvalidInputException.class)
@@ -254,6 +255,7 @@ public class RequestValidatorTest {
 	public void testAuthHistoryValidPageFetch() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
 		authRequestDTO.setIndividualIdType(IdType.VID);
+		authRequestDTO.setIndividualId("123");
 		authRequestDTO.setPageStart(1);
 		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(authRequestDTO);
@@ -267,12 +269,41 @@ public class RequestValidatorTest {
 	public void testAuthHistoryValidPageStart() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
 		authRequestDTO.setIndividualIdType(IdType.VID);
+		authRequestDTO.setIndividualId("123");
 		authRequestDTO.setPageFetch(1);
 		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setRequest(authRequestDTO);
 		requestWrapper.setVersion("v1");
 		requestWrapper.setId("mosip.resident.authhistory");
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
+
+	}
+	
+	@Test(expected = InvalidInputException.class)
+	public void testAuthHistoryValidIndividualId() throws Exception {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(false);
+		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
+		authRequestDTO.setIndividualIdType(IdType.UIN);
+		authRequestDTO.setIndividualId("123");
+		authRequestDTO.setPageFetch(1);
+		RequestWrapper<AuthHistoryRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(authRequestDTO);
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.authhistory");
+		requestValidator.validateAuthHistoryRequest(requestWrapper);
+
+	}
+	
+	@Test(expected = InvalidInputException.class)
+	public void testeuinValidIndividualId() throws Exception {
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(false);
+		EuinRequestDTO euinRequestDTO = new EuinRequestDTO();
+		euinRequestDTO.setIndividualIdType(IdType.VID);
+		RequestWrapper<EuinRequestDTO> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(euinRequestDTO);
+		requestWrapper.setVersion("v1");
+		requestWrapper.setId("mosip.resident.euin");
+		requestValidator.validateEuinRequest(requestWrapper);
 
 	}
 }

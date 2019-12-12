@@ -143,6 +143,11 @@ public class RequestValidator {
 		if (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
 				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
+		
+		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
+				requestDTO.getRequest().getIndividualIdType().name())) {
+			throw new InvalidInputException("individualId");
+		}
 
 	}
 
@@ -159,6 +164,11 @@ public class RequestValidator {
 		if (!requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.UIN.name())
 				&& !requestDTO.getRequest().getIndividualIdType().name().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
+		
+		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
+				requestDTO.getRequest().getIndividualIdType().name())) {
+			throw new InvalidInputException("individualId");
+		}
 
 		if (requestDTO.getRequest().getPageFetch() == null && requestDTO.getRequest().getPageStart() != null)
 			throw new InvalidInputException("please provide Page size to be Fetched");
@@ -187,7 +197,7 @@ public class RequestValidator {
 		return email.matches(emailRegex);
 	}
 
-	public boolean validateIndividualId(String individualId, String individualIdType) {
+	private boolean validateIndividualId(String individualId, String individualIdType) {
 		boolean validation = false;
 		try {
 			if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
