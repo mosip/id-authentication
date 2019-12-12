@@ -87,7 +87,7 @@ public class TemplateController {
 		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_LANG,TemplateDto.class.getSimpleName()));
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCode(langCode));
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG_SUCCESS,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC,TemplateDto.class.getSimpleName()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG_SUCCESS,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_LANG_SUCCESS_DESC,TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 

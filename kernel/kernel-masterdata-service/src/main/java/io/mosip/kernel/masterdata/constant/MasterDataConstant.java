@@ -68,7 +68,9 @@ public class MasterDataConstant {
 	public static final String GET_ALL="GET ALL %s ";
 	public static final String GET_ALL_SUCCESS="GET ALL Success %s ";
 	public static final String GET_ALL_SUCCESS_DESC="System successfully get all %s ";
-	public static final String GET_LANG="System successfully get all %s ";
+	public static final String GET_LANG=" get all %s ";
+	public static final String GET_LANG_SUCCESS="Get lang success %s ";
+	public static final String GET_LANG_SUCCESS_DESC="System successfully get lang %s ";
 	
 	
 	public static final String AUDIT_SYSTEM = "SYSTEM";
