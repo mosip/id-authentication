@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.context.annotation.Configuration;
 
-import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.logger.IdRepoAspectLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -17,12 +19,12 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  * @author Manoj SP
  */
-//@Aspect
-//@Configuration
+@Aspect
+@Configuration
 public class IdRepoAspectConfig {
 
 	/** The mosip logger. */
-	private Logger mosipLogger = IdRepoLogger.getLogger(IdRepoAspectConfig.class);
+	private Logger mosipLogger = IdRepoAspectLogger.getLogger(IdRepoAspectConfig.class);
 
 	/** The start time. */
 	private LocalDateTime startTime;
@@ -35,8 +37,8 @@ public class IdRepoAspectConfig {
 	 *
 	 * @param joinPoint the join point
 	 */
-	@Before("execution(* io.mosip.kernel.idrepo.*.*.*(..))"
-			+ "&& !execution(* io.mosip.kernel.idrepo.httpfilter.*.*(..))")
+	@Before("execution(* io.mosip.idrepository.*.*.*.*(..))"
+			+ "&& !execution(* io.mosip.idrepository.core.httpfilter.*.*(..))")
 	public void before(JoinPoint joinPoint) {
 		startTime = DateUtils.getUTCCurrentDateTime();
 	}
@@ -46,8 +48,8 @@ public class IdRepoAspectConfig {
 	 *
 	 * @param joinPoint the join point
 	 */
-	@After("execution(* io.mosip.kernel.idrepo.*.*.*(..))"
-			+ "&& !execution(* io.mosip.kernel.idrepo.httpfilter.*.*(..))")
+	@After("execution(* io.mosip.idrepository.*.*.*.*(..))"
+			+ "&& !execution(* io.mosip.idrepository.core.httpfilter.*.*(..))")
 	public void after(JoinPoint joinPoint) {
 		mosipLogger.debug(IdRepoSecurityManager.getUser(), "IdRepoAspectConfig", joinPoint.toString(),
 				"Time taken for execution - "
@@ -59,20 +61,20 @@ public class IdRepoAspectConfig {
 	 *
 	 * @param joinPoint the join point
 	 */
-	@Before("execution(* io.mosip.kernel.idobjectvalidator.impl.*.*(..))")
-	public void beforeJsonSchemaValidator(JoinPoint joinPoint) {
-		jsonSchemaValidatorStartTime = DateUtils.getUTCCurrentDateTime();
-	}
+//	@Before("execution(* io.mosip.kernel.idobjectvalidator.impl.*.*(..))")
+//	public void beforeJsonSchemaValidator(JoinPoint joinPoint) {
+//		jsonSchemaValidatorStartTime = DateUtils.getUTCCurrentDateTime();
+//	}
 
 	/**
 	 * After json schema validator.
 	 *
 	 * @param joinPoint the join point
 	 */
-	@After("execution(* io.mosip.kernel.idobjectvalidator.impl.*.*(..))")
-	public void afterJsonSchemaValidator(JoinPoint joinPoint) {
-		mosipLogger.debug(IdRepoSecurityManager.getUser(), "IdRepoAspectConfig", joinPoint.toString(),
-				"Time taken for execution - "
-						+ Duration.between(jsonSchemaValidatorStartTime, DateUtils.getUTCCurrentDateTime()).toMillis());
-	}
+//	@After("execution(* io.mosip.kernel.idobjectvalidator.impl.*.*(..))")
+//	public void afterJsonSchemaValidator(JoinPoint joinPoint) {
+//		mosipLogger.debug(IdRepoSecurityManager.getUser(), "IdRepoAspectConfig", joinPoint.toString(),
+//				"Time taken for execution - "
+//						+ Duration.between(jsonSchemaValidatorStartTime, DateUtils.getUTCCurrentDateTime()).toMillis());
+//	}
 }
