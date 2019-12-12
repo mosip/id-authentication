@@ -65,6 +65,7 @@ public class DocumentTypeController {
 
 	@ResponseFilter
 	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
+	@PreAuthorize("hasRole('RESIDENT')")
 	@GetMapping("/documenttypes/{documentcategorycode}/{langcode}")
 	public ResponseWrapper<ValidDocumentTypeResponseDto> getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langcode") String langCode,
