@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -569,15 +570,11 @@ public class AuthServiceImpl implements AuthService {
 					HttpMethod.GET, httpRequest, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			KeycloakErrorResponseDto keycloakErrorResponseDto = parseKeyClockErrorResponse(e);
-			if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Failed to parse JWT")) {
-				throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
-			} else if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Token is not active")) {
-				throw new AuthenticationServiceException(AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
-			} else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-				throw new AccessDeniedException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage()+keycloakErrorResponseDto.getError_description());
 			} 
 			else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-				throw new AccessDeniedException(AuthErrorCode.FORBIDDEN.getErrorMessage());
+				throw new AccessDeniedException(AuthErrorCode.FORBIDDEN.getErrorMessage()+keycloakErrorResponseDto.getError_description());
 			} else {
 				throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
 						AuthErrorCode.REST_EXCEPTION.getErrorMessage() + " " + e.getResponseBodyAsString());
