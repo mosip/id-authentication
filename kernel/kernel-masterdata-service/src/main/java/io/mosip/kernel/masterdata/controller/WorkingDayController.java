@@ -60,17 +60,17 @@ public class WorkingDayController {
 	 *         center ID and Day code {@link WorkingDaysResponseDto}
 	 */
 	@ResponseFilter
-	@GetMapping(value = "/workingdays/{registrationCenterID}/{dayCode}")
-	@ApiOperation(value = "Retrieve all working Days for given Registration center ID and Day Code", notes = "Retrieve all working Days for given Registration center ID and Languge Code")
+	@GetMapping(value = "/workingdays/{registrationCenterID}/{langCode}")
+	@ApiOperation(value = "Retrieve all working Days for given Registration center ID and Lang Code", notes = "Retrieve all working Days for given Registration center ID and Languge Code")
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When working days retrieved from database for the given Registration center ID day Code"),
-			@ApiResponse(code = 404, message = "When No working days found for the given Registration center ID and Day Code"),
+			@ApiResponse(code = 200, message = "When working days retrieved from database for the given Registration center ID lang Code"),
+			@ApiResponse(code = 404, message = "When No working days found for the given Registration center ID and lang Code"),
 			@ApiResponse(code = 500, message = "While retrieving working days any error occured") })
 	public ResponseWrapper<WorkingDaysResponseDto> getWorkingays(@PathVariable("registrationCenterID") String regCenterId,
-			@PathVariable("dayCode") String dayCode) {
+			@PathVariable("langCode") String langCode) {
 
 		ResponseWrapper<WorkingDaysResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(service.getWorkingDays(regCenterId, dayCode));
+		responseWrapper.setResponse(service.getWorkingDays(regCenterId, langCode));
 		return responseWrapper;
 	}
 
