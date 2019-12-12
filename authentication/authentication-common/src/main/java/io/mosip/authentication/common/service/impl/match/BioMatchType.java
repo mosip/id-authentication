@@ -333,7 +333,7 @@ public enum BioMatchType implements MatchType {
 	 */
 
 	public CbeffDocType[] getCbeffDocTypes() {
-		return cbeffDocTypes;
+		return cbeffDocTypes.clone();
 	}
 
 	/**

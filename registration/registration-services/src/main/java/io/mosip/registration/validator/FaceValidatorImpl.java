@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
@@ -68,6 +69,11 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator {
 
 		LOGGER.info(LOG_REG_FACE_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating face capture details for user registration");
+		
+		if (ibioApi instanceof BioApiImpl) {
+			ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FACE_ENABLE_FLAG,
+					RegistrationConstants.DISABLE);
+		}
 
 		try {
 			if (!authenticationValidatorDTO.isAuthValidationFlag()) {

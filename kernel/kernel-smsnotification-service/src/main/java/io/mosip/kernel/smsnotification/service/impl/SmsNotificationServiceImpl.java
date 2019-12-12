@@ -1,13 +1,10 @@
 package io.mosip.kernel.smsnotification.service.impl;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,15 +12,12 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 import io.mosip.kernel.smsnotification.constant.SmsPropertyConstant;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
-import io.mosip.kernel.smsnotification.dto.SmsServerResponseDto;
 import io.mosip.kernel.smsnotification.dto.SmsVendorRequestDto;
 import io.mosip.kernel.smsnotification.exception.InvalidNumberException;
 
@@ -93,20 +87,13 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 				infoBipSmsGateway(contactNumber, contentMessage);
 				break;
 			default:
-				System.out.println("-----No SmsGateway configured-----");
+				
 				break;
 			}
-		} else {
-			System.out.println("-----Sms notification not enabled-----");
-		}
+		} 
 
 		result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
-		// result.setStatus(response.getType());
 		result.setStatus("success");
-		// } else {
-		// result.setMessage("SMS Request Failed");
-		// result.setStatus("Failed");
-		// }
 		return result;
 
 	}
@@ -136,22 +123,6 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 			System.out.println("HttpErrorException: " + e.getMessage());
 			System.out.println(e.getResponseBodyAsString());
 			// throw new RuntimeException(e.getResponseBodyAsString());
-		}
-		if (responseEnt != null && responseEnt.getStatusCode() != HttpStatus.OK) {
-			// throw new RuntimeException(responseEnt.getBody());
-			System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
-			System.out.println(responseEnt.getBody());
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		SmsServerResponseDto response = null;
-		try {
-			if (responseEnt != null) {
-				System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
-				System.out.println(responseEnt.getBody());
-				response = mapper.readValue(responseEnt.getBody(), SmsServerResponseDto.class);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

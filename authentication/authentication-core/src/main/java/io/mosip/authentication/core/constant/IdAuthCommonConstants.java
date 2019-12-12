@@ -136,6 +136,8 @@ public final class IdAuthCommonConstants {
 	/** The Constant BIO_TYPE. */
 	public static final String BIO_TYPE = "bioType";
 	
+	public static final String BIO_SUB_TYPE = "bioSubType";
+	
 	/** The Constant SESSION_KEY. */
 	public static final String SESSION_KEY = "sessionKey";
 	
@@ -156,6 +158,9 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_DIGITALID_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + DIGITAL_ID;
 	
 	public static final String BIO_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_TYPE;
+	
+	public static final String BIO_SUB_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_SUB_TYPE;
+
 
 
 	/** The Constant EKYC. */
