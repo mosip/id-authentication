@@ -16,7 +16,6 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
-import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.constant.VidType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
@@ -24,7 +23,6 @@ import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.exception.InvalidInputException;
-import io.mosip.resident.exception.ResidentServiceException;
 
 @Component
 public class RequestValidator {
@@ -85,18 +83,9 @@ public class RequestValidator {
 				|| (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
 						&& !requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
-		else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())) {
-			try {
-				uinValidator.validateId(requestDto.getRequest().getIndividualId());
-			} catch (InvalidIDException e) {
-				throw new InvalidInputException("individualId");
-			}
-		} else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())) {
-			try {
-				vidValidator.validateId(requestDto.getRequest().getIndividualId());
-			} catch (InvalidIDException e) {
-				throw new InvalidInputException("individualId");
-			}
+		if (!validateIndividualId(requestDto.getRequest().getIndividualId(),
+				requestDto.getRequest().getIndividualIdType())) {
+			throw new InvalidInputException("individualId");
 		}
 
 		if (requestDto.getRequest().getOtp() == null)
@@ -130,6 +119,10 @@ public class RequestValidator {
 						&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
 
+		if (!validateIndividualId(requestDTO.getRequest().getIndividualId(),
+				requestDTO.getRequest().getIndividualIdType())) {
+			throw new InvalidInputException("individualId");
+		}
 		if (requestDTO.getRequest().getOtp() == null)
 			throw new InvalidInputException("otp");
 
@@ -205,8 +198,7 @@ public class RequestValidator {
 				validation = ridValidator.validateId(individualId);
 			}
 		} catch (InvalidIDException e) {
-			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
-					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage(), e);
+			throw new InvalidInputException("individualId");
 		}
 		return validation;
 	}

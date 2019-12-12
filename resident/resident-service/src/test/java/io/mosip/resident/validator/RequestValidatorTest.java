@@ -8,10 +8,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
@@ -23,6 +27,15 @@ import io.mosip.resident.exception.InvalidInputException;
 @RefreshScope
 @ContextConfiguration
 public class RequestValidatorTest {
+
+	@MockBean
+	private UinValidator uinValidator;
+
+	@MockBean
+	private VidValidator vidValidator;
+
+	@MockBean
+	private RidValidator<String> ridValidator;
 
 	@InjectMocks
 	private RequestValidator requestValidator = new RequestValidator();
@@ -64,7 +77,7 @@ public class RequestValidatorTest {
 		requestValidator.validateEuinRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testValidAuthHistoryId() throws Exception {
 		AuthHistoryRequestDTO authHistoryRequestDTO = new AuthHistoryRequestDTO();
@@ -96,7 +109,7 @@ public class RequestValidatorTest {
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testValideuinVersion() throws Exception {
 		EuinRequestDTO euinRequestDTO = new EuinRequestDTO();
@@ -129,7 +142,7 @@ public class RequestValidatorTest {
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testValideuinRequest() throws Exception {
 
@@ -177,7 +190,7 @@ public class RequestValidatorTest {
 		requestValidator.validateEuinRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidIndividualType() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
@@ -235,7 +248,7 @@ public class RequestValidatorTest {
 		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidPageFetch() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
@@ -248,7 +261,7 @@ public class RequestValidatorTest {
 		requestValidator.validateAuthHistoryRequest(requestWrapper);
 
 	}
-	
+
 	@Test(expected = InvalidInputException.class)
 	public void testAuthHistoryValidPageStart() throws Exception {
 		AuthHistoryRequestDTO authRequestDTO = new AuthHistoryRequestDTO();
