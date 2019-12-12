@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.constant.VidType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
@@ -22,6 +24,7 @@ import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.exception.InvalidInputException;
+import io.mosip.resident.exception.ResidentServiceException;
 
 @Component
 public class RequestValidator {
@@ -31,6 +34,9 @@ public class RequestValidator {
 
 	@Autowired
 	private VidValidator vidValidator;
+
+	@Autowired
+	private RidValidator<String> ridValidator;
 
 	@Value("${resident.vid.id}")
 	private String id;
@@ -43,7 +49,7 @@ public class RequestValidator {
 
 	@Value("${resident.euin.id}")
 	private String euinId;
-	
+
 	@Value("${resident.authhistory.id}")
 	private String authHstoryId;
 
@@ -52,10 +58,10 @@ public class RequestValidator {
 
 	@Value("${resident.authunlock.id}")
 	private String authUnLockId;
-	
+
 	@Value("${mosip.id.validation.identity.phone}")
 	private String phoneRegex;
-	
+
 	@Value("${mosip.id.validation.identity.email}")
 	private String emailRegex;
 
@@ -146,7 +152,7 @@ public class RequestValidator {
 			throw new InvalidInputException("individualIdType");
 
 	}
-	
+
 	public void validateAuthHistoryRequest(@Valid RequestWrapper<AuthHistoryRequestDTO> requestDTO) {
 		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authHstoryId))
 			throw new InvalidInputException("id");
@@ -156,15 +162,15 @@ public class RequestValidator {
 
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
-		
+
 		if (!requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.UIN.name())
 				&& !requestDTO.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name()))
 			throw new InvalidInputException("individualIdType");
-		
-		if(requestDTO.getRequest().getPageFetch()==null &&requestDTO.getRequest().getPageStart()!=null)
+
+		if (requestDTO.getRequest().getPageFetch() == null && requestDTO.getRequest().getPageStart() != null)
 			throw new InvalidInputException("please provide Page size to be Fetched");
-		
-		if(requestDTO.getRequest().getPageStart()==null &&requestDTO.getRequest().getPageFetch()!=null)
+
+		if (requestDTO.getRequest().getPageStart() == null && requestDTO.getRequest().getPageFetch() != null)
 			throw new InvalidInputException("please provide Page numer to be Fetched");
 	}
 
@@ -179,14 +185,30 @@ public class RequestValidator {
 				throw new InvalidInputException("authType");
 		}
 	}
-	
+
 	public boolean phoneValidator(String phone) {
 		return phone.matches(phoneRegex);
 	}
+
 	public boolean emailValidator(String email) {
 		return email.matches(emailRegex);
 	}
 
-	
+	public boolean validateIndividualId(String individualId, String individualIdType) {
+		boolean validation = false;
+		try {
+			if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
+				validation = uinValidator.validateId(individualId);
+			} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
+				validation = vidValidator.validateId(individualId);
+			} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
+				validation = ridValidator.validateId(individualId);
+			}
+		} catch (InvalidIDException e) {
+			throw new ResidentServiceException(ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorCode(),
+					ResidentErrorCode.IN_VALID_UIN_OR_VID_OR_RID.getErrorMessage(), e);
+		}
+		return validation;
+	}
 
 }
