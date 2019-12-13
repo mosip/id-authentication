@@ -2,8 +2,11 @@ package io.mosip.resident.validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,8 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.constant.RequestIdType;
+import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.constant.VidType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
@@ -24,6 +29,7 @@ import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.dto.VidRevokeRequestDTO;
 import io.mosip.resident.exception.InvalidInputException;
+import io.mosip.resident.exception.ResidentServiceException;
 
 @Component
 public class RequestValidator {
@@ -39,7 +45,7 @@ public class RequestValidator {
 
 	@Value("${resident.vid.id}")
 	private String id;
-	
+
 	@Value("${resident.revokevid.id}")
 	private String revokeVidId;
 
@@ -51,6 +57,8 @@ public class RequestValidator {
 
 	@Value("${resident.euin.id}")
 	private String euinId;
+
+	private static String reprintId;
 
 	@Value("${resident.authhistory.id}")
 	private String authHstoryId;
@@ -66,6 +74,20 @@ public class RequestValidator {
 
 	@Value("${mosip.id.validation.identity.email}")
 	private String emailRegex;
+
+	private static Map<RequestIdType, String> map;
+
+	@Value("${resident.printuin.id}")
+	public void setReprintId(String reprintId) {
+		RequestValidator.reprintId = reprintId;
+	}
+
+	@PostConstruct
+	public void setMap() {
+		map = new HashMap<RequestIdType, String>();
+		map.put(RequestIdType.RE_PRINT_ID, reprintId);
+		// map.put(key, value)
+	}
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
 
@@ -242,5 +264,16 @@ public class RequestValidator {
 		if (requestDto.getRequest().getTransactionID() == null)
 			throw new InvalidInputException("transactionId");
 	}
-	
+
+	public boolean validateRequest(RequestWrapper<?> request, RequestIdType requestIdType) {
+		if (!request.getId().equals(map.get(requestIdType)))
+			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
+					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");
+		if (!request.getVersion().equals(version))
+			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
+					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "version");
+		return true;
+
+	}
+
 }

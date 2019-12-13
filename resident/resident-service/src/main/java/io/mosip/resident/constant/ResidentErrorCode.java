@@ -10,7 +10,7 @@ public enum ResidentErrorCode {
 	API_RESOURCE_ACCESS_EXCEPTION("RES-SER-006","unable to access API resource"),
 	VID_CREATION_EXCEPTION("RES-SER-007", "Exception while creating vid"), 
 	VID_ALREADY_PRESENT("RES-SER-008","Maximum allowed VIDs are active. Deactivate VID to generate new one."), 
-	INVALID_INPUT("RES-SER-009","Invalid Input - "),
+	INVALID_INPUT("RES-SER-009","Invalid Input Parameter- "),
 	IN_VALID_VID("RES-SER-0010", "In Valid VID"),
 	IN_VALID_UIN("RES-SER-011", "In Valid UIN"),
 	IN_VALID_RID("RES-SER-012", "In Valid RID"),

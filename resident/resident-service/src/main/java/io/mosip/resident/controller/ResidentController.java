@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.resident.constant.AuthTypeStatus;
+import io.mosip.resident.constant.RequestIdType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthHistoryResponseDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
@@ -67,6 +68,7 @@ public class ResidentController {
 	@PostMapping(value = "/req/print-uin")
 	public ResponseEntity<Object> reqPrintUin(@Valid @RequestBody RequestWrapper<ResidentReprintRequestDto> requestDTO)
 			throws ResidentServiceCheckedException {
+		validator.validateRequest(requestDTO, RequestIdType.RE_PRINT_ID);
 		ResponseWrapper<ResidentReprintResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(residentService.reqPrintUin(requestDTO.getRequest()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
