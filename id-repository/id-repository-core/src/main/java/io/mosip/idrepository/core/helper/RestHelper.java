@@ -97,15 +97,15 @@ public class RestHelper {
 			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
 			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
-			if (request.getTimeout() != null) {
-				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-			} else {
+//			if (request.getTimeout() != null) {
+//				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
+//				mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+//						PREFIX_RESPONSE + response);
+//			} else {
 				response = request(request).block();
 				mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
-			}
+//			}
 			checkErrorResponse(response, request.getResponseType());
 			return (T) response;
 		} catch (WebClientResponseException e) {

@@ -113,6 +113,13 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 //					+ "\n\n");
 //			return null;
 //		}
+		if (token == null) {
+			String req = "{\"id\":\"string\",\"request\":{\"clientId\":\"resident\",\"secretKey\":\"dbe554cd-81e8-44c2-b8ec-3d8090aca1f4\",\"appId\":\"resident\"},\"requesttime\":\"2019-04-23T09:41:05.633Z\",\"version\":\"string\"}";
+			HttpHeaders headers = WebClient.create("https://dev.mosip.io/v1/authmanager/authenticate/clientidsecretkey").post()
+			.syncBody(new ObjectMapper().readValue(req, Object.class)).exchange()
+			.map(res -> res.headers().asHttpHeaders()).block();
+			token = headers.get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replace("Authorization=", "");
+		}
 		AuthToken authToken = new AuthToken(token);
 		return getAuthenticationManager().authenticate(authToken);
 	}
