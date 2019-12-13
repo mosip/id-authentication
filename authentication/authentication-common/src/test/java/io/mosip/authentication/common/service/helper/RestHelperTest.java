@@ -816,7 +816,7 @@ public class RestHelperTest {
 			PowerMockito.when(requestBodyUriSpec.cookie(Mockito.any(), Mockito.any())).thenReturn(requestBodyUriSpec);
 			ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
 			PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
-			String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-402\"}]}";
+			String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
 			PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
 					.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
 			assertTrue(ReflectionTestUtils

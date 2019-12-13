@@ -82,7 +82,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.server.admin.validate.url:http://localhost:8091/v1/authmanager/authorize/admin/validateToken}")
+	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/v1/authmanager/authorize/validateToken}")
 	private String adminValidateUrl;
 	
 	@Value("${auth.jwt.base:Mosip-Token}")

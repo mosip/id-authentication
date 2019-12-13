@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.batchjob.model;
+package io.mosip.preregistration.core.common.dto;
 
 import lombok.Data;
 
@@ -15,8 +15,8 @@ import lombok.Data;
 @Data
 public class LoginUser {
 
-	private String userName;
-	private String password;
+	private String clientId;
+	private String secretKey;
 	private String appId;
 
 }
