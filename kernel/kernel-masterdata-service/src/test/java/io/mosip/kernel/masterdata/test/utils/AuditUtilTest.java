@@ -34,7 +34,7 @@ public class AuditUtilTest {
 	
 	@Test
 	public void testAuditUtil() {
-		mockRestServiceServer.expect(post(uri))
+		//mockRestServiceServer.expect(post(uri))
 	}
 }
 
