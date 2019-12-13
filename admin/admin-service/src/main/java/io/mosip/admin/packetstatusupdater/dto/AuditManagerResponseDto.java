@@ -7,7 +7,7 @@ public class AuditManagerResponseDto {
 	
 
 	/**
-	 * The boolean audit status
+	 * The audit status
 	 */
 	private String status;
 	private String message;
