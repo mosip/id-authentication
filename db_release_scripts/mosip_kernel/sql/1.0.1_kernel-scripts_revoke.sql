@@ -9,3 +9,7 @@
 -- -------------------------------------------------------------------------------------------------
 
 \c mosip_kernel sysadmin
+
+--------- PRID POOL REQUIREMENT DB CHANGES REVOKE -----------
+
+DROP TABLE IF EXISTS kernel.prid;
