@@ -158,17 +158,7 @@ public class RequestValidatorTest {
 
 	}
 
-	@Test(expected = InvalidInputException.class)
-	public void testValidTransactionId() throws Exception {
-		AuthLockOrUnLockRequestDto authLockRequestDto = new AuthLockOrUnLockRequestDto();
-
-		RequestWrapper<AuthLockOrUnLockRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setId("mosip.resident.authlock");
-		requestWrapper.setVersion("v1");
-		requestWrapper.setRequest(authLockRequestDto);
-		requestValidator.validateAuthLockOrUnlockRequest(requestWrapper, AuthTypeStatus.LOCK);
-
-	}
+	
 
 	@Test(expected = InvalidInputException.class)
 	public void testValidIndividualType() throws Exception {
