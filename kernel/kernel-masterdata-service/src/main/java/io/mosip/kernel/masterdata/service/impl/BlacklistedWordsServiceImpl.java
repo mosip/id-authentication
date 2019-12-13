@@ -22,14 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.UpdateQueryConstants;
 import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
-import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
@@ -40,7 +38,6 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
-import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -180,7 +177,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, BlacklistedWordsDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, BlacklistedWordsDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage()));

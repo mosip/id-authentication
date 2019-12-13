@@ -907,7 +907,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	private void auditException(String errorCode,String errorMessage) {
 		auditUtil.auditRequest(
-				String.format(MasterDataConstant.DECOMMISSION_FAILURE, RegistrationCenterSearchDto.class.getSimpleName()),
+				String.format(MasterDataConstant.FAILURE_DECOMMISSION, RegistrationCenterSearchDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 						errorCode,errorMessage));
 	}
@@ -972,7 +972,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							regCenterPostReqDto.getLangCode());
 			if (regCenterType == null) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.CREATE_ERROR_AUDIT, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 								MasterDataConstant.INVALID_REG_CENTER_TYPE));
@@ -984,7 +984,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPostReqDto.getLocationCode(), regCenterPostReqDto.getLangCode());
 			if (CollectionUtils.isEmpty(location)) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.CREATE_ERROR_AUDIT, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 								MasterDataConstant.INVALID_LOCATION_CODE));
@@ -1045,7 +1045,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, RegistrationCenterSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage()));

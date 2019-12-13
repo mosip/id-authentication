@@ -224,9 +224,9 @@ public class DeviceServiceImpl implements DeviceService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, DeviceDto.class.getCanonicalName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceDto.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, DeviceDto.class.getCanonicalName()));
+					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getCanonicalName()));
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
@@ -744,9 +744,10 @@ public class DeviceServiceImpl implements DeviceService {
 		// device is not in DB
 		if (renDevices.isEmpty()) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.DECOMMISSION_FAILURE, DeviceDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()));
+					String.format(MasterDataConstant.FAILURE_DESC,DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
+							String.format(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage(), deviceId)));
 			throw new RequestException(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
 					String.format(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage(), deviceId));
 		}
@@ -754,9 +755,10 @@ public class DeviceServiceImpl implements DeviceService {
 		// check the given device and registration center zones are come under user zone
 		if (!zoneIds.contains(renDevices.get(0).getZoneCode())) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.DECOMMISSION_FAILURE, DeviceDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()));
+					String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
+							DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage()));
 			throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
 					DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
 		}
@@ -765,9 +767,10 @@ public class DeviceServiceImpl implements DeviceService {
 			if (!registrationCenterDeviceRepository.findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(deviceId)
 					.isEmpty()) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.DECOMMISSION_FAILURE, DeviceDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()));
+						String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
+								DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage()));
 				throw new RequestException(DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
 						DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
 			}
@@ -789,9 +792,10 @@ public class DeviceServiceImpl implements DeviceService {
 
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.DECOMMISSION_FAILURE, DeviceDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()));
+					String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+							DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()));
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause());
 		}
@@ -830,9 +834,10 @@ public class DeviceServiceImpl implements DeviceService {
 
 			if (renDevice == null && primaryLangCode.equals(devicePutReqDto.getLangCode())) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.DECOMMISSION_FAILURE, DeviceDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()));
+						String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
+								DeviceErrorCode.DECOMMISSIONED.getErrorMessage()));
 				throw new MasterDataServiceException(DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
 						DeviceErrorCode.DECOMMISSIONED.getErrorMessage());
 			} else if (renDevice == null && secondaryLang.equals(devicePutReqDto.getLangCode())) {
@@ -872,7 +877,9 @@ public class DeviceServiceImpl implements DeviceService {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()));
+					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception)));
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));

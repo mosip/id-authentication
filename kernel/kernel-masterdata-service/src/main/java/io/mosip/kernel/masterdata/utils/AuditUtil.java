@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
@@ -58,7 +57,7 @@ public class AuditUtil {
 
 	private String hostName = null;
 
-	private volatile int eventCounter;
+	private volatile int eventCounter=500;
 
 	@Value("${mosip.kernel.masterdata.audit-url}")
 	private String auditUrl;

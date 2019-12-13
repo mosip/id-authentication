@@ -215,7 +215,7 @@ public class LocationServiceImpl implements LocationService {
 							.findLocationHierarchyByCodeAndLanguageCode(dto.getParentLocCode(), dto.getLangCode());
 					if (CollectionUtils.isEmpty(parentLocList)) {
 						auditUtil.auditRequest(
-								String.format(MasterDataConstant.CREATE_ERROR_AUDIT, LocationDto.class.getSimpleName()),
+								String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
 								MasterDataConstant.AUDIT_SYSTEM,
 								String.format(MasterDataConstant.FAILURE_DESC,
 										LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
@@ -228,7 +228,7 @@ public class LocationServiceImpl implements LocationService {
 						dto.getHierarchyLevel(), dto.getLangCode());
 				if (list != null && !list.isEmpty()) {
 					auditUtil.auditRequest(
-							String.format(MasterDataConstant.CREATE_ERROR_AUDIT, LocationDto.class.getSimpleName()),
+							String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
 							String.format(MasterDataConstant.FAILURE_DESC,
 									LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
@@ -245,7 +245,7 @@ public class LocationServiceImpl implements LocationService {
 			}
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, LocationDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
@@ -255,7 +255,7 @@ public class LocationServiceImpl implements LocationService {
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, LocationDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),

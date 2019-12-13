@@ -22,11 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachinePutReqDto;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachinePostReqDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
@@ -45,8 +43,6 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
-import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -769,7 +765,7 @@ public class MachineServiceImpl implements MachineService {
 		// machine is not in DB
 		if (renMachines.isEmpty()) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
@@ -781,7 +777,7 @@ public class MachineServiceImpl implements MachineService {
 		// check the given device and registration center zones are come under user zone
 		if (!zoneIds.contains(renMachines.get(0).getZoneCode())) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
 							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()));
@@ -792,7 +788,7 @@ public class MachineServiceImpl implements MachineService {
 			if (!registrationCenterMachineRepository.findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(machineId)
 					.isEmpty()) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
 								MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()));
@@ -817,7 +813,7 @@ public class MachineServiceImpl implements MachineService {
 
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.DECOMMISSION_FAILURE, MachineSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()));
@@ -874,7 +870,7 @@ public class MachineServiceImpl implements MachineService {
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, MachineDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()));

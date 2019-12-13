@@ -109,7 +109,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 			registrationCenterType = registrationCenterTypeRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, RegistrationCenterTypeDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterTypeDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
