@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,14 +38,13 @@ public class AuditManagerProxyController {
 	 *            {@link AuditRequestDto} having required fields for auditing
 	 * @return The {@link AuditResponseDto} having the status of audit
 	 */
-	//@PreAuthorize()
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping(value = "/logs",produces= MediaType.APPLICATION_JSON_VALUE)
-	public void addAudit(@RequestBody @Valid RequestWrapper<AuditManagerRequestDto> requestDto) {
+	public ResponseWrapper<AuditManagerResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditManagerRequestDto> requestDto) {
 		ResponseWrapper<AuditManagerResponseDto> response = new ResponseWrapper<>();
-		//response.setResponse();
-				auditManagerProxyService.logAdminAudit(requestDto.getRequest());
-		//return response;
+		response.setResponse(auditManagerProxyService.logAdminAudit(requestDto.getRequest()));
+		return response;
 	}
 
 }

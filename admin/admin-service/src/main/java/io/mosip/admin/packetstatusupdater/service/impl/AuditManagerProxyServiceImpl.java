@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.admin.packetstatusupdater.dto.AuditManagerRequestDto;
+import io.mosip.admin.packetstatusupdater.dto.AuditManagerResponseDto;
 import io.mosip.admin.packetstatusupdater.service.AuditManagerProxyService;
 
 /**
@@ -31,8 +32,8 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 	RestTemplate restTemplate;
 
 	@Override
-	public void logAdminAudit(AuditManagerRequestDto auditManagerRequestDto) {
-		
+	public AuditManagerResponseDto logAdminAudit(AuditManagerRequestDto auditManagerRequestDto) {
+		AuditManagerResponseDto auditManagerResponseDto = new AuditManagerResponseDto();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<AuditManagerRequestDto> entity = new HttpEntity<>(auditManagerRequestDto,
@@ -45,6 +46,8 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 			System.out.println("HttpErrorException: " + e.getMessage());
 			System.out.println(e.getResponseBodyAsString());
 		}
+		auditManagerResponseDto.setStatus(true);
+		return auditManagerResponseDto;
 
 	}
 

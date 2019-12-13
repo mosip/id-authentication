@@ -82,15 +82,5 @@ public class AuditManagerRequestDto {
 	@Size(max = 2048)
 	private String description;
 	
-	
-	   /* public eventId: string;
-	    public eventName: string;
-	    public eventType: string;
-	    public moduleId: string;
-	    public moduleName: string;
-	    public description: string;
-	    public sessionUserId: string;
-	    public sessionUserName: string;
-	    public createdBy: string; 
-       */
+
 }

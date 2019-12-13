@@ -184,7 +184,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER+token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
-			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
+			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.POST, entity, String.class);
 		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
 		}
