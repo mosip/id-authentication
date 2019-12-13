@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -29,6 +30,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,6 +53,9 @@ public class TemplateController {
 
 	@Autowired
 	private TemplateService templateService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * Method to fetch all Template details
@@ -61,8 +66,10 @@ public class TemplateController {
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<TemplateResponseDto> getAllTemplate() {
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL,TemplateDto.class.getSimpleName()));
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplate());
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC,TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -77,9 +84,10 @@ public class TemplateController {
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCode(@PathVariable("langcode") String langCode) {
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_LANG,TemplateDto.class.getSimpleName()));
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplateByLanguageCode(langCode));
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_LANG_SUCCESS,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_LANG_SUCCESS_DESC,TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -232,8 +240,10 @@ public class TemplateController {
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
 	public ResponseWrapper<PageResponseDto<TemplateExtnDto>> searchTemplates(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SEARCH_API_IS_CALLED,TemplateDto.class.getSimpleName()));
 		ResponseWrapper<PageResponseDto<TemplateExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.searchTemplates(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 	
@@ -252,8 +262,10 @@ public class TemplateController {
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
 	public ResponseWrapper<FilterResponseDto> filterTemplates(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_API_IS_CALLED,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FILTER_API_IS_CALLED,TemplateDto.class.getSimpleName()));
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.filterTemplates(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,TemplateDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC,TemplateDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 }

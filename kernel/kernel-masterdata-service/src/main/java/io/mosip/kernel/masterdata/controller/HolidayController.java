@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
@@ -31,6 +32,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -52,6 +54,9 @@ public class HolidayController {
 
 	@Autowired
 	private HolidayService holidayService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * This method returns all holidays present in master db
@@ -195,8 +200,10 @@ public class HolidayController {
 	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
 
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SEARCH_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()));
 		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,HolidaySearchDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -212,8 +219,10 @@ public class HolidayController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> holidayFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FILTER_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()));
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC,HolidaySearchDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
