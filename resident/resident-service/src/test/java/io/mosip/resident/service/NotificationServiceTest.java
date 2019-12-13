@@ -1,4 +1,4 @@
-package io.mosip.resident.util;
+package io.mosip.resident.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,6 +38,11 @@ import io.mosip.resident.dto.TemplateResponseDto;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
+import io.mosip.resident.service.NotificationService;
+import io.mosip.resident.util.JsonUtil;
+import io.mosip.resident.util.ResidentServiceRestClient;
+import io.mosip.resident.util.TokenGenerator;
+import io.mosip.resident.util.Utilitiy;
 import io.mosip.resident.validator.RequestValidator;
 
 @RunWith(PowerMockRunner.class)

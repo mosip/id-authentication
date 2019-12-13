@@ -26,7 +26,7 @@ import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.RIDInvalidException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.impl.ResidentServiceImpl;
-import io.mosip.resident.util.NotificationService;
+import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 

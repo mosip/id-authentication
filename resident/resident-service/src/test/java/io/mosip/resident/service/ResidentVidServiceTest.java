@@ -7,7 +7,7 @@ import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.*;
 import io.mosip.resident.exception.*;
 import io.mosip.resident.service.impl.ResidentVidServiceImpl;
-import io.mosip.resident.util.NotificationService;
+import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 import org.assertj.core.util.Lists;

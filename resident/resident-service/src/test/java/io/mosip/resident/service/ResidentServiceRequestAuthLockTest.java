@@ -28,7 +28,7 @@ import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.impl.ResidentServiceImpl;
-import io.mosip.resident.util.NotificationService;
+import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.util.UINCardDownloadService;
 
 /**

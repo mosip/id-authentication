@@ -53,7 +53,7 @@ import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.util.JsonUtil;
-import io.mosip.resident.util.NotificationService;
+import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 import io.mosip.resident.util.UINCardDownloadService;

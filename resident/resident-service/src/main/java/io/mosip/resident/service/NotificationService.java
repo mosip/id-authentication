@@ -1,4 +1,4 @@
-package io.mosip.resident.util;
+package io.mosip.resident.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,6 +39,10 @@ import io.mosip.resident.dto.TemplateResponseDto;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
+import io.mosip.resident.util.JsonUtil;
+import io.mosip.resident.util.ResidentServiceRestClient;
+import io.mosip.resident.util.TokenGenerator;
+import io.mosip.resident.util.Utilitiy;
 import io.mosip.resident.validator.RequestValidator;
 
 /**
@@ -220,6 +224,11 @@ public class NotificationService {
 		try {
 			resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()), MediaType.APPLICATION_JSON, req,
 					ResponseWrapper.class, tokenGenerator.getToken());
+			if (resp == null || resp.getResponse() == null || resp.getErrors() != null && !resp.getErrors().isEmpty()) {
+				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorCode(),
+						ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorMessage() + " SMSNOTIFIER API"
+								+ (resp != null ? resp.getErrors().get(0) : ""));
+			}
 			NotificationResponseDTO notifierResponse = JsonUtil
 					.readValue(JsonUtil.writeValueAsString(resp.getResponse()), NotificationResponseDTO.class);
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
@@ -311,6 +320,12 @@ public class NotificationService {
 
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
+			if (response == null || response.getResponse() == null
+					|| response.getErrors() != null && !response.getErrors().isEmpty()) {
+				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorCode(),
+						ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorMessage() + " EMAILNOTIFIER API"
+								+ (response != null ? response.getErrors().get(0) : ""));
+			}
 			NotificationResponseDTO notifierResponse = JsonUtil
 					.readValue(JsonUtil.writeValueAsString(response.getResponse()), NotificationResponseDTO.class);
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
