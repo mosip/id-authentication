@@ -46,7 +46,8 @@ public class AuditManagerProxyServiceImpl implements AuditManagerProxyService {
 			System.out.println("HttpErrorException: " + e.getMessage());
 			System.out.println(e.getResponseBodyAsString());
 		}
-		auditManagerResponseDto.setStatus(true);
+		auditManagerResponseDto.setStatus("Success");
+		auditManagerResponseDto.setMessage("Audit logged successfuly");
 		return auditManagerResponseDto;
 
 	}

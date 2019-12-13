@@ -9,6 +9,7 @@ public class AuditManagerResponseDto {
 	/**
 	 * The boolean audit status
 	 */
-	private boolean status;
+	private String status;
+	private String message;
 
 }

@@ -82,7 +82,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/v1/authmanager/authorize/validateToken}")
+	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/v1/authmanager/authorize/admin/validateToken}")
 	private String adminValidateUrl;
 	
 	@Value("${auth.jwt.base:Mosip-Token}")
@@ -184,7 +184,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER+token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
-			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.POST, entity, String.class);
+			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
 		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
 		}

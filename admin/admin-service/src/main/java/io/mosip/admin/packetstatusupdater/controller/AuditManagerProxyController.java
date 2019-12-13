@@ -22,7 +22,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 
 @RestController
-@RequestMapping("/auditmangaer")
+@RequestMapping(value = "/auditmanager/log")
 public class AuditManagerProxyController {
 	/**
 	 * AuditManager Service field with functions related to auditing
@@ -40,7 +40,7 @@ public class AuditManagerProxyController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@PostMapping(value = "/logs",produces= MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping
 	public ResponseWrapper<AuditManagerResponseDto> addAudit(@RequestBody @Valid RequestWrapper<AuditManagerRequestDto> requestDto) {
 		ResponseWrapper<AuditManagerResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(auditManagerProxyService.logAdminAudit(requestDto.getRequest()));
