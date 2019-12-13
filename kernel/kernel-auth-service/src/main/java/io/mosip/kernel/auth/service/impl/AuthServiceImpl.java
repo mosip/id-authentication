@@ -295,7 +295,7 @@ public class AuthServiceImpl implements AuthService {
 		otpUser.setOtpChannel(otpUser.getOtpChannel());
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
 			mosipUser = uinService.getDetailsFromUin(otpUser);
-			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser.getOtpChannel(), "ida");
+			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser, "ida");
 			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
 		} else if (AuthConstant.APPTYPE_USERID.equals(otpUser.getUseridtype())) {

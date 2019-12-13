@@ -179,7 +179,7 @@ public class TemplateController {
 	 */
 	@GetMapping("/templatetypecodes/{code}")
 	@ResponseFilter
-	@PreAuthorize("hasRole('RESIDENT')")
+	@PreAuthorize("hasAnyRole('RESIDENT','ID_AUTHENTICATION')")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateByTemplateTypeCode(
 			@PathVariable("code") String templateTypeCode) {
 
