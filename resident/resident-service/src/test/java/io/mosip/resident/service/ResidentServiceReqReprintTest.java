@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
@@ -24,12 +23,12 @@ import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.RegProcRePrintResponseDto;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
+import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.impl.ResidentServiceImpl;
-import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 
@@ -96,7 +95,8 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void validateOtpException() throws OtpValidationFailedException, IOException, ResidentServiceCheckedException {
+	public void validateOtpException()
+			throws OtpValidationFailedException, IOException, ResidentServiceCheckedException {
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(false);
 		residentServiceImpl.reqPrintUin(residentReqDto);
@@ -104,7 +104,8 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void reprintApiException() throws OtpValidationFailedException, IOException, ApisResourceAccessException, ResidentServiceCheckedException {
+	public void reprintApiException() throws OtpValidationFailedException, IOException, ApisResourceAccessException,
+			ResidentServiceCheckedException {
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenReturn(null);
 		residentServiceImpl.reqPrintUin(residentReqDto);
@@ -119,8 +120,8 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void testApiResourceAccessException()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
+	public void testApiResourceAccessException() throws ApisResourceAccessException, IOException,
+			OtpValidationFailedException, ResidentServiceCheckedException {
 		HttpClientErrorException exp = new HttpClientErrorException(HttpStatus.BAD_GATEWAY);
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenThrow(new ApisResourceAccessException("badgateway", exp));
@@ -128,8 +129,8 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void testApiResourceAccessExceptionServer()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
+	public void testApiResourceAccessExceptionServer() throws ApisResourceAccessException, IOException,
+			OtpValidationFailedException, ResidentServiceCheckedException {
 		HttpServerErrorException exp = new HttpServerErrorException(HttpStatus.BAD_GATEWAY);
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenThrow(new ApisResourceAccessException("badgateway", exp));
@@ -137,16 +138,16 @@ public class ResidentServiceReqReprintTest {
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void testApiResourceAccessExceptionUnknown()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
+	public void testApiResourceAccessExceptionUnknown() throws ApisResourceAccessException, IOException,
+			OtpValidationFailedException, ResidentServiceCheckedException {
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenThrow(new ApisResourceAccessException("badgateway", new RuntimeException()));
 		residentServiceImpl.reqPrintUin(residentReqDto);
 	}
 
 	@Test(expected = ResidentServiceException.class)
-	public void testTokenGeneratorIOException()
-			throws ApisResourceAccessException, IOException, OtpValidationFailedException, ResidentServiceCheckedException {
+	public void testTokenGeneratorIOException() throws ApisResourceAccessException, IOException,
+			OtpValidationFailedException, ResidentServiceCheckedException {
 		Mockito.when(tokenGenerator.getRegprocToken()).thenThrow(new IOException());
 		Mockito.when(env.getProperty(ApiName.REPRINTUIN.name()))
 				.thenReturn("https://int.mosip.io/registrationprocessor/v1/requesthandler/reprint");
