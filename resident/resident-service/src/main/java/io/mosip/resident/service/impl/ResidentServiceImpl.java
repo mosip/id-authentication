@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.config.LoggerConfiguration;
@@ -45,15 +45,16 @@ import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseDTO;
+import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.RIDInvalidException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
 import io.mosip.resident.exception.ResidentServiceException;
 import io.mosip.resident.service.IdAuthService;
+import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.service.ResidentService;
 import io.mosip.resident.util.JsonUtil;
-import io.mosip.resident.service.NotificationService;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 import io.mosip.resident.util.UINCardDownloadService;
@@ -64,7 +65,6 @@ public class ResidentServiceImpl implements ResidentService {
 	private static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 	private static final String STATUS_CHECK_ID = "mosip.resident.service.status.check.id";
 	private static final String STATUS_CHECEK_VERSION = "mosip.resident.service.status.check.version";
-	private static final int RID_LENGTH = 29;
 	private static final String REJECTED_MESSAGE = "REJECTED - PLEASE VISIT THE NEAREST CENTER FOR DETAILS.";
 	private static final String REREGISTER_MESSAGE = "FAILED - PLEASE VISIT THE NEAREST CENTER FOR DETAILS.";
 	private static final String RESEND_MESSAGE = "UNDER PROCESSING - PLEASE CHECK BACK AGAIN LATER.";
@@ -88,6 +88,9 @@ public class ResidentServiceImpl implements ResidentService {
 	private ResidentServiceRestClient residentServiceRestClient;
 
 	@Autowired
+	private RidValidator<String> ridValidator;
+
+	@Autowired
 	Environment env;
 
 	@Value("${resident.center.id}")
@@ -102,8 +105,9 @@ public class ResidentServiceImpl implements ResidentService {
 	public RegStatusCheckResponseDTO getRidStatus(RequestDTO request) throws ApisResourceAccessException {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::getRidStatus():: entry");
-		validateRID(request.getIndividualId());
-
+		if (!ridValidator.validateId(request.getIndividualId()))
+			throw new ResidentServiceException(ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorCode(),
+					ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorMessage());
 		RegStatusCheckResponseDTO response = null;
 		ResponseWrapper<RegistrationStatusDTO> responseWrapper = null;
 
@@ -118,7 +122,7 @@ public class ResidentServiceImpl implements ResidentService {
 		dto.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 
 		try {
-			responseWrapper = (ResponseWrapper) residentServiceRestClient.postApi(
+			responseWrapper = (ResponseWrapper<RegistrationStatusDTO>) residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REGISTRATIONSTATUSSEARCH.name()), MediaType.APPLICATION_JSON, dto,
 					ResponseWrapper.class, tokenGenerator.getToken());
 		} catch (Exception e) {
@@ -129,7 +133,7 @@ public class ResidentServiceImpl implements ResidentService {
 		response = new RegStatusCheckResponseDTO();
 
 		if (responseWrapper.getResponse() == null) {
-			if (responseWrapper.getErrors() == null) {
+			if (responseWrapper.getErrors() == null || responseWrapper.getErrors().isEmpty()) {
 				throw new RIDInvalidException(ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorCode(),
 						ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -140,43 +144,11 @@ public class ResidentServiceImpl implements ResidentService {
 					.getResponse();
 
 			String statusCode = validateResponse(statusResponse.get(0).get("statusCode"));
-			sendNotification(request, statusCode);
 			response.setRidStatus(statusCode);
 		}
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::getRidStatus():: exit");
 		return response;
-	}
-
-	private void sendNotification(RequestDTO request, String statusCode) {
-		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::sendNotification():: entry");
-		NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-		notificationRequestDto.setId(request.getIndividualId());
-		notificationRequestDto.setIdType(getIdType(request.getIndividualIdType()));
-		// temporarily commented --> need to be removed later
-		// notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_NO_MOB_MAIL_ID);
-		Map<String, Object> attribute = new HashMap<String, Object>();
-		attribute.put("statusCode", statusCode);
-		notificationRequestDto.setAdditionalAttributes(attribute);
-		try {
-			NotificationResponseDTO notificationResponse = notificationService.sendNotification(notificationRequestDto);
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					request.getIndividualId(), notificationResponse.getStatus() + notificationResponse.getMessage());
-		} catch (ResidentServiceCheckedException e) {
-			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
-		}
-		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::sendNotification():: exit");
-	}
-
-	private void validateRID(String registrationId) {
-		if (registrationId.length() == RID_LENGTH && registrationId.matches("[0-9]+")) {
-			return;
-		}
-		throw new RIDInvalidException(ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorCode(),
-				ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorMessage());
 	}
 
 	private String validateResponse(String statusCode) {

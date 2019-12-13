@@ -18,10 +18,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
+import io.mosip.resident.dto.RegistrationStatusDTO;
 import io.mosip.resident.dto.RequestDTO;
+import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.RIDInvalidException;
 import io.mosip.resident.exception.ResidentServiceException;
@@ -49,6 +51,9 @@ public class RidStatusServiceTest {
 	@Mock
 	NotificationService notificationService;
 	
+	@Mock
+	private RidValidator<String> ridValidator;
+	
 	@InjectMocks
 	ResidentServiceImpl residentService = new ResidentServiceImpl();
 	
@@ -64,10 +69,19 @@ public class RidStatusServiceTest {
 		Mockito.when(env.getProperty(STATUS_CHECEK_VERSION)).thenReturn("version");
 		Mockito.when(env.getProperty(DATETIME_PATTERN)).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Mockito.when(env.getProperty(REGISTRATIONSTATUSSEARCH)).thenReturn(REGISTRATIONSTATUSSEARCH);
+		Mockito.when(ridValidator.validateId(Mockito.anyString())).thenReturn(true);
 	}
 	
-	@Test(expected = RIDInvalidException.class)
+	@Test(expected = ResidentServiceException.class)
 	public void testInvalidRID() throws ApisResourceAccessException {
+		ResponseWrapper<RegistrationStatusDTO>responseWrapper  = new ResponseWrapper<>();
+		List<ServiceError> errors = new ArrayList<>();
+		ServiceError error = new ServiceError();
+		error.setErrorCode("RES-SER-10");
+		error.setMessage("Invalid RID");
+		errors.add(error);
+		responseWrapper.setErrors(errors);
+		Mockito.when(residentServiceRestClient.postApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
 		requestDTO = new RequestDTO();
 		requestDTO.setIndividualId("100061004359892201912021042");
 		residentService.getRidStatus(requestDTO);
@@ -81,7 +95,9 @@ public class RidStatusServiceTest {
 	}
 	@Test(expected = RIDInvalidException.class)
 	public void testInvalidRIDError() throws Exception {
-	
+		ResponseWrapper<RegistrationStatusDTO>responseWrapper  = new ResponseWrapper<>();
+		Mockito.when(residentServiceRestClient.postApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+
 		requestDTO.setIndividualId("123456789");
 		residentService.getRidStatus(requestDTO);
 		
@@ -117,7 +133,7 @@ public class RidStatusServiceTest {
 		NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
 		notificationResponseDTO.setMessage("done");
 		notificationResponseDTO.setStatus("done");
-		Mockito.when(notificationService.sendNotification(any())).thenReturn(notificationResponseDTO);
+	//	Mockito.when(notificationService.sendNotification(any())).thenReturn(notificationResponseDTO);
 		RegStatusCheckResponseDTO response = residentService.getRidStatus(requestDTO);
 		assertEquals(response.getRidStatus(), "PROCESSED");
 	}

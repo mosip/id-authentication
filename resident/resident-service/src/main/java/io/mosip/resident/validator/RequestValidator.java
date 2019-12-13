@@ -86,7 +86,6 @@ public class RequestValidator {
 	public void setMap() {
 		map = new HashMap<RequestIdType, String>();
 		map.put(RequestIdType.RE_PRINT_ID, reprintId);
-		// map.put(key, value)
 	}
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
