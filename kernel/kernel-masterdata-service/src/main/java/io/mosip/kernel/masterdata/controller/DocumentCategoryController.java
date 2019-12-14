@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
@@ -67,9 +68,10 @@ public class DocumentCategoryController {
 	@ResponseFilter
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL,DocumentCategoryDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL,DocumentCategoryDto.class.getSimpleName()));
 		ResponseWrapper<DocumentCategoryResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.getAllDocumentCategory());
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS,DocumentCategoryDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC,DocumentCategoryDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 

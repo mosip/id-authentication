@@ -78,6 +78,7 @@ public class AuditUtil {
 
 		setAuditRequestDto(eventName, eventType, description);
 	}
+	
 
 	/**
 	 * Sets the audit request dto.
