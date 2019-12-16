@@ -60,9 +60,12 @@ public class ResidentServiceRestClient {
 	/**
 	 * Gets the api.
 	 *
-	 * @param              <T> the generic type
-	 * @param token        the token
-	 * @param responseType the response type
+	 * @param <T>
+	 *            the generic type
+	 * @param token
+	 *            the token
+	 * @param responseType
+	 *            the response type
 	 * @return the api
 	 * @throws Exception
 	 */
@@ -114,7 +117,7 @@ public class ResidentServiceRestClient {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw new ApisResourceAccessException("Exception occured while accessing " + uriComponents.toUri(), e);
+				throw new ApisResourceAccessException("Exception occured while accessing ", e);
 
 			}
 		}
@@ -145,10 +148,14 @@ public class ResidentServiceRestClient {
 	/**
 	 * Patch api.
 	 *
-	 * @param               <T> the generic type
-	 * @param uri           the uri
-	 * @param requestType   the request type
-	 * @param responseClass the response class
+	 * @param <T>
+	 *            the generic type
+	 * @param uri
+	 *            the uri
+	 * @param requestType
+	 *            the request type
+	 * @param responseClass
+	 *            the response class
 	 * @return the t
 	 */
 	@SuppressWarnings("unchecked")
@@ -181,13 +188,18 @@ public class ResidentServiceRestClient {
 	/**
 	 * Put api.
 	 *
-	 * @param               <T> the generic type
-	 * @param uri           the uri
-	 * @param requestType   the request type
-	 * @param responseClass the response class
+	 * @param <T>
+	 *            the generic type
+	 * @param uri
+	 *            the uri
+	 * @param requestType
+	 *            the request type
+	 * @param responseClass
+	 *            the response class
 	 * @param mediaType
 	 * @return the t
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T putApi(String uri, Object requestType, Class<?> responseClass, MediaType mediaType, String token)
