@@ -543,7 +543,7 @@ public class OTPServiceImpl implements OTPService {
 			case AuthConstant.PHONE:
 				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser,
 						accessTokenResponse.getAccess_token());
-				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(),
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getUserId(),
 						accessTokenResponse.getAccess_token());
 				break;
 			}

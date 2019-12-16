@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 
 /***********************************************************************************************************************
  * AUTH HEADERS FILTER This filter is going to act as a CORS filter. It is
@@ -30,6 +29,10 @@ public class CorsFilter extends OncePerRequestFilter {
 		    String origin = request.getHeader("Origin");
 			if (origin != null && !origin.isEmpty()) {
 				response.setHeader("Access-Control-Allow-Origin", origin);
+			}
+			else
+			{
+				response.setHeader("Access-Control-Allow-Origin", "*");
 			}
 			response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT, PATCH");
 			response.setHeader("Access-Control-Allow-Headers",
