@@ -12,6 +12,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -38,6 +39,7 @@ import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
+import io.mosip.registration.controller.device.Streamer;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.controller.eodapproval.RegistrationApprovalController;
 import io.mosip.registration.controller.reg.AlertController;
@@ -59,6 +61,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.operator.UserOnboardService;
@@ -86,10 +89,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -108,7 +113,7 @@ import javafx.util.Duration;
 
 @Component
 public class BaseController {
-	
+
 	private static final String ALERT_STAGE = "alertStage";
 
 	@Autowired
@@ -185,7 +190,10 @@ public class BaseController {
 	private List<String> pageDetails = new ArrayList<>();
 
 	private Stage alertStage;
-	
+
+	@Autowired
+	private BioService bioService;
+
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -200,7 +208,7 @@ public class BaseController {
 	public Stage getAlertStage() {
 		return alertStage;
 	}
-	
+
 	/**
 	 * Adding events to the stage.
 	 *
@@ -510,10 +518,10 @@ public class BaseController {
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
 					clearRegistrationData();
-					
-					//Clear Captured images data
+
+					// Clear Captured images data
 					BioServiceImpl.clearAllCaptures();
-					
+
 				} else {
 					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
 							RegistrationConstants.ENABLE);
@@ -551,7 +559,7 @@ public class BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-		webCameraController.closeWebcam();		
+		webCameraController.closeWebcam();
 		goToHomePage();
 
 	}
@@ -1218,8 +1226,8 @@ public class BaseController {
 		alert.initStyle(StageStyle.UNDECORATED);
 		alert.initModality(Modality.WINDOW_MODAL);
 		alert.initOwner(fXComponents.getStage());
-		if(SessionContext.isSessionContextAvailable()) {
-		SessionContext.map().put("alert", alert);
+		if (SessionContext.isSessionContextAvailable()) {
+			SessionContext.map().put("alert", alert);
 		}
 		return alert;
 	}
@@ -1403,5 +1411,86 @@ public class BaseController {
 			
 		}
 	}
+
+	protected void clearBiometrics(String bioType) {
+
+		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
+				"Clearing Bio Data (Capture Response,bio scores, bio stream images) of : " + bioType);
+
+		if (bioType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT)) {
+			BioServiceImpl.clearCaptures(RegistrationConstants.LEFT_SLAP);
+			BioServiceImpl.clearCaptures(RegistrationConstants.RIGHT_SLAP);
+			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_THUMBS);
+
+			BioServiceImpl.clearBIOScoreByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
+
+			BioServiceImpl.clearBIOStreamImagesByBioType(Arrays.asList(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
+					RegistrationConstants.FINGERPRINT_SLAB_RIGHT, RegistrationConstants.FINGERPRINT_SLAB_THUMBS));
+
+		} else if (bioType.equalsIgnoreCase(RegistrationConstants.IRIS)) {
+			BioServiceImpl.clearCaptures(RegistrationConstants.TWO_IRIS);
+			BioServiceImpl.clearBIOScoreByBioType(RegistrationConstants.TWO_IRIS);
+
+			BioServiceImpl.clearBIOStreamImagesByBioType(RegistrationConstants.TWO_IRIS);
+
+		}
+
+		LOGGER.info("REGISTRATION - BASE_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
+				"Cleared Bio Data (Capture Response,bio scores, bio stream images) of : " + bioType);
+	}
+
+	protected void clearAllBiometrics() {
+		BioServiceImpl.clearAllCaptures();
+
+	}
+
+	protected void updateByAttempt(String bioType, int attempt, ImageView streamImage, Label qualityText,
+			ProgressBar progressBar, Label progressQualityScore) {
+
+		double qualityScoreValue = bioService.getBioQualityScores(bioType, attempt);
+		String qualityScore = getQualityScore(qualityScoreValue);
+
+		if (qualityScore != null) {
+			Image image = bioService.getBioStreamImage(bioType, attempt);
+			// Set Stream image
+			streamImage.setImage(image);
+
+			// Quality Label
+			qualityText.setText(qualityScore);
+
+			// Progress BAr
+			progressBar.setProgress(qualityScoreValue / 100);
+
+			// Progress Bar Quality Score
+			progressQualityScore
+					.setText(qualityScore);
+
+			if (qualityScoreValue >= Double
+					.parseDouble(getValueFromApplicationContext(getThresholdKeyByBioType(bioType)))) {
+				progressBar.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
+				progressBar.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
+			} else {
+				progressBar.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
+				progressBar.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
+			}
+
+		}
+
+	}
+
+	protected String getThresholdKeyByBioType(String bioType) {
+		return bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
+				? RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD
+				: bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)
+						? RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD
+						: bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)
+								? RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD
+								: bioType.toLowerCase().contains(RegistrationConstants.IRIS.toLowerCase()) ? RegistrationConstants.IRIS_THRESHOLD
+										: RegistrationConstants.EMPTY;
+	}
+	
 
 }
