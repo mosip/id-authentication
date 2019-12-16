@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.documents.exception;
+package io.mosip.preregistration.core.exception;
 
 import java.util.List;
 

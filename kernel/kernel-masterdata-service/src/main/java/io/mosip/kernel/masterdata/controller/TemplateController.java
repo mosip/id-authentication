@@ -93,7 +93,7 @@ public class TemplateController {
 	 *            the template type code
 	 * @return All {@link TemplateDto}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH','PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH','PRE_REGISTRATION_ADMIN','RESIDENT')")
 	@ResponseFilter
 	@GetMapping("/{langcode}/{templatetypecode}")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateBylangCodeAndTemplateTypeCode(
@@ -179,6 +179,7 @@ public class TemplateController {
 	 */
 	@GetMapping("/templatetypecodes/{code}")
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('RESIDENT','ID_AUTHENTICATION')")
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateByTemplateTypeCode(
 			@PathVariable("code") String templateTypeCode) {
 

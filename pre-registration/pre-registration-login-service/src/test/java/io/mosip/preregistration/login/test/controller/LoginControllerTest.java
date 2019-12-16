@@ -43,7 +43,6 @@ import net.minidev.json.parser.ParseException;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { PreRegistartionLoginApplication.class })
 @AutoConfigureMockMvc
-// @ConfigurationProperties("mosip.preregistration.login")
 public class LoginControllerTest {
 
 	@Autowired
