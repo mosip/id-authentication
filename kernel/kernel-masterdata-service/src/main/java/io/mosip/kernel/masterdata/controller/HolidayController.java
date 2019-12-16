@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
+import io.mosip.kernel.masterdata.dto.HolidayLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -214,6 +215,24 @@ public class HolidayController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+	
+
+	/**
+	 * This method returns a list of holidays containing a particular language code
+	 * for the given country level
+	 * 
+	 * @param langCode
+	 *            input parameter language code
+	 * @return {@link HolidayLevelResponseDto}
+	 */
+	@ResponseFilter
+	@GetMapping("level/{langcode}")
+	public ResponseWrapper<HolidayLevelResponseDto> getAllHolidayByLangCode(
+			@PathVariable("langcode") String langCode) {
+		ResponseWrapper<HolidayLevelResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.getHolidayLanguageCode(langCode));
 		return responseWrapper;
 	}
 
