@@ -3,6 +3,8 @@ package io.mosip.resident.service;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
@@ -106,8 +109,20 @@ public class ResidentServiceReqReprintTest {
 	@Test(expected = ResidentServiceException.class)
 	public void reprintApiException() throws OtpValidationFailedException, IOException, ApisResourceAccessException,
 			ResidentServiceCheckedException {
+		ResponseWrapper<RegProcRePrintResponseDto> response = new ResponseWrapper<>();
+		RegProcRePrintResponseDto reprintResp = new RegProcRePrintResponseDto();
+		reprintResp.setMessage("sent to packet receiver");
+		reprintResp.setRegistrationId("10008200070004620191203115734");
+		reprintResp.setStatus("success");
+		response.setResponse(reprintResp);
+		List<ServiceError> errorList = new ArrayList<>();
+		ServiceError error = new ServiceError();
+		error.setErrorCode("RES_SER-001");
+		error.setMessage("Runtime exception");
+		errorList.add(error);
+		response.setErrors(errorList);
 		Mockito.when(residentServiceRestClient.postApi(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(null);
+				Mockito.any())).thenReturn(response);
 		residentServiceImpl.reqPrintUin(residentReqDto);
 
 	}

@@ -2,7 +2,7 @@ package io.mosip.resident.validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +20,6 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.constant.RequestIdType;
-import io.mosip.resident.constant.ResidentErrorCode;
 import io.mosip.resident.constant.VidType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
@@ -29,7 +28,6 @@ import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.dto.VidRevokeRequestDTO;
 import io.mosip.resident.exception.InvalidInputException;
-import io.mosip.resident.exception.ResidentServiceException;
 
 @Component
 public class RequestValidator {
@@ -43,6 +41,16 @@ public class RequestValidator {
 	@Autowired
 	private RidValidator<String> ridValidator;
 
+	private String euinId;
+
+	private String reprintId;
+
+	private String authUnLockId;
+
+	private String authHstoryId;
+
+	private String authLockId;
+
 	@Value("${resident.vid.id}")
 	private String id;
 
@@ -53,21 +61,27 @@ public class RequestValidator {
 	private String version;
 
 	@Value("${resident.authlock.id}")
-	private String authLockId;
+	public void setAuthLockId(String authLockId) {
+		this.authLockId = authLockId;
+	}
 
 	@Value("${resident.euin.id}")
-	private String euinId;
-
-	private static String reprintId;
+	public void setEuinIdString(String euinId) {
+		this.euinId = euinId;
+	}
 
 	@Value("${resident.authhistory.id}")
-	private String authHstoryId;
+	public void setAuthHstoryId(String authHstoryId) {
+		this.authHstoryId = authHstoryId;
+	}
 
 	@Value("${auth.types.allowed}")
 	private String authTypes;
 
 	@Value("${resident.authunlock.id}")
-	private String authUnLockId;
+	public void setAuthUnlockId(String authUnLockId) {
+		this.authUnLockId = authUnLockId;
+	}
 
 	@Value("${mosip.id.validation.identity.phone}")
 	private String phoneRegex;
@@ -75,17 +89,22 @@ public class RequestValidator {
 	@Value("${mosip.id.validation.identity.email}")
 	private String emailRegex;
 
-	private static Map<RequestIdType, String> map;
+	private Map<RequestIdType, String> map;
 
 	@Value("${resident.printuin.id}")
 	public void setReprintId(String reprintId) {
-		RequestValidator.reprintId = reprintId;
+		this.reprintId = reprintId;
 	}
 
 	@PostConstruct
 	public void setMap() {
-		map = new HashMap<RequestIdType, String>();
+		map = new EnumMap<>(RequestIdType.class);
 		map.put(RequestIdType.RE_PRINT_ID, reprintId);
+		map.put(RequestIdType.AUTH_LOCK_ID, authLockId);
+		map.put(RequestIdType.AUTH_UNLOCK_ID, authUnLockId);
+		map.put(RequestIdType.E_UIN_ID, euinId);
+		map.put(RequestIdType.AUTH_HISTORY_ID, authHstoryId);
+
 	}
 
 	public void validateVidCreateRequest(ResidentVidRequestDto requestDto) {
@@ -122,16 +141,7 @@ public class RequestValidator {
 
 	public void validateAuthLockOrUnlockRequest(RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO,
 			AuthTypeStatus authTypeStatus) {
-		if (authTypeStatus.equals(AuthTypeStatus.LOCK)) {
-			if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authLockId))
-				throw new InvalidInputException("id");
-		} else {
-			if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authUnLockId))
-				throw new InvalidInputException("id");
-		}
-
-		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
-			throw new InvalidInputException("version");
+		validateAuthorUnlockId(requestDTO, authTypeStatus);
 
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
@@ -149,12 +159,17 @@ public class RequestValidator {
 
 	}
 
-	public void validateEuinRequest(RequestWrapper<EuinRequestDTO> requestDTO) {
-		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(euinId))
-			throw new InvalidInputException("id");
+	private void validateAuthorUnlockId(RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO,
+			AuthTypeStatus authTypeStatus) {
+		if (authTypeStatus.equals(AuthTypeStatus.LOCK)) {
+			validateRequest(requestDTO, RequestIdType.AUTH_LOCK_ID);
+		} else {
+			validateRequest(requestDTO, RequestIdType.AUTH_UNLOCK_ID);
+		}
+	}
 
-		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
-			throw new InvalidInputException("version");
+	public void validateEuinRequest(RequestWrapper<EuinRequestDTO> requestDTO) {
+		validateRequest(requestDTO, RequestIdType.E_UIN_ID);
 
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
@@ -171,11 +186,7 @@ public class RequestValidator {
 	}
 
 	public void validateAuthHistoryRequest(@Valid RequestWrapper<AuthHistoryRequestDTO> requestDTO) {
-		if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authHstoryId))
-			throw new InvalidInputException("id");
-
-		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
-			throw new InvalidInputException("version");
+		validateRequest(requestDTO, RequestIdType.AUTH_HISTORY_ID);
 
 		if (requestDTO.getRequest() == null)
 			throw new InvalidInputException("request");
@@ -242,21 +253,21 @@ public class RequestValidator {
 		if (requestDto.getRequest().getIndividualIdType() == null
 				|| (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
-		
+
 		if (!validateIndividualId(requestDto.getRequest().getIndividualId(),
 				requestDto.getRequest().getIndividualIdType())) {
 			throw new InvalidInputException("individualId");
 		}
-		
+
 		if (requestDto.getRequest().getOtp() == null)
 			throw new InvalidInputException("otp");
 
 		if (requestDto.getRequest().getTransactionID() == null)
 			throw new InvalidInputException("transactionId");
 	}
-	
+
 	public void validateRequestWrapper(RequestWrapper<?> request) {
-		
+
 		if (request.getId() == null || !request.getId().equalsIgnoreCase(revokeVidId))
 			throw new InvalidInputException("id");
 
@@ -268,18 +279,14 @@ public class RequestValidator {
 	}
 
 	public boolean validateRequest(RequestWrapper<?> request, RequestIdType requestIdType) {
-		if(request.getId() == null || request.getId().isEmpty())
-			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
-					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");
-		if(request.getVersion() == null || request.getVersion().isEmpty())
-			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
-					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "version");		
+		if (request.getId() == null || request.getId().isEmpty())
+			throw new InvalidInputException("id");
+		if (request.getVersion() == null || request.getVersion().isEmpty())
+			throw new InvalidInputException("version");
 		if (!request.getId().equals(map.get(requestIdType)))
-			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
-					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");
+			throw new InvalidInputException("id");
 		if (!request.getVersion().equals(version))
-			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
-					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "version");
+			throw new InvalidInputException("version");
 		return true;
 
 	}

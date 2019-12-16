@@ -11,7 +11,7 @@ public class RequestWrapper<T> {
 	private String version;
 	private String requesttime;
 
-	@NotNull
+	@NotNull(message = "request should not be null")
 	@Valid
 	private T request;
 }
