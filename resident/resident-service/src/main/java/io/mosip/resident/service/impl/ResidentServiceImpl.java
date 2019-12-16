@@ -39,6 +39,7 @@ import io.mosip.resident.dto.RegProcRePrintResponseDto;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RegistrationStatusDTO;
 import io.mosip.resident.dto.RegistrationStatusRequestDTO;
+import io.mosip.resident.dto.RegistrationStatusResponseDTO;
 import io.mosip.resident.dto.RegistrationStatusSubRequestDto;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
@@ -109,7 +110,8 @@ public class ResidentServiceImpl implements ResidentService {
 			throw new ResidentServiceException(ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorCode(),
 					ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorMessage());
 		RegStatusCheckResponseDTO response = null;
-		ResponseWrapper<RegistrationStatusDTO> responseWrapper = null;
+		//ResponseWrapper<RegistrationStatusDTO> responseWrapper = null;
+		RegistrationStatusResponseDTO responseWrapper = null;
 
 		RegistrationStatusRequestDTO dto = new RegistrationStatusRequestDTO();
 		List<RegistrationStatusSubRequestDto> rids = new ArrayList<RegistrationStatusSubRequestDto>();
@@ -122,9 +124,9 @@ public class ResidentServiceImpl implements ResidentService {
 		dto.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 
 		try {
-			responseWrapper = (ResponseWrapper<RegistrationStatusDTO>) residentServiceRestClient.postApi(
+			responseWrapper = (RegistrationStatusResponseDTO) residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REGISTRATIONSTATUSSEARCH.name()), MediaType.APPLICATION_JSON, dto,
-					ResponseWrapper.class, tokenGenerator.getToken());
+					RegistrationStatusResponseDTO.class, tokenGenerator.getAdminToken());
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -138,7 +140,7 @@ public class ResidentServiceImpl implements ResidentService {
 						ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorMessage());
 			}
 			throw new ResidentServiceException(responseWrapper.getErrors().get(0).getErrorCode(),
-					responseWrapper.getErrors().get(0).getMessage());
+					responseWrapper.getErrors().get(0).getErrorMessage());
 		} else {
 			List<LinkedHashMap<String, String>> statusResponse = (List<LinkedHashMap<String, String>>) responseWrapper
 					.getResponse();
