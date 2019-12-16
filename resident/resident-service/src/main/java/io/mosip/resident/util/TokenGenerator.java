@@ -27,7 +27,7 @@ public class TokenGenerator {
 
     private static Logger logger = LoggerConfiguration.logConfig(TokenGenerator.class);
 
-            @Autowired
+    @Autowired
     Environment environment;
 
 
