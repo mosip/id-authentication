@@ -2,7 +2,7 @@ package io.mosip.resident.validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +58,7 @@ public class RequestValidator {
 	@Value("${resident.euin.id}")
 	private String euinId;
 
-	private static volatile String reprintId;
+	private String reprintId;
 
 	@Value("${resident.authhistory.id}")
 	private String authHstoryId;
@@ -75,17 +75,16 @@ public class RequestValidator {
 	@Value("${mosip.id.validation.identity.email}")
 	private String emailRegex;
 
-	private static Map<RequestIdType, String> map = new HashMap<>();;
+	private Map<RequestIdType, String> map;
 
 	@Value("${resident.printuin.id}")
 	public void setReprintId(String reprintId) {
-		if (RequestValidator.reprintId != null)
-			RequestValidator.reprintId = reprintId;
+		this.reprintId = reprintId;
 	}
 
 	@PostConstruct
 	public void setMap() {
-
+		map = new EnumMap<>(RequestIdType.class);
 		map.put(RequestIdType.RE_PRINT_ID, reprintId);
 	}
 
