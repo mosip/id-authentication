@@ -128,6 +128,11 @@ public class Utilitiy {
 						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
 			}
 		}
+		
+		return retrieveErrorCode(idType, response,id);
+	}
+	
+	public JSONObject retrieveErrorCode(IdType idType,ResponseWrapper<IdRepoResponseDto> response,String id) throws ResidentServiceCheckedException {
 		ResidentErrorCode errorCode;
 		if (idType.equals(IdType.UIN))
 			errorCode = ResidentErrorCode.IN_VALID_UIN;
