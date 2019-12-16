@@ -5,6 +5,7 @@
 package io.mosip.preregistration.demographic.exception.util;
 
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
@@ -28,10 +29,13 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.core.exception.RestCallException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+import io.mosip.preregistration.demographic.errorcodes.ErrorCodes;
+import io.mosip.preregistration.demographic.errorcodes.ErrorMessages;
 import io.mosip.preregistration.demographic.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.demographic.exception.CryptocoreException;
 import io.mosip.preregistration.demographic.exception.DemographicServiceException;
 import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.demographic.exception.DuplicatePridKeyException;
 import io.mosip.preregistration.demographic.exception.IdValidationException;
 import io.mosip.preregistration.demographic.exception.InvalidDateFormatException;
 import io.mosip.preregistration.demographic.exception.MissingRequestParameterException;
@@ -174,6 +178,9 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof NoSuchAlgorithmException) {
 			throw new InvalidRequestParameterException(((NoSuchAlgorithmException) ex).getErrorCode(),
 					((NoSuchAlgorithmException) ex).getErrorText(), mainResponsedto);
+		}
+		else if (ex instanceof DataIntegrityViolationException ) {
+			throw new DuplicatePridKeyException(ErrorCodes.PRG_PAM_APP_021.getCode(),ErrorMessages.DUPLICATE_KEY.getMessage(), mainResponsedto);
 		}
 
 	}

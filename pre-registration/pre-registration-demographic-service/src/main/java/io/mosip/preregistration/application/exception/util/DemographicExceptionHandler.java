@@ -50,6 +50,7 @@ import io.mosip.preregistration.demographic.exception.BookingDeletionFailedExcep
 import io.mosip.preregistration.demographic.exception.CryptocoreException;
 import io.mosip.preregistration.demographic.exception.DemographicServiceException;
 import io.mosip.preregistration.demographic.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.demographic.exception.DuplicatePridKeyException;
 import io.mosip.preregistration.demographic.exception.IdValidationException;
 import io.mosip.preregistration.demographic.exception.InvalidDateFormatException;
 import io.mosip.preregistration.demographic.exception.MissingRequestParameterException;
@@ -459,5 +460,16 @@ public class DemographicExceptionHandler {
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
+	}
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for DuplicateKeyException
+	 */
+	@ExceptionHandler(DuplicatePridKeyException.class)
+	public ResponseEntity<MainResponseDTO<?>> duplicateKeyException(final DuplicatePridKeyException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 }

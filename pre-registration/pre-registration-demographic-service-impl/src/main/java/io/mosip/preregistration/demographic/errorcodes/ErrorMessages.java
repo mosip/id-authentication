@@ -166,7 +166,12 @@ public enum ErrorMessages {
 	/**
 	 * PRG_PAM_APP_019
 	 */
-	INVALID_PAGE_INDEX_VALUE("Invalid page index value");
+	INVALID_PAGE_INDEX_VALUE("Invalid page index value"),
+	
+	/**
+	 * PRG_PAM_APP_021
+	 */
+	DUPLICATE_KEY("Duplicate key for prid");
 
 	private ErrorMessages(String message) {
 		this.message = message;

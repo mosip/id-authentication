@@ -277,10 +277,10 @@ public class DemographicService implements DemographicServiceIntf {
 		log.info("sessionId", "idType", "id", "In addPreRegistration method of pre-registration service ");
 		log.info("sessionId", "idType", "id",
 				"Pre Registration start time : " + DateUtils.getUTCCurrentDateTimeString());
-		MainResponseDTO<DemographicCreateResponseDTO> mainResponseDTO = (MainResponseDTO<DemographicCreateResponseDTO>) serviceUtil
-				.getMainResponseDto(request);
+		MainResponseDTO<DemographicCreateResponseDTO> mainResponseDTO= null;
 		boolean isSuccess = false;
 		try {
+			mainResponseDTO = (MainResponseDTO<DemographicCreateResponseDTO>) serviceUtil.getMainResponseDto(request);
 			DemographicRequestDTO demographicRequest = request.getRequest();
 			validationUtil.langvalidation(demographicRequest.getLangCode());
 			log.info("sessionId", "idType", "id",
@@ -706,6 +706,7 @@ public class DemographicService implements DemographicServiceIntf {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
 					List<String> list = listAuth(authUserDetails().getAuthorities());
+					log.info("sessionId", "idType", "id", "In getDemographicData method of pre-registration service with list  "+list);
 					if (list.contains("ROLE_INDIVIDUAL")) {
 						userValidation(authUserDetails().getUserId(), demographicEntity.getCreatedBy());
 					}
@@ -901,6 +902,7 @@ public class DemographicService implements DemographicServiceIntf {
 	}
 
 	public void userValidation(String authUserId, String preregUserId) {
+		log.info("sessionId", "idType", "id", "In getDemographicData method of userValidation with priid "+preregUserId +" and userID "+authUserId);
 		if (!authUserId.trim().equals(preregUserId.trim())) {
 			throw new PreIdInvalidForUserIdException(ErrorCodes.PRG_PAM_APP_017.getCode(),
 					ErrorMessages.INVALID_PREID_FOR_USER.getMessage());
@@ -909,7 +911,7 @@ public class DemographicService implements DemographicServiceIntf {
 
 	private JSONObject getDocumentMetadata(DemographicEntity demographicEntity, String poa)
 			throws JsonProcessingException, ParseException {
-		String documentJsonString = "";
+		String documentJsonString;
 		JSONParser jsonParser = new JSONParser();
 		DocumentMultipartResponseDTO documentMultipartResponseDTO = new DocumentMultipartResponseDTO();
 		if (!serviceUtil.isNull(demographicEntity.getDocumentEntity())) {

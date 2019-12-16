@@ -96,7 +96,10 @@ public enum ErrorCodes {
 	PRG_PAM_APP_019("PRG_PAM_APP_019"),
 	
 	/* ErrorCode for PRID_RESTCALL_FAIL */
-	PRG_PAM_APP_020("PRG_PAM_APP_020");
+	PRG_PAM_APP_020("PRG_PAM_APP_020"),
+	
+	/* ErrorCode for PRID_RESTCALL_FAIL */
+	PRG_PAM_APP_021("PRG_PAM_APP_021");
 
 	private ErrorCodes(String code) {
 		this.code = code;
