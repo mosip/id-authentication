@@ -199,7 +199,7 @@ public class NotificationService {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 				"NotificationService::sendSMSNotification()::entry");
 		String phone = (String) mailingAttributes.get("phone");
-		if (phone == null || phone.isEmpty() || !(requestValidator.phoneValidator(phone))) {
+		if (nullValueCheck(phone) || !(requestValidator.phoneValidator(phone))) {
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 					"NotificationService::sendSMSNotification()::phoneValidatio::" + "false :: invalid phone number");
 			return false;
@@ -224,7 +224,7 @@ public class NotificationService {
 		try {
 			resp = restClient.postApi(env.getProperty(ApiName.SMSNOTIFIER.name()), MediaType.APPLICATION_JSON, req,
 					ResponseWrapper.class, tokenGenerator.getToken());
-			if (resp == null || resp.getResponse() == null || resp.getErrors() != null && !resp.getErrors().isEmpty()) {
+			if (nullCheckForResponse(resp)) {
 				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorCode(),
 						ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorMessage() + " SMSNOTIFIER API"
 								+ (resp != null ? resp.getErrors().get(0) : ""));
@@ -284,7 +284,7 @@ public class NotificationService {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 				"NotificationService::sendEmailNotification()::entry");
 		String email = String.valueOf(mailingAttributes.get("email"));
-		if (email == null || email.isEmpty() || !(requestValidator.emailValidator(email))) {
+		if (nullValueCheck(email) || !(requestValidator.emailValidator(email))) {
 			logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 					"NotificationService::sendEmailNotification()::emailValidation::" + "false :: invalid email");
 			return false;
@@ -320,8 +320,7 @@ public class NotificationService {
 
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
-			if (response == null || response.getResponse() == null
-					|| response.getErrors() != null && !response.getErrors().isEmpty()) {
+			if (nullCheckForResponse(response)) {
 				throw new ResidentServiceException(ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorCode(),
 						ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorMessage() + " EMAILNOTIFIER API"
 								+ (response != null ? response.getErrors().get(0) : ""));
@@ -364,5 +363,18 @@ public class NotificationService {
 		return false;
 
 	}
+	
+	public boolean nullValueCheck(String value) {
+		if(value == null || value.isEmpty())
+			return true;
+		return false;
+	}
 
+	public boolean nullCheckForResponse(ResponseWrapper<NotificationResponseDTO> response) {
+		if(response == null || response.getResponse() == null
+				|| response.getErrors() != null && !response.getErrors().isEmpty())
+			return true;
+		return false;
+		
+	}
 }
