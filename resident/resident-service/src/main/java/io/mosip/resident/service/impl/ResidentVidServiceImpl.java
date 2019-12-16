@@ -188,24 +188,24 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 		NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 		Long uin = null;
 
-		try {
-			boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(), requestDto.getIndividualId(),
-					requestDto.getIndividualIdType(), requestDto.getOtp());
-
-			if (!isAuthenticated)
-				throw new OtpValidationFailedException();
-		} catch (OtpValidationFailedException e) {
-			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_REV_SUCCESS);
-			notificationService.sendNotification(notificationRequestDto);
-			throw e;
-		}
+//		try {
+//			boolean isAuthenticated = idAuthService.validateOtp(requestDto.getTransactionID(), requestDto.getIndividualId(),
+//					requestDto.getIndividualIdType(), requestDto.getOtp());
+//
+//			if (!isAuthenticated)
+//				throw new OtpValidationFailedException();
+//		} catch (OtpValidationFailedException e) {
+//			notificationRequestDto.setTemplateTypeCode(NotificationTemplateCode.RS_VIN_REV_SUCCESS);
+//			notificationService.sendNotification(notificationRequestDto);
+//			throw e;
+//		}
 
 
 		try {
 			JSONObject jsonObject = utilitiy.retrieveIdrepoJson(vid, IdType.VID);
 			uin = JsonUtil.getJSONValue(jsonObject, IdType.UIN.name());
 		} catch (IdRepoAppException e) {
-			throw new VidRevocationException(e.getMessage());
+			throw new DataNotFoundException(e.getErrorCode(),e.getMessage());
 		}
 
 		notificationRequestDto.setId(uin.toString());

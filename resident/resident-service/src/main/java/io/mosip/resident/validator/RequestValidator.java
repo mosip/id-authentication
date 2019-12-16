@@ -234,14 +234,7 @@ public class RequestValidator {
 
 	public void validateVidRevokeRequest(RequestWrapper<VidRevokeRequestDTO> requestDto) {
 
-		if (requestDto.getId() == null || !requestDto.getId().equalsIgnoreCase(revokeVidId))
-			throw new InvalidInputException("id");
-
-		if (requestDto.getVersion() == null || !requestDto.getVersion().equalsIgnoreCase(version))
-			throw new InvalidInputException("version");
-
-		if (requestDto.getRequest() == null)
-			throw new InvalidInputException("request");
+		validateRequestWrapper(requestDto);
 
 		if (requestDto.getRequest().getVidStatus() == null)
 			throw new InvalidInputException("vidStatus");
@@ -249,19 +242,29 @@ public class RequestValidator {
 		if (requestDto.getRequest().getIndividualIdType() == null
 				|| (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
-		else if (requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())) {
-			try {
-				vidValidator.validateId(requestDto.getRequest().getIndividualId());
-			} catch (InvalidIDException e) {
-				throw new InvalidInputException("individualId");
-			}
+		
+		if (!validateIndividualId(requestDto.getRequest().getIndividualId(),
+				requestDto.getRequest().getIndividualIdType())) {
+			throw new InvalidInputException("individualId");
 		}
-
+		
 		if (requestDto.getRequest().getOtp() == null)
 			throw new InvalidInputException("otp");
 
 		if (requestDto.getRequest().getTransactionID() == null)
 			throw new InvalidInputException("transactionId");
+	}
+	
+	public void validateRequestWrapper(RequestWrapper<?> request) {
+		
+		if (request.getId() == null || !request.getId().equalsIgnoreCase(revokeVidId))
+			throw new InvalidInputException("id");
+
+		if (request.getVersion() == null || !request.getVersion().equalsIgnoreCase(version))
+			throw new InvalidInputException("version");
+
+		if (request.getRequest() == null)
+			throw new InvalidInputException("request");
 	}
 
 	public boolean validateRequest(RequestWrapper<?> request, RequestIdType requestIdType) {
