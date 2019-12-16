@@ -5,12 +5,16 @@ import com.google.gson.GsonBuilder;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.ResidentTestBootApplication;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
 import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.dto.VidRequestDto;
 import io.mosip.resident.dto.VidResponseDto;
+import io.mosip.resident.dto.VidRevokeRequestDTO;
+import io.mosip.resident.dto.VidRevokeResponseDTO;
 import io.mosip.resident.exception.OtpValidationFailedException;
 import io.mosip.resident.exception.VidCreationException;
+import io.mosip.resident.exception.VidRevocationException;
 import io.mosip.resident.service.impl.IdAuthServiceImpl;
 import io.mosip.resident.service.impl.ResidentServiceImpl;
 import io.mosip.resident.service.impl.ResidentVidServiceImpl;
@@ -29,6 +33,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -42,195 +49,373 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:application.properties")
 public class ResidentVidControllerTest {
 
-    private static final String JSON_STRING_RESPONSE = "";
+	private static final String JSON_STRING_RESPONSE = "";
 
-    @MockBean
-    private RestTemplate restTemplate;
+	@MockBean
+	private RestTemplate restTemplate;
 
-    @MockBean
-    private ResidentVidServiceImpl residentVidService;
+	@MockBean
+	private ResidentVidServiceImpl residentVidService;
 
-    @MockBean
-    private IdAuthServiceImpl idAuthService;
+	@MockBean
+	private IdAuthServiceImpl idAuthService;
 
-    @MockBean
-    private ResidentServiceImpl residentService;
+	@MockBean
+	private ResidentServiceImpl residentService;
 
-    @MockBean
-    private ResidentServiceRestClient residentServiceRestClient;
+	@MockBean
+	private ResidentServiceRestClient residentServiceRestClient;
 
-    @MockBean
-    private TokenGenerator tokenGenerator;
+	@MockBean
+	private TokenGenerator tokenGenerator;
 
-    @Mock
-    private Environment env;
+	@Mock
+	private Environment env;
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
+	
+	private static ResidentVidRequestDto getRequest() {
+		VidRequestDto vidRequestDto = new VidRequestDto();
+		vidRequestDto.setIndividualId("9072037081");
+		vidRequestDto.setIndividualIdType(IdType.UIN.name());
+		vidRequestDto.setOtp("974436");
+		vidRequestDto.setTransactionID("1111122222");
+		vidRequestDto.setVidType("Temporary");
 
-    private static ResidentVidRequestDto getRequest() {
-        VidRequestDto vidRequestDto = new VidRequestDto();
-        vidRequestDto.setIndividualId("9072037081");
-        vidRequestDto.setIndividualIdType(IdType.UIN.name());
-        vidRequestDto.setOtp("974436");
-        vidRequestDto.setTransactionID("1111122222");
-        vidRequestDto.setVidType("Temporary");
+		ResidentVidRequestDto request = new ResidentVidRequestDto();
+		request.setId("mosip.resident.vid");
+		request.setVersion("v1");
+		request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+		request.setRequest(vidRequestDto);
+		return request;
+	}
 
-        ResidentVidRequestDto request = new ResidentVidRequestDto();
-        request.setId("mosip.resident.vid");
-        request.setVersion("v1");
-        request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-        request.setRequest(vidRequestDto);
-        return request;
-    }
+	private static RequestWrapper<VidRevokeRequestDTO> getRevokeRequest() {
+		VidRevokeRequestDTO vidRevokeRequestDTO = new VidRevokeRequestDTO();
+		vidRevokeRequestDTO.setIndividualId("2038096257310540");
+		vidRevokeRequestDTO.setIndividualIdType(IdType.VID.name());
+		vidRevokeRequestDTO.setOtp("974436");
+		vidRevokeRequestDTO.setTransactionID("1111122222");
+		vidRevokeRequestDTO.setVidStatus("REVOKE");
 
+		RequestWrapper request = new RequestWrapper();
+		request.setId("mosip.resident.vidstatus");
+		request.setVersion("v1");
+		request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+		request.setRequest(vidRevokeRequestDTO);
+		return request;
+	}
 
-    @Test
-    public void vidCreationSuccessTest() throws Exception {
+	@Test
+	public void vidCreationSuccessTest() throws Exception {
 
-        VidResponseDto dto = new VidResponseDto();
-        dto.setVid("12345");
-        dto.setMessage("Successful");
+		VidResponseDto dto = new VidResponseDto();
+		dto.setVid("12345");
+		dto.setMessage("Successful");
 
-        ResponseWrapper<VidResponseDto> responseWrapper = new ResponseWrapper<>();
-        responseWrapper.setResponse(dto);
+		ResponseWrapper<VidResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dto);
 
-        Mockito.when(
-                residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
-                .thenReturn(responseWrapper);
+		Mockito.when(residentVidService.generateVid(Mockito.any(VidRequestDto.class))).thenReturn(responseWrapper);
 
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(getRequest());
 
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.vid", is("12345")));
+	}
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(getRequest());
+	@Test
+	public void otpValidationFailureTest() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.response.vid", is("12345")));
-    }
+		Mockito.when(residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
+				.thenThrow(new OtpValidationFailedException());
 
-    @Test
-    public void otpValidationFailureTest() throws Exception {
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(getRequest());
 
-        Mockito.when(
-                residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
-                .thenThrow(new OtpValidationFailedException());
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-004")));
+	}
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(getRequest());
+	@Test
+	public void vidCreationFailureTest() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-004")));
-    }
+		Mockito.when(residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
+				.thenThrow(new VidCreationException());
 
-    @Test
-    public void vidCreationFailureTest() throws Exception {
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(getRequest());
 
-        Mockito.when(
-                residentVidService.generateVid(Mockito.any(VidRequestDto.class)))
-                .thenThrow(new VidCreationException());
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-007")));
+	}
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(getRequest());
+	@Test
+	public void invalidId() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-007")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.setId(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidId() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.setId(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidVersion() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.setVersion(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidVersion() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.setVersion(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidRequest() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.setRequest(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidRequest() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.setRequest(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidVidType() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.getRequest().setVidType(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidVidType() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.getRequest().setVidType(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidIndividualIdType() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.getRequest().setIndividualIdType(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidIndividualIdType() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.getRequest().setIndividualIdType(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidIndividualId() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.getRequest().setIndividualId(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidIndividualId() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.getRequest().setIndividualId(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidTransactionId() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.getRequest().setTransactionID(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidTransactionId() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.getRequest().setTransactionID(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void invalidOtp() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		ResidentVidRequestDto request = getRequest();
+		request.getRequest().setOtp(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
 
-    @Test
-    public void invalidOtp() throws Exception {
+		this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
-        ResidentVidRequestDto request = getRequest();
-        request.getRequest().setOtp(null);
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String json = gson.toJson(request);
+	@Test
+	public void vidRevokingSuccessTest() throws Exception {
 
-        this.mockMvc.perform(post("/vid").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
-    }
+		VidRevokeResponseDTO dto = new VidRevokeResponseDTO();
+		dto.setMessage("Successful");
 
+		ResponseWrapper<VidRevokeResponseDTO> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(dto);
+
+		Mockito.when(residentVidService.revokeVid(Mockito.any(VidRevokeRequestDTO.class), Mockito.anyString()))
+				.thenReturn(responseWrapper);
+
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(getRevokeRequest());
+
+		RequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540").content(json)
+				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.response.message", is("Successful")));
+
+	}
+
+	@Test
+	public void vidRevokingFailureTest() throws Exception {
+
+		Mockito.when(residentVidService.revokeVid(Mockito.any(VidRevokeRequestDTO.class), Mockito.anyString()))
+				.thenThrow(new VidRevocationException());
+
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(getRevokeRequest());
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-RID-005")));
+
+	}
+
+	@Test
+	public void invalidIdRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.setId(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidVersionRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.setVersion(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidRequestRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.setRequest(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidVidStatusRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.getRequest().setVidStatus(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidIndividualIdTypeRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.getRequest().setIndividualIdType(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidIndividualIdRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.getRequest().setIndividualId(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidTransactionIdRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.getRequest().setTransactionID(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
+
+	@Test
+	public void invalidOtpRevokeTest() throws Exception {
+
+		RequestWrapper<VidRevokeRequestDTO> request = getRevokeRequest();
+		request.getRequest().setOtp(null);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(request);
+
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/vid/{vid}", "2038096257310540")
+				.content(json).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE)
+				.characterEncoding("UTF-8");
+
+		this.mockMvc.perform(builder).andExpect(status().isOk())
+				.andExpect(jsonPath("$.errors[0].errorCode", is("RES-SER-009")));
+	}
 
 }

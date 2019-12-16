@@ -54,9 +54,9 @@ public class ResidentVidController {
     }
     
     @PatchMapping(path = "/vid/{vid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Revoke VID", response = ResidentVidRequestDto.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "VID successfully generated"),
-            @ApiResponse(code = 400, message = "Unable to generate VID") })
+    @ApiOperation(value = "Revoke VID", response = ResponseWrapper.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "VID successfully revoked"),
+            @ApiResponse(code = 400, message = "Unable to revoke VID") })
     public ResponseEntity<Object> revokeVid(@RequestBody(required = true) RequestWrapper<VidRevokeRequestDTO> requestDto, @PathVariable String vid) throws OtpValidationFailedException, ResidentServiceCheckedException {
         validator.validateVidRevokeRequest(requestDto);
         ResponseWrapper<VidRevokeResponseDTO> vidResponseDto = residentVidService.revokeVid(requestDto.getRequest(),vid);
