@@ -268,6 +268,12 @@ public class RequestValidator {
 	}
 
 	public boolean validateRequest(RequestWrapper<?> request, RequestIdType requestIdType) {
+		if(request.getId() == null || request.getId().isEmpty())
+			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
+					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");
+		if(request.getVersion() == null || request.getVersion().isEmpty())
+			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
+					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "version");		
 		if (!request.getId().equals(map.get(requestIdType)))
 			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
 					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");

@@ -142,6 +142,35 @@
 			<version>${google.gson.version}</version>
 		</dependency>
 	</dependencies>
+		<profiles>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://104.215.158.154:9000
+				</sonar.host.url>
+				<sonar.login>90903e93f9e6f0e73b5352382e7c51e0a18bfa80</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>
+					http://104.215.158.154:9000
+				</sonar.host.url>
+				<sonar.login>90903e93f9e6f0e73b5352382e7c51e0a18bfa80</sonar.login>
+				<sonar.ws.timeout>90000</sonar.ws.timeout>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>

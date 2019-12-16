@@ -8,13 +8,13 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.crypto.SecretKey;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -95,18 +95,18 @@ public class IdAuthServiceImpl implements IdAuthService {
 		} catch (ApisResourceAccessException | InvalidKeySpecException | NoSuchAlgorithmException | IOException
 				| JsonProcessingException e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
-					"IdAuthServiceImpl::validateOtp():: validate otp method call" + e.getStackTrace());
+					"IdAuthServiceImpl::validateOtp():: validate otp method call" + ExceptionUtils.getStackTrace(e));
 			throw new OtpValidationFailedException(e.getMessage());
 		}
-		if (response.getErrors() != null && response.getErrors().size() > 0) {
+		if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 			response.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
-			OtpValidationFailedException e = new OtpValidationFailedException(
-					response.getErrors().get(0).getErrorCode(), response.getErrors().get(0).getErrorMessage());
-			throw e;
+			throw new OtpValidationFailedException(response.getErrors().get(0).getErrorCode(),
+					response.getErrors().get(0).getErrorMessage());
+
 		}
 
-		return response != null && response.getResponse().isAuthStatus();
+		return response.getResponse().isAuthStatus();
 	}
 
 	public AuthResponseDTO internelOtpAuth(String transactionID, String individualId, String individualIdType,
@@ -158,14 +158,16 @@ public class IdAuthServiceImpl implements IdAuthService {
 		try {
 			response = (AuthResponseDTO) restClient.postApi(environment.getProperty(ApiName.INTERNALAUTH.name()),
 					MediaType.APPLICATION_JSON, authRequestDTO, AuthResponseDTO.class, tokenGenerator.getToken());
+
+			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
+					"IdAuthServiceImpl::internelOtpAuth()::INTERNALAUTH POST service call ended with response data "
+							+ JsonUtils.javaObjectToJsonString(response));
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
-					"IdAuthServiceImp::internelOtpAuth():: INTERNALAUTH GET service call" + e.getStackTrace());
+					"IdAuthServiceImp::internelOtpAuth():: INTERNALAUTH GET service call"
+							+ ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException("Could not fetch public key from kernel keymanager", e);
 		}
-		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
-				"IdAuthServiceImpl::internelOtpAuth()::INTERNALAUTH POST service call ended with response data "
-						+ JsonUtils.javaObjectToJsonString(response));
 
 		return response;
 
@@ -192,7 +194,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 					tokenGenerator.getToken());
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), refId,
-					"IdAuthServiceImp::lencryptRSA():: ENCRYPTIONSERVICE GET service call" + e.getStackTrace());
+					"IdAuthServiceImp::lencryptRSA():: ENCRYPTIONSERVICE GET service call"
+							+ ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException("Could not fetch public key from kernel keymanager", e);
 		}
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
@@ -252,7 +255,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
-					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call" + e.getStackTrace());
+					"IdAuthServiceImp::authLock():: AUTHLOCK POST service call" + ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException("Could not able call auth status api", e);
 		}
 
@@ -266,42 +269,44 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 		return isAuthTypeStatusSuccess;
 	}
+
 	@Override
 	public List<AuthTxnDetailsDTO> getAuthHistoryDetails(String individualId, String individualIdType,
 			Integer pageStart, Integer pageFetch) throws ApisResourceAccessException {
-		List<AuthTxnDetailsDTO> details=null;
-		int count=1;
-		AutnTxnResponseDto autnTxnResponseDto= new AutnTxnResponseDto();
-		List<String> pathsegments=new ArrayList<>();
-		pathsegments.add(0,"individualIdType");
-		pathsegments.add(1,individualIdType);
-		pathsegments.add(2,"individualId");
-		pathsegments.add(3,individualId);
-		String queryParamName=null;
-		String queryParamValue=null;
-		if(pageStart != null && pageFetch !=null) {
-		 queryParamName="pageFetch,pageStart";
-		 queryParamValue=pageFetch.toString()+","+pageStart.toString();
-		 count=count+pageFetch*(pageStart-1);
+		List<AuthTxnDetailsDTO> details = null;
+		int count = 1;
+		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(0, "individualIdType");
+		pathsegments.add(1, individualIdType);
+		pathsegments.add(2, "individualId");
+		pathsegments.add(3, individualId);
+		String queryParamName = null;
+		String queryParamValue = null;
+		if (pageStart != null && pageFetch != null) {
+			queryParamName = "pageFetch,pageStart";
+			queryParamValue = pageFetch.toString() + "," + pageStart.toString();
+			count = count + pageFetch * (pageStart - 1);
 		}
 		try {
-			autnTxnResponseDto=(AutnTxnResponseDto) restClient.getApi(ApiName.INTERNALAUTHTRANSACTIONS,
-					pathsegments, queryParamName, queryParamValue, AutnTxnResponseDto.class, tokenGenerator.getToken());
-			
+			autnTxnResponseDto = (AutnTxnResponseDto) restClient.getApi(ApiName.INTERNALAUTHTRANSACTIONS, pathsegments,
+					queryParamName, queryParamValue, AutnTxnResponseDto.class, tokenGenerator.getToken());
+
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), null,
-					"IdAuthServiceImp::getAuthHistoryDetails():: AUTHTransactions GET service call" + e.getStackTrace());
+					"IdAuthServiceImp::getAuthHistoryDetails():: AUTHTransactions GET service call"
+							+ ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException("Could not able call auth transactions api", e);
 		}
 		if (autnTxnResponseDto.getErrors() != null && autnTxnResponseDto.getErrors().size() > 0) {
-			autnTxnResponseDto.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
+			autnTxnResponseDto.getErrors().stream()
+					.forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
 
-		}
-		else if(autnTxnResponseDto.getResponse().get("authTransactions") != null ) {
-			details=new ArrayList<AuthTxnDetailsDTO>();
-			if(!autnTxnResponseDto.getResponse().get("authTransactions").isEmpty()) {
-				for(AutnTxnDto autnTxnDto :autnTxnResponseDto.getResponse().get("authTransactions")) {
+		} else if (autnTxnResponseDto.getResponse().get("authTransactions") != null) {
+			details = new ArrayList<AuthTxnDetailsDTO>();
+			if (!autnTxnResponseDto.getResponse().get("authTransactions").isEmpty()) {
+				for (AutnTxnDto autnTxnDto : autnTxnResponseDto.getResponse().get("authTransactions")) {
 					details.add(getDetails(autnTxnDto, count));
 					count++;
 				}
@@ -310,8 +315,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 		return details;
 	}
 
-	private AuthTxnDetailsDTO getDetails(AutnTxnDto autnTxnDto,int count) {
-		AuthTxnDetailsDTO authTxnDetailsDTO=new AuthTxnDetailsDTO();
+	private AuthTxnDetailsDTO getDetails(AutnTxnDto autnTxnDto, int count) {
+		AuthTxnDetailsDTO authTxnDetailsDTO = new AuthTxnDetailsDTO();
 		authTxnDetailsDTO.setSerialNumber(count);
 		authTxnDetailsDTO.setAuthModality(autnTxnDto.getAuthtypeCode());
 		authTxnDetailsDTO.setAuthResponse(autnTxnDto.getStatusComment());

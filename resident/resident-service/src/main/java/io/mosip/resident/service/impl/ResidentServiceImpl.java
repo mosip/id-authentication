@@ -3,7 +3,6 @@ package io.mosip.resident.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +36,8 @@ import io.mosip.resident.dto.NotificationResponseDTO;
 import io.mosip.resident.dto.RegProcRePrintRequestDto;
 import io.mosip.resident.dto.RegProcRePrintResponseDto;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
-import io.mosip.resident.dto.RegistrationStatusDTO;
 import io.mosip.resident.dto.RegistrationStatusRequestDTO;
+import io.mosip.resident.dto.RegistrationStatusResponseDTO;
 import io.mosip.resident.dto.RegistrationStatusSubRequestDto;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
@@ -99,18 +98,15 @@ public class ResidentServiceImpl implements ResidentService {
 	@Value("${resident.machine.id}")
 	private String machineId;
 
-	/************** to fetch UIN status for particular RID ******************/
-
 	@Override
-	public RegStatusCheckResponseDTO getRidStatus(RequestDTO request) throws ApisResourceAccessException {
+	public RegStatusCheckResponseDTO getRidStatus(RequestDTO request) {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::getRidStatus():: entry");
 		if (!ridValidator.validateId(request.getIndividualId()))
 			throw new ResidentServiceException(ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorCode(),
 					ResidentErrorCode.INVALID_RID_EXCEPTION.getErrorMessage());
 		RegStatusCheckResponseDTO response = null;
-		ResponseWrapper<RegistrationStatusDTO> responseWrapper = null;
-
+		RegistrationStatusResponseDTO responseWrapper = null;
 		RegistrationStatusRequestDTO dto = new RegistrationStatusRequestDTO();
 		List<RegistrationStatusSubRequestDto> rids = new ArrayList<RegistrationStatusSubRequestDto>();
 		RegistrationStatusSubRequestDto rid = new RegistrationStatusSubRequestDto(request.getIndividualId());
@@ -122,30 +118,55 @@ public class ResidentServiceImpl implements ResidentService {
 		dto.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 
 		try {
-			responseWrapper = (ResponseWrapper<RegistrationStatusDTO>) residentServiceRestClient.postApi(
+			responseWrapper = (RegistrationStatusResponseDTO) residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REGISTRATIONSTATUSSEARCH.name()), MediaType.APPLICATION_JSON, dto,
-					ResponseWrapper.class, tokenGenerator.getToken());
-		} catch (Exception e) {
-			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new ApisResourceAccessException(e.getMessage(), e);
-		}
-		response = new RegStatusCheckResponseDTO();
-
-		if (responseWrapper.getResponse() == null) {
-			if (responseWrapper.getErrors() == null || responseWrapper.getErrors().isEmpty()) {
-				throw new RIDInvalidException(ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorCode(),
-						ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorMessage());
+					RegistrationStatusResponseDTO.class, tokenGenerator.getAdminToken());
+			if (responseWrapper == null) {
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), "In valid response from Registration status API");
+				throw new RIDInvalidException(ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorCode(),
+						ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorMessage()
+								+ ApiName.REGISTRATIONSTATUSSEARCH.name());
 			}
-			throw new ResidentServiceException(responseWrapper.getErrors().get(0).getErrorCode(),
-					responseWrapper.getErrors().get(0).getMessage());
-		} else {
-			List<LinkedHashMap<String, String>> statusResponse = (List<LinkedHashMap<String, String>>) responseWrapper
-					.getResponse();
 
-			String statusCode = validateResponse(statusResponse.get(0).get("statusCode"));
-			response.setRidStatus(statusCode);
+			if (responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty()) {
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), responseWrapper.getErrors().get(0).toString());
+				throw new RIDInvalidException(ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.NO_RID_FOUND_EXCEPTION.getErrorMessage()
+								+ responseWrapper.getErrors().get(0).toString());
+			}
+			if (responseWrapper.getResponse() == null) {
+				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), "In valid response from Registration status API");
+				throw new RIDInvalidException(ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorCode(),
+						ResidentErrorCode.IN_VALID_API_RESPONSE.getErrorMessage() + ApiName.REGISTRATIONSTATUSSEARCH);
+			}
+
+			String status = validateResponse(responseWrapper.getResponse().getStatusCode());
+			response = new RegStatusCheckResponseDTO();
+			response.setRidStatus(status);
+
+		} catch (IOException e) {
+			throw new ResidentServiceException(ResidentErrorCode.IO_EXCEPTION.getErrorCode(),
+					ResidentErrorCode.IO_EXCEPTION.getErrorMessage(), e);
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
+
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+			}
+
 		}
+
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::getRidStatus():: exit");
 		return response;
@@ -165,12 +186,6 @@ public class ResidentServiceImpl implements ResidentService {
 		return PROCESSING_MESSAGE;
 
 	}
-
-	/**********************
-	 * end of RID status check
-	 * 
-	 * @throws ResidentServiceCheckedException
-	 *************/
 
 	@Override
 	public byte[] reqEuin(EuinRequestDTO dto) throws ResidentServiceCheckedException {
@@ -451,18 +466,6 @@ public class ResidentServiceImpl implements ResidentService {
 		logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 				LoggerFileConstant.APPLICATIONID.toString(), "ResidentServiceImpl::reqAuthHistory():: exit");
 		return response;
-	}
-
-	private IdType getIdType(String individualIdType) {
-		IdType idType = null;
-		if (individualIdType.equalsIgnoreCase(IdType.UIN.toString())) {
-			idType = IdType.UIN;
-		} else if (individualIdType.equalsIgnoreCase(IdType.VID.toString())) {
-			idType = IdType.VID;
-		} else if (individualIdType.equalsIgnoreCase(IdType.RID.toString())) {
-			idType = IdType.RID;
-		}
-		return idType;
 	}
 
 	private NotificationResponseDTO sendNotification(String id, IdType idType,

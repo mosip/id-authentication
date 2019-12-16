@@ -1,7 +1,11 @@
 package io.mosip.resident.validator;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,11 +21,14 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.resident.constant.AuthTypeStatus;
 import io.mosip.resident.constant.IdType;
+import io.mosip.resident.constant.RequestIdType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
+import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.exception.InvalidInputException;
+import io.mosip.resident.exception.ResidentServiceException;
 
 @RunWith(SpringRunner.class)
 public class RequestValidatorTest {
@@ -41,12 +48,15 @@ public class RequestValidatorTest {
 	@Before
 	public void setup() {
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
-
+		Map<RequestIdType, String> map = new HashMap<RequestIdType, String>();
+		map.put(RequestIdType.RE_PRINT_ID, "mosip.resident.print");
 		ReflectionTestUtils.setField(requestValidator, "authLockId", "mosip.resident.authlock");
 		ReflectionTestUtils.setField(requestValidator, "euinId", "mosip.resident.euin");
 		ReflectionTestUtils.setField(requestValidator, "authHstoryId", "mosip.resident.authhistory");
 		ReflectionTestUtils.setField(requestValidator, "authTypes", "bio-FIR,bio-IIR");
 		ReflectionTestUtils.setField(requestValidator, "version", "v1");
+		ReflectionTestUtils.setField(requestValidator, "map", map);
+
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(ridValidator.validateId(Mockito.anyString())).thenReturn(true);
@@ -312,6 +322,46 @@ public class RequestValidatorTest {
 		requestWrapper.setVersion("v1");
 		requestWrapper.setId("mosip.resident.euin");
 		requestValidator.validateEuinRequest(requestWrapper);
+
+	}
+	@Test
+	public void testValidateRequest() {
+		ResidentReprintRequestDto request = new ResidentReprintRequestDto();
+		request.setIndividualId("3542102");
+		request.setIndividualIdType(IdType.UIN);
+		request.setOtp("1234");
+		request.setTransactionID("9876543210");
+		RequestWrapper<ResidentReprintRequestDto> reqWrapper = new RequestWrapper<>();
+		reqWrapper.setRequest(request);
+		reqWrapper.setId("mosip.resident.print");
+		reqWrapper.setVersion("v1");
+		boolean result = requestValidator.validateRequest(reqWrapper, RequestIdType.RE_PRINT_ID);
+		assertTrue(result);
+	}
+	@Test(expected = ResidentServiceException.class)
+	public void testvalidateRequestInValidId() {
+		ResidentReprintRequestDto request = new ResidentReprintRequestDto();
+		RequestWrapper<ResidentReprintRequestDto> reqWrapper = new RequestWrapper<>();
+		try {
+        requestValidator.validateRequest(reqWrapper, RequestIdType.RE_PRINT_ID);
+		}catch (ResidentServiceException e) {
+			//do nothing
+		}
+        reqWrapper.setId("mosip.resident.print1");
+        try {
+        requestValidator.validateRequest(reqWrapper, RequestIdType.RE_PRINT_ID);
+		}catch (ResidentServiceException e) {
+			//do nothing
+		}
+        reqWrapper.setVersion("v1");
+        try {
+        requestValidator.validateRequest(reqWrapper, RequestIdType.RE_PRINT_ID);
+		}catch (ResidentServiceException e) {
+			//do nothing
+		}
+        reqWrapper.setId("mosip.resident.print");
+        reqWrapper.setVersion("v2");
+        requestValidator.validateRequest(reqWrapper, RequestIdType.RE_PRINT_ID);
 
 	}
 }
