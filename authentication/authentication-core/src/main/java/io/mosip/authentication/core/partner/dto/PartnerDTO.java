@@ -12,6 +12,7 @@ import lombok.Data;
 public class PartnerDTO {
 	
 	private String partnerId;
+	private String partnerName;
 	private String policyId;
 	private String status;
 	
