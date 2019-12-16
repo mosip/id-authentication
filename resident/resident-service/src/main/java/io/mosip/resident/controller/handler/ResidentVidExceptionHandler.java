@@ -1,7 +1,15 @@
 package io.mosip.resident.controller.handler;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -11,19 +19,15 @@ import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.LoggerFileConstant;
 import io.mosip.resident.controller.ResidentVidController;
 import io.mosip.resident.dto.ResponseWrapper;
-import io.mosip.resident.exception.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import io.mosip.resident.exception.ApisResourceAccessException;
+import io.mosip.resident.exception.InvalidInputException;
+import io.mosip.resident.exception.OtpValidationFailedException;
+import io.mosip.resident.exception.ResidentServiceCheckedException;
+import io.mosip.resident.exception.VidAlreadyPresentException;
+import io.mosip.resident.exception.VidCreationException;
+import io.mosip.resident.exception.VidRevocationException;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-
-@RestControllerAdvice(assignableTypes= ResidentVidController.class)
+@RestControllerAdvice(assignableTypes = ResidentVidController.class)
 public class ResidentVidExceptionHandler {
 
 	private static final String RESIDENT_VID_ID = "resident.vid.id";
@@ -75,7 +79,7 @@ public class ResidentVidExceptionHandler {
 				e.getErrorCode(), e.getMessage());
 		return buildRegStatusExceptionResponse((Exception) e);
 	}
-	
+
 	@ExceptionHandler(VidRevocationException.class)
 	public ResponseEntity<Object> vidRevocationFailed(VidRevocationException e) {
 		logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
@@ -92,7 +96,9 @@ public class ResidentVidExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
-			List<ServiceError> errors = errorTexts.parallelStream().map(errMsg -> new ServiceError(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct().collect(Collectors.toList());
+			List<ServiceError> errors = errorTexts.parallelStream()
+					.map(errMsg -> new ServiceError(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
+					.collect(Collectors.toList());
 
 			response.setErrors(errors);
 		} else if (e instanceof BaseUncheckedException) {
@@ -110,11 +116,9 @@ public class ResidentVidExceptionHandler {
 		response.setVersion(env.getProperty(RESIDENT_VID_VERSION));
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString());
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
-
 
 }

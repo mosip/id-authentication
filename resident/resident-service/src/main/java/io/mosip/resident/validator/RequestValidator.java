@@ -58,7 +58,7 @@ public class RequestValidator {
 	@Value("${resident.euin.id}")
 	private String euinId;
 
-	private static String reprintId;
+	private static volatile String reprintId;
 
 	@Value("${resident.authhistory.id}")
 	private String authHstoryId;
@@ -75,16 +75,17 @@ public class RequestValidator {
 	@Value("${mosip.id.validation.identity.email}")
 	private String emailRegex;
 
-	private static Map<RequestIdType, String> map;
+	private static Map<RequestIdType, String> map = new HashMap<>();;
 
 	@Value("${resident.printuin.id}")
 	public void setReprintId(String reprintId) {
-		RequestValidator.reprintId = reprintId;
+		if (RequestValidator.reprintId != null)
+			RequestValidator.reprintId = reprintId;
 	}
 
 	@PostConstruct
 	public void setMap() {
-		map = new HashMap<RequestIdType, String>();
+
 		map.put(RequestIdType.RE_PRINT_ID, reprintId);
 	}
 
@@ -122,13 +123,7 @@ public class RequestValidator {
 
 	public void validateAuthLockOrUnlockRequest(RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO,
 			AuthTypeStatus authTypeStatus) {
-		if (authTypeStatus.equals(AuthTypeStatus.LOCK)) {
-			if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authLockId))
-				throw new InvalidInputException("id");
-		} else {
-			if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authUnLockId))
-				throw new InvalidInputException("id");
-		}
+		validateAuthorUnlockId(requestDTO, authTypeStatus);
 
 		if (requestDTO.getVersion() == null || !requestDTO.getVersion().equalsIgnoreCase(version))
 			throw new InvalidInputException("version");
@@ -147,6 +142,17 @@ public class RequestValidator {
 
 		validateAuthType(requestDTO.getRequest().getAuthType());
 
+	}
+
+	private void validateAuthorUnlockId(RequestWrapper<AuthLockOrUnLockRequestDto> requestDTO,
+			AuthTypeStatus authTypeStatus) {
+		if (authTypeStatus.equals(AuthTypeStatus.LOCK)) {
+			if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authLockId))
+				throw new InvalidInputException("id");
+		} else {
+			if (requestDTO.getId() == null || !requestDTO.getId().equalsIgnoreCase(authUnLockId))
+				throw new InvalidInputException("id");
+		}
 	}
 
 	public void validateEuinRequest(RequestWrapper<EuinRequestDTO> requestDTO) {
@@ -242,21 +248,21 @@ public class RequestValidator {
 		if (requestDto.getRequest().getIndividualIdType() == null
 				|| (!requestDto.getRequest().getIndividualIdType().equalsIgnoreCase(IdType.VID.name())))
 			throw new InvalidInputException("individualIdType");
-		
+
 		if (!validateIndividualId(requestDto.getRequest().getIndividualId(),
 				requestDto.getRequest().getIndividualIdType())) {
 			throw new InvalidInputException("individualId");
 		}
-		
+
 		if (requestDto.getRequest().getOtp() == null)
 			throw new InvalidInputException("otp");
 
 		if (requestDto.getRequest().getTransactionID() == null)
 			throw new InvalidInputException("transactionId");
 	}
-	
+
 	public void validateRequestWrapper(RequestWrapper<?> request) {
-		
+
 		if (request.getId() == null || !request.getId().equalsIgnoreCase(revokeVidId))
 			throw new InvalidInputException("id");
 
@@ -268,12 +274,12 @@ public class RequestValidator {
 	}
 
 	public boolean validateRequest(RequestWrapper<?> request, RequestIdType requestIdType) {
-		if(request.getId() == null || request.getId().isEmpty())
+		if (request.getId() == null || request.getId().isEmpty())
 			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
 					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");
-		if(request.getVersion() == null || request.getVersion().isEmpty())
+		if (request.getVersion() == null || request.getVersion().isEmpty())
 			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
-					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "version");		
+					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "version");
 		if (!request.getId().equals(map.get(requestIdType)))
 			throw new ResidentServiceException(ResidentErrorCode.INVALID_INPUT.getErrorCode(),
 					ResidentErrorCode.INVALID_INPUT.getErrorMessage() + "id");

@@ -282,19 +282,18 @@ public class ResidentServiceImpl implements ResidentService {
 			ResponseWrapper<RegProcRePrintResponseDto> response = residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REPRINTUIN.name()), MediaType.APPLICATION_JSON, request,
 					ResponseWrapper.class, tokenGenerator.getRegprocToken());
-			if (response == null
-					|| response != null && response.getErrors() != null && !response.getErrors().isEmpty()) {
+			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
 						NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
 				throw new ResidentServiceException(ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorCode(),
 						ResidentErrorCode.RE_PRINT_REQUEST_FAILED.getErrorMessage()
-								+ (response != null ? response.getErrors().get(0).toString() : ""));
+								+ (response.getErrors().get(0).toString()));
 			}
 
 			RegProcRePrintResponseDto responseDto = JsonUtil
 					.readValue(JsonUtil.writeValueAsString(response.getResponse()), RegProcRePrintResponseDto.class);
 
-			Map<String, Object> additionalAttributes = new HashMap<String, Object>();
+			Map<String, Object> additionalAttributes = new HashMap<>();
 			additionalAttributes.put("RID", responseDto.getRegistrationId());
 			NotificationResponseDTO notificationResponseDTO = sendNotification(dto.getIndividualId(),
 					dto.getIndividualIdType(), NotificationTemplateCode.RS_UIN_RPR_SUCCESS, additionalAttributes);

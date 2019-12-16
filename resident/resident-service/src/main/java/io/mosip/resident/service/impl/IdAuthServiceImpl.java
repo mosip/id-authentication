@@ -243,7 +243,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 			authTypes.add(authTypeStatus);
 		}
 		authTypeStatusRequestDto.setRequest(authTypes);
-		AuthTypeStatusResponseDto response = new AuthTypeStatusResponseDto();
+		AuthTypeStatusResponseDto response;
+		;
 		try {
 			response = restClient.postApi(environment.getProperty(ApiName.AUTHTYPESTATUSUPDATE.name()),
 					MediaType.APPLICATION_JSON, authTypeStatusRequestDto, AuthTypeStatusResponseDto.class,
@@ -259,7 +260,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new ApisResourceAccessException("Could not able call auth status api", e);
 		}
 
-		if (response.getErrors() != null && response.getErrors().size() > 0) {
+		if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 			response.getErrors().stream().forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
 
@@ -275,7 +276,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			Integer pageStart, Integer pageFetch) throws ApisResourceAccessException {
 		List<AuthTxnDetailsDTO> details = null;
 		int count = 1;
-		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+		AutnTxnResponseDto autnTxnResponseDto;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(0, "individualIdType");
 		pathsegments.add(1, individualIdType);
@@ -298,7 +299,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 							+ ExceptionUtils.getStackTrace(e));
 			throw new ApisResourceAccessException("Could not able call auth transactions api", e);
 		}
-		if (autnTxnResponseDto.getErrors() != null && autnTxnResponseDto.getErrors().size() > 0) {
+		if (autnTxnResponseDto.getErrors() != null && !autnTxnResponseDto.getErrors().isEmpty()) {
 			autnTxnResponseDto.getErrors().stream()
 					.forEach(error -> logger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.USERID.toString(), error.getErrorCode(), error.getErrorMessage()));
