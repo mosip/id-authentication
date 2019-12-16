@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class License {
+	private String licenseKey;
 	private String mispId;
 	private String expiryDt;
 	private String status;

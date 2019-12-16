@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
@@ -164,7 +165,7 @@ public class FilterValidatorTest {
 	@Test
 	public void validPartnerIdTest1() {
 		try {
-			ReflectionTestUtils.invokeMethod(idAuthFilter, "validPartnerId", "123456789");
+			ReflectionTestUtils.invokeMethod(idAuthFilter, "checkValidPartnerId", "123456789");
 		} catch (UndeclaredThrowableException e) {
 			String detailMessage = e.getUndeclaredThrowable().getMessage();
 			String[] error = detailMessage.split("-->");
@@ -177,7 +178,7 @@ public class FilterValidatorTest {
 	@Test
 	public void validPartnerIdTest2() {
 		try {
-			ReflectionTestUtils.invokeMethod(idAuthFilter, "validPartnerId", "18248239994");
+			ReflectionTestUtils.invokeMethod(idAuthFilter, "checkValidPartnerId", "18248239994");
 		} catch (UndeclaredThrowableException e) {
 			String detailMessage = e.getUndeclaredThrowable().getMessage();
 			String[] error = detailMessage.split("-->");
@@ -190,7 +191,7 @@ public class FilterValidatorTest {
 	@Test
 	public void validPartnerIdTest3() {
 		try {
-			ReflectionTestUtils.invokeMethod(idAuthFilter, "validPartnerId", "1873293764");
+			ReflectionTestUtils.invokeMethod(idAuthFilter, "checkValidPartnerId", "1873293764");
 		} catch (UndeclaredThrowableException e) {
 			String detailMessage = e.getUndeclaredThrowable().getMessage();
 			String[] error = detailMessage.split("-->");
@@ -203,7 +204,9 @@ public class FilterValidatorTest {
 	@Test
 	public void validMISPPartnerMappingTest1() {
 		try {
-			ReflectionTestUtils.invokeMethod(idAuthFilter, "validMISPPartnerMapping", "1873293764", "12344544");
+			PartnerDTO partner = new PartnerDTO();
+			partner.setPartnerId("1873293764");
+			ReflectionTestUtils.invokeMethod(idAuthFilter, "validMISPPartnerMapping", partner, "12344544");
 		} catch (UndeclaredThrowableException e) {
 			String detailMessage = e.getUndeclaredThrowable().getMessage();
 			String[] error = detailMessage.split("-->");
@@ -216,7 +219,9 @@ public class FilterValidatorTest {
 	@Test
 	public void validMISPPartnerMappingTest2() {
 		try {
-			ReflectionTestUtils.invokeMethod(idAuthFilter, "validMISPPartnerMapping", "1873299300", "9870862555");
+			PartnerDTO partner = new PartnerDTO();
+			partner.setPartnerId("1873299300");
+			ReflectionTestUtils.invokeMethod(idAuthFilter, "validMISPPartnerMapping", partner, "9870862555");
 		} catch (UndeclaredThrowableException e) {
 			String detailMessage = e.getUndeclaredThrowable().getMessage();
 			String[] error = detailMessage.split("-->");

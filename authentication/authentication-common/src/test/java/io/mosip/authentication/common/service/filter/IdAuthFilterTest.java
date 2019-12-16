@@ -54,9 +54,9 @@ import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdAuthFilterTest.
  */
@@ -257,7 +257,7 @@ public class IdAuthFilterTest {
 	public void inValidPartnerIdTest() throws IdAuthenticationAppException {
 		String errorMessage="IDA-MPA-009 --> Partner is not registered";
 		try {
-			ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "18732937232");
+			ReflectionTestUtils.invokeMethod(filter, "checkValidPartnerId", "18732937232");
 		} catch (UndeclaredThrowableException ex) {
 			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
@@ -272,7 +272,7 @@ public class IdAuthFilterTest {
 	public void inactivePartnerIdTest() throws IdAuthenticationAppException {
 		String errorMessage="IDA-MPA-012 --> Partner is deactivated";
 		try {
-			ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "1873293764");
+			ReflectionTestUtils.invokeMethod(filter, "checkValidPartnerId", "1873293764");
 		} catch (UndeclaredThrowableException ex) {
 			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
@@ -287,7 +287,7 @@ public class IdAuthFilterTest {
 	public void policyUnmappedPartnerIdTest() throws IdAuthenticationAppException {
 		String errorMessage="IDA-MPA-014 --> Partner is not assigned with any policy";
 		try {
-			ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "18248239994");
+			ReflectionTestUtils.invokeMethod(filter, "checkValidPartnerId", "18248239994");
 		} catch (UndeclaredThrowableException ex) {
 			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
@@ -300,7 +300,10 @@ public class IdAuthFilterTest {
 	 */
 	@Test
 	public void validMISPPartnerIdTest() throws IdAuthenticationAppException {
-		String policyId = ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", "1873299273",
+		PartnerDTO partner = new PartnerDTO();
+		partner.setPartnerId("1873299273");
+		partner.setPolicyId("92834787293");
+		String policyId = ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", partner,
 				"5479834598");
 		assertEquals("92834787293", policyId);
 	}
@@ -314,7 +317,9 @@ public class IdAuthFilterTest {
 	public void inValidMISPPartnerIdTest() throws IdAuthenticationAppException {
 		String errorMessage="IDA-MPA-010 --> MISP and Partner not mapped";
 		try {
-			ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", "1873299300", "9870862555");
+			PartnerDTO partner = new PartnerDTO();
+			partner.setPartnerId("1873299300");
+			ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", partner, "9870862555");
 		} catch (UndeclaredThrowableException ex) {
 			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}

@@ -8,7 +8,8 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 
 /**
- * The service to obtain MISP and Partner details.
+ * The service to fetch the Partner, Policy, MISP and License information. 
+ * Any caching of these data to be handled here.
  * 
  * @author Loganathan Sekar
  *
@@ -21,6 +22,6 @@ public interface PartnerService {
 	
 	Optional<License> getLicense(String licenseKey) throws IdAuthenticationBusinessException;
 	
-	boolean hasMispPartnerMapping(String partnerId, String mispId) throws IdAuthenticationBusinessException;
+	boolean getMispPartnerMapping(String partnerId, String mispId) throws IdAuthenticationBusinessException;
 
 }
