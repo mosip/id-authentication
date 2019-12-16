@@ -85,7 +85,7 @@ public class TokenGeneratorTest {
         when(response.getEntity()).thenReturn(entity);
         when(response.getHeaders("Set-Cookie")).thenReturn(headers);
 
-        String result = tokenGenerator.getToken();
+        String result = tokenGenerator.getRegprocToken();
 
         Assert.assertTrue("Expected token", result.equals(token));
     }
@@ -101,7 +101,7 @@ public class TokenGeneratorTest {
         when(response.getEntity()).thenReturn(entity);
         when(response.getHeaders("Set-Cookie")).thenReturn(headers);
 
-        String result = tokenGenerator.getToken();
+        String result = tokenGenerator.getAdminToken();
 
         Assert.assertTrue("Expected token", result.equals(token));
     }
