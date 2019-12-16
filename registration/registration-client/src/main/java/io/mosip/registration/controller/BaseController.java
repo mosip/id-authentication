@@ -1400,6 +1400,7 @@ public class BaseController {
 				&& SessionContext.map().get(ALERT_STAGE) != null) {
 			Stage alertStageFromSession = (Stage) SessionContext.map().get(ALERT_STAGE);
 			alertStageFromSession.close();
+			
 		}
 	}
 
