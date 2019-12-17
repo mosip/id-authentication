@@ -83,7 +83,7 @@ public class NotificationService {
 	@Autowired
 	private RequestValidator requestValidator;
 
-	private static final String LINE_SEPARATOR = "" + '\n' + '\n' + '\n';
+	private static final String LINE_SEPARATOR = new  StringBuilder().append('\n').append('\n').append('\n').toString();
 	private static final String BOTH = "both";
 	private static final String EMAIL = "_EMAIL";
 	private static final String SMS = "_SMS";
@@ -92,12 +92,16 @@ public class NotificationService {
 	private static final String SMS_SUCCESS = "Notification has been sent to the provided contact phone number";
 	private static final String EMAIL_SUCCESS = "Notification has been sent to the provided email ";
 	private static final String SMS_EMAIL_FAILED = "Invalid phone number and email";
+	private static final String IS_SMS_NOTIFICATION_SUCCESS = "NotificationService::sendSMSNotification()::isSuccess?::";
+	private static final String IS_EMAIL_NOTIFICATION_SUCCESS = "NotificationService::sendEmailNotification()::isSuccess?::";
+	private static final String TEMPLATE_CODE = "Template Code";
+	private static final String SUCCESS = "success";
 
 	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws ResidentServiceCheckedException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendNotification()::entry");
-		boolean smsStatus = false;
-		boolean emailStatus = false;
+		boolean smsStatus;
+		boolean emailStatus;
 		Map<String, Object> notificationAttributes = utility.getMailingAttributes(dto.getId(), dto.getIdType());
 		if (dto.getAdditionalAttributes() != null && dto.getAdditionalAttributes().size() > 0) {
 			notificationAttributes.putAll(dto.getAdditionalAttributes());
@@ -105,19 +109,21 @@ public class NotificationService {
 		smsStatus = sendSMSNotification(notificationAttributes, dto.getTemplateTypeCode());
 		emailStatus = sendEmailNotification(notificationAttributes, dto.getTemplateTypeCode(), null);
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
-				"NotificationService::sendSMSNotification()::isSuccess?::" + smsStatus);
+				IS_SMS_NOTIFICATION_SUCCESS + smsStatus);
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
-				"NotificationService::sendSMSNotification()::isSuccess?::" + emailStatus);
+				IS_EMAIL_NOTIFICATION_SUCCESS + emailStatus);
 		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
-		if ((smsStatus == false && emailStatus == false)) {
-			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
-					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage() + SMS_EMAIL_FAILED);
-		} else if (smsStatus && emailStatus) {
+		if (smsStatus && emailStatus) {
 			notificationResponse.setMessage(SMS_EMAIL_SUCCESS);
+			notificationResponse.setStatus(SUCCESS);
 		} else if (smsStatus) {
 			notificationResponse.setMessage(SMS_SUCCESS);
-		} else {
+		} else if (emailStatus) {
 			notificationResponse.setMessage(EMAIL_SUCCESS);
+		} else {
+			notificationResponse.setMessage(SMS_EMAIL_FAILED);
+			throw new ResidentServiceException(ResidentErrorCode.NOTIFICATION_FAILURE.getErrorCode(),
+					ResidentErrorCode.NOTIFICATION_FAILURE.getErrorMessage() + SMS_EMAIL_FAILED);
 		}
 
 		logger.info(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
@@ -129,9 +135,9 @@ public class NotificationService {
 
 	@SuppressWarnings("unchecked")
 	private String getTemplate(String langCode, String templatetypecode) throws ResidentServiceCheckedException {
-		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), "Template code", templatetypecode,
+		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), TEMPLATE_CODE, templatetypecode,
 				"NotificationService::getTemplate()::entry");
-		List<String> pathSegments = new ArrayList<String>();
+		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(langCode);
 		pathSegments.add(templatetypecode);
 		try {
@@ -144,10 +150,10 @@ public class NotificationService {
 			}
 			TemplateResponseDto templateResponse = JsonUtil.readValue(JsonUtil.writeValueAsString(resp.getResponse()),
 					TemplateResponseDto.class);
-			logger.info(LoggerFileConstant.APPLICATIONID.toString(), "Template code", templatetypecode,
+			logger.info(LoggerFileConstant.APPLICATIONID.toString(), TEMPLATE_CODE, templatetypecode,
 					"NotificationService::getTemplate()::getTemplateResponse::" + JsonUtil.writeValueAsString(resp));
 			List<TemplateDto> response = templateResponse.getTemplates();
-			logger.debug(LoggerFileConstant.APPLICATIONID.toString(), "Template code", templatetypecode,
+			logger.debug(LoggerFileConstant.APPLICATIONID.toString(), TEMPLATE_CODE, templatetypecode,
 					"NotificationService::getTemplate()::exit");
 			return response.get(0).getFileText().replaceAll("^\"|\"$", "");
 		} catch (IOException e) {
@@ -179,7 +185,7 @@ public class NotificationService {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), "",
 				"NotificationService::templateMerge()::entry");
 		try {
-			String mergeTemplate = null;
+			String mergeTemplate;
 			InputStream templateInputStream = new ByteArrayInputStream(fileText.getBytes(Charset.forName("UTF-8")));
 
 			InputStream resultedTemplate = templateManager.merge(templateInputStream, mailingAttributes);
@@ -235,7 +241,7 @@ public class NotificationService {
 					"NotificationService::sendSMSNotification()::response::"
 							+ JsonUtil.writeValueAsString(notifierResponse));
 
-			if (notifierResponse.getStatus().equalsIgnoreCase("success")) {
+			if (SUCCESS.equalsIgnoreCase(notifierResponse.getStatus())) {
 				logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 						"NotificationService::sendSMSNotification()::exit");
 				return true;
@@ -301,15 +307,15 @@ public class NotificationService {
 		LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
 		String[] mailTo = { mailingAttributes.get("email").toString() };
 		String[] mailCc = notificationEmails.split("\\|");
-		
-		UriComponentsBuilder builder=prepareBuilder(mailTo,mailCc);
-		
+
+		UriComponentsBuilder builder = prepareBuilder(mailTo, mailCc);
+
 		try {
 			builder.queryParam("mailSubject", emailSubject);
 			builder.queryParam("mailContent", primaryLanguageMergeTemplate);
 			params.add("attachments", attachment);
 			ResponseWrapper<NotificationResponseDTO> response;
-			
+
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
 			if (nullCheckForResponse(response)) {
@@ -323,7 +329,7 @@ public class NotificationService {
 					"NotificationService::sendEmailNotification()::response::"
 							+ JsonUtil.writeValueAsString(notifierResponse));
 
-			if (notifierResponse.getStatus().equals("success")) {
+			if ("success".equals(notifierResponse.getStatus())) {
 				logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), " ",
 						"NotificationService::sendEmailNotification()::exit");
 				return true;
@@ -355,22 +361,22 @@ public class NotificationService {
 		return false;
 
 	}
-	
+
 	public boolean nullValueCheck(String value) {
-		if(value == null || value.isEmpty())
+		if (value == null || value.isEmpty())
 			return true;
 		return false;
 	}
 
 	public boolean nullCheckForResponse(ResponseWrapper<NotificationResponseDTO> response) {
-		if(response == null || response.getResponse() == null
+		if (response == null || response.getResponse() == null
 				|| response.getErrors() != null && !response.getErrors().isEmpty())
 			return true;
 		return false;
-		
+
 	}
-	
-	public UriComponentsBuilder prepareBuilder(String[] mailTo,String[] mailCc) {
+
+	public UriComponentsBuilder prepareBuilder(String[] mailTo, String[] mailCc) {
 		String apiHost = env.getProperty(ApiName.EMAILNOTIFIER.name());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiHost);
 		for (String item : mailTo) {

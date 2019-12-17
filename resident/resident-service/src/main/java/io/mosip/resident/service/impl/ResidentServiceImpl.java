@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -17,6 +19,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.resident.config.LoggerConfiguration;
 import io.mosip.resident.constant.ApiName;
@@ -33,16 +36,20 @@ import io.mosip.resident.dto.AuthTxnDetailsDTO;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.NotificationRequestDto;
 import io.mosip.resident.dto.NotificationResponseDTO;
+import io.mosip.resident.dto.RegProcCommonResponseDto;
 import io.mosip.resident.dto.RegProcRePrintRequestDto;
-import io.mosip.resident.dto.RegProcRePrintResponseDto;
+import io.mosip.resident.dto.RegProcUpdateRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RegistrationStatusRequestDTO;
 import io.mosip.resident.dto.RegistrationStatusResponseDTO;
 import io.mosip.resident.dto.RegistrationStatusSubRequestDto;
 import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
+import io.mosip.resident.dto.ResidentDocuments;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
+import io.mosip.resident.dto.ResidentUpdateRequestDto;
+import io.mosip.resident.dto.ResidentUpdateResponseDTO;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.exception.ApisResourceAccessException;
@@ -57,6 +64,7 @@ import io.mosip.resident.util.JsonUtil;
 import io.mosip.resident.util.ResidentServiceRestClient;
 import io.mosip.resident.util.TokenGenerator;
 import io.mosip.resident.util.UINCardDownloadService;
+import io.mosip.resident.util.Utilitiy;
 
 @Service
 public class ResidentServiceImpl implements ResidentService {
@@ -68,6 +76,12 @@ public class ResidentServiceImpl implements ResidentService {
 	private static final String REREGISTER_MESSAGE = "FAILED - PLEASE VISIT THE NEAREST CENTER FOR DETAILS.";
 	private static final String RESEND_MESSAGE = "UNDER PROCESSING - PLEASE CHECK BACK AGAIN LATER.";
 	private static final String PROCESSING_MESSAGE = "UNDER PROCESSING - PLEASE CHECK BACK AGAIN LATER.";
+	private static final String PROOF_OF_ADDRESS = "poa";
+	private static final String PROOF_OF_DOB = "pob";
+	private static final String PROOF_OF_RELATIONSHIP = "por";
+	private static final String PROOF_OF_IDENTITY = "poi";
+	private static final String IDENTITY = "identity";
+	private static final String VALUE = "value";
 
 	private static final Logger logger = LoggerConfiguration.logConfig(ResidentServiceImpl.class);
 
@@ -92,6 +106,9 @@ public class ResidentServiceImpl implements ResidentService {
 	@Autowired
 	Environment env;
 
+	@Autowired
+	private Utilitiy utility;
+
 	@Value("${resident.center.id}")
 	private String centerId;
 
@@ -108,7 +125,7 @@ public class ResidentServiceImpl implements ResidentService {
 		RegStatusCheckResponseDTO response = null;
 		RegistrationStatusResponseDTO responseWrapper = null;
 		RegistrationStatusRequestDTO dto = new RegistrationStatusRequestDTO();
-		List<RegistrationStatusSubRequestDto> rids = new ArrayList<RegistrationStatusSubRequestDto>();
+		List<RegistrationStatusSubRequestDto> rids = new ArrayList<>();
 		RegistrationStatusSubRequestDto rid = new RegistrationStatusSubRequestDto(request.getIndividualId());
 
 		rids.add(rid);
@@ -279,7 +296,7 @@ public class ResidentServiceImpl implements ResidentService {
 			request.setId("mosip.uincard.reprint");
 			request.setVersion("1.0");
 			request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-			ResponseWrapper<RegProcRePrintResponseDto> response = residentServiceRestClient.postApi(
+			ResponseWrapper<RegProcCommonResponseDto> response = residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REPRINTUIN.name()), MediaType.APPLICATION_JSON, request,
 					ResponseWrapper.class, tokenGenerator.getRegprocToken());
 			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
@@ -290,8 +307,8 @@ public class ResidentServiceImpl implements ResidentService {
 								+ (response.getErrors().get(0).toString()));
 			}
 
-			RegProcRePrintResponseDto responseDto = JsonUtil
-					.readValue(JsonUtil.writeValueAsString(response.getResponse()), RegProcRePrintResponseDto.class);
+			RegProcCommonResponseDto responseDto = JsonUtil
+					.readValue(JsonUtil.writeValueAsString(response.getResponse()), RegProcCommonResponseDto.class);
 
 			Map<String, Object> additionalAttributes = new HashMap<>();
 			additionalAttributes.put("RID", responseDto.getRegistrationId());
@@ -475,4 +492,117 @@ public class ResidentServiceImpl implements ResidentService {
 		return notificationService.sendNotification(notificationRequest);
 	}
 
+	@Override
+	public ResidentUpdateResponseDTO reqUinUpdate(ResidentUpdateRequestDto dto) throws ResidentServiceCheckedException {
+		ResidentUpdateResponseDTO responseDto = new ResidentUpdateResponseDTO();
+		try {
+			if (!idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
+					dto.getIndividualIdType().name(), dto.getOtp())) {
+				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
+						NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
+			}
+			RegProcUpdateRequestDTO regProcReqUpdateDto = new RegProcUpdateRequestDTO();
+			regProcReqUpdateDto.setIdValue(dto.getIndividualId());
+			regProcReqUpdateDto.setIdType(dto.getIndividualIdType().name());
+			regProcReqUpdateDto.setCenterId(centerId);
+			regProcReqUpdateDto.setMachineId(machineId);
+			regProcReqUpdateDto.setIdentityJson(dto.getIdentityJson());
+			List<ResidentDocuments> documents = dto.getDocuments();
+			byte[] decodedDemoJson = CryptoUtil.decodeBase64(dto.getIdentityJson());
+			JSONObject demographicJsonObject = JsonUtil.readValue(new String(decodedDemoJson), JSONObject.class);
+			JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJsonObject, IDENTITY);
+			String mappingJson = utility.getMappingJson();
+			JSONObject mappingJsonObject = JsonUtil.readValue(mappingJson, JSONObject.class);
+			JSONObject mappingIdentity = JsonUtil.getJSONObject(mappingJsonObject, IDENTITY);
+			String poaMapping = getDocumentName(mappingIdentity, PROOF_OF_ADDRESS);
+			String poiMapping = getDocumentName(mappingIdentity, PROOF_OF_IDENTITY);
+			String porMapping = getDocumentName(mappingIdentity, PROOF_OF_RELATIONSHIP);
+			String pobMapping = getDocumentName(mappingIdentity, PROOF_OF_DOB);
+			JSONObject proofOfAddressJson = JsonUtil.getJSONObject(demographicIdentity, poaMapping);
+			regProcReqUpdateDto.setProofOfAddress(getDocumentValue(proofOfAddressJson, documents));
+			JSONObject proofOfIdentityJson = JsonUtil.getJSONObject(demographicIdentity, poiMapping);
+			regProcReqUpdateDto.setProofOfIdentity(getDocumentValue(proofOfIdentityJson, documents));
+			JSONObject proofOfrelationJson = JsonUtil.getJSONObject(demographicIdentity, porMapping);
+			regProcReqUpdateDto.setProofOfRelationship(getDocumentValue(proofOfrelationJson, documents));
+			JSONObject proofOfBirthJson = JsonUtil.getJSONObject(demographicIdentity, pobMapping);
+			regProcReqUpdateDto.setProofOfDateOfBirth(getDocumentValue(proofOfBirthJson, documents));
+			RequestWrapper<RegProcUpdateRequestDTO> request = new RequestWrapper<>();
+			request.setId("mosip.registration.update");
+			request.setRequest(regProcReqUpdateDto);
+			request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+			request.setVersion("1.0");
+			ResponseWrapper<RegProcCommonResponseDto> response = residentServiceRestClient.postApi(
+					env.getProperty(ApiName.REGPROCRESUPDATE.name()), MediaType.APPLICATION_JSON, request,
+					ResponseWrapper.class, tokenGenerator.getRegprocToken());
+
+			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
+				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
+						NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+				throw new ResidentServiceException(ResidentErrorCode.UIN_UPDATE_FAILED.getErrorCode(),
+						ResidentErrorCode.UIN_UPDATE_FAILED.getErrorMessage()
+								+ (response.getErrors().get(0).toString()));
+			}
+			RegProcCommonResponseDto regProcResponseDto = JsonUtil
+					.readValue(JsonUtil.writeValueAsString(response.getResponse()), RegProcCommonResponseDto.class);
+
+			Map<String, Object> additionalAttributes = new HashMap<>();
+			additionalAttributes.put("RID", regProcResponseDto.getRegistrationId());
+			NotificationResponseDTO notificationResponseDTO = sendNotification(dto.getIndividualId(),
+					dto.getIndividualIdType(), NotificationTemplateCode.RS_UIN_RPR_SUCCESS, additionalAttributes);
+			responseDto.setMessage(notificationResponseDTO.getMessage());
+			responseDto.setRegistrationId(regProcResponseDto.getRegistrationId());
+
+		} catch (OtpValidationFailedException e) {
+			sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
+					NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
+					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
+
+		} catch (ApisResourceAccessException e) {
+			sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
+					NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
+
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
+						ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorMessage() + e.getMessage(), e);
+			}
+		} catch (IOException e) {
+			sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
+					NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+			throw new ResidentServiceException(ResidentErrorCode.IO_EXCEPTION.getErrorCode(),
+					ResidentErrorCode.IO_EXCEPTION.getErrorMessage(), e);
+		}
+		return responseDto;
+	}
+
+	// get name of document
+	private String getDocumentName(JSONObject identityJson, String name) {
+		JSONObject docJson = JsonUtil.getJSONObject(identityJson, name);
+		return JsonUtil.getJSONValue(docJson, VALUE);
+	}
+
+	// get document content
+	private String getDocumentValue(JSONObject documentJsonObject, List<ResidentDocuments> documents) {
+		if (documentJsonObject == null || documents == null || documents.isEmpty())
+			return null;
+		String documentName = JsonUtil.getJSONValue(documentJsonObject, VALUE);
+		Optional<ResidentDocuments> residentDocument = documents.parallelStream()
+				.filter(document -> document.getName().equals(documentName)).findAny();
+		if (residentDocument.isPresent())
+			return residentDocument.get().getValue();
+		else
+			throw new ResidentServiceException(ResidentErrorCode.DOCUMENT_NOT_FOUND.getErrorCode(),
+					ResidentErrorCode.DOCUMENT_NOT_FOUND.getErrorMessage());
+
+	}
 }

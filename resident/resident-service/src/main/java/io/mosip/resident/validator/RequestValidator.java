@@ -23,6 +23,7 @@ import io.mosip.resident.constant.RequestIdType;
 import io.mosip.resident.constant.VidType;
 import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
+import io.mosip.resident.dto.BaseRequestDTO;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentVidRequestDto;
@@ -50,6 +51,13 @@ public class RequestValidator {
 	private String authHstoryId;
 
 	private String authLockId;
+	
+	private String uinUpdateId;
+
+	@Value("${resident.updateuin.id}")
+	public void setUinUpdateId(String uinUpdateId) {
+		this.uinUpdateId = uinUpdateId;
+	}
 
 	@Value("${resident.vid.id}")
 	private String id;
@@ -104,6 +112,7 @@ public class RequestValidator {
 		map.put(RequestIdType.AUTH_UNLOCK_ID, authUnLockId);
 		map.put(RequestIdType.E_UIN_ID, euinId);
 		map.put(RequestIdType.AUTH_HISTORY_ID, authHstoryId);
+		map.put(RequestIdType.RES_UPDATE, uinUpdateId);
 
 	}
 
@@ -279,6 +288,19 @@ public class RequestValidator {
 	}
 
 	public boolean validateRequest(RequestWrapper<?> request, RequestIdType requestIdType) {
+		if (request.getId() == null || request.getId().isEmpty())
+			throw new InvalidInputException("id");
+		if (request.getVersion() == null || request.getVersion().isEmpty())
+			throw new InvalidInputException("version");
+		if (!request.getId().equals(map.get(requestIdType)))
+			throw new InvalidInputException("id");
+		if (!request.getVersion().equals(version))
+			throw new InvalidInputException("version");
+		return true;
+
+	}
+
+	public boolean validateRequest(BaseRequestDTO request, RequestIdType requestIdType) {
 		if (request.getId() == null || request.getId().isEmpty())
 			throw new InvalidInputException("id");
 		if (request.getVersion() == null || request.getVersion().isEmpty())

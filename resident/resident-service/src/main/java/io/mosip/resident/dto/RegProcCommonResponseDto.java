@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegProcRePrintResponseDto {
+public class RegProcCommonResponseDto {
 	private String registrationId;
 	private String status;
 	private String message;

@@ -36,6 +36,8 @@ public enum ApiName {
 	
 	REPRINTUIN,
 	
+	REGPROCRESUPDATE,
+	
 	IDAUTHREVOKEVID;
 
 }

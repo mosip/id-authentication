@@ -26,6 +26,8 @@ import io.mosip.resident.dto.RequestDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
+import io.mosip.resident.dto.ResidentUpdateRequestDto;
+import io.mosip.resident.dto.ResidentUpdateResponseDTO;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.exception.ApisResourceAccessException;
 import io.mosip.resident.exception.ResidentServiceCheckedException;
@@ -107,4 +109,14 @@ public class ResidentController {
 		return response;
 	}
 
+	@ResponseFilter
+	@PostMapping(value = "/req/update-uin")
+	public ResponseWrapper<ResidentUpdateResponseDTO> updateUin(
+			@Valid @RequestBody RequestWrapper<ResidentUpdateRequestDto> requestDTO)
+			throws ResidentServiceCheckedException {
+		validator.validateRequest(requestDTO, RequestIdType.RES_UPDATE);
+		ResponseWrapper<ResidentUpdateResponseDTO> response = new ResponseWrapper<>();
+		response.setResponse(residentService.reqUinUpdate(requestDTO.getRequest()));
+		return response;
+	}
 }

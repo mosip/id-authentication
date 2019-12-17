@@ -23,7 +23,7 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.resident.constant.ApiName;
 import io.mosip.resident.constant.IdType;
 import io.mosip.resident.dto.NotificationResponseDTO;
-import io.mosip.resident.dto.RegProcRePrintResponseDto;
+import io.mosip.resident.dto.RegProcCommonResponseDto;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
 import io.mosip.resident.dto.ResponseWrapper;
@@ -80,8 +80,8 @@ public class ResidentServiceReqReprintTest {
 	public void reqPrintUinTest() throws ApisResourceAccessException, OtpValidationFailedException, IOException,
 			ResidentServiceCheckedException {
 
-		ResponseWrapper<RegProcRePrintResponseDto> response = new ResponseWrapper<>();
-		RegProcRePrintResponseDto reprintResp = new RegProcRePrintResponseDto();
+		ResponseWrapper<RegProcCommonResponseDto> response = new ResponseWrapper<>();
+		RegProcCommonResponseDto reprintResp = new RegProcCommonResponseDto();
 		reprintResp.setMessage("sent to packet receiver");
 		reprintResp.setRegistrationId("10008200070004620191203115734");
 		reprintResp.setStatus("success");
@@ -109,8 +109,8 @@ public class ResidentServiceReqReprintTest {
 	@Test(expected = ResidentServiceException.class)
 	public void reprintApiException() throws OtpValidationFailedException, IOException, ApisResourceAccessException,
 			ResidentServiceCheckedException {
-		ResponseWrapper<RegProcRePrintResponseDto> response = new ResponseWrapper<>();
-		RegProcRePrintResponseDto reprintResp = new RegProcRePrintResponseDto();
+		ResponseWrapper<RegProcCommonResponseDto> response = new ResponseWrapper<>();
+		RegProcCommonResponseDto reprintResp = new RegProcCommonResponseDto();
 		reprintResp.setMessage("sent to packet receiver");
 		reprintResp.setRegistrationId("10008200070004620191203115734");
 		reprintResp.setStatus("success");
@@ -172,8 +172,8 @@ public class ResidentServiceReqReprintTest {
 	@Test(expected = ResidentServiceCheckedException.class)
 	public void notificationServiceException() throws ApisResourceAccessException, OtpValidationFailedException,
 			IOException, ResidentServiceCheckedException {
-		ResponseWrapper<RegProcRePrintResponseDto> response = new ResponseWrapper<>();
-		RegProcRePrintResponseDto reprintResp = new RegProcRePrintResponseDto();
+		ResponseWrapper<RegProcCommonResponseDto> response = new ResponseWrapper<>();
+		RegProcCommonResponseDto reprintResp = new RegProcCommonResponseDto();
 		reprintResp.setMessage("sent to packet receiver");
 		reprintResp.setRegistrationId("10008200070004620191203115734");
 		reprintResp.setStatus("success");

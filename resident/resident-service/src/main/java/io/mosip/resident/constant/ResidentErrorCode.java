@@ -23,6 +23,8 @@ public enum ResidentErrorCode {
 	RE_PRINT_REQUEST_FAILED("RES-SER-019","Re print UIN request failed"),
 	VID_REVOCATION_EXCEPTION("RES-RID-005","VID revocation request failed. Please visit the nearest registration center for assistance."),
 	IN_VALID_API_RESPONSE("RES-SER-21","In valid APi response from - "),
+	UIN_UPDATE_FAILED("RES-SER-22","Resident UIN update failed"),
+	DOCUMENT_NOT_FOUND("RES-SER-23", "Could not find the submitted document"),
 	//system exceptions
 	RESIDENT_SYS_EXCEPTION("RES-SER-SYS-001","System exception occured"),
 	IO_EXCEPTION("RES-SER-SYS-002","IO Exception occured"),
