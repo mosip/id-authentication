@@ -39,6 +39,7 @@ import io.mosip.resident.dto.AuthHistoryRequestDTO;
 import io.mosip.resident.dto.AuthHistoryResponseDTO;
 import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
+import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RequestWrapper;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
@@ -103,6 +104,16 @@ public class ResidentControllerTest {
 
 	}
 
+	@Test
+	public void testGetRidStatusSuccess() throws Exception {
+		RegStatusCheckResponseDTO dto = new RegStatusCheckResponseDTO();
+		dto.setRidStatus("PROCESSED");
+		Mockito.doReturn(dto).when(residentService).getRidStatus(Mockito.any());
+		this.mockMvc
+		.perform(post("/rid/check-status").contentType(MediaType.APPLICATION_JSON).content(authLockRequestToJson))
+		.andExpect(status().isOk()).andExpect(jsonPath("$.response.ridStatus", is("PROCESSED")));
+	}
+	
 	@Test
 	public void testRequestAuthLockSuccess() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
