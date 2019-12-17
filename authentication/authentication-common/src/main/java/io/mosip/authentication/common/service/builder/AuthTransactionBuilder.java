@@ -36,6 +36,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 public class AuthTransactionBuilder {
 
+	private static final String SERVICE_ACCOUNT = "service-account-";
+
 	/**
 	 * Instantiates a new auth transaction builder.
 	 */
@@ -232,6 +234,12 @@ public class AuthTransactionBuilder {
 					Optional<String> clientId = Optional.ofNullable(transactionManager.getUser());
 					if (clientId.isPresent()) {
 						String user = clientId.get();
+						// TODO Added workaround to trim the user id coming out authentication to avoid
+						// length exceeding than 36 chars for Entity ID value in Auth Transaction table.
+						// Handle this properly.
+						if(user.contains(SERVICE_ACCOUNT)) {
+							user = user.replace(SERVICE_ACCOUNT, "");
+						}
 						autnTxn.setEntityId(user);
 						autnTxn.setEntityName(user);
 					}
