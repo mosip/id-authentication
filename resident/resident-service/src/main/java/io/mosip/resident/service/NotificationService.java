@@ -301,23 +301,15 @@ public class NotificationService {
 		LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
 		String[] mailTo = { mailingAttributes.get("email").toString() };
 		String[] mailCc = notificationEmails.split("\\|");
-		String apiHost = env.getProperty(ApiName.EMAILNOTIFIER.name());
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiHost);
-		for (String item : mailTo) {
-			builder.queryParam("mailTo", item);
-		}
-
-		if (mailCc != null) {
-			for (String item : mailCc) {
-				builder.queryParam("mailCc", item);
-			}
-		}
+		
+		UriComponentsBuilder builder=prepareBuilder(mailTo,mailCc);
+		
 		try {
 			builder.queryParam("mailSubject", emailSubject);
 			builder.queryParam("mailContent", primaryLanguageMergeTemplate);
 			params.add("attachments", attachment);
 			ResponseWrapper<NotificationResponseDTO> response;
-
+			
 			response = restClient.postApi(builder.build().toUriString(), MediaType.MULTIPART_FORM_DATA, params,
 					ResponseWrapper.class, tokenGenerator.getToken());
 			if (nullCheckForResponse(response)) {
@@ -376,5 +368,20 @@ public class NotificationService {
 			return true;
 		return false;
 		
+	}
+	
+	public UriComponentsBuilder prepareBuilder(String[] mailTo,String[] mailCc) {
+		String apiHost = env.getProperty(ApiName.EMAILNOTIFIER.name());
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiHost);
+		for (String item : mailTo) {
+			builder.queryParam("mailTo", item);
+		}
+
+		if (mailCc != null) {
+			for (String item : mailCc) {
+				builder.queryParam("mailCc", item);
+			}
+		}
+		return builder;
 	}
 }
