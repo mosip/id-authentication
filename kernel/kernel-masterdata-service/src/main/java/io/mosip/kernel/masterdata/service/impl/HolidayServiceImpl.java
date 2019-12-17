@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,12 +24,9 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
-import io.mosip.kernel.masterdata.dto.HolidayLevelDto;
-import io.mosip.kernel.masterdata.dto.HolidayLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
@@ -90,8 +86,7 @@ public class HolidayServiceImpl implements HolidayService {
 	@Autowired
 	private PageUtils pageUtils;
 	
-	@Value("${mosip.level:4}")
-	private int level;
+
 
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:newHolidayDate,h.holidayId.holidayName = :newHolidayName   WHERE h.holidayId.locationCode = :locationCode and h.holidayId.holidayName = :holidayName and h.holidayId.holidayDate = :holidayDate and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 
@@ -461,26 +456,6 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 	}
 	
-	@Override
-	public HolidayLevelResponseDto getHolidayLanguageCode(String langCode) {
-		List<Holiday> holidayList = null;
-		List<HolidayLevelDto> holidayLevelDtoList = null;
-		HolidayLevelResponseDto holidayLevelResponseDto = new HolidayLevelResponseDto();
-		try {
-			holidayList = holidayRepository.findHoildayByLocationCodeAndLangCode(level,langCode);
-		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
-		}
-		if (holidayList != null && !holidayList.isEmpty()) {
-			holidayLevelDtoList = MapperUtils.mapAll(holidayList, HolidayLevelDto.class);
-
-		} else {
-			throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
-		}
-		holidayLevelResponseDto.setHolidays(holidayLevelDtoList);
-		return holidayLevelResponseDto;
-			}
+	
 
 }

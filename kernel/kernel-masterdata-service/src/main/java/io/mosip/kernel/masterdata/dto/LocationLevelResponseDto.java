@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class HolidayLevelResponseDto {
-	private List<HolidayLevelDto> holidays;
+public class LocationLevelResponseDto {
+	private List<LocationLevelDto> locations;
 
 }

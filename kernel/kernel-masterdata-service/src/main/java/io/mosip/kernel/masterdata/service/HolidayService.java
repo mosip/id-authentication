@@ -4,7 +4,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
-import io.mosip.kernel.masterdata.dto.HolidayLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -112,7 +111,7 @@ public interface HolidayService {
 	 * @return the response i.e. pages containing the holidays
 	 */
 	public PageDto<HolidayExtnDto> getHolidays(int pageNumber, int pageSize, String sortBy, String orderBy);
-	
+
 	/**
 	 * Method to search holidays based on filters provided.
 	 * 
@@ -130,18 +129,5 @@ public interface HolidayService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto);
-	
-	/**
-	 * To fetch specific holiday by language code for the level
-	 * 
-	 * @param langCode
-	 *            input from user
-	 * @return {@linkplain HolidayResponseDto}
-	 * @throws MasterDataServiceException
-	 *             when data not fetched from DB
-	 * @throws DataNotFoundException
-	 *             when data not found
-	 */
-	public HolidayLevelResponseDto getHolidayLanguageCode(String langCode);
 
 }
