@@ -3,7 +3,9 @@ package io.mosip.resident.exception;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -162,35 +164,22 @@ public class ApiExceptionHandler {
 	}
 
 	private String setId(String requestURI) {
-		if (requestURI.contains("/check-status")) {
-			return env.getProperty(CHECK_STATUS);
-		}
-		if (requestURI.contains("/euin")) {
-			return env.getProperty(EUIN);
-		}
-		if (requestURI.contains("/print-uin")) {
-			return env.getProperty(PRINT_UIN);
-		}
-		if (requestURI.contains("/uin")) {
-			return env.getProperty(UIN);
-		}
-		if (requestURI.contains("/rid")) {
-			return env.getProperty(RID);
-		}
-		if (requestURI.contains("/update-uin")) {
-			return env.getProperty(UPDATE_UIN);
-		}
-		if (requestURI.contains("/vid")) {
-			return env.getProperty(VID);
-		}
-		if (requestURI.contains("/auth-lock")) {
-			return env.getProperty(AUTH_LOCK);
-		}
-		if (requestURI.contains("/auth-unlock")) {
-			return env.getProperty(AUTH_UNLOCK);
-		}
-		if (requestURI.contains("/auth-history")) {
-			return env.getProperty(AUTH_HISTORY);
+		Map<String, String> idMap = new HashMap<>();
+		idMap.put("/check-status", env.getProperty(CHECK_STATUS));
+		idMap.put("/euin", env.getProperty(EUIN));
+		idMap.put("/print-uin", env.getProperty(PRINT_UIN));
+		idMap.put("/uin", env.getProperty(UIN));
+		idMap.put("/rid", env.getProperty(RID));
+		idMap.put("/update-uin", env.getProperty(UPDATE_UIN));
+		idMap.put("/vid", env.getProperty(VID));
+		idMap.put("/auth-lock", env.getProperty(AUTH_LOCK));
+		idMap.put("/auth-unlock", env.getProperty(AUTH_UNLOCK));
+		idMap.put("/auth-history", env.getProperty(CHECK_STATUS));
+
+		for (Map.Entry<String, String> entry : idMap.entrySet()) {
+			if (requestURI.contains(entry.getKey())) {
+				return entry.getValue();
+			}
 		}
 		return null;
 	}
