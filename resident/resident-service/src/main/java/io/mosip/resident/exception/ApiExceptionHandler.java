@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.mosip.resident.controller.ResidentController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 
-@RestControllerAdvice
+@RestControllerAdvice(assignableTypes = ResidentController.class)
 public class ApiExceptionHandler {
 	@Autowired
 	private ObjectMapper objectMapper;
