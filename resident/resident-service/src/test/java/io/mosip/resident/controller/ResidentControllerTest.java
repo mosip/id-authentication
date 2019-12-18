@@ -41,8 +41,11 @@ import io.mosip.resident.dto.AuthLockOrUnLockRequestDto;
 import io.mosip.resident.dto.EuinRequestDTO;
 import io.mosip.resident.dto.RegStatusCheckResponseDTO;
 import io.mosip.resident.dto.RequestWrapper;
+import io.mosip.resident.dto.ResidentDocuments;
 import io.mosip.resident.dto.ResidentReprintRequestDto;
 import io.mosip.resident.dto.ResidentReprintResponseDto;
+import io.mosip.resident.dto.ResidentUpdateRequestDto;
+import io.mosip.resident.dto.ResidentUpdateResponseDTO;
 import io.mosip.resident.dto.ResponseDTO;
 import io.mosip.resident.dto.ResponseWrapper;
 import io.mosip.resident.service.ResidentService;
@@ -110,10 +113,11 @@ public class ResidentControllerTest {
 		dto.setRidStatus("PROCESSED");
 		Mockito.doReturn(dto).when(residentService).getRidStatus(Mockito.any());
 		this.mockMvc
-		.perform(post("/rid/check-status").contentType(MediaType.APPLICATION_JSON).content(authLockRequestToJson))
-		.andExpect(status().isOk()).andExpect(jsonPath("$.response.ridStatus", is("PROCESSED")));
+				.perform(post("/rid/check-status").contentType(MediaType.APPLICATION_JSON)
+						.content(authLockRequestToJson))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.response.ridStatus", is("PROCESSED")));
 	}
-	
+
 	@Test
 	public void testRequestAuthLockSuccess() throws Exception {
 		ResponseDTO responseDto = new ResponseDTO();
@@ -241,5 +245,30 @@ public class ResidentControllerTest {
 				.perform(post("/req/auth-history").contentType(MediaType.APPLICATION_JSON).content(""))
 				.andExpect(status().isOk()).andReturn();
 		assertTrue(result.getResponse().getContentAsString().contains("RES-SER-020"));
+	}
+
+	@Test
+	public void testRequestUINUpdate() throws Exception {
+		ResidentUpdateRequestDto dto = new ResidentUpdateRequestDto();
+		ResidentDocuments document = new ResidentDocuments();
+		document.setName("POA");
+		document.setValue("abecfsgdsdg");
+		List<ResidentDocuments> list = new ArrayList<>();
+		list.add(document);
+		dto.setDocuments(list);
+		dto.setIdentityJson("sdgfdgsfhfh");
+		dto.setIndividualId("9876543210");
+		dto.setIndividualIdType(IdType.UIN);
+		dto.setOtp("1234");
+		dto.setTransactionID("12345");
+		RequestWrapper<ResidentUpdateRequestDto> reqWrapper = new RequestWrapper<>();
+		reqWrapper.setRequest(dto);
+		reqWrapper.setId("mosip.resident.uin");
+		reqWrapper.setVersion("v1");
+		Mockito.when(residentService.reqUinUpdate(Mockito.any())).thenReturn(new ResidentUpdateResponseDTO());
+		String requestAsString = gson.toJson(reqWrapper);
+		this.mockMvc.perform(post("/req/update-uin").contentType(MediaType.APPLICATION_JSON).content(requestAsString))
+				.andExpect(status().isOk());
+
 	}
 }
