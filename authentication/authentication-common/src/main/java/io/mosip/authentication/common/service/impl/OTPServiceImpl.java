@@ -123,7 +123,7 @@ public class OTPServiceImpl implements OTPService {
 		String requestTime = otpRequestDto.getRequestTime();
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		
-		boolean isInternal = partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL);
+		boolean isInternal = partnerId != null && partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL);
 
 		if (isOtpFlooded(hashedUin, requestTime)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
@@ -157,10 +157,9 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
 			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, userIdForSendOtp, userIdTypeForSendOtp, valueMap);
-			Boolean staticTokenRequired = partnerId != null
-					&& !isInternal
-							? env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class)
-							: false;
+			
+			boolean staticTokenRequired = !isInternal && env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);
+			
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());

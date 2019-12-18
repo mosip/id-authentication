@@ -77,7 +77,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * Instantiates a new id auth exception handler.
 	 */
 	public IdAuthExceptionHandler() {
-
+		//Default constructor
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		String[] splitedContext = contextPath.split("/");
 		String requestReceived = splitedContext[splitedContext.length - 1];
 		if (requestReceived.equalsIgnoreCase("internal")) {
-			String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+			String reqUrl = (request).getRequestURL().toString();
 			type = fetchInternalAuthtype(reqUrl);
 		}
 		List<AuthError> errors = null;
