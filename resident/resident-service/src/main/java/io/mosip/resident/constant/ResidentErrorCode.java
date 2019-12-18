@@ -22,6 +22,7 @@ public enum ResidentErrorCode {
 	IN_VALID_UIN_OR_VID_OR_RID("RES-SER-018", "Invalid individualId"),
 	RE_PRINT_REQUEST_FAILED("RES-SER-019","Re print UIN request failed"),
 	VID_REVOCATION_EXCEPTION("RES-RID-005","VID revocation request failed. Please visit the nearest registration center for assistance."),
+	BAD_REQUEST("RES-SER-020","Bad Request"),
 	IN_VALID_API_RESPONSE("RES-SER-21","In valid APi response from - "),
 	UIN_UPDATE_FAILED("RES-SER-22","Resident UIN update failed"),
 	DOCUMENT_NOT_FOUND("RES-SER-23", "Could not find the submitted document"),
