@@ -37,7 +37,7 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository
 import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
-
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -56,6 +56,9 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 
 	private static final String REGISTERED = "Registered";
 
+	@Autowired
+	AuditUtil auditUtil;
+	
 	@Autowired
 	private RegisteredDeviceRepository registeredDeviceRepository;
 
@@ -403,6 +406,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		try {
 
 			if (deviceProviderRepository.findById(DeviceProvider.class, dto.getId()) != null) {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, DeviceProvider.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								DeviceProviderManagementErrorCode.DEVICE_PROVIDER_EXIST.getErrorCode(),
+								DeviceProviderManagementErrorCode.DEVICE_PROVIDER_EXIST.getErrorMessage()));
 				throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_EXIST.getErrorCode(),
 						String.format(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_EXIST.getErrorMessage(),
 								dto.getId()));
@@ -420,6 +428,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 			deviceProviderHistoryRepository.create(entityHistory);
 
 		} catch (DataAccessLayerException | DataAccessException ex) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, DeviceProvider.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorCode(),
+							DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorMessage()));
 			throw new MasterDataServiceException(
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INSERTION_EXCEPTION.getErrorMessage() + " "
@@ -446,6 +459,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 			renDeviceProvider = deviceProviderRepository.findById(DeviceProvider.class, dto.getId());
 
 			if (renDeviceProvider == null) {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceProvider.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
+								DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage()));
 				throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 						String.format(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage(),
 								dto.getId()));
@@ -462,6 +480,11 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 			deviceProviderHistoryRepository.create(entityHistory);
 
 		} catch (DataAccessLayerException | DataAccessException ex) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceProvider.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceProviderManagementErrorCode.DEVICE_PROVIDER_UPDATE_EXCEPTION.getErrorCode(),
+							DeviceProviderManagementErrorCode.DEVICE_PROVIDER_UPDATE_EXCEPTION.getErrorMessage()));
 			throw new MasterDataServiceException(
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_UPDATE_EXCEPTION.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_UPDATE_EXCEPTION.getErrorMessage() + " "
