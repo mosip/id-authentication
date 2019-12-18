@@ -46,6 +46,12 @@ import lombok.Data;
 @Component
 public class BioMatcherUtil {
 
+	private static final String KER_BIO_QUALITY_CHK_FAILED = "KER-BIO-003";
+
+	private static final String KER_BIO_MATCH_FAILED = "KER-BIO-004";
+
+	private static final String KER_BIO_UNKNOWN_ERROR = "KER-BIO-005";
+	
 	@Autowired(required = false)
 	@Qualifier("finger")
 	private IBioApi fingerApi;
@@ -101,7 +107,7 @@ public class BioMatcherUtil {
 				if (Stream.of(match).anyMatch(Objects::isNull)) {
 					// Handling null score. Usually this should not occur, as any exception should
 					// be thrown by the bio sdk instead of returning null.
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MATCH_FAILED_TO_PERFORM);
 				} else {
 					logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 							"match size >>>" + match.length);
@@ -112,10 +118,24 @@ public class BioMatcherUtil {
 				}
 				
 			} catch (BiometricException e) {
+				String errorCode = e.getErrorCode();
 				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Error occurred in matching biometrics: " 
-								+ e.getErrorCode() + " --> " + e.getErrorText());
+								+ errorCode + " --> " + e.getErrorText());
 				
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+				switch (errorCode) {
+					case KER_BIO_QUALITY_CHK_FAILED:
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.QUALITY_CHECK_FAILED, e);
+					case KER_BIO_MATCH_FAILED:
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.BIO_MATCH_FAILED_TO_PERFORM, e);
+					case KER_BIO_UNKNOWN_ERROR:
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO,
+								e);
+					default:
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO,
+								e);
+				}
+				
 			}
 		}
 		return 0;

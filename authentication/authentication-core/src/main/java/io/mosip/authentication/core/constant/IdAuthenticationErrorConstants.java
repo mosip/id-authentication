@@ -76,6 +76,9 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_MDS("IDA-BIA-012", "MDS verification failed"),
 	INVALID_HASH("IDA-BIA-014", "Hash Validation Failed"),
 	INVALID_SIGNATURE("IDA-BIA-015", "Signature Validation Failed"),
+	QUALITY_CHECK_FAILED("IDA-BIA-016", "Unable to Perform Quality Check due to a Technical Issue"),
+	BIO_MATCH_FAILED_TO_PERFORM("IDA-BIA-017", "Unable to Perform Biometric Match due to a Technical Issue"),
+	UNABLE_TO_PROCESS_BIO("IDA-BIA-018", "Unable to Process the Request due to a Technical Issue"),
 
 	
 
