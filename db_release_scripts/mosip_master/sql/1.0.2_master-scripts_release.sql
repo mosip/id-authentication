@@ -1,6 +1,6 @@
 -- ---------------------------------------------------------------------------------------------------------
 -- Database Name: mosip_master
--- Release Version 	: 1.0.1
+-- Release Version 	: 1.0.2
 -- Purpose    		: Database Alter scripts for the release for Master DB.       
 -- Create By   		: Sadanandegowda DM
 -- Created Date		: 11-Dec-2019
@@ -43,6 +43,11 @@ TRUNCATE TABLE master.daysofweek_list cascade ;
 
 \COPY master.daysofweek_list (code,name,day_seq,is_global_working,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-daysofweek_list.csv' delimiter ',' HEADER  csv;
 
+----- TRUNCATE master.template_type TABLE Data and It's reference Data and COPY Data from CSV file -----
+TRUNCATE TABLE master.template_type cascade ;
+
+\COPY master.template_type (code,descr,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template_type.csv' delimiter ',' HEADER  csv;
+
 
 -------------- Level 2 data load scripts ------------------------
 
@@ -55,4 +60,10 @@ TRUNCATE TABLE master.reg_working_nonworking cascade ;
 TRUNCATE TABLE master.reg_exceptional_holiday cascade ;
 
 \COPY master.reg_exceptional_holiday (regcntr_id,hol_date,hol_name,hol_reason,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-reg_exceptional_holiday.csv' delimiter ',' HEADER  csv;
+
+
+----- TRUNCATE master.template TABLE Data and It's reference Data and COPY Data from CSV file -----
+TRUNCATE TABLE master.template cascade ;
+
+\COPY master.template (id,name,descr,file_format_code,model,file_txt,module_id,module_name,template_typ_code,lang_code,is_active,cr_by,cr_dtimes) FROM './dml/master-template.csv' delimiter ',' HEADER  csv;
 

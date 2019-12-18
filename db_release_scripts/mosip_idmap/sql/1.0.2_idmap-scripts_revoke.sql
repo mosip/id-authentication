@@ -1,7 +1,7 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_idamap
--- Release Version 	: 1.0.1
--- Purpose    		: Database Alter scripts for the release for ID Map DB.       
+-- Database Name: mosip_idmap
+-- Release Version 	: 1.0.2
+-- Purpose    		: Revoking Database Alter deployement done for release in ID Map DB.       
 -- Create By   		: Sadanandegowda DM
 -- Created Date		: 09-Dec-2019
 -- 

@@ -660,7 +660,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("resident")
 	public void testGetDoucmentTypesForDocumentCategoryAndLangCode() throws Exception {
 
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
@@ -672,7 +672,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("resident")
 	public void testDocumentTypeNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("KER-DOC-10001",
@@ -984,7 +984,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("resident")
 	public void getAllTemplateByTemplateTypeCodeTest() throws Exception {
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		templateResponseDto.setTemplates(templateDtoList);

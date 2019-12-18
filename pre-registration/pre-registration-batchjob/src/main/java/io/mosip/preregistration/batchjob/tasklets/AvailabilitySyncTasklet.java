@@ -14,9 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.preregistration.batchjob.utils.AuthTokenUtil;
 import io.mosip.preregistration.batchjob.utils.AvailabilityUtil;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.AuthTokenUtil;
 
 /**
  * This class is a tasklet of batch job to call master data sync API in batch service.
