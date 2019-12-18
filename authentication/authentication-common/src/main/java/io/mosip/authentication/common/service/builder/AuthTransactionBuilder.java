@@ -234,7 +234,7 @@ public class AuthTransactionBuilder {
 					Optional<String> clientId = Optional.ofNullable(transactionManager.getUser());
 					if (clientId.isPresent()) {
 						String user = clientId.get();
-						// TODO Added workaround to trim the user id coming out authentication to avoid
+						// Added workaround to trim the user id coming out authentication to avoid
 						// length exceeding than 36 chars for Entity ID value in Auth Transaction table.
 						// Handle this properly.
 						if(user.contains(SERVICE_ACCOUNT)) {

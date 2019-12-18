@@ -3,6 +3,7 @@
  */
 package io.mosip.authentication.core.constant;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -189,7 +190,7 @@ public enum IdAuthenticationErrorConstants {
 
 	public static Optional<String> getActionMessageForErrorCode(String errorCode) {
 		return Stream.of(values()).filter(ele -> ele.getErrorCode().equals(errorCode))
-				.map(ele -> ele.getActionMessage()).filter(act -> act != null).findAny();
+				.map(IdAuthenticationErrorConstants::getActionMessage).filter(Objects::nonNull).findAny();
 	}
 
 }
