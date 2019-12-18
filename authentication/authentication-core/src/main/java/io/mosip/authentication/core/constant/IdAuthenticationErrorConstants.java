@@ -102,6 +102,7 @@ public enum IdAuthenticationErrorConstants {
 	UNAUTHORISED_PARTNER("IDA-MPA-013", "Partner is unauthorised for eKYC"),
 	PARTNER_POLICY_NOTMAPPED("IDA-MPA-014", "Partner is not assigned with any policy"),
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
+	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 

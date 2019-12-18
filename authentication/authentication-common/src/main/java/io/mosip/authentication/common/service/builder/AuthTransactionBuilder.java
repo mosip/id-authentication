@@ -21,6 +21,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -34,6 +35,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
  *
  */
 public class AuthTransactionBuilder {
+
+	private static final String SERVICE_ACCOUNT = "service-account-";
 
 	/**
 	 * Instantiates a new auth transaction builder.
@@ -76,6 +79,10 @@ public class AuthTransactionBuilder {
 
 	/** The otp request DTO. */
 	private OtpRequestDTO otpRequestDTO;
+
+	private Optional<PartnerDTO> partnerOptional = Optional.empty();
+
+	private boolean isInternal;
 
 	/**
 	 * Set the AuthRequestDTO.
@@ -148,6 +155,16 @@ public class AuthTransactionBuilder {
 		this.isStatus = isStatus;
 		return this;
 	}
+	
+	public AuthTransactionBuilder withPartner(Optional<PartnerDTO> partnerOptional) {
+		this.partnerOptional = partnerOptional;
+		return this;
+	}
+	
+	public AuthTransactionBuilder withInternal(boolean isInternal) {
+		this.isInternal = isInternal;
+		return this;
+	}
 
 	/**
 	 * Build {@code AutnTxn}.
@@ -211,17 +228,31 @@ public class AuthTransactionBuilder {
 				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
 				autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
 						+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
-
-				Optional<String> clientId = Optional.of(transactionManager.getUser());
-				if (clientId.isPresent()) {
-					autnTxn.setEntityName(clientId.get());
-					if (clientId.get()
-							.equalsIgnoreCase(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_CLIENTID))) {
-						autnTxn.setEntitytype(TransactionType.PARTNER.getType());
-					} else {
-						autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
+				
+				if(isInternal) {
+					autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
+					Optional<String> clientId = Optional.ofNullable(transactionManager.getUser());
+					if (clientId.isPresent()) {
+						String user = clientId.get();
+						// TODO Added workaround to trim the user id coming out authentication to avoid
+						// length exceeding than 36 chars for Entity ID value in Auth Transaction table.
+						// Handle this properly.
+						if(user.contains(SERVICE_ACCOUNT)) {
+							user = user.replace(SERVICE_ACCOUNT, "");
+						}
+						autnTxn.setEntityId(user);
+						autnTxn.setEntityName(user);
 					}
+				} else {
+					autnTxn.setEntitytype(TransactionType.PARTNER.getType());
+					if(partnerOptional.isPresent()) {
+						PartnerDTO partner = partnerOptional.get();
+						autnTxn.setEntityId(partner.getPartnerId());
+						autnTxn.setEntityName(partner.getPartnerName());
+					}
+
 				}
+
 				return autnTxn;
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),

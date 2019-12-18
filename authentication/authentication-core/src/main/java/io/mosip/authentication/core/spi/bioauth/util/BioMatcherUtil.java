@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -96,13 +97,24 @@ public class BioMatcherUtil {
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"entityBIR size >>>" + entityBIR.length);
 				match = getBioSdkInstance(reqBIR.get().getBdbInfo().getFormat().getType()).match(reqBIR.get(), entityBIR, null);
-				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
-						"match size >>>" + match.length);
-				Arrays.asList(match).stream().forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA",
-						"matchValue", "scaled score Value >>>" + score.getScaleScore()));
-				return Stream.of(match).mapToDouble(Score::getScaleScore).max().orElse(0);
+				
+				if (Stream.of(match).anyMatch(Objects::isNull)) {
+					// Handling null score. Usually this should not occur, as any exception should
+					// be thrown by the bio sdk instead of returning null.
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_BIOMETRIC);
+				} else {
+					logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+							"match size >>>" + match.length);
+					Stream.of(match).filter(Objects::nonNull)
+							.forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+									"scaled score Value >>>" + score.getScaleScore()));
+					return Stream.of(match).filter(Objects::nonNull).mapToDouble(Score::getScaleScore).max().orElse(0);
+				}
+				
 			} catch (BiometricException e) {
-				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Biovalue not Matched");
+				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Error occurred in matching biometrics: " 
+								+ e.getErrorCode() + " --> " + e.getErrorText());
+				
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
 		}
