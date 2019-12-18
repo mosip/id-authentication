@@ -487,21 +487,21 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType())
 						|| bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType()))) {
-			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, AuditModules.FINGERPRINT_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FINGER_AUTH, isInternal, partnerId);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.IRIS_IMG.getType()))) {
-			auditHelper.audit(AuditModules.IRIS_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, AuditModules.IRIS_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.IRIS_AUTH, isInternal, partnerId);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FACE_IMG.getType()))) {
-			auditHelper.audit(AuditModules.FACE_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, AuditModules.FACE_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FACE_AUTH, isInternal, partnerId);
 			idAuthService.saveAutnTxn(authTxn);
