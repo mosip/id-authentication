@@ -295,7 +295,7 @@ public class AuthServiceImpl implements AuthService {
 		otpUser.setOtpChannel(otpUser.getOtpChannel());
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
 			mosipUser = uinService.getDetailsFromUin(otpUser);
-			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser.getOtpChannel(), "ida");
+			authNResponseDto = oTPService.sendOTPForUin(mosipUser, otpUser, "ida");
 			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
 		} else if (AuthConstant.APPTYPE_USERID.equals(otpUser.getUseridtype())) {
@@ -600,7 +600,7 @@ public class AuthServiceImpl implements AuthService {
 		if(EmptyCheckUtils.isNullEmpty(token)) {
 			throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
-		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
+		//token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
 		Map<String, String> pathparams = new HashMap<>();
 		pathparams.put(KeycloakConstants.REALM_ID, realmID);
 		ResponseEntity<String> response = null;

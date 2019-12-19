@@ -3,6 +3,7 @@
  */
 package io.mosip.authentication.core.constant;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -76,6 +77,9 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_MDS("IDA-BIA-012", "MDS verification failed"),
 	INVALID_HASH("IDA-BIA-014", "Hash Validation Failed"),
 	INVALID_SIGNATURE("IDA-BIA-015", "Signature Validation Failed"),
+	QUALITY_CHECK_FAILED("IDA-BIA-016", "Unable to Perform Quality Check due to a Technical Issue"),
+	BIO_MATCH_FAILED_TO_PERFORM("IDA-BIA-017", "Unable to Perform Biometric Match due to a Technical Issue"),
+	UNABLE_TO_PROCESS_BIO("IDA-BIA-018", "Unable to Process the Request due to a Technical Issue"),
 
 	
 
@@ -102,6 +106,7 @@ public enum IdAuthenticationErrorConstants {
 	UNAUTHORISED_PARTNER("IDA-MPA-013", "Partner is unauthorised for eKYC"),
 	PARTNER_POLICY_NOTMAPPED("IDA-MPA-014", "Partner is not assigned with any policy"),
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
+	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 
@@ -185,7 +190,7 @@ public enum IdAuthenticationErrorConstants {
 
 	public static Optional<String> getActionMessageForErrorCode(String errorCode) {
 		return Stream.of(values()).filter(ele -> ele.getErrorCode().equals(errorCode))
-				.map(ele -> ele.getActionMessage()).filter(act -> act != null).findAny();
+				.map(IdAuthenticationErrorConstants::getActionMessage).filter(Objects::nonNull).findAny();
 	}
 
 }
