@@ -195,7 +195,7 @@ public class OTPServiceImpl implements OTPService {
 	}
 	
 	private AuditEvents getAuditEvent(boolean isAuth) {
-		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
+		return isAuth ? AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE : AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE;
 	}
 
 	/**
