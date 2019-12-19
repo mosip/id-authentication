@@ -100,6 +100,7 @@ public class KeymanagerController {
 	@PostMapping("/sign")
 	public ResponseWrapper<SignatureResponseDto> sign(
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
+		System.out.println("Added Keymanager for testing");
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
 		return response;
