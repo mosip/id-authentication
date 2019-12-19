@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,16 +95,16 @@ public class PacketGeneratorController {
 	 * @throws RegBaseCheckedException
 	 * @throws IOException
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN', 'REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/packetgenerator", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
-			@RequestBody(required = true) @Valid PacketGeneratorRequestDto packerGeneratorRequestDto,
-			@CookieValue(value = "Authorization", required = true) String token)
+			@RequestBody(required = true) @Valid PacketGeneratorRequestDto packerGeneratorRequestDto)
 			throws RegBaseCheckedException, IOException {
-		tokenValidator.validate("Authorization=" + token, "requesthandler");
+
 
 		try {
 			validator.validate(packerGeneratorRequestDto.getRequesttime(), packerGeneratorRequestDto.getId(),

@@ -169,7 +169,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            - id of the registration center.
 	 * @return - the fetched registration center entity.
 	 */
-	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) and isActive=true")
+	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false) ")
 	List<RegistrationCenter> findByRegIdAndIsDeletedFalseOrNull(String id);
 
 	/**

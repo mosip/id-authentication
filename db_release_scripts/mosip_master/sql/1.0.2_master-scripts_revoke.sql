@@ -1,6 +1,6 @@
 -- --------------------------------------------------------------------------------------------------------
 -- Database Name: mosip_master
--- Release Version 	: 1.0.1
+-- Release Version 	: 1.0.2
 -- Purpose    		: Revoking Database Alter deployement done for release in Master DB.       
 -- Create By   		: Sadanandegowda DM
 -- Created Date		: 11-Dec-2019

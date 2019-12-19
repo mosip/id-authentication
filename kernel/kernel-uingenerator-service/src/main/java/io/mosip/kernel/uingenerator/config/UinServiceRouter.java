@@ -104,9 +104,9 @@ public class UinServiceRouter {
 			getRouter(vertx, routingContext, isSignEnable,profile,router,path,workerExecutorPool);
 		});
 		router.route().handler(BodyHandler.create());
-		if (!profile.equalsIgnoreCase("test")) {
-			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
-		}
+//		if (!profile.equalsIgnoreCase("test")) {
+//			authHandler.addAuthFilter(router, path, HttpMethod.PUT, "REGISTRATION_PROCESSOR");
+//		}
 		router.put(path).consumes(UinGeneratorConstant.APPLICATION_JSON).handler(this::updateRouter);
 
 		configureHealthCheckEndpoint(vertx, router, servletPath);
