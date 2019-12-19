@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.keymanagerservice.dto.PDFSignatureRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
@@ -102,6 +103,17 @@ public class KeymanagerController {
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
+		return response;
+	}
+	
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN','RESIDENT')")
+	
+	@ResponseFilter
+	@PostMapping("/pdf/sign")
+	public ResponseWrapper<SignatureResponseDto> signPDF(@RequestBody RequestWrapper<PDFSignatureRequestDto> signatureResponseDto
+			) {
+		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.signPDF(signatureResponseDto.getRequest()));
 		return response;
 	}
 

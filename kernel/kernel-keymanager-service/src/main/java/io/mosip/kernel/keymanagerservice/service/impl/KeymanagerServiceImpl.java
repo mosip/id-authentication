@@ -1,11 +1,17 @@
 package io.mosip.kernel.keymanagerservice.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -29,6 +35,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
@@ -36,15 +43,18 @@ import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
+import io.mosip.kernel.core.keymanager.model.CertificateEntry;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pdfgenerator.model.Rectangle;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
-import io.mosip.kernel.keymanagerservice.dto.CertificateEntry;
+import io.mosip.kernel.keymanagerservice.dto.PDFSignatureRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SignatureCertificate;
 import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
@@ -56,6 +66,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.exception.CryptoException;
 import io.mosip.kernel.keymanagerservice.exception.InvalidApplicationIdException;
 import io.mosip.kernel.keymanagerservice.exception.KeyStoreException;
+import io.mosip.kernel.keymanagerservice.exception.KeymanagerServiceException;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.logger.KeymanagerLogger;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
@@ -137,6 +148,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	@Autowired
 	KeymanagerUtil keymanagerUtil;
+	
+	@Autowired
+	private PDFGenerator pdfGenerator;
 
 	@Value("${mosip.kernel.keymanager.certificate-file-path}")
 	private String certificateFilePath;
@@ -725,6 +739,21 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				CryptoUtil.encodeBase64(
 						certificateResponse.getCertificateEntry().getChain()[0].getPublicKey().getEncoded()),
 				certificateResponse.getIssuedAt(), certificateResponse.getExpiryAt());
+	}
+
+	@Override
+	public SignatureResponseDto signPDF(PDFSignatureRequestDto request) {
+		SignatureCertificate signatureCertificate=getSigningCertificate(request.getApplicationId(), Optional.of(request.getReferenceId()), request.getTimeStamp());
+		Rectangle rectangle = new Rectangle(request.getX(), request.getY(), request.getWidth(), request.getHeight());
+		OutputStream outputStream;
+		try {
+			outputStream = pdfGenerator.signPDF(new ByteArrayInputStream(CryptoUtil.decodeBase64(request.getData())), rectangle, request.getReason(), request.getPageNumber(), Security.getProvider("SunPKCS11-SoftHSM2"), signatureCertificate.getCertificateEntry(),request.getPassword());
+		} catch (IOException | GeneralSecurityException e) {
+			throw new KeymanagerServiceException(KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorCode(), KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorMessage()+" "+e.getMessage());
+		}
+		SignatureResponseDto signatureResponseDto= new SignatureResponseDto();
+		signatureResponseDto.setData(CryptoUtil.encodeBase64(((ByteArrayOutputStream)outputStream).toByteArray()));
+		return signatureResponseDto;
 	}
 
 

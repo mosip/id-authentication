@@ -1,0 +1,53 @@
+{
+	"folders": {},
+	"connections": {
+		"postgres-jdbc-16df2627c45-178ccc9ded76eab5": {
+			"provider": "postgresql",
+			"driver": "postgres-jdbc",
+			"name": "PostgreSQL - mosip_kernel",
+			"save-password": true,
+			"show-system-objects": true,
+			"read-only": false,
+			"configuration": {
+				"host": "localhost",
+				"port": "5432",
+				"database": "mosip_kernel",
+				"url": "jdbc:postgresql://localhost:5432/mosip_kernel",
+				"type": "dev",
+				"provider-properties": {
+					"@dbeaver-show-non-default-db@": "true",
+					"@dbeaver-show-template-db@": "false"
+				}
+			}
+		},
+		"postgres-jdbc-16df2e7777c-7103a5fdf7b609e2": {
+			"provider": "postgresql",
+			"driver": "postgres-jdbc",
+			"name": "PostgreSQL - mosip_kernel 2",
+			"save-password": true,
+			"show-system-objects": true,
+			"read-only": false,
+			"configuration": {
+				"host": "104.211.202.203",
+				"port": "9001",
+				"database": "mosip_kernel",
+				"url": "jdbc:postgresql://104.211.202.203:9001/mosip_kernel",
+				"type": "dev",
+				"provider-properties": {
+					"@dbeaver-show-non-default-db@": "true",
+					"@dbeaver-show-template-db@": "false"
+				}
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false
+		}
+	}
+}

@@ -5,7 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.cert.X509Certificate;
 import java.util.List;
+
+import io.mosip.kernel.core.keymanager.model.CertificateEntry;
+import io.mosip.kernel.core.pdfgenerator.model.Rectangle;
+
 
 /**
  * This interface is has specifications for PDF generation from different types.
@@ -89,5 +97,19 @@ public interface PDFGenerator {
 	 * @return Password Protected PDF Output Stream (PDF stream)
 	 */
 	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException;
+
+	/** Signs a PDF and protect it with password
+	 * @param pdfStream pdfStream input stream of pdf.
+	 * @param rectangle {@link Rectangle} class to enclose signing
+	 * @param reason reason of signing.
+	 * @param pageNumber page number of rectangle.
+	 * @param provider security provider.
+	 * @param certificateEntry {@link CertificateEntry} class for certificate and private key as Input;
+	 * @param password password for protecting pdf if null pdf will not be protected with any password
+	 * @return {@link OutputStream} of signed PDF.
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws GeneralSecurityException Signals general security exception while signing.
+	 */
+	OutputStream signPDF(InputStream pdfStream,Rectangle rectangle,String reason,int pageNumber,Provider provider,CertificateEntry<X509Certificate, PrivateKey> certificateEntry,String password) throws IOException, GeneralSecurityException;
 
 }
