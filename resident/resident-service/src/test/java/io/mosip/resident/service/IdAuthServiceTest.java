@@ -245,7 +245,7 @@ public class IdAuthServiceTest {
 		AuthError error=new AuthError("e","e");
 		response.setErrors(Arrays.asList(error));
 		when(restClient.getApi(any(), any(),any(), any(), any(Class.class), any())).thenReturn(response);
-		idAuthService.getAuthHistoryDetails("1234", "WN", null, null);
+		assertEquals(null,idAuthService.getAuthHistoryDetails("1234", "WN", null, null));
 	}
 	
 	@Test(expected = ApisResourceAccessException.class)
