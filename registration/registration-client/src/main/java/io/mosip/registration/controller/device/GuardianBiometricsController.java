@@ -43,6 +43,7 @@ import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -52,6 +53,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -171,7 +173,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private String bioValue;
 
 	private FXUtils fxUtils;
-	
+
 	private int leftSlapCount = 0;
 	private int rightSlapCount = 0;
 	private int thumbCount = 0;
@@ -179,12 +181,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private int leftIrisCount = 0;
 	private int retries = 0;
 
-
 	private List<String> leftSlapexceptionList = new ArrayList<String>();
 	private List<String> rightSlapexceptionList = new ArrayList<String>();
 	private List<String> thumbsexceptionList = new ArrayList<String>();
-	
+
 	private List<String> fingerException;
+
+	private String bioType;
 
 	public ImageView getBiometricImage() {
 		return biometricImage;
@@ -259,7 +262,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	public void intializeCaptureCount() {
 		leftSlapCount = 0;
 		rightSlapCount = 0;
-	    thumbCount = 0;
+		thumbCount = 0;
 		rightIrisCount = 0;
 		leftIrisCount = 0;
 		retries = 0;
@@ -328,23 +331,25 @@ public class GuardianBiometricsController extends BaseController implements Init
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				headerText = RegistrationUIConstants.FINGERPRINT;
 				bioType = RegistrationConstants.FINGERPRINT_SLAB_RIGHT;
-				fingerException=rightSlapexceptionList;
+				fingerException = rightSlapexceptionList;
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				headerText = RegistrationUIConstants.FINGERPRINT;
 				bioType = RegistrationConstants.FINGERPRINT_SLAB_LEFT;
-				fingerException=leftSlapexceptionList;
+				fingerException = leftSlapexceptionList;
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
 				SessionContext.map().put("CAPTURE_EXCEPTION", thumbsexceptionList);
 				headerText = RegistrationUIConstants.FINGERPRINT;
 				bioType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
-				fingerException=thumbsexceptionList;
+				fingerException = thumbsexceptionList;
 			} else if (biometricType.getText().contains(RegistrationConstants.IRIS_LOWERCASE)) {
 				headerText = RegistrationUIConstants.IRIS_SCAN;
 				bioType = "IRIS_DOUBLE";
 			}
 			scanPopUpViewController.init(this, headerText);
 			if (bioService.isMdmEnabled())
-				streamer.startStream(new RequestDetail(bioType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, "40", fingerException), scanPopUpViewController.getScanImage(), biometricImage);
+				streamer.startStream(new RequestDetail(bioType,
+						getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, "40",
+						fingerException), scanPopUpViewController.getScanImage(), biometricImage);
 		}
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -478,6 +483,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Updating biometrics and clearing previous data");
+		this.bioType = constructBioType(bioType);
 		clearCaptureData();
 		biometricPane.getStyleClass().clear();
 		biometricPane.getStyleClass().add(RegistrationConstants.BIOMETRIC_PANES_SELECTED);
@@ -503,6 +509,18 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Updated biometrics and cleared previous data");
 	}
 
+	private String constructBioType(String bioType) {
+		if (bioType.equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
+			bioType = RegistrationConstants.FINGERPRINT_SLAB_RIGHT;
+		} else if (bioType.equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
+			bioType = RegistrationConstants.FINGERPRINT_SLAB_LEFT;
+		} else if (bioType.equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
+			bioType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
+		}
+
+		return bioType;
+	}
+
 	/**
 	 * Scan Iris
 	 * 
@@ -516,19 +534,26 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
 		IrisDetailsDTO detailsDTO = null;
-
+		IrisDetailsDTO tempIrisDetail = null;
 		List<IrisDetailsDTO> irisDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO().getIrisDetailsDTO();
+		String bioType = irisType.contains(RegistrationConstants.LEFT) ? RegistrationConstants.LEFT_EYE
+				: RegistrationConstants.RIGHT_EYE;
+
 		try {
-			IrisDetailsDTO tempIrisDetail = irisDetailsDTOs.stream()
-					.filter((iris) -> iris.getIrisType().contains(irisType)).findFirst().get();
+			tempIrisDetail = irisDetailsDTOs.stream().filter((iris) -> iris.getIrisType().equals(bioType)).findFirst()
+					.get();
 			irisDetailsDTOs.remove(tempIrisDetail);
 		} catch (Exception exception) {
 		}
 
+		int attempt = tempIrisDetail != null ? tempIrisDetail.getNumOfIrisRetry() + 1 : 1;
 		try {
 			detailsDTO = new IrisDetailsDTO();
-			bioService.getIrisImageAsDTO(detailsDTO, new RequestDetail(irisType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2, String.valueOf(thresholdValue), null));
+			bioService.getIrisImageAsDTO(detailsDTO,
+					new RequestDetail(irisType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT),
+							2, String.valueOf(thresholdValue), null),
+					attempt, attempt);
 		} catch (RegBaseCheckedException | IOException runtimeException) {
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
@@ -540,42 +565,52 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 		if (detailsDTO.isCaptured()) {
 			detailsDTO.getIrises().forEach((iris) -> {
-				
-				if (irisType.toLowerCase().contains(iris.getIrisType().split(" ")[0].toLowerCase())) {
-					if (iris.getIrisType().equals(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
-						leftIrisCount++;
-						retries = leftIrisCount;
-					} else {
-						rightIrisCount++;
-						retries = rightIrisCount;
-					}
-					scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
-					biometricImage.setImage(convertBytesToImage(iris.getIris()));
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
-					setCapturedValues(iris.getQualityScore(), retries, thresholdValue);
-					iris.setNumOfIrisRetry(retries);
 
-					if (validateIrisQulaity(iris, new Double(thresholdValue))) {
-						if (retries == Integer
-								.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
-							scanBtn.setDisable(true);
-						continueBtn.setDisable(false);
-					} else {
-						scanBtn.setDisable(false);
-						continueBtn.setDisable(true);
-					}
-					irisDetailsDTOs.add(iris);
+				if (iris.getIrisType().contains(RegistrationConstants.RIGHT)) {
+					rightIrisCount++;
+					retries = rightIrisCount;
+				} else {
+					leftIrisCount++;
+					retries = leftIrisCount;
+
 				}
+//				streamer.setBioStreamImages(convertBytesToImage(iris.getIris()), iris.getIrisType(), attempt);
+
+				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
+				biometricImage
+						.setImage(bioService.isMdmEnabled() ? bioService.getBioStreamImage(iris.getIrisType(), retries)
+								: convertBytesToImage(iris.getIris()));
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
+				setCapturedValues(
+						bioService.isMdmEnabled() ? bioService.getBioQualityScores(iris.getIrisType(), retries)
+								: iris.getQualityScore(),
+						retries, thresholdValue);
+				iris.setNumOfIrisRetry(retries);
+
+				if (validateIrisQulaity(iris, new Double(thresholdValue))) {
+					if (retries == Integer
+							.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
+						scanBtn.setDisable(true);
+					continueBtn.setDisable(false);
+				} else {
+					scanBtn.setDisable(false);
+					continueBtn.setDisable(true);
+				}
+				irisDetailsDTOs.add(iris);
 
 			});
+
 			popupStage.close();
-			if(validateIrisLocalDedup(detailsDTO.getIrises())){
+			if (validateIrisLocalDedup(detailsDTO.getIrises())) {
 				continueBtn.setDisable(true);
-				duplicateCheckLbl.setText("Duplicate" + " " + (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
-			}else {
+				duplicateCheckLbl.setText(
+						"Duplicate" + " " + (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS));
+			} else {
 				continueBtn.setDisable(false);
 			}
-		} else {
+		} else
+
+		{
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		}
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -597,14 +632,17 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	}
 
-
 	/**
 	 * Scan Fingers
 	 * 
-	 * @param fingerType           finger type
-	 * @param segmentedFingersPath segmented finger path
-	 * @param popupStage           stage
-	 * @param thresholdValue       threshold value
+	 * @param fingerType
+	 *            finger type
+	 * @param segmentedFingersPath
+	 *            segmented finger path
+	 * @param popupStage
+	 *            stage
+	 * @param thresholdValue
+	 *            threshold value
 	 */
 	private void scanFingers(String fingerType, String[] segmentedFingersPath, Stage popupStage, int thresholdValue)
 			throws RegBaseCheckedException {
@@ -613,6 +651,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Scanning Fingerprints started");
 
 		FingerprintDetailsDTO detailsDTO = null;
+
+		int attempt = 0;
 
 		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO()
 				.getIntroducerBiometricDTO().getFingerprintDetailsDTO();
@@ -646,12 +686,20 @@ public class GuardianBiometricsController extends BaseController implements Init
 			if (detailsDTO == null) {
 				detailsDTO = new FingerprintDetailsDTO();
 				detailsDTO.setNumRetry(detailsDTO.getNumRetry() + 1);
+				detailsDTO.setFingerType(fingerType);
 				fingerprintDetailsDTOs.add(detailsDTO);
+
 			}
+
+			attempt = detailsDTO.getNumRetry();
 		}
 
 		try {
-			bioService.getFingerPrintImageAsDTO(detailsDTO, new RequestDetail(fingerType, getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1, String.valueOf(thresholdValue), fingerException));
+			bioService.getFingerPrintImageAsDTO(detailsDTO,
+					new RequestDetail(fingerType,
+							getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 1,
+							String.valueOf(thresholdValue), fingerException),
+					attempt);
 			streamer.stop();
 			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
 		} catch (Exception exception) {
@@ -665,24 +713,32 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		if (detailsDTO.isCaptured()) {
 			if (fingerType.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
-				leftSlapCount++;
-				retries = leftSlapCount;
-			} else if (fingerType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 				rightSlapCount++;
 				retries = rightSlapCount;
+			} else if (fingerType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
+
+				leftSlapCount++;
+				retries = leftSlapCount;
+
 			} else {
 				thumbCount++;
 				retries = thumbCount;
 			}
+			streamer.setBioStreamImages(null, detailsDTO.getFingerType(), detailsDTO.getNumRetry());
+
 			detailsDTO.setNumRetry(retries);
 			if (!bioService.isMdmEnabled())
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			else
 				detailsDTO.setFingerPrint(streamer.imageBytes);
-			biometricImage.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+			biometricImage.setImage(
+					bioService.isMdmEnabled() ? bioService.getBioStreamImage(detailsDTO.getFingerType(), retries)
+							: convertBytesToImage(detailsDTO.getFingerPrint()));
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
-			setCapturedValues(detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
+			setCapturedValues(bioService.isMdmEnabled()
+					? bioService.getBioQualityScores(detailsDTO.getFingerType(), detailsDTO.getNumRetry())
+					: detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
 
 			popupStage.close();
 
@@ -708,10 +764,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Updating captured values
 	 * 
-	 * @param capturedBio    biometric
-	 * @param qltyScore      Qulaity score
-	 * @param retry          retrycount
-	 * @param thresholdValue threshold value
+	 * @param capturedBio
+	 *            biometric
+	 * @param qltyScore
+	 *            Qulaity score
+	 * @param retry
+	 *            retrycount
+	 * @param thresholdValue
+	 *            threshold value
 	 */
 	private void setCapturedValues(double qltyScore, int retry, double thresholdValue) {
 
@@ -747,13 +807,51 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Updating captured values
 	 * 
-	 * @param retryCount         retry count
-	 * @param biometricThreshold threshold value
+	 * @param retryCount
+	 *            retry count
+	 * @param biometricThreshold
+	 *            threshold value
 	 */
 	private void createQualityBox(String retryCount, String biometricThreshold) {
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Updating Quality and threshold values of biometrics");
+
+		final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
+			public void handle(final MouseEvent mouseEvent) {
+
+				LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+						"Mouse Event by attempt Started");
+
+				if (bioService.isMdmEnabled()) {
+					String eventString = mouseEvent.toString();
+					int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
+
+					if (index == -1) {
+						String text = "Text[text=";
+						index = eventString.indexOf(text) + text.length() + 1;
+
+					} else {
+						index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
+					}
+					try {
+
+						updateByAttempt(bioType, Character.getNumericValue(eventString.charAt(index)), biometricImage,
+								qualityText, bioProgress, qualityScore);
+
+						LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+								"Mouse Event by attempt Ended");
+
+					} catch (RuntimeException runtimeException) {
+						LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+								runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+					}
+				}
+
+			}
+
+		};
 
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			for (int retry = 0; retry < Integer.parseInt(getValueFromApplicationContext(retryCount)); retry++) {
@@ -763,8 +861,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 				label.setVisible(true);
 				label.setText(String.valueOf(retry + 1));
 				label.setAlignment(Pos.CENTER);
+
 				bioRetryBox.getChildren().add(label);
 			}
+			bioRetryBox.setOnMouseClicked(mouseEventHandler);
 
 			String threshold = getValueFromApplicationContext(biometricThreshold);
 
@@ -783,8 +883,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Clear attempts box.
 	 *
-	 * @param styleClass the style class
-	 * @param retries    the retries
+	 * @param styleClass
+	 *            the style class
+	 * @param retries
+	 *            the retries
 	 */
 	private void clearAttemptsBox(String styleClass, int retries) {
 		bioRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + retries).getStyleClass().clear();
@@ -805,22 +907,27 @@ public class GuardianBiometricsController extends BaseController implements Init
 		qualityText.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
 
 		bioRetryBox.getChildren().clear();
+
+		clearAllBiometrics();
 	}
 
 	/**
 	 * Validates QualityScore.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param handThreshold         the hand threshold
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param handThreshold
+	 *            the hand threshold
 	 * @return boolean
 	 */
 	private Boolean validateFingerPrintQulaity(FingerprintDetailsDTO fingerprintDetailsDTO, Double handThreshold) {
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the quality score of the captured fingers");
+		double qualityScore = bioService.isMdmEnabled() ?  bioService.getHighQualityScoreByBioType(fingerprintDetailsDTO.getFingerType()) : fingerprintDetailsDTO.getQualityScore();
 
-		return fingerprintDetailsDTO.getQualityScore() >= handThreshold
-				|| (fingerprintDetailsDTO.getQualityScore() < handThreshold)
+		return qualityScore  >= handThreshold
+				|| (qualityScore < handThreshold)
 						&& fingerprintDetailsDTO.getNumRetry() == Integer.parseInt(
 								getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))
 				|| fingerprintDetailsDTO.isForceCaptured();
@@ -829,7 +936,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Fingerdeduplication check.
 	 *
-	 * @param fingerprintDetailsDTOs the fingerprint details DT os
+	 * @param fingerprintDetailsDTOs
+	 *            the fingerprint details DT os
 	 * @return true, if successful
 	 */
 	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
@@ -884,8 +992,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Validates QualityScore.
 	 *
-	 * @param irisDetailsDTO the iris details DTO
-	 * @param irisThreshold  the iris threshold
+	 * @param irisDetailsDTO
+	 *            the iris details DTO
+	 * @param irisThreshold
+	 *            the iris threshold
 	 * @return boolean
 	 */
 	private boolean validateIrisQulaity(IrisDetailsDTO irisDetailsDTO, Double irisThreshold) {
@@ -893,11 +1003,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the quality score of the captured iris");
 
-		return irisDetailsDTO.getQualityScore() >= irisThreshold
-				|| (Double.compare(irisDetailsDTO.getQualityScore(), irisThreshold) < 0
-						&& irisDetailsDTO.getNumOfIrisRetry() == Integer
-								.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT))
-						|| irisDetailsDTO.isForceCaptured());
+		double qualityScore = bioService.isMdmEnabled()
+				? bioService.getHighQualityScoreByBioType(irisDetailsDTO.getIrisType())
+				: irisDetailsDTO.getQualityScore();
+
+		return qualityScore >= irisThreshold || (Double.compare(qualityScore, irisThreshold) < 0
+				&& irisDetailsDTO.getNumOfIrisRetry() == Integer
+						.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT))
+				|| irisDetailsDTO.isForceCaptured());
 	}
 
 	/**
@@ -907,6 +1020,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Clearing the captured biometric data");
+
+		//clearAllBiometrics();
 
 		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
 				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
@@ -1131,6 +1246,29 @@ public class GuardianBiometricsController extends BaseController implements Init
 			isValid = false;
 		}
 		return isValid;
+
+	}
+
+	private void updateByAttempt(String bioType, int attempt) {
+
+		double qualityScoreValue = bioService.getBioQualityScores(bioType, attempt);
+		String qualityScore = getQualityScore(qualityScoreValue);
+
+		if (qualityScore != null) {
+			Image streamImage = bioService.getBioStreamImage(bioType, attempt);
+			// Set Stream image
+			biometricImage.setImage(streamImage);
+
+			// Quality Label
+			qualityText.setText(qualityScore);
+
+			// Progress BAr
+			bioProgress.setProgress(qualityScoreValue / 100);
+
+			// Progress Bar Quality Score
+			this.qualityScore.setText(String.valueOf((int) qualityScoreValue).concat(RegistrationConstants.PERCENTAGE));
+
+		}
 
 	}
 

@@ -191,7 +191,9 @@ public class LoggerConstants {
 	public static final String LOG_ALERT_GENERATION = ALERT_GENERATION + "ALERT_GENERATION";
 	
 
-	public static final String STREAMER = ALERT_GENERATION + "STREAMER";
+	public static final String STREAMER = "STREAMER";
+	
+
 
 	
 }
