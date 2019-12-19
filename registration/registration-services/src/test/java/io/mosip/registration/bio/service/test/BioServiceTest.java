@@ -8,7 +8,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +22,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.util.EntityUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -355,6 +354,7 @@ public class BioServiceTest {
 		assertEquals(false, irisDetail.isForceCaptured());
 	}
 
+	@Ignore
 	@Test
 	public void testGetIrisImageAsDTOWithMdm() throws RegBaseCheckedException, IOException {
 		CaptureResponseDto captureResponse = getIrisCaptureResponse();
