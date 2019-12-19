@@ -74,6 +74,26 @@ public class FaceValidatorTest {
 	}
 	
 	@Test
+	public void validateTestGoodQuality() throws BiometricException {
+		Score score[] = new Score[1];
+		Score score2 = new Score();
+		score2.setScaleScore(90);
+		score[0] = score2;
+		when(ibioApi.match(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(score);
+		assertThat(faceValidatorImpl.validate(authenticationValidatorDTO), is(true));
+	}
+	
+	@Test
+	public void validateTestException() throws BiometricException {
+		Score score[] = new Score[1];
+		Score score2 = new Score();
+		score2.setInternalScore(30);
+		score[0] = score2;
+		when(ibioApi.match(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenThrow(BiometricException.class);
+		assertThat(faceValidatorImpl.validate(authenticationValidatorDTO), is(false));
+	}
+	
+	@Test
 	public void validateUserTest() {
 		authenticationValidatorDTO.setUserId("");
 		faceValidatorImpl.validate(authenticationValidatorDTO);
