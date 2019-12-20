@@ -177,6 +177,7 @@ public class RegistrationConstants {
 	public static final String RESTART = "Restart";
 	public static final String SUPERVISOR = "REGISTRATION_SUPERVISOR";
 	public static final String OFFICER = "REGISTRATION_OFFICER";
+	public static final String ROLE_DEFAULT = "Default";
 	public static final String IRIS_STUB = "leftIris";
 	public static final String FACE_STUB = "face";
 	public static final String SUPERVISOR_AUTH = "supervisor";
