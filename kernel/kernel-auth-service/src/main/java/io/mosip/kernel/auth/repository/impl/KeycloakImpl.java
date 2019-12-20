@@ -12,6 +12,8 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.collections.MultiMap;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
 import org.apache.directory.api.ldap.model.password.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +75,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 
 @Service
 public class KeycloakImpl implements DataStore {
-	
+
 	private static final String INDIVIDUAL = "INDIVIDUAL";
 
 	@Value("${mosip.kernel.base-url}")
@@ -96,7 +98,7 @@ public class KeycloakImpl implements DataStore {
 
 	@Value("${mosip.kernel.role-user-mapping-url}")
 	private String roleUserMappingurl;
-	
+
 	@Value("${mosip.admin.individual_role_id}")
 	private String individualRoleID;
 
@@ -118,11 +120,10 @@ public class KeycloakImpl implements DataStore {
 
 	@Value("${db_3_DS.keycloak.driverClassName}")
 	private String keycloakDriver;
-	
-	
+
 	@Value("${mosip.admin.pre-reg_user_password}")
 	private String preRegUserPassword;
-	
+
 	@Value("${hikari.maximumPoolSize:25}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
@@ -133,13 +134,16 @@ public class KeycloakImpl implements DataStore {
 	private int idleTimeout;
 	@Value("${hikari.minimumIdle:0}")
 	private int minimumIdle;
+	
+	@Value("${mosip.keycloak.max-no-of-users:100}")
+	private String maxUsers;
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	private static final String FETCH_ALL_SALTS = "select ue.username,ua.value from public.user_entity ue, public.user_attribute ua where ue.id=ua.user_id and ua.name='userPassword'"; // and
-																																							// ue.username
-																																							// IN
-																																							// (:username)";
+	// ue.username
+	// IN
+	// (:username)";
 
 	private static final String FETCH_PASSWORD = "select cr.value from public.credential cr, public.user_entity ue where cr.user_id=ue.id and ue.username=:username";
 	@Autowired
@@ -201,6 +205,7 @@ public class KeycloakImpl implements DataStore {
 		pathParams.put(AuthConstant.REALM_ID, realmId);
 		HttpEntity<String> httpEntity = new HttpEntity<>(null, new HttpHeaders());
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(keycloakAdminUrl + users);
+		uriComponentsBuilder.queryParam("max", maxUsers);
 		String response = callKeycloakService(uriComponentsBuilder.buildAndExpand(pathParams).toString(),
 				HttpMethod.GET, httpEntity);
 		try {
@@ -215,7 +220,6 @@ public class KeycloakImpl implements DataStore {
 		return mosipUserListDto;
 	}
 
-	
 	@Override
 	public MosipUserSaltListDto getAllUserDetailsWithSalt() throws Exception {
 		return jdbcTemplate.query(FETCH_ALL_SALTS, new MapSqlParameterSource(),
@@ -228,15 +232,18 @@ public class KeycloakImpl implements DataStore {
 						while (rs.next()) {
 							MosipUserSalt mosipUserSalt = new MosipUserSalt();
 							mosipUserSalt.setUserId(rs.getString("username"));
-							//System.out.println(rs.getString("value"));
-							PasswordDetails password = PasswordUtil.splitCredentials(CryptoUtil.decodeBase64(rs.getString("value")));
-							//System.out.println(rs.getString("username"));
-							//System.out.println("userPasword salt= "+rs.getString("value"));
-							//System.out.println("password salt= "+DatatypeConverter.printHexBinary(password.getPassword()));
-							//System.out.println("salt salt= "+CryptoUtil.encodeBase64String(password.getSalt()));
-							//mosipUserSalt.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
+							// System.out.println(rs.getString("value"));
+							PasswordDetails password = PasswordUtil
+									.splitCredentials(CryptoUtil.decodeBase64(rs.getString("value")));
+							// System.out.println(rs.getString("username"));
+							// System.out.println("userPasword salt= "+rs.getString("value"));
+							// System.out.println("password salt=
+							// "+DatatypeConverter.printHexBinary(password.getPassword()));
+							// System.out.println("salt salt=
+							// "+CryptoUtil.encodeBase64String(password.getSalt()));
+							// mosipUserSalt.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
 							mosipUserSalt.setSalt(CryptoUtil.encodeBase64String(password.getSalt()));
-							//System.out.println(mosipUserSalt.getSalt());
+							// System.out.println(mosipUserSalt.getSalt());
 							mosipUserSaltList.add(mosipUserSalt);
 						}
 						mosipUserSaltListDto.setMosipUserSaltList(mosipUserSaltList);
@@ -350,9 +357,11 @@ public class KeycloakImpl implements DataStore {
 	/**
 	 * Checks if is user already present.
 	 *
-	 * @param userName the user name
+	 * @param userName
+	 *            the user name
 	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean isUserAlreadyPresent(String userName) {
 		Map<String, String> pathParams = new HashMap<>();
@@ -500,9 +509,12 @@ public class KeycloakImpl implements DataStore {
 	/**
 	 * Call keycloak service.
 	 *
-	 * @param url           the url
-	 * @param httpMethod    the http method
-	 * @param requestEntity the request entity
+	 * @param url
+	 *            the url
+	 * @param httpMethod
+	 *            the http method
+	 * @param requestEntity
+	 *            the request entity
 	 * @return the string
 	 */
 	private String callKeycloakService(String url, HttpMethod httpMethod, HttpEntity<?> requestEntity) {
@@ -540,7 +552,8 @@ public class KeycloakImpl implements DataStore {
 	/**
 	 * Map users to user detail dto.
 	 *
-	 * @param node        the node
+	 * @param node
+	 *            the node
 	 * @param userDetails
 	 * @return the list
 	 */
@@ -551,37 +564,42 @@ public class KeycloakImpl implements DataStore {
 		for (JsonNode jsonNode : node) {
 			mosipUserDto = new MosipUserDto();
 			String userName = jsonNode.get("username").textValue();
-
+             System.out.println(userName);
 			if (userDetails.stream().anyMatch(user -> user.equals(userName))) {
 				String email = jsonNode.get("email").textValue();
 				JsonNode attributeNodes = jsonNode.get("attributes");
 				String userPassword = attributeNodes.get("userPassword").get(0).asText();
-				//System.out.println("Password : "+userPassword);
-				PasswordDetails password = PasswordUtil
-						.splitCredentials(CryptoUtil.decodeBase64(userPassword));
-				//System.out.println("userPasword userdetails= "+userPassword);
-				//System.out.println("password userdetails= "+DatatypeConverter.printHexBinary(password.getPassword()));
-				//System.out.println("salt userdetails= "+CryptoUtil.encodeBase64(password.getSalt()));
-				//userPassword = CryptoUtil.encodeBase64(password.getPassword());
-				//System.out.println("a = "+HMACUtils.digestAsPlainTextWithSalt(password.getPassword(), password.getSalt()));
-				//System.out.println("b = "+HMACUtils.digestAsPlainTextWithSalt("mosip".getBytes(), password.getSalt()));
-				//System.out.println(Strings.utf8ToString(password.getPassword()));
+				// System.out.println("Password : "+userPassword);
+				PasswordDetails password = PasswordUtil.splitCredentials(CryptoUtil.decodeBase64(userPassword));
+				// System.out.println("userPasword userdetails= "+userPassword);
+				// System.out.println("password userdetails=
+				// "+DatatypeConverter.printHexBinary(password.getPassword()));
+				// System.out.println("salt userdetails=
+				// "+CryptoUtil.encodeBase64(password.getSalt()));
+				// userPassword = CryptoUtil.encodeBase64(password.getPassword());
+				// System.out.println("a =
+				// "+HMACUtils.digestAsPlainTextWithSalt(password.getPassword(),
+				// password.getSalt()));
+				// System.out.println("b =
+				// "+HMACUtils.digestAsPlainTextWithSalt("mosip".getBytes(),
+				// password.getSalt()));
+				// System.out.println(Strings.utf8ToString(password.getPassword()));
 				userPassword = DatatypeConverter.printHexBinary(password.getPassword());
 				String mobile = null;
 				String rid = null;
-				String name = jsonNode.get("firstName").asText()+" "+jsonNode.get("lastName").asText();
+				String name = jsonNode.get("firstName").asText() + " " + jsonNode.get("lastName").asText();
 				try {
 					roles = getRolesAsString(jsonNode.get("id").textValue());
 				} catch (IOException e) {
 					throw new AuthManagerException(AuthErrorCode.IO_EXCEPTION.getErrorCode(),
 							AuthErrorCode.IO_EXCEPTION.getErrorMessage());
 				}
-				//userPassword = getPasswordFromDatabase(userName);
+				// userPassword = getPasswordFromDatabase(userName);
 				if (attributeNodes.get("mobile") != null) {
 					mobile = attributeNodes.get("mobile").get(0).textValue();
 				}
 				if (attributeNodes.get("name") != null) {
-					name = jsonNode.get("firstName").asText()+" "+jsonNode.get("lastName").asText();
+					name = jsonNode.get("firstName").asText() + " " + jsonNode.get("lastName").asText();
 				}
 				if (attributeNodes.get("rid") != null) {
 					rid = attributeNodes.get("rid").get(0).textValue();
@@ -621,10 +639,11 @@ public class KeycloakImpl implements DataStore {
 	/**
 	 * Gets the roles as string.
 	 *
-	 * @param userId the id generated by keycloak for that user not username or
-	 *               userid
+	 * @param userId
+	 *            the id generated by keycloak for that user not username or userid
 	 * @return role as string
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private String getRolesAsString(String userId) throws IOException {
 		StringBuilder roleBuilder = new StringBuilder();
