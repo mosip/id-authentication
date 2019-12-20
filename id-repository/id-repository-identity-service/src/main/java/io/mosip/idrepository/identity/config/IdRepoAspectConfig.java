@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.idrepository.core.logger.IdRepoAspectLogger;
+import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -24,7 +24,7 @@ import io.mosip.kernel.core.util.DateUtils;
 public class IdRepoAspectConfig {
 
 	/** The mosip logger. */
-	private Logger mosipLogger = IdRepoAspectLogger.getLogger(IdRepoAspectConfig.class);
+	private Logger mosipLogger = IdRepoLogger.getLogger(IdRepoAspectConfig.class);
 
 	/** The start time. */
 	private LocalDateTime startTime;

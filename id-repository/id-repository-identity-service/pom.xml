@@ -61,8 +61,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-ref-idobjectvalidator</artifactId>
-			<version>0.9.1</version>
+			<artifactId>kernel-ref-idobjectvalidator-phil</artifactId>
+			<version>0.10.0</version>
 		</dependency>
 	</dependencies>
 	<build>
