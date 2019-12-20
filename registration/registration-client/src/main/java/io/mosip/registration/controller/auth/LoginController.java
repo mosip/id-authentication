@@ -237,7 +237,17 @@ public class LoginController extends BaseController implements Initializable {
 
 		/* Save Global Param Values in Application Context's application map */
 		getGlobalParams();
-		ApplicationContext.loadResources();
+
+		/*
+		 * if the primary or secondary language is not set , the application should show
+		 * err msg
+		 */
+		boolean isPrimaryOrSecondaryLanguageEmpty = ApplicationContext.loadResources();
+		if (isPrimaryOrSecondaryLanguageEmpty) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
 
 		try {
 
