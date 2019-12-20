@@ -18,6 +18,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -251,6 +252,23 @@ public class LocationController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.locationFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * This method returns a list of holidays containing a particular language code
+	 * for the given country level
+	 * 
+	 * @param langCode
+	 *            input parameter language code
+	 * @return {@link LocationLevelResponseDto}
+	 */
+	@ResponseFilter
+	@GetMapping("level/{langcode}")
+	public ResponseWrapper<LocationLevelResponseDto> getLocationCodeByLangCode(
+			@PathVariable("langcode") String langCode) {
+		ResponseWrapper<LocationLevelResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.getLocationCodeByLangCode(langCode));
 		return responseWrapper;
 	}
 
