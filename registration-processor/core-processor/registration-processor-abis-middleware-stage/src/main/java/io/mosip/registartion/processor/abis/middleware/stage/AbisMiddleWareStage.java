@@ -650,7 +650,8 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 	private void updateAbisResponseDetail(CandidatesDto candidatesDto, AbisResponseDto abisResponseDto,
 			String bioRefId) {
 		int scaledScore = 0;
-		if (!candidatesDto.getReferenceId().equals(bioRefId)) {
+		if ((packetInfoDao.getRegIdByBioRefId(bioRefId) != null
+		|| !packetInfoDao.getRegIdByBioRefId(bioRefId).isEmpty()) &&!candidatesDto.getReferenceId().equalsIgnoreCase(bioRefId)) {
 			if (candidatesDto.getScaledScore() != null) {
 				scaledScore = Integer.valueOf(candidatesDto.getScaledScore());
 
