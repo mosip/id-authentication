@@ -108,7 +108,7 @@ public class DeviceProviderServiceImpl implements
 			registeredDevice = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_REGISTERED_DEVICE));
 		}
 
 		if (registeredDevice == null) {
@@ -131,7 +131,7 @@ public class DeviceProviderServiceImpl implements
 			deviceProvider = deviceProviderRepository.findByIdAndIsActiveIsTrue(deviceProviderId);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_DEVICE_PROVIDER));
 		}
 		if (deviceProvider == null) {
 			throw new DataNotFoundException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INACTIVE.getErrorCode(),
@@ -148,7 +148,7 @@ public class DeviceProviderServiceImpl implements
 			deviceServices = deviceServiceRepository.findBySwVersionAndIsActiveIsTrue(serviceSoftwareVersion);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE));
 		}
 		if (deviceServices.isEmpty()) {
 			throw new DataNotFoundException(DeviceProviderManagementErrorCode.MDS_INACTIVE_STATE.getErrorCode(),
@@ -166,7 +166,7 @@ public class DeviceProviderServiceImpl implements
 					swServiceVersion, digitalIdDto.getMake(), digitalIdDto.getModel());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE));
 		}
 
 		if (deviceService == null) {
@@ -196,7 +196,7 @@ public class DeviceProviderServiceImpl implements
 					registeredDevice.getMake(), registeredDevice.getModel(), registeredDevice.getDpId());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE));
 		}
 
 		if (mosipDeviceService == null) {
@@ -383,7 +383,7 @@ public class DeviceProviderServiceImpl implements
 					.findByIdAndIsActiveIsTrueAndByEffectiveTimes(deviceServiceVersion, effTimes);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE_HISTORY));
 		}
 		if (deviceServiceHistory.isEmpty()) {
 			throw new RequestException(DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
@@ -400,7 +400,7 @@ public class DeviceProviderServiceImpl implements
 					.findRegisteredDeviceHistoryByIdAndEffTimes(deviceCode, effTimes);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_REGISTERED_DEVICE_HISTORY));
 		}
 
 		if (registeredDeviceHistory == null) {
@@ -423,7 +423,7 @@ public class DeviceProviderServiceImpl implements
 					.findDeviceProviderHisByIdAndEffTimes(deviceProviderId, timeStamp);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_DEVICE_PROVIDER_HISTORY));
 		}
 		if (deviceProviderHistory == null) {
 			throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
