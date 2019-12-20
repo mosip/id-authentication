@@ -19,25 +19,26 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "Device", description = "Device Detail resource")
-@ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId", "foundationalTrustSignature",
-		"foundationalTrustCertificate" })
+@ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId" })
+		/*"foundationalTrustSignature",
+		"foundationalTrustCertificate"*/ 
 public class RegisteredDevicePostReqDto {
 
-	/**
+/*	*//**
 	 * Field for deviceTypeCode
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String deviceTypeCode;
 
-	/**
+	*//**
 	 * Field for deviceSubTypeCode
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceSTypeCode", required = true, dataType = "java.lang.String")
-	private String deviceSTypeCode;
+	private String deviceSTypeCode;*/
 
 	/**
 	 * Field for Status Code Status should only have standard values - “Registered”,
@@ -111,24 +112,24 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 
-	@Size(min = 0, max = 512)
+	/*@Size(min = 0, max = 512)
 	@ApiModelProperty(value = "foundationalTrustSignature", required = true, dataType = "java.lang.String")
 	private String foundationalTrustSignature;
 
-	/**
+	*//**
 	 * Field for device name
-	 */
+	 *//*
 
 	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.byte")
 	private byte[] foundationalTrustCertificate;
 
-	/**
+	*//**
 	 * Field for device name
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 512)
 	@ApiModelProperty(value = "dProviderSignature", required = true, dataType = "java.lang.String")
-	private String deviceProviderSignature;
+	private String deviceProviderSignature;*/
 	
 	@NotNull
 	@Valid

@@ -38,7 +38,7 @@ public class RegisteredDevice extends BaseEntity {
 	private String deviceTypeCode;
 
 	@Column(name = "dstype_code", length=36)
-	private String devicesTypeCode;
+	private String deviceSTypeCode;
 
 	@Column(name = "status_code", length=64)
 	private String statusCode;

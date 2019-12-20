@@ -17,19 +17,18 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.masterdata.constant.DeviceRegisterErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegisteredDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
-import io.mosip.kernel.masterdata.dto.DeviceRegResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
+import io.mosip.kernel.masterdata.dto.EncodedRegisteredDeviceResponse;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceRegister;
-import io.mosip.kernel.masterdata.entity.DeviceRegisterHistory;
+import io.mosip.kernel.masterdata.entity.DeviceProvider;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -79,6 +78,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	@Autowired
 	DeviceRepository deviceRepository;
 	
+	
 	/** The registered. */
 	private static String REGISTERED = "Registered";
 
@@ -97,33 +97,36 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	 */
 	@Transactional
 	@Override
-	public RegisteredDeviceExtnDto createRegisteredDevice(RegisteredDevicePostReqDto dto) {
+	public EncodedRegisteredDeviceResponse createRegisteredDevice(RegisteredDevicePostReqDto dto) {
 		RegisteredDevice entity = null;
 		RegisteredDevice mapEntity = null;
 		RegisteredDevice crtRegisteredDevice = null;
 		RegisteredDeviceExtnDto renRegisteredDeviceExtnDto = null;
+		EncodedRegisteredDeviceResponse encodedRegisteredDeviceResponse = new EncodedRegisteredDeviceResponse();
 		DigitalIdDto digitalIdDto = null;
 		String digitalIdJson;
-
+		String ecodedRegisteredDeviceExtnDto;
+		String strRegisteredDeviceExtnDto;
 		try {
-			if (deviceProviderRepository.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-					dto.getDigitalIdDto().getDpId(), dto.getDigitalIdDto().getDp()) == null) {
+			DeviceProvider deviceProvider = deviceProviderRepository.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
+					dto.getDigitalIdDto().getDpId(), dto.getDigitalIdDto().getDp());
+			if (deviceProvider == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 						RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 			}
 
 			if (registrationDeviceTypeRepository
-					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceTypeCode()) == null) {
+					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDigitalIdDto().getDeviceTypeCode()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_TYPE_NOT_EXIST.getErrorCode(),
 						String.format(RegisteredDeviceErrorCode.DEVICE_TYPE_NOT_EXIST.getErrorMessage(),
-								dto.getDeviceTypeCode()));
+								dto.getDigitalIdDto().getDeviceTypeCode()));
 			}
 
 			if (registrationDeviceSubTypeRepository
-					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceSTypeCode()) == null) {
+					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDigitalIdDto().getDeviceSTypeCode()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_SUB_TYPE_NOT_EXIST.getErrorCode(),
 						String.format(RegisteredDeviceErrorCode.DEVICE_SUB_TYPE_NOT_EXIST.getErrorMessage(),
-								dto.getDeviceSTypeCode()));
+								dto.getDigitalIdDto().getDeviceSTypeCode()));
 			}
 
 			digitalIdJson = mapper.writeValueAsString(dto.getDigitalIdDto());
@@ -141,8 +144,17 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 			entityHistory.setEffectivetimes(crtRegisteredDevice.getCreatedDateTime());
 			entityHistory.setCreatedDateTime(crtRegisteredDevice.getCreatedDateTime());
 			registeredDeviceHistoryRepo.create(entityHistory);
+			
 
 			digitalIdDto = mapper.readValue(digitalIdJson, DigitalIdDto.class);
+			
+			renRegisteredDeviceExtnDto = MapperUtils.map(crtRegisteredDevice, RegisteredDeviceExtnDto.class);
+			renRegisteredDeviceExtnDto.setDigitalIdDto(digitalIdDto);
+			// DTO to String
+			strRegisteredDeviceExtnDto = mapper.writeValueAsString(renRegisteredDeviceExtnDto);
+			ecodedRegisteredDeviceExtnDto = CryptoUtil.encodeBase64(strRegisteredDeviceExtnDto.getBytes());
+			
+			encodedRegisteredDeviceResponse.setEnocodedResponse(ecodedRegisteredDeviceExtnDto);
 
 		} catch (DataAccessLayerException | DataAccessException | IOException ex) {
 			throw new MasterDataServiceException(
@@ -150,9 +162,8 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 					RegisteredDeviceErrorCode.REGISTERED_DEVICE_INSERTION_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
-		renRegisteredDeviceExtnDto = MapperUtils.map(crtRegisteredDevice, RegisteredDeviceExtnDto.class);
-		renRegisteredDeviceExtnDto.setDigitalIdDto(digitalIdDto);
-		return renRegisteredDeviceExtnDto;
+		
+		return encodedRegisteredDeviceResponse;
 	}
 
 	// check the value of purpose and Serial Num, based on this generate the code

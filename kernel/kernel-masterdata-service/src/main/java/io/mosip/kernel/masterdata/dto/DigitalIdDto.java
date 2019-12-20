@@ -51,11 +51,28 @@ public class DigitalIdDto {
 	@ApiModelProperty(value = "mpdel", required = true, dataType = "java.lang.String")
 	private String model;
 
-	/** type */
+	/** type *//*
 	@ApiModelProperty(value = "type", dataType = "java.lang.String")
 	//@ValidType(message = "Type Value is Invalid")
-	private String type;
+	private String type;*/
 
 	/** The date time. */
 	private String dateTime;
+	
+	
+	/**
+	 * Field for deviceTypeCode
+	 */
+	@NotBlank
+	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
+	private String deviceTypeCode;
+
+	/**
+	 * Field for deviceSubTypeCode
+	 */
+	@NotBlank
+	@Size(min = 1, max = 36)
+	@ApiModelProperty(value = "devicesTypeCode", required = true, dataType = "java.lang.String")
+	private String deviceSTypeCode;
 }

@@ -21,9 +21,9 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
+import io.mosip.kernel.masterdata.dto.EncodedRegisteredDeviceResponse;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
 import io.mosip.kernel.masterdata.service.RegisteredDeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,9 +53,9 @@ public class RegisteredDeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When No Registered Device found"),
 			@ApiResponse(code = 500, message = "While creating Registered Device any error occured") })
-	public ResponseWrapper<RegisteredDeviceExtnDto> createRegisteredDevice(
+	public ResponseWrapper<EncodedRegisteredDeviceResponse> createRegisteredDevice(
 			@Valid @RequestBody RequestWrapper<RegisteredDevicePostReqDto> registeredDevicePostReqDto) {
-		ResponseWrapper<RegisteredDeviceExtnDto> response = new ResponseWrapper<>();
+		ResponseWrapper<EncodedRegisteredDeviceResponse> response = new ResponseWrapper<>();
 		response.setResponse(registeredDeviceService.createRegisteredDevice(registeredDevicePostReqDto.getRequest()));
 		return response;
 	}

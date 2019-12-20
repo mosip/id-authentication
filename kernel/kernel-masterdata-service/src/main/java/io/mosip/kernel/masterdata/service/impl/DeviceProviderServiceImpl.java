@@ -179,7 +179,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 			registeredDevice = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 			
 			mosipDeviceService=deviceServiceRepository.findByDeviceDetail(swVersion, registeredDevice.getDeviceTypeCode(),
-					registeredDevice.getDevicesTypeCode(), registeredDevice.getMake(), registeredDevice.getModel(),
+					registeredDevice.getDeviceSTypeCode(), registeredDevice.getMake(), registeredDevice.getModel(),
 					registeredDevice.getDpId());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
