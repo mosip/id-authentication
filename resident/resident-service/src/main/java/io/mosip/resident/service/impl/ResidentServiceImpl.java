@@ -499,7 +499,7 @@ public class ResidentServiceImpl implements ResidentService {
 			if (!idAuthService.validateOtp(dto.getTransactionID(), dto.getIndividualId(),
 					dto.getIndividualIdType().name(), dto.getOtp())) {
 				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
-						NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+						NotificationTemplateCode.RS_UIN_UPDATE_FAILURE, null);
 				throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 						ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage());
 			}
@@ -539,7 +539,7 @@ public class ResidentServiceImpl implements ResidentService {
 
 			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
-						NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+						NotificationTemplateCode.RS_UIN_UPDATE_FAILURE, null);
 				throw new ResidentServiceException(ResidentErrorCode.UIN_UPDATE_FAILED.getErrorCode(),
 						ResidentErrorCode.UIN_UPDATE_FAILED.getErrorMessage()
 								+ (response.getErrors().get(0).toString()));
@@ -550,19 +550,19 @@ public class ResidentServiceImpl implements ResidentService {
 			Map<String, Object> additionalAttributes = new HashMap<>();
 			additionalAttributes.put("RID", regProcResponseDto.getRegistrationId());
 			NotificationResponseDTO notificationResponseDTO = sendNotification(dto.getIndividualId(),
-					dto.getIndividualIdType(), NotificationTemplateCode.RS_UIN_RPR_SUCCESS, additionalAttributes);
+					dto.getIndividualIdType(), NotificationTemplateCode.RS_UIN_UPDATE_SUCCESS, additionalAttributes);
 			responseDto.setMessage(notificationResponseDTO.getMessage());
 			responseDto.setRegistrationId(regProcResponseDto.getRegistrationId());
 
 		} catch (OtpValidationFailedException e) {
 			sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
-					NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+					NotificationTemplateCode.RS_UIN_UPDATE_FAILURE, null);
 			throw new ResidentServiceException(ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorCode(),
 					ResidentErrorCode.OTP_VALIDATION_FAILED.getErrorMessage(), e);
 
 		} catch (ApisResourceAccessException e) {
 			sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
-					NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+					NotificationTemplateCode.RS_UIN_UPDATE_FAILURE, null);
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				throw new ResidentServiceException(ResidentErrorCode.API_RESOURCE_ACCESS_EXCEPTION.getErrorCode(),
@@ -578,7 +578,7 @@ public class ResidentServiceImpl implements ResidentService {
 			}
 		} catch (IOException e) {
 			sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
-					NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
+					NotificationTemplateCode.RS_UIN_UPDATE_FAILURE, null);
 			throw new ResidentServiceException(ResidentErrorCode.IO_EXCEPTION.getErrorCode(),
 					ResidentErrorCode.IO_EXCEPTION.getErrorMessage(), e);
 		}
