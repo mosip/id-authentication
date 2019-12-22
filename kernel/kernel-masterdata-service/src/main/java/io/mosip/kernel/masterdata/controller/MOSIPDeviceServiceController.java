@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceDto;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceExtDto;
 import io.mosip.kernel.masterdata.service.MOSIPDeviceServices;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,6 +37,9 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = { "MOSIPDeviceService" })
 public class MOSIPDeviceServiceController {
 
+	@Autowired
+	AuditUtil auditUtil;
+	
 	@Autowired
 	MOSIPDeviceServices mosipDeviceServices;
 
@@ -56,10 +61,16 @@ public class MOSIPDeviceServiceController {
 			@ApiResponse(code = 500, message = "While creating MOSIPDeviceService any error occured") })
 	public ResponseWrapper<MOSIPDeviceServiceExtDto> createMOSIPDeviceService(
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
-
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName());
 		ResponseWrapper<MOSIPDeviceServiceExtDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(mosipDeviceServices.createMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MOSIPDeviceServiceDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, MOSIPDeviceServiceDto.class.getCanonicalName()));
 		return responseWrapper;
 
 	}
@@ -82,10 +93,15 @@ public class MOSIPDeviceServiceController {
 			@ApiResponse(code = 500, message = "While updating MOSIPDeviceService any error occured") })
 	public ResponseWrapper<String> udpateMOSIPDeviceService(
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
-
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName());
 		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(mosipDeviceServices.updateMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName());
 		return responseWrapper;
 
 	}

@@ -65,8 +65,10 @@ public class TitleController {
 	@ResponseFilter
 	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL,TitleDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL,TitleDto.class.getSimpleName()));
 		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getAllTitles());
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS,TitleDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC,TitleDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -172,8 +174,10 @@ public class TitleController {
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
 			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL,TitleDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL,TitleDto.class.getSimpleName()));
 		ResponseWrapper<PageDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getTitles(pageNumber, pageSize, sortBy, orderBy.name()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS,TitleDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC,TitleDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
