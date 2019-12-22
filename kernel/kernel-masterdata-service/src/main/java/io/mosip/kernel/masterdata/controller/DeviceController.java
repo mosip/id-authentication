@@ -61,7 +61,7 @@ public class DeviceController {
 	 */
 	@Autowired
 	private DeviceService deviceService;
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
@@ -132,12 +132,12 @@ public class DeviceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseWrapper<Device> createDevice(
-			@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
-		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.CREATE_API_IS_CALLED+DeviceDto.class.getCanonicalName());
+	public ResponseWrapper<Device> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName());
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceDto.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.CREATE_API_IS_CALLED+DeviceDto.class.getCanonicalName());
 		return responseWrapper;
 
 	}
@@ -161,10 +161,12 @@ public class DeviceController {
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
 	public ResponseWrapper<DeviceExtnDto> updateDevice(
 			@Valid @RequestBody RequestWrapper<DevicePutReqDto> devicePutReqDto) {
-		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+DeviceDto.class.getCanonicalName());
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName());
 		ResponseWrapper<DeviceExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.updateDevice(devicePutReqDto.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+DeviceDto.class.getCanonicalName());
+
 		return responseWrapper;
 	}
 
@@ -183,7 +185,7 @@ public class DeviceController {
 			@ApiResponse(code = 404, message = "When Device not found"),
 			@ApiResponse(code = 500, message = "Error occurred while deleting Device") })
 	public ResponseWrapper<IdResponseDto> deleteDevice(@PathVariable("id") String id) {
-		
+
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deleteDevice(id));
 		return responseWrapper;
@@ -233,9 +235,14 @@ public class DeviceController {
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
 	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
-    
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName());
 		ResponseWrapper<PageResponseDto<DeviceSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,Device.class.getSimpleName()));
+
 		return responseWrapper;
 	}
 
@@ -251,10 +258,14 @@ public class DeviceController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> deviceFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+DeviceDto.class.getCanonicalName());
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName());
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,DeviceDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,DeviceDto.class.getCanonicalName()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, DeviceDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceDto.class.getCanonicalName()));
 		return responseWrapper;
 	}
 
@@ -270,10 +281,14 @@ public class DeviceController {
 	@PutMapping("/decommission/{deviceId}")
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
-		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DECOMMISION_API_CALLED+DeviceDto.class.getCanonicalName());
+		auditUtil.auditRequest(MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DECOMMISION_API_CALLED + DeviceDto.class.getCanonicalName());
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.decommissionDevice(deviceId));
-		auditUtil.auditRequest(MasterDataConstant.DECOMMISSION_SUCCESS+DeviceDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DECOMMISSION_SUCCESS_DESC+DeviceDto.class.getCanonicalName());
+		auditUtil.auditRequest(MasterDataConstant.DECOMMISSION_SUCCESS + DeviceDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DECOMMISSION_SUCCESS_DESC + DeviceDto.class.getCanonicalName());
 		return responseWrapper;
 	}
 

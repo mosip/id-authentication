@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.masterdata.constant.AuditErrorCode;
 import io.mosip.kernel.masterdata.dto.AuditResponseDto;
 import io.mosip.kernel.masterdata.dto.request.AuditRequestDto;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -57,7 +59,7 @@ public class AuditUtil {
 
 	private String hostName = null;
 
-	private volatile int eventCounter=500;
+	private volatile AtomicInteger eventCounter;
 
 	@Value("${mosip.kernel.masterdata.audit-url}")
 	private String auditUrl;
@@ -75,8 +77,14 @@ public class AuditUtil {
 	 *            the audit request dto
 	 */
 	public void auditRequest(String eventName, String eventType, String description) {
+		   eventCounter=new AtomicInteger();
+         String eventId="ADM-"+ eventCounter.incrementAndGet();
+		setAuditRequestDto(eventName, eventType, description,eventId);
+	}
+	
+	public void auditRequest(String eventName, String eventType, String description,String eventId) {
 
-		setAuditRequestDto(eventName, eventType, description);
+		setAuditRequestDto(eventName, eventType, description,eventId);
 	}
 
 	/**
@@ -85,13 +93,13 @@ public class AuditUtil {
 	 * @param auditRequestDto
 	 *            the new audit request dto
 	 */
-	private void setAuditRequestDto(String eventName, String eventType, String description) {
+	private void setAuditRequestDto(String eventName, String eventType, String description,String eventId) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		if (!validateSecurityContextHolder()) {
 
 		}
 
-		auditRequestDto.setEventId("ADM-" + eventCounter++);
+		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setId("NO_ID");
 		auditRequestDto.setIdType("NO_ID_TYPE");
 		auditRequestDto.setEventName(eventName);
@@ -201,7 +209,8 @@ public class AuditUtil {
 					});
 			auditResponseDto = responseObject.getResponse();
 		} catch (IOException | NullPointerException exception) {
-			throw new MasterDataServiceException("KER-MSD-111", "Parse Error exception", exception);
+			throw new MasterDataServiceException(AuditErrorCode.AUDIT_PARSE_EXCEPTION.getErrorCode(),
+					AuditErrorCode.AUDIT_PARSE_EXCEPTION.getErrorMessage());
 		}
 
 		return auditResponseDto;
@@ -224,7 +233,7 @@ public class AuditUtil {
 				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 		}
-		throw new MasterDataServiceException("KER-MSD-111", "Audit Exception", ex);
+		throw new MasterDataServiceException(AuditErrorCode.AUDIT_EXCEPTION.getErrorCode(),AuditErrorCode.AUDIT_EXCEPTION.getErrorMessage()+ex);
 
 	}
 

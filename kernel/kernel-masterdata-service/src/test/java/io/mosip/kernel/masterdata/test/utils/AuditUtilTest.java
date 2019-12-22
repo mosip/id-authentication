@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.request.AuditRequestDto;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 @RunWith(JUnit4.class)
@@ -27,14 +29,19 @@ public class AuditUtilTest {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	private AuditRequestDto auditRequestDto;
+	
 	@Before
 	public void setUp() {
 		mockRestServiceServer=mockRestServiceServer.bindTo(restTemplate).build();
+		auditRequestDto = new AuditRequestDto();
+		
 	}
 	
 	@Test
 	public void testAuditUtil() {
-		//mockRestServiceServer.expect(post(uri))
+		RequestWrapper<AuditRequestDto> auditWrapper= new RequestWrapper<>();
+		
 	}
 }
 
