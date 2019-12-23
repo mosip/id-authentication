@@ -65,8 +65,8 @@ public class MOSIPDeviceServiceDto {
 	@ApiModelProperty(value = "softBinaryHash", required = true, dataType = "java.lang.Byte")
 	private byte[] swBinaryHash;
 	
-	@ApiModelProperty(value = "isActive", dataType = "java.lang.Boolean")
-	private boolean isActive;
+	/*@ApiModelProperty(value = "isActive", dataType = "java.lang.Boolean")
+	private boolean isActive;*/
 	
 
 }
