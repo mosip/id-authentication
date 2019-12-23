@@ -32,4 +32,6 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String deviceId;
 	private String applicantTypeCode;
 	private List<ValuesDTO> fullName;
+	
+	private String regClientVersionNumber;
 }

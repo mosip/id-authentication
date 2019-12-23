@@ -27,7 +27,7 @@ public interface RegistrationCenterMachineRepository
 	Optional<RegistrationCenterMachine> findAllNondeletedMappings(
 			RegistrationCenterMachineID registrationCenterMachinePk);
 
-	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.machineId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false) and rm.isActive = true")
+	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.machineId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false) ")
 	List<RegistrationCenterMachine> findByMachineIdAndIsDeletedFalseOrIsDeletedIsNull(String machineId);
 
 	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.regCenterId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false) and rm.isActive = true")
@@ -46,7 +46,7 @@ public interface RegistrationCenterMachineRepository
 	 *            the center ID of the reg-center which needs to be decommissioned.
 	 * @return the list of registration centers mapped to machines.
 	 */
-	@Query(value = "FROM RegistrationCenterMachine rm WHERE rm.registrationCenterMachinePk.regCenterId =?1 and (rm.isDeleted is null or rm.isDeleted =false) and rm.isActive = true")
+	@Query(value = "FROM RegistrationCenterMachine rm WHERE rm.registrationCenterMachinePk.regCenterId =?1 and (rm.isDeleted is null or rm.isDeleted =false) ")
 	List<RegistrationCenterMachine> findRegCenterMachineMappings(String regCenterID);
 	
 	@Query("FROM RegistrationCenterMachine rm where  (rm.isDeleted is null or rm.isDeleted =false) and rm.isActive = true")

@@ -55,7 +55,7 @@ public class RegistrationCenterUserMachineController {
 	@ResponseFilter
 	@ApiOperation(value = "Create a mapping of registration center,user,and machine")
 	@PostMapping("/registrationmachineusermappings")
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER')")
 	public ResponseWrapper<RegistrationCenterMachineUserID> createRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestWrapper<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
 

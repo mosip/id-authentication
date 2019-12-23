@@ -71,7 +71,7 @@ public class PrintApiController {
 	 * @throws RegPrintAppException
 	 *             the reg print app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN', 'RESIDENT')")
 	@PostMapping(path = "/uincard", produces = "application/json")
 	@ApiOperation(value = "Service to get Pdf of UIN Card", response = Object.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "UIN card is successfully fetched") })

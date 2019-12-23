@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -137,5 +138,8 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	
 	@Query("FROM Location l WHERE l.name=?1 AND l.hierarchyLevel=?2 AND l.langCode=?3")
 	List<Location> findByNameAndLevelLangCode(String name, Short hierarchyLevel,String langCode);
+	
+	@Query("FROM Location l WHERE l.langCode=?1 AND l.hierarchyLevel<=?2")
+	Set<Location> findLocationByLangCodeLevel(String langCode, Short hierarchyLevel);
 
 }

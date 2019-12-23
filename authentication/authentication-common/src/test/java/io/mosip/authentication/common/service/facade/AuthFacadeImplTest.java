@@ -41,6 +41,7 @@ import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
@@ -72,6 +73,7 @@ import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -84,7 +86,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class, PartnerServiceImpl.class })
 
 public class AuthFacadeImplTest {
 
@@ -173,6 +175,9 @@ public class AuthFacadeImplTest {
 	
 	@Mock
 	private AuthtypeStatusImpl authTypeStatus;
+	
+	@Autowired
+	PartnerService partnerService;
 
 	/**
 	 * Before.
@@ -195,6 +200,9 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(authFacadeImpl, "partnerService", partnerService);
+
 	}
 
 	/**
@@ -683,7 +691,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
-				IdType.UIN, "247334310780728918141754192454591343", "123456");
+				IdType.UIN, "247334310780728918141754192454591343", true, "123456");
 
 	}
 
@@ -730,7 +738,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
-				IdType.UIN, "247334310780728918141754192454591343", "123456");
+				IdType.UIN, "247334310780728918141754192454591343", true, "123456");
 
 	}
 
@@ -779,7 +787,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
-				IdType.UIN, "247334310780728918141754192454591343", "123456");
+				IdType.UIN, "247334310780728918141754192454591343", true, "123456");
 
 	}
 

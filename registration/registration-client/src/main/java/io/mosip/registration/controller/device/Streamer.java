@@ -1,5 +1,6 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.BIO_SERVICE;
 import static io.mosip.registration.constants.LoggerConstants.STREAMER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -8,20 +9,24 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.cli.MissingArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.RequestDetail;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -52,6 +57,7 @@ public class Streamer {
 	// Image View, which UI need to be shown
 	private static ImageView imageView;
 
+
 	// Set Streaming image
 	public void setStreamImage(Image streamImage) {
 		this.streamImage = streamImage;
@@ -67,20 +73,37 @@ public class Streamer {
 		imageView.setImage(streamImage);
 	}
 
+	public void setBioStreamImages(Image image, String bioType, int attempt) {
 
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+				"Started Set Stream image of : " + bioType + " for attempt : " + attempt);
+
+	
+		image = image == null ? streamImage : image;
+		
+		BioServiceImpl.setBioStreamImages(image, bioType, attempt);
+	
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+				"Completed Set Stream image of : " + bioType + " for attempt : " + attempt);
+
+	}
+
+	
 	public void startStream(RequestDetail requestDetail, ImageView streamImage, ImageView scanImage) {
-  
-  LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread initiation started for : " + requestDetail.getType());
+
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+				"Streamer Thread initiation started for : " + requestDetail.getType());
 
 		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
 
-				LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread started for : " + requestDetail.getType());
+				LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+						"Streamer Thread started for : " + requestDetail.getType());
 
-				//Disable Auto-Logout
+				// Disable Auto-Logout
 				SessionContext.setAutoLogout(false);
-				
+
 				scanPopUpViewController.disableCloseButton();
 				isRunning = true;
 				try {
@@ -94,7 +117,8 @@ public class Streamer {
 					urlStream = mosipBioDeviceManager.stream(requestDetail);
 					if (urlStream == null) {
 
-						LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "URL Stream was null for : " + requestDetail.getType());
+						LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+								"URL Stream was null for : " + requestDetail.getType());
 
 						setPopViewControllerMessage(true,
 								RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
@@ -123,9 +147,9 @@ public class Streamer {
 							setPopViewControllerMessage(true,
 									RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
 
-							//Enable Auto-Logout
+							// Enable Auto-Logout
 							SessionContext.setAutoLogout(true);
-							
+
 							return;
 						}
 						setPopViewControllerMessage(true, RegistrationUIConstants.STREAMING_INIT_MESSAGE, true);
@@ -138,8 +162,8 @@ public class Streamer {
 
 						setPopViewControllerMessage(true,
 								RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"), false);
-						
-						//Enable Auto-Logout
+
+						// Enable Auto-Logout
 						SessionContext.setAutoLogout(true);
 					}
 
@@ -158,33 +182,31 @@ public class Streamer {
 						}
 					} catch (RuntimeException | IOException exception) {
 
-						
 						LOGGER.error(STREAMER, RegistrationConstants.APPLICATION_NAME,
-								RegistrationConstants.APPLICATION_ID, exception.getMessage()
-										+ ExceptionUtils.getStackTrace(exception));
+								RegistrationConstants.APPLICATION_ID,
+								exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
-						//Enable Auto-Logout
+						// Enable Auto-Logout
 						SessionContext.setAutoLogout(true);
-						
-						if(exception.getMessage().contains("Stream closed")){
-							
+
+						if (exception.getMessage().contains("Stream closed")) {
+
 							setPopViewControllerMessage(true, RegistrationUIConstants.STREAMING_CLOSED_MESSAGE, false);
 						}
-						    
+
 						urlStream = null;
 						isRunning = false;
-
 
 					}
 				}
 			}
 
-			
 		}, "STREAMER_THREAD");
 
 		streamer_thread.start();
 
-		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID, "Streamer Thread initiated completed for : " + requestDetail.getType());
+		LOGGER.info(STREAMER, APPLICATION_NAME, APPLICATION_ID,
+				"Streamer Thread initiated completed for : " + requestDetail.getType());
 
 	}
 
@@ -251,9 +273,9 @@ public class Streamer {
 	 */
 	public synchronized void stop() {
 
-		//Enable Auto-Logout
+		// Enable Auto-Logout
 		SessionContext.setAutoLogout(true);
-		
+
 		if (streamer_thread != null) {
 			try {
 				isRunning = false;
@@ -273,5 +295,6 @@ public class Streamer {
 		scanPopUpViewController.setScanningMsg(message);
 		this.isRunning = isRunning;
 	}
-
+	
+	
 }
