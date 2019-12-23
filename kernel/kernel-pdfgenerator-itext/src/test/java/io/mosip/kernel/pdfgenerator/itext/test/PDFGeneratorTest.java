@@ -186,37 +186,35 @@ public class PDFGeneratorTest {
 		pdfGenerator.generate(inputStream, resourceLoc);
 	}
 	
-	@Test
-	public void testPdfGeneratorProtectedPassword() throws Exception {
-		StringBuilder htmlString = new StringBuilder();
-        htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
-        InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) pdfGenerator.generate(is,"userpassword".getBytes());
-		File file = new File("protected.pdf");
-		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
-		assertTrue(file.exists());
-	}
-	
-	@Test(expected=PDFGeneratorException.class)
-	public void testPdfGeneratorProtectedNullInputStreamException() throws Exception {
-		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) pdfGenerator.generate(null,"userpassword".getBytes());
-		File file = new File("protected.pdf");
-		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
-		assertTrue(file.exists());
-	}
-	
-	@Test(expected=PDFGeneratorException.class)
-	public void testPdfGeneratorProtectedPasswordException() throws Exception {
-		StringBuilder htmlString = new StringBuilder();
-        htmlString.append("<html><body> This is HMTL to PDF conversion Example</body></html>");
-        InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-		PDFGenerator generator = new PDFGeneratorImpl();
-		ReflectionTestUtils.setField(generator, "pdfOwnerPassword", null);
-		ByteArrayOutputStream outputStream = (ByteArrayOutputStream) generator.generate(is,"userpassword".getBytes());
-		File file = new File("protected.pdf");
-		FileUtils.writeByteArrayToFile(file, outputStream.toByteArray());
-		assertTrue(file.exists());
-	}
+	/*
+	 * @Test public void testPdfGeneratorProtectedPassword() throws Exception {
+	 * StringBuilder htmlString = new StringBuilder(); htmlString.
+	 * append("<html><body> This is HMTL to PDF conversion Example</body></html>");
+	 * InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
+	 * ByteArrayOutputStream outputStream = (ByteArrayOutputStream)
+	 * pdfGenerator.generate(is,"userpassword".getBytes()); File file = new
+	 * File("protected.pdf"); FileUtils.writeByteArrayToFile(file,
+	 * outputStream.toByteArray()); assertTrue(file.exists()); }
+	 * 
+	 * @Test(expected=PDFGeneratorException.class) public void
+	 * testPdfGeneratorProtectedNullInputStreamException() throws Exception {
+	 * ByteArrayOutputStream outputStream = (ByteArrayOutputStream)
+	 * pdfGenerator.generate(null,"userpassword".getBytes()); File file = new
+	 * File("protected.pdf"); FileUtils.writeByteArrayToFile(file,
+	 * outputStream.toByteArray()); assertTrue(file.exists()); }
+	 * 
+	 * @Test(expected=PDFGeneratorException.class) public void
+	 * testPdfGeneratorProtectedPasswordException() throws Exception { StringBuilder
+	 * htmlString = new StringBuilder(); htmlString.
+	 * append("<html><body> This is HMTL to PDF conversion Example</body></html>");
+	 * InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
+	 * PDFGenerator generator = new PDFGeneratorImpl();
+	 * ReflectionTestUtils.setField(generator, "pdfOwnerPassword", null);
+	 * ByteArrayOutputStream outputStream = (ByteArrayOutputStream)
+	 * generator.generate(is,"userpassword".getBytes()); File file = new
+	 * File("protected.pdf"); FileUtils.writeByteArrayToFile(file,
+	 * outputStream.toByteArray()); assertTrue(file.exists()); }
+	 */
 
 	@Test
 	public void getSinglePDFInBytesTest() throws IOException {

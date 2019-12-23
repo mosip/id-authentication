@@ -16,20 +16,20 @@ import lombok.NoArgsConstructor;
 public class Rectangle {
 
 	/**
-	 * The x coordinate of lower left point of sign rectangle.
+	 * The lower left x value of rectangle.
 	 */
-	private float x;
+	private float llx;
 	/**
-	 * The y coordinate of lower left point of sign rectangle.
+	 * The lower left y value of rectangle.
 	 */
-	private float y;
+	private float lly;
 	/**
-	 * The width value of sign rectangle.
+	 * The upper right x value of rectangle.
 	 */
-	private float width;
+	private float urx;
 	/**
-	 * The height value of sign rectangle.
+	 * The upper right y value of rectangle.
 	 */
-	private float height;
+	private float ury;
 
 }

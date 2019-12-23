@@ -1,6 +1,5 @@
 package io.mosip.kernel.keymanagerservice.service.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,7 +33,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
@@ -744,10 +742,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	@Override
 	public SignatureResponseDto signPDF(PDFSignatureRequestDto request) {
 		SignatureCertificate signatureCertificate=getSigningCertificate(request.getApplicationId(), Optional.of(request.getReferenceId()), request.getTimeStamp());
-		Rectangle rectangle = new Rectangle(request.getX(), request.getY(), request.getWidth(), request.getHeight());
+		Rectangle rectangle = new Rectangle(request.getLowerLeftX(), request.getLowerLeftY(), request.getUpperRightX(), request.getUpperRightY());
 		OutputStream outputStream;
 		try {
-			outputStream = pdfGenerator.signPDF(new ByteArrayInputStream(CryptoUtil.decodeBase64(request.getData())), rectangle, request.getReason(), request.getPageNumber(), Security.getProvider("SunPKCS11-SoftHSM2"), signatureCertificate.getCertificateEntry(),request.getPassword());
+			outputStream = pdfGenerator.signAndEncryptPDF(CryptoUtil.decodeBase64(request.getData()), rectangle, request.getReason(), request.getPageNumber(), Security.getProvider("SunPKCS11-SoftHSM2"), signatureCertificate.getCertificateEntry(),request.getPassword());
 		} catch (IOException | GeneralSecurityException e) {
 			throw new KeymanagerServiceException(KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorCode(), KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorMessage()+" "+e.getMessage());
 		}

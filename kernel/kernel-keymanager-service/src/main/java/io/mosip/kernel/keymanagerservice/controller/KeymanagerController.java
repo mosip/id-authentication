@@ -2,6 +2,8 @@ package io.mosip.kernel.keymanagerservice.controller;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -110,7 +112,7 @@ public class KeymanagerController {
 	
 	@ResponseFilter
 	@PostMapping("/pdf/sign")
-	public ResponseWrapper<SignatureResponseDto> signPDF(@RequestBody RequestWrapper<PDFSignatureRequestDto> signatureResponseDto
+	public ResponseWrapper<SignatureResponseDto> signPDF(@RequestBody @Valid RequestWrapper<PDFSignatureRequestDto> signatureResponseDto
 			) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerService.signPDF(signatureResponseDto.getRequest()));

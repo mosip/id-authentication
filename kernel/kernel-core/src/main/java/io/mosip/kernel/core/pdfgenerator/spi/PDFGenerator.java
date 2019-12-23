@@ -85,31 +85,18 @@ public interface PDFGenerator {
 	 */
 	public byte[] mergePDF(List<URL> pdfLists) throws IOException;
 
-	/**
-	 * Converts data obtained from an {@link InputStream} to a password protected
-	 * PDF written to an {@link OutputStream}.
-	 * 
-	 * If password is null or empty, PDF will not be encrypted.
-	 * 
-	 * @param dataInputStream the processedTemplate in the form of a
-	 *                        {@link InputStream}
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @return Password Protected PDF Output Stream (PDF stream)
-	 */
-	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException;
-
 	/** Signs a PDF and protect it with password
-	 * @param pdfStream pdfStream input stream of pdf.
+	 * @param pdf byte array of pdf.
 	 * @param rectangle {@link Rectangle} class to enclose signing
 	 * @param reason reason of signing.
 	 * @param pageNumber page number of rectangle.
-	 * @param provider security provider.
+	 * @param provider {@link Provider}.
 	 * @param certificateEntry {@link CertificateEntry} class for certificate and private key as Input;
-	 * @param password password for protecting pdf if null pdf will not be protected with any password
+	 * @param password password for protecting pdf.
 	 * @return {@link OutputStream} of signed PDF.
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws GeneralSecurityException Signals general security exception while signing.
 	 */
-	OutputStream signPDF(InputStream pdfStream,Rectangle rectangle,String reason,int pageNumber,Provider provider,CertificateEntry<X509Certificate, PrivateKey> certificateEntry,String password) throws IOException, GeneralSecurityException;
+	OutputStream signAndEncryptPDF(byte[] pdf,Rectangle rectangle,String reason,int pageNumber,Provider provider,CertificateEntry<X509Certificate, PrivateKey> certificateEntry,String password) throws IOException, GeneralSecurityException;
 
 }
