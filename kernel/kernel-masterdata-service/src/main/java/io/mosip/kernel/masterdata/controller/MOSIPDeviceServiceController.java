@@ -81,10 +81,10 @@ public class MOSIPDeviceServiceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When MOSIPDeviceService successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While updating MOSIPDeviceService any error occured") })
-	public ResponseWrapper<String> udpateMOSIPDeviceService(
+	public ResponseWrapper<MOSIPDeviceServiceExtDto> udpateMOSIPDeviceService(
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServicePUTDto> mosipDeviceServiceRequestDto) {
 
-		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<MOSIPDeviceServiceExtDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(mosipDeviceServices.updateMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
 		return responseWrapper;

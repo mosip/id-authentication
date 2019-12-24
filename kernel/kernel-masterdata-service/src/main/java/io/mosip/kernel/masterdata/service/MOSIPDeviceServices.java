@@ -14,6 +14,6 @@ public interface MOSIPDeviceServices {
 
 	public MOSIPDeviceServiceExtDto createMOSIPDeviceService(MOSIPDeviceServiceDto dto);
 
-	public String updateMOSIPDeviceService(MOSIPDeviceServicePUTDto dto);
+	public MOSIPDeviceServiceExtDto updateMOSIPDeviceService(MOSIPDeviceServicePUTDto dto);
 
 }
