@@ -20,12 +20,12 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "MOSIP Device Service", description = "MOSIP Device Service Detail resource")
-public class MOSIPDeviceServiceDto {
+public class MOSIPDeviceServicePUTDto {
 
-	/*@NotBlank
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
-	private String id;*/
+	private String id;
 
 	@NotBlank
 	@Size(min = 1, max = 64)
@@ -71,3 +71,4 @@ public class MOSIPDeviceServiceDto {
 	
 
 }
+

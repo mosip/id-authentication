@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MOSIPDeviceServiceErrorCode;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceDto;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceExtDto;
+import io.mosip.kernel.masterdata.dto.MOSIPDeviceServicePUTDto;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceServiceHistory;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -38,6 +41,11 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 	@Autowired
 	MOSIPDeviceServiceHistoryRepository mosipDeviceServiceHistoryRepository;
 
+	
+	
+	
+	
+	
 	@Autowired
 	RegistrationDeviceTypeRepository registrationDeviceTypeRepository;
 
@@ -55,10 +63,6 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
 		try {
 
-			if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
-				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
-						String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
-			}
 			if ((registrationDeviceTypeRepository
 					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getRegDeviceTypeCode())) == null) {
 				throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorCode(),
@@ -76,7 +80,8 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 			}
 
 			entity = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceService.class);
-			entity.setIsActive(true);
+			String id  = UUID.randomUUID().toString();
+			entity.setId(id);
 			crtMosipDeviceService = mosipDeviceServiceRepository.create(entity);
 
 			MOSIPDeviceServiceHistory entityHistory = new MOSIPDeviceServiceHistory();
@@ -97,11 +102,11 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
 	@Override
 	@Transactional
-	public String updateMOSIPDeviceService(MOSIPDeviceServiceDto dto) {
+	public String updateMOSIPDeviceService(MOSIPDeviceServicePUTDto dto) {
 		try {
 			MOSIPDeviceService crtMosipDeviceService = null;
 			MOSIPDeviceService entity = null;
-			if(dto.getDeviceProviderId() == null || dto.getId() == null || dto.getMake() == null || dto.getModel() == null
+			if(dto.getDeviceProviderId() == null || dto.getId() == null ||  dto.getMake() == null || dto.getModel() == null
 					|| dto.getRegDeviceSubCode() == null || dto.getRegDeviceTypeCode() == null || dto.getSwBinaryHash() == null 
 					|| dto.getSwCreateDateTime() == null || dto.getSwExpiryDateTime() == null || dto.getSwVersion() == null) {
 				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorCode(),
@@ -112,7 +117,8 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
 			}
 			entity = MetaDataUtils.setCreateMetaData(dto, MOSIPDeviceService.class);
-			entity.setIsActive(dto.isActive());
+			entity.setIsActive(dto.getIsActive());
+			
 			crtMosipDeviceService = mosipDeviceServiceRepository.update(entity);
 
 			MOSIPDeviceServiceHistory entityHistory = new MOSIPDeviceServiceHistory();

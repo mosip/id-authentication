@@ -16,6 +16,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceDto;
 import io.mosip.kernel.masterdata.dto.MOSIPDeviceServiceExtDto;
+import io.mosip.kernel.masterdata.dto.MOSIPDeviceServicePUTDto;
 import io.mosip.kernel.masterdata.service.MOSIPDeviceServices;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,7 +82,7 @@ public class MOSIPDeviceServiceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While updating MOSIPDeviceService any error occured") })
 	public ResponseWrapper<String> udpateMOSIPDeviceService(
-			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
+			@Valid @RequestBody RequestWrapper<MOSIPDeviceServicePUTDto> mosipDeviceServiceRequestDto) {
 
 		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
