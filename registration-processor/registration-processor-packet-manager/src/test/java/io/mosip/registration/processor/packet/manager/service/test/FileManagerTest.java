@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.manager.service.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -126,22 +127,28 @@ public class FileManagerTest {
 		impl.copy(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE);
 		boolean fileExists = impl.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
 		assertTrue(fileExists);
+
+		// delete file after copy
+		impl.deletePacket(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 	}
 
 	@Test
 	public void testFilemanagerGetFile() throws IOException {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		impl.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
 		File f = impl.getFile(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertEquals(f.getName(), newFile.getName());
 
+		// delete file after get
+		impl.deletePacket(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
+
 	}
 
 	@Test
 	public void testGetFileByteArray() throws Exception {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		// Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(),
@@ -150,13 +157,15 @@ public class FileManagerTest {
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenReturn(is);
-		impl.getFile(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn, sftpDto);
+		byte[] fileBytes = impl.getFile(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn, sftpDto);
+
+		assertNotNull(fileBytes);
 
 	}
 
 	@Test(expected = SftpFileOperationException.class)
 	public void testSftpExceptoin() throws Exception {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		Mockito.doNothing().when(session).connect();
@@ -169,31 +178,36 @@ public class FileManagerTest {
 
 	@Test
 	public void testCopyFile() throws Exception {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenReturn(is);
-		impl.copy(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, sftpDto);
+		boolean status = impl.copy(fileNameWithoutExtn,
+				DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, sftpDto);
+
+		assertTrue("Expected copy status as true", status);
 	}
 
 	@Test
 	public void testCleanUpFile() throws Exception {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		Mockito.doNothing().when(session).connect();
 		Mockito.when(session.openChannel(Mockito.any())).thenReturn(sftp);
 		Mockito.doNothing().when(sftp).connect();
 		Mockito.when(sftp.get(Mockito.any())).thenReturn(is);
-		impl.cleanUp(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, sftpDto);
+		boolean result = impl.cleanUp(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, sftpDto);
+
+		assertTrue(result);
 	}
 
 	@Test(expected = SftpFileOperationException.class)
 	public void testSftpExceptoinForCopyFile() throws Exception {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		// Mockito.when(jSch.getSession(Mockito.any(), Mockito.any(),
@@ -207,7 +221,7 @@ public class FileManagerTest {
 
 	@Test(expected = SftpFileOperationException.class)
 	public void testCleanUpException() throws Exception {
-		File newFile = new File("Abc.zip");
+		File newFile = new File("1001.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		Mockito.doNothing().when(session).connect();
