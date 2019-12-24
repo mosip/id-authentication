@@ -1,26 +1,36 @@
 # MOSIP Contributors list 
-# Template used "Name;email;Organization;Major areas of contributions and support"
+# Template used "Name;email;Organization;Role;Major areas of contributions and support"
 #
 # ACTIVE Contributors
 #
-Shrikant Karwa;shri@mosip.io;MOSIP;Product Management, country engagemnet, centers of excellence
-Arunkumar Gurumurthy;arun@mosip.io;MOSIP;Project Manager
-Krishnan Rajagopalan;krish@mosip.io;Mosip;Quality, Independent verification and Community Engagement
-Anadi Mishra;anadi@mosip.io;Mosip;MOSIP Architecture, Engineering and design
-Ramesh Narayanan;ramesh@mosip.io;Mosip;MOSIP Architecture, desing, development and delivery
-Srijoni Sen;srijoni@mosip.io;MOSIP;MOSIP Documentation, Strategy, Communications
-Puneet Joshi;puneet@mosip.io;Mosip;MOSIP Architecture and Deployment
-Shravan Poorigali;pgshravan@gmail.com;Mindtree;MOSIP Architecture and design
-Sasikumar Ganesan;gsasikumar@gmail.com;Aujas Networks;MOSIP Security
-Gurpreet Kaur Bagga;gurpreetvgi008@gmail.com;Mindtree;ID Authenticatiom and Biometrics
+Shrikant Karwa;shri@mosip.io;MOSIP;;Product Management, country engagemnet,centers of excellence
+Arunkumar Gurumurthy;arun@mosip.io;MOSIP;Project Manager;Project Managemnet
+Krishnan Rajagopalan;krish@mosip.io;Mosip;Test Lead;Quality, Independent verification and Community Engagement
+Anadi Mishra;anadi@mosip.io;Mosip;Lead Architect;MOSIP Architecture, Engineering and design
+Ramesh Narayanan;ramesh@mosip.io;Mosip;Architect;MOSIP Architecture, desing, development and delivery
+Srijoni Sen;srijoni@mosip.io;MOSIP;;MOSIP Documentation, Strategy, Communications
+Puneet Joshi;puneet@mosip.io;Mosip;Architect;MOSIP Architecture and Deployment
+Shravan Poorigali;pgshravan@gmail.com;Mindtree;Architect;MOSIP Architecture and design
+Sasikumar Ganesan;gsasikumar@gmail.com;Aujas Networks;Architect;MOSIP Security
+Gurpreet Kaur Bagga;gurpreetvgi008@gmail.com;Mindtree;Architect;ID Authenticatiom and Biometrics
+Jane Rose Anthony;jane.anthon@gmail.com;Technoforte;Tester;Acceptance Testing
+Sanjeev Kumar Srivastava;mosip.sanjeev@gmail.com;Technoforte;Developer;Partner Management
+Nagarjuna Kuchi;nagarjunabtechece@gmail.com;Technoforte;Developer;Partner Management
+Piyush singh,piyush.singh@technoforte.co.in;Technoforte;Tester;Acceptance Testing
+Alok Kumar Tiwari;alokt0037@gmail.com;Technoforte;Automation Tester;Acceptance Test Rig
+Chandra Keshav Mishra;chandrakeshavmishra@gmail.com;Technoforte;DevOps;Build and Deployment
+Niyati Swamy,niyati.swami@gmail.com,Technoforte;Tester,Acceptance Testing
+Channakeshava Puttaswamy;Channakeshava.p@zoho.com;Technoforte;Automation Tester;Acceptance Test Rig
+Hemant C Vadher;hemant.vadher@google.com;Technoforte;Tester;Acceptance Testing
+Yogesh Pathak;Yogesh@technoforte.co.in;Technoforte;Test Lead;Acceptance Testing
 #
 # Supporters
 #
-Sanjay Jain;snjyjn@gmail.com;iSpirt;Technology Leadership
-Prof. Rajagopalan;raj@iiitb.ac.in;IIITB;MOSIP Development Lead
-Prof. Thangaraju;b.thangaraju@iiitb.ac.in;IIITB;Technology Committee
-Prof. Chandrashekaran Ramanathan;rc@iiitb.ac.in;IIITB;Technology Committee 
-Satish Mohan;mohan.satish@gmail.com;Red Hat,Technology Committee
+Sanjay Jain;snjyjn@gmail.com;iSpirt;Technology Lead;Technology Leadership
+Prof. Rajagopalan;raj@iiitb.ac.in;IIITB;Development Lead;MOSIP Development Lead
+Prof. Thangaraju;b.thangaraju@iiitb.ac.in;IIITB;Reviewer;Technology Committee
+Prof. Chandrashekaran Ramanathan;rc@iiitb.ac.in;IIITB;Reviewer;Technology Committee 
+Satish Mohan;mohan.satish@gmail.com;Red Hat;Independent Reviewer;Technology Committee
 #
 # INACTIVE Members 
 # 
