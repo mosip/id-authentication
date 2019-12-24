@@ -47,11 +47,13 @@ public class MOSIPDeviceServiceDto {
 	@ApiModelProperty(value = "deviceSubCode", required = true, dataType = "java.lang.String")
 	private String regDeviceSubCode;
 
-	@Size(min = 0, max = 36)
+	@NotBlank
+	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "make", required = true, dataType = "java.lang.String")
 	private String make;
 
-	@Size(min = 0, max = 36)
+	@NotBlank
+	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "model", required = true, dataType = "java.lang.String")
 	private String model;
 
