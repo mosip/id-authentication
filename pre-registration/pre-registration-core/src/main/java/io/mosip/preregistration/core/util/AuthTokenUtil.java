@@ -1,4 +1,4 @@
-package io.mosip.preregistration.document.config;
+package io.mosip.preregistration.core.util;
 
 import java.time.LocalDateTime;
 
@@ -17,10 +17,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.LoginUser;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.document.dto.LoginUser;
-import io.mosip.preregistration.document.exception.LoginServiceException;
+import io.mosip.preregistration.core.exception.LoginServiceException;
 
 /**
  * @author Kishan Rathore
@@ -56,8 +56,8 @@ public class AuthTokenUtil {
 			/* Get the token from auth-manager service */
 			LoginUser loginUser = new LoginUser();
 			loginUser.setAppId(appId);
-			loginUser.setPassword(password);
-			loginUser.setUserName(userName);
+			loginUser.setSecretKey(password);
+			loginUser.setClientId(userName);
 			RequestWrapper<LoginUser> requestWrapper = new RequestWrapper<>();
 			requestWrapper.setId(id);
 			requestWrapper.setRequest(loginUser);
