@@ -41,11 +41,6 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 	@Autowired
 	MOSIPDeviceServiceHistoryRepository mosipDeviceServiceHistoryRepository;
 
-	
-	
-	
-	
-	
 	@Autowired
 	RegistrationDeviceTypeRepository registrationDeviceTypeRepository;
 
