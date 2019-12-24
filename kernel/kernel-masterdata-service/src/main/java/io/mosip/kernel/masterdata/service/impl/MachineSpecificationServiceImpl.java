@@ -119,7 +119,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()));
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()),
+					"ADM-673");
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
@@ -158,7 +159,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION
-										.getErrorMessage()));
+										.getErrorMessage()),
+						"ADM-674");
 				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -169,7 +171,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
-							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()));
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-675");
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
@@ -212,7 +215,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 												MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION
 														.getErrorCode(),
 												MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION
-														.getErrorMessage()));
+														.getErrorMessage()),
+										"ADM-676");
 						throw new MasterDataServiceException(
 								MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
 								MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
@@ -226,18 +230,21 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 								MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION
-										.getErrorMessage()));
+										.getErrorMessage()),
+						"ADM-677");
 				throw new RequestException(
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineSpecificationErrorCode.MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSpecification.class.getCanonicalName()),
+					String.format(
+							MasterDataConstant.FAILURE_DECOMMISSION, MachineSpecification.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
-							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage()));
+							MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage()),
+					"ADM-678");
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage()

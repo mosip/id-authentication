@@ -73,13 +73,14 @@ public class MachineTypeController {
 			@Valid @RequestBody RequestWrapper<MachineTypeDto> machineType) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + MachineTypeDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(), "ADM-651");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machinetypeService.createMachineType(machineType.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, MachineTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, MachineTypeDto.class.getCanonicalName()),
+				"ADM-652");
 		return responseWrapper;
 	}
 
@@ -128,13 +129,14 @@ public class MachineTypeController {
 			@ApiParam(value = "Request DTO to search Machine Types") @RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + MachineTypeDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(), "ADM-653");
 		ResponseWrapper<PageResponseDto<MachineTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machinetypeService.searchMachineType(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, MachineTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, MachineTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, MachineTypeDto.class.getCanonicalName()),
+				"ADM-654");
 		return responseWrapper;
 	}
 
@@ -152,13 +154,14 @@ public class MachineTypeController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + MachineTypeDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + MachineTypeDto.class.getCanonicalName(), "ADM-655");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machinetypeService.machineTypesFilterValues(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER, MachineTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, MachineTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, MachineTypeDto.class.getCanonicalName()),
+				"ADM-656");
 		return responseWrapper;
 	}
 }

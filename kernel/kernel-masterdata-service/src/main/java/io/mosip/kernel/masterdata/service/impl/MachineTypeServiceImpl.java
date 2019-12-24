@@ -104,11 +104,13 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 		try {
 			renMachineType = machineTypeRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, MachineType.class.getCanonicalName()),
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, MachineType.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-							MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()));
+							MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()),
+					"ADM-657");
 			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));

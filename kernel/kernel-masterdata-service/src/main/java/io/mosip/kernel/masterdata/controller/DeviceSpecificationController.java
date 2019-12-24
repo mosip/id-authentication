@@ -138,14 +138,15 @@ public class DeviceSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.CREATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-638");
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						DeviceSpecificationDto.class.getCanonicalName()));
+						DeviceSpecificationDto.class.getCanonicalName()),
+				"ADM-639");
 		return responseWrapper;
 	}
 
@@ -162,14 +163,15 @@ public class DeviceSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-640");
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DeviceSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						DeviceSpecificationDto.class.getCanonicalName()));
+						DeviceSpecificationDto.class.getCanonicalName()),
+				"ADM-641");
 		return responseWrapper;
 	}
 
@@ -225,13 +227,14 @@ public class DeviceSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-642");
 		ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceSpecificationService.searchDeviceSpec(requestWrapper.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
-						DeviceSpecificationDto.class.getCanonicalName()));
+						DeviceSpecificationDto.class.getCanonicalName()),
+				"ADM-643");
 		return responseWrapper;
 	}
 
@@ -252,12 +255,12 @@ public class DeviceSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.FILTER_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-645");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceSpecificationService.deviceSpecFilterValues(requestWrapper.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + DeviceSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_FILTER_DESC + DeviceSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + DeviceSpecificationDto.class.getCanonicalName(), "ADM-646");
 		return responseWrapper;
 	}
 

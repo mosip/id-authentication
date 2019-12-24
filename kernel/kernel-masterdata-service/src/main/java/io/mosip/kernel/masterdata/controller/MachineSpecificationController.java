@@ -77,14 +77,15 @@ public class MachineSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.CREATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-568");
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(machineSpecificationService.createMachineSpecification(machineSpecification.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						MachineSpecificationDto.class.getCanonicalName()));
+						MachineSpecificationDto.class.getCanonicalName()),
+				"ADM-659");
 		return responseWrapper;
 	}
 
@@ -108,14 +109,15 @@ public class MachineSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.UPDATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-660");
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(machineSpecificationService.updateMachineSpecification(machineSpecification.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						MachineSpecificationDto.class.getCanonicalName()));
+						MachineSpecificationDto.class.getCanonicalName()),
+				"ADM-666");
 		return responseWrapper;
 	}
 
@@ -138,7 +140,8 @@ public class MachineSpecificationController {
 				String.format(MasterDataConstant.DECOMMISION_API_CALLED,
 						MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DECOMMISION_API_CALLED,
-						MachineSpecificationDto.class.getCanonicalName()));
+						MachineSpecificationDto.class.getCanonicalName()),
+				"ADM-667");
 
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.deleteMachineSpecification(id));
@@ -146,7 +149,8 @@ public class MachineSpecificationController {
 				String.format(MasterDataConstant.DECOMMISSION_SUCCESS,
 						MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DECOMMISSION_SUCCESS,
-						MachineSpecificationDto.class.getCanonicalName()));
+						MachineSpecificationDto.class.getCanonicalName()),
+				"ADM-668");
 		return responseWrapper;
 	}
 
@@ -196,13 +200,14 @@ public class MachineSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-669");
 		ResponseWrapper<PageResponseDto<MachineSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.searchMachineSpecification(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, MachineSpecificationDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
-						MachineSpecificationDto.class.getCanonicalName()));
+						MachineSpecificationDto.class.getCanonicalName()),
+				"ADM-670");
 		return responseWrapper;
 	}
 
@@ -221,12 +226,13 @@ public class MachineSpecificationController {
 		auditUtil.auditRequest(
 				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + MachineSpecificationDto.class.getCanonicalName(), "ADM-671");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineSpecificationService.machineSpecificationFilterValues(request.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + MachineSpecificationDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SUCCESSFUL_FILTER_DESC + MachineSpecificationDto.class.getCanonicalName());
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + MachineSpecificationDto.class.getCanonicalName(),
+				"ADM-672");
 		return responseWrapper;
 	}
 

@@ -50,7 +50,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  */
 @Service
 public class DeviceTypeServiceImpl implements DeviceTypeService {
-	
+
 	@Autowired
 	AuditUtil auditUtil;
 
@@ -94,11 +94,13 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 			renDeviceType = deviceTypeRepository.create(entity);
 		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException
 				| IllegalArgumentException | SecurityException e) {
-			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()));
+							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()),
+					"ADM-637");
 			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
