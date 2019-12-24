@@ -71,6 +71,15 @@ public class MasterDataConstant {
 	public static final String GET_LANG=" get all %s ";
 	public static final String GET_LANG_SUCCESS="Get lang success %s ";
 	public static final String GET_LANG_SUCCESS_DESC="System successfully get lang %s ";
+	public static final String DEVICE_VALIDATION_API_CALLED="Device validation API called::";
+	public static final String DEVICE_VALIDATION_SUCCESS="Device Validation - Success";
+	public static final String DEVICE_VALIDATION_SUCCESS_DESC="System successfully validated the Device Details %s";
+	public static final String DEVICE_VALIDATION_FAILURE="Device Validation - Failure";
+	public static final String DEVICE_VALIDATION_HISTORY_API_CALLED="Device validation history API called";
+	public static final String DEVICE_VALIDATION_HISTORY_SUCCESS="Device history validation  - Success";
+	public static final String DEVICE_VALIDATION_HISTORY_SUCCESS_DESC="System successfully validated the Device history Details %s";
+	public static final String DEVICE_VALIDATION_HISTORY_FAILURE="Device history validation - Failure";
+	
 	
 	
 	public static final String AUDIT_SYSTEM = "SYSTEM";

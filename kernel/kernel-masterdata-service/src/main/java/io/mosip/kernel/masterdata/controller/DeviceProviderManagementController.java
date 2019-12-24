@@ -13,11 +13,13 @@ import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 
 
@@ -33,6 +35,9 @@ import io.swagger.annotations.Api;
 public class DeviceProviderManagementController {
 
 	@Autowired
+	private AuditUtil auditUtil;
+	
+	@Autowired
 	private DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> deviceProviderService;
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
@@ -41,8 +46,10 @@ public class DeviceProviderManagementController {
 	public ResponseWrapper<ResponseDto> validateDeviceProvider(
 			@RequestBody @Valid RequestWrapper<ValidateDeviceDto> request) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
+		auditUtil.auditRequest(MasterDataConstant.DEVICE_VALIDATION_API_CALLED+ValidateDeviceDto.class.getSimpleName(),MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DEVICE_VALIDATION_API_CALLED+ValidateDeviceDto.class.getSimpleName(),"ADM-600");
 		responseWrapper.setResponse(
 				deviceProviderService.validateDeviceProviders(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.DEVICE_VALIDATION_SUCCESS,ValidateDeviceDto.class.getSimpleName()),MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS_DESC,ValidateDeviceDto.class.getSimpleName()),"ADM-601");
 		return responseWrapper;
 
 	}

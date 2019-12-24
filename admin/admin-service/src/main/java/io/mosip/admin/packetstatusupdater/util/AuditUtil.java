@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.utils;
+package io.mosip.admin.packetstatusupdater.util;
 
 import java.io.IOException;
 import java.net.InetAddress;

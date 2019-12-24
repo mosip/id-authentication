@@ -24,4 +24,5 @@ public class MosipUserDto {
 	private String name;
 	private String role;
 	private String rId;
+	private String token;
 }
