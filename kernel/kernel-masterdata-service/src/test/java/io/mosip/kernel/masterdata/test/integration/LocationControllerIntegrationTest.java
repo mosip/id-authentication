@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -214,5 +215,28 @@ public class LocationControllerIntegrationTest {
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createLocationException() throws Exception {
+		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createLocationIllegalException() throws Exception {
+		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new IllegalArgumentException());
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
+	}
+
 
 }
