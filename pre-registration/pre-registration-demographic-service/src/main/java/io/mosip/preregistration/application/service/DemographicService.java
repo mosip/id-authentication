@@ -287,8 +287,8 @@ public class DemographicService {
 				validationUtil.langvalidation(demographicRequest.getLangCode());
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-			//	jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
-			//			IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
+						IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				log.info("sessionId", "idType", "id",
