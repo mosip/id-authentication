@@ -11,7 +11,6 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,7 +28,6 @@ import org.springframework.security.web.authentication.www.NonceExpiredException
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -169,18 +167,14 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		return mosipUserDto;
 	}
 
-	private ResponseEntity<String> getValidatedUserResponse(String token) throws JsonParseException, JsonMappingException, IOException {
+	private ResponseEntity<String> getValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
 			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
 		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			String req = "{\"id\":\"mosip.otpnotification.send\",\"metadata\":{},\"request\":{\"clientId\":\"registration-processor\",\"secretKey\":\"d80ec0be-bba7-4d8e-bf0c-85ab45bb976b\",\"appId\":\"registrationprocessor\"},\"requesttime\":\"2018-12-09T06:39:03.683Z\",\"version\":\"v1.0\"}";
-			token = WebClient.create("https://dev.mosip.io/v1/authmanager/authenticate/clientidsecretkey").post()
-					.syncBody(new ObjectMapper().readValue(req, Object.class)).exchange()
-					.map(res -> res.headers().asHttpHeaders()).block().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replace("Authorization=", "");
-			return getValidatedUserResponse(token);
+			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
 		}
 	}
 	

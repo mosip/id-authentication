@@ -43,7 +43,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	private static final String DEACTIVATE = "deactivate";
 
 	/** The mosip logger. */
-	Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
+	private Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
 
 	/** The Constant VID_REQUEST_VALIDATOR. */
 	private static final String VID_REQUEST_VALIDATOR = "VidRequestValidator";
@@ -135,7 +135,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 					"vidType is null");
 			errors.rejectValue(REQUEST, MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
-		} else if (!policyProvider.getAllVidTypes().contains(vidType)) {
+		} else if (!policyProvider.getAllVidTypes().contains(vidType.toUpperCase())) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateVidType",
 					"vidType is invalid - " + vidType);
 			errors.rejectValue(REQUEST, INVALID_INPUT_PARAMETER.getErrorCode(),

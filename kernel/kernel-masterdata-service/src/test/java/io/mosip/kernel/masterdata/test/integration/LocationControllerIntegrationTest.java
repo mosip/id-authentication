@@ -26,9 +26,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 
 @RunWith(SpringRunner.class)
@@ -46,7 +48,6 @@ public class LocationControllerIntegrationTest {
 	private Location location3;
 	private LocationDto dto1;
 	private LocationDto dto2;
-	private LocationDto dto3;
 	private List<Location> parentLocList;
 
 	@Autowired
@@ -63,7 +64,6 @@ public class LocationControllerIntegrationTest {
 		location3 = new Location("", "LOCATION NAME", (short) 3, "City", "XYZ", "eng", null);
 		dto1 = new LocationDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng", false);
 		dto2 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
-		dto3 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "fra", false);
 		request = new RequestWrapper<>();
 		request.setId("1.0");
 		request.setRequesttime(LocalDateTime.now());
@@ -80,21 +80,35 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		//when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void locationParentNotFoundSuccess() throws Exception {
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		//when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new MasterDataServiceException("","Parent location not found"));
+		//when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		//when(repo.create(Mockito.any())).thenReturn(location1);
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
 	}
 
 	@Test
 	@WithUserDetails("global-admin")
 	public void createActiveLocationSuccess() throws Exception {
 		location1.setIsActive(true);
-		location2.setIsActive(true);
-		location3.setIsActive(true);
 		when(repo.save(Mockito.any())).thenReturn(Arrays.asList(location1));
 		dto1.setIsActive(true);
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -106,8 +120,21 @@ public class LocationControllerIntegrationTest {
 		dto1.setIsActive(true);
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
+		when(repo.update(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void updateIllegalExceptionTest() throws Exception {
+		location1.setIsActive(true);
+		dto1.setIsActive(true);
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.update(Mockito.any())).thenThrow(new IllegalArgumentException());
+		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
 	}
 
 	@Test
@@ -116,6 +143,8 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -127,6 +156,8 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -138,8 +169,20 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createLocatioParentLocationnoExist() throws Exception {
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new MasterDataServiceException("","Location not Exist"));
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
 	}
 
 	@Test
@@ -149,6 +192,21 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createEmptyLangCode() throws Exception {
+		dto2.setLangCode("");
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -160,6 +218,8 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -171,6 +231,8 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -182,6 +244,8 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -193,6 +257,8 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
@@ -204,8 +270,33 @@ public class LocationControllerIntegrationTest {
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
+		when(repo.create(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createLocationException() throws Exception {
+		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void createLocationIllegalException() throws Exception {
+		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
+		request.setRequest(dto1);
+		String requestJson = mapper.writeValueAsString(request);
+		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new IllegalArgumentException());
+		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+				.andExpect(status().is5xxServerError());
+	}
+
 
 }

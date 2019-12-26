@@ -7,6 +7,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
@@ -44,7 +46,7 @@ public interface DocumentTypeService {
 	 *            dto with documents type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	public CodeAndLanguageCodeID createDocumentType(DocumentTypeDto documentTypeDto);
+	public DocumentTypePostResponseDto createDocumentType(DocumentTypeDto documentTypeDto);
 
 	/**
 	 * Method to update document type.
@@ -53,7 +55,7 @@ public interface DocumentTypeService {
 	 *            DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	public CodeAndLanguageCodeID updateDocumentType(DocumentTypeDto documentTypeDto);
+	public DocumentTypePutResponseDto updateDocumentType(DocumentTypeDto documentTypeDto);
 
 	/**
 	 * Method to delete document type.

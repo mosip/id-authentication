@@ -27,7 +27,7 @@ public interface RegistrationCenterDeviceRepository
 	@Query("FROM RegistrationCenterDevice WHERE registrationCenterDevicePk =?1 and (isDeleted is null or isDeleted =false) and isActive = true")
 	Optional<RegistrationCenterDevice> findAllNondeletedMappings(RegistrationCenterDeviceID registrationCenterDevicePk);
 
-	@Query("FROM RegistrationCenterDevice rd where rd.registrationCenterDevicePk.deviceId = ?1 AND (rd.isDeleted is null or rd.isDeleted=false) and rd.isActive = true")
+	@Query("FROM RegistrationCenterDevice rd where rd.registrationCenterDevicePk.deviceId = ?1 AND (rd.isDeleted is null or rd.isDeleted=false)")
 	List<RegistrationCenterDevice> findByDeviceIdAndIsDeletedFalseOrIsDeletedIsNull(String deviceId);
 
 	@Query("FROM RegistrationCenterDevice rd where rd.registrationCenterDevicePk.regCenterId = ?1 AND (rd.isDeleted is null or rd.isDeleted=false) and rd.isActive = true")
@@ -43,7 +43,7 @@ public interface RegistrationCenterDeviceRepository
 	 *            the center ID of the reg-center which needs to be decommissioned.
 	 * @return the list of registration centers mapped to devices.
 	 */
-	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 and (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
+	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 and (rd.isDeleted is null or rd.isDeleted =false)")
 	public List<RegistrationCenterDevice> registrationCenterDeviceMappings(String regCenterID);
 
 	@Query("FROM RegistrationCenterDevice rd where  (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")

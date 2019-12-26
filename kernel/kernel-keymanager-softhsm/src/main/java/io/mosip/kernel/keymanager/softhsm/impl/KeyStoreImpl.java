@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -101,6 +102,8 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	public void afterPropertiesSet() throws Exception {
 		Provider provider = setupProvider(configPath);
 		addProvider(provider);
+		BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
+		Security.addProvider(bouncyCastleProvider);
 		this.keyStore = getKeystoreInstance(keystoreType, provider);
 		loadKeystore();
 		// loadCertificate();

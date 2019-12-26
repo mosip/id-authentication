@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
-import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.AuthPolicy;
 
 /**
  * The Class KycAuthFilter - used to authenticate the request and manipulate

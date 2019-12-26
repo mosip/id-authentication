@@ -22,7 +22,6 @@ import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceAndRegCenterMappingResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
@@ -291,8 +290,8 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		List<String> zoneHierarchy = Arrays.asList(hierarchyPath.split("/"));
 		isInSameHierarchy = zoneHierarchy.stream().anyMatch(zone -> zone.equals(device.getZoneCode()));
 		if (isInSameHierarchy) {
-			if ((!device.getIsActive() && device.getIsDeleted())
-					|| (!registrationCenters.get(0).getIsActive() && registrationCenters.get(0).getIsDeleted())) {
+			if ((!device.getIsActive() && (device.getIsDeleted()!=null && device.getIsDeleted()))
+					|| (!registrationCenters.get(0).getIsActive() && (registrationCenters.get(0).getIsDeleted()!=null && registrationCenters.get(0).getIsDeleted()))) {
 				throw new MasterDataServiceException(
 						RegistrationCenterDeviceErrorCode.REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE.getErrorCode(),
 						RegistrationCenterDeviceErrorCode.REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE
@@ -430,7 +429,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 			if (device == null) {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 			return device;
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -454,16 +453,16 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 					.findByRegIdAndLangCode(regCenterId, langCode);
 			if (registrationCenters.isEmpty()) {
 				throw new RequestException(
-						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
-						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND
+						RegistrationCenterDeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorCode(),
+						RegistrationCenterDeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION
 								.getErrorMessage());
 			}
 
 			return registrationCenters;
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage()
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

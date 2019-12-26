@@ -74,8 +74,8 @@ public class VidPolicyProvider {
 				READ_LIST_OPTIONS);
 		List<Object> vidPolicy = JsonPath.compile(VID_POLICY_PATH)
 				.read(policyJson.toString(), READ_LIST_OPTIONS);
-		vidPolicies = IntStream.range(0, vidType.size()).parallel().boxed()
-				.collect(Collectors.toMap(vidType::get, i -> mapper.convertValue(vidPolicy.get(i), VidPolicy.class)));
+		vidPolicies = IntStream.range(0, vidType.size()).boxed().collect(Collectors
+				.toMap(i -> vidType.get(i).toUpperCase(), i -> mapper.convertValue(vidPolicy.get(i), VidPolicy.class)));
 	}
 
 	/**

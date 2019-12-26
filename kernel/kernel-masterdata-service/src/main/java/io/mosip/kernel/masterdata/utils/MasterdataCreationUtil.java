@@ -116,9 +116,7 @@ public class MasterdataCreationUtil {
 		}
 		
 		if (langCode.equals(primaryLang)) {
-			Field isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-			isActive.setAccessible(true);
-			isActive.set(t, Boolean.FALSE);
+			Field isActive = null;
 			if(primaryKeyCol!=null&&primaryKeyCol.equals(CODE_COLUMN_NAME))
 			{
 				Field idColumn = dtoClass.getDeclaredField(CODE_COLUMN_NAME);
@@ -154,6 +152,18 @@ public class MasterdataCreationUtil {
 						idColumn.set(t, generateId());
 					}
 				}
+			}
+			if(activeDto==true)
+			{
+				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+				isActive.setAccessible(true);
+				isActive.set(t, Boolean.TRUE);
+			}
+			else
+			{
+				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+				isActive.setAccessible(true);
+				isActive.set(t, Boolean.FALSE);
 			}
 			return t;
 		}
@@ -193,9 +203,13 @@ public class MasterdataCreationUtil {
 				return t;
 			} 
 		}
-		//return null;
-		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
+		else
+		{
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
+		}
+		return t;
+		
 	}
 
 	private String generateId() {

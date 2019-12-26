@@ -11,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,16 +72,15 @@ public class UinCardRePrintController {
 	@Autowired
 	private Environment env;
 
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN', 'REGISTRATION_PROCESSOR', 'RESIDENT')")
 	@ApiOperation(value = "Uin Card Re-Print Api", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Uin Card Re-Print Api"),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	@PostMapping(path = "/reprint", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getStatus(
-			@RequestBody(required = true) @Valid UinCardRePrintRequestDto uinCardRePrintRequestDto,
-			@CookieValue(value = "Authorization", required = true) String token)
+			@RequestBody(required = true) @Valid UinCardRePrintRequestDto uinCardRePrintRequestDto)
 			throws RegBaseCheckedException, IOException {
-		tokenValidator.validate("Authorization=" + token, "requesthandler");
 		try {
 			PacketGeneratorResDto packetGeneratorResDto;
 			packetGeneratorResDto = uinCardRePrintServiceImpl.createPacket(uinCardRePrintRequestDto);

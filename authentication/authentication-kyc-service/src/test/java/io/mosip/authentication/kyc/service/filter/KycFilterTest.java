@@ -35,10 +35,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
-import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.AuthPolicy;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest

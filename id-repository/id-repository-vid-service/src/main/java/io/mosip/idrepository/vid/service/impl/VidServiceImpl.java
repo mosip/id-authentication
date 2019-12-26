@@ -71,7 +71,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
- * The Class VidServiceImpl - service implementation for VID service.
+ * The Class VidServiceImpl - service implementation for {@code VidService}.
  *
  * @author Manoj SP
  * @author Prem Kumar
@@ -220,7 +220,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * Generate vid.
 	 *
-	 * @return the string
+	 * @return the vid
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -235,7 +235,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorText());
 		} catch (RestServiceException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
-			throw new IdRepoAppException(VID_GENERATION_FAILED, e);
+			throw new IdRepoAppException(VID_GENERATION_FAILED);
 		}
 	}
 
@@ -516,9 +516,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This Method will accepts vid as parameter and will return Vid Object from DB.
 	 *
-	 * @param vid
-	 *            the vid
-	 * @return The Vid Object
+	 * @param vid the vid
+	 * @return the vid
 	 */
 	private Vid retrieveVidEntity(String vid) {
 		return vidRepo.findByVid(vid);
@@ -528,10 +527,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * This method will check expiry date of the vid, if vid is expired then it will
 	 * throw IdRepoAppException.
 	 *
-	 * @param expiryDTimes
-	 *            the expiry D times
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param expiryDTimes the expiry D times
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
 		if (!DateUtils.after(expiryDTimes, DateUtils.getUTCCurrentDateTime())) {
@@ -545,10 +542,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This method will check Status of the vid.
 	 *
-	 * @param statusCode
-	 *            the status code
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param statusCode the status code
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkStatus(String statusCode) throws IdRepoAppException {
 		if (!statusCode.equalsIgnoreCase(env.getProperty(VID_ACTIVE_STATUS))) {
@@ -565,7 +560,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @param uin the uin
 	 * @param uinHash the uin hash
 	 * @return the string
-	 * @throws IdRepoAppException             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private String decryptUin(String uin, String uinHash) throws IdRepoAppException {
 		List<String> uinDetails = Arrays.stream(uin.split(SPLITTER))
@@ -586,11 +581,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This Method will build the Vid Response.
 	 *
-	 * @param response
-	 *            the response
-	 * @param id
-	 *            the id
-	 * @return The Vid Response
+	 * @param response the response
+	 * @param id the id
+	 * @return the response wrapper
 	 */
 	private ResponseWrapper<VidResponseDTO> buildResponse(VidResponseDTO response, String id) {
 		ResponseWrapper<VidResponseDTO> responseDto = new ResponseWrapper<>();

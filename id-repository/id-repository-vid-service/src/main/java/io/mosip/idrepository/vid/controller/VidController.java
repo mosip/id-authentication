@@ -38,6 +38,8 @@ import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The Class Vid Controller - controller class for vid service.
+ * These services can be used to perform various operations on 
+ * VID like generate or re-generate VID, update VID status, etc.
  *
  * @author Manoj SP
  * @author Prem Kumar
@@ -45,12 +47,16 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class VidController {
 
+	/** The Constant REACTIVATE. */
 	private static final String REACTIVATE = "reactivate";
 
+	/** The Constant DEACTIVATE. */
 	private static final String DEACTIVATE = "deactivate";
 
+	/** The Constant UIN. */
 	private static final String UIN = "uin";
 
+	/** The Constant DEACTIVATE_VID. */
 	private static final String DEACTIVATE_VID = "deactivateVid";
 
 	/** The Constant VID. */
@@ -106,11 +112,11 @@ public class VidController {
 	 * This service will generate a new VID based on VID type provided.
 	 *
 	 * @param request the request
-	 * @param errors  the errors
+	 * @param errors the errors
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','RESIDENT')")
 	@PostMapping(path = "/vid", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> createVid(
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
@@ -118,6 +124,7 @@ public class VidController {
 		try {
 			validator.validateId(request.getId(), CREATE);
 			DataValidationUtil.validate(errors);
+			request.getRequest().setVidType(request.getRequest().getVidType().toUpperCase());
 			return new ResponseEntity<>(vidService.generateVid(request.getRequest()), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
@@ -127,13 +134,14 @@ public class VidController {
 
 	/**
 	 * This method will accepts vid as parameter, if vid is valid it will return
-	 * respective uin.
+	 * respective uin. This service will retrieve associated decrypted UIN for a given 
+	 * VID, once VID is successfully validated.
 	 *
 	 * @param vid the vid
-	 * @return uin the uin
+	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT')")
 	@GetMapping(path = "/vid/{VID}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> retrieveUinByVid(@PathVariable("VID") String vid)
 			throws IdRepoAppException {
@@ -152,12 +160,13 @@ public class VidController {
 
 	/**
 	 * This Method accepts VidRequest body as parameter and vid from url then it
-	 * will update the status if it is an valid vid.
+	 * will update the status if it is an valid vid. This service will update status 
+	 * associated with a given VID, if the current status of VID is 'ACTIVE'.
 	 *
-	 * @param vid     the vid
+	 * @param vid the vid
 	 * @param request the request
-	 * @param errors  the errors
-	 * @return VidResponseDTO
+	 * @param errors the errors
+	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION')")
@@ -185,14 +194,15 @@ public class VidController {
 
 	/**
 	 * This method will accepts an vid, if vid is valid to regenerate then
-	 * regenerated vid will be returned as response.
+	 * regenerated vid will be returned as response. This service will re-generate 
+	 * VID for a given VID, only if the current status of VID is 'ACTIVE', 'USED', 
+	 * or 'EXPIRED'.
 	 *
 	 * @param vid the vid
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	// TODO have to add roles when partner service is available
-//	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PostMapping(path = "/vid/{VID}/regenerate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> regenerateVid(@PathVariable("VID") String vid)
 			throws IdRepoAppException {
@@ -211,13 +221,15 @@ public class VidController {
 
 	/**
 	 * This method will accept an uin, if uin is valid then it will deactivate all
-	 * the respective vid's
-	 * 
-	 * @param request
-	 * @param errors
-	 * @return
-	 * @throws IdRepoAppException
+	 * the respective vid's. This service will de-activate VIDs mapped against the 
+	 * provided UIN, only if the current status of VID is 'ACTIVE'.
+	 *
+	 * @param request the request
+	 * @param errors the errors
+	 * @return the response entity
+	 * @throws IdRepoAppException the id repo app exception
 	 */
+	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PostMapping(path = "/vid/deactivate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> deactivateVIDsForUIN(
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
@@ -240,13 +252,16 @@ public class VidController {
 
 	/**
 	 * This method will accept an uin, if uin is valid then it will reactivate all
-	 * the respective vid's
-	 * 
-	 * @param request
-	 * @param errors
-	 * @return
-	 * @throws IdRepoAppException
+	 * the respective vid's. This service will re-activate VIDs mapped against the 
+	 * provided UIN, only if the current status of VID is 'DEACTIVATED', 'INACTIVE' 
+	 * and not 'EXPIRED'.
+	 *
+	 * @param request the request
+	 * @param errors the errors
+	 * @return the response entity
+	 * @throws IdRepoAppException the id repo app exception
 	 */
+	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PostMapping(path = "/vid/reactivate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> reactivateVIDsForUIN(
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)

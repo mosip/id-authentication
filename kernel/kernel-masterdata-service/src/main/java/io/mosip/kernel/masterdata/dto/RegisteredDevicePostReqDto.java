@@ -132,6 +132,6 @@ public class RegisteredDevicePostReqDto {
 	
 	@NotNull
 	@Valid
-	private DigitalIdDto digitalIdDto;
+	private DigitalIdDeviceRegisterDto digitalIdDto;
 
 }
