@@ -623,19 +623,6 @@ public class MachineServiceImpl implements MachineService {
 		return Collections.emptyList();
 	}
 
-	/**
-	 * This method return Machine Types list filters.
-	 * 
-	 * @param machineTypes
-	 *            the list of Machine Type.
-	 * @return the list of {@link SearchFilter}.
-	 */
-	private List<SearchFilter> buildMachineTypeSearchFilter(List<MachineType> machineTypes) {
-		if (machineTypes != null && !machineTypes.isEmpty())
-			return machineTypes.stream().filter(Objects::nonNull).map(this::buildMachineType)
-					.collect(Collectors.toList());
-		return Collections.emptyList();
-	}
 
 	/**
 	 * This method return Machine Specification list filters.
@@ -668,36 +655,6 @@ public class MachineServiceImpl implements MachineService {
 		filter.setColumnName("id");
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(machineId);
-		return filter;
-	}
-
-	/**
-	 * This method provide search filter for provided Machine specification.
-	 * 
-	 * @param machineSpecification
-	 *            the machine specification.
-	 * @return the {@link SearchFilter}.
-	 */
-	private SearchFilter buildMachineSpecification(MachineSpecification machineSpecification) {
-		SearchFilter filter = new SearchFilter();
-		filter.setColumnName("machineSpecId");
-		filter.setType(FilterTypeEnum.EQUALS.name());
-		filter.setValue(machineSpecification.getId());
-		return filter;
-	}
-
-	/**
-	 * This method provide search filter for provided Machine Type.
-	 * 
-	 * @param machineType
-	 *            the machine type.
-	 * @return the {@link SearchFilter}.
-	 */
-	private SearchFilter buildMachineType(MachineType machineType) {
-		SearchFilter filter = new SearchFilter();
-		filter.setColumnName("machineTypeCode");
-		filter.setType(FilterTypeEnum.EQUALS.name());
-		filter.setValue(machineType.getCode());
 		return filter;
 	}
 
