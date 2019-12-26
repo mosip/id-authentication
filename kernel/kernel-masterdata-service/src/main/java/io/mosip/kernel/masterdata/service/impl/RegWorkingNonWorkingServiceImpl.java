@@ -16,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WorkingDaysDto;
+import io.mosip.kernel.masterdata.entity.DaysOfWeek;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DaysOfWeekListRepo;
@@ -35,18 +36,17 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	private DaysOfWeekListRepo daysOfWeekRepo;
 
 	@Override
-	public WeekDaysResponseDto getWeekDaysList(String regCenterId,String langCode) {
+	public WeekDaysResponseDto getWeekDaysList(String regCenterId, String langCode) {
 
 		List<WeekDaysDto> weekdayList = null;
 		List<DayNameAndSeqListDto> nameSeqList = null;
 		WeekDaysResponseDto weekdays = new WeekDaysResponseDto();
-		
+
 		Objects.requireNonNull(regCenterId);
 		Objects.requireNonNull(langCode);
 
 		try {
-			nameSeqList = workingDaysRepo.findByregistrationCenterIdAndlanguagecode(
-					regCenterId,langCode);
+			nameSeqList = workingDaysRepo.findByregistrationCenterIdAndlanguagecodeForWeekDays(regCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
@@ -67,8 +67,7 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 			weekdays.setWeekdays(weekdayList);
 
 		} else {
-			throw new DataNotFoundException(
-					WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
 					WorkingNonWorkingDayErrorCode.WEEK_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
 		}
 
@@ -76,28 +75,44 @@ public class RegWorkingNonWorkingServiceImpl implements RegWorkingNonWorkingServ
 	}
 
 	@Override
-	public WorkingDaysResponseDto getWorkingDays(String regCenterId,String dayCode) {
-		
-		List<WorkingDaysDto> workingDayList=null;
-		WorkingDaysResponseDto responseDto=new WorkingDaysResponseDto();
+	public WorkingDaysResponseDto getWorkingDays(String regCenterId, String langCode) {
+
+		List<WorkingDaysDto> workingDayList = null;
+		WorkingDaysResponseDto responseDto = new WorkingDaysResponseDto();
 		Objects.requireNonNull(regCenterId);
-		Objects.requireNonNull(dayCode);
+		Objects.requireNonNull(langCode);
 		try {
-			workingDayList=workingDaysRepo.findByregistrationCenterIdAnddayCode(regCenterId, dayCode);
+			workingDayList = workingDaysRepo.findByregistrationCenterIdAndlangCodeForWorkingDays(regCenterId, langCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorCode(),
 					WorkingNonWorkingDayErrorCode.WORKING_DAY_TABLE_NOT_ACCESSIBLE.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		
-		if(workingDayList!=null && !workingDayList.isEmpty()) {
+		// Fetch from DB.
+		if (workingDayList != null && !workingDayList.isEmpty()) {
 			responseDto.setWorkingdays(workingDayList);
 		}
+		// Fetch from global level .
 		else {
-			throw new DataNotFoundException(
-					WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
-					WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
+			List<DaysOfWeek> globalDaysList = daysOfWeekRepo.findByAllGlobalWorkingTrue(langCode);
+			if (globalDaysList != null && !globalDaysList.isEmpty()) {
+				workingDayList = globalDaysList.stream().map(day -> {
+					WorkingDaysDto globalWorkingDay = new WorkingDaysDto();
+					globalWorkingDay.setDayCode(day.getCode());
+					globalWorkingDay.setGlobalWorking(day.isGlobalWorking());
+					globalWorkingDay.setLanguagecode(day.getLangCode());
+					globalWorkingDay.setName(day.getName());
+					return globalWorkingDay;
+				}).collect(Collectors.toList());
+
+				responseDto.setWorkingdays(workingDayList);
+			} else {
+				throw new DataNotFoundException(
+						WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorCode(),
+						WorkingNonWorkingDayErrorCode.WORKING_DAY_DATA_FOUND_EXCEPTION.getErrorMessage());
+			}
+
 		}
 		return responseDto;
 	}

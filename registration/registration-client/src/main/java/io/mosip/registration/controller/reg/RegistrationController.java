@@ -50,6 +50,7 @@ import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
+import io.mosip.registration.update.SoftwareUpdateHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -109,6 +110,9 @@ public class RegistrationController extends BaseController {
 	private AuthenticationController authenticationController;
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
+	
+	@Autowired
+	private SoftwareUpdateHandler softwareUpdateHandler;
 
 	/*
 	 * (non-Javadoc)
@@ -408,6 +412,9 @@ public class RegistrationController extends BaseController {
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
+		
+		// setting the reg client version
+		registrationMetaDataDTO.setRegClientVersionNumber(softwareUpdateHandler.getCurrentVersion());
 
 		RegistrationCenterDetailDTO registrationCenter = SessionContext.userContext().getRegistrationCenterDetailDTO();
 
