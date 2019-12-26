@@ -2300,5 +2300,26 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/holidays/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void filterLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("Region");
+		filterDto.setType("all");
+		filterDto.setText("");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(filterColumnValidator.validate(Mockito.eq(FilterDto.class), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList("true", "false"));
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 
 }

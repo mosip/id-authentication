@@ -132,22 +132,23 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	public DocumentTypePostResponseDto createDocumentType(DocumentTypeDto documentTypeDto) {
 	
 		
-		DocumentType documentType = null;
+		DocumentType documentType = new DocumentType();
+		DocumentTypePostResponseDto documentTypePostResponseDto = new DocumentTypePostResponseDto();
 		try {
 			documentTypeDto = masterdataCreationUtil.createMasterData(DocumentType.class, documentTypeDto);
 			DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
 			documentType = documentTypeRepository.create(entity);
+			MapperUtils.map(documentType, documentTypePostResponseDto);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
-			e1.printStackTrace();
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e1));
 		}
 
-		DocumentTypePostResponseDto documentTypePostResponseDto = new DocumentTypePostResponseDto();
-		MapperUtils.map(documentType, documentTypePostResponseDto);
 
 		return documentTypePostResponseDto;
 	}
