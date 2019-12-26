@@ -167,16 +167,16 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					documentTypeDto.getLangCode());
 			if (documentType != null) {
 
-				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
-					throw new RequestException(
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
-				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
-						&& (documentType.getIsActive() == Boolean.FALSE)) {
-					throw new RequestException(
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
-				}
+//				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
+//					throw new RequestException(
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
+//				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
+//						&& (documentType.getIsActive() == Boolean.FALSE)) {
+//					throw new RequestException(
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
+//				}
 				documentTypeDto = masterdataCreationUtil.updateMasterData(DocumentType.class, documentTypeDto);
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType,true);
 				documentTypeRepository.update(documentType);
