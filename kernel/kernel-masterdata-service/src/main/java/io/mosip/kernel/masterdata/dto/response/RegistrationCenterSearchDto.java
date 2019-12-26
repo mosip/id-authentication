@@ -1,12 +1,15 @@
 package io.mosip.kernel.masterdata.dto.response;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
+import io.mosip.kernel.masterdata.dto.WorkingNonWorkingDaysDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.validator.FilterType;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -71,7 +74,7 @@ public class RegistrationCenterSearchDto extends BaseDto {
 	@Size(min = 1, max = 32)
 	private String workingHours;
 
-	@ValidLangCode
+	@ValidLangCode(message = "Language Code is Invalid")
 	private String langCode;
 
 	private Short numberOfKiosks;
@@ -124,5 +127,9 @@ public class RegistrationCenterSearchDto extends BaseDto {
 	private String zoneCode;
 
 	private String zone;
+	
+	private WorkingNonWorkingDaysDto workingNonWorkingDays;
+	
+	private List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDto;
 
 }

@@ -54,6 +54,8 @@ import reactor.core.publisher.Mono;
 @NoArgsConstructor
 public class RestHelperImpl implements RestHelper {
 
+	private static final String KER_ATH_TOKEN_EXPIRY_ERROR_CODE = "KER-ATH-401";
+
 	private static final String GENERATE_AUTH_TOKEN = "generateAuthToken";
 
 	/** The mapper. */
@@ -268,11 +270,14 @@ public class RestHelperImpl implements RestHelper {
 				.syncBody(request).exchange().block();
 		if (response.statusCode() == HttpStatus.OK) {
 			ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-			if (responseBody != null && responseBody.get("response").get("status").asText().contentEquals("success")) {
+			if (responseBody != null && responseBody.get("response").get("status").asText().equalsIgnoreCase("success")) {
 				ResponseCookie responseCookie = response.cookies().get("Authorization").get(0);
 				authToken = responseCookie.getValue();
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
 						"Auth token generated successfully and set");
+			} else {
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
+						"Auth token generation failed: " + response);
 			}
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
@@ -285,9 +290,12 @@ public class RestHelperImpl implements RestHelper {
 		ClientResponse response = WebClient.create(env.getProperty("auth-token-validator.rest.uri")).post()
 				.cookie("Authorization", getAuthToken()).exchange().block();
 		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-		List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBody.toString());
+		String responseStr = responseBody.toString();
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
+				responseStr);
+		List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseStr);
 		if (Objects.nonNull(errorList) && !errorList.isEmpty()
-				&& errorList.get(0).getErrorCode().contentEquals("KER-ATH-402")) {
+				&& errorList.get(0).getErrorCode().contentEquals(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 			authToken = null;
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
 					"Auth token expired. setting authToken as null to regenerate.");
@@ -312,7 +320,7 @@ public class RestHelperImpl implements RestHelper {
 			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
 			if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
-					&& !errorList.get(0).getErrorCode().startsWith("KER-ATH-401")) {
+					&& !errorList.get(0).getErrorCode().startsWith(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR");
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
@@ -321,7 +329,7 @@ public class RestHelperImpl implements RestHelper {
 						mapper.readValue(responseBodyAsString.getBytes(), responseType));
 			} else if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
-					&& errorList.get(0).getErrorCode().contentEquals("KER-ATH-401")) {
+					&& errorList.get(0).getErrorCode().contentEquals(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 				retry++;
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						"errorCode -> KER-ATH-401" + " - retry++");

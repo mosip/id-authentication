@@ -19,12 +19,10 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.constants.ManualVerificationConstants;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.exception.handler.ManualVerificationExceptionHandler;
 import io.mosip.registration.processor.manual.verification.request.dto.ManualAppBiometricRequestDTO;
-import io.mosip.registration.processor.manual.verification.request.dto.ManualAppDemographicRequestDTO;
 import io.mosip.registration.processor.manual.verification.request.dto.ManualVerificationAssignmentRequestDTO;
 import io.mosip.registration.processor.manual.verification.request.dto.ManualVerificationDecisionRequestDTO;
 import io.mosip.registration.processor.manual.verification.response.builder.ManualVerificationResponseBuilder;
@@ -84,6 +82,10 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	@Value("${server.servlet.path}")
 	private String contextPath;
 
@@ -93,7 +95,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	 * Deploy stage.
 	 */
 	public void deployStage() {
-		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 	}
 
 	@Override
@@ -269,16 +271,17 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	public void processPacketInfo(RoutingContext ctx)
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"ManualVerificationStage::processPacketInfo::entry");
+				"ManualVerificationStage::processpacketInfo::entry");
 		JsonObject obj = ctx.getBodyAsJson();
-		ManualAppDemographicRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
-				ManualAppDemographicRequestDTO.class);
 		manualVerificationRequestValidator.validate(obj,
 				env.getProperty(ManualVerificationConstants.PACKETINFO_SERVICE_ID));
-		PacketMetaInfo packetInfo = manualAdjudicationService.getApplicantPacketInfo(pojo.getRequest().getRegId());
+		ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue(obj.getMap(), ManualAppBiometricRequestDTO.class);
+		byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),
+				PacketFiles.PACKET_META_INFO.name());
 		if (packetInfo != null) {
+			String byteAsString = new String(packetInfo);
 			BaseRestResponseDTO responseData = ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(
-					packetInfo, env.getProperty(ManualVerificationConstants.PACKETINFO_SERVICE_ID),
+					byteAsString, env.getProperty(ManualVerificationConstants.PACKETINFO_SERVICE_ID),
 					env.getProperty(ManualVerificationConstants.MVS_APPLICATION_VERSION),
 					env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);

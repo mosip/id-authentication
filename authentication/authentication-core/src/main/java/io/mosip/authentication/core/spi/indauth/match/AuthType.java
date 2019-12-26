@@ -121,6 +121,10 @@ public interface AuthType {
 	public default String getType() {
 		return getAuthTypeImpl().getType();
 	}
+	
+	public default String[] getTypes() {
+		return new String[] {getType()};
+	}
 
 	/**
 	 * Checks if is auth type info available.
@@ -150,5 +154,9 @@ public interface AuthType {
 	 */
 	public default Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
 		return getAuthTypeImpl().getAuthTypePredicate();
+	}
+
+	public default String getDisplayName(AuthRequestDTO authReq, IdInfoFetcher helper) {
+		return getDisplayName();
 	}
 }

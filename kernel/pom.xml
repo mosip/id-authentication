@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>1.0.3</version>
 	</parent>
 
 
@@ -39,7 +37,7 @@
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<swagger.core.version>2.0.7</swagger.core.version>
-		<swagger.annotations.version>1.5.20</swagger.annotations.version>
+		<swagger.annotations.version>1.5.21</swagger.annotations.version>
 		<springfox.version>2.9.2</springfox.version>
 
 		<vertx.version>3.6.2</vertx.version>
@@ -119,7 +117,7 @@
 
 
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**,**/*Utils.java,**/*Validator.java,**/*Helper.java,**/verticle/**,**/VidWriter.java/**,**/masterdata/utils/**,**/spi/**,**/core/http/**,"**/LocationServiceImpl.java","**/RegistrationCenterMachineServiceImpl.java","**/RegistrationCenterServiceImpl.java","**/pridgenerator/**","**/idgenerator/prid"</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
@@ -176,8 +174,11 @@
 		<module>kernel-signature-service</module>
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-keymanager-service</module>
-
-	</modules>
+                <module>kernel-vidgenerator-service</module>
+		<!--<module>kernel-salt-generator</module>-->
+    <!--<module>kernel-packetstatusupdater-api</module>-->
+                <module>kernel-pridgenerator-service</module>
+  </modules>
 
 	<dependencies>
 		<dependency>
@@ -200,6 +201,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
+					    <skipTests>false</skipTests>
 						<skip>false</skip>
 						<useFile>false</useFile>
 					</configuration>

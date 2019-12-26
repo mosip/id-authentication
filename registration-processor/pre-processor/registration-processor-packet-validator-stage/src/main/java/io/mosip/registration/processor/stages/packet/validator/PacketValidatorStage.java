@@ -36,6 +36,10 @@ public class PacketValidatorStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
@@ -47,7 +51,7 @@ public class PacketValidatorStage extends MosipVerticleAPIManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN,
 				MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
 	}

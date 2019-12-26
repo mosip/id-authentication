@@ -29,8 +29,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -55,11 +54,8 @@ public class ResponseSignatureAdviceTest {
 	@Mock
 	RestTemplate restTemplate;
 
-	@Mock
-	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
-
-	@Mock
-	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	@Mock       
+	private CryptoCoreSpec<byte[], byte[], SecretKey, PublicKey, PrivateKey, String> cryptoCore;
 
 	@Mock
 	KeyGenerator keyGenerator;
@@ -125,7 +121,7 @@ public class ResponseSignatureAdviceTest {
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
 		Mockito.when(signatureUtil.validateWithPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+		Mockito.when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("rqN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
 		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
@@ -170,7 +166,7 @@ public class ResponseSignatureAdviceTest {
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
 		Mockito.when(signatureUtil.validateWithPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(false);
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+		Mockito.when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("rqN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
 		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
@@ -214,7 +210,7 @@ public class ResponseSignatureAdviceTest {
 		Mockito.when(signatureUtil.validateWithPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+		Mockito.when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
 		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
@@ -256,7 +252,7 @@ public class ResponseSignatureAdviceTest {
 		Mockito.when(signatureUtil.validateWithPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+		Mockito.when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
 		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);
@@ -299,7 +295,7 @@ public class ResponseSignatureAdviceTest {
 		keys.setPublicKey(key);
 
 		Mockito.when(policySyncDAO.getPublicKey(Mockito.anyString())).thenReturn(keys);
-		Mockito.when(decryptor.asymmetricPublicDecrypt(Mockito.any(), Mockito.any()))
+		Mockito.when(cryptoCore.asymmetricDecrypt(Mockito.any(), Mockito.any()))
 				.thenReturn("qN-Es-XfO9Ksl7mBJ0jjlWzkhMV1BPk4ShfOOq7QDQ".getBytes());
 
 		responseSignatureAdvice.responseSignatureValidation(joinPointMock, linkedMap);

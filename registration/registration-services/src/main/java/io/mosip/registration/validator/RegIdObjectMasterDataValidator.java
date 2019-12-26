@@ -25,22 +25,20 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorDocumentMapping;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorLocationMapping;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.IdObjectReferenceValidatorDocumentMapping;
+import io.mosip.registration.constants.IdObjectReferenceValidatorLocationMapping;
+import io.mosip.registration.constants.IdObjectValidatorConstant;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.DocumentType;
@@ -344,7 +342,7 @@ public class RegIdObjectMasterDataValidator {
 				"Validating region has been started");
 
 		SetValuedMap<String, String> regionMap = new HashSetValuedHashMap<>();
-		Set<String> regionNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.REGION.getLevel());
+		Set<String> regionNameList = locationHierarchyDetails.get(IdObjectReferenceValidatorLocationMapping.REGION.getLevel());
 		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> regionMap.putAll(locationDetail)));
@@ -385,7 +383,7 @@ public class RegIdObjectMasterDataValidator {
 
 		SetValuedMap<String, String> provinceMap = new HashSetValuedHashMap<>();
 		Set<String> provinceNameList = locationHierarchyDetails
-				.get(IdObjectValidatorLocationMapping.PROVINCE.getLevel());
+				.get(IdObjectReferenceValidatorLocationMapping.PROVINCE.getLevel());
 		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> provinceMap.putAll(locationDetail)));
@@ -424,7 +422,7 @@ public class RegIdObjectMasterDataValidator {
 				"Validating city has been started");
 
 		SetValuedMap<String, String> cityMap = new HashSetValuedHashMap<>();
-		Set<String> cityNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.CITY.getLevel());
+		Set<String> cityNameList = locationHierarchyDetails.get(IdObjectReferenceValidatorLocationMapping.CITY.getLevel());
 		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> cityMap.putAll(locationDetail)));
@@ -464,7 +462,7 @@ public class RegIdObjectMasterDataValidator {
 
 		SetValuedMap<String, String> localAdministrativeAuthorityMap = new HashSetValuedHashMap<>();
 		Set<String> localAdminAuthNameList = locationHierarchyDetails
-				.get(IdObjectValidatorLocationMapping.ZONE.getLevel());
+				.get(IdObjectReferenceValidatorLocationMapping.ZONE.getLevel());
 		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> localAdministrativeAuthorityMap.putAll(locationDetail)));
@@ -505,7 +503,7 @@ public class RegIdObjectMasterDataValidator {
 	private void validatePostalCode(String identityString, List<ServiceError> errorList) {
 		SetValuedMap<String, String> postalCodeMap = new HashSetValuedHashMap<>();
 		Set<String> postalCodeNameList = locationHierarchyDetails
-				.get(IdObjectValidatorLocationMapping.POSTAL_CODE.getLevel());
+				.get(IdObjectReferenceValidatorLocationMapping.POSTAL_CODE.getLevel());
 		Optional.ofNullable(postalCodeNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(postalCodeMap::putAll));
@@ -530,7 +528,7 @@ public class RegIdObjectMasterDataValidator {
 		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Validating documents has been started");
 
-		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().stream()
+		IdObjectReferenceValidatorDocumentMapping.getAllMapping().entrySet().stream()
 				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
 					JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() + ".type");
 					Object value = jsonPath.read(identityString, READ_OPTIONS);

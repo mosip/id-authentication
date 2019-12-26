@@ -49,8 +49,8 @@
       				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" onAction="#validateCredentials" promptText="%withpword" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
       				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
 <!--                   <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="%resetPassword" /> -->
-                  <Hyperlink layoutX="270.0" layoutY="222.0" mnemonicParsing="false" styleClass="hyperLinkStyle" text="%resetPassword" onAction="#resetPwd" fx:id="resetPword"/>
-                  <Hyperlink layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="hyperLinkStyle" text="%forgotUsername" onAction="#forgotUsrname" fx:id="forgotUsrnme"/>
+                  <Hyperlink fx:id="resetPword" layoutX="270.0" layoutY="222.0" mnemonicParsing="false" onAction="#resetPwd" styleClass="hyperLinkStyle" text="%resetPassword" />
+                  <Hyperlink fx:id="forgotUsrnme" layoutX="52.0" layoutY="222.0" mnemonicParsing="false" onAction="#forgotUsrname" styleClass="hyperLinkStyle" text="%forgotUsername" />
                   <ProgressIndicator fx:id="passwordProgressIndicator" layoutX="130.0" layoutY="50.0" progress="0.0" visible="false" />
               
                </children>
@@ -89,12 +89,13 @@
       				</ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="facePane" layoutX="55.0" layoutY="232.0" styleClass="loginAnchorPaneStyle" visible="false"> 
+            <AnchorPane fx:id="facePane" layoutX="10.0" layoutY="38.0" prefHeight="510.0" prefWidth="458.0" styleClass="loginAnchorPaneStyle" visible="false"> 
                <children>
-               <Label layoutX="57.0" layoutY="31.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="31.0" />
-                  <Label layoutX="57.0" layoutY="75.0" text="%withface" />
-                  <Button layoutX="57.0" layoutY="174.0" mnemonicParsing="false" onAction="#captureFace" styleClass="loginSubmitStyle" text="%submit" />
-                  <ImageView fitHeight="59.0" fitWidth="53.0" layoutX="180.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
+               <Label layoutX="35.0" layoutY="14.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="14.0" />
+                  <Label layoutX="35.0" layoutY="71.0" text="%withface" />
+                  <Button layoutX="134.0" layoutY="474.0" mnemonicParsing="false" onAction="#captureFace" styleClass="loginSubmitStyle1" text="%submit" />
+                  <Button layoutX="217.0" layoutY="474.0" mnemonicParsing="false" onAction="#streamFace" styleClass="loginSubmitStyle1" text="Stream" />
+                  <ImageView fx:id="faceImage" fitHeight="353.0" fitWidth="378.0" layoutX="38.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
       					<image>
       						<Image url="@../images/FaceScan.png" />
       					</image>

@@ -1,8 +1,7 @@
 package io.mosip.registration.processor.core.packet.dto.demographicinfo;
 	
-import java.util.Arrays;
+import java.util.List;
 
-import io.mosip.registration.processor.core.packet.dto.abis.Analytics;
 import lombok.Data;
 
 /**
@@ -10,34 +9,13 @@ import lombok.Data;
  */
 @Data
 public class IndividualDemographicDedupe {
-	
 	/** The name. */
-	private JsonValue[] name;
-	public JsonValue[] getName() {
-		return name != null ? name.clone() : null;
-	}
-
-	public void setName(JsonValue[] name) {
-		this.name = name!=null?name:null;
-	}
-
+	private List<JsonValue[]> name;
 	/** The date of birth. */
 	private String dateOfBirth;
-
 	/** The gender. */
 	private JsonValue[] gender;
-	public JsonValue[] getGender() {
-		return gender != null ? gender.clone() : null;
-	}
-
-	public void setGender(JsonValue[] gender) {
-		this.gender = gender!=null?gender:null;
-	}
-	
 	/** The pheonitic name. */
 	private String pheoniticName;
-
-
-
 
 }

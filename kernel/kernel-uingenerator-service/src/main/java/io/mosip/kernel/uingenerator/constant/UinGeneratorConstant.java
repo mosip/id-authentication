@@ -181,4 +181,6 @@ public final class UinGeneratorConstant {
 	 * The enable signing property key
 	 */
 	public static final String SIGNING_ENABLE = "mosip.kernel.uin.response-signing-enable";
+	
+	public static final String GET_EXECUTOR_POOL_ENABLE ="mosip.kernel.uin.get_executor_pool";
 }

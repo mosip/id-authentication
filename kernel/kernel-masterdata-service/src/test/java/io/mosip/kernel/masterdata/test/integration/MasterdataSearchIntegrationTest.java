@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -161,7 +162,6 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private DeviceUtils deviceUtil;
-	
 
 	private List<Zone> zones;
 	private ZoneUser zoneUser;
@@ -216,6 +216,9 @@ public class MasterdataSearchIntegrationTest {
 	private List<Device> devices;
 	private RegistrationCenterType registrationCenterType;
 	private List<RegistrationCenterType> registrationCenterTypes;
+
+	@Value("${mosip.primary-language}")
+	private String primaryLangCode;
 
 	@Before
 	public void setup() throws JsonProcessingException {
@@ -467,7 +470,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithNameSuccess() throws Exception {
 		searchDto.setFilters(Arrays.asList(filter1));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -477,7 +480,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithCenterTypeNameSuccess() throws Exception {
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -487,7 +490,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithCityNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
@@ -501,7 +504,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithPostalCodeNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
@@ -515,7 +518,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithRegionNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
@@ -529,7 +532,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithLAANameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
@@ -543,7 +546,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegCenterWithProvinceNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
@@ -557,7 +560,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchInvalidCenterFilterTypeSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
@@ -583,11 +586,11 @@ public class MasterdataSearchIntegrationTest {
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
 				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchInvalidCenterName() throws Exception {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenterType.class), Mockito.any(),
 				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
@@ -685,7 +688,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineTest() throws Exception {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		Machine machine = new Machine();
@@ -699,7 +702,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineByMappedStatusFieldTest() throws Exception {
 		machineSearchFilter.setColumnName("mapStatus");
 		machineSearchFilter.setValue("assigned");
@@ -721,7 +724,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineByMappedStatusFieldNotFoundExceptionTest() throws Exception {
 		machineSearchFilter.setColumnName("mapStatus");
 		machineSearchFilter.setValue("assigned");
@@ -741,7 +744,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineByNotMappedStatusFieldTest() throws Exception {
 		machineSearchFilter.setColumnName("mapStatus");
 		machineSearchFilter.setValue("unassigned");
@@ -762,7 +765,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineByNotMappedStatusFieldNotFoundExceptionTest() throws Exception {
 		machineSearchFilter.setColumnName("mapStatus");
 		machineSearchFilter.setValue("unassigned");
@@ -782,7 +785,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineRequestExceptionTest() throws Exception {
 		machineSearchFilter.setColumnName("mapStatus");
 		machineSearchFilter.setValue("invalidValue");
@@ -793,26 +796,26 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchMachineByMachineTypeNameTest() throws Exception {
 		machineSearchFilter.setColumnName("machineTypeName");
 		machineSearchFilter.setValue("Desktop");
 		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineSearchDto.setLanguageCode("all");
 		machineRequestDto.setRequest(machineSearchDto);
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
 		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
-		MachineSpecification specification = new MachineSpecification();
-		specification.setId("1001");
+		Machine machine = new Machine();
+		machine.setId("1001");
 		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
-		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
+		Page<Machine> pageContentSpecificationData = new PageImpl<>(Arrays.asList(machine));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
-				Mockito.any())).thenReturn(pageContentSpecificationData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
@@ -841,7 +844,7 @@ public class MasterdataSearchIntegrationTest {
 
 	
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineByMachineTypeNameWithCorrespondingSpecificationIdNotFoundExceptionTest() throws Exception {
 		machineSearchFilter.setColumnName("machineTypeName");
 		machineSearchFilter.setValue("Desktop");
@@ -850,114 +853,115 @@ public class MasterdataSearchIntegrationTest {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
-		Object[] object= {"1001"};
-		List<Object[]> machineSpec= new ArrayList<>();
+		Object[] object = { "1001" };
+		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(machineSpec);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(machineSpec);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
-		.thenReturn(new PageImpl<>(machines,  PageRequest.of(0, 10), 1));
+				.thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMapStatusAndDeviceTypeName() throws Exception {
 		machineSearchFilter.setColumnName("machineTypeName");
 		machineSearchFilter.setValue("Desktop");
-		SearchFilter searchFilter= new SearchFilter();
+		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("mapStatus");
 		searchFilter.setValue("unAssigned");
-		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter,searchFilter));
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter, searchFilter));
 		machineRequestDto.setRequest(machineSearchDto);
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
-		Object[] object= {"1001"};
-		List<Object[]> machineSpec= new ArrayList<>();
+		Object[] object = { "1001" };
+		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
-		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001","10002"));
+		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001", "10002"));
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(machineSpec);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(machineSpec);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
-		.thenReturn(new PageImpl<>(machines,  PageRequest.of(0, 10), 1));
-		when(masterdataSearchHelper.nativeMachineQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.anyBoolean())).thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
+				.thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.nativeMachineQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean())).thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void zoneNullTest() throws Exception {
 		machineSearchFilter.setColumnName("machineTypeName");
 		machineSearchFilter.setValue("Desktop");
-		SearchFilter searchFilter= new SearchFilter();
+		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("mapStatus");
 		searchFilter.setValue("unAssigned");
-		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter,searchFilter));
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter, searchFilter));
 		machineRequestDto.setRequest(machineSearchDto);
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
-		Object[] object= {"1001"};
-		List<Object[]> machineSpec= new ArrayList<>();
+		Object[] object = { "1001" };
+		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
-		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001","10002"));
+		when(machineRepository.findNotMappedMachineId(Mockito.anyString())).thenReturn(Arrays.asList("1001", "10002"));
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(machineSpec);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(machineSpec);
 		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
 		doReturn(null).when(zoneRepository).findAllNonDeleted();
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void MachineSpecExceptionTest() throws Exception {
 		machineSearchFilter.setColumnName("machineTypeName");
 		machineSearchFilter.setValue("Desktop");
-		SearchFilter searchFilter= new SearchFilter();
+		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("mapStatus");
 		searchFilter.setValue("unAssigne");
-		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter,searchFilter));
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter, searchFilter));
 		machineRequestDto.setRequest(machineSearchDto);
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
-		Object[] object= {"1001"};
-		List<Object[]> machineSpec= new ArrayList<>();
+		Object[] object = { "1001" };
+		List<Object[]> machineSpec = new ArrayList<>();
 		machineSpec.add(object);
 		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
-		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(),
-				Mockito.anyString())).thenReturn(machineSpec);
+		when(machineRepository.findMachineSpecByMachineTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(machineSpec);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
-	@WithUserDetails("zonal-admin")
-	public void searchByZone() throws Exception{
+	@WithUserDetails("global-admin")
+	public void searchByZone() throws Exception {
 		machineSearchFilter.setColumnName("zone");
 		machineSearchFilter.setValue("CST");
 		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
 		machineRequestDto.setRequest(machineSearchDto);
 		String json = objectMapper.writeValueAsString(machineRequestDto);
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Zone.class),
-				Mockito.any(), Mockito.any())).thenReturn(new PageImpl<>(zones, PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Zone.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(zones, PageRequest.of(0, 10), 1));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
-		.thenReturn(new PageImpl<>(machines,  PageRequest.of(0, 10), 1));
+				.thenReturn(new PageImpl<>(machines, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
-		.andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 	
 	
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceTest() throws Exception {
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
 		Device device = new Device();
@@ -968,11 +972,11 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceTestMapStatusException() throws Exception {
-		SearchFilter search=new SearchFilter();
+		SearchFilter search = new SearchFilter();
 		search.setColumnName("mapStatus");
 		search.setValue("unAssi");
 		search.setType("equals");
@@ -986,11 +990,11 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void ZoneDeviceNullTest() throws Exception {
-		
+
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
 		Device device = new Device();
 		device.setId("1001");
@@ -1002,20 +1006,20 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void UnAssignedAndDeviceTypeNameCheck() throws Exception {
-		
-		SearchFilter deviceSearchFilter= new SearchFilter();
+
+		SearchFilter deviceSearchFilter = new SearchFilter();
 		deviceSearchFilter.setColumnName("deviceTypeName");
 		deviceSearchFilter.setValue("Printer");
 		deviceSearchFilter.setType("equals");
-		SearchFilter deviceSearchFilter2= new SearchFilter();
+		SearchFilter deviceSearchFilter2 = new SearchFilter();
 		deviceSearchFilter2.setColumnName("mapStatus");
 		deviceSearchFilter2.setValue("UnAssigned");
 		deviceSearchFilter2.setType("equals");
-		deviceRequestDto.getRequest().setFilters(Arrays.asList(deviceSearchFilter,deviceSearchFilter2));
+		deviceRequestDto.getRequest().setFilters(Arrays.asList(deviceSearchFilter, deviceSearchFilter2));
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
 		Device device = new Device();
 		device.setId("1001");
@@ -1023,23 +1027,24 @@ public class MasterdataSearchIntegrationTest {
 		device.setMacAddress("12:r1:6t:as:7u");
 		device.setLangCode("eng");
 		device.setSerialNum("sdsddsfsf");
-		Object[] object= {"10002"};
-		List<Object[]> devspecs=new ArrayList<>();
+		Object[] object = { "10002" };
+		List<Object[]> devspecs = new ArrayList<>();
 		devspecs.add(object);
-		List<Device> devices= Arrays.asList(device);
+		List<Device> devices = Arrays.asList(device);
 		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		when(deviceRepository.findNotMappedDeviceId(Mockito.anyString())).thenReturn(Arrays.asList("1001"));
-		when(deviceRepository
-							.findDeviceSpecByDeviceTypeNameAndLangCode(Mockito.anyString(),Mockito.anyString())).thenReturn(devspecs);
-		when(masterdataSearchHelper.nativeDeviceQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.anyBoolean())).thenReturn(new PageImpl<>(devices, PageRequest.of(0, 10), 1));
+		when(deviceRepository.findDeviceSpecByDeviceTypeNameAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(devspecs);
+		when(masterdataSearchHelper.nativeDeviceQuerySearch(Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean())).thenReturn(new PageImpl<>(devices, PageRequest.of(0, 10), 1));
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceByMappedStatusFieldTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
 		deviceSearchFilter.setValue("assigned");
@@ -1060,7 +1065,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceByMappedStatusFieldNotFoundExceptionTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
 		deviceSearchFilter.setValue("assigned");
@@ -1079,7 +1084,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceByNotMappedStatusFieldTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
 		deviceSearchFilter.setValue("unassigned");
@@ -1100,7 +1105,7 @@ public class MasterdataSearchIntegrationTest {
 	
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceByNotMappedStatusFieldNotFoundExceptionTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
 		deviceSearchFilter.setValue("unassigned");
@@ -1118,13 +1123,16 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void searchDeviceRequestExceptionTest() throws Exception {
+	public void searchDeviceAllLangTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
 		deviceSearchFilter.setValue("unassigned");
-		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		SearchFilter searchFilter = new SearchFilter();
+		searchFilter.setColumnName("deviceTypeName");
+		searchFilter.setValue("Printer");
+		deviceSearchDto.setLanguageCode("all");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter, searchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
 		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -1205,7 +1213,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchBlackListedWordsTest() throws Exception {
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("word");
@@ -1231,7 +1239,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterMachineTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1253,7 +1261,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterBlackListedWordsTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("word");
@@ -1274,7 +1282,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterBlackListedWordsTestForArabicLanguage() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("ÙƒÙ„Ù…Ø© ÙÙŠ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø³ÙˆØ¯Ø§Ø¡");
@@ -1312,7 +1320,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterDeviceTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1333,7 +1341,62 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
+	@WithUserDetails("global-admin")
+	public void filterDeviceZoneEmptyTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setType("all");
+		filterDto.setText("rd");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+
+		mockMvc.perform(post("/devices/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
 	@WithUserDetails("zonal-admin")
+	public void filterMachineZoneEmptyTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setType("all");
+		filterDto.setText("rd");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void filterRegCenterZoneEmptyTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setType("all");
+		filterDto.setText("rd");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+		mockMvc.perform(post("/registrationcenters/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("global-admin")
 	public void filterDocumentTypeTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1354,7 +1417,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDocumentTypeTest() throws Exception {
 		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();
 		SearchDto searchDto = new SearchDto();
@@ -1392,7 +1455,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDocumentTypeFailureTest() throws Exception {
 		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();
 		SearchDto searchDto = new SearchDto();
@@ -1436,7 +1499,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineTypesTest() throws Exception {
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("name");
@@ -1463,7 +1526,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceTypeTest() throws Exception {
 		String json = objectMapper.writeValueAsString(deviceTypeRequestDto);
 		DeviceType deviceType = new DeviceType();
@@ -1476,7 +1539,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterDeviceTypeTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1496,7 +1559,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchtemplate() throws Exception {
 
 		String validRequest = objectMapper.writeValueAsString(templateRequestDto);
@@ -1505,7 +1568,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchTitles() throws Exception {
 		String validRequest = objectMapper.writeValueAsString(titleRequestDto);
 		mockMvc.perform(post("/title/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
@@ -1513,7 +1576,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterTemplate() throws Exception {
 		RequestWrapper<FilterValueDto> request = new RequestWrapper<>();
 		FilterValueDto filterValueDto = new FilterValueDto();
@@ -1536,7 +1599,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterTitle() throws Exception {
 		RequestWrapper<FilterValueDto> request = new RequestWrapper<>();
 		FilterValueDto filterValueDto = new FilterValueDto();
@@ -1561,7 +1624,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterMachineTypeTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1582,7 +1645,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDevicespecTest() throws Exception {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		DeviceSpecification spec = new DeviceSpecification();
@@ -1597,7 +1660,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchDeviceSpecByDeviceTypeNameTest() throws Exception {
 		machineSearchFilter.setColumnName("deviceTypeName");
 		machineSearchFilter.setValue("Desktop");
@@ -1620,7 +1683,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void deadads() throws Exception {
 		machineSearchFilter.setColumnName("deviceTypeName");
 		machineSearchFilter.setValue("Camera");
@@ -1641,7 +1704,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void deviceSpecFilterTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1684,7 +1747,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterGenderTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("genderName");
@@ -1706,7 +1769,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterGenderTestForArabicLanguage() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("genderName");
@@ -1744,7 +1807,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchGenderTest() throws Exception {
 		SearchDto searchDto = new SearchDto();
 		searchDto.setFilters(Arrays.asList());
@@ -1821,7 +1884,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterCenterById() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("id");
@@ -1842,7 +1905,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterCenterByName() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1861,7 +1924,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegistrationCenterTypeTest() throws Exception {
 		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();
 		SearchDto searchDto = new SearchDto();
@@ -1900,7 +1963,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchRegistrationCenterTypeFailureTest() throws Exception {
 		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();
 		SearchDto searchDto = new SearchDto();
@@ -1945,7 +2008,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void registrationCenterTypeFilterTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -1967,7 +2030,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchIndividualTypeTest() throws Exception {
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setColumnName("code");
@@ -1995,7 +2058,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterIndividualTypeTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("code");
@@ -2035,7 +2098,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineSpecificationTest() throws Exception {
 		String json = objectMapper.writeValueAsString(machineSpecificationRequestDto);
 		MachineSpecification machineSpecification = new MachineSpecification();
@@ -2048,7 +2111,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineSpecificationByMachineTypeNameTest() throws Exception {
 		machineSpecificationSearchFilter.setColumnName("machineTypeName");
 		machineSpecificationSearchFilter.setValue("Vostro");
@@ -2070,7 +2133,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchMachineSpecificationByMachineTypeNameNotFoundExceptionTest() throws Exception {
 		machineSpecificationSearchFilter.setColumnName("machineTypeName");
 		machineSpecificationSearchFilter.setValue("Vostro");
@@ -2085,7 +2148,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterMachineSpecificationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("name");
@@ -2106,7 +2169,7 @@ public class MasterdataSearchIntegrationTest {
 	// TODO:
 	/* holiday search test case */
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchHolidayTest() throws Exception {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		List<Holiday> holidays = new ArrayList<Holiday>();
@@ -2146,7 +2209,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchHolidayByLocationNotFoundTest() throws Exception {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		List<Holiday> holidays = new ArrayList<Holiday>();
@@ -2218,7 +2281,7 @@ public class MasterdataSearchIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterHolidayTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("isActive");

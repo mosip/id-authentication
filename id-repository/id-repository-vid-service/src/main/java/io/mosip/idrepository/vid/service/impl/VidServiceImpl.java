@@ -48,15 +48,13 @@ import io.mosip.idrepository.vid.repository.VidRepo;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
-import io.mosip.kernel.idgenerator.vid.exception.VidException;
 
 /**
- * The Class VidServiceImpl - service implementation for VID service.
+ * The Class VidServiceImpl - service implementation for {@code VidService}.
  *
  * @author Manoj SP
  * @author Prem Kumar
@@ -64,6 +62,9 @@ import io.mosip.kernel.idgenerator.vid.exception.VidException;
 @Component
 @Transactional
 public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper<VidResponseDTO>> {
+
+	/** The Constant VID. */
+	private static final String VID = "vid";
 
 	/** The Constant REACTIVATE. */
 	private static final String REACTIVATE = "reactivate";
@@ -99,10 +100,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/** The vid repo. */
 	@Autowired
 	private VidRepo vidRepo;
-
-	/** The vid generator. */
-	@Autowired
-	private VidGenerator<String> vidGenerator;
 
 	/** The rest builder. */
 	@Autowired
@@ -153,9 +150,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 					securityManager.hash(uin.getBytes()), IdType.VID,
 					"Create VID requested for " + vidRequest.getVidType());
 			return buildResponse(responseDTO, id.get("create"));
-		} catch (VidException e) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED, e);
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID,
 					"\n" + ExceptionUtils.getStackTrace(e));
@@ -194,7 +188,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID,
 					uin + IdRepoConstants.SPLITTER.getValue() + DateUtils.getUTCCurrentDateTime()).toString();
 			return vidRepo
-					.save(new Vid(vidRefId, vidGenerator.generateId(), uinHash, uinToEncrypt, vidType, currentTime,
+					.save(new Vid(vidRefId, generateVid(), uinHash, uinToEncrypt, vidType, currentTime,
 							Objects.nonNull(policy.getValidForInMinutes())
 									? DateUtils.getUTCCurrentDateTime().plusMinutes(policy.getValidForInMinutes())
 									: LocalDateTime.MAX.withYear(9999),
@@ -208,13 +202,33 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	}
 
 	/**
+	 * Generate vid.
+	 *
+	 * @return the vid
+	 * @throws IdRepoAppException the id repo app exception
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private String generateVid() throws IdRepoAppException {
+		try {
+			ResponseWrapper response = restHelper.requestSync(
+					restBuilder.buildRequest(RestServicesConstants.VID_GENERATOR_SERVICE, null, ResponseWrapper.class));
+			return ((Map<String, String>) response.getResponse()).get(VID);
+		} catch (IdRepoDataValidationException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, "generateVID",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorText());
+		} catch (RestServiceException e) {
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
+			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED);
+		}
+	}
+
+	/**
 	 * Fetch details of the provided uin from Id Repository identity service and
 	 * check if the uin is active or not. If not, Exception will be thrown.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uin the uin
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkUinStatus(String uin) throws IdRepoAppException {
 		try {
@@ -486,9 +500,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This Method will accepts vid as parameter and will return Vid Object from DB.
 	 *
-	 * @param vid
-	 *            the vid
-	 * @return The Vid Object
+	 * @param vid the vid
+	 * @return the vid
 	 */
 	private Vid retrieveVidEntity(String vid) {
 		return vidRepo.findByVid(vid);
@@ -498,10 +511,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * This method will check expiry date of the vid, if vid is expired then it will
 	 * throw IdRepoAppException.
 	 *
-	 * @param expiryDTimes
-	 *            the expiry D times
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param expiryDTimes the expiry D times
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
 		if (!DateUtils.after(expiryDTimes, DateUtils.getUTCCurrentDateTime())) {
@@ -515,10 +526,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This method will check Status of the vid.
 	 *
-	 * @param statusCode
-	 *            the status code
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param statusCode the status code
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkStatus(String statusCode) throws IdRepoAppException {
 		if (!statusCode.equalsIgnoreCase(env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()))) {
@@ -535,7 +544,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @param uin the uin
 	 * @param uinHash the uin hash
 	 * @return the string
-	 * @throws IdRepoAppException             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private String decryptUin(String uin, String uinHash) throws IdRepoAppException {
 		List<String> uinDetails = Arrays.stream(uin.split(IdRepoConstants.SPLITTER.getValue()))
@@ -557,11 +566,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	/**
 	 * This Method will build the Vid Response.
 	 *
-	 * @param response
-	 *            the response
-	 * @param id
-	 *            the id
-	 * @return The Vid Response
+	 * @param response the response
+	 * @param id the id
+	 * @return the response wrapper
 	 */
 	private ResponseWrapper<VidResponseDTO> buildResponse(VidResponseDTO response, String id) {
 		ResponseWrapper<VidResponseDTO> responseDto = new ResponseWrapper<>();

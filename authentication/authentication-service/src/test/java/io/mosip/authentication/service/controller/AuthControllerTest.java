@@ -83,7 +83,7 @@ public class AuthControllerTest {
 	@Mock
 	WebDataBinder binder;
 
-	@InjectMocks
+	@Mock
 	private AuthRequestValidator authRequestValidator;
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");

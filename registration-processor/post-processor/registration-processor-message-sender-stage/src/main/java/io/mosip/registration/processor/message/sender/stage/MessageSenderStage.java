@@ -32,6 +32,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.IdType;
@@ -40,6 +41,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -56,6 +58,7 @@ import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.constants.MessageSenderConstant;
+import io.mosip.registration.processor.message.sender.constants.NotificationTypeEnum;
 import io.mosip.registration.processor.message.sender.dto.MessageSenderDto;
 import io.mosip.registration.processor.message.sender.exception.ConfigurationNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
@@ -78,7 +81,7 @@ import io.mosip.registration.processor.status.service.TransactionService;
 
 /**
  * The Class MessageSenderStage.
- * 
+ *
  * @author M1048358 Alok
  * @since 1.0.0
  */
@@ -144,12 +147,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Autowired
 	private TransactionService<TransactionDto> transactionStatusService;
 
-	/** The Constant SMS_TYPE. */
-	private static final String SMS_TYPE = "SMS";
-
-	/** The Constant EMAIL_TYPE. */
-	private static final String EMAIL_TYPE = "EMAIL";
-
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
@@ -158,11 +155,15 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** worker pool size. */
+	@Value("${worker.pool.size}")
+	private Integer workerPoolSize;
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
 	}
 
@@ -179,7 +180,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)
@@ -233,9 +234,10 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				isTransactionSuccessful = false;
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-				description.setMessage(StatusUtil.NOTIFICATION_FAILED_FOR_LOST.getMessage());
+				description.setStatusComment(StatusUtil.NOTIFICATION_FAILED_FOR_LOST.getMessage());
 				description.setSubStatusCode(StatusUtil.NOTIFICATION_FAILED_FOR_LOST.getCode());
-
+				description.setMessage(PlatformErrorMessages.RPR_NOTIFICATION_FAILED_FOR_LOST.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_NOTIFICATION_FAILED_FOR_LOST.getCode());
 			} else {
 				if (type != null) {
 					setTemplateAndSubject(type, regType, messageSenderDto);
@@ -245,8 +247,10 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				String[] ccEMailList = null;
 
 				if (isNotificationTypesEmpty()) {
-					description.setMessage(StatusUtil.TEMPLATE_CONFIGURATION_NOT_FOUND.getMessage());
+					description.setStatusComment(StatusUtil.TEMPLATE_CONFIGURATION_NOT_FOUND.getMessage());
 					description.setSubStatusCode(StatusUtil.TEMPLATE_CONFIGURATION_NOT_FOUND.getCode());
+					description.setMessage(PlatformErrorMessages.RPR_TEMPLATE_CONFIGURATION_NOT_FOUND.getMessage());
+					description.setCode(PlatformErrorMessages.RPR_TEMPLATE_CONFIGURATION_NOT_FOUND.getCode());
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), object.getRid(),
 							PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getMessage());
@@ -272,7 +276,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				}
 			}
-			object.setIsValid(Boolean.TRUE);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, "MessageSenderStage::success");
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException |
@@ -281,18 +284,22 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, e.getMessage() + ExceptionUtils.getStackTrace(e));
-			description.setMessage(trimExceptionMessage.trimExceptionMessage(
+			description.setStatusComment(trimExceptionMessage.trimExceptionMessage(
 					StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + e.getMessage()));
 			description.setSubStatusCode(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getCode());
+			description.setMessage(PlatformErrorMessages.RPR_EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} catch (TemplateNotFoundException tnf) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-			description.setMessage(trimExceptionMessage.trimExceptionMessage(
+			description.setStatusComment(trimExceptionMessage.trimExceptionMessage(
 					StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage() + tnf.getMessage()));
 			description.setSubStatusCode(StatusUtil.EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getCode());
+			description.setMessage(PlatformErrorMessages.RPR_EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} catch (FSAdapterException e) {
@@ -300,21 +307,27 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
-			description.setMessage(trimExceptionMessage
+			description.setStatusComment(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 			description.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
+			description.setMessage(PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
 		} catch (Exception ex) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			description.setMessage(trimExceptionMessage
+			description.setStatusComment(trimExceptionMessage
 					.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 			description.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
+			description.setMessage(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+
 		} finally {
-			registrationStatusDto.setStatusComment(description.getMessage());
+			object.setIsValid(isTransactionSuccessful);
+			registrationStatusDto.setStatusComment(description.getStatusComment());
 			registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -331,9 +344,13 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-
+			/** Module-Id can be Both Success/Error code */
+			String moduleId = isTransactionSuccessful
+					? PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode()
+					: description.getCode();
+			String moduleName = ModuleName.MESSAGE_SENDER.toString();
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					id, ApiName.AUDIT);
+					moduleId, moduleName, id);
 		}
 
 		return object;
@@ -368,21 +385,56 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			String[] allNotificationTypes, String regType, MessageSenderDto messageSenderDto,
 			LogDescription description) throws Exception {
 		boolean isNotificationSuccess = false;
-		boolean isSMSSuccess = true, isEmailSuccess = true;
-		for (String notificationType : allNotificationTypes) {
-			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(messageSenderDto)) {
-				isSMSSuccess = SendSms(id, attributes, regType, messageSenderDto, description);
-			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(messageSenderDto)) {
-				isEmailSuccess = sendEmail(id, attributes, ccEMailList, regType, messageSenderDto, description);
-			} else {
-				throw new TemplateNotFoundException(MessageSenderStatusMessage.TEMPLATE_NOT_FOUND);
+		boolean isSMSSuccess = false, isEmailSuccess = false;
+		// if notification is set as none then dont send notification
+		if (allNotificationTypes != null && allNotificationTypes.length == 1
+				&& allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.NONE.name())) {
+			isNotificationSuccess = true;
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOT_CONFIGURED.getCode());
+			return isNotificationSuccess;
+		}
+		if (allNotificationTypes != null) {
+			for (String notificationType : allNotificationTypes) {
+				if (notificationType.equalsIgnoreCase(NotificationTypeEnum.SMS.name())
+						&& isTemplateAvailable(messageSenderDto)) {
+					isSMSSuccess = SendSms(id, attributes, regType, messageSenderDto, description);
+				} else if (notificationType.equalsIgnoreCase(NotificationTypeEnum.EMAIL.name())
+						&& isTemplateAvailable(messageSenderDto)) {
+					isEmailSuccess = sendEmail(id, attributes, ccEMailList, regType, messageSenderDto, description);
+				} else {
+					throw new TemplateNotFoundException(MessageSenderStatusMessage.TEMPLATE_NOT_FOUND);
+				}
 			}
 		}
 
 		if (isEmailSuccess && isSMSSuccess) {
 			isNotificationSuccess = true;
-			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage() + id);
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage());
+			description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIF_SUCC.getCode());
+		} else if (!isEmailSuccess && !isSMSSuccess) {
+			description.setMessage(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getCode());
+		} else if (allNotificationTypes.length == 1
+				&& ((allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.SMS.name()) && isSMSSuccess)
+						|| (allNotificationTypes[0].equalsIgnoreCase(NotificationTypeEnum.EMAIL.name())
+								&& isEmailSuccess))) {
+			// if only one notification type is set and that is successful
+			isNotificationSuccess = true;
+		} else if (!isEmailSuccess || !isSMSSuccess) {
+			isNotificationSuccess = false;
+			String failedMessage = "Failed to send Notification for type : "
+					+ (isEmailSuccess ? NotificationTypeEnum.SMS.name() : NotificationTypeEnum.EMAIL.name());
+			description.setMessage(failedMessage);
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_STAGE_FAILED.getCode());
+			description.setStatusComment(failedMessage);
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_NOTIFICATION_FAILED.getCode());
 		}
 
 		return isNotificationSuccess;
@@ -397,15 +449,28 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					regType);
 			if (emailResponse.getStatus().equals("success")) {
 				isEmailSuccess = true;
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage());
+				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getCode());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_SUCCESS.getMessage());
+				description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
 			} else {
-				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage() + id);
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
 				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getCode());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
-		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
-			description.setMessage(e.getMessage());
+		} catch (EmailIdNotFoundException e) {
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
+			description.setMessage(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getCode());
+		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
+			description.setStatusComment(e.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_EMAIL_FAILED.getCode());
+			description.setMessage(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_EMAIL_FAILED.getCode());
 		}
 		return isEmailSuccess;
 	}
@@ -420,15 +485,28 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					messageSenderDto.getIdType(), attributes, regType);
 			if (smsResponse.getStatus().equals("success")) {
 				isSmsSuccess = true;
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_SUCCESS.getMessage());
+				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_SUCCESS.getCode());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_SUCCESS.getMessage());
+				description.setCode(PlatformSuccessMessages.RPR_MESSAGE_SENDER_STAGE_SUCCESS.getCode());
 			} else {
-				description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage() + id);
+				description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
 				description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
+				description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
+				description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getCode());
 			}
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
-		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
-			description.setMessage(e.getMessage());
+		} catch (PhoneNumberNotFoundException e) {
+			description.setStatusComment(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
 			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
+			description.setMessage(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getCode());
+		} catch (TemplateGenerationFailedException | ApisResourceAccessException e) {
+			description.setStatusComment(e.getMessage());
+			description.setSubStatusCode(StatusUtil.MESSAGE_SENDER_SMS_FAILED.getCode());
+			description.setMessage(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_MESSAGE_SENDER_SMS_FAILED.getCode());
 		}
 		return isSmsSuccess;
 	}

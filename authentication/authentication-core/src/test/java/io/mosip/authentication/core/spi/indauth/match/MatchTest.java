@@ -245,6 +245,19 @@ public class MatchTest {
 			public Set<IdMapping> getSubIdMappings() {
 				return Collections.emptySet();
 			}
+
+			@Override
+			public String getType() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String getSubType() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
 		};
 		String name = "name";
 		IdMapping[] authTypes = new IdMapping[] { idMapping };

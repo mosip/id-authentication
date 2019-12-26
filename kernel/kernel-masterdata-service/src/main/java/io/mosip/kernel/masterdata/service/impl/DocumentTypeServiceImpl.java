@@ -72,6 +72,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
+
 	@Autowired
 	FilterColumnValidator filterColumnValidator;
 
@@ -83,6 +84,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -104,8 +108,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		if (documents != null && !documents.isEmpty()) {
 			listOfDocumentTypeDto = MapperUtils.mapAll(documents, DocumentTypeDto.class);
 		} else {
-			throw new DataNotFoundException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			listOfDocumentTypeDto = new ArrayList<>();
 		}
 		return listOfDocumentTypeDto;
 
@@ -149,12 +152,24 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			DocumentType documentType = documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(),
 					documentTypeDto.getLangCode());
 			if (documentType != null) {
+
+				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
+					throw new RequestException(
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
+				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
+						&& (documentType.getIsActive() == Boolean.FALSE)) {
+					throw new RequestException(
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
+				}
+
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, false);
+				documentTypeRepository.update(documentType);
 			} else {
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-			documentTypeRepository.update(documentType);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
@@ -277,6 +292,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentTypeExtnDto> doumentTypes = null;
 		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(DocumentType.class, dto.getSort());
 			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);

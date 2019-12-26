@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +38,12 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -88,6 +91,9 @@ public class KycFacadeImpl implements KycFacade {
 	
 	@Autowired
 	private IdAuthTransactionManager transactionManager;
+	
+	@Autowired
+	private PartnerService partnerService;
 
 	/*
 	 * (non-Javadoc)
@@ -119,7 +125,7 @@ public class KycFacadeImpl implements KycFacade {
 		String resTime = null;
 		if (kycAuthRequestDTO != null) {
 			String idvId = kycAuthRequestDTO.getIndividualId();
-			String idvIdtype =kycAuthRequestDTO.getIndividualIdType();
+			String idvIdtype =IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
 			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
 			String uin = (String) idResDTO.get("uin");
 			String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
@@ -154,9 +160,14 @@ public class KycFacadeImpl implements KycFacade {
 
 			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId);
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
-					.withRequestType(RequestType.KYC_AUTH_REQUEST).withStaticToken(staticTokenId)
-					.withStatus(kycAuthResponseDTO.getResponse().isKycStatus()).withUin(uin)
+					.withRequestType(RequestType.KYC_AUTH_REQUEST)
+					.withStaticToken(staticTokenId)
+					.withStatus(kycAuthResponseDTO.getResponse().isKycStatus())
+					.withInternal(false)
+					.withPartner(partner)
+					.withUin(uin)
 					.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
 			idAuthService.saveAutnTxn(authTxn);
 		}

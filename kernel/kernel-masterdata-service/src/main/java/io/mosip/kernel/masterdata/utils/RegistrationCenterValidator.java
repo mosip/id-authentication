@@ -1,5 +1,8 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,19 +24,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.idgenerator.spi.MachineIdGenerator;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
+import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.RegCenterPostReqDto;
-import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.RegCenterPutReqDto;
+import io.mosip.kernel.masterdata.dto.RegcenterBaseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.entity.Holiday;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.exception.ValidationException;
+import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 
@@ -92,6 +102,9 @@ public class RegistrationCenterValidator {
 
 	@Autowired
 	RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
+	
+	@Autowired
+	HolidayRepository holidayRepository;
 	
 	
     // method to compare data
@@ -308,8 +321,21 @@ public class RegistrationCenterValidator {
 
 	// method to validate the format of the longitude and latitude, zone validation,
 	// lunch and center start and end time
-	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> void validateRegCenterCreateReq(
-			T registrationCenterDto, List<ServiceError> errors) {
+//	public <T extends RegcenterBaseDto, D extends RegcenterBaseDto> void validateRegCenterCreateReq(
+//			T registrationCenterDto, List<ServiceError> errors) {
+//
+//		String latitude = registrationCenterDto.getLatitude();
+//		String longitude = registrationCenterDto.getLongitude();
+//
+//		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
+//		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
+//		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
+//		formatValidationLongitudeLatitude(errors, latitude, longitude);
+//
+//	}
+	
+	public void validateRegCenterCreate(
+			RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors) {
 
 		String latitude = registrationCenterDto.getLatitude();
 		String longitude = registrationCenterDto.getLongitude();
@@ -318,7 +344,19 @@ public class RegistrationCenterValidator {
 		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
 		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
 		formatValidationLongitudeLatitude(errors, latitude, longitude);
+		holidayVlidation(registrationCenterDto, errors);
 
+	}
+	
+	// validate Holiday against DB
+	private void holidayVlidation(RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors) {
+		List<Holiday> holidays = holidayRepository
+				.findHolidayByHolidayIdLocationCode(registrationCenterDto.getHolidayLocationCode());
+		if (holidays.isEmpty()) {
+			errors.add(new ServiceError(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorMessage(),
+							registrationCenterDto.getZoneCode())));
+		 }
 	}
 
 	// list zone Id mapped with the called user
@@ -331,7 +369,7 @@ public class RegistrationCenterValidator {
 
 	// validation to check entered zoneCode is mapped with eligible user or not and
 	// is valid zoneCode
-	private <T extends RegcenterBaseDto> void zoneUserMapValidation(T registrationCenterDto, List<ServiceError> errors,
+	private void zoneUserMapValidation(RegCenterPostReqDto registrationCenterDto, List<ServiceError> errors,
 			List<String> zoneIds) {
 
 		if (!zoneIds.isEmpty()) {
@@ -358,11 +396,13 @@ public class RegistrationCenterValidator {
 	// validation to check the RegCenter Lunch Start Time is greater
 	// than RegCenter
 	// Lunch End Time
-	private <T extends RegcenterBaseDto> void lunchStartEndTimeGrtValidation(T registrationCenterDto,
+	private void lunchStartEndTimeGrtValidation(RegCenterPostReqDto registrationCenterDto,
 			List<ServiceError> errors) {
 		// validation to check the RegCenter Lunch Start Time is greater than RegCenter
 		// Lunch End Time
-		if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		LocalTime lunchStartTime = LocalTime.parse("00:00:00", formatter);
+		if ((registrationCenterDto.getLunchStartTime()!=null && !registrationCenterDto.getLunchStartTime().equals(lunchStartTime)) && registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 			errors.add(new ServiceError(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
 					String.format(
@@ -370,11 +410,27 @@ public class RegistrationCenterValidator {
 							registrationCenterDto.getLunchEndTime())));
 
 		}
+		if ((registrationCenterDto.getLunchEndTime()!=null && !registrationCenterDto.getLunchEndTime().equals(lunchStartTime)) && registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+			errors.add(new ServiceError(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
+					String.format(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorMessage(),
+							registrationCenterDto.getLunchEndTime())));
+
+		}
+		if((registrationCenterDto.getLunchStartTime()!=null && !registrationCenterDto.getLunchStartTime().equals(lunchStartTime)) && registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime()))
+		{
+			errors.add(new ServiceError(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),
+					String.format(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorMessage(),
+							registrationCenterDto.getLunchEndTime())));
+		}
 	}
 
 	// validation to check the RegCenter Start Time is greater than
 	// RegCenter End Time
-	private <T extends RegcenterBaseDto> void zoneStartEndTimeGtrValidation(T registrationCenterDto,
+	private void zoneStartEndTimeGtrValidation(RegCenterPostReqDto registrationCenterDto,
 			List<ServiceError> errors) {
 		if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 			errors.add(new ServiceError(
@@ -609,22 +665,6 @@ public class RegistrationCenterValidator {
 
 		}
 
-		// method to compare PerKioskProcessTime
-		private <T extends RegcenterBaseDto, D extends RegcenterBaseDto> boolean validatePerKioskProcessTime(T firstObj,
-				D eachRecord, List<ServiceError> errors) {
-			if (eachRecord.getPerKioskProcessTime() != null && firstObj.getPerKioskProcessTime() != null) {
-				if (eachRecord.getPerKioskProcessTime().equals(firstObj.getPerKioskProcessTime())) {
-					return true;
-				} else {
-					errors.add(new ServiceError(RegistrationCenterErrorCode.PERKIOSKPROCESSTIME_NOT_UNIQUE.getErrorCode(),
-							String.format(RegistrationCenterErrorCode.PERKIOSKPROCESSTIME_NOT_UNIQUE.getErrorMessage(),
-									eachRecord.getPerKioskProcessTime())));
-
-				}
-			}
-			return false;
-		}
-
 	// validate for the given ID, do we have records in all supported languages then make True for all records.
 	public void isActiveTrueAllSupLang(List<RegCenterPutReqDto> registrationCenterPutReqAdmDto) {
 		if (registrationCenterPutReqAdmDto.get(0).getIsActive() != null
@@ -699,5 +739,116 @@ public class RegistrationCenterValidator {
 		newrRegistrationCenterDtoList = MapperUtils.mapAll(newregistrationCenterList, RegistrationCenterExtnDto.class);
 		return newrRegistrationCenterDtoList;
 	}
+	
+	
+	@Autowired
+	MachineIdGenerator<String> machineIdGenerator;
+
+	@Autowired
+	MachineRepository machineRepository;
+
+	// call method generate ID or validate with DB
+	public String generateMachineIdOrvalidateWithDB(String uniqueId) {
+		if (uniqueId.isEmpty()) {
+			// Get Machine Id by calling MachineIdGenerator API
+			uniqueId = machineIdGenerator.generateMachineId();
+		} else {
+			List<Machine> renMachine = machineRepository
+					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNullNoIsActive(uniqueId);
+			if (renMachine.isEmpty()) {
+				// for the given ID, we don't have data in primary language
+				throw new RequestException(MachineErrorCode.MACHINE_ID.getErrorCode(),
+						String.format(MachineErrorCode.MACHINE_ID.getErrorMessage(), uniqueId));
+			}
+		}
+		return uniqueId;
+	}
+
+
+
+
+	public void validateRegCenterUpdate(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
+		String latitude = registrationCenterDto.getLatitude();
+		String longitude = registrationCenterDto.getLongitude();
+
+		zoneUserMapValidation(registrationCenterDto, errors, getZoneIdsForUser());
+		zoneStartEndTimeGtrValidation(registrationCenterDto, errors);
+		lunchStartEndTimeGrtValidation(registrationCenterDto, errors);
+		formatValidationLongitudeLatitude(errors, latitude, longitude);
+		holidayVlidation(registrationCenterDto, errors);
+		
+	}
+	
+	// validate Holiday against DB
+		private void holidayVlidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors) {
+			List<Holiday> holidays = holidayRepository
+					.findHolidayByHolidayIdLocationCode(registrationCenterDto.getHolidayLocationCode());
+			if (holidays.isEmpty()) {
+				errors.add(new ServiceError(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.HOLIDAY_NOT_FOUND.getErrorMessage(),
+								registrationCenterDto.getZoneCode())));
+			 }
+		}
+	
+	// validation to check entered zoneCode is mapped with eligible user or not and
+		// is valid zoneCode
+		private void zoneUserMapValidation(RegCenterPutReqDto registrationCenterDto, List<ServiceError> errors,
+				List<String> zoneIds) {
+
+			if (!zoneIds.isEmpty()) {
+				if (!zoneIds.contains(registrationCenterDto.getZoneCode())) {
+					errors.add(new ServiceError(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
+							String.format(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage(),
+									registrationCenterDto.getZoneCode())));
+				}
+			}
+		}
+
+		// validation to check the RegCenter Lunch Start Time is greater
+		// than RegCenter
+		// Lunch End Time
+		private void lunchStartEndTimeGrtValidation(RegCenterPutReqDto registrationCenterDto,
+				List<ServiceError> errors) {
+			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// Lunch End Time
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+			LocalTime lunchStartTime = LocalTime.parse("00:00:00", formatter);
+			if ((registrationCenterDto.getLunchStartTime()!=null && !registrationCenterDto.getLunchStartTime().equals(lunchStartTime)) && registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						String.format(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getLunchEndTime())));
+
+			}
+			if ((registrationCenterDto.getLunchEndTime()!=null && !registrationCenterDto.getLunchEndTime().equals(lunchStartTime)) && registrationCenterDto.getLunchEndTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorCode(),
+						String.format(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_END_CENTER_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getLunchEndTime())));
+
+			}
+			if((registrationCenterDto.getLunchStartTime()!=null && !registrationCenterDto.getLunchStartTime().equals(lunchStartTime)) && registrationCenterDto.getLunchStartTime().isBefore(registrationCenterDto.getCenterStartTime()))
+			{
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorCode(),
+						String.format(
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_CENTER_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getLunchEndTime())));
+			}
+		}
+
+		// validation to check the RegCenter Start Time is greater than
+		// RegCenter End Time
+		private void zoneStartEndTimeGtrValidation(RegCenterPutReqDto registrationCenterDto,
+				List<ServiceError> errors) {
+			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				errors.add(new ServiceError(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage(),
+								registrationCenterDto.getCenterEndTime())));
+			}
+		}
 
 }

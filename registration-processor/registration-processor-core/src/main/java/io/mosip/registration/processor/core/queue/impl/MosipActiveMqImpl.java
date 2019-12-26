@@ -55,20 +55,25 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	private void setup(MosipActiveMq mosipActiveMq) {
 		regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "In ActiveMq setUp ", LINE_SEPERATOR);
 		try {
-			this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
-			regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----CONNECTION-----",
-					LINE_SEPERATOR + this.connection);
-			regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----SESSION-----", LINE_SEPERATOR + this.session);
-			ActiveMQConnection activemQConn = (ActiveMQConnection)connection;
-			activemQConn.addTransportListener(new TransportExceptionListener());
-			if (session == null) {
-				connection.start();
-				this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----NEW CONNECTION-----",
+			ActiveMQConnection activemQConn = (ActiveMQConnection) connection;
+			if (activemQConn == null || activemQConn.isClosed()) {
+				regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----INITIAL CONNECTION-----",
 						LINE_SEPERATOR + this.connection);
-				regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----NEW SESSION-----",
+				regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----INITIAL SESSION-----",
 						LINE_SEPERATOR + this.session);
+				connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
+				activemQConn = (ActiveMQConnection) connection;
+				activemQConn.addTransportListener(new TransportExceptionListener());
+				if (session == null) {
+					connection.start();
+					this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+					regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----NEW CONNECTION-----",
+							LINE_SEPERATOR + this.connection);
+					regProcLogger.debug(LINE_SEPERATOR, LINE_SEPERATOR, "-----NEW SESSION-----",
+							LINE_SEPERATOR + this.session);
+				}
 			}
+
 		} catch (JMSException e) {
 			regProcLogger.error(LINE_SEPERATOR, LINE_SEPERATOR, "-----EXCEPTION While starting connection -----",
 					LINE_SEPERATOR + ExceptionUtils.getFullStackTrace(e));

@@ -121,8 +121,7 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			AuthToken token = getAuthToken(authResponseDto);
-			customTokenServices.StoreToken(token);
+	
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -183,13 +182,14 @@ public class AuthController {
 		if (authResponseDto != null && authResponseDto.getToken() != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
 			authNResponse = new AuthNResponse();
+			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			AuthToken token = getAuthToken(authResponseDto);
-			if (token != null && token.getUserId() != null) {
-				customTokenServices.StoreToken(token);
-			}
+			/*
+			 * AuthToken token = getAuthToken(authResponseDto); if (token != null &&
+			 * token.getUserId() != null) { customTokenServices.StoreToken(token); }
+			 */
 		} else {
 			authNResponse = new AuthNResponse();
 			authNResponse.setStatus(authResponseDto.getStatus());
@@ -215,10 +215,10 @@ public class AuthController {
 		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithSecretKey(clientSecretDto.getRequest());
-		if (authResponseDto != null && authResponseDto.getToken()!=null) {
+		if (authResponseDto != null) {
 			Cookie cookie = createCookie(authResponseDto.getToken(), mosipEnvironment.getTokenExpiry());
-			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			authNResponse = new AuthNResponse();
+			res.addHeader(mosipEnvironment.getAuthTokenHeader(), authResponseDto.getToken());
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
@@ -259,6 +259,7 @@ public class AuthController {
 						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
+			System.out.println("Token check after validate :::"+mosipUserDtoToken.getToken());
 			if (mosipUserDtoToken != null) {
 				mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
 			}
@@ -282,10 +283,32 @@ public class AuthController {
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/authorize/admin/validateToken")
-	public ResponseWrapper<MosipUserDto> validateToken(
-			@CookieValue(value = "Authorization", required = false) String token)
-			throws IOException {
-		MosipUserDto mosipUserDto = authService.valdiateToken(token);
+	public ResponseWrapper<MosipUserDto> validateAdminToken(
+			HttpServletRequest request,HttpServletResponse res){
+		String authToken = null;
+		Cookie[] cookies = request.getCookies();
+		if (cookies == null) {
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
+		MosipUserDto mosipUserDto =null;
+		try {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
+					authToken = cookie.getValue();
+				}
+			}
+			if (authToken == null) {
+				throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
+						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
+			}
+		
+		mosipUserDto = authService.valdiateToken(authToken);
+		Cookie cookie = createCookie(mosipUserDto.getToken(), mosipEnvironment.getTokenExpiry());
+		res.addCookie(cookie);
+		}catch (NonceExpiredException exp) {
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
+		}
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
 		return responseWrapper;
@@ -485,14 +508,14 @@ public class AuthController {
 	 *            {@link UserRegistrationRequestDto}
 	 * @return {@link UserRegistrationResponseDto}
 	 */
-	@ResponseFilter
+/*	@ResponseFilter
 	@PostMapping(value = "/user")
 	public ResponseWrapper<UserRegistrationResponseDto> registerUser(
 			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
 		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
 		return responseWrapper;
-	}
+	}*/
 
 	@ResponseFilter
 	@PostMapping(value = "/user/addpassword")
@@ -601,7 +624,7 @@ public class AuthController {
 		AccessTokenResponseDTO jwtResponseDTO = authService.loginRedirect(state, sessionState, code, stateCookie,
 				redirectURI);
 		String uri = new String(Base64.decodeBase64(redirectURI.getBytes()));
-		Cookie cookie = createCookie(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
+		Cookie cookie = createCookie(jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
 		res.addCookie(cookie);
 		res.setStatus(302);
 		res.sendRedirect(uri);

@@ -40,5 +40,10 @@ public interface IdMapping {
 	}
 	
 	public Set<IdMapping> getSubIdMappings();
+	
+	public String getType();
+	
+	public String getSubType();
+	
 
 }

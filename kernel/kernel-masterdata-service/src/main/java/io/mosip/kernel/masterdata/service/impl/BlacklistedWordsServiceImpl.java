@@ -37,6 +37,7 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -82,6 +83,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	/**
 	 * Autowired reference for {@link DataMapper}
@@ -168,8 +172,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		try {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(BlacklistedWordsErrorCode.BLACKLISTED_WORDS_INSERT_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -226,8 +230,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_DELETE_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_DELETE_EXCEPTION.getErrorMessage());
 		}
 		if (noOfRowAffected == 0) {
 			throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
@@ -330,7 +334,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
 		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
 		List<BlacklistedWordsExtnDto> blackListedWords = null;
+
 		if (filterTypeValidator.validate(BlacklistedWordsExtnDto.class, dto.getFilters())) {
+			pageUtils.validateSortField(BlacklistedWords.class, dto.getSort());
 			Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);

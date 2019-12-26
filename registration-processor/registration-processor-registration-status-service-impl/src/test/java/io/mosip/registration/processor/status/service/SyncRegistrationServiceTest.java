@@ -33,6 +33,8 @@ import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.decryptor.Decryptor;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
@@ -70,6 +72,9 @@ public class SyncRegistrationServiceTest {
 	/** The entities. */
 	private List<SyncRegistrationDto> entities;
 
+	/** The entities. */
+	private List<SyncRegistrationEntity> syncRegistrationEntities;
+
 	/** The sync registration dao. */
 	@Mock
 	private SyncRegistrationDao syncRegistrationDao;
@@ -97,7 +102,7 @@ public class SyncRegistrationServiceTest {
 
 	@Mock
 	Environment env;
-	
+
 	@Mock
 	LogDescription description;
 
@@ -118,8 +123,9 @@ public class SyncRegistrationServiceTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
 		entities = new ArrayList<>();
+		syncRegistrationEntities = new ArrayList<>();
 		Mockito.doNothing().when(description).setMessage(any());
-		
+
 		syncRegistrationDto = new SyncRegistrationDto();
 
 		syncRegistrationDto.setRegistrationId("27847657360002520181208183052");
@@ -182,7 +188,6 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto5.setSyncType(SyncTypeDto.NEW.getValue());
 		syncRegistrationDto5.setPacketHashValue("ab123");
 		syncRegistrationDto5.setSupervisorStatus("APPROVED");
-
 
 		SyncRegistrationDto syncRegistrationDto7 = new SyncRegistrationDto();
 		syncRegistrationDto7.setRegistrationId(null);
@@ -277,7 +282,7 @@ public class SyncRegistrationServiceTest {
 		entities.add(syncRegistrationDto3);
 		entities.add(syncRegistrationDto4);
 		entities.add(syncRegistrationDto5);
-		
+
 		entities.add(syncRegistrationDto7);
 		entities.add(syncRegistrationDto8);
 		entities.add(syncRegistrationDto9);
@@ -305,7 +310,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationEntity.setUpdateDateTime(LocalDateTime.now());
 		syncRegistrationEntity.setCreatedBy("MOSIP");
 		syncRegistrationEntity.setUpdatedBy("MOSIP");
-
+		syncRegistrationEntities.add(syncRegistrationEntity);
 		Mockito.when(ridValidator.validateId(any())).thenReturn(true);
 
 	}
@@ -488,6 +493,34 @@ public class SyncRegistrationServiceTest {
 		RegistrationSyncRequestDTO regSyncDto = syncRegistrationService.decryptAndGetSyncRequest("", "", "1234",
 				syncResponseList);
 		assertEquals(1, syncResponseList.size());
+
+	}
+
+	@Test
+	public void testGetByIdsSuccess() {
+
+		Mockito.when(syncRegistrationDao.getByIds(any())).thenReturn(syncRegistrationEntities);
+
+		RegistrationStatusSubRequestDto registrationId = new RegistrationStatusSubRequestDto();
+		registrationId.setRegistrationId("1001");
+		List<RegistrationStatusSubRequestDto> registrationIds = new ArrayList<>();
+		registrationIds.add(registrationId);
+		List<RegistrationStatusDto> list = syncRegistrationService.getByIds(registrationIds);
+		assertEquals("UPLOAD_PENDING", list.get(0).getStatusCode());
+	}
+
+	@Test(expected = TablenotAccessibleException.class)
+	public void getByIdsFailureTest() {
+		RegistrationStatusSubRequestDto registrationId = new RegistrationStatusSubRequestDto();
+		registrationId.setRegistrationId("1001");
+		List<RegistrationStatusSubRequestDto> registrationIds = new ArrayList<>();
+		registrationIds.add(registrationId);
+
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
+		Mockito.when(syncRegistrationDao.getByIds(any())).thenThrow(exp);
+
+		syncRegistrationService.getByIds(registrationIds);
 
 	}
 

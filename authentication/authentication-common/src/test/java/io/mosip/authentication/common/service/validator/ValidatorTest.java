@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,12 +40,14 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -310,6 +313,8 @@ public class ValidatorTest {
 	public void validateAllowedAuthTypes() {
 		MockEnvironment mockEnv = new MockEnvironment();
 		mockEnv.setProperty("auth.types.allowed", "demo,otp");
+		mockEnv.setProperty("datetime.pattern","yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		mockEnv.setProperty("authrequest.received-time-allowed.minutes", "30");
 		ReflectionTestUtils.setField(authRequestValidator, "env", mockEnv);
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -430,7 +435,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream()
-				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioType"))));
 	}
 
 	@Test
@@ -443,7 +448,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream()
-				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioType"))));
 	}
 
 	@Test
@@ -480,7 +485,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream().forEach(
-				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
 	}
 
 	@Test
@@ -493,7 +498,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 		errors.getAllErrors().stream().forEach(
-				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
 	}
 
 	@Test
@@ -506,7 +511,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
 		errors.getAllErrors().stream().forEach(err -> assertTrue(
-				Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType - XYZ for bioType FID"))));
+				Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType - XYZ"))));
 	}
 
 	@Test
@@ -516,7 +521,18 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
-		dataDTO.setBioType("FID");
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
+		dataDTO.setBioType("FACE");
 		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
@@ -544,6 +560,17 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
@@ -570,8 +597,19 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("LEFT_INDEX");
+		dataDTO.setBioSubType("Left IndexFinger");
 		dataDTO.setBioValue(
 				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -589,6 +627,10 @@ public class ValidatorTest {
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-002")));
 	}
 
+	/**
+	 * Since validation to more than 2 finger count is removed ignoring this test
+	 */
+	@Ignore
 	@Test
 	public void validateBioMetadataDetails_validateFingerRequestExceedingCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFinger();
@@ -596,8 +638,19 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("RIGHT_INDEX");
+		dataDTO.setBioSubType("Right IndexFinger");
 		dataDTO.setBioValue(
 				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -607,7 +660,19 @@ public class ValidatorTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
+		
 		DataDTO dataDTO1 = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId1 = new DigitalId();
+		digitalId1.setSerialNo("1");
+		digitalId1.setMake("1");
+		digitalId1.setModel("1");
+		digitalId1.setType("1");
+		digitalId1.setDeviceProvider("1");
+		digitalId1.setDeviceProviderId("1");
+		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId1);
 		dataDTO1.setBioType("FMR");
 		dataDTO1.setBioSubType("UNKNOWN");
 		dataDTO1.setBioValue(
@@ -619,10 +684,12 @@ public class ValidatorTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO1.setData(dataDTO1);
 		biometrics.add(bioIdentityInfoDTO1);
+		
 		requestDto.setBiometrics(biometrics);
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
+		
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-003")));
 	}
@@ -634,8 +701,19 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("IIR");
-		dataDTO.setBioSubType("RIGHT");
+		dataDTO.setBioSubType("Right Iris");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -660,8 +738,19 @@ public class ValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("IIR");
-		dataDTO.setBioSubType("RIGHT");
+		dataDTO.setBioSubType("Right Iris");
 		dataDTO.setBioValue(
 				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -672,8 +761,19 @@ public class ValidatorTest {
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
 		DataDTO dataDTO1 = new DataDTO();// DataDTO
+		dataDTO1.setDeviceCode("1");
+		dataDTO1.setDeviceServiceVersion("1");
+		DigitalId digitalId1 = new DigitalId();
+		digitalId1.setSerialNo("1");
+		digitalId1.setMake("1");
+		digitalId1.setModel("1");
+		digitalId1.setType("1");
+		digitalId1.setDeviceProvider("1");
+		digitalId1.setDeviceProviderId("1");
+		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO1.setDigitalId(digitalId1);
 		dataDTO1.setBioType("IIR");
-		dataDTO1.setBioSubType("LEFT");
+		dataDTO1.setBioSubType("Left Iris");
 		dataDTO1.setBioValue(
 				"ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO1.setDeviceProviderID("cogent");
@@ -726,7 +826,18 @@ public class ValidatorTest {
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
-		dataDTO.setBioType("FID");
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
+		dataDTO.setBioType("FACE");
 		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
@@ -759,8 +870,19 @@ public class ValidatorTest {
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FMR");
-		dataDTO.setBioSubType("LEFT_INDEX");
+		dataDTO.setBioSubType("Left IndexFinger");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -792,8 +914,19 @@ public class ValidatorTest {
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("IIR");
-		dataDTO.setBioSubType("LEFT");
+		dataDTO.setBioSubType("Left Iris");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");

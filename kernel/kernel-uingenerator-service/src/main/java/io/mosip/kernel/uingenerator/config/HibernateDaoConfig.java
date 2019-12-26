@@ -2,7 +2,6 @@ package io.mosip.kernel.uingenerator.config;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -26,7 +25,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.uingenerator.constant.HibernatePersistenceConstant;
-import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 
 /**
  * Configuration class for UinGenerator
@@ -51,7 +49,7 @@ public class HibernateDaoConfig implements EnvironmentAware {
 	@Autowired
 	private Environment env;
 
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${mosip.kernel.uin.hikari_maximumPoolSize:400}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
 	private int validationTimeout;

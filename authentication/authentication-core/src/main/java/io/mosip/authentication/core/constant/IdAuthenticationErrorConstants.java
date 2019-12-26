@@ -3,8 +3,11 @@
  */
 package io.mosip.authentication.core.constant;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import io.mosip.authentication.core.indauth.dto.IdType;
 
 /**
  * List of all IDA error codes and its respective error messages.
@@ -61,16 +64,22 @@ public enum IdAuthenticationErrorConstants {
 
 	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
 	DUPLICATE_FINGER("IDA-BIA-002", "Duplicate fingers in request", "Please try again with distinct fingers"),
-	FINGER_EXCEEDING("IDA-BIA-003", "Number of FMR should not exceed 2"),
+	FINGER_EXCEEDING("IDA-BIA-003", "Number of Fingers should not exceed %s"),
 	INVALID_DEVICEID("IDA-BIA-004", "Device not registered with MOSIP"),
 	INVALID_PROVIDERID("IDA-BIA-005", "Device provider not registered with MOSIP"),
 	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
 			"Your Biometric data is not available in MOSIP"),
 	DUPLICATE_IRIS("IDA-BIA-007", "Duplicate Irises in request", "Please try again with distinct Irises"),
 	IRIS_EXCEEDING("IDA-BIA-008", "Number of IIR should not exceed 2"),
-	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
+	FACE_EXCEEDING("IDA-BIA-009", "Number of FACE records should not exceed 1"),
 	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
 	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
+	INVALID_MDS("IDA-BIA-012", "MDS verification failed"),
+	INVALID_HASH("IDA-BIA-014", "Hash Validation Failed"),
+	INVALID_SIGNATURE("IDA-BIA-015", "Signature Validation Failed"),
+	QUALITY_CHECK_FAILED("IDA-BIA-016", "Unable to Perform Quality Check due to a Technical Issue"),
+	BIO_MATCH_FAILED_TO_PERFORM("IDA-BIA-017", "Unable to Perform Biometric Match due to a Technical Issue"),
+	UNABLE_TO_PROCESS_BIO("IDA-BIA-018", "Unable to Process the Request due to a Technical Issue"),
 
 	
 
@@ -97,6 +106,7 @@ public enum IdAuthenticationErrorConstants {
 	UNAUTHORISED_PARTNER("IDA-MPA-013", "Partner is unauthorised for eKYC"),
 	PARTNER_POLICY_NOTMAPPED("IDA-MPA-014", "Partner is not assigned with any policy"),
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
+	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 
@@ -109,7 +119,12 @@ public enum IdAuthenticationErrorConstants {
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
 	
-	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed")
+	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed"),
+
+	// Device verification validation
+	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
+	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
+	PROVIDER_ID_VERIFICATION_FAILED("IDA-DPM-003", "Device Provider is not registered with MOSIP")
 
 	;
 
@@ -150,16 +165,37 @@ public enum IdAuthenticationErrorConstants {
 	 * @return the errorMessage
 	 */
 	public String getErrorMessage() {
-		return errorMessage;
+		return replaceIdTypeStrWithAlias(errorMessage);
 	}
 
 	public String getActionMessage() {
-		return actionMessage;
+		return replaceIdTypeStrWithAlias(actionMessage);
+	}
+	
+	/**
+	 * Replace the occurrences of ID Type to its alias if available.
+	 * @param str the string to check 
+	 * @return the string which has replacements with alias
+	 */
+	private String replaceIdTypeStrWithAlias(String str) {
+		String s = str;
+		if (str != null) {
+			for (IdType idType : IdType.values()) {
+				Optional<String> alias = idType.getAlias();
+				if (alias.isPresent()) {
+					String type = idType.getType();
+					if (str.contains(type)) {
+						s = s.replace(type, alias.get());
+					}
+				}
+			}
+		}
+		return s;
 	}
 
 	public static Optional<String> getActionMessageForErrorCode(String errorCode) {
 		return Stream.of(values()).filter(ele -> ele.getErrorCode().equals(errorCode))
-				.map(ele -> ele.getActionMessage()).filter(act -> act != null).findAny();
+				.map(IdAuthenticationErrorConstants::getActionMessage).filter(Objects::nonNull).findAny();
 	}
 
 }

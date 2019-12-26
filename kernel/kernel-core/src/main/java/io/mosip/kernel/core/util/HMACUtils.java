@@ -78,17 +78,17 @@ public final class HMACUtils {
 		messageDigest.update(password);
 		messageDigest.update(salt);
 		return DatatypeConverter.printHexBinary(messageDigest.digest());
-		/*KeySpec spec = null;
-        try {
-        	spec = new PBEKeySpec(new String(password,"UTF-8").toCharArray(), Base64.decodeBase64(salt), 27500, 512);
-            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
-            return Base64.encodeBase64String(key);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException("Credential could not be encoded", e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }*/
+//		KeySpec spec = null;
+//        try {
+//        	spec = new PBEKeySpec(new String(password,"UTF-8").toCharArray(), salt, 27500, 512);
+//            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
+//            return Base64.encodeBase64String(key);
+//        } catch (InvalidKeySpecException e) {
+//            throw new RuntimeException("Credential could not be encoded", e);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
     
 	}
 
@@ -169,7 +169,6 @@ public final class HMACUtils {
 	 */
 	private HMACUtils() {
 	}
-
 	
 	 private static String encode(String password, byte[] salt) {
 	        KeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), 27500, 512);

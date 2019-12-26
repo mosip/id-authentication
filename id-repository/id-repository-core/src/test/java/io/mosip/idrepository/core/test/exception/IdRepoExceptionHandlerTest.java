@@ -21,6 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -30,6 +31,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -126,7 +128,7 @@ public class IdRepoExceptionHandlerTest {
 	 */
 	@Test
 	public void testHandleExceptionInternal_HttpMessageNotReadableException() {
-		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
+		WebRequest request = new ServletWebRequest(new MockHttpServletRequest("POST", "deactivate"));
 		HttpMessageNotReadableException httpMessageNotReadableException = new HttpMessageNotReadableException("",
 				new DateTimeParseException("", "", 0));
 		Class<? extends Throwable> class1 = httpMessageNotReadableException.getCause().getClass();

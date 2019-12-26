@@ -5,6 +5,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,8 +29,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.RequestErrorCode;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -119,15 +123,17 @@ public class MasterdataCreationUtil {
 			{
 				Field idColumn = dtoClass.getDeclaredField(CODE_COLUMN_NAME);
 				idColumn.setAccessible(true);
-				primaryId =  generateId();
-				E primary = getResultSet(entity, primaryLang, primaryId,primaryKeyCol);
-				if(primary!=null)
-				{
-					idColumn.set(t, primaryId);
-				}
-				else
-				{
-					idColumn.set(t, generateId());
+				if(!entity.equals(DeviceType.class)) {
+					primaryId =  generateId();
+					E primary = getResultSet(entity, primaryLang, primaryId,primaryKeyCol);
+					if(primary!=null)
+					{
+						idColumn.set(t, primaryId);
+					}
+					else
+					{
+						idColumn.set(t, generateId());
+					}
 				}
 				
 			}
@@ -153,14 +159,23 @@ public class MasterdataCreationUtil {
 		}
 		if (langCode.equals(secondaryLang)) {
 			
+			if(StringUtils.isBlank(id))
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
 			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
-			if (primaryEntity != null) {
-				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
+			if(primaryEntity==null)
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
+			for (Field field : primaryEntity.getClass().getDeclaredFields()) {
 					field.setAccessible(true);
 							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
 								activePrimary = (boolean) field.get(t);
 					}
-				}
+							
 				if(activeDto==true)
 				{
 					Field isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
@@ -176,20 +191,14 @@ public class MasterdataCreationUtil {
 					updatePrimaryToTrue(primaryEntity.getClass(),id,primaryKeyCol,false);
 				}
 				return t;
-			} else {
-				throw new MasterDataServiceException(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-						"Cannot create data in secondary language as data does not exist in primary language");
-			}
+			} 
 		}
-		return null;
+		//return null;
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
-	
-	private String getCodeFromName(String name) {
-		return RandomStringUtils.random(name.length(), name);
-	}
-	
-	private String generateId()
-	{
+
+	private String generateId() {
 		return UUID.randomUUID().toString();
 	}
 	
@@ -209,7 +218,8 @@ public class MasterdataCreationUtil {
 	public <E, T> T updateMasterData(Class<E> entity, T t)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		String langCode = null, id = null;
-		String entColumn=null;
+		boolean activeDto=false,activePrimary=false,activeSecondary=false;
+		String primaryKeyCol=null,nameCol=null,nameValue=null;
 		Field isActive;
 		Class<?> dtoClass = t.getClass();
 		for (Field entField: entity.getDeclaredFields()) {
@@ -217,7 +227,10 @@ public class MasterdataCreationUtil {
 			 {
 				 entField.setAccessible(true);
 				 if (entField.getName() != null && !entField.getName().equals(LANGCODE_COLUMN_NAME)) {
-					 entColumn = entField.getName();
+					 primaryKeyCol = entField.getName();
+					}
+				 if (entField.getName() != null && !entField.getName().equals(NAME_COLUMN_NAME)) {
+					 nameCol = entField.getName();
 					}
 			 }
 			}
@@ -227,21 +240,112 @@ public class MasterdataCreationUtil {
 				langCode = (String) field.get(t);
 			}
 
-			if (field.getName() != null && field.getName().equals(entColumn)) {
+			if (field.getName() != null && field.getName().equals(primaryKeyCol)) {
 				id = (String) field.get(t);
+			}
+			
+			if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+				activeDto = (boolean) field.get(t);
 			}
 		}
 		
 		if (langCode.equals(primaryLang)) {
-			isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
-			isActive.setAccessible(true);
-			isActive.set(t, Boolean.FALSE);
+			E secondaryEntity = getResultSet(entity, secondaryLang, id, primaryKeyCol);
+			if (activeDto == true) {
+				if (secondaryEntity != null) {
+					try {
+						Field[] childFields = secondaryEntity.getClass().getDeclaredFields();
+						Field[] superFields = secondaryEntity.getClass().getSuperclass().getDeclaredFields();
+						List<Field> fieldList = new ArrayList<>();
+						fieldList.addAll(Arrays.asList(childFields));
+						if (superFields != null)
+							fieldList.addAll(Arrays.asList(superFields));
+						for (Field field : fieldList) {
+							field.setAccessible(true);
+							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+								activeSecondary = (boolean) field.get(secondaryEntity);
+							}
+						}
+					}catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+					if(activeSecondary==true)
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.TRUE);
+					}
+					else if(activeDto==true && activeSecondary==false)
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.TRUE);
+						updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, true);
+					}
+					else
+					{
+						isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+						isActive.setAccessible(true);
+						isActive.set(t, Boolean.FALSE);
+						updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, false);
+					}
+					
+				}
+				else
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.FALSE);
+				}
+				
+			}
+			if(activeDto==false)
+			{
+				isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+				isActive.setAccessible(true);
+				isActive.set(t, Boolean.FALSE);
+				if (secondaryEntity != null) {
+					updatePrimaryToTrue(secondaryEntity.getClass(), id, primaryKeyCol, false);
+				}
+			}
 			return t;
 		}
 		if (langCode.equals(secondaryLang)) {
 			
-			E secondaryLang = getResultSet(entity, primaryLang, id,entColumn);
-			
+			if(StringUtils.isBlank(id))
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
+			E primaryEntity = getResultSet(entity, primaryLang, id,primaryKeyCol);
+			if(primaryEntity==null)
+			{
+				throw new MasterDataServiceException(RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorCode(),
+						RequestErrorCode.REQUEST_INVALID_SEC_LANG_ID.getErrorMessage());
+			}
+			if (primaryEntity != null) {
+				for (Field field : primaryEntity.getClass().getDeclaredFields()) {
+					field.setAccessible(true);
+							if (field.getName() != null && field.getName().equals(ISACTIVE_COLUMN_NAME)) {
+								activePrimary = (boolean) field.get(t);
+					}
+				}
+				}
+				if(activeDto==true)
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.TRUE);
+					updatePrimaryToTrue(primaryEntity.getClass(),id,primaryKeyCol,true);
+				}
+				if(activeDto==false)
+				{
+					isActive = dtoClass.getDeclaredField(ISACTIVE_COLUMN_NAME);
+					isActive.setAccessible(true);
+					isActive.set(t, Boolean.FALSE);
+					updatePrimaryToTrue(primaryEntity.getClass(),id,primaryKeyCol,false);
+				}
 			if (secondaryLang != null) {
 				return t;
 			} else {
@@ -249,7 +353,9 @@ public class MasterdataCreationUtil {
 						"Cannot update data in secondary language as data does not exist in primary language");
 			}
 		}
-		return null;
+		//return null;
+		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
 	}
 
 
@@ -306,7 +412,7 @@ public class MasterdataCreationUtil {
 	private <E> Predicate setId(CriteriaBuilder builder, Root<E> root, String id,String idColumn) {
 		if (id != null && !id.isEmpty()) {
 			Path<Object> idPath = root.get(idColumn);
-			if (id != null) {
+			if (idPath != null) {
 				return builder.equal(idPath, id);
 			}
 		}

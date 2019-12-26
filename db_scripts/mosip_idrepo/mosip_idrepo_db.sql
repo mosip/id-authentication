@@ -1,10 +1,11 @@
 DROP DATABASE IF EXISTS mosip_idrepo;
 CREATE DATABASE mosip_idrepo
 	ENCODING = 'UTF8'
---	LC_COLLATE = 'en_US.UTF-8'
---	LC_CTYPE = 'en_US.UTF-8'
+	LC_COLLATE = 'en_US.UTF-8'
+	LC_CTYPE = 'en_US.UTF-8'
 	TABLESPACE = pg_default
-	OWNER = sysadmin;
+	OWNER = sysadmin
+	TEMPLATE  = template0;
 -- ddl-end --
 COMMENT ON DATABASE mosip_idrepo IS 'ID Repo database stores all the data related to an individual for which an UIN is generated';
 -- ddl-end --

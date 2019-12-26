@@ -73,8 +73,7 @@ public class AuditRequestBuilder {
 		auditRequest.setEventId(event.getEventId());
 		auditRequest.setEventName(event.getEventName());
 		auditRequest.setEventType(event.getEventType());
-		auditRequest.setActionTimeStamp(DateUtils.parseUTCToLocalDateTime(DateUtils.getUTCCurrentDateTimeString(),
-				env.getProperty("mosip.utc-datetime-pattern")));
+		auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 		auditRequest.setHostName(hostName);
 		auditRequest.setHostIp(hostAddress);
 		auditRequest.setApplicationId(env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
@@ -91,8 +90,7 @@ public class AuditRequestBuilder {
 		request.setId("audit");
 		request.setRequest(auditRequest);
 		request.setVersion("1.0");
-		request.setRequesttime(DateUtils.parseUTCToLocalDateTime(DateUtils.getUTCCurrentDateTimeString(),
-				env.getProperty("mosip.utc-datetime-pattern")));
+		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 
 		return request;
 	}

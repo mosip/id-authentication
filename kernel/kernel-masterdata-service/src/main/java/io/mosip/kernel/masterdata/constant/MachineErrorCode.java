@@ -11,6 +11,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum MachineErrorCode {
 	MACHINE_FETCH_EXCEPTION("KER-MSD-029", "Error occured while fetching Machines"),
 	MACHINE_NOT_FOUND_EXCEPTION("KER-MSD-030", "Machine not Found"),
+	MACHINE_NOT_EXIST_EXCEPTION("KER-MSD-042", "Machine ID %s does not exist"),
 	MACHINE_INSERT_EXCEPTION("KER-MSD-063", "Error occurred while inserting Machine details"),
 	MACHINE_UPDATE_EXCEPTION("KER-MSD-087", "Error occurred while updating Machine details"),
 	MACHINE_DELETE_EXCEPTION("KER-MSD-088", "Error occurred while deleting Machine details"),
@@ -24,7 +25,12 @@ public enum MachineErrorCode {
 	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-330","No Machine Specification found for the Machine Type name:%s"),
 	MACHINE_NOT_TAGGED_TO_ZONE("KER-MSD-342","No zone assigned to the user"),
 	MACHINE_ZONE_NOT_FOUND_EXCEPTION("KER-MSD-395", "User is not authorized to decommission the machine "),
-	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),MACHINE_DECOMMISSION_EXCEPTION("XX","Machine cannot be Decommissioned as it is assigned to a Registration Center");;
+	INVALIDE_MACHINE_ZONE("KER-MSD-436", "Admin not authorized to access this Machine for this Zone"),
+	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),
+	MACHINE_ID("KER-MSD-437","Machine ID %s does not exist for primary language"),
+	MAPPED_TO_REGCENTER("KER-MSD-352","Machine cannot Decommissioned as some Registration centers are mapped");
+
+
 
 	private final String errorCode;
 	private final String errorMessage;

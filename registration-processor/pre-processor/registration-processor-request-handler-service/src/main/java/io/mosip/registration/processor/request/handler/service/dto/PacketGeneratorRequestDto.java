@@ -2,6 +2,8 @@ package io.mosip.registration.processor.request.handler.service.dto;
 
 import java.io.Serializable;
 
+import javax.validation.Valid;
+
 import io.mosip.registration.processor.core.common.rest.dto.BaseRestRequestDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +25,7 @@ public class PacketGeneratorRequestDto extends BaseRestRequestDTO implements Ser
 	 * 
 	 */
 	private static final long serialVersionUID = -7684570757540652649L;
-
+    @Valid
 	private PacketGeneratorDto request;
 
 }

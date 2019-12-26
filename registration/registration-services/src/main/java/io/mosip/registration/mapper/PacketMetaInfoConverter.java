@@ -100,34 +100,34 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 
 			// Set Left Index Finger
-			applicant.setLeftIndex(getBiometric(fingerprintMap.get("LEFTINDEX"), RegistrationConstants.INDIVIDUAL));
+			applicant.setLeftIndex(getBiometric(fingerprintMap.get("LEFT INDEX"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Middle Finger
-			applicant.setLeftMiddle(getBiometric(fingerprintMap.get("LEFTMIDDLE"), RegistrationConstants.INDIVIDUAL));
+			applicant.setLeftMiddle(getBiometric(fingerprintMap.get("LEFT MIDDLE"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Ring Finger
-			applicant.setLeftRing(getBiometric(fingerprintMap.get("LEFTRING"), RegistrationConstants.INDIVIDUAL));
+			applicant.setLeftRing(getBiometric(fingerprintMap.get("LEFT RING"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Little Finger
-			applicant.setLeftLittle(getBiometric(fingerprintMap.get("LEFTLITTLE"), RegistrationConstants.INDIVIDUAL));
+			applicant.setLeftLittle(getBiometric(fingerprintMap.get("LEFT LITTLE"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Thumb Finger
-			applicant.setLeftThumb(getBiometric(fingerprintMap.get("LEFTTHUMB"), RegistrationConstants.INDIVIDUAL));
+			applicant.setLeftThumb(getBiometric(fingerprintMap.get("LEFT THUMB"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Right Index Finger
-			applicant.setRightIndex(getBiometric(fingerprintMap.get("RIGHTINDEX"), RegistrationConstants.INDIVIDUAL));
+			applicant.setRightIndex(getBiometric(fingerprintMap.get("RIGHT INDEX"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Middle Finger
-			applicant.setRightMiddle(getBiometric(fingerprintMap.get("RIGHTMIDDLE"), RegistrationConstants.INDIVIDUAL));
+			applicant.setRightMiddle(getBiometric(fingerprintMap.get("RIGHT MIDDLE"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Ring Finger
-			applicant.setRightRing(getBiometric(fingerprintMap.get("RIGHTRING"), RegistrationConstants.INDIVIDUAL));
+			applicant.setRightRing(getBiometric(fingerprintMap.get("RIGHT RING"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Little Finger
-			applicant.setRightLittle(getBiometric(fingerprintMap.get("RIGHTLITTLE"), RegistrationConstants.INDIVIDUAL));
+			applicant.setRightLittle(getBiometric(fingerprintMap.get("RIGHT LITTLE"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Thumb Finger
-			applicant.setRightThumb(getBiometric(fingerprintMap.get("RIGHTTHUMB"), RegistrationConstants.INDIVIDUAL));
+			applicant.setRightThumb(getBiometric(fingerprintMap.get("RIGHT THUMB"), RegistrationConstants.INDIVIDUAL));
 
 			// Get captured Iris Details
 			List<IrisDetailsDTO> irisDetailsDTOs = biometricInfoDTO.getIrisDetailsDTO();
@@ -141,10 +141,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 
 			// Set Left Eye
-			applicant.setLeftEye(getBiometric(irisMap.get("LEFTEYE"), RegistrationConstants.INDIVIDUAL));
+			applicant.setLeftEye(getBiometric(irisMap.get("LEFT IRIS"), RegistrationConstants.INDIVIDUAL));
 
 			// Set Right Eye
-			applicant.setRightEye(getBiometric(irisMap.get("RIGHTEYE"), RegistrationConstants.INDIVIDUAL));
+			applicant.setRightEye(getBiometric(irisMap.get("RIGHT IRIS"), RegistrationConstants.INDIVIDUAL));
 
 			// Add captured biometric exceptions
 			identity.getExceptionBiometrics()
@@ -358,6 +358,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Get RegistrationMetaDataDTO
 		RegistrationMetaDataDTO metaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 
+		// Add reg client version
+		metaData.add(
+				buildFieldValue("regClientVersionNumber", String.valueOf(metaDataDTO.getRegClientVersionNumber())));
 		// Add Geo-location Latitude
 		metaData.add(buildFieldValue("geoLocLatitude", String.valueOf(metaDataDTO.getGeoLatitudeLoc())));
 		// Add Geo-location Longitude

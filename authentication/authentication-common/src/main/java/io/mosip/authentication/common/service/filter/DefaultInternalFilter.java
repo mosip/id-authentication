@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.kernel.core.util.StringUtils;
 import io.netty.handler.codec.http.HttpMethod;
 
@@ -24,18 +24,6 @@ import io.netty.handler.codec.http.HttpMethod;
  */
 @Component
 public class DefaultInternalFilter extends IdAuthFilter {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.common.service.filter.IdAuthFilter#validateSignature(
-	 * java.lang.String, byte[])
-	 */
-	@Override
-	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		return true;
-	}
 
 	/*
 	 * (non-Javadoc)

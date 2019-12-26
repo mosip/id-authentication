@@ -84,7 +84,7 @@ public class ManualVerificationStageTest{
 		}
 
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl, int instanceNumber) {
 			return null;
 		}
 		@Override
@@ -106,6 +106,8 @@ public class ManualVerificationStageTest{
 	{
 		ReflectionTestUtils.setField(manualverificationstage, "port", "8080");
 		ReflectionTestUtils.setField(manualverificationstage, "contextPath", "/registrationprocessor/v1/manualverification");
+		ReflectionTestUtils.setField(manualverificationstage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(manualverificationstage, "clusterManagerUrl", "/dummyPath");
 		//Mockito.when(env.getProperty(SwaggerConstant.SERVER_SERVLET_PATH)).thenReturn("/registrationprocessor/v1/manualverification");
 		Mockito.doNothing().when(router).setRoute(any());
 		Mockito.when(router.post(any())).thenReturn(null);
@@ -181,7 +183,6 @@ public class ManualVerificationStageTest{
 		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.packetinfo");
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		PacketMetaInfo info=new PacketMetaInfo();
-		Mockito.when(manualAdjudicationService.getApplicantPacketInfo(any())).thenReturn(info);
 		manualverificationstage.processPacketInfo(ctx);
 	}
 	private FileUpload setFileUpload() {

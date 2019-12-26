@@ -244,6 +244,7 @@ public class UpdateUINController extends BaseController implements Initializable
 
 						SelectionListDTO selectionListDTO = new SelectionListDTO();
 
+						
 						selectionListDTO.setName(name.isSelected());
 						selectionListDTO.setAge(age.isSelected());
 						selectionListDTO.setGender(gender.isSelected());
@@ -254,6 +255,10 @@ public class UpdateUINController extends BaseController implements Initializable
 						selectionListDTO.setCnieNumber(cnieNumber.isSelected());
 						selectionListDTO.setParentOrGuardianDetails(parentOrGuardianDetails.isSelected());
 						selectionListDTO.setForeigner(foreigner.isSelected());
+						
+						if(age.isSelected() || gender.isSelected()) {
+							selectionListDTO.setName(true);
+						}
 
 						selectionListDTO.setUinId(uinId.getText());
 

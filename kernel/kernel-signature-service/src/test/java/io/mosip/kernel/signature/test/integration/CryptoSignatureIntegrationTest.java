@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -23,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.signature.test.SignatureTestBootApplication;
 
 @SpringBootTest(classes = SignatureTestBootApplication.class)
@@ -77,6 +77,31 @@ public class CryptoSignatureIntegrationTest {
 		when(signatureUtil.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(false);
 		mockMvc.perform(post("/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHTIMESTAMP))
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void signResponseTimeStampValidationValid() throws Exception {
+		when(signatureUtil.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+		mockMvc.perform(post("/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHTIMESTAMP))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void signResponsStatusFalse() throws Exception {
+		when(signatureUtil.validateWithPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+		.thenReturn(false);
+		mockMvc.perform(post("/public/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHPUBLICKEY))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void signResponseTimeStampValidationException() throws Exception {
+		when(signatureUtil.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenThrow(InvalidKeySpecException.class);
+		mockMvc.perform(post("/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHTIMESTAMP))
+				.andExpect(status().isInternalServerError());
 	}
 
 }

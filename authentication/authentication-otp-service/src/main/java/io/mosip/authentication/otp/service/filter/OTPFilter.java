@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
-import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.AuthPolicy;
 
 /**
  * The Class OTPFilter.
@@ -25,14 +25,6 @@ public class OTPFilter extends IdAuthFilter {
 
 	/** The Constant OTP_REQUEST. */
 	private static final String OTP_REQUEST = "otp-request";
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#validateSignature(java.lang.String, byte[])
-	 */
-	@Override
-	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		return true;
-	}
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
@@ -76,5 +68,5 @@ public class OTPFilter extends IdAuthFilter {
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		// Nothing to do
 	}
-
+	
 }

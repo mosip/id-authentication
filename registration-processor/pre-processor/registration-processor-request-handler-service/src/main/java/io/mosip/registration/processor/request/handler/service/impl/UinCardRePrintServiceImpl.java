@@ -2,6 +2,7 @@ package io.mosip.registration.processor.request.handler.service.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,9 +18,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.CardType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -31,6 +38,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.vid.VidRequestDto;
 import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.request.handler.service.PacketCreationService;
@@ -45,6 +53,7 @@ import io.mosip.registration.processor.request.handler.service.exception.RegBase
 import io.mosip.registration.processor.request.handler.service.exception.VidCreationException;
 import io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService;
 import io.mosip.registration.processor.request.handler.upload.validator.RequestHandlerRequestValidator;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 /**
  * The Class ResidentServiceRePrintServiceImpl.
@@ -76,6 +85,9 @@ public class UinCardRePrintServiceImpl {
 	@Autowired
 	Utilities utilities;
 
+	@Autowired
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
 	/** The vid type. */
 	@Value("${registration.processor.id.repo.vidType}")
 	private String vidType;
@@ -101,32 +113,29 @@ public class UinCardRePrintServiceImpl {
 	/**
 	 * Creates the packet.
 	 *
-	 * @param uinCardRePrintRequestDto
-	 *            the uin card re print request dto
+	 * @param uinCardRePrintRequestDto the uin card re print request dto
 	 * @return the packet generator res dto
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
 	public PacketGeneratorResDto createPacket(UinCardRePrintRequestDto uinCardRePrintRequestDto)
 			throws RegBaseCheckedException, IOException {
-
+		boolean isTransactional = false;
 		String uin = null;
 		String vid = null;
 		byte[] packetZipBytes = null;
 		PacketGeneratorResDto packetGeneratorResDto = new PacketGeneratorResDto();
 		validator.validate(uinCardRePrintRequestDto.getRequesttime(), uinCardRePrintRequestDto.getId(),
 				uinCardRePrintRequestDto.getVersion());
-		if (validator.isValidCenter(uinCardRePrintRequestDto.getRequest().getCenterId())
-				&& validator.isValidMachine(uinCardRePrintRequestDto.getRequest().getMachineId())
-				&& validator.isValidRePrintRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
-				&& validator.isValidIdType(uinCardRePrintRequestDto.getRequest().getIdType())
-				&& validator.isValidCardType(uinCardRePrintRequestDto.getRequest().getCardType())
-				&& isValidUinVID(uinCardRePrintRequestDto)) {
-
-			try {
+		try {
+			if (validator.isValidCenter(uinCardRePrintRequestDto.getRequest().getCenterId())
+					&& validator.isValidMachine(uinCardRePrintRequestDto.getRequest().getMachineId())
+					&& validator
+							.isValidRePrintRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
+					&& validator.isValidIdType(uinCardRePrintRequestDto.getRequest().getIdType())
+					&& validator.isValidCardType(uinCardRePrintRequestDto.getRequest().getCardType())
+					&& isValidUinVID(uinCardRePrintRequestDto)) {
 				String cardType = uinCardRePrintRequestDto.getRequest().getCardType();
 				String regType = uinCardRePrintRequestDto.getRequest().getRegistrationType();
 
@@ -139,7 +148,7 @@ public class UinCardRePrintServiceImpl {
 
 					VidRequestDto vidRequestDto = new VidRequestDto();
 					RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
-					VidResponseDTO response = new VidResponseDTO();
+					VidResponseDTO response;
 					vidRequestDto.setUIN(uin);
 					vidRequestDto.setVidType("Temporary");
 					request.setId(env.getProperty(VID_CREATE_ID));
@@ -179,7 +188,7 @@ public class UinCardRePrintServiceImpl {
 						uinCardRePrintRequestDto.getRequest().getRegistrationType(),
 						uinCardRePrintRequestDto.getRequest().getCenterId(),
 						uinCardRePrintRequestDto.getRequest().getMachineId(), vid, cardType);
-				packetZipBytes = packetCreationService.create(registrationDTO);
+				packetZipBytes = packetCreationService.create(registrationDTO, null);
 				String rid = registrationDTO.getRegistrationId();
 				String packetCreatedDateTime = rid.substring(rid.length() - 14);
 				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
@@ -195,37 +204,51 @@ public class UinCardRePrintServiceImpl {
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), rid,
 							"UinCardRePrintServiceImpl::createPacket():: RID link to UIN failed");
-			} catch (Exception e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(),
-						PlatformErrorMessages.RPR_RHS_REG_BASE_EXCEPTION.getMessage(), ExceptionUtils.getStackTrace(e));
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RHS_REG_BASE_EXCEPTION,
-						ExceptionUtils.getStackTrace(e), e);
 
 			}
-
+			isTransactional = true;
+			return packetGeneratorResDto;
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION, e);
+		} catch (VidCreationException
+				| io.mosip.registration.processor.packet.storage.exception.VidCreationException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", PlatformErrorMessages.RPR_PGS_VID_CREATION_EXCEPTION.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_VID_CREATION_EXCEPTION, e);
+		} catch (IdObjectValidationFailedException | IdObjectIOException | ParseException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"",
+					PlatformErrorMessages.RPR_PGS_ID_OBJECT_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_ID_OBJECT_EXCEPTION, e);
+		} finally {
+			String eventId = isTransactional ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = isTransactional ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
+			String eventType = isTransactional ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
+			String message = isTransactional ? StatusUtil.UIN_CARD_REPRINT_SUCCESS.getMessage()
+					: StatusUtil.UIN_CARD_REPRINT_FAILED.getMessage();
+			String moduleName = ModuleName.REQUEST_HANDLER_SERVICE.toString();
+			String moduleId = isTransactional ? StatusUtil.UIN_CARD_REPRINT_SUCCESS.getCode()
+					: StatusUtil.UIN_CARD_REPRINT_FAILED.getCode();
+			auditLogRequestBuilder.createAuditRequestBuilder(message, eventId, eventName, eventType, moduleId,
+					moduleName, packetGeneratorResDto.getRegistrationId());
 		}
-		return packetGeneratorResDto;
 	}
 
 	/**
 	 * Creates the registration DTO object.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param registrationType
-	 *            the registration type
-	 * @param centerId
-	 *            the center id
-	 * @param machineId
-	 *            the machine id
-	 * @param vid
-	 *            the vid
-	 * @param cardType
-	 *            the card type
+	 * @param uin              the uin
+	 * @param registrationType the registration type
+	 * @param centerId         the center id
+	 * @param machineId        the machine id
+	 * @param vid              the vid
+	 * @param cardType         the card type
 	 * @return the registration DTO
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
 			String machineId, String vid, String cardType) throws RegBaseCheckedException {
@@ -244,18 +267,12 @@ public class UinCardRePrintServiceImpl {
 	/**
 	 * Gets the registration meta data DTO.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param registrationType
-	 *            the registration type
-	 * @param centerId
-	 *            the center id
-	 * @param machineId
-	 *            the machine id
-	 * @param vid
-	 *            the vid
-	 * @param cardType
-	 *            the card type
+	 * @param uin              the uin
+	 * @param registrationType the registration type
+	 * @param centerId         the center id
+	 * @param machineId        the machine id
+	 * @param vid              the vid
+	 * @param cardType         the card type
 	 * @return the registration meta data DTO
 	 */
 	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String uin, String registrationType, String centerId,
@@ -275,8 +292,7 @@ public class UinCardRePrintServiceImpl {
 	/**
 	 * Gets the demographic DTO.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param uin the uin
 	 * @return the demographic DTO
 	 */
 	private DemographicDTO getDemographicDTO(String uin) {
@@ -293,13 +309,10 @@ public class UinCardRePrintServiceImpl {
 	/**
 	 * Generate registration id.
 	 *
-	 * @param centerId
-	 *            the center id
-	 * @param machineId
-	 *            the machine id
+	 * @param centerId  the center id
+	 * @param machineId the machine id
 	 * @return the string
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private String generateRegistrationId(String centerId, String machineId) throws RegBaseCheckedException {
 
@@ -307,8 +320,8 @@ public class UinCardRePrintServiceImpl {
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
 		String rid = null;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		JSONObject ridJson = new JSONObject();
+		ResponseWrapper<?> responseWrapper;
+		JSONObject ridJson;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 
@@ -347,11 +360,9 @@ public class UinCardRePrintServiceImpl {
 	/**
 	 * Checks if is valid uin VID.
 	 *
-	 * @param uinCardRePrintRequestDto
-	 *            the uin card re print request dto
+	 * @param uinCardRePrintRequestDto the uin card re print request dto
 	 * @return true, if is valid uin VID
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	public boolean isValidUinVID(UinCardRePrintRequestDto uinCardRePrintRequestDto) throws RegBaseCheckedException {
 		boolean isValid = false;

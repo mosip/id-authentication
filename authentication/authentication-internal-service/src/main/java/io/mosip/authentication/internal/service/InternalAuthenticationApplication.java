@@ -25,6 +25,7 @@ import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
@@ -39,7 +40,7 @@ import io.mosip.authentication.internal.service.integration.RestHelperImpl;
 import io.mosip.authentication.internal.service.manager.InternalAuthTransactionManager;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
@@ -54,7 +55,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @SpringBootApplication(exclude=HibernateDaoConfig.class)
 @Import(value = {UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		DecryptorImpl.class, KeyManager.class, RestHelperImpl.class, RestRequestFactory.class, IdInfoFetcherImpl.class,
+		KeyManager.class, RestHelperImpl.class, RestRequestFactory.class, IdInfoFetcherImpl.class,
 		OTPManager.class, MasterDataManager.class, MatchInputBuilder.class, IdRepoManager.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class,
@@ -62,7 +63,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioApiImpl.class,
 		IdObjectPatternValidator.class, DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class,IdaTransactionInterceptor.class,
-		InternalAuthTransactionManager.class,AuthTxnServiceImpl.class,AuthtypeStatusImpl.class })
+		InternalAuthTransactionManager.class,AuthTxnServiceImpl.class,AuthtypeStatusImpl.class, JWSValidation.class,
+		PartnerServiceImpl.class})
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.adapter.*" })
 public class InternalAuthenticationApplication {
 

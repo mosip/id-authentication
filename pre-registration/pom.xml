@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.10.0</version>
+		<version>1.0.3</version>
 	</parent>
 
 	<groupId>io.mosip.preregistration</groupId>
@@ -88,8 +88,8 @@
 	<modules>
 		<module>pre-registration-core</module>
 		<module>pre-registration-login-service</module>
-		<module>pre-registration-demographic-service</module>
 		<module>pre-registration-demographic-service-impl</module>
+		<module>pre-registration-demographic-service</module>
 		<module>pre-registration-document-service</module>
 		<module>pre-registration-booking-service</module>
 		<module>pre-registration-datasync-service</module>

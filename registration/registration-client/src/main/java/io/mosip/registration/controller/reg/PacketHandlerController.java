@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -57,6 +56,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -429,6 +429,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void createPacket() {
 
+		BioServiceImpl.clearAllCaptures();
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -464,6 +465,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
 							getScene(createRoot).setRoot(createRoot);
+							
+							//SessionContext.setAutoLogout(false);
 						}
 					}
 
@@ -484,6 +487,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void lostUIN() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -539,6 +544,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 							} else {
 								getScene(createRoot).setRoot(createRoot);
 								demographicDetailController.lostUIN();
+								
+								//SessionContext.setAutoLogout(false);
 							}
 						}
 					} catch (IOException ioException) {
@@ -681,6 +688,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				getScene(uploadRoot);
+				
+				//Clear all registration data
+				clearRegistrationData();
+				
+				//Enable Auto-Logout
+				SessionContext.setAutoLogout(true);
+				
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,
@@ -691,6 +705,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	public void updateUIN() {
 
+		BioServiceImpl.clearAllCaptures();
 			if (isMachineRemapProcessStarted()) {
 
 				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -736,6 +751,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 							} else {
 								getScene(root);
+								
+								//SessionContext.setAutoLogout(false);
 							}
 						}
 					}
@@ -770,6 +787,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void onBoardUser() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -818,6 +837,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					"RegistrationAcknowledgement." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 		}
 
+		//Clear all bio-captures data
+		BioServiceImpl.clearAllCaptures();
+		
 		// packet creation
 		ResponseDTO response = packetHandlerService.handle(registrationDTO);
 
@@ -861,8 +883,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();
-					syncAndUploadPacket();
 				}
+				/*sync the packet to server irrespective of eod enable/disable */
+				syncAndUploadPacket();
 
 				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
@@ -933,11 +956,18 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 */
 	public void loadReRegistrationScreen() {
 
+		BioServiceImpl.clearAllCaptures();
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - LOAD_RE_REGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
+			/*
+			 * check if there is no pending re register packets and blocks the user to
+			 * proceed further
+			 */
+			if (!isPacketsPendingForReRegister())
+				return;
 		}
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading re-registration screen sarted.");
 		try {
@@ -989,11 +1019,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 			String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
 
-			if (response.equals(RegistrationConstants.EMPTY)) {
+			// modified as per the story MOS-29831
+			if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
+					.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+				if (response.equals(RegistrationConstants.EMPTY)) {
 
-				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
-			} else {
-				generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
+					packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+				} else {
+					generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
+				}
 			}
 
 		}
@@ -1110,7 +1144,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.getSyncControlOfJob(RegistrationConstants.OPT_TO_REG_PDS_J00003);
 
 		if (syncControl != null) {
-			Timestamp lastPreRegPacketDownloaded = syncControl.getUpdDtimes();
+			Timestamp lastPreRegPacketDownloaded = syncControl.getLastSyncDtimes();
 
 			if (lastPreRegPacketDownloaded != null) {
 

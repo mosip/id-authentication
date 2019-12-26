@@ -5,9 +5,9 @@ import static org.junit.Assert.assertThat;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 
@@ -60,7 +60,7 @@ public class KeymanagerUtilTest {
 	@Before
 	public void setupKey() throws NoSuchAlgorithmException {
 		KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KeymanagerConstant.RSA);
-		keyGen.initialize(1024);
+		keyGen.initialize(2048);
 		keyPairMaster = keyGen.generateKeyPair();
 		keyPair = keyGen.generateKeyPair();
 		X509Certificate x509Certificate=CertificateUtility.generateX509Certificate(keyPair, "mosip", "mosip", "mosip", "india", LocalDateTime.of(2010, 1, 1, 12, 00), LocalDateTime.of(2011, 1, 1, 12, 00));
@@ -74,7 +74,6 @@ public class KeymanagerUtilTest {
 		byte[] key = keymanagerUtil.encryptKey(keyPair.getPrivate(), keyPairMaster.getPublic());
 		assertThat(key, isA(byte[].class));
 		assertThat(keymanagerUtil.decryptKey(key, keyPairMaster.getPrivate()), isA(byte[].class));
-
 	}
 	
 	

@@ -56,10 +56,7 @@ public class RegistrationTransactionController {
 	
 	@Autowired
 	private Environment env;
-	
-	@Autowired
-	TokenValidator tokenValidator;
-	
+
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
 	
@@ -91,8 +88,8 @@ public class RegistrationTransactionController {
 			throws Exception {
 		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
-		try {	
-			dtoList =transactionService.getTransactionByRegId(rid,langCode);
+		try {
+			dtoList = transactionService.getTransactionByRegId(rid,langCode);
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 
 				headers.add(RESPONSE_SIGNATURE,

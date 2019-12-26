@@ -44,7 +44,6 @@ import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -86,6 +85,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private MasterDataFilterHelper masterDataFilterHelper;
 	@Autowired
 	private PageUtils pageUtils;
+	
+
 
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:newHolidayDate,h.holidayId.holidayName = :newHolidayName   WHERE h.holidayId.locationCode = :locationCode and h.holidayId.holidayName = :holidayName and h.holidayId.holidayDate = :holidayDate and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 
@@ -371,6 +372,7 @@ public class HolidayServiceImpl implements HolidayService {
 			dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 			dto.setSort(Collections.emptyList());
 			List<HolidaySearchDto> resultDto = new ArrayList<>();
+			pageUtils.validateSortField(HolidaySearchDto.class, Holiday.class, dto.getSort());
 			if (filterValidator.validate(HolidaySearchDto.class, dto.getFilters())) {
 				OptionalFilter optionalFilter = new OptionalFilter(addList);
 				Page<Holiday> page = masterdataSearchHelper.searchMasterdata(Holiday.class, dto,
@@ -399,7 +401,7 @@ public class HolidayServiceImpl implements HolidayService {
 	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Holiday.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				List<?> filterValues = masterDataFilterHelper.filterValues(Holiday.class, filterDto, filterValueDto);
 				filterValues.forEach(filterValue -> {
@@ -453,5 +455,7 @@ public class HolidayServiceImpl implements HolidayService {
 			searchDto.setName(locationNames);
 		}
 	}
+	
+	
 
 }

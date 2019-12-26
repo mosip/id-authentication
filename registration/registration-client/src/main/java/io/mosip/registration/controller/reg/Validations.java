@@ -301,18 +301,14 @@ public class Validations extends BaseController {
 			boolean showAlert, String errorMessage) {
 		boolean isInputValid = false;
 		if (blackListedWords != null && !id.contains(RegistrationConstants.ON_TYPE)) {
-			if (blackListedWords.contains(node.getText())) {
-				isInputValid = false;
-				generateInvalidValueAlert(parentPane, id, String.format("%s %s", node.getText(), errorMessage), showAlert);
-			} else {
-				
-				List<String> invalidWorlds = blackListedWords.stream().flatMap(l1->Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(l2->{
-					return l1.equalsIgnoreCase(l2) || Pattern.compile(Pattern.quote(l1), Pattern.CASE_INSENSITIVE).matcher(l2).find();
-				})).collect(Collectors.toList());
-				
-				String bWords = String.join(", ", invalidWorlds);
-				if (bWords.length() > 0) {
-					generateInvalidValueAlert(parentPane, id, String.format("%s %s", bWords, errorMessage), showAlert);
+			String[] splittedText = node.getText().split("\\s+");
+
+			for (String text : splittedText) {
+				if (blackListedWords.contains(text)) {
+					isInputValid = false;
+					generateInvalidValueAlert(parentPane, id, String.format("%s %s", node.getText(), errorMessage),
+							showAlert);
+					break;
 				} else {
 					isInputValid = true;
 				}
@@ -339,7 +335,8 @@ public class Validations extends BaseController {
 							&& !getRegistrationDTOFromSession().getSelectionListDTO().isAddress())
 							|| (id.matches(RegistrationConstants.POI_DOCUMENT)
 									&& !getRegistrationDTOFromSession().getSelectionListDTO().isName())
-							|| id.matches(RegistrationConstants.POR_DOCUMENT))) {
+							|| (id.matches(RegistrationConstants.POR_DOCUMENT) && 
+									!getRegistrationDTOFromSession().getSelectionListDTO().isParentOrGuardianDetails()))) {
 				return true;
 			}
 			if (getRegistrationDTOFromSession().getSelectionListDTO() == null

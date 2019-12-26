@@ -232,8 +232,10 @@ public class DemodedupeProcessorTest {
 		jsonValue2.setLanguage("eng");
 		jsonValue2.setValue("gender");
 		jsonArray1[0] = jsonValue2;
+		List<JsonValue[]> jsonArrayList = new ArrayList<>();
+		jsonArrayList.add(jsonArray);
 
-		individualDemoDedupe.setName(jsonArray);
+		individualDemoDedupe.setName(jsonArrayList);
 		individualDemoDedupe.setDateOfBirth("dateOfBirth");
 		individualDemoDedupe.setGender(jsonArray1);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
@@ -283,7 +285,7 @@ public class DemodedupeProcessorTest {
 
 		registrationStatusDto.setRetryCount(null);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(), any(), any());
 
 	}
 
@@ -437,7 +439,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(), anyString())).thenReturn(abisResponseDtos);
 		Mockito.when(packetInfoManager.getAbisResponseDetRecordsList(any())).thenReturn(abisResponseDetDtos);
 		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRegIds);
-		doNothing().when(packetInfoManager).saveManualAdjudicationData(anyList(), anyString(), any());
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(anyList(), anyString(), any(), any(), any());
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getIsValid());

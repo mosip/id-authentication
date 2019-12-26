@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -54,7 +56,7 @@ public interface LocationService {
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
 	public ResponseWrapper<Location> createLocation(
-			LocationDto locationDto);
+			LocationCreateDto locationDto);
 
 
 	/**
@@ -153,4 +155,6 @@ public interface LocationService {
 	 * @return names corresponding to the eneted filter dto
 	 */
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto);
+	
+	public LocationLevelResponseDto getLocationCodeByLangCode(String langCode);
 }

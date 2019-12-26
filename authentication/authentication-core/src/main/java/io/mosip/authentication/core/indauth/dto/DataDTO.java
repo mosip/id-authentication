@@ -10,6 +10,8 @@ import lombok.Data;
  */
 @Data
 public class DataDTO {
+	
+	private DigitalId digitalId;
 
 	/** The Value for type */
 	private String bioType;

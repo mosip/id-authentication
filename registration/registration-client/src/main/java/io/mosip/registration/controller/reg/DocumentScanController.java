@@ -39,6 +39,7 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.doc.category.DocumentCategoryService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
@@ -978,6 +979,7 @@ public class DocumentScanController extends BaseController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					clearAllValues();
+					fingerPrintCaptureController.duplicateCheckLbl.setText("");
 					if (newValue) {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;
@@ -999,9 +1001,11 @@ public class DocumentScanController extends BaseController {
 				}
 			});
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {
+				BioServiceImpl.clearAllCaptures();
 				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 			});
 			bioExceptionToggleLabel2.setOnMouseClicked((event) -> {
+				BioServiceImpl.clearAllCaptures();
 				switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
 			});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,

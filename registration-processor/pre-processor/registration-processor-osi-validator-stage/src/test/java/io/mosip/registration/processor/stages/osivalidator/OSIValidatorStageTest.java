@@ -23,6 +23,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -33,9 +34,11 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.ParentOnHoldException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -105,6 +108,9 @@ public class OSIValidatorStageTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		ReflectionTestUtils.setField(osiValidatorStage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(osiValidatorStage, "clusterManagerUrl", "/dummyPath");
 
 		@SuppressWarnings("unchecked")
 		RegistrationProcessorRestClientService<Object> mockObj = Mockito
@@ -186,6 +192,23 @@ public class OSIValidatorStageTest {
 	public void apiResourceExceptionTest() throws Exception {
 		Mockito.when(umcValidator.isValidUMC(anyString(), any(InternalRegistrationStatusDto.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(oSIValidator.isValidOSI(anyString(), any(InternalRegistrationStatusDto.class))).thenThrow(new ApisResourceAccessException(""));
+
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+	
+	@Test
+	public void ParentOnHoldExceptionTest() throws Exception {
+		InternalRegistrationStatusDto regStatusDto = new InternalRegistrationStatusDto();
+		regStatusDto.setStatusCode(StatusUtil.UIN_RID_NOT_FOUND.getCode());
+		regStatusDto.setStatusComment("ParentOnHold");
+		regStatusDto.setSubStatusCode(StatusUtil.UIN_RID_NOT_FOUND.getCode());
+		
+		
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(regStatusDto);
+		Mockito.when(umcValidator.isValidUMC(anyString(), any(InternalRegistrationStatusDto.class))).thenReturn(Boolean.TRUE);
+		Mockito.when(oSIValidator.isValidOSI(anyString(), any(InternalRegistrationStatusDto.class))).thenThrow(new ParentOnHoldException(StatusUtil.UIN_RID_NOT_FOUND.getCode(),StatusUtil.UIN_RID_NOT_FOUND.getMessage()));
 
 		MessageDTO messageDto = osiValidatorStage.process(dto);
 		assertEquals(true, messageDto.getInternalError());

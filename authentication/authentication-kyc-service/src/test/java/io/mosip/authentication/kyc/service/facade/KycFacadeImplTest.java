@@ -34,6 +34,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
@@ -59,6 +60,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -67,7 +69,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class, PartnerServiceImpl.class })
 public class KycFacadeImplTest {
 
 	@InjectMocks
@@ -117,6 +119,10 @@ public class KycFacadeImplTest {
 	
 	@Mock
 	private AuthtypeStatusImpl authTypeStatus;
+	
+	@Autowired
+	PartnerService partnerService;
+	
 	@Before
 	public void beforeClass() {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
@@ -129,6 +135,10 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(kycFacade, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
+		ReflectionTestUtils.setField(authFacadeImpl, "partnerService", partnerService);
+		ReflectionTestUtils.setField(kycFacade, "partnerService", partnerService);
+		
+
 	}
 
 	@Test
@@ -207,7 +217,7 @@ public class KycFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456")).thenReturn(authStatusInfo);
+		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456", true)).thenReturn(authStatusInfo);
 		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
 		kycFacade.authenticateIndividual(authRequestDTO, true, "123456");
 	}

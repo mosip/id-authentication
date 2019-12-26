@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerAuthRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -50,7 +49,7 @@ public class CryptomanagerController {
 	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN','RESIDENT')")
 	@ResponseFilter
 	@PostMapping(value = "/encrypt", produces = "application/json")
 	public ResponseWrapper<CryptomanagerResponseDto> encrypt(
@@ -66,46 +65,13 @@ public class CryptomanagerController {
 	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN','RESIDENT')")
 	@ResponseFilter
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public ResponseWrapper<CryptomanagerResponseDto> decrypt(
 			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
 		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(cryptomanagerService.decrypt(cryptomanagerRequestDto.getRequest()));
-		return response;
-	}
-	
-	// to be removed after Crypto Core merge with main branch
-	/**
-	 * Controller for Decrypt the data
-	 * 
-	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
-	 * @return {@link CryptomanagerResponseDto} decrypted Data
-	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@PostMapping(value = "/auth/decrypt", produces = "application/json")
-	public ResponseWrapper<CryptomanagerResponseDto> authDecrypt(
-			@ApiParam("AAD(Advance Authentication Data), Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerAuthRequestDto> cryptomanagerAuthRequestDto) {
-		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(cryptomanagerService.authDecrypt(cryptomanagerAuthRequestDto.getRequest()));
-		return response;
-	}
-	
-	/**
-	 * Controller for Decrypt the data
-	 * 
-	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
-	 * @return {@link CryptomanagerResponseDto} decrypted Data
-	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@PostMapping(value = "/auth/encrypt", produces = "application/json")
-	public ResponseWrapper<CryptomanagerResponseDto> authEncrypt(
-			@ApiParam("AAD(Advance Authentication Data), Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerAuthRequestDto> cryptomanagerAuthRequestDto) {
-		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(cryptomanagerService.authEncrypt(cryptomanagerAuthRequestDto.getRequest()));
 		return response;
 	}
 }

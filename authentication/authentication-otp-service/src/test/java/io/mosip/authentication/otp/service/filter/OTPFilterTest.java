@@ -19,13 +19,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class OTPFilterTest.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { IdAuthFilter.class })
+@ContextConfiguration(classes = { IdAuthFilter.class, JWSValidation.class, PartnerServiceImpl.class })
 @WebMvcTest 
 public class OTPFilterTest {
 
@@ -41,6 +44,11 @@ public class OTPFilterTest {
 	@Autowired
 	private ObjectMapper mapper;
 	
+	@Autowired
+	private JWSValidation jwsValidation;
+	
+	@Autowired
+	PartnerService partnerService;
 	
 	
 	/**
@@ -50,6 +58,9 @@ public class OTPFilterTest {
 	public void before() {
 		ReflectionTestUtils.setField(filter, "mapper", mapper);
 		ReflectionTestUtils.setField(filter, "env", environment);
+		ReflectionTestUtils.setField(filter, "jwsValidation", jwsValidation);
+		ReflectionTestUtils.setField(filter, "partnerService", partnerService);
+
 	}
 
 

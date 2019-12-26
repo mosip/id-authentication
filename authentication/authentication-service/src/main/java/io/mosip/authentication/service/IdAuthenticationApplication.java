@@ -24,6 +24,7 @@ import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
@@ -37,7 +38,7 @@ import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
+import io.mosip.kernel.crypto.jce.util.JWSValidation;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
@@ -54,7 +55,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @SpringBootApplication(exclude = HibernateDaoConfig.class)
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		DecryptorImpl.class, CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class, RestHelperImpl.class,
+		CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class, RestHelperImpl.class,
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, IdRepoManager.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class, OTPManager.class,
@@ -63,7 +64,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, IdObjectPatternValidator.class,
 		BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
-		IdAuthTransactionManager.class, RestRequestFactory.class, RestHelperImpl.class,AuthtypeStatusImpl.class})
+		IdAuthTransactionManager.class, RestRequestFactory.class, RestHelperImpl.class,AuthtypeStatusImpl.class,
+		JWSValidation.class, PartnerServiceImpl.class})
 @ComponentScan({ "io.mosip.authentication.service.*" })
 public class IdAuthenticationApplication {
 

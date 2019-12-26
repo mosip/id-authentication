@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.util.ZipUtils;
 
 /**

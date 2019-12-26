@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
@@ -41,7 +42,6 @@ import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.UBtree;
 
 /**
  * @author Sidhant Agarwal
@@ -101,7 +101,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchLocationTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -115,13 +115,13 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevel(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(location);
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(location);
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchLocationContainsTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -137,13 +137,13 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(Arrays.asList(location));
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchLocationStartsWithTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -159,13 +159,13 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(Arrays.asList(location));
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void searchLocationExceptionTest() throws Exception {
 		List<Location> locations = new ArrayList<>();
 		Location location = new Location();
@@ -181,7 +181,7 @@ public class LocationSearchFilterIntegrationTest {
 		String json = objectMapper.writeValueAsString(request);
 		when(locationRepository.findAllByLangCode(Mockito.anyString())).thenReturn(locations);
 		when(locationRepository.findLocationByHierarchyLevelContains(Mockito.anyShort(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(Arrays.asList(location));
+				Mockito.anyString(),Mockito.anyBoolean())).thenReturn(Arrays.asList(location));
 		MvcResult response = mockMvc
 				.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andReturn();
@@ -189,14 +189,12 @@ public class LocationSearchFilterIntegrationTest {
 		ResponseWrapper<LocationSearchDto> responseWrapper = objectMapper.readValue(errorResponse,
 				ResponseWrapper.class);
 
-		System.out.println();
-
 		assertThat(responseWrapper.getErrors().get(0).getMessage(),
 				is("Column city doesn't support filter type error-type"));
 	}
 
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterAllEmptyTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -229,7 +227,7 @@ public class LocationSearchFilterIntegrationTest {
 
 	
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterAllWithTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -261,7 +259,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 	
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterUniqueEmptyTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -284,7 +282,7 @@ public class LocationSearchFilterIntegrationTest {
 				.andExpect(status().isOk());
 	}
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterUniqueWithTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -308,7 +306,7 @@ public class LocationSearchFilterIntegrationTest {
 	}
 	
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterInvalidTypeExceptionLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("Zone");
@@ -325,7 +323,7 @@ public class LocationSearchFilterIntegrationTest {
 				.andExpect(status().isOk());
 	}
 	@Test
-	@WithUserDetails("zonal-admin")
+	@WithUserDetails("global-admin")
 	public void filterInvalidColumnNameExceptionLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
 		filterDto.setColumnName("InvalidColumn");

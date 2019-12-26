@@ -255,6 +255,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 		dto.getFilters().removeAll(removeList);
 		Pagination pagination = dto.getPagination();
 		List<SearchSort> sort = dto.getSort();
+		pageUtils.validateSortField(DocumentCategory.class, sort);
 		dto.setPagination(new Pagination(0, Integer.MAX_VALUE));
 		dto.setSort(Collections.emptyList());
 		Page<DocumentCategory> pageCategory = masterdataSearchHelper.searchMasterdata(DocumentCategory.class, dto,

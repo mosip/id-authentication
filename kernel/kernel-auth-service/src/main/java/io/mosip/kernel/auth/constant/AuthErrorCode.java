@@ -8,6 +8,7 @@ package io.mosip.kernel.auth.constant;
  *
  */
 public enum AuthErrorCode {
+	
 	/**
 	 * UNAUTHORIZED
 	 */
@@ -15,7 +16,7 @@ public enum AuthErrorCode {
 	/**
 	 * FORBIDDEN
 	 */
-	FORBIDDEN("KER-ATH-403", "Forbidden"),
+	FORBIDDEN("KER-ATH-403", "Forbidden : "),
 	/**
 	 * Token expired
 	 */
@@ -23,7 +24,7 @@ public enum AuthErrorCode {
 	/**
 	 * Invalid Token
 	 */
-	INVALID_TOKEN("KER-ATH-401", "Invalid Token"),
+	INVALID_TOKEN("KER-ATH-401", "Authentication Failed : Invalid Token :"),
 	/**
 	 * FORBIDDEN
 	 */

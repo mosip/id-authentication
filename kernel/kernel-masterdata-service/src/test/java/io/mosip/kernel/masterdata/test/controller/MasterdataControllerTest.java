@@ -44,14 +44,18 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordListRequestDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.WeekDaysResponseDto;
+import io.mosip.kernel.masterdata.dto.WorkingDaysResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlackListedWordsResponse;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ExceptionalHolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -59,6 +63,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -77,8 +82,10 @@ import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.service.ExceptionalHolidayService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.RegWorkingNonWorkingService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
@@ -95,7 +102,7 @@ public class MasterdataControllerTest {
 	private static final String JSON_STRING_RESPONSE = "{\r\n" + "\"registrationConfiguration\":\r\n"
 			+ "							{\"keyValidityPeriodPreRegPack\":\"3\",\"smsNotificationTemplateRegCorrection\":\"OTP for your request is $otp\",\"defaultDOB\":\"1-Jan\",\"smsNotificationTemplateOtp\":\"OTP for your request is $otp\",\"supervisorVerificationRequiredForExceptions\":\"true\",\"keyValidityPeriodRegPack\":\"3\",\"irisRetryAttempts\":\"10\",\"fingerprintQualityThreshold\":\"120\",\"multifactorauthentication\":\"true\",\"smsNotificationTemplateUpdateUIN\":\"OTP for your request is $otp\",\"supervisorAuthType\":\"password\",\"maxDurationRegPermittedWithoutMasterdataSyncInDays\":\"10\",\"modeOfNotifyingIndividual\":\"mobile\",\"emailNotificationTemplateUpdateUIN\":\"Hello $user the OTP is $otp\",\"maxDocSizeInMB\":\"150\",\"emailNotificationTemplateOtp\":\"Hello $user the OTP is $otp\",\"emailNotificationTemplateRegCorrection\":\"Hello $user the OTP is $otp\",\"faceRetry\":\"12\",\"noOfFingerprintAuthToOnboardUser\":\"10\",\"smsNotificationTemplateLostUIN\":\"OTP for your request is $otp\",\"supervisorAuthMode\":\"IRIS\",\"operatorRegSubmissionMode\":\"fingerprint\",\"officerAuthType\":\"password\",\"faceQualityThreshold\":\"25\",\"gpsDistanceRadiusInMeters\":\"3\",\"automaticSyncFreqServerToClient\":\"25\",\"maxDurationWithoutMasterdataSyncInDays\":\"7\",\"loginMode\":\"bootable dongle\",\"irisQualityThreshold\":\"25\",\"retentionPeriodAudit\":\"3\",\"fingerprintRetryAttempts\":\"234\",\"emailNotificationTemplateNewReg\":\"Hello $user the OTP is $otp\",\"passwordExpiryDurationInDays\":\"3\",\"emailNotificationTemplateLostUIN\":\"Hello $user the OTP is $otp\",\"blockRegistrationIfNotSynced\":\"10\",\"noOfIrisAuthToOnboardUser\":\"10\",\"smsNotificationTemplateNewReg\":\"OTP for your request is $otp\"},\r\n"
 			+ "\r\n" + "\"globalConfiguration\":\r\n"
-			+ "						{\"mosip.kernel.crypto.symmetric-algorithm-name\":\"AES\",\"mosip.kernel.virus-scanner.port\":\"3310\",\"mosip.kernel.email.max-length\":\"50\",\"mosip.kernel.email.domain.ext-max-lenght\":\"7\",\"mosip.kernel.rid.sequence-length\":\"5\",\"mosip.kernel.uin.uin-generation-cron\":\"0 * * * * *\",\"mosip.kernel.rid.centerid-length\":\"5\",\"mosip.kernel.email.special-char\":\"!#$%&'*+-\\/=?^_`{|}~.\",\"mosip.kernel.rid.requesttime-length\":\"14\",\"mosip.kernel.vid.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.asymmetric-algorithm-length\":\"2048\",\"mosip.kernel.uin.min-unused-threshold\":\"100000\",\"mosip.kernel.prid.sequence-limit\":\"3\",\"auth.role.prefix\":\"ROLE_\",\"mosip.kernel.email.domain.ext-min-lenght\":\"2\",\"auth.server.validate.url\":\"http:\\/\\/localhost:8091\\/auth\\/validate_token\",\"mosip.kernel.machineid.length\":\"4\",\"mosip.supported-languages\":\"eng,ara,fra,hin,deu\",\"mosip.kernel.prid.length\":\"14\",\"auth.header.name\":\"Authorization\",\"mosip.kernel.crypto.asymmetric-algorithm-name\":\"RSA\",\"mosip.kernel.phone.min-length\":\"9\",\"mosip.kernel.uin.length\":\"10\",\"mosip.kernel.virus-scanner.host\":\"104.211.209.102\",\"mosip.kernel.email.min-length\":\"7\",\"mosip.kernel.rid.machineid-length\":\"5\",\"mosip.kernel.prid.repeating-block-limit\":\"3\",\"mosip.kernel.vid.length.repeating-block-limit\":\"2\",\"mosip.kernel.rid.length\":\"29\",\"mosip.kernel.phone.max-length\":\"15\",\"mosip.kernel.prid.repeating-limit\":\"2\",\"mosip.kernel.uin.restricted-numbers\":\"786,666\",\"mosip.kernel.email.domain.special-char\":\"-\",\"mosip.kernel.vid.length.repeating-limit\":\"2\",\"mosip.kernel.registrationcenterid.length\":\"4\",\"mosip.kernel.phone.special-char\":\"+ -\",\"mosip.kernel.uin.uins-to-generate\":\"200000\",\"mosip.kernel.vid.length\":\"16\",\"mosip.kernel.tokenid.length\":\"36\",\"mosip.kernel.uin.length.repeating-block-limit\":\"2\",\"mosip.kernel.tspid.length\":\"4\",\"mosip.kernel.tokenid.sequence-limit\":\"3\",\"mosip.kernel.uin.length.repeating-limit\":\"2\",\"mosip.kernel.uin.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.symmetric-algorithm-length\":\"256\",\"mosip.kernel.data-key-splitter\":\"#KEY_SPLITTER#\"}\r\n"
+			+ "						{\"mosip.kernel.crypto.symmetric-algorithm-name\":\"AES\",\"mosip.kernel.virus-scanner.port\":\"3310\",\"mosip.kernel.email.max-length\":\"50\",\"mosip.kernel.email.domain.ext-max-lenght\":\"7\",\"mosip.kernel.rid.sequence-length\":\"5\",\"mosip.kernel.uin.uin-generation-cron\":\"0 * * * * *\",\"mosip.kernel.rid.centerid-length\":\"5\",\"mosip.kernel.email.special-char\":\"!#$%&'*+-\\/=?^_`{|}~.\",\"mosip.kernel.rid.requesttime-length\":\"14\",\"mosip.kernel.vid.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.asymmetric-key-length\":\"2048\",\"mosip.kernel.uin.min-unused-threshold\":\"100000\",\"mosip.kernel.prid.sequence-limit\":\"3\",\"auth.role.prefix\":\"ROLE_\",\"mosip.kernel.email.domain.ext-min-lenght\":\"2\",\"auth.server.validate.url\":\"http:\\/\\/localhost:8091\\/auth\\/validate_token\",\"mosip.kernel.machineid.length\":\"4\",\"mosip.supported-languages\":\"eng,ara,fra,hin,deu\",\"mosip.kernel.prid.length\":\"14\",\"auth.header.name\":\"Authorization\",\"mosip.kernel.crypto.asymmetric-algorithm-name\":\"RSA\",\"mosip.kernel.phone.min-length\":\"9\",\"mosip.kernel.uin.length\":\"10\",\"mosip.kernel.virus-scanner.host\":\"104.211.209.102\",\"mosip.kernel.email.min-length\":\"7\",\"mosip.kernel.rid.machineid-length\":\"5\",\"mosip.kernel.prid.repeating-block-limit\":\"3\",\"mosip.kernel.vid.length.repeating-block-limit\":\"2\",\"mosip.kernel.rid.length\":\"29\",\"mosip.kernel.phone.max-length\":\"15\",\"mosip.kernel.prid.repeating-limit\":\"2\",\"mosip.kernel.uin.restricted-numbers\":\"786,666\",\"mosip.kernel.email.domain.special-char\":\"-\",\"mosip.kernel.vid.length.repeating-limit\":\"2\",\"mosip.kernel.registrationcenterid.length\":\"4\",\"mosip.kernel.phone.special-char\":\"+ -\",\"mosip.kernel.uin.uins-to-generate\":\"200000\",\"mosip.kernel.vid.length\":\"16\",\"mosip.kernel.tokenid.length\":\"36\",\"mosip.kernel.uin.length.repeating-block-limit\":\"2\",\"mosip.kernel.tspid.length\":\"4\",\"mosip.kernel.tokenid.sequence-limit\":\"3\",\"mosip.kernel.uin.length.repeating-limit\":\"2\",\"mosip.kernel.uin.length.sequence-limit\":\"3\",\"mosip.kernel.keygenerator.symmetric-key-length\":\"256\",\"mosip.kernel.data-key-splitter\":\"#KEY_SPLITTER#\"}\r\n"
 			+ "}";
 
 	@Autowired
@@ -122,6 +129,12 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private BiometricAttributeService biometricAttributeService;
+
+	@MockBean
+	private RegWorkingNonWorkingService regWorkingNonWorkingService;
+	
+	@MockBean
+	private ExceptionalHolidayService exceptionalHolidayService;
 
 	// private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{
 	// \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\",
@@ -210,6 +223,10 @@ public class MasterdataControllerTest {
 	private TemplateFileFormatService templateFileFormatService;
 
 	private ObjectMapper mapper;
+	
+	WeekDaysResponseDto weekDaysResponseDto=new WeekDaysResponseDto();
+	WorkingDaysResponseDto workingDaysResponseDto=new WorkingDaysResponseDto();
+	ExceptionalHolidayResponseDto exceptionalHolidayResponseDto=new ExceptionalHolidayResponseDto();
 
 	@Before
 	public void setUp() {
@@ -236,7 +253,24 @@ public class MasterdataControllerTest {
 		templateSetup();
 
 		templateFileFormatSetup();
+		
+		regWorkingDaySetup();
+		
+		exceptionalHolidaySetUp();
 
+	}
+
+	public void regWorkingDaySetup() {
+
+		List<WeekDaysDto> WeekDaysResponseList = new ArrayList<>();
+		WeekDaysDto weekDaysDto = new WeekDaysDto();
+		WeekDaysResponseList.add(weekDaysDto);
+	}
+	
+	public void exceptionalHolidaySetUp() {
+		List<ExceptionalHolidayDto> exceptionalHolidayList=new ArrayList<>();
+		ExceptionalHolidayDto exceptionalHolidayDto=new ExceptionalHolidayDto();
+		exceptionalHolidayList.add(exceptionalHolidayDto);
 	}
 
 	private void templateSetup() {
@@ -303,7 +337,7 @@ public class MasterdataControllerTest {
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
 		locationDto.setName("INDIA");
-		locationDto.setHierarchyLevel((short)0);
+		locationDto.setHierarchyLevel((short) 0);
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
 		locationDto.setLangCode("HIN");
@@ -312,7 +346,7 @@ public class MasterdataControllerTest {
 		locationHierarchies.add(locationDto);
 		locationDto.setCode("KAR");
 		locationDto.setName("KARNATAKA");
-		locationDto.setHierarchyLevel((short)1);
+		locationDto.setHierarchyLevel((short) 1);
 		locationDto.setHierarchyName("STATE");
 		locationDto.setParentLocCode("IND");
 		locationDto.setLangCode("eng");
@@ -626,7 +660,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("resident")
 	public void testGetDoucmentTypesForDocumentCategoryAndLangCode() throws Exception {
 
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
@@ -638,7 +672,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("resident")
 	public void testDocumentTypeNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("KER-DOC-10001",
@@ -772,27 +806,25 @@ public class MasterdataControllerTest {
 	}
 
 	/**
+	 * @Test @WithUserDetails("test") public void testSaveLocationHierarchy() throws
+	 *       Exception {
+	 *       Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
+	 *       mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+	 *       .content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+	 *       }
+	 * 
+	 * @Test @WithUserDetails("test") public void
+	 *       testNegativeSaveLocationHierarchy() throws Exception {
+	 *       Mockito.when(locationService.createLocationHierarchy(Mockito.any()))
+	 *       .thenThrow(new MasterDataServiceException("1111111", "Error from
+	 *       database"));
+	 *       mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
+	 *       .content(LOCATION_JSON_EXPECTED_POST))
+	 *       .andExpect(MockMvcResultMatchers.status().isInternalServerError()); }
+	 * 
+	 **/
 	@Test
-	@WithUserDetails("test")
-	public void testSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.createLocationHierarchy(Mockito.any())).thenReturn(locationCodeDto);
-		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-
-	@Test
-	@WithUserDetails("test")
-	public void testNegativeSaveLocationHierarchy() throws Exception {
-		Mockito.when(locationService.createLocationHierarchy(Mockito.any()))
-				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
-		mockMvc.perform(MockMvcRequestBuilders.post("/locations").contentType(MediaType.APPLICATION_JSON)
-				.content(LOCATION_JSON_EXPECTED_POST))
-				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
-	}
-
-**/
-	@Test
-	@WithUserDetails("central-admin")
+	@WithUserDetails("global-admin")
 	public void testUpdateLocationDetails() throws Exception {
 		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
@@ -800,7 +832,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("central-admin")
+	@WithUserDetails("global-admin")
 	public void testUpdateLocationDetailsException() throws Exception {
 		Mockito.when(locationService.updateLocationDetails(Mockito.any()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
@@ -952,7 +984,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("resident")
 	public void getAllTemplateByTemplateTypeCodeTest() throws Exception {
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		templateResponseDto.setTemplates(templateDtoList);
@@ -1092,6 +1124,35 @@ public class MasterdataControllerTest {
 				.thenThrow(new DataNotFoundException("11111", "Data not found exception"));
 
 		mockMvc.perform(get("/registrationcenters/validate/1/eng/2017-12-12T17:59:59.999Z")).andExpect(status().isOk());
+
+	}
+
+	// -----------------------------WorkingDayControllerTest------------------------
+	@Test
+	@WithUserDetails("reg-processor")
+	public void weekDaysControllerTest() throws Exception {
+
+		Mockito.when(regWorkingNonWorkingService.getWeekDaysList("10001", "eng")).thenReturn(weekDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/weekdays/10001/eng")).andExpect(status().isOk());
+
+	}
+
+	@Test
+	@WithUserDetails("reg-processor")
+	public void workDaysControllerTest() throws Exception {
+
+		Mockito.when(regWorkingNonWorkingService.getWorkingDays("10001", "101")).thenReturn(workingDaysResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/101")).andExpect(status().isOk());
+
+	}
+	
+	// -----------------------------ExceptionalHolidayControllerTest------------------------
+	@Test
+	@WithUserDetails("reg-processor")
+	public void exceptionalHolidayControllerTest() throws Exception {
+
+		Mockito.when(exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng")).thenReturn(exceptionalHolidayResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng")).andExpect(status().isOk());
 
 	}
 

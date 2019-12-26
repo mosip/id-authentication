@@ -72,7 +72,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	public List<AutnTxnDto> fetchAuthTxnDetails(AutnTxnRequestDto authtxnrequestdto)
 			throws IdAuthenticationBusinessException {
 		List<AutnTxn> autnTxnList;
-		String individualIdType = authtxnrequestdto.getIndividualIdType();
+		String individualIdType = IdType.getIDTypeStrOrDefault(authtxnrequestdto.getIndividualIdType());
 		
 		if(!IdType.UIN.getType().equals(individualIdType) && !IdType.VID.getType().equals(individualIdType)) {
 			throw new IdAuthenticationBusinessException(
@@ -110,36 +110,42 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 			String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
 			String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes());
 			
-			PageRequest pageRequest = null;
-			if(!fetchAllRecords) {
-				if (pageStart < 1) {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(
-									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-									"pageStart - " + pageStart ));
-				}
-				
-				if (pageFetch < 1) {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(
-									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-									"pageFetch - " + pageFetch));
-				}
-				
-				int pageStartIndex = pageStart - 1;
-				pageRequest = PageRequest.of(pageStartIndex, pageFetch);
-				
-				logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
-						"pageStart >>" + pageStart + "\t" + "pageFetch >>" + pageFetch);
-			}
+			PageRequest pageRequest = getPageRequest(pageStart, pageFetch, fetchAllRecords);
 			
 			autnTxnList = authtxnRepo.findByUin(hashedUin, pageRequest);
 			return fetchAuthResponse(autnTxnList);
 		}
 		
 		return Collections.emptyList();
+	}
+
+	private PageRequest getPageRequest(Integer pageStart, Integer pageFetch, boolean fetchAllRecords)
+			throws IdAuthenticationBusinessException {
+		PageRequest pageRequest = null;
+		if(!fetchAllRecords) {
+			if (pageStart < 1) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"pageStart - " + pageStart ));
+			}
+			
+			if (pageFetch < 1) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"pageFetch - " + pageFetch));
+			}
+			
+			int pageStartIndex = pageStart - 1;
+			pageRequest = PageRequest.of(pageStartIndex, pageFetch);
+			
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
+					"pageStart >>" + pageStart + "\t" + "pageFetch >>" + pageFetch);
+		}
+		return pageRequest;
 	}
 
 	/**

@@ -12,6 +12,7 @@ import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,6 +58,7 @@ import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dao.impl.RegisteredDeviceDAO;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -70,15 +72,16 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
-import io.mosip.registration.dto.json.metadata.FieldValue;
+import io.mosip.registration.dto.json.metadata.DigitalId;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
+import io.mosip.registration.dto.json.metadata.RegisteredDevice;
 import io.mosip.registration.entity.DocumentType;
-import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
@@ -113,9 +116,10 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 	@Autowired
 	private AuditDAO auditDAO;
 	@Autowired
-	private MachineMappingDAO machineMappingDAO;
-	@Autowired
 	private DocumentTypeDAO documentTypeDAO;
+	@Autowired
+	private RegisteredDeviceDAO registeredDeviceDAO;
+
 
 	/*
 	 * (non-Javadoc)
@@ -125,14 +129,15 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
+	@PreAuthorizeUserId(roles = { AuthenticationAdvice.OFFICER_ROLE, AuthenticationAdvice.SUPERVISOR_ROLE,
+			AuthenticationAdvice.ADMIN_ROLE })
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
 		try {
 
 			validateContexts();
-			validateRegistrationDTO(registrationDTO); 
-			
+			validateRegistrationDTO(registrationDTO);
+
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
 
@@ -141,7 +146,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 			// and display error message to the user.
 			idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
 					registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory());
-			
+
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
 			SessionContext.map().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
@@ -199,9 +204,9 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 				}
 			}
 
-			//Convert the Document Name to Codes
+			// Convert the Document Name to Codes
 			setDocumentCodes(registrationDTO);
-			
+
 			// Generating Demographic JSON as byte array
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
@@ -307,17 +312,15 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 
 				filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
-				LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, String.format(loggerMessageForCBEFF,
-						RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
+				LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+						String.format(loggerMessageForCBEFF, RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
 				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			}
 
-			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
-					.getFace();
+			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace();
 			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINNonBiometric()
-						&& !registrationDTO.isUpdateUINChild()) {
+				if (registrationDTO.isUpdateUINNonBiometric() && !registrationDTO.isUpdateUINChild()) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
 							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
 				} else {
@@ -413,8 +416,8 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
 			int qualityScore, String imageType) {
 		if (image != null) {
-			BIR bir = buildBIR(image, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
-					Arrays.asList(SingleType.FACE), Arrays.asList());
+			BIR bir = buildBIR(image, CbeffConstant.FORMAT_TYPE_FACE, qualityScore, Arrays.asList(SingleType.FACE),
+					Arrays.asList());
 
 			birs.add(bir);
 			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
@@ -452,7 +455,8 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 						|| personType.equals(RegistrationConstants.INTRODUCER))
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage());
+						BIR bir = buildFingerprintBIR(segmentedFingerprint,
+								segmentedFingerprint.getFingerPrintISOImage());
 						birs.add(bir);
 						birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
 								bir.getBdbInfo().getIndex());
@@ -533,7 +537,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 
 	private List<String> getFingerSubType(String fingerType) {
 		List<String> fingerSubTypes = new ArrayList<>();
-		fingerType=fingerType.toLowerCase();
+		fingerType = fingerType.toLowerCase();
 		if (fingerType.startsWith(RegistrationConstants.LEFT.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
 			fingerType = fingerType.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.EMPTY);
@@ -541,7 +545,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
 			fingerType = fingerType.replace(RegistrationConstants.RIGHT.toLowerCase(), RegistrationConstants.EMPTY);
 		}
-		fingerType=fingerType.trim();
+		fingerType = fingerType.trim();
 		if (fingerType.equalsIgnoreCase(RegistrationConstants.THUMB.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
 		} else {
@@ -552,21 +556,25 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 		return fingerSubTypes;
 	}
 
-	private List<FieldValue> getRegisteredDevices() {
-		List<RegDeviceMaster> registeredDevices = machineMappingDAO
-				.getDevicesMappedToRegCenter(ApplicationContext.applicationLanguage());
+	private List<RegisteredDevice> getRegisteredDevices() {
 
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<>();
-		FieldValue capturedRegisteredDevice;
+		List<RegisteredDevice> capturedRegisteredDevices = new ArrayList<>();
 
-		if (registeredDevices != null) {
-			for (RegDeviceMaster registeredDevice : registeredDevices) {
-				capturedRegisteredDevice = new FieldValue();
-				capturedRegisteredDevice.setLabel(registeredDevice.getRegDeviceSpec().getRegDeviceType().getName());
-				capturedRegisteredDevice.setValue(registeredDevice.getRegMachineSpecId().getId());
-				capturedRegisteredDevices.add(capturedRegisteredDevice);
-			}
-		}
+		MosipBioDeviceManager.getDeviceRegistry().forEach((deviceName, device) -> {
+				RegisteredDevice registerdDevice = new RegisteredDevice();
+				registerdDevice.setDeviceCode(device.getDeviceId());
+				registerdDevice.setDeviceServiceVersion(device.getSerialVersion());
+				DigitalId digitalId = new DigitalId();
+				digitalId.setSerialNo(device.getDeviceId());
+				digitalId.setMake(device.getDeviceMake());
+				digitalId.setType(device.getDeviceType());
+				digitalId.setModel(device.getDeviceModel());
+				digitalId.setDp(device.getDeviceProviderName());
+				digitalId.setDpId(device.getDeviceProviderId());
+				digitalId.setDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toString());
+				registerdDevice.setDigitalId(digitalId);
+				capturedRegisteredDevices.add(registerdDevice);
+		});
 
 		return capturedRegisteredDevices;
 	}
@@ -656,8 +664,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 
 	private boolean isOperatorAuthNotProvided(Map<String, Boolean> biometricsCapturedFlags, OSIDataDTO osiData) {
 		return !(osiData.isOperatorAuthenticatedByPassword() || osiData.isOperatorAuthenticatedByPIN()
-				|| biometricsCapturedFlags.getOrDefault(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED,
-						false));
+				|| biometricsCapturedFlags.getOrDefault(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, false));
 	}
 
 	private Map<String, Boolean> validateBiometrics(RegistrationDTO registration,
@@ -689,7 +696,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 
 		biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED,
 				isBiometricCaptured(registration.getBiometricDTO().getOperatorBiometricDTO()));
-		
+
 		if (isEnabled(RegistrationConstants.SUPERVISOR_AUTH_CONFIG)) {
 			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED,
 					hasApplicantBiometricException || hasAuthenticationBiometricException);
@@ -763,10 +770,11 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 							RegistrationExceptionConstants.REG_PKT_CREATE_NO_CBEFF_TAG_FLAG.getErrorMessage()));
 		}
 	}
-	
+
 	private void setDocumentCodes(RegistrationDTO registrationDTO) {
-		IndividualIdentity individualIdentity = (IndividualIdentity)registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity();
-		
+		IndividualIdentity individualIdentity = (IndividualIdentity) registrationDTO.getDemographicDTO()
+				.getDemographicInfoDTO().getIdentity();
+
 		setDocumentTypeCode(individualIdentity.getProofOfAddress());
 		setDocumentTypeCode(individualIdentity.getProofOfDateOfBirth());
 		setDocumentTypeCode(individualIdentity.getProofOfException());
@@ -775,11 +783,12 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 	}
 
 	private void setDocumentTypeCode(DocumentDetailsDTO documentDetailsDTO) {
-		if(documentDetailsDTO != null) {
+		if (documentDetailsDTO != null) {
 			List<DocumentType> documentTypes = documentTypeDAO.getDocTypeByName(documentDetailsDTO.getType());
-			
-			if(!documentTypes.isEmpty()) documentDetailsDTO.setType(documentTypes.get(0).getCode());
+
+			if (!documentTypes.isEmpty())
+				documentDetailsDTO.setType(documentTypes.get(0).getCode());
 		}
 	}
-	
+
 }

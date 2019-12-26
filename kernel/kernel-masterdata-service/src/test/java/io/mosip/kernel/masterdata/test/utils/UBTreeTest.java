@@ -13,9 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import io.mosip.kernel.core.masterdata.util.model.Node;
+import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.utils.Node;
-import io.mosip.kernel.masterdata.utils.UBtree;
 
 @RunWith(JUnit4.class)
 public class UBTreeTest {

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -41,9 +42,11 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.MaskedResponseDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -96,6 +99,9 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	private IdAuthTransactionManager transactionManager;
+	
+	@Autowired
+	private PartnerService partnerService;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
@@ -116,10 +122,13 @@ public class OTPServiceImpl implements OTPService {
 		String hashedUin = HMACUtils.digestAsPlainText(HMACUtils.generateHash(individualId.getBytes()));
 		String requestTime = otpRequestDto.getRequestTime();
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
+		
+		boolean isInternal = partnerId != null && partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL);
+
 		if (isOtpFlooded(hashedUin, requestTime)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			String individualIdType = otpRequestDto.getIndividualIdType();
+			String individualIdType = IdType.getIDTypeStrOrDefault(otpRequestDto.getIndividualIdType());
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
 			String uin = String.valueOf(idResDTO.get("uin"));
 			String userIdForSendOtp = uin;
@@ -148,10 +157,9 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
 			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, userIdForSendOtp, userIdTypeForSendOtp, valueMap);
-			Boolean staticTokenRequired = partnerId != null
-					&& !partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL)
-							? env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class)
-							: false;
+			
+			boolean staticTokenRequired = !isInternal && env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);
+			
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
@@ -168,22 +176,26 @@ public class OTPServiceImpl implements OTPService {
 					processChannel(channel, phoneNumber, email, maskedResponseDTO);
 				}
 				otpResponseDTO.setResponse(maskedResponseDTO);
-				auditTxn(otpRequestDto, uin, staticTokenId, true);
+				saveTxn(otpRequestDto, uin, staticTokenId, true, partnerId, isInternal);
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 						" is OTP generated: " + isOtpGenerated);
 			} else {
-				auditTxn(otpRequestDto, uin, staticTokenId, false);
+				saveTxn(otpRequestDto, uin, staticTokenId, false, partnerId, isInternal);
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 						this.getClass().getName(), "OTP Generation failed");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
 		}
 
-		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
+		auditHelper.audit(AuditModules.OTP_REQUEST, getAuditEvent(!isInternal), otpRequestDto.getIndividualId(),
 				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), AuditModules.OTP_REQUEST.getDesc());
 
 		return otpResponseDTO;
 
+	}
+	
+	private AuditEvents getAuditEvent(boolean isAuth) {
+		return isAuth ? AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE : AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE;
 	}
 
 	/**
@@ -196,10 +208,17 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void auditTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status)
+	private void saveTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status, String partnerId, boolean isInternal)
 			throws IdAuthenticationBusinessException {
-		AutnTxn authTxn = AuthTransactionBuilder.newInstance().withOtpRequest(otpRequestDto)
-				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId).withStatus(status).withUin(uin)
+		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
+		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
+				.withOtpRequest(otpRequestDto)
+				.withRequestType(RequestType.OTP_REQUEST)
+				.withStaticToken(staticTokenId)
+				.withStatus(status)
+				.withUin(uin)
+				.withPartner(partner)
+				.withInternal(isInternal)
 				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
 		idAuthService.saveAutnTxn(authTxn);
 	}

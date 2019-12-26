@@ -1,13 +1,10 @@
 package io.mosip.registration.processor.status.entity;
-	
+
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * The Class RegistrationStatusEntity.
@@ -49,8 +46,8 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	private String createdBy;
 
 	/** The create date time. */
-	@Column(name = "cr_dtimes",updatable=false)
-	@CreationTimestamp
+	@Column(name = "cr_dtimes", updatable = false)
+
 	private LocalDateTime createDateTime;
 
 	/** The updated by. */
@@ -59,7 +56,6 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime updateDateTime;
 
 	/** The is deleted. */
@@ -68,7 +64,6 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime deletedDateTime;
 
 	/** The retry count. */
@@ -89,7 +84,6 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 
 	/** The latest transaction times. */
 	@Column(name = "latest_trn_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime latestTransactionTimes;
 
 	/** The registration stage name. */

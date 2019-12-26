@@ -71,7 +71,6 @@ import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
-import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -310,7 +309,7 @@ public class LdapDataStore implements DataStore {
 
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
-			Dn searchBase = new Dn("ou=roles,c="+dataBaseConfig.getCommonName());
+			Dn searchBase = new Dn("ou=roles,c=morocco");
 			String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=" + userdn + "))";
 
 			EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
@@ -339,11 +338,11 @@ public class LdapDataStore implements DataStore {
 	}
 
 	private Dn createUserDn(String userName) throws LdapInvalidDnException {
-		return new Dn("uid=" + userName + ",ou=people,c="+dataBaseConfig.getCommonName());
+		return new Dn("uid=" + userName + ",ou=people,c=morocco");
 	}
 
 	private Dn createRoleDn(String role) throws LdapInvalidDnException {
-		return new Dn("cn=" + role + ",ou=roles,c="+dataBaseConfig.getCommonName());
+		return new Dn("cn=" + role + ",ou=roles,c=morocco");
 	}
 
 	@Override
@@ -354,7 +353,7 @@ public class LdapDataStore implements DataStore {
 		try {
 			connection = createAnonymousConnection();
 			List<Role> roleDtos = new ArrayList<>();
-			Dn searchBase = new Dn("ou=roles,c="+dataBaseConfig.getCommonName());
+			Dn searchBase = new Dn("ou=roles,c=morocco");
 			String searchFilter = "(objectClass=organizationalRole)";
 
 			rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
@@ -423,7 +422,7 @@ public class LdapDataStore implements DataStore {
 		try
 		{
 		connection = createAnonymousConnection();
-		Dn searchBase = new Dn("ou=people,c="+dataBaseConfig.getCommonName());
+		Dn searchBase = new Dn("ou=people,c=morocco");
 		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson))";
 		EntryCursor peoplesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 		for (Entry entry : peoplesData) {
@@ -488,7 +487,7 @@ public class LdapDataStore implements DataStore {
 			modItems[1] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
 					new BasicAttribute(LdapConstants.PWD_FAILURE_TIME_ATTRIBUTE));
 
-			context.modifyAttributes("uid=" + userId + ",ou=people,c="+dataBaseConfig.getCommonName(), modItems);
+			context.modifyAttributes("uid=" + userId + ",ou=people,c=morocco", modItems);
 			authZResponseDto = new AuthZResponseDto();
 			authZResponseDto.setMessage("Successfully Unblocked");
 			authZResponseDto.setStatus("Sucesss");
@@ -534,7 +533,7 @@ public class LdapDataStore implements DataStore {
 				ModificationItem[] modItems = new ModificationItem[1];
 				modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("userPassword", newUserPassword));
-				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c="+dataBaseConfig.getCommonName(), modItems);
+				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
 				authZResponseDto = new AuthZResponseDto();
 				authZResponseDto.setMessage("Successfully changed");
 				authZResponseDto.setStatus("Success");
@@ -580,7 +579,7 @@ public class LdapDataStore implements DataStore {
 				ModificationItem[] modItems = new ModificationItem[1];
 				modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("userPassword", newUserPassword));
-				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c="+dataBaseConfig.getCommonName(), modItems);
+				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
 
 				authZResponseDto = new AuthZResponseDto();
 				authZResponseDto.setMessage("Successfully the password has been reset");
@@ -634,7 +633,7 @@ public class LdapDataStore implements DataStore {
 	 */
 	private String getPassword(String userid, LdapContext ldapContext) throws Exception {
 		String encryptedPassword = null;
-		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c="+dataBaseConfig.getCommonName());
+		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c=morocco");
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		NamingEnumeration<SearchResult> searchResult = ldapContext.search(searchBase.getName(),
@@ -684,7 +683,7 @@ public class LdapDataStore implements DataStore {
 	}
 
 	@Override
-	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+	public MosipUserDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
 		DirContext context = null;
 		try {
@@ -749,7 +748,9 @@ public class LdapDataStore implements DataStore {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
-		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
+		MosipUserDto dto= new MosipUserDto();
+		dto.setUserId(userCreationRequestDto.getUserName());
+		return dto;
 
 	}
 
@@ -857,7 +858,7 @@ public class LdapDataStore implements DataStore {
 
 	private NamingEnumeration<SearchResult> getUserDetail(String mobileNumber)
 			throws LdapInvalidDnException, NamingException {
-		Dn searchBase = new Dn("ou=people,c="+dataBaseConfig.getCommonName());
+		Dn searchBase = new Dn("ou=people,c=morocco");
 		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
 				+ mobileNumber + "))";
 		LdapContext context = getContext();
@@ -904,7 +905,7 @@ public class LdapDataStore implements DataStore {
 	private NamingEnumeration<SearchResult> getUserDetailSearchResult(String userId)
 			throws NamingException, LdapInvalidDnException {
 		LdapContext context = getContext();
-		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c="+dataBaseConfig.getCommonName());
+		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(),
@@ -976,7 +977,7 @@ public class LdapDataStore implements DataStore {
 			throws NamingException, LdapInvalidDnException {
 
 		LdapContext context = getContext();
-		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c="+dataBaseConfig.getCommonName());
+		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
 		SearchControls searchControls = new SearchControls();
 		NamingEnumeration<SearchResult> searchResult = null;
 
@@ -1058,8 +1059,8 @@ public class LdapDataStore implements DataStore {
 	 */
 	private String getRolesBasedOnUid(String uid) throws LdapInvalidDnException, NamingException {
 		LdapContext context = getContext();
-		Dn searchBase = new Dn("ou=roles,c="+dataBaseConfig.getCommonName());
-		String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid=" + uid + ",ou=people,c="+dataBaseConfig.getCommonName()+"))";
+		Dn searchBase = new Dn("ou=roles,c=morocco");
+		String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid=" + uid + ",ou=people,c=morocco))";
 		NamingEnumeration<SearchResult> searchResultRoles = context.search(searchBase.getName(), searchFilter,
 				new SearchControls());
 		Set<String> roles = new HashSet<>();

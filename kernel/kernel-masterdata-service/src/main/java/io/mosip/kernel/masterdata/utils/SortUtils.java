@@ -7,8 +7,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
@@ -85,8 +91,21 @@ public class SortUtils {
 		return fields;
 	}
 
+	private <T extends BaseEntity> List<Field> extractEntityFields(Class<T> clazz) {
+		List<Field> fields = new ArrayList<>();
+		fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+		fields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
+		return fields;
+
+	}
+
 	private Field findField(List<Field> fields, String name) {
 		Optional<Field> field = fields.stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
+		if(StringUtils.isBlank(name))
+		{
+			throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorCode(),
+					MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorMessage());
+		}
 		if (field.isPresent()) {
 			return field.get();
 		} else {
@@ -94,6 +113,64 @@ public class SortUtils {
 					String.format(MasterdataSearchErrorCode.INVALID_SORT_FIELD.getErrorMessage(), name));
 
 		}
+	}
+
+	/**
+	 * @param clazz
+	 *            - generic class
+	 * @param searchSorts
+	 *            - {@link SearchSort}
+	 */
+	public <T extends BaseEntity> void validateSortField(Class<T> clazz, List<SearchSort> searchSorts) {
+		List<Field> fields = extractEntityFields(clazz);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+			findType(searchSort.getSortType());
+		}
+
+	}
+
+	private void findType(String sortType) {
+		if(StringUtils.isBlank(sortType))
+		{
+			throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorCode(),
+					MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorMessage());
+		}
+		else if(OrderEnum.asc.name().equalsIgnoreCase(sortType) || OrderEnum.desc.name().equalsIgnoreCase(sortType))
+		{
+			return ;
+		}
+		else
+		{
+			throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_TYPE.getErrorCode(), String
+					.format(MasterdataSearchErrorCode.INVALID_SORT_TYPE.getErrorMessage(), sortType));
+		}
+	}
+
+	public <T> void validateSortLocationField(Class<LocationSearchDto> clazz, Class<Location> class2,List<SearchSort> searchSorts) {
+		List<Field> fields = extractFields(clazz);
+		List<Field> entityFields = extractEntityFields(class2);
+		fields.addAll(entityFields);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+			findType(searchSort.getSortType());
+		}
+	}
+	
+	public <T extends BaseEntity,E> void validateSortField(Class<E> clazz, Class<T> class2,List<SearchSort> searchSorts) {
+		List<Field> fields = extractFields(clazz);
+		List<Field> entityFields = extractEntityFields(class2);
+		fields.addAll(entityFields);
+		for (SearchSort searchSort : searchSorts) {
+			findField(fields, searchSort.getSortField());
+			findType(searchSort.getSortType());
+		}
+	}
+
+	private<T> List<Field> extractFields(Class<T> clazz) {
+		List<Field> fields = new ArrayList<>();
+		fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+		return fields;
 	}
 
 }

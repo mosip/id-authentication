@@ -3,6 +3,7 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class MandatoryValidation {
 				.getIdentity();
 		JSONObject idJsonObj = getDemoIdentity(regId);
 		Map<String, Boolean> fieldValidationMap = new HashMap<>();
-		fieldValidationMap.put(identiy.getName().getValue(), identiy.getName().getIsMandatory());
+		Arrays.stream(identiy.getName().getValue().split(",")).forEach(name->fieldValidationMap.put(name, identiy.getName().getIsMandatory()));
 		fieldValidationMap.put(identiy.getDob().getValue(), identiy.getDob().getIsMandatory());
 		fieldValidationMap.put(identiy.getGender().getValue(), identiy.getGender().getIsMandatory());
 		fieldValidationMap.put(identiy.getParentOrGuardianRID().getValue(),
@@ -77,9 +78,7 @@ public class MandatoryValidation {
 		fieldValidationMap.put(identiy.getIndividualBiometrics().getValue(),
 				identiy.getIndividualBiometrics().getIsMandatory());
 		fieldValidationMap.put(identiy.getAge().getValue(), identiy.getAge().getIsMandatory());
-		fieldValidationMap.put(identiy.getAddressLine1().getValue(), identiy.getAddressLine1().getIsMandatory());
-		fieldValidationMap.put(identiy.getAddressLine2().getValue(), identiy.getAddressLine2().getIsMandatory());
-		fieldValidationMap.put(identiy.getAddressLine3().getValue(), identiy.getAddressLine3().getIsMandatory());
+		Arrays.stream(identiy.getAddress().getValue().split(",")).forEach(address->fieldValidationMap.put(address, identiy.getAddress().getIsMandatory()));
 		fieldValidationMap.put(identiy.getRegion().getValue(), identiy.getRegion().getIsMandatory());
 		fieldValidationMap.put(identiy.getProvince().getValue(), identiy.getProvince().getIsMandatory());
 		fieldValidationMap.put(identiy.getPostalCode().getValue(), identiy.getPostalCode().getIsMandatory());

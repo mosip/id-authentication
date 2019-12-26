@@ -60,7 +60,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_PHONETIC_LANG = "mosip.phonetic.lang.";
 	public static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 	public static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
-	public static final String CRYPTO_PARTNER_ID = "cryptomanager.partner.id";
+	public static final String PARTNER_REFERENCE_ID = "partner.reference.id";
+	public static final String PARTNER_BIO_REFERENCE_ID = "partner.biometric.reference.id";
 	public static final String IRIS_IMG_RIGHT_VALUE = ".irisimg.right.match.value";
 	public static final String IRIS_IMG_LEFT_VALUE = ".irisimg.left.match.value";
 	public static final String FACE_IMG_VALUE = ".faceimg.match.value";
@@ -73,6 +74,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.auth.types.allowed";
 	public static final String INTERNAL_APPLICATION_ID = "internal.application.id";
 	public static final String INTERNAL_REFERENCE_ID = "internal.reference.id";
+	public static final String INTERNAL_BIO_REFERENCE_ID = "internal.biometric.reference.id";
 	public static final String SIGN_RESPONSE = "mosip.signed.response.header";
 	public static final String MOSIP_IDA_API_ID = "ida.api.id.";
 	public static final String MOSIP_IDA_API_VERSION = "ida.api.version.";
@@ -88,6 +90,10 @@ public final class IdAuthConfigKeyConstants {
 	public static final String FINGERPRINT_PROVIDER = "ida.fingerprint.provider";
 	public static final String FACE_PROVIDER = "ida.face.provider";
 	public static final String IRIS_PROVIDER = "ida.iris.provider";
+	public static final String COMPOSITE_BIO_PROVIDER = "ida.composite.biometric.provider";
 	public static final String OTP_INTERNAL_ID_SUFFIX = "otp.internal";
+	public static final String ID_TYPE_ALIAS = "mosip.%s.alias";
+	public static final String IDA_AAD_LASTBYTES_NUM = "ida.aad.lastbytes.num";
+	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
 
 }

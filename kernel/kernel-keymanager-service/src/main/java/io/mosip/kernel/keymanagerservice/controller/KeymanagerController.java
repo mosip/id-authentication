@@ -50,12 +50,6 @@ public class KeymanagerController {
 	 */
 	@Autowired
 	KeymanagerService keymanagerService;
-	
-/*	*//**
-	 * Instance of simpleAES
-	 *//*
-	@Autowired
-	SimpleAES simpleAES*/;
 
 	/**
 	 * Request mapping to get Public Key
@@ -65,7 +59,7 @@ public class KeymanagerController {
 	 * @param referenceId   Reference id of the application requesting publicKey
 	 * @return {@link PublicKeyResponse} instance
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN','RESIDENT')")
 	@ResponseFilter
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
@@ -90,7 +84,7 @@ public class KeymanagerController {
 	 * 
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN','RESIDENT')")
 	@ResponseFilter
 	@PostMapping(value = "/decrypt")
 	public ResponseWrapper<SymmetricKeyResponseDto> decryptSymmetricKey(
@@ -101,31 +95,14 @@ public class KeymanagerController {
 	}
 
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN','RESIDENT')")
 	@ResponseFilter
 	@PostMapping("/sign")
 	public ResponseWrapper<SignatureResponseDto> sign(
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
+		System.out.println("Added Keymanager for testing");
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
-		return response;
-	}
-	
-	// To be merged with decrypt
-	/**
-	 * Request mapping to decrypt symmetric key
-	 * 
-	 * @param symmetricKeyRequestDto having encrypted symmetric key
-	 * 
-	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
-	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','PRE_REGISTRATION_ADMIN')")
-	@ResponseFilter
-	@PostMapping(value = "/auth/decrypt")
-	public ResponseWrapper<SymmetricKeyResponseDto> decryptAuthSymmetricKey(
-			@ApiParam("Data to decrypt in BASE64 encoding with meta-data") @RequestBody RequestWrapper<SymmetricKeyRequestDto> symmetricKeyRequestDto) {
-        ResponseWrapper<SymmetricKeyResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.decryptAuthSymmetricKey(symmetricKeyRequestDto.getRequest()));
 		return response;
 	}
 

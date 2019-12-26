@@ -97,7 +97,7 @@ public class GenerateQRcodeService {
 						ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
 			}else if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(data),requiredRequestMap)) {
 				
-			qrCode = qrCodeGenerator.generateQrCode(data.getRequest().toString(),QrVersion.valueOf(qrversion));
+			qrCode = qrCodeGenerator.generateQrCode(data.getRequest(),QrVersion.valueOf(qrversion));
 			responsedto = new QRCodeResponseDTO();
 			responsedto.setQrcode(qrCode);
 			}

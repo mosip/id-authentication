@@ -205,4 +205,6 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus);
 
+	List<Registration> fetchReRegisterPendingPackets();
+
 }

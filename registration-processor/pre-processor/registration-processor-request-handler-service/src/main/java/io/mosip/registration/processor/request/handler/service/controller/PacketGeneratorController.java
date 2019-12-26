@@ -3,13 +3,17 @@ package io.mosip.registration.processor.request.handler.service.controller;
 import java.io.IOException;
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +24,11 @@ import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.request.handler.service.PacketGeneratorService;
+import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResponseDto;
@@ -46,7 +52,8 @@ public class PacketGeneratorController {
 
 	/** The packet generator service. */
 	@Autowired
-	private PacketGeneratorService packetGeneratorService;
+	@Qualifier("packetGeneratorService")
+	private PacketGeneratorService<PacketGeneratorDto> packetGeneratorService;
 
 	/** The env. */
 	@Autowired
@@ -88,16 +95,16 @@ public class PacketGeneratorController {
 	 * @throws RegBaseCheckedException
 	 * @throws IOException
 	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN', 'REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/packetgenerator", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Get the status of packet "),
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
-			@RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
-			@CookieValue(value = "Authorization", required = true) String token)
+			@RequestBody(required = true) @Valid PacketGeneratorRequestDto packerGeneratorRequestDto)
 			throws RegBaseCheckedException, IOException {
-		tokenValidator.validate("Authorization=" + token, "requesthandler");
+
 
 		try {
 			validator.validate(packerGeneratorRequestDto.getRequesttime(), packerGeneratorRequestDto.getId(),
@@ -113,8 +120,11 @@ public class PacketGeneratorController {
 				return ResponseEntity.ok().headers(headers).body(response);
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-		} catch (RequestHandlerValidationException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
+		}catch (RegBaseCheckedException | IOException e) {
+			if (e instanceof RegBaseCheckedException) {
+				throw e;
+			}
+			throw new RegBaseCheckedException(StatusUtil.UNKNOWN_EXCEPTION_OCCURED, e);
 
 		}
 	}

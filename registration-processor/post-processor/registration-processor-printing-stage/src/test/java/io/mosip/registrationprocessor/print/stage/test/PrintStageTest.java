@@ -187,6 +187,8 @@ public class PrintStageTest {
 
 	@Before
 	public void setup() throws Exception {
+		ReflectionTestUtils.setField(stage, "workerPoolSize", 10);
+		ReflectionTestUtils.setField(stage, "clusterManagerUrl", "/dummyPath");
 		System.setProperty("server.port", "8099");
 		System.setProperty("registration.processor.queue.username", "admin");
 		System.setProperty("registration.processor.queue.password", "admin");
@@ -214,7 +216,7 @@ public class PrintStageTest {
 
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(), any(), any());
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
