@@ -150,7 +150,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
         try {
             response = (ResponseWrapper) residentServiceRestClient
                     .postApi(env.getProperty(ApiName.IDAUTHCREATEVID.name()),
-                            MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getRegprocToken());
+                            MediaType.APPLICATION_JSON, request, ResponseWrapper.class, tokenGenerator.getToken());
         } catch (Exception e) {
             logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
                     requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode() + e.getMessage()
@@ -272,7 +272,7 @@ public class ResidentVidServiceImpl implements ResidentVidService {
 		try {
 			response = (ResponseWrapper) residentServiceRestClient.postApi(
 					env.getProperty(ApiName.IDAUTHREVOKEVID.name()), MediaType.APPLICATION_JSON, request,
-					ResponseWrapper.class, tokenGenerator.getRegprocToken());
+					ResponseWrapper.class, tokenGenerator.getToken());
 		} catch (Exception e) {
 			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					requestDto.getIndividualIdType(), ResidentErrorCode.API_RESOURCE_UNAVAILABLE.getErrorCode()

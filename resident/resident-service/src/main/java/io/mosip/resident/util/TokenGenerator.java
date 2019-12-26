@@ -41,14 +41,6 @@ public class TokenGenerator {
         return generateToken(setRequestDto());
     }
 
-    public String getRegprocToken() throws IOException {
-        return generateToken(setRegprcRequestDto());
-    }
-    
-    public String getAdminToken() throws IOException {
-    	return generateToken(setAdminRequestDto());
-    }
-
     private String generateToken(ClientIdSecretKeyRequestDto dto) throws IOException {
         // TokenRequestDTO<PasswordRequest> tokenRequest = new
         // TokenRequestDTO<PasswordRequest>();
@@ -94,23 +86,6 @@ public class TokenGenerator {
         request.setAppId(environment.getProperty("resident.appid"));
         request.setClientId(environment.getProperty("resident.clientId"));
         request.setSecretKey(environment.getProperty("resident.secretKey"));
-        return request;
-    }
-
-    private ClientIdSecretKeyRequestDto setRegprcRequestDto() {
-        ClientIdSecretKeyRequestDto request = new ClientIdSecretKeyRequestDto();
-        request.setAppId(environment.getProperty("regprc.appid"));
-        request.setClientId(environment.getProperty("regprc.clientId"));
-        request.setSecretKey(environment.getProperty("regprc.secretKey"));
-        return request;
-    }
-    
-    
-    private ClientIdSecretKeyRequestDto setAdminRequestDto() {
-        ClientIdSecretKeyRequestDto request = new ClientIdSecretKeyRequestDto();
-        request.setAppId(environment.getProperty("admin.appid"));
-        request.setClientId(environment.getProperty("admin.clientId"));
-        request.setSecretKey(environment.getProperty("admin.secretKey"));
         return request;
     }
 

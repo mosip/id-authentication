@@ -74,38 +74,6 @@ public class TokenGeneratorTest {
         Assert.assertTrue("Expected token", result.equals(token));
     }
 
-    @Test
-    public void getRegprocTokenTest() throws IOException {
-        String token = "token";
-        org.apache.http.HttpEntity entity = new StringEntity(token, null, null);
-        BasicHeader header = new BasicHeader("token", "token;");
-        BasicHeader[] headers = new BasicHeader[1];
-        headers[0] = header;
-
-        when(response.getEntity()).thenReturn(entity);
-        when(response.getHeaders("Set-Cookie")).thenReturn(headers);
-
-        String result = tokenGenerator.getRegprocToken();
-
-        Assert.assertTrue("Expected token", result.equals(token));
-    }
-
-    @Test
-    public void getAdminTokenTest() throws IOException {
-        String token = "token";
-        org.apache.http.HttpEntity entity = new StringEntity(token, null, null);
-        BasicHeader header = new BasicHeader("token", "token;");
-        BasicHeader[] headers = new BasicHeader[1];
-        headers[0] = header;
-
-        when(response.getEntity()).thenReturn(entity);
-        when(response.getHeaders("Set-Cookie")).thenReturn(headers);
-
-        String result = tokenGenerator.getAdminToken();
-
-        Assert.assertTrue("Expected token", result.equals(token));
-    }
-
     @Test(expected = TokenGenerationFailedException.class)
     public void tokenGenerationFailedTest() throws IOException {
         String token = "token";

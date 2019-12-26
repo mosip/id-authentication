@@ -64,7 +64,7 @@ public class ResidentServiceReqReprintTest {
 	public void setUp() throws IOException, OtpValidationFailedException {
 		Mockito.when(env.getProperty(ApiName.REPRINTUIN.name()))
 				.thenReturn("https://int.mosip.io/registrationprocessor/v1/requesthandler/reprint");
-		Mockito.when(tokenGenerator.getRegprocToken()).thenReturn("assagfdhsfiuhewqedsavckdsann");
+		Mockito.when(tokenGenerator.getToken()).thenReturn("assagfdhsfiuhewqedsavckdsann");
 		Mockito.when(idAuthService.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(true);
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
@@ -163,7 +163,7 @@ public class ResidentServiceReqReprintTest {
 	@Test(expected = ResidentServiceException.class)
 	public void testTokenGeneratorIOException() throws ApisResourceAccessException, IOException,
 			OtpValidationFailedException, ResidentServiceCheckedException {
-		Mockito.when(tokenGenerator.getRegprocToken()).thenThrow(new IOException());
+		Mockito.when(tokenGenerator.getToken()).thenThrow(new IOException());
 		Mockito.when(env.getProperty(ApiName.REPRINTUIN.name()))
 				.thenReturn("https://int.mosip.io/registrationprocessor/v1/requesthandler/reprint");
 		residentServiceImpl.reqPrintUin(residentReqDto);

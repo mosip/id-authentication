@@ -172,7 +172,7 @@ public class RidStatusServiceTest {
 
 	@Test(expected = ResidentServiceException.class)
 	public void iOExceptionTest() throws IOException {
-		Mockito.when(tokenGenerator.getAdminToken()).thenThrow(new IOException());
+		Mockito.when(tokenGenerator.getToken()).thenThrow(new IOException());
 		residentService.getRidStatus(requestDTO);
 
 	}

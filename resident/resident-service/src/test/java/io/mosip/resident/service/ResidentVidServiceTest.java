@@ -85,7 +85,7 @@ public class ResidentVidServiceTest {
         NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
         notificationResponseDTO.setMessage("Vid successfully generated");
 
-        when(tokenGenerator.getRegprocToken()).thenReturn("token");
+        when(tokenGenerator.getToken()).thenReturn("token");
         when(notificationService.sendNotification(any(NotificationRequestDto.class))).thenReturn(notificationResponseDTO);
    
         ClassLoader classLoader = getClass().getClassLoader();

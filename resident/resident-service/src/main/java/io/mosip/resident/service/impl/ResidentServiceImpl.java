@@ -137,7 +137,7 @@ public class ResidentServiceImpl implements ResidentService {
 		try {
 			responseWrapper = (RegistrationStatusResponseDTO) residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REGISTRATIONSTATUSSEARCH.name()), MediaType.APPLICATION_JSON, dto,
-					RegistrationStatusResponseDTO.class, tokenGenerator.getAdminToken());
+					RegistrationStatusResponseDTO.class, tokenGenerator.getToken());
 			if (responseWrapper == null) {
 				logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 						LoggerFileConstant.APPLICATIONID.toString(), "In valid response from Registration status API");
@@ -298,7 +298,7 @@ public class ResidentServiceImpl implements ResidentService {
 			request.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 			ResponseWrapper<RegProcCommonResponseDto> response = residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REPRINTUIN.name()), MediaType.APPLICATION_JSON, request,
-					ResponseWrapper.class, tokenGenerator.getRegprocToken());
+					ResponseWrapper.class, tokenGenerator.getToken());
 			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),
 						NotificationTemplateCode.RS_UIN_RPR_FAILURE, null);
@@ -535,7 +535,7 @@ public class ResidentServiceImpl implements ResidentService {
 			request.setVersion("1.0");
 			ResponseWrapper<RegProcCommonResponseDto> response = residentServiceRestClient.postApi(
 					env.getProperty(ApiName.REGPROCRESUPDATE.name()), MediaType.APPLICATION_JSON, request,
-					ResponseWrapper.class, tokenGenerator.getRegprocToken());
+					ResponseWrapper.class, tokenGenerator.getToken());
 
 			if (response.getErrors() != null && !response.getErrors().isEmpty()) {
 				sendNotification(dto.getIndividualId(), dto.getIndividualIdType(),

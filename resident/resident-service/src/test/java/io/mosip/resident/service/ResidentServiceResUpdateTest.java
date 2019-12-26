@@ -172,7 +172,7 @@ public class ResidentServiceResUpdateTest {
 	@Test(expected = ResidentServiceException.class)
 	public void testTokenGeneratorIOException() throws ApisResourceAccessException, IOException,
 			OtpValidationFailedException, ResidentServiceCheckedException {
-		Mockito.when(tokenGenerator.getRegprocToken()).thenThrow(new IOException());
+		Mockito.when(tokenGenerator.getToken()).thenThrow(new IOException());
 		residentServiceImpl.reqUinUpdate(dto);
 	}
 	
