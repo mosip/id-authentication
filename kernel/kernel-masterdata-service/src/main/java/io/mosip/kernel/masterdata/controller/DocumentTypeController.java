@@ -25,6 +25,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
@@ -90,10 +92,10 @@ public class DocumentTypeController {
 	@ResponseFilter
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
-	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentType(
+	public ResponseWrapper<DocumentTypePostResponseDto> createDocumentType(
 			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 
-		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<DocumentTypePostResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.createDocumentType(types.getRequest()));
 		return responseWrapper;
 	}
@@ -109,10 +111,10 @@ public class DocumentTypeController {
 	@ResponseFilter
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")
-	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentType(
+	public ResponseWrapper<DocumentTypePutResponseDto> updateDocumentType(
 			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 
-		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<DocumentTypePutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.updateDocumentType(types.getRequest()));
 		return responseWrapper;
 	}

@@ -42,7 +42,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
@@ -51,11 +50,11 @@ import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -67,7 +66,6 @@ import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -107,15 +105,11 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private PageUtils pageUtils;
 	private List<Location> childHierarchyList = null;
-	private List<Location> hierarchyChildList = null;
 	private List<Location> parentHierarchyList = null;
 	private List<String> childList = null;
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-
-	@Autowired
-	private ZoneUtils zoneUtils;
 
 	@Value("${mosip.level:4}")
 	private short level;
@@ -211,9 +205,10 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	@Transactional
-	public ResponseWrapper<Location> createLocation(LocationCreateDto dto) {
+	public LocationPostResponseDto createLocation(LocationCreateDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
 		Location locationEntity = null;
+		LocationPostResponseDto locationPostResponseDto = new LocationPostResponseDto();
 
 		try {
 			if (dto != null) {
@@ -236,6 +231,7 @@ public class LocationServiceImpl implements LocationService {
 
 				locationEntity = MetaDataUtils.setCreateMetaData(dto, Location.class);
 				locationEntity = locationRepository.create(locationEntity);
+				MapperUtils.map(locationEntity, locationPostResponseDto);
 			}
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
@@ -245,10 +241,7 @@ public class LocationServiceImpl implements LocationService {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
-		ResponseWrapper<Location> response = new ResponseWrapper<>();
-		response.setErrors(errors);
-		response.setResponse(locationEntity);
-		return response;
+		return locationPostResponseDto;
 	}
 
 	/**
@@ -263,16 +256,13 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationDto) {
-		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
-		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
-		locationId.setCode(locationDto.getCode());
-		locationId.setLangCode(locationDto.getLangCode());
+	public LocationPutResponseDto updateLocationDetails(LocationDto locationDto) {
+		LocationPutResponseDto postLocationCodeResponseDto = new LocationPutResponseDto();
 		try {
-			masterDataCreateUtil.updateMasterData(Location.class, locationDto);
+			locationDto = masterDataCreateUtil.updateMasterData(Location.class, locationDto);
 			Location location = MetaDataUtils.setUpdateMetaData(locationDto, new Location(), true);
+			locationRepository.update(location);
 			MapperUtils.map(location, postLocationCodeResponseDto);
-
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
@@ -525,64 +515,6 @@ public class LocationServiceImpl implements LocationService {
 		return pageDto;
 	}
 
-	/**
-	 * This method to find, is there any child of given Location isActive is true
-	 * then return true and break the loop. Otherwise if all children of the given
-	 * location are false the return false.
-	 * 
-	 * @param location
-	 * @return boolean return true or false
-	 */
-	public boolean findIsActiveInHierarchy(Location location) {
-		boolean flag = false;
-		String locCode = location.getCode();
-		String langCode = location.getLangCode();
-
-		List<Location> childList = new ArrayList<>();
-		hierarchyChildList = new ArrayList<>();
-		childList = getIsActiveChildList(locCode, langCode);
-		if (!childList.isEmpty())
-			return true;
-		return flag;
-	}
-
-	/**
-	 * This method fetches child hierarchy details of the location based on location
-	 * code, here child isActive can true or false
-	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
-	 * @return List<Location>
-	 */
-	private List<Location> getIsActiveChildList(String locCode, String langCode) {
-
-		if (locCode != null && !locCode.isEmpty()) {
-			List<Location> childLocHierList = getIsActiveLocationChildHierarchyList(locCode, langCode);
-			hierarchyChildList.addAll(childLocHierList);
-			childLocHierList.parallelStream().filter(entity -> entity.getCode() != null && !entity.getCode().isEmpty())
-					.map(entity -> getIsActiveChildList(entity.getCode(), langCode)).collect(Collectors.toList());
-		}
-		return hierarchyChildList;
-
-	}
-
-	/**
-	 * fetches location hierarchy details from database based on parent location
-	 * code and language code, children's isActive is either true or false
-	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
-	 * @return List<LocationHierarchy>
-	 */
-	private List<Location> getIsActiveLocationChildHierarchyList(String locCode, String langCode) {
-
-		return locationRepository.findDistinctByparentLocCode(locCode, langCode);
-
-	}
 
 	/**
 	 * This method fetches child hierarchy details of the location based on location
@@ -635,7 +567,6 @@ public class LocationServiceImpl implements LocationService {
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
 		String active = null;
-		List<Zone> zones = null;
 		boolean isActive = true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 
