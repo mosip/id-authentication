@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -27,10 +32,26 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.security.BouncyCastleDigest;
+import com.itextpdf.text.pdf.security.CertificateUtil;
+import com.itextpdf.text.pdf.security.CrlClient;
+import com.itextpdf.text.pdf.security.CrlClientOnline;
+import com.itextpdf.text.pdf.security.MakeSignature;
+import com.itextpdf.text.pdf.security.MakeSignature.CryptoStandard;
+import com.itextpdf.text.pdf.security.OcspClient;
+import com.itextpdf.text.pdf.security.OcspClientBouncyCastle;
+import com.itextpdf.text.pdf.security.PrivateKeySignature;
+import com.itextpdf.text.pdf.security.TSAClient;
+import com.itextpdf.text.pdf.security.TSAClientBouncyCastle;
+import com.itextpdf.text.pdf.security.ExternalDigest;
+import com.itextpdf.text.pdf.security.ExternalSignature;
 
+import io.mosip.kernel.core.keymanager.model.CertificateEntry;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -214,51 +235,82 @@ public class PDFGeneratorImpl implements PDFGenerator {
 	}
 
 	@Override
-	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException {
-		isValidInputStream(dataInputStream);
-		if (password == null || password.length == 0) {
-			return generate(dataInputStream);
-		} else {
-			if (EmptyCheckUtils.isNullEmpty(pdfOwnerPassword)) {
-				throw new PDFGeneratorException(
-						PDFGeneratorExceptionCodeConstant.OWNER_PASSWORD_NULL_EMPTY_EXCEPTION.getErrorCode(),
-						PDFGeneratorExceptionCodeConstant.OWNER_PASSWORD_NULL_EMPTY_EXCEPTION.getErrorMessage());
-			}
-			OutputStream pdfStream = new ByteArrayOutputStream();
-			PdfReader pdfReader = null;
-			PdfStamper pdfStamper = null;
-			try (OutputStream outputStream = generate(dataInputStream)) {
-				pdfReader = new PdfReader(((ByteArrayOutputStream) outputStream).toByteArray());
-				pdfStamper = new PdfStamper(pdfReader, pdfStream);
-				pdfStamper.setEncryption(password, pdfOwnerPassword.getBytes(),
+	public OutputStream signAndEncryptPDF(byte[] pdf, io.mosip.kernel.core.pdfgenerator.model.Rectangle rectangle,
+			String reason, int pageNumber, Provider provider,
+			CertificateEntry<X509Certificate, PrivateKey> certificateEntry, String password)
+			throws IOException, GeneralSecurityException {
+		OutputStream outputStream = new ByteArrayOutputStream();
+		PdfReader pdfReader = null;
+		PdfStamper pdfStamper = null;
+		try {
+			pdfReader = new PdfReader(pdf);
+			pdfStamper = PdfStamper.createSignature(pdfReader, outputStream, '\0');
+
+			if (password != null && !password.trim().isEmpty()) {
+				pdfStamper.setEncryption(password.getBytes(), pdfOwnerPassword.getBytes(),
 						com.itextpdf.text.pdf.PdfWriter.ALLOW_PRINTING,
 						com.itextpdf.text.pdf.PdfWriter.ENCRYPTION_AES_256);
-			} catch (DocumentException e) {
-				throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-						e.getMessage(), e);
-			} finally {
-				if(pdfStamper != null) {
-				closeQuietly(pdfStamper);
-				}
-				if(pdfReader != null) {
-				pdfReader.close();
-				}
 			}
-			return pdfStream;
+			PdfSignatureAppearance signAppearance = pdfStamper.getSignatureAppearance();
+
+			signAppearance.setReason(reason);
+			// comment next line to have an invisible signature
+			signAppearance.setVisibleSignature(
+					new Rectangle(rectangle.getLlx(), rectangle.getLly(), rectangle.getUrx(), rectangle.getUry()),
+					pageNumber, null);
+
+			OcspClient ocspClient = new OcspClientBouncyCastle(null);
+			TSAClient tsaClient = null;
+			for (X509Certificate certificate : certificateEntry.getChain()) {
+				String tsaUrl = CertificateUtil.getTSAURL(certificate);
+				if (tsaUrl != null) {
+					tsaClient = new TSAClientBouncyCastle(tsaUrl);
+					break;
+				}
+				signAppearance.setCertificate(certificate);
+			}
+
+			List<CrlClient> crlList = new ArrayList<>();
+			crlList.add(new CrlClientOnline(certificateEntry.getChain()));
+
+			ExternalSignature pks = new PrivateKeySignature(certificateEntry.getPrivateKey(), "SHA256",
+					provider.getName());
+			ExternalDigest digest = new BouncyCastleDigest();
+
+			// Sign the document using the detached mode, CMS or CAdES equivalent.
+			MakeSignature.signDetached(signAppearance, digest, pks, certificateEntry.getChain(), crlList, ocspClient,
+					tsaClient, 0, CryptoStandard.CMS);
+
+			pdfStamper.close();
+
+		} catch (DocumentException e) {
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					e.getMessage(), e);
+		} finally {
+			outputStream.close();
+			if (pdfStamper != null) {
+				closeQuietly(pdfStamper);
+			}
+			if (pdfReader != null) {
+				pdfReader.close();
+			}
 		}
-		
+		return outputStream;
 	}
 
+	/*
+	
+	 */
+
 	// Quietly close the pdfStamper.
-	private void closeQuietly(final PdfStamper pdfStamper) throws IOException{
+	private void closeQuietly(final PdfStamper pdfStamper) throws IOException {
 		try {
 			pdfStamper.close();
 		} catch (DocumentException e) {
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage(), e);
-		} 
+		}
 	}
-
 
 	private void isValidInputStream(InputStream dataInputStream) {
 		if (EmptyCheckUtils.isNullEmpty(dataInputStream)) {
@@ -267,4 +319,5 @@ public class PDFGeneratorImpl implements PDFGenerator {
 					PDFGeneratorExceptionCodeConstant.INPUTSTREAM_NULL_EMPTY_EXCEPTION.getErrorMessage());
 		}
 	}
+
 }

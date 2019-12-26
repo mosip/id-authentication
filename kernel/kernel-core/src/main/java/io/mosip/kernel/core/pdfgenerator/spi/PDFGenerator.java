@@ -5,7 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.cert.X509Certificate;
 import java.util.List;
+
+import io.mosip.kernel.core.keymanager.model.CertificateEntry;
+import io.mosip.kernel.core.pdfgenerator.model.Rectangle;
+
 
 /**
  * This interface is has specifications for PDF generation from different types.
@@ -77,17 +85,18 @@ public interface PDFGenerator {
 	 */
 	public byte[] mergePDF(List<URL> pdfLists) throws IOException;
 
-	/**
-	 * Converts data obtained from an {@link InputStream} to a password protected
-	 * PDF written to an {@link OutputStream}.
-	 * 
-	 * If password is null or empty, PDF will not be encrypted.
-	 * 
-	 * @param dataInputStream the processedTemplate in the form of a
-	 *                        {@link InputStream}
+	/** Signs a PDF and protect it with password
+	 * @param pdf byte array of pdf.
+	 * @param rectangle {@link Rectangle} class to enclose signing
+	 * @param reason reason of signing.
+	 * @param pageNumber page number of rectangle.
+	 * @param provider {@link Provider}.
+	 * @param certificateEntry {@link CertificateEntry} class for certificate and private key as Input;
+	 * @param password password for protecting pdf.
+	 * @return {@link OutputStream} of signed PDF.
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @return Password Protected PDF Output Stream (PDF stream)
+	 * @throws GeneralSecurityException Signals general security exception while signing.
 	 */
-	public OutputStream generate(InputStream dataInputStream, byte[] password) throws IOException;
+	OutputStream signAndEncryptPDF(byte[] pdf,Rectangle rectangle,String reason,int pageNumber,Provider provider,CertificateEntry<X509Certificate, PrivateKey> certificateEntry,String password) throws IOException, GeneralSecurityException;
 
 }

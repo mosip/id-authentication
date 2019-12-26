@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.mosip.kernel.core.keymanager.model.CertificateEntry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,16 +15,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Response class for Public Key
+ * Response class for Signature
  * 
- * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Class representing a Public Key Response")
+@ApiModel(description = "Class representing a Signature Response")
 public class SignatureCertificate {
 
 	/**
