@@ -1,11 +1,12 @@
 package io.mosip.kernel.pdfgenerator.itext.test;
 
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +14,32 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.SignatureException;
+import java.security.cert.X509Certificate;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,10 +47,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.keymanager.model.CertificateEntry;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
+import io.mosip.kernel.core.pdfgenerator.model.Rectangle;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
@@ -42,14 +64,21 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 public class PDFGeneratorTest {
 	@Autowired
 	private PDFGenerator pdfGenerator;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
 
 	private static BufferedImage bufferedImage;
 	private static BufferedImage bufferedImage2;
+	
+	private static BouncyCastleProvider bouncyCastleProvider;
+	
+	private static CertificateEntry<X509Certificate, PrivateKey> certificateEntry;
 
 	private static List<BufferedImage> bufferedImages = new ArrayList<>();
 
 	@BeforeClass
-	public static void initialize() throws IOException, java.io.IOException {
+	public static void initialize() throws IOException, java.io.IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SecurityException, SignatureException {
 		URL url = PDFGeneratorTest.class.getResource("/Change.jpg");
 		URL url2 = PDFGeneratorTest.class.getResource("/nelsonmandela1-2x.jpg");
 
@@ -58,6 +87,31 @@ public class PDFGeneratorTest {
 
 		bufferedImage2 = ImageIO.read(url2);
 		bufferedImages.add(bufferedImage2);
+		
+		
+		bouncyCastleProvider = new BouncyCastleProvider();
+		Security.addProvider(bouncyCastleProvider);
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+		generator.initialize(2048, new SecureRandom());
+		KeyPair keyPair=generator.generateKeyPair();
+		X509Certificate[] serverChain = new X509Certificate[1];
+		X509V3CertificateGenerator serverCertGen = new X509V3CertificateGenerator();
+		X500Principal serverSubjectName = new X500Principal("CN=OrganizationName");
+		serverCertGen.setSerialNumber(new BigInteger("123456789"));
+		// X509Certificate caCert=null;
+		serverCertGen.setIssuerDN(serverSubjectName);
+		serverCertGen.setNotBefore(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		serverCertGen.setNotAfter(Date.from(LocalDate.now().plusDays(21).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		serverCertGen.setSubjectDN(serverSubjectName);
+		serverCertGen.setPublicKey(keyPair.getPublic());
+		serverCertGen.setSignatureAlgorithm("MD5WithRSA");
+	
+		serverChain[0] = serverCertGen.generateX509Certificate(keyPair.getPrivate(), "BC"); // note: private key of CA
+        
+		certificateEntry= new CertificateEntry<X509Certificate, PrivateKey>(serverChain, keyPair.getPrivate());			
+				
+				
+		
 	
 	}
 	@Test
@@ -185,36 +239,6 @@ public class PDFGeneratorTest {
 		InputStream inputStream = new FileInputStream(inputFileName);
 		pdfGenerator.generate(inputStream, resourceLoc);
 	}
-	
-	/*
-	 * @Test public void testPdfGeneratorProtectedPassword() throws Exception {
-	 * StringBuilder htmlString = new StringBuilder(); htmlString.
-	 * append("<html><body> This is HMTL to PDF conversion Example</body></html>");
-	 * InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-	 * ByteArrayOutputStream outputStream = (ByteArrayOutputStream)
-	 * pdfGenerator.generate(is,"userpassword".getBytes()); File file = new
-	 * File("protected.pdf"); FileUtils.writeByteArrayToFile(file,
-	 * outputStream.toByteArray()); assertTrue(file.exists()); }
-	 * 
-	 * @Test(expected=PDFGeneratorException.class) public void
-	 * testPdfGeneratorProtectedNullInputStreamException() throws Exception {
-	 * ByteArrayOutputStream outputStream = (ByteArrayOutputStream)
-	 * pdfGenerator.generate(null,"userpassword".getBytes()); File file = new
-	 * File("protected.pdf"); FileUtils.writeByteArrayToFile(file,
-	 * outputStream.toByteArray()); assertTrue(file.exists()); }
-	 * 
-	 * @Test(expected=PDFGeneratorException.class) public void
-	 * testPdfGeneratorProtectedPasswordException() throws Exception { StringBuilder
-	 * htmlString = new StringBuilder(); htmlString.
-	 * append("<html><body> This is HMTL to PDF conversion Example</body></html>");
-	 * InputStream is = new ByteArrayInputStream(htmlString.toString().getBytes());
-	 * PDFGenerator generator = new PDFGeneratorImpl();
-	 * ReflectionTestUtils.setField(generator, "pdfOwnerPassword", null);
-	 * ByteArrayOutputStream outputStream = (ByteArrayOutputStream)
-	 * generator.generate(is,"userpassword".getBytes()); File file = new
-	 * File("protected.pdf"); FileUtils.writeByteArrayToFile(file,
-	 * outputStream.toByteArray()); assertTrue(file.exists()); }
-	 */
 
 	@Test
 	public void getSinglePDFInBytesTest() throws IOException {
@@ -248,6 +272,13 @@ public class PDFGeneratorTest {
 		if (op != null) {
 			op.close();
 		}
+	}
+	
+	@Test
+	public void testsignAndEncryptPDF() throws IOException, GeneralSecurityException, io.mosip.kernel.core.exception.IOException{
+		byte[] pdf=FileUtils.readFileToByteArray(resourceLoader.getResource("classpath:dummy.pdf").getFile());
+		Rectangle rectangle = new Rectangle(100, 100, 200, 200);
+		assertThat(pdfGenerator.signAndEncryptPDF(pdf, rectangle, "check", 1, bouncyCastleProvider, certificateEntry, "mosip") ,isA(OutputStream.class));
 	}
 
 	@AfterClass
