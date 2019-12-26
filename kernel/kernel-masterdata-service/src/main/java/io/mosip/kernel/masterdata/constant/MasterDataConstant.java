@@ -83,6 +83,8 @@ public class MasterDataConstant {
 	public static final String UNMAP_API_IS_CALLED = "Un-Map API called::";
 	public static final String SUCCESSFUL_MAP="MAP %s - Success";
 	public static final String SUCCESSFUL_UNMAP="UNMAP %s - Success";
+	public static final String FAILURE_MAP="MAP %s - Failure";
+	public static final String FAILURE_UNMAP="UNMAP %s - Failure";
 	
 	
 	public static final String AUDIT_SYSTEM = "SYSTEM";

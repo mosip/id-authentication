@@ -63,14 +63,14 @@ public class MOSIPDeviceServiceController {
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),"ADM-707");
 		ResponseWrapper<MOSIPDeviceServiceExtDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(mosipDeviceServices.createMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MOSIPDeviceServiceDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, MOSIPDeviceServiceDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, MOSIPDeviceServiceDto.class.getCanonicalName()),"ADM-708");
 		return responseWrapper;
 
 	}
@@ -95,13 +95,13 @@ public class MOSIPDeviceServiceController {
 			@Valid @RequestBody RequestWrapper<MOSIPDeviceServiceDto> mosipDeviceServiceRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),"ADM-709");
 		ResponseWrapper<String> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(mosipDeviceServices.updateMOSIPDeviceService(mosipDeviceServiceRequestDto.getRequest()));
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + MOSIPDeviceServiceDto.class.getCanonicalName(),"ADM-710");
 		return responseWrapper;
 
 	}

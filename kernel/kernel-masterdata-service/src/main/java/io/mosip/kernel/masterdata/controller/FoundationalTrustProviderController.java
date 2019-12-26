@@ -48,12 +48,12 @@ public class FoundationalTrustProviderController {
 	{
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName(),"ADM-701");
 		ResponseWrapper<FoundationalTrustProviderResDto> response=foundationalTrustProviderService.registerFoundationalTrustProvider(foundationalTrustProviderDto.getRequest());
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, FoundationalTrustProviderDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, FoundationalTrustProviderDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, FoundationalTrustProviderDto.class.getCanonicalName()),"ADM-702");
 		return response;
 	}
 	
@@ -63,12 +63,12 @@ public class FoundationalTrustProviderController {
 	{
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName(),"ADM-703");
 		ResponseWrapper<FoundationalTrustProviderResDto> response= foundationalTrustProviderService.updateFoundationalTrustProvider(foundationalTrustProviderDto.getRequest());
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, FoundationalTrustProviderDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, FoundationalTrustProviderDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, FoundationalTrustProviderDto.class.getCanonicalName()),"ADM-704");
 		return response;
 	}
 	

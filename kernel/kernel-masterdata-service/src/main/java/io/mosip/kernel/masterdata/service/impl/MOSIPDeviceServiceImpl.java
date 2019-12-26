@@ -66,7 +66,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage()));
+								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage()),"ADM-711");
 				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
 						String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
 			}
@@ -76,7 +76,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorMessage()));
+								MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorMessage()),"ADM-712");
 				throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorCode(),
 						MOSIPDeviceServiceErrorCode.REG_DEVICE_TYPE_NOT_FOUND.getErrorMessage());
 			}
@@ -86,7 +86,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage()));
+								MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage()),"ADM-713");
 				
 				throw new RequestException(MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorCode(),
 						MOSIPDeviceServiceErrorCode.REG_DEVICE_SUB_TYPE_NOT_FOUND.getErrorMessage());
@@ -97,7 +97,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage()));
+								MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage()),"ADM-70314");
 				throw new RequestException(MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
 						MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
 			}
@@ -118,7 +118,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorCode(),
-							MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorMessage()));
+							MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorMessage()),"ADM-715");
 			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorCode(),
 					MOSIPDeviceServiceErrorCode.MDS_INSERTION_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
@@ -140,7 +140,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorMessage()));
+								MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorMessage()),"ADM-716");
 				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorCode(),
 						MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorMessage());
 			}	 
@@ -149,7 +149,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage()));
+								MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage()),"ADM-717");
 				throw new RequestException(MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorCode(),
 						MOSIPDeviceServiceErrorCode.DEVICE_PROVIDER_NOT_FOUND.getErrorMessage());
 			}
@@ -170,7 +170,7 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorCode(),
-							MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorMessage()));
+							MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorMessage()),"ADM-718");
 			throw new MasterDataServiceException(MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorCode(),
 					MOSIPDeviceServiceErrorCode.MDS_DB_UPDATION_ERROR.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));

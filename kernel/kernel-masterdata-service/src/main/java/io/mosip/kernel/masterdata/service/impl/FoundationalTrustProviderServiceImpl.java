@@ -56,7 +56,7 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),
-							FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage()));
+							FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage()),"ADM-705");
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage());
 		}
 		else
@@ -95,7 +95,7 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorCode(),
-							FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorMessage()));
+							FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorMessage()),"ADM-706");
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorMessage());
 		}
 		updateFoundationalTrustProvider = MetaDataUtils.setUpdateMetaData(foundationalTrustProviderPutDto, updateFoundationalTrustProvider,  false);
