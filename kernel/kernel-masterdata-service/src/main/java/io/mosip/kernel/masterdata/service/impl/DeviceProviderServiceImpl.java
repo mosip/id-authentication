@@ -27,6 +27,8 @@ import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceServiceHistory;
 import io.mosip.kernel.masterdata.entity.RegisteredDevice;
 import io.mosip.kernel.masterdata.entity.RegisteredDeviceHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationDeviceSubType;
+import io.mosip.kernel.masterdata.entity.RegistrationDeviceType;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -37,7 +39,8 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceHistoryRepository
 import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
-
+import io.mosip.kernel.masterdata.repository.RegistrationDeviceSubTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationDeviceTypeRepository;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -50,7 +53,8 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  *
  */
 @Service
-public class DeviceProviderServiceImpl implements DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> {
+public class DeviceProviderServiceImpl implements
+		DeviceProviderService<ResponseDto, ValidateDeviceDto, ValidateDeviceHistoryDto, DeviceProviderDto, DeviceProviderExtnDto> {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -74,6 +78,12 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 	@Autowired
 	private MOSIPDeviceServiceHistoryRepository deviceServiceHistoryRepository;
 
+	@Autowired
+	private RegistrationDeviceTypeRepository registeredDeviceTypeRepo;
+
+	@Autowired
+	private RegistrationDeviceSubTypeRepository registeredDeviceSubTypeRepo;
+
 	@Override
 	public ResponseDto validateDeviceProviders(ValidateDeviceDto validateDeviceDto) {
 		ResponseDto responseDto = new ResponseDto();
@@ -81,9 +91,9 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		isDeviceProviderPresent(validateDeviceDto.getDigitalId().getDpId());
 		isValidServiceSoftwareVersion(validateDeviceDto.getDeviceServiceVersion());
 		checkMappingBetweenProviderAndService(validateDeviceDto.getDigitalId().getDpId(),
-				validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDigitalId());
-		//checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
-		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDeviceCode());
+				validateDeviceDto.getDeviceServiceVersion(), validateDeviceDto.getDigitalId());
+		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceServiceVersion(),
+				validateDeviceDto.getDeviceCode());
 		validateDeviceCodeAndDigitalId(validateDeviceDto.getDeviceCode(), validateDeviceDto.getDigitalId());
 		responseDto.setStatus(MasterDataConstant.VALID);
 		responseDto.setMessage("Device  details validated successfully");
@@ -91,13 +101,14 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		return responseDto;
 	}
 
+
 	private RegisteredDevice findRegisteredDevice(String deviceCode) {
 		RegisteredDevice registeredDevice = null;
 		try {
 			registeredDevice = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_REGISTERED_DEVICE));
 		}
 
 		if (registeredDevice == null) {
@@ -120,7 +131,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 			deviceProvider = deviceProviderRepository.findByIdAndIsActiveIsTrue(deviceProviderId);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_DEVICE_PROVIDER));
 		}
 		if (deviceProvider == null) {
 			throw new DataNotFoundException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_INACTIVE.getErrorCode(),
@@ -137,7 +148,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 			deviceServices = deviceServiceRepository.findBySwVersionAndIsActiveIsTrue(serviceSoftwareVersion);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE));
 		}
 		if (deviceServices.isEmpty()) {
 			throw new DataNotFoundException(DeviceProviderManagementErrorCode.MDS_INACTIVE_STATE.getErrorCode(),
@@ -147,13 +158,15 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		return true;
 	}
 
-	private boolean checkMappingBetweenProviderAndService(String providerId, String swServiceVersion, DigitalIdDto digitalIdDto) {
+	private boolean checkMappingBetweenProviderAndService(String providerId, String swServiceVersion,
+			DigitalIdDto digitalIdDto) {
 		MOSIPDeviceService deviceService = null;
 		try {
-			deviceService = deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(providerId, swServiceVersion,digitalIdDto.getMake(),digitalIdDto.getModel());
+			deviceService = deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(providerId,
+					swServiceVersion, digitalIdDto.getMake(), digitalIdDto.getModel());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE));
 		}
 
 		if (deviceService == null) {
@@ -172,18 +185,18 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 	 *            the device code
 	 * @return true, if successful
 	 */
-	private boolean checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(String swVersion,String deviceCode) {
-	    RegisteredDevice registeredDevice = null;
-		MOSIPDeviceService mosipDeviceService=null;
+	private boolean checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(String swVersion, String deviceCode) {
+		RegisteredDevice registeredDevice = null;
+		MOSIPDeviceService mosipDeviceService = null;
 		try {
 			registeredDevice = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
-			
-			mosipDeviceService=deviceServiceRepository.findByDeviceDetail(swVersion, registeredDevice.getDeviceTypeCode(),
-					registeredDevice.getDevicesTypeCode(), registeredDevice.getMake(), registeredDevice.getModel(),
-					registeredDevice.getDpId());
+
+			mosipDeviceService = deviceServiceRepository.findByDeviceDetail(swVersion,
+					registeredDevice.getDeviceTypeCode(), registeredDevice.getDevicesTypeCode(),
+					registeredDevice.getMake(), registeredDevice.getModel(), registeredDevice.getDpId());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE));
 		}
 
 		if (mosipDeviceService == null) {
@@ -244,10 +257,28 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					digitalIdDto.getSerialNo()));
 			serviceErrors.add(serviceError);
 		}
+		if (!registeredDevice.getDeviceTypeCode().equals(digitalIdDto.getType())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getType()));
+			serviceErrors.add(serviceError);
+		}
+		if (!registeredDevice.getDevicesTypeCode().equals(digitalIdDto.getSubType())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getSubType()));
+			serviceErrors.add(serviceError);
+		}
 		if (!serviceErrors.isEmpty()) {
 			throw new ValidationException(serviceErrors);
-		}else {
-			serviceErrors=null;
+		} else {
+			serviceErrors = null;
 		}
 
 	}
@@ -258,14 +289,13 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		responseDto.setStatus(MasterDataConstant.INVALID);
 		responseDto.setMessage("Device details history is invalid");
 		LocalDateTime effTimes = parseToLocalDateTime(validateDeviceDto.getTimeStamp());
-		RegisteredDeviceHistory registeredDeviceHistory=isRegisteredDeviceHistory(validateDeviceDto.getDeviceCode(), effTimes);
+		RegisteredDeviceHistory registeredDeviceHistory = isRegisteredDeviceHistory(validateDeviceDto.getDeviceCode(),
+				effTimes);
 		isDeviceProviderHistoryPresent(validateDeviceDto.getDigitalId().getDpId(), effTimes);
 		isValidServiceVersionFromHistory(validateDeviceDto.getDeviceServiceVersion(), effTimes);
-		/*checkMappingBetweenProviderAndDeviceCodeHistory(validateDeviceDto.getDeviceCode(),
-				validateDeviceDto.getDigitalId().getDp(), effTimes);*/
-		//checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceCode());
-		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceServiceVersion(),validateDeviceDto.getDeviceCode());
-		validateDigitalIdWithRegisteredDeviceHistory(registeredDeviceHistory,validateDeviceDto.getDigitalId());
+		checkMappingBetweenSwVersionDeviceTypeAndDeviceSubType(validateDeviceDto.getDeviceServiceVersion(),
+				validateDeviceDto.getDeviceCode());
+		validateDigitalIdWithRegisteredDeviceHistory(registeredDeviceHistory, validateDeviceDto.getDigitalId());
 		responseDto.setStatus(MasterDataConstant.VALID);
 		responseDto.setMessage("Device details history validated successfully");
 
@@ -320,12 +350,30 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					digitalIdDto.getSerialNo()));
 			serviceErrors.add(serviceError);
 		}
+		if (!registeredDevice.getDeviceTypeCode().equals(digitalIdDto.getType())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getType()));
+			serviceErrors.add(serviceError);
+		}
+		if (!registeredDevice.getDevicesTypeCode().equals(digitalIdDto.getSubType())) {
+			ServiceError serviceError = new ServiceError();
+			serviceError
+					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
+			serviceError.setMessage(String.format(
+					DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorMessage(),
+					digitalIdDto.getSubType()));
+			serviceErrors.add(serviceError);
+		}
 		if (!serviceErrors.isEmpty()) {
 			throw new ValidationException(serviceErrors);
-		}else {
-			serviceErrors=null;
+		} else {
+			serviceErrors = null;
 		}
-		
+
 	}
 
 	private boolean isValidServiceVersionFromHistory(String deviceServiceVersion, LocalDateTime effTimes) {
@@ -335,11 +383,10 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					.findByIdAndIsActiveIsTrueAndByEffectiveTimes(deviceServiceVersion, effTimes);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_MOSIP_DEVICE_SERVICE_HISTORY));
 		}
 		if (deviceServiceHistory.isEmpty()) {
-			throw new RequestException(
-					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorCode(),
 					DeviceProviderManagementErrorCode.SOFTWARE_VERSION_IS_NOT_A_MATCH.getErrorMessage());
 		}
 
@@ -353,7 +400,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					.findRegisteredDeviceHistoryByIdAndEffTimes(deviceCode, effTimes);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_REGISTERED_DEVICE_HISTORY));
 		}
 
 		if (registeredDeviceHistory == null) {
@@ -361,8 +408,7 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					DeviceProviderManagementErrorCode.DEVICE_DOES_NOT_EXIST.getErrorMessage());
 		}
 		if (!registeredDeviceHistory.getStatusCode().equalsIgnoreCase(REGISTERED)) {
-			throw new RequestException(
-					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_REVOKED_OR_RETIRED.getErrorMessage());
 		}
 		return registeredDeviceHistory;
@@ -377,11 +423,10 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 					.findDeviceProviderHisByIdAndEffTimes(deviceProviderId, timeStamp);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+					String.format(DeviceProviderManagementErrorCode.DATABASE_EXCEPTION.getErrorMessage(),MasterDataConstant.ERROR_OCCURED_DEVICE_PROVIDER_HISTORY));
 		}
 		if (deviceProviderHistory == null) {
-			throw new RequestException(
-					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
+			throw new RequestException(DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 					DeviceProviderManagementErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 		}
 
@@ -392,8 +437,6 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 	public LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
-
-	
 
 	/*
 	 * (non-Javadoc)
@@ -476,7 +519,5 @@ public class DeviceProviderServiceImpl implements DeviceProviderService<Response
 		}
 		return MapperUtils.map(updtDeviceProvider, DeviceProviderExtnDto.class);
 	}
-
-	
 
 }

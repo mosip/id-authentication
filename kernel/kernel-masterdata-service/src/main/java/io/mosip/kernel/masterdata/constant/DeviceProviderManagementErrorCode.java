@@ -10,7 +10,7 @@ public enum DeviceProviderManagementErrorCode {
 
 	DEVICE_DOES_NOT_EXIST("ADM-DPM-001", "Device does not exist"), 
 	DEVICE_REVOKED_OR_RETIRED("ADM-DPM-002","Device is revoked/retired"), 
-	DATABASE_EXCEPTION("ADM-DPM-009","Error occurred while checking a Device Details"),
+	DATABASE_EXCEPTION("ADM-DPM-009","Error occurred while checking a Device Details %s"),
 	DEVICE_PROVIDER_NOT_EXIST("ADM-DPM-003","Device Provider does not exist"),
 	DEVICE_PROVIDER_INACTIVE("ADM-DPM-004","Device Provider is marked Inactive or not found"),
 	MDS_DOES_NOT_EXIST("ADM-DPM-005","MDS does not exist"),
