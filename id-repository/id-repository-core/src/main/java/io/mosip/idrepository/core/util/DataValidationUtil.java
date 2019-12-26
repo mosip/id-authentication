@@ -1,8 +1,9 @@
 package io.mosip.idrepository.core.util;
 
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.getAllErrorCodes;
+
 import org.springframework.validation.Errors;
 
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 
 /**
@@ -29,7 +30,7 @@ public final class DataValidationUtil {
 		if (errors.hasErrors()) {
 			IdRepoDataValidationException exception = new IdRepoDataValidationException();
 			errors.getAllErrors().stream()
-					.filter(error -> IdRepoErrorConstants.getAllErrorCodes().contains(error.getCode()))
+					.filter(error -> getAllErrorCodes().contains(error.getCode()))
 					.forEach(error -> exception.addInfo(error.getCode(), error.getDefaultMessage()));
 			throw exception;
 		}

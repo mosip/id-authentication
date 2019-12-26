@@ -19,8 +19,8 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  * @author Manoj SP
  */
-@Aspect
-@Configuration
+//@Aspect
+//@Configuration
 public class IdRepoAspectConfig {
 
 	/** The mosip logger. */

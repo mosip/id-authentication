@@ -1,5 +1,8 @@
 package io.mosip.idrepository.vid.validator;
 
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.MISSING_INPUT_PARAMETER;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
@@ -131,13 +133,13 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		if (Objects.isNull(vidType)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateVidType",
 					"vidType is null");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
+			errors.rejectValue(REQUEST, MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		} else if (!policyProvider.getAllVidTypes().contains(vidType)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateVidType",
 					"vidType is invalid - " + vidType);
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
+			errors.rejectValue(REQUEST, INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		}
 	}
 
@@ -151,16 +153,16 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		if (Objects.isNull(uin)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateUin",
 					"\n" + "uin is null");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), UIN));
+			errors.rejectValue(REQUEST, MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), UIN));
 		} else {
 			try {
 				uinValidator.validateId(uin.toString());
 			} catch (InvalidIDException e) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateUin",
 						"\n" + ExceptionUtils.getStackTrace(e));
-				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+				errors.rejectValue(REQUEST, INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 			}
 		}
 	}
@@ -175,8 +177,8 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		if (Objects.isNull(request)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateRequest",
 					"\n" + "request is null");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+			errors.rejectValue(REQUEST, MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 		}
 	}
 
@@ -190,13 +192,13 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		if (Objects.isNull(vidStatus)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateStatus",
 					"\n" + "Status is null");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
+			errors.rejectValue(REQUEST, MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		} else if (!allowedStatus.contains(vidStatus)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateStatus",
 					"\n" + "Status is invalid");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
+			errors.rejectValue(REQUEST, INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
 
 	}

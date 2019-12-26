@@ -1,5 +1,8 @@
 package io.mosip.idrepository.identity.config;
 
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CLIENT_ERROR;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.MASTERDATA_RETRIEVE_ERROR;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +30,6 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
@@ -99,13 +101,13 @@ public class IdRepoConfig implements WebMvcConfigurer {
 						mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError", "Rest Template logs",
 								"Status error - returning RestServiceException - CLIENT_ERROR -- "
 										+ new String(super.getResponseBody(response)));
-						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.CLIENT_ERROR);
+						throw new IdRepoAppUncheckedException(CLIENT_ERROR);
 					}
 				} else {
 					mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError", "Rest Template logs",
 							"Status error - returning RestServiceException - CLIENT_ERROR -- "
 									+ new String(super.getResponseBody(response)));
-					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.MASTERDATA_RETRIEVE_ERROR);
+					throw new IdRepoAppUncheckedException(MASTERDATA_RETRIEVE_ERROR);
 				}
 			}
 		});
@@ -286,9 +288,9 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource("jdbc:postgresql://localhost:5432/mosip_idrepo");
-		dataSource.setUsername("postgres");
-		dataSource.setPassword("admin");
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(dataSourceValues.get("url"));
+		dataSource.setUsername(dataSourceValues.get("username"));
+		dataSource.setPassword(dataSourceValues.get("password"));
 		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
 		return dataSource;
 	}

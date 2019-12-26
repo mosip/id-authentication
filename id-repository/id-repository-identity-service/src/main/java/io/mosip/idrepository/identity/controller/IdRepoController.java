@@ -1,5 +1,11 @@
 package io.mosip.idrepository.identity.controller;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.DATA_VALIDATION_FAILED;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_REQUEST;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.MISSING_INPUT_PARAMETER;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
@@ -148,7 +152,7 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, ADD_IDENTITY, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw new IdRepoAppException(DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -197,8 +201,8 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByRid(rid, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
+			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -225,7 +229,7 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, UPDATE_IDENTITY, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw new IdRepoAppException(DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -244,9 +248,9 @@ public class IdRepoController {
 			List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
 			if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, CHECK_TYPE,
-						IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
-				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
+						INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
+				throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 			} else {
 				typeList.contains(allowedTypes.get(0));
 				if (typeList.contains(ALL) || allowedTypes.parallelStream()
@@ -254,9 +258,9 @@ public class IdRepoController {
 					type = ALL;
 				} else if (!allowedTypes.containsAll(typeList)) {
 					mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, CHECK_TYPE,
-							IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
-					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
+							INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
+					throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 				}
 			}
 		}
@@ -272,7 +276,7 @@ public class IdRepoController {
 	 */
 	private String getUin(Object request) throws IdRepoAppException {
 		Object uin = null;
-		String pathOfUin = env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue());
+		String pathOfUin = env.getProperty(MOSIP_KERNEL_IDREPO_JSON_PATH);
 		try {
 			String identity = mapper.writeValueAsString(request);
 			JsonPath jsonPath = JsonPath.compile(pathOfUin);
@@ -280,11 +284,11 @@ public class IdRepoController {
 			return String.valueOf(uin);
 		} catch (JsonProcessingException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, "getUin", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, e);
+			throw new IdRepoAppException(INVALID_REQUEST, e);
 		} catch (JsonPathException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, "getUin", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
-					IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "/" + pathOfUin.replace(".", "/")));
+			throw new IdRepoAppException(MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
+					MISSING_INPUT_PARAMETER.getErrorMessage(), "/" + pathOfUin.replace(".", "/")));
 		}
 	}
 }
