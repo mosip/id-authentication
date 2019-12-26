@@ -280,7 +280,8 @@ public class Utilities {
 	/**
 	 * retrieving identity json ffrom id repo by UIN.
 	 *
-	 * @param uin : the uin
+	 * @param uin
+	 *            the uin
 	 * @return the JSON object
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
@@ -319,7 +320,7 @@ public class Utilities {
 			} catch (org.json.simple.parser.ParseException e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
 						ExceptionUtils.getStackTrace(e));
-				throw new IdRepoAppException("Error while parsing idrepo response string to JSONObject",e);
+				throw new IdRepoAppException("Error while parsing string to JSONObject",e);
 			}
 
 
@@ -576,7 +577,7 @@ public class Utilities {
 			} catch (org.json.simple.parser.ParseException e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
 						ExceptionUtils.getStackTrace(e));
-				throw new IdRepoAppException("Error while parsing idrepo response string to JSONObject",e);
+				throw new IdRepoAppException("Error while parsing string to JSONObject",e);
 			}
 
 		}
