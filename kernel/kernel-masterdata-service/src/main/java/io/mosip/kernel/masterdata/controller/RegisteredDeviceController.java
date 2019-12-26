@@ -45,6 +45,14 @@ public class RegisteredDeviceController {
 	@Autowired
 	RegisteredDeviceService registeredDeviceService;
 
+	/**
+	 * Api to Register Device.
+	 * 
+	 * @param registeredDevicePostReqDto
+	 *            the request DTO.
+	 * @return response
+	 */
+	
 	@ResponseFilter
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PostMapping
