@@ -429,7 +429,7 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 			if (device == null) {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 			return device;
 		} catch (DataAccessException | DataAccessLayerException e) {

@@ -167,7 +167,7 @@ public class MasterdataCreationUtil {
 			}
 			return t;
 		}
-		if (!primaryLang.equals(secondaryLang) && langCode.equals(secondaryLang)) {
+		if (langCode.equals(secondaryLang)) {
 			
 			if(StringUtils.isBlank(id))
 			{
@@ -203,9 +203,13 @@ public class MasterdataCreationUtil {
 				return t;
 			} 
 		}
-		//return null;
-		throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
-				String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
+		else
+		{
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.LANGUAGE_EXCEPTION.getErrorMessage(),langCode));
+		}
+		return t;
+		
 	}
 
 	private String generateId() {
