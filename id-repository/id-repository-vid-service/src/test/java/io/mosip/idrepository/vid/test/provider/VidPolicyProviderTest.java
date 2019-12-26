@@ -67,7 +67,7 @@ public class VidPolicyProviderTest {
 
 		ObjectNode policy = objectMapper.readValue(this.getClass().getClassLoader().getResource("vid_policy.json"),
 				ObjectNode.class);
-		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH.getValue()).read(policy.toString(),
+		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH).read(policy.toString(),
 				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
 		when(mapper.readValue(Mockito.any(URL.class), Mockito.any(Class.class))).thenReturn(policy);
 		when(mapper.convertValue(vidPolicy.get(0), VidPolicy.class))
