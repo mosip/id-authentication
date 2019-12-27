@@ -3,12 +3,14 @@ package io.mosip.kernel.core.deviceprovidermanager.spi;
 /**
  * @author M1046464
  *
- * @param <T> - 
+ * @param <T>
+ *            -
  * @param <D>
  * @param <S>
  * @param <U>
  */
-public interface DeviceProviderService<T,Q,D, S, U> {
+
+public interface DeviceProviderService<ResponseDto, ValidateDeviceDto, ValidateDeviceHistoryDto, DeviceProviderDto, DeviceProviderExtnDto> {
 
 	/**
 	 * Validate device providers.
@@ -17,7 +19,7 @@ public interface DeviceProviderService<T,Q,D, S, U> {
 	 *            the validate device dto
 	 * @return {@link ResponseDto}
 	 */
-	public T validateDeviceProviders(Q validateDeviceDto);
+	public ResponseDto validateDeviceProviders(ValidateDeviceDto validateDeviceDto);
 
 	/**
 	 * Validate device provider history.
@@ -26,7 +28,7 @@ public interface DeviceProviderService<T,Q,D, S, U> {
 	 *            the validate device dto
 	 * @return {@link ResponseDto} the response dto
 	 */
-	public T validateDeviceProviderHistory(D validateDeviceHistoryDto);
+	public ResponseDto validateDeviceProviderHistory(ValidateDeviceHistoryDto validateDeviceHistoryDto);
 
 	/**
 	 * Method to create Device Provider
@@ -35,7 +37,7 @@ public interface DeviceProviderService<T,Q,D, S, U> {
 	 *            Device Provider dto from user
 	 * @return DeviceProviderExtnDto device Provider dto which has created
 	 */
-	public U createDeviceProvider(S dto);
+	public DeviceProviderExtnDto createDeviceProvider(DeviceProviderDto dto);
 
 	/**
 	 * Method to update Device Provider
@@ -44,5 +46,5 @@ public interface DeviceProviderService<T,Q,D, S, U> {
 	 *            Device Provider dto from user
 	 * @return DeviceProviderExtnDto device Provider dto which has updated
 	 */
-	public U updateDeviceProvider(S dto);
+	public DeviceProviderExtnDto updateDeviceProvider(DeviceProviderDto dto);
 }

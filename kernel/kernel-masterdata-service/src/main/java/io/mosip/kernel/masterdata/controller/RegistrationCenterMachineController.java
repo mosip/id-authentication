@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,7 +39,8 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/registrationcentermachine")
 @Api(tags = { "RegistrationCenterMachine" })
 public class RegistrationCenterMachineController {
-
+	@Autowired
+	AuditUtil auditUtil;
 	@Autowired
 	private RegistrationCenterMachineService registrationCenterMachineService;
 
@@ -59,8 +63,10 @@ public class RegistrationCenterMachineController {
 	/**
 	 * Delete the mapping of registration center and machine
 	 * 
-	 * @param regCenterId Registration center id to be deleted
-	 * @param machineId   MachineId id to be deleted
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param machineId
+	 *            MachineId id to be deleted
 	 * @return {@link RegistrationCenterMachineID}
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
@@ -76,30 +82,51 @@ public class RegistrationCenterMachineController {
 				registrationCenterMachineService.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
 		return responseWrapper;
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@ApiOperation(value="Un-map center to machine map ")
+	@ApiOperation(value = "Un-map center to machine map ")
 	@GetMapping("/unmap/{regCenterId}/{machineId}")
-	public ResponseWrapper<ResponseDto> unMapRegistrationCenterMachine(@ApiParam("Registration center id") @PathVariable String regCenterId,
-			@ApiParam("MachineId id ") @PathVariable String machineId){
+	public ResponseWrapper<ResponseDto> unMapRegistrationCenterMachine(
+			@ApiParam("Registration center id") @PathVariable String regCenterId,
+			@ApiParam("MachineId id ") @PathVariable String machineId) {
+		auditUtil.auditRequest(
+				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterMachineDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterMachineDto.class.getCanonicalName(),
+				"ADM-743");
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				registrationCenterMachineService.unMapCenterToMachineMapping(regCenterId, machineId));
+		responseWrapper
+				.setResponse(registrationCenterMachineService.unMapCenterToMachineMapping(regCenterId, machineId));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UNMAP,
+						RegistrationCenterMachineDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UNMAP,
+						RegistrationCenterMachineDto.class.getCanonicalName()),
+				"ADM-744");
 		return responseWrapper;
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
-	@ApiOperation(value="Un-map center to machine map ")
+	@ApiOperation(value = "Un-map center to machine map ")
 	@GetMapping("/map/{regCenterId}/{machineId}")
-	public ResponseWrapper<ResponseDto> mapRegistrationCenterMachine(@ApiParam("Registration center id") @PathVariable String regCenterId,
-			@ApiParam("MachineId id ") @PathVariable String machineId){
+	public ResponseWrapper<ResponseDto> mapRegistrationCenterMachine(
+			@ApiParam("Registration center id") @PathVariable String regCenterId,
+			@ApiParam("MachineId id ") @PathVariable String machineId) {
+		auditUtil.auditRequest(
+				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterMachineDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterMachineDto.class.getCanonicalName(),
+				"ADM-741");
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				registrationCenterMachineService.mapCenterToMachineMapping(regCenterId, machineId));
+		responseWrapper.setResponse(registrationCenterMachineService.mapCenterToMachineMapping(regCenterId, machineId));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterMachineDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterMachineDto.class.getCanonicalName()),
+				"ADM-742");
 		return responseWrapper;
 	}
-	
 
 }

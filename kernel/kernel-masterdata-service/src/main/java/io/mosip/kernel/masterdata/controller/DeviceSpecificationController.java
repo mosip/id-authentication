@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto;
@@ -30,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -50,6 +52,9 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DeviceSpecification" })
 public class DeviceSpecificationController {
+
+	@Autowired
+	AuditUtil auditUtil;
 
 	/**
 	 * Reference to DeviceSpecificationService.
@@ -130,10 +135,18 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 500, message = "While creating Device Specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> createDeviceSpecification(
 			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
-
+		auditUtil.auditRequest(
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-638");
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						DeviceSpecificationDto.class.getCanonicalName()),
+				"ADM-639");
 		return responseWrapper;
 	}
 
@@ -147,10 +160,18 @@ public class DeviceSpecificationController {
 			@ApiResponse(code = 500, message = "While updating device specification any error occured") })
 	public ResponseWrapper<IdAndLanguageCodeID> updateDeviceSpecification(
 			@Valid @RequestBody RequestWrapper<DeviceSpecificationDto> deviceSpecification) {
-
+		auditUtil.auditRequest(
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-640");
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DeviceSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						DeviceSpecificationDto.class.getCanonicalName()),
+				"ADM-641");
 		return responseWrapper;
 	}
 
@@ -203,8 +224,17 @@ public class DeviceSpecificationController {
 	@PostMapping("/devicespecifications/search")
 	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
 			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper) {
+		auditUtil.auditRequest(
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-642");
 		ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceSpecificationService.searchDeviceSpec(requestWrapper.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceSpecificationDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
+						DeviceSpecificationDto.class.getCanonicalName()),
+				"ADM-643");
 		return responseWrapper;
 	}
 
@@ -222,8 +252,15 @@ public class DeviceSpecificationController {
 	@PostMapping("/devicespecifications/filtervalues")
 	public ResponseWrapper<FilterResponseDto> deviceSpecificationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
+		auditUtil.auditRequest(
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-645");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceSpecificationService.deviceSpecFilterValues(requestWrapper.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + DeviceSpecificationDto.class.getCanonicalName(), "ADM-646");
 		return responseWrapper;
 	}
 

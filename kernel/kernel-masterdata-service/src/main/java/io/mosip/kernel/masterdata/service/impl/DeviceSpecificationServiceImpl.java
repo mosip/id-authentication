@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -42,6 +43,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -68,6 +70,9 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  */
 @Service
 public class DeviceSpecificationServiceImpl implements DeviceSpecificationService {
+
+	@Autowired
+	AuditUtil auditUtil;
 
 	@Autowired
 	DeviceSpecificationRepository deviceSpecificationRepository;
@@ -166,6 +171,13 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		try {
 			renDeviceSpecification = deviceSpecificationRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceSpecification.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()),
+					"ADM-648");
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
@@ -197,11 +209,26 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 				idAndLanguageCodeID.setId(entity.getId());
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, DeviceSpecification.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+								DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION
+										.getErrorMessage()),
+						"ADM-649");
 				throw new RequestException(
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceSpecification.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
+							DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-650");
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
@@ -312,7 +339,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<DeviceSpecificationExtnDto> devices = null;
 		List<SearchFilter> deviceCodeFilter = null;
-		
+
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (column.equalsIgnoreCase("deviceTypeName")) {

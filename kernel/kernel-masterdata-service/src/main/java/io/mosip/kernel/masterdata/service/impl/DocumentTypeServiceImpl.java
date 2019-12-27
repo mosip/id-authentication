@@ -141,6 +141,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			MapperUtils.map(documentType, documentTypePostResponseDto);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
+		auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorMessage()), "ADM-687");
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
@@ -181,11 +187,25 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType,true);
 				documentTypeRepository.update(documentType);
 			} else {
+			auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION
+										.getErrorMessage()), "ADM-690");
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
+		auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION
+									.getErrorMessage()), "ADM-691");
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
