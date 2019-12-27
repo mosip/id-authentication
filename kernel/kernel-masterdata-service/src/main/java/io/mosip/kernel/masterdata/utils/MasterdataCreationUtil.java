@@ -120,12 +120,12 @@ public class MasterdataCreationUtil {
 		boolean activeDto = false, activePrimary = false;
 		String primaryKeyCol = null, nameCol = null, nameValue = null;
 		Class<?> dtoClass = t.getClass();
-		if(StringUtils.isNotEmpty(primaryLang))
+		if(StringUtils.isEmpty(primaryLang))
 		{
 			throw new MasterDataServiceException(RegistrationCenterErrorCode.PRIMARY_LANGUAGE_EMPTY_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.PRIMARY_LANGUAGE_EMPTY_EXCEPTION.getErrorMessage());
 		}
-		else if(StringUtils.isNotEmpty(secondaryLang))
+		else if(StringUtils.isEmpty(secondaryLang))
 		{
 			throw new MasterDataServiceException(RegistrationCenterErrorCode.SECONDARY_LANGUAGE_EMPTY_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.SECONDARY_LANGUAGE_EMPTY_EXCEPTION.getErrorMessage());
