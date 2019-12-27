@@ -247,6 +247,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private AnchorPane thumbTrackerImg;
 	@FXML
 	private ImageView backImageView;
+	@FXML
+	private Label dedupeMessage;
 
 	/** The left slap count. */
 	private int leftSlapCount;
@@ -1550,13 +1552,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			} else {
 				if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
-
 					try {
-
+						dedupeMessage.setVisible(true);
 						isValid = fingerdeduplicationCheck(segmentedFingerprintDetailsDTOs, isValid,
 								fingerprintDetailsDTOs);
+						dedupeMessage.setVisible(false);
 					} catch (Exception exception) {
 						isValid = false;
+						dedupeMessage.setVisible(false);
 					}
 				}
 			}
