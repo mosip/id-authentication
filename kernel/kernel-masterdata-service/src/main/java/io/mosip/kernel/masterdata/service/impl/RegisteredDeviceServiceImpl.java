@@ -270,6 +270,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	 */
 	private void updateRegisterDetails(RegisteredDevice deviceRegister) {
 		try {
+			deviceRegister = MetaDataUtils.setUpdateMetaData(deviceRegister, deviceRegister, false);
 			registeredDeviceRepository.update(deviceRegister);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
