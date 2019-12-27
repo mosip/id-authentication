@@ -57,5 +57,20 @@ public interface MOSIPDeviceServiceRepository extends BaseRepository<MOSIPDevice
 	 */
 	@Query(value = "select * from master.mosip_device_service a,master.registered_device_master b where a.dtype_code=b.dtype_code and a.dstype_code=b.dstype_code and a.make=b.make and a.model=b.model and a.dprovider_id=b.provider_id and b.code=?1", nativeQuery = true)
 	List<MOSIPDeviceService> findByDeviceCode(String deviceCode);
+	
+	/**
+	 * Find by device detail.
+	 *
+	 * @param version the version
+	 * @param deviceTypeCode the device type code
+	 * @param devicesTypeCode the devices type code
+	 * @param make the make
+	 * @param model the model
+	 * @param dp the dp
+	 * @return the MOSIP device service
+	 */
+	@Query(value = "select * from mosip_device_service where sw_version=?1 and dtype_code=?2 and dstype_code=?3 and make=?4 and model=?5 and dprovider_id=?6", nativeQuery = true)
+	MOSIPDeviceService findByDeviceDetail(String version, String deviceTypeCode, String devicesTypeCode, String make,
+			String model, String dp);
 
 }

@@ -114,11 +114,10 @@ public class DeviceController {
 	/**
 	 * Post API to insert a new row of Device data
 	 * 
-	 * @param deviceDto
-	 *            input parameter deviceDto
+	 * @param request
+	 *            
 	 * 
-	 * @return ResponseEntity Device Id which is inserted successfully
-	 *         {@link ResponseEntity}
+	 * @return responseWrapper
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','GLOBAL_ADMIN')")
 	@ResponseFilter
@@ -128,9 +127,9 @@ public class DeviceController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
 	public ResponseWrapper<Device> createDevice(
-			@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
+			@RequestBody RequestWrapper<DeviceDto> request) {
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.createDevice(deviceDto.getRequest()));
+		responseWrapper.setResponse(deviceService.createDevice(request.getRequest()));
 		return responseWrapper;
 
 	}

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -45,6 +46,12 @@ import lombok.Data;
 @Component
 public class BioMatcherUtil {
 
+	private static final String KER_BIO_QUALITY_CHK_FAILED = "KER-BIO-003";
+
+	private static final String KER_BIO_MATCH_FAILED = "KER-BIO-004";
+
+	private static final String KER_BIO_UNKNOWN_ERROR = "KER-BIO-005";
+	
 	@Autowired(required = false)
 	@Qualifier("finger")
 	private IBioApi fingerApi;
@@ -96,14 +103,39 @@ public class BioMatcherUtil {
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"entityBIR size >>>" + entityBIR.length);
 				match = getBioSdkInstance(reqBIR.get().getBdbInfo().getFormat().getType()).match(reqBIR.get(), entityBIR, null);
-				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
-						"match size >>>" + match.length);
-				Arrays.asList(match).stream().forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA",
-						"matchValue", "scaled score Value >>>" + score.getScaleScore()));
-				return Stream.of(match).mapToDouble(Score::getScaleScore).max().orElse(0);
+				
+				if (Stream.of(match).anyMatch(Objects::isNull)) {
+					// Handling null score. Usually this should not occur, as any exception should
+					// be thrown by the bio sdk instead of returning null.
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MATCH_FAILED_TO_PERFORM);
+				} else {
+					logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+							"match size >>>" + match.length);
+					Stream.of(match).filter(Objects::nonNull)
+							.forEach(score -> logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+									"scaled score Value >>>" + score.getScaleScore()));
+					return Stream.of(match).filter(Objects::nonNull).mapToDouble(Score::getScaleScore).max().orElse(0);
+				}
+				
 			} catch (BiometricException e) {
-				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Biovalue not Matched");
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+				String errorCode = e.getErrorCode();
+				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Error occurred in matching biometrics: " 
+								+ errorCode + " --> " + e.getErrorText());
+				
+				switch (errorCode) {
+					case KER_BIO_QUALITY_CHK_FAILED:
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.QUALITY_CHECK_FAILED, e);
+					case KER_BIO_MATCH_FAILED:
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.BIO_MATCH_FAILED_TO_PERFORM, e);
+					case KER_BIO_UNKNOWN_ERROR:
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO,
+								e);
+					default:
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO,
+								e);
+				}
+				
 			}
 		}
 		return 0;
@@ -305,4 +337,3 @@ public class BioMatcherUtil {
 	}
 	
 }
-;

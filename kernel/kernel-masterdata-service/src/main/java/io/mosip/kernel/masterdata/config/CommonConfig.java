@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
-import io.mosip.kernel.core.util.Node;
-import io.mosip.kernel.core.util.UBtree;
+import io.mosip.kernel.core.masterdata.util.model.Node;
+import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;

@@ -19,12 +19,15 @@ public enum AuditEvents {
 	/** The internal request response. */
 	INTERNAL_REQUEST_RESPONSE("IDA-004", "SYSTEM", "Internal Authentication Request"),
 	
+	/** The internal otp trigger request response. */
+	INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE("IDA-005", "SYSTEM", "Internal OTP Request"),
+	
 	/**  Static_Pin_Storage_Request_Response. */
-	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-004","BUSINESS", ""),//not applicable for release v1
+	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-006","BUSINESS", ""),//not applicable for release v1
 	
 	
 	/** The vid generate request response. */
-	VID_GENERATE_REQUEST_RESPONSE("IDA-EVT-005","BUSINESS", "");//not applicable for release v1
+	VID_GENERATE_REQUEST_RESPONSE("IDA-EVT-007","BUSINESS", "");//not applicable for release v1
 	
 	/** The event id. */
 	private final String eventId;
@@ -40,6 +43,7 @@ public enum AuditEvents {
 	 *
 	 * @param eventId the event id
 	 * @param eventType the event type
+	 * @param eventName the event name
 	 */
 	private AuditEvents(String eventId, String eventType, String eventName) {
 		this.eventId = eventId;

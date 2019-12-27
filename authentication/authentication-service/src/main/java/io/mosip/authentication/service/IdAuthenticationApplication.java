@@ -24,6 +24,7 @@ import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
@@ -64,7 +65,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, IdObjectPatternValidator.class,
 		BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
 		IdAuthTransactionManager.class, RestRequestFactory.class, RestHelperImpl.class,AuthtypeStatusImpl.class,
-		JWSValidation.class})
+		JWSValidation.class, PartnerServiceImpl.class})
 @ComponentScan({ "io.mosip.authentication.service.*" })
 public class IdAuthenticationApplication {
 

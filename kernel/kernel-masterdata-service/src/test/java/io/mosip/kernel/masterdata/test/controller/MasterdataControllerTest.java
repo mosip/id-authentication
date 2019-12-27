@@ -66,6 +66,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.WeekDaysDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -329,6 +331,9 @@ public class MasterdataControllerTest {
 
 		holidays.add(holiday);
 	}
+	
+	LocationPostResponseDto locationPostResponseDto=null;
+	LocationPutResponseDto locationPutResponseDto=null;
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
@@ -361,6 +366,7 @@ public class MasterdataControllerTest {
 		locationHierarchyDtos.add(locationHierarchyDto);
 		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
+		
 		locationCodeDto = new PostLocationCodeResponseDto();
 		locationCodeDto.setCode("TN");
 		locationCodeDto.setLangCode("eng");
@@ -368,6 +374,24 @@ public class MasterdataControllerTest {
 		requestDto.setId("mosip.create.location");
 		requestDto.setVersion("1.0.0");
 		requestDto.setRequest(locationDto);
+		
+		locationPostResponseDto = new LocationPostResponseDto();
+		locationPostResponseDto.setCode("KAR");
+		locationPostResponseDto.setName("KARNATAKA");
+		locationPostResponseDto.setHierarchyLevel((short) 1);
+		locationPostResponseDto.setHierarchyName("STATE");
+		locationPostResponseDto.setParentLocCode("IND");
+		locationPostResponseDto.setLangCode("eng");
+		locationPostResponseDto.setIsActive(true);
+		
+		locationPutResponseDto = new LocationPutResponseDto();
+		locationPutResponseDto.setCode("KAR");
+		locationPutResponseDto.setName("KARNATAKA");
+		locationPutResponseDto.setHierarchyLevel((short) 1);
+		locationPutResponseDto.setHierarchyName("STATE");
+		locationPutResponseDto.setParentLocCode("IND");
+		locationPutResponseDto.setLangCode("eng");
+		locationPutResponseDto.setIsActive(true);
 
 		try {
 			LOCATION_JSON_EXPECTED_POST = mapper.writeValueAsString(requestDto);
@@ -660,7 +684,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("resident")
 	public void testGetDoucmentTypesForDocumentCategoryAndLangCode() throws Exception {
 
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
@@ -672,7 +696,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("resident")
 	public void testDocumentTypeNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("KER-DOC-10001",
@@ -826,7 +850,7 @@ public class MasterdataControllerTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void testUpdateLocationDetails() throws Exception {
-		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
+		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationPutResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/locations").contentType(MediaType.APPLICATION_JSON)
 				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -984,7 +1008,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("individual")
+	@WithUserDetails("resident")
 	public void getAllTemplateByTemplateTypeCodeTest() throws Exception {
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		templateResponseDto.setTemplates(templateDtoList);

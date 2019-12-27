@@ -8,7 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 9-Nov-2019           Sadanandegowda DM   Added columns for lost UIN requirements
+-- 11-Nov-2019           Sadanandegowda DM   Added columns for lost UIN requirements
 -- ------------------------------------------------------------------------------------------
 
 -- object: regprc.individual_demographic_dedup | type: TABLE --

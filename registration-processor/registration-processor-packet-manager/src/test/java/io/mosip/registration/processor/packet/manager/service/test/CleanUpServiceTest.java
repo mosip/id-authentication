@@ -87,6 +87,7 @@ public class CleanUpServiceTest {
 		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertFalse(exists);
 
+
 	}
 
 	@Test
@@ -114,7 +115,7 @@ public class CleanUpServiceTest {
 	@Test(expected = FileNotFoundInSourceException.class)
 	public void cleanUpFileSourceFailureCheck() throws IOException {
 
-		String fileName = "1002.zip";
+		String fileName = "1001.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
 
@@ -154,7 +155,7 @@ public class CleanUpServiceTest {
 	@Test(expected = FileNotFoundInSourceException.class)
 	public void cleanUpFileChildSourceFailureCheck() throws IOException {
 
-		String fileName = "1002.zip";
+		String fileName = "1001.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
 
@@ -180,7 +181,7 @@ public class CleanUpServiceTest {
 
 	@Test(expected = FileNotFoundInSourceException.class)
 	public void deleteFailureTest() throws FileNotFoundException, IOException {
-		String fileName = "1002.zip";
+		String fileName = "1001.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 
 		fileManager.deletePacket(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
@@ -188,12 +189,15 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	public void copyTest() throws FileNotFoundException, IOException {
+	public void copyTest() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
 		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
 		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE);
+
+		// delete packet after copy
+		fileManager.deletePacket(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 	}
 
 	@Test

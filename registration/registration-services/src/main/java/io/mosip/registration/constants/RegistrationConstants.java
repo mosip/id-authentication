@@ -1559,8 +1559,11 @@ public class RegistrationConstants {
 			"Right Little");
 
 	public static final List<String> TWO_THUMBS = Arrays.asList("Left Thumb", "Right Thumb");
+	public static final String LEFT_EYE = "Left Iris";
+	public static final String RIGHT_EYE = "Right Iris";
 	
-	public static final List<String> TWO_IRIS = Arrays.asList("Left Iris", "Right Iris");
+	public static final List<String> TWO_IRIS = Arrays.asList(LEFT_EYE, RIGHT_EYE);
+	
 	
 	public static final String SESSION_KEY_URL = "session_key";
 	public static final String AUTH_HASH = "hash";

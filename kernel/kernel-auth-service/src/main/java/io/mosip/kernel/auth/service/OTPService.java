@@ -21,7 +21,7 @@ public interface OTPService {
 
 	MosipUserTokenDto validateOTP(MosipUserDto mosipUser, String otp);
 
-	AuthNResponseDto sendOTPForUin(MosipUserDto mosipUser, List<String> otpChannel, String appId);
+	AuthNResponseDto sendOTPForUin(MosipUserDto mosipUserDto, OtpUser otpUser, String appId);
 	
 	AuthNResponseDto sendOTP(MosipUserDto mosipUser, OtpUser otpUser) throws Exception;
 

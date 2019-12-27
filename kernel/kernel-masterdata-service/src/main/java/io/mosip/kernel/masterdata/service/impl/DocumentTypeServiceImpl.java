@@ -23,12 +23,15 @@ import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocumentTypePutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -41,6 +44,7 @@ import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -87,6 +91,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
 	private PageUtils pageUtils;
+	
+	@Autowired
+	private MasterdataCreationUtil masterdataCreationUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -122,21 +129,28 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID createDocumentType(DocumentTypeDto documentTypeDto) {
-		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
-		DocumentType documentType;
+	public DocumentTypePostResponseDto createDocumentType(DocumentTypeDto documentTypeDto) {
+	
+		
+		DocumentType documentType = new DocumentType();
+		DocumentTypePostResponseDto documentTypePostResponseDto = new DocumentTypePostResponseDto();
 		try {
+			documentTypeDto = masterdataCreationUtil.createMasterData(DocumentType.class, documentTypeDto);
+			DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
 			documentType = documentTypeRepository.create(entity);
+			MapperUtils.map(documentType, documentTypePostResponseDto);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
+					ExceptionUtils.parseException(e1));
+		}
 
-		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		MapperUtils.map(documentType, codeLangCodeId);
 
-		return codeLangCodeId;
+		return documentTypePostResponseDto;
 	}
 
 	/*
@@ -147,24 +161,24 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public CodeAndLanguageCodeID updateDocumentType(DocumentTypeDto documentTypeDto) {
+	public DocumentTypePutResponseDto updateDocumentType(DocumentTypeDto documentTypeDto) {
 		try {
 			DocumentType documentType = documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(),
 					documentTypeDto.getLangCode());
 			if (documentType != null) {
 
-				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
-					throw new RequestException(
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
-				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
-						&& (documentType.getIsActive() == Boolean.FALSE)) {
-					throw new RequestException(
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
-							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
-				}
-
-				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, false);
+//				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
+//					throw new RequestException(
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
+//				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
+//						&& (documentType.getIsActive() == Boolean.FALSE)) {
+//					throw new RequestException(
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
+//							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
+//				}
+				documentTypeDto = masterdataCreationUtil.updateMasterData(DocumentType.class, documentTypeDto);
+				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType,true);
 				documentTypeRepository.update(documentType);
 			} else {
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -176,11 +190,14 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		CodeAndLanguageCodeID documentTypeId = new CodeAndLanguageCodeID();
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+			e1.printStackTrace();
+		}
+		DocumentTypePutResponseDto documentTypePutResponseDto = new DocumentTypePutResponseDto();
 
-		MapperUtils.mapFieldValues(documentTypeDto, documentTypeId);
+		MapperUtils.mapFieldValues(documentTypeDto, documentTypePutResponseDto);
 
-		return documentTypeId;
+		return documentTypePutResponseDto;
 	}
 
 	/*

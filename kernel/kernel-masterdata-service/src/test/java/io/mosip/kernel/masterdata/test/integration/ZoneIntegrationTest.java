@@ -14,14 +14,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
 
@@ -40,6 +44,17 @@ public class ZoneIntegrationTest {
 
 	private List<Zone> leafsZones;
 
+	@MockBean
+	private RegistrationCenterRepository registrationCenterRepo;
+
+	@Value("${mosip.kernel.registrationcenterid.length}")
+	private int centerIdLength;
+
+	@Value("${mosip.primary-language}")
+	private String primaryLangCode;
+
+	private RegistrationCenter registrationCenter;
+
 	@Before
 	public void setup() {
 		zones = new ArrayList<>();
@@ -51,6 +66,8 @@ public class ZoneIntegrationTest {
 		zones.addAll(Arrays.asList(zone1, zone2, zone3, zone4, zone5));
 		leafsZones = new ArrayList<>();
 		leafsZones.addAll(Arrays.asList(zone3, zone4, zone5));
+		registrationCenter = new RegistrationCenter();
+		registrationCenter.setZoneCode("ZONE5");
 	}
 
 	@Test
@@ -77,6 +94,41 @@ public class ZoneIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	public void getZoneNoLeafs() throws Exception {
 		mockMvc.perform(get("/zones/leafs/{langCode}", "eng")).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void authorizeZone() throws Exception {
+		when(zoneUtils.getUserLeafZones(Mockito.anyString())).thenReturn(leafsZones);
+		when(registrationCenterRepo.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		mockMvc.perform(get("/zones/authorize?rid=12234234234234234")).andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void authorizeZoneWithInvalidZone() throws Exception {
+		//when(zoneUtils.getUserLeafZones(Mockito.anyString())).thenReturn(leafsZones);
+		when(registrationCenterRepo.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		mockMvc.perform(get("/zones/authorize?rid=12234234234234234")).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void authorizeZoneExceptionTest() throws Exception {
+		
+		when(registrationCenterRepo.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/zones/authorize?rid=12234234234234234")).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void authorizeZoneZoneExceptionTest() throws Exception {
+		when(registrationCenterRepo.findByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/zones/authorize?rid=12234234234234234")).andExpect(status().isInternalServerError());
 	}
 
 }
