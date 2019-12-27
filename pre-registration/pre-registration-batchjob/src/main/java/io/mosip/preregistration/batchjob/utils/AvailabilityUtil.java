@@ -39,13 +39,15 @@ import io.mosip.preregistration.batchjob.code.ErrorCodes;
 import io.mosip.preregistration.batchjob.code.ErrorMessages;
 import io.mosip.preregistration.batchjob.entity.AvailibityEntity;
 import io.mosip.preregistration.batchjob.exception.NoRecordFoundException;
-import io.mosip.preregistration.batchjob.exception.NotificationException;
 import io.mosip.preregistration.batchjob.exception.RestCallException;
 import io.mosip.preregistration.batchjob.exception.util.BatchServiceExceptionCatcher;
+import io.mosip.preregistration.batchjob.model.ExceptionalHolidayDto;
+import io.mosip.preregistration.batchjob.model.ExceptionalHolidayResponseDto;
 import io.mosip.preregistration.batchjob.model.HolidayDto;
 import io.mosip.preregistration.batchjob.model.RegistrationCenterDto;
 import io.mosip.preregistration.batchjob.model.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.batchjob.model.RegistrationCenterResponseDto;
+import io.mosip.preregistration.batchjob.model.WorkingDaysResponseDto;
 import io.mosip.preregistration.batchjob.repository.utils.BatchJpaRepositoryImpl;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
@@ -63,6 +65,8 @@ import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.NotificationException;
+
 /**
  * @author Kishan Rathore
  * @since 1.0.0
@@ -100,6 +104,18 @@ public class AvailabilityUtil {
 	 */
 	@Value("${holiday.url}")
 	String holidayListUrl;
+
+	/**
+	 * Reference for ${holiday.exceptional.url} from property file
+	 */
+	@Value("${holiday.exceptional.url}")
+	String exceptionalHolidayListUrl;
+	
+	/**
+	 * Reference for ${working.day.url} from property file
+	 */
+	@Value("${working.day.url}")
+	String workingDayListUrl;
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
@@ -145,7 +161,7 @@ public class AvailabilityUtil {
 			List<String> regCenterDumped = batchServiceDAO.findRegCenter(LocalDate.now());
 			for (RegistrationCenterDto regDto : regCenterDtos) {
 				List<LocalDate> insertedDate = batchServiceDAO.findDistinctDate(LocalDate.now(), regDto.getId());
-				List<String> holidaylist = getHolidayListMasterData(regDto,headers);
+				List<String> holidaylist = getHolidayListMasterData(regDto, headers);
 				regCenterDumped.remove(regDto.getId());
 				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate)
 						|| sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
@@ -166,8 +182,8 @@ public class AvailabilityUtil {
 											regBookingEntityList.get(i).getDemographicEntity().getPreRegistrationId())
 											.equals(StatusCodes.BOOKED.getCode())) {
 										cancelBooking(regBookingEntityList.get(i).getDemographicEntity()
-												.getPreRegistrationId(),headers);
-										sendNotification(regBookingEntityList.get(i),headers);
+												.getPreRegistrationId(), headers);
+										sendNotification(regBookingEntityList.get(i), headers);
 									}
 								}
 							}
@@ -190,8 +206,8 @@ public class AvailabilityUtil {
 									.getDemographicStatus(
 											entityList.get(j).getDemographicEntity().getPreRegistrationId())
 									.equals(StatusCodes.BOOKED.getCode())) {
-								cancelBooking(entityList.get(j).getDemographicEntity().getPreRegistrationId(),headers);
-								sendNotification(entityList.get(j),headers);
+								cancelBooking(entityList.get(j).getDemographicEntity().getPreRegistrationId(), headers);
+								sendNotification(entityList.get(j), headers);
 							}
 						}
 					}
@@ -208,10 +224,11 @@ public class AvailabilityUtil {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
 						"Availability for booking successfully saved in the database",
-						AuditLogVariables.MULTIPLE_ID.toString(), auditUserId, auditUsername, null,headers);
+						AuditLogVariables.MULTIPLE_ID.toString(), auditUserId, auditUsername, null, headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"addAvailability failed", AuditLogVariables.NO_ID.toString(), auditUserId, auditUsername, null,headers);
+						"addAvailability failed", AuditLogVariables.NO_ID.toString(), auditUserId, auditUsername, null,
+						headers);
 			}
 		}
 		response.setResponsetime(getCurrentResponseTime());
@@ -219,7 +236,7 @@ public class AvailabilityUtil {
 		return response;
 	}
 
-	private boolean cancelBooking(String preRegistrationId,HttpHeaders headers) {
+	private boolean cancelBooking(String preRegistrationId, HttpHeaders headers) {
 
 		log.info("sessionId", "idType", "id", "In cancelBooking method of Availability Util");
 		try {
@@ -314,32 +331,72 @@ public class AvailabilityUtil {
 	 * @param regDto
 	 * @return List of string
 	 */
-	public List<String> getHolidayListMasterData(RegistrationCenterDto regDto,HttpHeaders headers) {
+	public List<String> getHolidayListMasterData(RegistrationCenterDto regDto, HttpHeaders headers) {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
 
 			String holidayUrl = holidayListUrl + regDto.getLangCode() + "/" + regDto.getId() + "/"
 					+ LocalDate.now().getYear();
-			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
+			UriComponentsBuilder builder1 = UriComponentsBuilder.fromHttpUrl(holidayUrl);
 			HttpEntity<RequestWrapper<RegistrationCenterHolidayDto>> httpHolidayEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder2.build().encode().toUriString();
+			String uriBuilder = builder1.build().encode().toUriString();
 			log.info("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service URL- " + uriBuilder);
-			ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> responseEntity2 = restTemplate.exchange(
+			/** Rest call to master for regular holidays. */
+			ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> responseEntity1 = restTemplate.exchange(
 					uriBuilder, HttpMethod.GET, httpHolidayEntity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
+					});
+			if (responseEntity1.getBody().getErrors() != null && !responseEntity1.getBody().getErrors().isEmpty()) {
+				throw new NoRecordFoundException(responseEntity1.getBody().getErrors().get(0).getErrorCode(),
+						responseEntity1.getBody().getErrors().get(0).getMessage());
+			}
+			holidaylist = new ArrayList<>();
+			if (!responseEntity1.getBody().getResponse().getHolidays().isEmpty()) {
+				for (HolidayDto holiday : responseEntity1.getBody().getResponse().getHolidays()) {
+					holidaylist.add(holiday.getHolidayDate());
+				}
+			}
+
+			/** Rest call to master for exceptional holidays. */
+			String exceptionalHolidayUrl = exceptionalHolidayListUrl + "/" + regDto.getId() + "/"
+					+ regDto.getLangCode();
+			UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(exceptionalHolidayUrl);
+			HttpEntity<RequestWrapper<RegistrationCenterHolidayDto>> httpExceptionalHolidayEntity = new HttpEntity<>(
+					headers);
+			String uriBuilder2 = builder2.build().encode().toUriString();
+			ResponseEntity<ResponseWrapper<ExceptionalHolidayResponseDto>> responseEntity2 = restTemplate.exchange(
+					uriBuilder2, HttpMethod.GET, httpExceptionalHolidayEntity,
+					new ParameterizedTypeReference<ResponseWrapper<ExceptionalHolidayResponseDto>>() {
 					});
 			if (responseEntity2.getBody().getErrors() != null && !responseEntity2.getBody().getErrors().isEmpty()) {
 				throw new NoRecordFoundException(responseEntity2.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity2.getBody().getErrors().get(0).getMessage());
 			}
-			holidaylist = new ArrayList<>();
-			if (!responseEntity2.getBody().getResponse().getHolidays().isEmpty()) {
-				for (HolidayDto holiday : responseEntity2.getBody().getResponse().getHolidays()) {
-					holidaylist.add(holiday.getHolidayDate());
+			if (!responseEntity2.getBody().getResponse().getExceptionalHolidayList().isEmpty()) {
+				for (ExceptionalHolidayDto workingDay : responseEntity2.getBody().getResponse()
+						.getExceptionalHolidayList()) {
+					//holidaylist.add(workingDay.getHolidayDate().toString());// uncomment when completed
 				}
 			}
+
+			/** Rest call to master for working holidays. */
+			String workingDayUrl= workingDayListUrl+"/"+regDto.getId()+"/"+regDto.getLangCode();
+			UriComponentsBuilder builder3 = UriComponentsBuilder.fromHttpUrl(workingDayUrl);
+			HttpEntity<RequestWrapper<WorkingDaysResponseDto>> httpWorkingDayEntity = new HttpEntity<>(
+					headers);
+			String uriBuilder3 = builder3.build().encode().toUriString();
+			ResponseEntity<ResponseWrapper<WorkingDaysResponseDto>> responseEntity3 = restTemplate.exchange(
+					uriBuilder3, HttpMethod.GET, httpWorkingDayEntity,
+					new ParameterizedTypeReference<ResponseWrapper<WorkingDaysResponseDto>>() {
+					});
+			if (responseEntity3.getBody().getErrors() != null && !responseEntity3.getBody().getErrors().isEmpty()) {
+				throw new NoRecordFoundException(responseEntity3.getBody().getErrors().get(0).getErrorCode(),
+						responseEntity3.getBody().getErrors().get(0).getMessage());
+			}
+			// Code to retrive date of days and add it to holidays.
+			
 
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
@@ -362,7 +419,8 @@ public class AvailabilityUtil {
 	 */
 	public void timeSlotCalculator(RegistrationCenterDto regDto, List<String> holidaylist, LocalDate sDate,
 			BatchJpaRepositoryImpl batchServiceDAO) {
-		log.info("sessionId", "idType", "id", "In timeSlotCalculator method of Booking Service Util for "+regDto +" on date "+sDate);
+		log.info("sessionId", "idType", "id",
+				"In timeSlotCalculator method of Booking Service Util for " + regDto + " on date " + sDate);
 		if (holidaylist.contains(sDate.toString())) {
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 			String text = "2016-11-09 00:00:00";
@@ -450,7 +508,8 @@ public class AvailabilityUtil {
 	 */
 
 	public boolean isNull(Object key) {
-//		log.info("sessionId", "idType", "id", "In isNull method of Booking Service Util");
+		// log.info("sessionId", "idType", "id", "In isNull method of Booking Service
+		// Util");
 		if (key instanceof String) {
 			if (key.equals("") || ((String) key).trim().length() == 0)
 				return true;
@@ -466,7 +525,8 @@ public class AvailabilityUtil {
 	 * @param registrationBookingEntity
 	 * @throws JsonProcessingException
 	 */
-	public void sendNotification(RegistrationBookingEntity registrationBookingEntity,HttpHeaders headers) throws JsonProcessingException {
+	public void sendNotification(RegistrationBookingEntity registrationBookingEntity, HttpHeaders headers)
+			throws JsonProcessingException {
 		log.info("sessionId", "idType", "id", "In sendNotification method of Booking Service");
 		NotificationDTO notification = new NotificationDTO();
 		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
@@ -477,7 +537,7 @@ public class AvailabilityUtil {
 		notification.setAppointmentTime(time);
 		notification.setAdditionalRecipient(false);
 		notification.setIsBatch(true);
-		emailNotification(notification, primaryLang,headers);
+		emailNotification(notification, primaryLang, headers);
 	}
 
 	/**
@@ -487,7 +547,8 @@ public class AvailabilityUtil {
 	 * @return NotificationResponseDTO
 	 * @throws JsonProcessingException
 	 */
-	public void emailNotification(NotificationDTO notificationDTO, String langCode,HttpHeaders headers) throws JsonProcessingException {
+	public void emailNotification(NotificationDTO notificationDTO, String langCode, HttpHeaders headers)
+			throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
@@ -534,7 +595,7 @@ public class AvailabilityUtil {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName, String ref_id,HttpHeaders headers) {
+			String userId, String userName, String ref_id, HttpHeaders headers) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -546,7 +607,7 @@ public class AvailabilityUtil {
 		auditRequestDto.setModuleId(AuditLogVariables.BOOK.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.BOOKING_SERVICE.toString());
 		auditRequestDto.setId(ref_id);
-		auditLogUtil.saveAuditDetails(auditRequestDto,headers);
+		auditLogUtil.saveAuditDetails(auditRequestDto, headers);
 	}
 
 }

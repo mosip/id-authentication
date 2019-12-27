@@ -57,32 +57,9 @@ public class TransliterationService {
 	private TransliterationServiceUtil serviceUtil;
 
 	/**
-	 * Reference for ${id} from property file
-	 */
-	@Value("${mosip.pre-registration.transliteration.transliterate.id}")
-	private String id;
-
-	/**
-	 * Reference for ${ver} from property file
-	 */
-	@Value("${version}")
-	private String version;
-
-	/**
-	 * Request map to store the id and version and this is to be passed to request
-	 * validator method.
-	 */
-	Map<String, String> requiredRequestMap = new HashMap<>();
-
-	/**
 	 * This method acts as a post constructor to initialize the required request
 	 * parameters.
 	 */
-	@PostConstruct
-	public void setup() {
-		requiredRequestMap.put("id", id);
-		requiredRequestMap.put("version", version);
-	}
 
 	/**
 	 * 
@@ -96,7 +73,6 @@ public class TransliterationService {
 		responseDTO.setId(requestDTO.getId());
 		responseDTO.setVersion(requestDTO.getVersion());
 		try {
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO),requiredRequestMap)) {
 				TransliterationRequestDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
 					if(serviceUtil.supportedLanguageCheck(transliterationRequestDTO)) {
@@ -119,7 +95,6 @@ public class TransliterationService {
 					throw new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode(),
 							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage(),responseDTO);
 				}
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			new TransliterationExceptionCatcher().handle(e,responseDTO);

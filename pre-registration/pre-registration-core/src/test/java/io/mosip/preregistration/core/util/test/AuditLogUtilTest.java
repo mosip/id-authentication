@@ -1,6 +1,6 @@
 package io.mosip.preregistration.core.util.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,13 +22,15 @@ import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuditResponseDto;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
+
 /**
- * AuditLogUtil Test
  * 
+ * AuditLogUtil Test
  * @version 1.0.0
  * @author M1043226
- *
  */
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,8 +39,11 @@ public class AuditLogUtilTest {
 	@Autowired
 	AuditLogUtil auditUtil;
 	
-	private AuditLogUtil auditLogUtilSpy;
 	@MockBean
+	private RequestValidator validator;
+	
+	private AuditLogUtil auditLogUtilSpy;
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 	
 	AuditRequestDto auditRequestDto=new AuditRequestDto();

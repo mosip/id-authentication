@@ -12,12 +12,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import javax.persistence.LockModeType;
+
 import org.apache.commons.collections4.SetValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,12 +43,6 @@ import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
 @Component
 public class ValidationUtil {
 
-	private static String utcDateTimePattern;
-
-	private static String preIdRegex;
-
-	private static String preIdLength;
-
 	private static String emailRegex;
 
 	private static String phoneRegex;
@@ -54,10 +51,6 @@ public class ValidationUtil {
 
 	private static String documentTypeUri;
 
-	private static String documentCategoryUri;
-	
-	private static String validDocUri;
-
 	private static String masterdataUri;
 
 	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
@@ -65,15 +58,6 @@ public class ValidationUtil {
 	private ValidationUtil() {
 	}
 
-	@Value("${mosip.utc-datetime-pattern}")
-	public void setDateTime(String value) {
-		ValidationUtil.utcDateTimePattern = value;
-	}
-
-	@Value("${mosip.kernel.prid.length}")
-	public void setLength(String value) {
-		ValidationUtil.preIdLength = value;
-	}
 
 	@Value("${mosip.id.validation.identity.email}")
 	public void setEmailRegex(String value) {
@@ -108,11 +92,6 @@ public class ValidationUtil {
 	@Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
 	public void setDocType(String value) {
 		ValidationUtil.documentTypeUri = value;
-	}
-
-	@Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.lang.rest.uri}")
-	public void setDocCatCode(String value) {
-		ValidationUtil.documentCategoryUri = value;
 	}
 	
 	@Value("${mosip.kernel.masterdata.validdoc.rest.uri}")
@@ -280,7 +259,7 @@ public class ValidationUtil {
 		}
 	}
 
-	
+	@Lock(LockModeType.READ)
 	public boolean validateDocuments(String langCode, String catCode, String typeCode, String preRegistrationId) {
 		log.debug("sessionId", "idType", "id", "beforegetAllDocCategories preRegistrationId " + preRegistrationId);
 		log.debug("sessionId", "idType", "id", "aftergetAllDocCategories preRegistrationId " + preRegistrationId);
@@ -383,7 +362,6 @@ public class ValidationUtil {
 									.forEach(secIndex -> validDocsMap.put(String.valueOf(resp.get(index).get(CODE)),
 											String.valueOf(intResponse.get(secIndex).get(CODE))));
 						});
-				System.out.println();
 				log.info("sessionId", "idType", "id", " validDocsMap " + validDocsMap);
 			} else {
 				log.debug("sessionId", "idType", "id", "inside getAllDocCategories inside else  preRegistrationId ");

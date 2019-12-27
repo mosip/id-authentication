@@ -1,7 +1,3 @@
-/* 
- * Copyright
- * 
- */
 package io.mosip.preregistration.transliteration.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +26,9 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.IllegalParamException;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.transliteration.dto.TransliterationResponseDTO;
-import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 
 
@@ -51,6 +49,9 @@ public class TransliterationControllerTest {
 	 */
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@Mock
+	private RequestValidator requestValidator;
 
 	/**
 	 * Creating Mock Bean for transliteration Service

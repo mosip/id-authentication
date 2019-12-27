@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,8 +23,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.util.RequestValidator;
+import io.mosip.preregistration.demographic.service.DemographicServiceIntf;
+import io.mosip.preregistration.document.service.DocumentServiceIntf;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.service.NotificationService;
@@ -46,7 +51,22 @@ public class NotificationControllerTest {
 
 	@Autowired
 	private ObjectMapper mapper;
+	
 
+	@Mock
+	private RequestValidator requestValidator;
+
+	@MockBean
+	private DemographicServiceIntf preRegistrationService;
+	
+	/**
+	 * Creating Mock Bean for DocumentUploadService
+	 */
+	@MockBean
+	private DocumentServiceIntf demoservice;
+	
+	@MockBean
+	private BookingServiceIntf bookingServiceIntf;
 	/**
 	 * /** Creating Mock Bean for NotificationService
 	 */
@@ -97,7 +117,7 @@ public class NotificationControllerTest {
 				.andExpect(status().isOk());
 
 	}
-
+}
 	// /**
 	// * This test method is for success qrCodeGeneration
 	// * @throws Exception
@@ -113,4 +133,4 @@ public class NotificationControllerTest {
 	// .content(stringjson)).andExpect(status().isOk());
 	//
 	// }
-}
+
