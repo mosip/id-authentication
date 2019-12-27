@@ -85,18 +85,4 @@ public class DeviceDto {
 
 	private String zoneCode;
 	
-	/**
-	 * Zone name for Device.
-	 */
-	private String zone;
-	
-	/**
-	 * Device Type name of Device.
-	 */
-	private String deviceTypeName;
-
-	/**
-	 * Device center mapping status.
-	 */
-	private String mapStatus;
 }

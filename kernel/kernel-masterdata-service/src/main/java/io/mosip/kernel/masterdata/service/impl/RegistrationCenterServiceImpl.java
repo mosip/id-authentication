@@ -987,6 +987,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterEntity = new RegistrationCenter();
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPostReqDto,
 						registrationCenterEntity.getClass());
+				registrationCenterExtnDto = MapperUtils.map(registrationCenterEntity, RegistrationCenterExtnDto.class);
 			}
 			// registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity,
 			// registrationCenterDto);
@@ -998,7 +999,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * 
 			 */
 
-			if (registrationCenterEntity != null) {
+			if (registrationCenterEntity != null && primaryLang!=secondaryLang) {
 				if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
 					uniqueId = registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
 					registrationCenterEntity.setId(uniqueId);
@@ -1014,7 +1015,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				
 				registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
 			}
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
+			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode()) && primaryLang!=secondaryLang) {
 				// insert 7 rows in reg_working_non_working table
 				try {
 					if (regCenterPostReqDto.getWorkingNonWorkingDays() != null) {
@@ -1035,12 +1036,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				}
 			}
 				
-			if((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode())  ){
+			if(primaryLang!=secondaryLang && ((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode()))){
 				//set response for working_non_working for both primary and sencodary language
 				setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
+				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
 			}
 				//set ExpHoliday Dto
-				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
+				
 				
 
 				// creating registration center history
