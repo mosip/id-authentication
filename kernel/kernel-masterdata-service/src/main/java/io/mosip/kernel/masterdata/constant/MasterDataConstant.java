@@ -42,4 +42,11 @@ public class MasterDataConstant {
     public static final String DEVICE_REGISTER_UPDATE_MESSAGE="Device status updated successfully";
     public static final String INVALID_REG_CENTER_TYPE="Invalid centerTypeCode";
     public static final String INVALID_LOCATION_CODE="Invalid Location Code";
+    public static final String ERROR_OCCURED_REGISTERED_DEVICE="Regsitered device table";
+    public static final String ERROR_OCCURED_DEVICE_PROVIDER="Device provider table";
+    public static final String ERROR_OCCURED_MOSIP_DEVICE_SERVICE="MDS table";
+    public static final String ERROR_OCCURED_REGISTERED_DEVICE_HISTORY="Regsitered device table";
+    public static final String ERROR_OCCURED_DEVICE_PROVIDER_HISTORY="Device provider table";
+    public static final String ERROR_OCCURED_MOSIP_DEVICE_SERVICE_HISTORY="MDS table";
+    
 }

@@ -144,7 +144,8 @@ public class DeviceProviderManagementIntegrationTest {
 		digitalIdDto.setMake("make-updated");
 		digitalIdDto.setModel("model-updated");
 		digitalIdDto.setSerialNo("BS563Q2230890");
-		digitalIdDto.setType("face");
+		digitalIdDto.setType("Face");
+		digitalIdDto.setSubType("Slab");
 		validateDeviceDto.setDigitalId(digitalIdDto);
 
 		validateDeviceHistoryDto = new ValidateDeviceHistoryDto();
@@ -171,6 +172,8 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setMake("make-updated");
 		registeredDeviceHistory.setModel("model-updated");
 		registeredDeviceHistory.setSerialNo("GV3434343M");
+		registeredDeviceHistory.setDeviceTypeCode("Face");
+		registeredDeviceHistory.setDevicesTypeCode("Slab");
 		registeredDeviceHistory.setEffectivetimes(LocalDateTime.now(ZoneOffset.UTC));
 
 		deviceProviderHistory = new DeviceProviderHistory();
@@ -376,6 +379,8 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setMake("make-update");
 		registeredDevice.setModel("model-update");
 		registeredDevice.setSerialNo("GV343434");
+		registeredDevice.setDevicesTypeCode("GV343434");
+		registeredDevice.setDeviceTypeCode("GV343434");
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
 		mockBean.perform(post(DPM_URL).contentType(MediaType.APPLICATION_JSON).content(req)).andExpect(status().isOk());
@@ -486,6 +491,8 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setMake("make-update");
 		registeredDeviceHistory.setModel("model-update");
 		registeredDeviceHistory.setSerialNo("GV343434");
+		registeredDeviceHistory.setDevicesTypeCode("GV343434");
+		registeredDeviceHistory.setDeviceTypeCode("GV343434");
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);
 		mockBean.perform(post(DPM_HISTORY_URL).contentType(MediaType.APPLICATION_JSON).content(req))

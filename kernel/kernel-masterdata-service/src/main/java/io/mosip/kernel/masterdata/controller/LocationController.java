@@ -18,22 +18,22 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -77,13 +77,24 @@ public class LocationController {
 		responseWrapper.setResponse(locationHierarchyService.getLocationDetails(langcode));
 		return responseWrapper;
 	}
+	
+
+	/**
+	 * 
+	 * @param RequestWrapper<LocationDto>
+	 *            
+	 * @return ResponseWrapper<LocationPostResponseDto>
+	 */
+	
 
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
-	public ResponseWrapper<Location> createLocationHierarchyDetails(
+	public ResponseWrapper<LocationPostResponseDto> createLocationHierarchyDetails(
 			@RequestBody @Valid RequestWrapper<LocationCreateDto> locationRequestDto) {
-		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
+		ResponseWrapper<LocationPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.createLocation(locationRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -123,17 +134,17 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationRequestDto
-	 *            - location request DTO
-	 * @return PostLocationCodeResponseDto
+	 * @param RequestWrapper<LocationDto>
+	 *            
+	 * @return ResponseWrapper<LocationPutResponseDto>
 	 */
 	@ResponseFilter
 	@PutMapping
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
-	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
+	public ResponseWrapper<LocationPutResponseDto> updateLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
 
-		ResponseWrapper<PostLocationCodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<LocationPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.updateLocationDetails(locationRequestDto.getRequest()));
 		return responseWrapper;
 	}

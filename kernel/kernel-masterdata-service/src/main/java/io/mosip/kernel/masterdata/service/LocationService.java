@@ -17,6 +17,8 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -55,7 +57,7 @@ public interface LocationService {
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public ResponseWrapper<Location> createLocation(
+	public LocationPostResponseDto createLocation(
 			LocationCreateDto locationDto);
 
 
@@ -73,7 +75,7 @@ public interface LocationService {
 	 *            - location request DTO
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationRequestDto);
+	public LocationPutResponseDto updateLocationDetails(LocationDto locationRequestDto);
 
 	/**
 	 * 
