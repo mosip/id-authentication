@@ -194,17 +194,20 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		try {
 			deviceRegisterEntity = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 			if (deviceRegisterEntity != null) {
+				if(Arrays.asList(REVOKED, RETIRED).contains(deviceRegisterEntity.getStatusCode())) {
+					throw new DeviceRegisterException("KER-DPR-002", "Device already de-registered");
+				}
 				deviceRegisterEntity.setStatusCode("Retired");
 				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
 				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
 				registeredDeviceRepository.update(deviceRegisterEntity);
 				registeredDeviceHistoryRepo.create(deviceRegisterHistory);
 			} else {
-				throw new DeviceRegisterException("KER-MSD-xx", "No register device found");
+				throw new DeviceRegisterException("KER-DPR-001", "No register device found");
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new DeviceRegisterException("KER-MSD-xx",
+			throw new DeviceRegisterException("KER-DPR-003",
 					"Error occur while deregistering device details " + ExceptionUtils.parseException(e));
 		}
 		DeviceDeRegisterResponse response = new DeviceDeRegisterResponse();
