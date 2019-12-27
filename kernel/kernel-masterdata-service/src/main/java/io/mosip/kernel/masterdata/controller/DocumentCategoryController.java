@@ -52,7 +52,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DocumentCategory" })
 public class DocumentCategoryController {
-	
+
 	@Autowired
 	AuditUtil auditUtil;
 
@@ -68,10 +68,15 @@ public class DocumentCategoryController {
 	@ResponseFilter
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL,DocumentCategoryDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL,DocumentCategoryDto.class.getSimpleName()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.GET_ALL, DocumentCategoryDto.class.getSimpleName()), "ADM-692");
 		ResponseWrapper<DocumentCategoryResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.getAllDocumentCategory());
-		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS,DocumentCategoryDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC,DocumentCategoryDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.GET_ALL_SUCCESS, DocumentCategoryDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, DocumentCategoryDto.class.getSimpleName()), "ADM-693");
 		return responseWrapper;
 	}
 
@@ -128,13 +133,13 @@ public class DocumentCategoryController {
 
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(), "ADM-694");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.createDocumentCategory(category.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DocumentCategoryDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DocumentCategoryDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DocumentCategoryDto.class.getCanonicalName()), "ADM-695");
 		return responseWrapper;
 	}
 
@@ -152,16 +157,15 @@ public class DocumentCategoryController {
 	public ResponseWrapper<CodeAndLanguageCodeID> updateDocumentCategory(
 			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestWrapper<DocumentCategoryDto> category) {
 
-		auditUtil.auditRequest(
-				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(), "ADM-696");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.updateDocumentCategory(category.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DocumentCategoryDto.class.getCanonicalName()),
-				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						DocumentCategoryDto.class.getCanonicalName()));
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, DocumentCategoryDto.class.getCanonicalName()), "ADM-697");
 		return responseWrapper;
 	}
 
@@ -228,13 +232,13 @@ public class DocumentCategoryController {
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(), "ADM-698");
 		ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.searchDocCategories(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER, DocumentCategoryDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentCategoryDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentCategoryDto.class.getCanonicalName()), "ADM-699");
 		return responseWrapper;
 	}
 
@@ -254,13 +258,13 @@ public class DocumentCategoryController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + DocumentCategoryDto.class.getCanonicalName(), "ADM-800");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.docCategoriesFilterValues(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER, DocumentCategoryDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentCategoryDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentCategoryDto.class.getCanonicalName()), "ADM-801");
 		return responseWrapper;
 	}
 }

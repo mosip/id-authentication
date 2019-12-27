@@ -100,13 +100,13 @@ public class DocumentTypeController {
 			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(), "ADM-679");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.createDocumentType(types.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DocumentTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DocumentTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DocumentTypeDto.class.getCanonicalName()), "ADM-680");
 		return responseWrapper;
 	}
 
@@ -126,13 +126,13 @@ public class DocumentTypeController {
 		auditUtil.auditRequest(
 				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(), "ADM-681");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.updateDocumentType(types.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DocumentTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						DocumentTypeDto.class.getCanonicalName()));
+						DocumentTypeDto.class.getCanonicalName()), "ADM-682");
 		return responseWrapper;
 	}
 
@@ -199,13 +199,13 @@ public class DocumentTypeController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),"ADM-683");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.documentTypeFilterValues(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER, DocumentTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DocumentTypeDto.class.getCanonicalName()), "ADM-684");
 		return responseWrapper;
 	}
 
@@ -221,13 +221,13 @@ public class DocumentTypeController {
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + DocumentTypeDto.class.getCanonicalName(), "ADM-685");
 		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DocumentTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DocumentTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DocumentTypeDto.class.getCanonicalName(), "ADM-686"));
 		return responseWrapper;
 	}
 
