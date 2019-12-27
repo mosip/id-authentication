@@ -53,12 +53,13 @@ public class DeviceProviderController {
 			@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),"ADM-719");
 		ResponseWrapper<DeviceProviderExtnDto> response = new ResponseWrapper<>();
 		response.setResponse(deviceProviderSerice.createDeviceProvider(deviceProviderDto.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceProviderDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName());
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DeviceProviderDto.class.getCanonicalName()),"ADM-720");
 		return response;
 	}
 	
@@ -73,13 +74,13 @@ public class DeviceProviderController {
 			@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),"ADM-721");
 		ResponseWrapper<DeviceProviderExtnDto> response = new ResponseWrapper<>();
 		response.setResponse(deviceProviderSerice.updateDeviceProvider(deviceProviderDto.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DeviceProviderDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, DeviceProviderDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, DeviceProviderDto.class.getCanonicalName()),"ADM-722");
 		return response;
 	}
 

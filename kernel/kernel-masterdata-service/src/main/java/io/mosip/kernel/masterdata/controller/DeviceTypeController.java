@@ -43,8 +43,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = { "DeviceType" })
 public class DeviceTypeController {
-	
-	
+
 	@Autowired
 	AuditUtil auditUtil;
 
@@ -74,13 +73,14 @@ public class DeviceTypeController {
 			@Valid @RequestBody RequestWrapper<DeviceTypeDto> deviceTypes) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-630");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.createDeviceType(deviceTypes.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DeviceTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DeviceTypeDto.class.getCanonicalName()),
+				"ADM-631");
 		return responseWrapper;
 	}
 
@@ -112,7 +112,7 @@ public class DeviceTypeController {
 		responseWrapper.setResponse(deviceTypeService.getAllDeviceTypes(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Api to search Device Type based on filters provided.
 	 * 
@@ -128,16 +128,17 @@ public class DeviceTypeController {
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-633");
 		ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.deviceTypeSearch(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceTypeDto.class.getCanonicalName()),
+				"ADM-634");
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Api to filter Device Type based on column and type provided.
 	 * 
@@ -152,13 +153,14 @@ public class DeviceTypeController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceTypeDto.class.getCanonicalName(), "ADM-635");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.deviceTypeFilterValues(request.getRequest()));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_FILTER, DeviceTypeDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DeviceTypeDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, DeviceTypeDto.class.getCanonicalName()),
+				"ADM-636");
 		return responseWrapper;
 	}
 

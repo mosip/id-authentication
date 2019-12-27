@@ -140,7 +140,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()));
+							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()), "ADM-687");
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ " " + ExceptionUtils.parseException(e));
@@ -173,7 +173,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 							String.format(MasterDataConstant.FAILURE_DESC,
 									DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
 									DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION
-											.getErrorMessage()));
+											.getErrorMessage()), "ADM-688");
 					throw new RequestException(
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
@@ -185,7 +185,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 							String.format(MasterDataConstant.FAILURE_DESC,
 									DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
 									DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION
-											.getErrorMessage()));
+											.getErrorMessage()), "ADM-689");
 					throw new RequestException(
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
 							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
@@ -200,7 +200,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 						String.format(MasterDataConstant.FAILURE_DESC,
 								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION
-										.getErrorMessage()));
+										.getErrorMessage()), "ADM-690");
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -212,7 +212,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION
-									.getErrorMessage()));
+									.getErrorMessage()), "ADM-691");
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));

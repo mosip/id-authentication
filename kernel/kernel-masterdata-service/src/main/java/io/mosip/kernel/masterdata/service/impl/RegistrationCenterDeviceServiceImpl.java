@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
+import io.mosip.kernel.masterdata.constant.MOSIPDeviceServiceErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
@@ -28,6 +29,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
@@ -41,6 +43,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceHistoryRepo
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -57,7 +60,8 @@ import io.mosip.kernel.masterdata.utils.ZoneUtils;
  */
 @Service
 public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDeviceService {
-
+	@Autowired
+	AuditUtil auditUtil;
 	/**
 	 * {@link RegistrationCenterDeviceRepository} instance
 	 */
@@ -189,18 +193,33 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 
 				// check the given device zones are come under user zone
 				if (!(zoneIds.contains(deviceZone.getZoneCode()))) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterDevice.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
+									RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage()),"ADM-736");
 					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
 				}
 
 				// check the given device zones are come under user zone
 				if (!(zoneIds.contains(regCenterZone.getZoneCode()))) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterDevice.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorCode(),
+									RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorMessage()),"ADM-737");
 					throw new RequestException(RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.INVALIDE_CENTER_ZONE.getErrorMessage());
 				}
 
 				// isActive is false, already un-mapped
 				if (!registrationCenterDevice.getIsActive()) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterDevice.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION.getErrorCode(),
+									RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION.getErrorMessage()),"ADM-738");
 					throw new RequestException(
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION
 									.getErrorCode(),
@@ -239,6 +258,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 				}
 
 			} else {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterDevice.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterDeviceErrorCode.DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION.getErrorCode(),
+								RegistrationCenterDeviceErrorCode.DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION.getErrorMessage()),"ADM-739");
 				throw new RequestException(
 						RegistrationCenterDeviceErrorCode.DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
 								.getErrorCode(),
@@ -249,6 +273,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterDevice.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION.getErrorCode(),
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION.getErrorMessage()),"ADM-740");
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_MAPPING_EXCEPTION.getErrorMessage());
@@ -282,6 +311,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		}
 
 		if (!isMachineMappedToUserZone || !isRegCenterMappedToUserZone) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterDevice.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ZONE_INVALID.getErrorCode(),
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ZONE_INVALID.getErrorMessage()),"ADM-731");
 			throw new RequestException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ZONE_INVALID.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_ZONE_INVALID.getErrorMessage());
@@ -293,6 +327,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		if (isInSameHierarchy) {
 			if ((!device.getIsActive() && device.getIsDeleted())
 					|| (!registrationCenters.get(0).getIsActive() && registrationCenters.get(0).getIsDeleted())) {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterDevice.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterDeviceErrorCode.REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE.getErrorCode(),
+								RegistrationCenterDeviceErrorCode.REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE.getErrorMessage()),"ADM-732");
 				throw new MasterDataServiceException(
 						RegistrationCenterDeviceErrorCode.REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE.getErrorCode(),
 						RegistrationCenterDeviceErrorCode.REGISTATION_CENTER_DEVICE_DECOMMISIONED_STATE
@@ -302,6 +341,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			if (registrationCenterDevice != null) {
 
 				if (registrationCenterDevice.getIsActive()) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterDevice.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorCode(),
+									RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorMessage()),"ADM-733");
 					throw new MasterDataServiceException(
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorMessage());
@@ -313,6 +357,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			} else {
 
 				if (getRegistrationDeviceMapping(deviceId) != null) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterDevice.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorCode(),
+									RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorMessage()),"ADM-734");
 					throw new MasterDataServiceException(
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorCode(),
 							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_ALREADY_MAPPED.getErrorMessage());
@@ -321,6 +370,11 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 			}
 
 		} else {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterDevice.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_NOT_IN_SAME_HIERARCHY.getErrorCode(),
+							RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_NOT_IN_SAME_HIERARCHY.getErrorMessage()),"ADM-735");
 			throw new MasterDataServiceException(
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_NOT_IN_SAME_HIERARCHY.getErrorCode(),
 					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_NOT_IN_SAME_HIERARCHY
