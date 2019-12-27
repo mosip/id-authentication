@@ -407,8 +407,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		Integer moduloValue = env.getProperty(MODULO_VALUE, Integer.class);
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinHash = modResult + SPLITTER
-				+ securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
+		String uinHash = modResult + SPLITTER + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 
 		try {
 			Uin uinObject = retrieveIdentityByUin(uinHash, null);
