@@ -18,6 +18,8 @@ public enum DeviceRegisterErrorCode {
 	DEVICE_REGISTER_NOT_FOUND_EXCEPTION("KER-DPM-001", "No register device found");
 	
 
+	
+
 	private final String errorCode;
 	private final String errorMessage;
 

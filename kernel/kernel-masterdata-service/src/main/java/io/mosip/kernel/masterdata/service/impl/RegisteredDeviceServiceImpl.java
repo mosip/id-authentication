@@ -77,8 +77,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 
 	@Autowired
 	DeviceRepository deviceRepository;
-	
-	
+
 	/** The registered. */
 	private static String REGISTERED = "Registered";
 
@@ -108,22 +107,23 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		String ecodedRegisteredDeviceExtnDto;
 		String strRegisteredDeviceExtnDto;
 		try {
-			DeviceProvider deviceProvider = deviceProviderRepository.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
-					dto.getDigitalIdDto().getDpId(), dto.getDigitalIdDto().getDp());
+			DeviceProvider deviceProvider = deviceProviderRepository
+					.findByIdAndNameAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDigitalIdDto().getDpId(),
+							dto.getDigitalIdDto().getDp());
 			if (deviceProvider == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorCode(),
 						RegisteredDeviceErrorCode.DEVICE_PROVIDER_NOT_EXIST.getErrorMessage());
 			}
 
-			if (registrationDeviceTypeRepository
-					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDigitalIdDto().getDeviceTypeCode()) == null) {
+			if (registrationDeviceTypeRepository.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
+					dto.getDigitalIdDto().getDeviceTypeCode()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_TYPE_NOT_EXIST.getErrorCode(),
 						String.format(RegisteredDeviceErrorCode.DEVICE_TYPE_NOT_EXIST.getErrorMessage(),
 								dto.getDigitalIdDto().getDeviceTypeCode()));
 			}
 
-			if (registrationDeviceSubTypeRepository
-					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDigitalIdDto().getDeviceSTypeCode()) == null) {
+			if (registrationDeviceSubTypeRepository.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(
+					dto.getDigitalIdDto().getDeviceSTypeCode()) == null) {
 				throw new RequestException(RegisteredDeviceErrorCode.DEVICE_SUB_TYPE_NOT_EXIST.getErrorCode(),
 						String.format(RegisteredDeviceErrorCode.DEVICE_SUB_TYPE_NOT_EXIST.getErrorMessage(),
 								dto.getDigitalIdDto().getDeviceSTypeCode()));
@@ -144,16 +144,15 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 			entityHistory.setEffectivetimes(crtRegisteredDevice.getCreatedDateTime());
 			entityHistory.setCreatedDateTime(crtRegisteredDevice.getCreatedDateTime());
 			registeredDeviceHistoryRepo.create(entityHistory);
-			
 
 			digitalIdDto = mapper.readValue(digitalIdJson, DigitalIdDto.class);
-			
+
 			renRegisteredDeviceExtnDto = MapperUtils.map(crtRegisteredDevice, RegisteredDeviceExtnDto.class);
 			renRegisteredDeviceExtnDto.setDigitalIdDto(digitalIdDto);
 			// DTO to String
 			strRegisteredDeviceExtnDto = mapper.writeValueAsString(renRegisteredDeviceExtnDto);
 			ecodedRegisteredDeviceExtnDto = CryptoUtil.encodeBase64(strRegisteredDeviceExtnDto.getBytes());
-			
+
 			encodedRegisteredDeviceResponse.setEnocodedResponse(ecodedRegisteredDeviceExtnDto);
 
 		} catch (DataAccessLayerException | DataAccessException | IOException ex) {
@@ -162,7 +161,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 					RegisteredDeviceErrorCode.REGISTERED_DEVICE_INSERTION_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(ex));
 		}
-		
+
 		return encodedRegisteredDeviceResponse;
 	}
 
@@ -170,20 +169,20 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	// value
 	private String generateCodeValue(RegisteredDevicePostReqDto dto) {
 		String code = "";
-			if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.REGISTRATION)) {
-				List<Device> device = deviceRepository.findDeviceBySerialNumberAndIsDeletedFalseorIsDeletedIsNullNoIsActive(
-						dto.getDigitalIdDto().getSerialNo());
-				if (device.isEmpty()) {
-					throw new RequestException(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorCode(),
-							String.format(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorMessage(),
-									dto.getDigitalIdDto().getSerialNo()));
-				}
-				// copy Device id as code
-				code = device.get(0).getId();
-			} else if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.AUTH)) {
-				// should be uniquely randomly generated
-				code = UUID.randomUUID().toString();
+		if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.REGISTRATION)) {
+			List<Device> device = deviceRepository.findDeviceBySerialNumberAndIsDeletedFalseorIsDeletedIsNullNoIsActive(
+					dto.getDigitalIdDto().getSerialNo());
+			if (device.isEmpty()) {
+				throw new RequestException(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorCode(),
+						String.format(RegisteredDeviceErrorCode.SERIALNUM_NOT_EXIST.getErrorMessage(),
+								dto.getDigitalIdDto().getSerialNo()));
 			}
+			// copy Device id as code
+			code = device.get(0).getId();
+		} else if (dto.getPurpose().equalsIgnoreCase(RegisteredDeviceConstant.AUTH)) {
+			// should be uniquely randomly generated
+			code = UUID.randomUUID().toString();
+		}
 		return code;
 	}
 
@@ -194,31 +193,35 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		try {
 			deviceRegisterEntity = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 			if (deviceRegisterEntity != null) {
-				if(Arrays.asList(REVOKED, RETIRED).contains(deviceRegisterEntity.getStatusCode())) {
+				if (Arrays.asList(REVOKED, RETIRED).contains(deviceRegisterEntity.getStatusCode())) {
 					throw new MasterDataServiceException(
 							DeviceRegisterErrorCode.DEVICE_DE_REGISTERED_ALREADY.getErrorCode(),
 							DeviceRegisterErrorCode.DEVICE_DE_REGISTERED_ALREADY.getErrorMessage());
 				}
 				deviceRegisterEntity.setStatusCode("Retired");
 				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
-				deviceRegisterHistory.setEffectivetimes(deviceRegisterHistory.getUpdatedDateTime());
+				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
 				registeredDeviceRepository.update(deviceRegisterEntity);
 				registeredDeviceHistoryRepo.create(deviceRegisterHistory);
 			} else {
-				throw new DataNotFoundException(DeviceRegisterErrorCode.DEVICE_REGISTER_NOT_FOUND_EXCEPTION.getErrorCode(),
+
+				throw new DataNotFoundException(
+						DeviceRegisterErrorCode.DEVICE_REGISTER_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceRegisterErrorCode.DEVICE_REGISTER_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceRegisterErrorCode.DEVICE_REGISTER_DELETED_EXCEPTION.getErrorCode(),
-					DeviceRegisterErrorCode.DEVICE_REGISTER_DELETED_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+			throw new MasterDataServiceException(
+					DeviceRegisterErrorCode.DEVICE_REGISTER_DELETED_EXCEPTION.getErrorCode(),
+					DeviceRegisterErrorCode.DEVICE_REGISTER_DELETED_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		DeviceDeRegisterResponse response = new DeviceDeRegisterResponse();
 		response.setStatus("success");
 		response.setMessage("Device deregistered successfully");
 		return response;
 	}
-	
+
 	@Transactional
 	@Override
 	public ResponseDto updateStatus(String deviceCode, String statusCode) {
@@ -227,7 +230,8 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 			deviceRegister = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorCode(),
-					DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 
 		if (deviceRegister == null) {
@@ -246,7 +250,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		responseDto.setStatus(MasterDataConstant.SUCCESS);
 		return responseDto;
 	}
-	
+
 	/**
 	 * Creates the history details.
 	 *
