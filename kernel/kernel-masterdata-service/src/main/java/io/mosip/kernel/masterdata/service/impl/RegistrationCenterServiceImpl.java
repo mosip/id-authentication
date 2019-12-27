@@ -998,59 +998,59 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * generateRegistrationCenterId().
 			 * 
 			 */
+				if (registrationCenterEntity != null) {
+					if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
+						uniqueId = registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
+						registrationCenterEntity.setId(uniqueId);
+					}
+					/*
+					 * at the time of creation of new Registration Center Number of Kiosks value
+					 * will be Zero always
+					 */
+					registrationCenterEntity.setNumberOfKiosks((short) 0);
 
-			if (registrationCenterEntity != null && primaryLang!=secondaryLang) {
+					// registrationCenterEntity.setIsActive(false);
+					registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+					
+					registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
+				}
 				if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
-					uniqueId = registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
-					registrationCenterEntity.setId(uniqueId);
-				}
-				/*
-				 * at the time of creation of new Registration Center Number of Kiosks value
-				 * will be Zero always
-				 */
-				registrationCenterEntity.setNumberOfKiosks((short) 0);
-
-				// registrationCenterEntity.setIsActive(false);
-				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-				
-				registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
-			}
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode()) && primaryLang!=secondaryLang) {
-				// insert 7 rows in reg_working_non_working table
-				try {
-					if (regCenterPostReqDto.getWorkingNonWorkingDays() != null) {
-						createRegWorkingNonWorking(regCenterPostReqDto.getWorkingNonWorkingDays(), registrationCenterEntity);
+					// insert 7 rows in reg_working_non_working table
+					try {
+						if (regCenterPostReqDto.getWorkingNonWorkingDays() != null) {
+							createRegWorkingNonWorking(regCenterPostReqDto.getWorkingNonWorkingDays(), registrationCenterEntity);
+						}
+					} catch (NullPointerException e) {
+						errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+								RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 					}
-				} catch (NullPointerException e) {
-					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
-							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
-				}
-				try {
-					if (!regCenterPostReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
-						// Exceptional holiday create
-						createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
+					try {
+						if (!regCenterPostReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
+							// Exceptional holiday create
+							createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
+						}
+					} catch (NullPointerException e) {
+						errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+								RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 					}
-				} catch (NullPointerException e) {
-					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
-							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 				}
-			}
-				
-			if(primaryLang!=secondaryLang && ((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode()))){
-				//set response for working_non_working for both primary and sencodary language
-				setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
-				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
-			}
-				//set ExpHoliday Dto
-				
-				
+					
+				if(((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode()))){
+					//set response for working_non_working for both primary and sencodary language
+					setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
+					setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
+				}
+					//set ExpHoliday Dto
+					
+					
 
-				// creating registration center history
-				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
-						RegistrationCenterHistory.class);
-				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
-				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
-				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+					// creating registration center history
+					registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+							RegistrationCenterHistory.class);
+					registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+					registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+					registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+		
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
