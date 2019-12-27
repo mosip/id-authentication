@@ -25,6 +25,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -670,8 +671,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 		String bioAuthType;
 		for (String bioType : bioTypeList) {
 			bioAuthType = bioType;
-			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
-					|| bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
+			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || 
+					(FMR_ENABLED_TEST.test(env) && bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType()))) {
 				bioType = SingleType.FINGER.value();
 			} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
 				bioType = SingleType.FACE.value();
