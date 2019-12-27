@@ -59,11 +59,6 @@
 			<artifactId>kernel-bioapi-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-ref-idobjectvalidator-phil</artifactId>
-			<version>0.10.0</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

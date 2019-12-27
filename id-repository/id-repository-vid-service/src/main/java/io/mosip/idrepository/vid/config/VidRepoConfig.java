@@ -110,8 +110,7 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource(
-				env.getProperty(VID_DB_URL));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(VID_DB_URL));
 		dataSource.setUsername(env.getProperty(VID_DB_USERNAME));
 		dataSource.setPassword(env.getProperty(VID_DB_PASSWORD));
 		dataSource.setDriverClassName(env.getProperty(VID_DB_DRIVER_CLASS_NAME));

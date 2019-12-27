@@ -15,21 +15,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
@@ -48,8 +44,6 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
  *
  */
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
-	
-	private static String token;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthFilter.class);
 
@@ -83,42 +77,35 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 			throws AuthenticationException, JsonProcessingException, IOException {
-//		String token = null;
-//		Cookie[] cookies = null;
-//		try
-//		{
-//			cookies = httpServletRequest.getCookies();
-//			if (cookies != null) {
-//				for (Cookie cookie : cookies) {
-//					if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
-//						token = cookie.getValue();
-//					}
-//				}
-//			}
-//		}catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
-//		
-//		if (token == null) {
-//			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-//			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
-//					"Authentication Failed");
-//			errorResponse.getErrors().add(error);
-//			httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-//			httpServletResponse.setContentType("application/json");
-//			httpServletResponse.setCharacterEncoding("UTF-8");
-//			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
-//			logger.error("\n\n Exception : Authorization token not present > " + httpServletRequest.getRequestURL()
-//					+ "\n\n");
-//			return null;
-//		}
+		String token = null;
+		Cookie[] cookies = null;
+		try
+		{
+			cookies = httpServletRequest.getCookies();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
+						token = cookie.getValue();
+					}
+				}
+			}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 		if (token == null) {
-			String req = "{\"id\":\"string\",\"request\":{\"clientId\":\"resident\",\"secretKey\":\"dbe554cd-81e8-44c2-b8ec-3d8090aca1f4\",\"appId\":\"resident\"},\"requesttime\":\"2019-04-23T09:41:05.633Z\",\"version\":\"string\"}";
-			HttpHeaders headers = WebClient.create("https://dev.mosip.io/v1/authmanager/authenticate/clientidsecretkey").post()
-			.syncBody(new ObjectMapper().readValue(req, Object.class)).exchange()
-			.map(res -> res.headers().asHttpHeaders()).block();
-			token = headers.get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replace("Authorization=", "");
+			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+					"Authentication Failed");
+			errorResponse.getErrors().add(error);
+			httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+			httpServletResponse.setContentType("application/json");
+			httpServletResponse.setCharacterEncoding("UTF-8");
+			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
+			logger.error("\n\n Exception : Authorization token not present > " + httpServletRequest.getRequestURL()
+					+ "\n\n");
+			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
 		return getAuthenticationManager().authenticate(authToken);
@@ -134,12 +121,21 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-		String req = "{\"id\":\"mosip.otpnotification.send\",\"metadata\":{},\"request\":{\"clientId\":\"registration-processor\",\"secretKey\":\"d80ec0be-bba7-4d8e-bf0c-85ab45bb976b\",\"appId\":\"registrationprocessor\"},\"requesttime\":\"2018-12-09T06:39:03.683Z\",\"version\":\"v1.0\"}";
-		HttpHeaders headers = WebClient.create("https://dev.mosip.io/v1/authmanager/authenticate/clientidsecretkey").post()
-		.syncBody(new ObjectMapper().readValue(req, Object.class)).exchange()
-		.map(res -> res.headers().asHttpHeaders()).block();
-		token = headers.get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0).replace("Authorization=", "");
-		this.attemptAuthentication(request, response);
+		AuthManagerException exception = (AuthManagerException) failed;
+		ResponseWrapper<ServiceError> errorResponse = setErrors(request);
+		if (exception.getList().size() != 0) {
+			errorResponse.getErrors().addAll(exception.getList());
+		} else {
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+					"Authentication Failed");
+			errorResponse.getErrors().add(error);
+		}
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		ExceptionUtils.logRootCause(failed);
+		response.getWriter().write(convertObjectToJson(errorResponse));
+
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
