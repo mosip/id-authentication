@@ -195,20 +195,23 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 			deviceRegisterEntity = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 			if (deviceRegisterEntity != null) {
 				if(Arrays.asList(REVOKED, RETIRED).contains(deviceRegisterEntity.getStatusCode())) {
-					throw new DeviceRegisterException("KER-DPR-002", "Device already de-registered");
+					throw new MasterDataServiceException(
+							DeviceRegisterErrorCode.DEVICE_DE_REGISTERED_ALREADY.getErrorCode(),
+							DeviceRegisterErrorCode.DEVICE_DE_REGISTERED_ALREADY.getErrorMessage());
 				}
 				deviceRegisterEntity.setStatusCode("Retired");
 				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
-				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+				deviceRegisterHistory.setEffectivetimes(deviceRegisterHistory.getUpdatedDateTime());
 				registeredDeviceRepository.update(deviceRegisterEntity);
 				registeredDeviceHistoryRepo.create(deviceRegisterHistory);
 			} else {
-				throw new DeviceRegisterException("KER-DPR-001", "No register device found");
+				throw new DataNotFoundException(DeviceRegisterErrorCode.DEVICE_REGISTER_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DeviceRegisterErrorCode.DEVICE_REGISTER_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new DeviceRegisterException("KER-DPR-003",
-					"Error occur while deregistering device details " + ExceptionUtils.parseException(e));
+			throw new MasterDataServiceException(DeviceRegisterErrorCode.DEVICE_REGISTER_DELETED_EXCEPTION.getErrorCode(),
+					DeviceRegisterErrorCode.DEVICE_REGISTER_DELETED_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		}
 		DeviceDeRegisterResponse response = new DeviceDeRegisterResponse();
 		response.setStatus("success");
