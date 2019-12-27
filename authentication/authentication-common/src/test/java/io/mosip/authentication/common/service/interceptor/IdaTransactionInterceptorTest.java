@@ -49,7 +49,7 @@ public class IdaTransactionInterceptorTest {
 	@Test
 	public void testOnSave() throws IdAuthenticationBusinessException, RestServiceException {
 		AutnTxn entity = new AutnTxn();
-		String splitter = IdRepoConstants.SPLITTER.getValue();
+		String splitter = IdRepoConstants.SPLITTER;
 		entity.setUin("123" + splitter + "456" + splitter + "789");
 		Mockito.when(idAuthTransactionManager.encryptWithSalt(Mockito.any(), Mockito.any())).thenReturn("abc".getBytes());
 		idaTransactionInterceptor.onSave(entity, null, new String[] {"123"}, new String[] {"uin"}, null);

@@ -288,9 +288,9 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource(dataSourceValues.get("url"));
-		dataSource.setUsername(dataSourceValues.get("username"));
-		dataSource.setPassword(dataSourceValues.get("password"));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource("jdbc:postgresql://localhost:5432/mosip_idrepo");
+		dataSource.setUsername("postgres");
+		dataSource.setPassword("admin");
 		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
 		return dataSource;
 	}
