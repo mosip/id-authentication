@@ -49,15 +49,17 @@ public class RegistrationCenterUserController {
 			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
-		auditUtil.auditRequest(MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),
+		auditUtil.auditRequest(
+				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),"ADM-763");
+				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(), "ADM-763");
 		ResponseWrapper<UserAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterUserService.unmapUserRegCenter(userId, regCenterId));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UNMAP, RegistrationCenterUserDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_UNMAP, RegistrationCenterUserDto.class.getCanonicalName()),"ADM-764");
+				String.format(MasterDataConstant.SUCCESSFUL_UNMAP, RegistrationCenterUserDto.class.getCanonicalName()),
+				"ADM-764");
 		return responseWrapper;
 	}
 
@@ -77,15 +79,17 @@ public class RegistrationCenterUserController {
 			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
-		auditUtil.auditRequest(MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),
+		auditUtil.auditRequest(
+				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),"ADM-761");
+				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(), "ADM-761");
 		ResponseWrapper<UserAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterUserService.mapUserRegCenter(userId, regCenterId));
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterUserDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterUserDto.class.getCanonicalName()),"ADM-762");
+				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterUserDto.class.getCanonicalName()),
+				"ADM-762");
 		return responseWrapper;
 	}
 
