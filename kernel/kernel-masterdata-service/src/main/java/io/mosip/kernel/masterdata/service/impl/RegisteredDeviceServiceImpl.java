@@ -192,7 +192,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		RegisteredDeviceHistory deviceRegisterHistory = new RegisteredDeviceHistory();
 		try {
 			deviceRegisterEntity = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
-			if (deviceRegisterEntity != null) {
+			if (deviceRegisterEntity != null) {	
 				if (Arrays.asList(REVOKED, RETIRED).contains(deviceRegisterEntity.getStatusCode())) {
 					throw new MasterDataServiceException(
 							DeviceRegisterErrorCode.DEVICE_DE_REGISTERED_ALREADY.getErrorCode(),
