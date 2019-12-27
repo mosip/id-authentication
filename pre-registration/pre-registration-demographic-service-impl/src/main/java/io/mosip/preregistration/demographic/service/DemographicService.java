@@ -303,6 +303,7 @@ public class DemographicService implements DemographicServiceIntf {
 
 			mainResponseDTO.setResponse(res);
 			isSuccess = true;
+			mainResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
@@ -318,7 +319,7 @@ public class DemographicService implements DemographicServiceIntf {
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
 
 		} finally {
-			mainResponseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+			
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.BUSINESS.toString(),
 						"Pre-Registration data is sucessfully saved in the demographic table",
