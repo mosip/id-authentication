@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -484,9 +484,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String uin, IdType idType, boolean isStatus,
 			String staticTokenId, boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
-		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType())
-						|| bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType()))) {
+		if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType())
+						|| (FMR_ENABLED_TEST.test(env)
+								&& bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType()))))) {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, AuditModules.FINGERPRINT_AUTH.getDesc());
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FINGER_AUTH, isInternal, partnerId);

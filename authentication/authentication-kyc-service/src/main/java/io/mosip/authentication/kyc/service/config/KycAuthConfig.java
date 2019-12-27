@@ -1,6 +1,6 @@
 package io.mosip.authentication.kyc.service.config;
-
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.EKYC_ALLOWED_AUTH_TYPE;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +24,9 @@ public class KycAuthConfig extends IdAuthConfig {
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isFingerAuthEnabled()
 	 */
 	protected boolean isFingerAuthEnabled() {
-		return (environment.getProperty(EKYC_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigNameValue())
-				|| environment.getProperty(EKYC_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue()));
+		return (environment.getProperty(EKYC_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue())
+				|| (FMR_ENABLED_TEST.test(environment) && environment.getProperty(EKYC_ALLOWED_AUTH_TYPE)
+						.contains(BioAuthType.FGR_MIN.getConfigNameValue())));
 	}
 	
 	/* (non-Javadoc)
