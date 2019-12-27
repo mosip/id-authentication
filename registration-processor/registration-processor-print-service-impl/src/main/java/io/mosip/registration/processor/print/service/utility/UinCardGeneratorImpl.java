@@ -49,7 +49,7 @@ public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStr
 		ByteArrayOutputStream out = null;
 		try {
 			if (password != null) {
-				out = (ByteArrayOutputStream) pdfGenerator.generate(in, password.getBytes());
+				out = (ByteArrayOutputStream) pdfGenerator.generate(in);
 			} else {
 				out = (ByteArrayOutputStream) pdfGenerator.generate(in);
 			}
