@@ -199,9 +199,10 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 							DeviceRegisterErrorCode.DEVICE_DE_REGISTERED_ALREADY.getErrorMessage());
 				}
 				deviceRegisterEntity.setStatusCode("Retired");
-				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
-				deviceRegisterHistory.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+				deviceRegisterEntity = MetaDataUtils.setUpdateMetaData(deviceRegisterEntity, deviceRegisterEntity, false);
 				registeredDeviceRepository.update(deviceRegisterEntity);
+				MapperUtils.map(deviceRegisterEntity, deviceRegisterHistory);
+				deviceRegisterHistory.setEffectivetimes(deviceRegisterEntity.getUpdatedDateTime());
 				registeredDeviceHistoryRepo.create(deviceRegisterHistory);
 			} else {
 
