@@ -23,6 +23,8 @@ import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
@@ -54,7 +56,7 @@ public class HolidayController {
 
 	@Autowired
 	private HolidayService holidayService;
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
@@ -118,6 +120,9 @@ public class HolidayController {
 	@PostMapping
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + HolidayDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + HolidayDto.class.getSimpleName(), "ADM-593");
 		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.saveHoliday(holiday.getRequest()));
 		return responseWrapper;
@@ -135,6 +140,9 @@ public class HolidayController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
 	public ResponseWrapper<HolidayIDDto> updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + HolidayUpdateDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + HolidayUpdateDto.class.getSimpleName(), "ADM-594");
 		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.updateHoliday(holiday.getRequest()));
 		return responseWrapper;
@@ -200,10 +208,16 @@ public class HolidayController {
 	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
 
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SEARCH_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),"ADM-595");
 		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,HolidaySearchDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, HolidaySearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, HolidaySearchDto.class.getSimpleName()),"ADM-596");
 		return responseWrapper;
 	}
 
@@ -219,10 +233,16 @@ public class HolidayController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseDto> holidayFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FILTER_API_IS_CALLED,HolidaySearchDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),"ADM-597");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,HolidaySearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC,HolidaySearchDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER, HolidaySearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, HolidaySearchDto.class.getSimpleName()),"ADM-598");
 		return responseWrapper;
 	}
 

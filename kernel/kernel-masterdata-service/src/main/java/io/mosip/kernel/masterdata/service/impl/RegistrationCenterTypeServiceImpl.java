@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.FilterData;
@@ -56,6 +55,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  * 
  * @author Sagar Mahapatra
  * @author Megha Tanga
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -113,7 +113,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception)));
+							+ ExceptionUtils.parseException(exception)),"ADM-556");
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
@@ -123,7 +123,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_CREATE, RegistrationCenterTypeDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						RegistrationCenterTypeDto.class.getSimpleName(), codeAndLanguageCodeID.getCode()));
+						RegistrationCenterTypeDto.class.getSimpleName(), codeAndLanguageCodeID.getCode()),"ADM-555");
 		return codeAndLanguageCodeID;
 	}
 
@@ -149,7 +149,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 						String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterTypeDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
-								RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage()));
+								RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage()),"ADM-552");
 				throw new RequestException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -160,7 +160,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception)));
+							+ ExceptionUtils.parseException(exception)),"ADM-553");
 			throw new MasterDataServiceException(
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorMessage()
@@ -169,7 +169,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		auditUtil.auditRequest(
 				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						RegistrationCenterTypeDto.class.getSimpleName(), registrationCenterTypeId.getCode()));
+						RegistrationCenterTypeDto.class.getSimpleName(), registrationCenterTypeId.getCode()),"ADM-554");
 		return registrationCenterTypeId;
 	}
 

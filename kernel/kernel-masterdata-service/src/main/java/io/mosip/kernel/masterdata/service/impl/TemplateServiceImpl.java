@@ -18,6 +18,8 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
+import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -175,10 +177,10 @@ public class TemplateServiceImpl implements TemplateService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, RegistrationCenterSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.CREATE_ERROR_AUDIT, TemplateDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 							TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
-							TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage()));
+							TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage()),"ADM-812");
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 			
@@ -186,7 +188,9 @@ public class TemplateServiceImpl implements TemplateService {
 
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(templateEntity, idAndLanguageCodeID);
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, TemplateDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						TemplateDto.class.getSimpleName(), idAndLanguageCodeID.getId()),"ADM-813");
 		return idAndLanguageCodeID;
 	}
 
@@ -209,13 +213,26 @@ public class TemplateServiceImpl implements TemplateService {
 				idAndLanguageCodeID.setId(entity.getId());
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+								TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+								TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage()),"ADM-814");
 				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+							TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
+							TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e)),"ADM-815");
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, TemplateDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						TemplateDto.class.getSimpleName(), idAndLanguageCodeID.getId()),"ADM-816");
 		return idAndLanguageCodeID;
 	}
 

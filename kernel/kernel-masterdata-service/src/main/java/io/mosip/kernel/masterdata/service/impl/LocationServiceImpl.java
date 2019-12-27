@@ -219,7 +219,7 @@ public class LocationServiceImpl implements LocationService {
 								MasterDataConstant.AUDIT_SYSTEM,
 								String.format(MasterDataConstant.FAILURE_DESC,
 										LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
-										LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage()));
+										LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage()),"ADM-574");
 						throw new MasterDataServiceException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
 								LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
 					}
@@ -234,7 +234,7 @@ public class LocationServiceImpl implements LocationService {
 									LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
 									String.format(
 											LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
-											dto.getName())));
+											dto.getName())),"ADM-575");
 					throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
 							String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
 									dto.getName()));
@@ -250,7 +250,7 @@ public class LocationServiceImpl implements LocationService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(ex)));
+									+ ExceptionUtils.parseException(ex)),"ADM-576");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
@@ -259,7 +259,7 @@ public class LocationServiceImpl implements LocationService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
-							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage()));
+							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage()),"ADM-577");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
@@ -268,7 +268,7 @@ public class LocationServiceImpl implements LocationService {
 		response.setResponse(locationEntity);
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, LocationDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						LocationDto.class.getSimpleName(), response.getId()));
+						LocationDto.class.getSimpleName(), response.getId()),"ADM-578");
 		return response;
 	}
 
@@ -300,13 +300,13 @@ public class LocationServiceImpl implements LocationService {
 					String.format(MasterDataConstant.FAILURE_DESC,
 							LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
 							LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()
-									+ ExceptionUtils.parseException(e)));
+									+ ExceptionUtils.parseException(e)),"ADM-579");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, LocationDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						LocationDto.class.getSimpleName(), postLocationCodeResponseDto.getCode()));
+						LocationDto.class.getSimpleName(), postLocationCodeResponseDto.getCode()),"ADM-580");
 		return postLocationCodeResponseDto;
 	}
 
@@ -701,7 +701,7 @@ public class LocationServiceImpl implements LocationService {
 									MasterDataConstant.AUDIT_SYSTEM,
 									String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
 											String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-													filter.getColumnName(), filter.getType())));
+													filter.getColumnName(), filter.getType())),"ADM-581");
 							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
 									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
 											filter.getColumnName(), filter.getType()));
@@ -730,7 +730,7 @@ public class LocationServiceImpl implements LocationService {
 							MasterDataConstant.AUDIT_SYSTEM,
 							String.format(MasterDataConstant.FAILURE_DESC,MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
 									String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
-											filter.getColumnName())));
+											filter.getColumnName())),"ADM-582");
 					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
 							String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
 									filter.getColumnName()));
@@ -739,7 +739,7 @@ public class LocationServiceImpl implements LocationService {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
-										MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()));
+										MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()),"ADM-583");
 				throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
 						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
 			}
@@ -927,7 +927,7 @@ public class LocationServiceImpl implements LocationService {
 					auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
 							String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
-									ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorMessage()));
+									ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorMessage()),"ADM-584");
 									
 					throw new RequestException(ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
 							ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorMessage());
@@ -936,7 +936,7 @@ public class LocationServiceImpl implements LocationService {
 					auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
 							String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
-									ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage()));
+									ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage()),"ADM-585");
 					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
 				}
@@ -944,7 +944,7 @@ public class LocationServiceImpl implements LocationService {
 					auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM,
 							String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(), String
-									.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())));
+									.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())),"ADM-586");
 					throw new RequestException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(), String
 							.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName()));
 				}
@@ -1012,7 +1012,7 @@ public class LocationServiceImpl implements LocationService {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-							LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()));
+							LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()),"ADM-587");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -1057,7 +1057,7 @@ public class LocationServiceImpl implements LocationService {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
-							MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()));
+							MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()),"ADM-588");
 
 			throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
 					MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());

@@ -63,7 +63,7 @@ public class LocationController {
 	 */
 	@Autowired
 	private LocationService locationHierarchyService;
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
@@ -90,7 +90,7 @@ public class LocationController {
 			@RequestBody @Valid RequestWrapper<LocationCreateDto> locationRequestDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + LocationCreateDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + LocationCreateDto.class.getSimpleName());
+				MasterDataConstant.CREATE_API_IS_CALLED + LocationCreateDto.class.getSimpleName(), "ADM-568");
 		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
 	}
 
@@ -140,7 +140,9 @@ public class LocationController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PostLocationCodeResponseDto> updatPostLocationCodeResponseDtoeLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
-		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+LocationDto.class.getSimpleName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+LocationDto.class.getSimpleName());
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(), "ADM-569");
 		ResponseWrapper<PostLocationCodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.updateLocationDetails(locationRequestDto.getRequest()));
 		return responseWrapper;
@@ -241,10 +243,15 @@ public class LocationController {
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED+LocationSearchDto.class.getSimpleName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SEARCH_API_IS_CALLED+LocationSearchDto.class.getSimpleName());
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + LocationSearchDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + LocationSearchDto.class.getSimpleName(),"ADM-570");
 		ResponseWrapper<PageResponseDto<LocationSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,LocationSearchDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM,String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,LocationSearchDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, LocationSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, LocationSearchDto.class.getSimpleName()),"ADM-571");
 		return responseWrapper;
 	}
 
@@ -260,10 +267,14 @@ public class LocationController {
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> locationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+LocationDto.class.getSimpleName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+LocationDto.class.getSimpleName());
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(),"ADM-572");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.locationFilterValues(request.getRequest()));
-		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER+LocationDto.class.getSimpleName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SUCCESSFUL_FILTER_DESC+LocationDto.class.getSimpleName());
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + LocationDto.class.getSimpleName(),"ADM-573");
 		return responseWrapper;
 	}
 

@@ -18,7 +18,6 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
@@ -28,7 +27,6 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
-import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -57,7 +55,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@Autowired
 	RegistrationCenterTypeService registrationCenterTypeService;
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
@@ -74,7 +72,10 @@ public class RegistrationCenterTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> createRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED+RegistrationCenterTypeDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.CREATE_API_IS_CALLED+RegistrationCenterTypeDto.class.getCanonicalName());
+		auditUtil.auditRequest(
+				MasterDataConstant.CREATE_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),"ADM-546");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterTypeService.createRegistrationCenterType(registrationCenterTypeDto.getRequest()));
@@ -94,7 +95,10 @@ public class RegistrationCenterTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> updateRegistrationCenterType(
 			@Valid @RequestBody RequestWrapper<RegistrationCenterTypeDto> registrationCenterTypeDto) {
-		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED+RegistrationCenterTypeDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.UPDATE_API_IS_CALLED+RegistrationCenterTypeDto.class.getCanonicalName());
+		auditUtil.auditRequest(
+				MasterDataConstant.UPDATE_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + RegistrationCenterTypeDto.class.getCanonicalName(),"ADM-547");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto.getRequest()));
@@ -153,11 +157,16 @@ public class RegistrationCenterTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<FilterResponseCodeDto> registrationCenterTypeFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED+RegistrationCenterType.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.FILTER_API_IS_CALLED+RegistrationCenterType.class.getCanonicalName());
+		auditUtil.auditRequest(
+				MasterDataConstant.FILTER_API_IS_CALLED + RegistrationCenterType.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + RegistrationCenterType.class.getCanonicalName(),"ADM-548");
 		ResponseWrapper<FilterResponseCodeDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterTypeService.registrationCenterTypeFilterValues(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,MachineDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,MachineDto.class.getCanonicalName()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, MachineDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, MachineDto.class.getCanonicalName()),"ADM-549");
 		return responseWrapper;
 	}
 
@@ -171,10 +180,17 @@ public class RegistrationCenterTypeController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> searchRegistrationCenterType(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED+RegistrationCenterTypeExtnDto.class.getCanonicalName(), MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.SEARCH_API_IS_CALLED+RegistrationCenterTypeExtnDto.class.getCanonicalName());
+		auditUtil.auditRequest(
+				MasterDataConstant.SEARCH_API_IS_CALLED + RegistrationCenterTypeExtnDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + RegistrationCenterTypeExtnDto.class.getCanonicalName(),"ADM-550");
 		ResponseWrapper<PageResponseDto<RegistrationCenterTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterTypeService.searchRegistrationCenterTypes(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,RegistrationCenterTypeExtnDto.class.getCanonicalName()), MasterDataConstant.AUDIT_SYSTEM,String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,RegistrationCenterTypeExtnDto.class.getCanonicalName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH,
+						RegistrationCenterTypeExtnDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
+						RegistrationCenterTypeExtnDto.class.getCanonicalName()),"ADM-551");
 		return responseWrapper;
 	}
 }

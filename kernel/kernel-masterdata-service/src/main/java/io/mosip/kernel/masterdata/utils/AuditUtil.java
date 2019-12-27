@@ -88,11 +88,6 @@ public class AuditUtil {
 		
 	}
 	
-	@PreDestroy
-    public void shutdown() throws Exception {
-		System.out.println("destroy");
-		System.setProperty("seqGen", String.valueOf(eventCounter));
-    }
 	
 		
 	

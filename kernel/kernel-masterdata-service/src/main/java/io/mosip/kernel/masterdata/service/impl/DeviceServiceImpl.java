@@ -223,10 +223,13 @@ public class DeviceServiceImpl implements DeviceService {
 				deviceHistoryService.createDeviceHistory(entityHistory);
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_CREATE, DeviceDto.class.getCanonicalName()),
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, DeviceDto.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getCanonicalName()));
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+							DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " "
+									+ ExceptionUtils.parseException(e)),
+					"ADM-507");
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
@@ -234,7 +237,9 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		// IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		// MapperUtils.map(device, idAndLanguageCodeID);
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, device.getId()),"ADM-508");
 		return device;
 
 	}
@@ -383,9 +388,9 @@ public class DeviceServiceImpl implements DeviceService {
 							return pageDto;
 						}
 					} else {
-						auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_FAILED),
+						auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_FAILED,DeviceDto.class.getSimpleName()),
 								MasterDataConstant.AUDIT_SYSTEM,
-								String.format(MasterDataConstant.SEARCH_FAILED, DeviceSearchDto.class.getSimpleName()));
+								String.format(MasterDataConstant.SEARCH_FAILED, DeviceSearchDto.class.getSimpleName()), "ADM-509");
 						throw new RequestException(DeviceErrorCode.INVALID_DEVICE_FILTER_VALUE_EXCEPTION.getErrorCode(),
 								DeviceErrorCode.INVALID_DEVICE_FILTER_VALUE_EXCEPTION.getErrorMessage());
 					}
@@ -417,6 +422,10 @@ public class DeviceServiceImpl implements DeviceService {
 				auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_FAILED), MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.SEARCH_FAILED, DeviceSearchDto.class.getSimpleName()));
 
+			auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_FAILED,DeviceDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.SEARCH_FAILED, DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorCode(),
+							DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorMessage()), "ADM-510");
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_TAGGED_TO_ZONE.getErrorMessage());
 		}
@@ -743,22 +752,21 @@ public class DeviceServiceImpl implements DeviceService {
 
 		// device is not in DB
 		if (renDevices.isEmpty()) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()),
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
-							String.format(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage(), deviceId)));
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
+							String.format(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage(), deviceId)),"ADM-511");
 			throw new RequestException(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorCode(),
 					String.format(DeviceErrorCode.DEVICE_NOT_EXISTS_EXCEPTION.getErrorMessage(), deviceId));
 		}
 
 		// check the given device and registration center zones are come under user zone
 		if (!zoneIds.contains(renDevices.get(0).getZoneCode())) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()),
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_DESC, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
-							DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage()));
+							DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage()),"ADM-512");
 			throw new RequestException(DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorCode(),
 					DeviceErrorCode.INVALIDE_DEVICE_ZONE.getErrorMessage());
 		}
@@ -769,8 +777,9 @@ public class DeviceServiceImpl implements DeviceService {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
-								DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage()));
+						String.format(MasterDataConstant.FAILURE_DESC,
+								DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
+								DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage()),"ADM-513");
 				throw new RequestException(DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
 						DeviceErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
 			}
@@ -794,8 +803,9 @@ public class DeviceServiceImpl implements DeviceService {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
-							DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()));
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
+							DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()),"ADM-514");
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause());
 		}
@@ -837,7 +847,7 @@ public class DeviceServiceImpl implements DeviceService {
 						String.format(MasterDataConstant.FAILURE_DECOMMISSION, DeviceDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC, DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
-								DeviceErrorCode.DECOMMISSIONED.getErrorMessage()));
+								DeviceErrorCode.DECOMMISSIONED.getErrorMessage()),"ADM-515");
 				throw new MasterDataServiceException(DeviceErrorCode.DECOMMISSIONED.getErrorCode(),
 						DeviceErrorCode.DECOMMISSIONED.getErrorMessage());
 			} else if (renDevice == null && secondaryLang.equals(devicePutReqDto.getLangCode())) {
@@ -874,12 +884,12 @@ public class DeviceServiceImpl implements DeviceService {
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
-			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, DeviceDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_UPDATE, DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception)));
+					String.format(MasterDataConstant.FAILURE_UPDATE,
+							DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
+							DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
+									+ ExceptionUtils.parseException(exception)),"ADM-516");
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));

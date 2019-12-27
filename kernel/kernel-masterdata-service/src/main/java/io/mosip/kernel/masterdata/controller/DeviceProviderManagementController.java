@@ -22,7 +22,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 
-
 /**
  * Device provider management controller
  * 
@@ -36,9 +35,9 @@ public class DeviceProviderManagementController {
 
 	@Autowired
 	private AuditUtil auditUtil;
-	
+
 	@Autowired
-	private DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> deviceProviderService;
+	private DeviceProviderService<ResponseDto, ValidateDeviceDto, ValidateDeviceHistoryDto, DeviceProviderDto, DeviceProviderExtnDto> deviceProviderService;
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@PostMapping("/validate")
@@ -46,10 +45,17 @@ public class DeviceProviderManagementController {
 	public ResponseWrapper<ResponseDto> validateDeviceProvider(
 			@RequestBody @Valid RequestWrapper<ValidateDeviceDto> request) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
-		auditUtil.auditRequest(MasterDataConstant.DEVICE_VALIDATION_API_CALLED+ValidateDeviceDto.class.getSimpleName(),MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DEVICE_VALIDATION_API_CALLED+ValidateDeviceDto.class.getSimpleName(),"ADM-600");
-		responseWrapper.setResponse(
-				deviceProviderService.validateDeviceProviders(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.DEVICE_VALIDATION_SUCCESS,ValidateDeviceDto.class.getSimpleName()),MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS_DESC,ValidateDeviceDto.class.getSimpleName()),"ADM-601");
+		auditUtil.auditRequest(
+				MasterDataConstant.DEVICE_VALIDATION_API_CALLED + ValidateDeviceDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DEVICE_VALIDATION_API_CALLED + ValidateDeviceDto.class.getSimpleName(), "ADM-600");
+		responseWrapper.setResponse(deviceProviderService.validateDeviceProviders(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.DEVICE_VALIDATION_SUCCESS, ValidateDeviceDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS_DESC,
+						ValidateDeviceDto.class.getSimpleName()),
+				"ADM-601");
 		return responseWrapper;
 
 	}
@@ -57,9 +63,22 @@ public class DeviceProviderManagementController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@PostMapping("/validate/history")
 	@ResponseFilter
-	public ResponseWrapper<ResponseDto> validateDeviceProviderHistory(@RequestBody @Valid RequestWrapper<ValidateDeviceHistoryDto> request) {
+	public ResponseWrapper<ResponseDto> validateDeviceProviderHistory(
+			@RequestBody @Valid RequestWrapper<ValidateDeviceHistoryDto> request) {
+		auditUtil.auditRequest(
+				MasterDataConstant.DEVICE_VALIDATION_HISTORY_API_CALLED
+						+ ValidateDeviceHistoryDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DEVICE_VALIDATION_HISTORY_API_CALLED
+						+ ValidateDeviceHistoryDto.class.getSimpleName(),
+				"ADM-602");
+
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceProviderService.validateDeviceProviderHistory(request.getRequest()));
+		auditUtil.auditRequest(
+				MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS + ValidateDeviceHistoryDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS_DESC + ValidateDeviceDto.class.getSimpleName(), "ADM-604");
+
 		return responseWrapper;
 	}
 

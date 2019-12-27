@@ -47,7 +47,7 @@ public class IndividualTypeController {
 
 	@Autowired
 	private IndividualTypeService individualTypeService;
-	
+
 	@Autowired
 	private AuditUtil auditUtil;
 
@@ -109,10 +109,16 @@ public class IndividualTypeController {
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> searchIndividuals(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED,IndividualTypeDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SEARCH_API_IS_CALLED,IndividualTypeDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, IndividualTypeDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, IndividualTypeDto.class.getSimpleName()),"ADM-589");
 		ResponseWrapper<PageResponseDto<IndividualTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(individualTypeService.searchIndividuals(request.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH,IndividualTypeDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,IndividualTypeDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, IndividualTypeDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, IndividualTypeDto.class.getSimpleName()),"ADM-590");
 		return responseWrapper;
 	}
 
@@ -130,10 +136,16 @@ public class IndividualTypeController {
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> individualsFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
-		auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_API_IS_CALLED,IndividualTypeDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FILTER_API_IS_CALLED,IndividualTypeDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED, IndividualTypeDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED, IndividualTypeDto.class.getSimpleName()),"ADM-591");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(individualTypeService.individualsFilterValues(requestWrapper.getRequest()));
-		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER,IndividualTypeDto.class.getSimpleName()), MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC,IndividualTypeDto.class.getSimpleName()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER, IndividualTypeDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, IndividualTypeDto.class.getSimpleName()),"ADM-592");
 		return responseWrapper;
 	}
 }

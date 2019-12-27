@@ -24,6 +24,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
@@ -42,17 +43,15 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Machine;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.HolidayService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -88,6 +87,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private MasterDataFilterHelper masterDataFilterHelper;
 	@Autowired
 	private PageUtils pageUtils;
+	@Autowired
+	private AuditUtil auditUtil;
 
 	private static final String UPDATE_HOLIDAY_QUERY = "UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:newHolidayDate,h.holidayId.holidayName = :newHolidayName   WHERE h.holidayId.locationCode = :locationCode and h.holidayId.holidayName = :holidayName and h.holidayId.holidayDate = :holidayDate and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)";
 
@@ -194,11 +195,18 @@ public class HolidayServiceImpl implements HolidayService {
 		try {
 			holiday = holidayRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,HolidayErrorCode.HOLIDAY_INSERT_EXCEPTION.getErrorCode(),
+							ExceptionUtils.parseException(e)),"ADM-599");
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
 		}
 		HolidayIDDto holidayId = new HolidayIDDto();
 		MapperUtils.map(holiday, holidayId);
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, HolidayDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						HolidayDto.class.getSimpleName(), holidayId),"ADM-800");
 		return holidayId;
 	}
 
@@ -215,16 +223,30 @@ public class HolidayServiceImpl implements HolidayService {
 		Map<String, Object> params = bindDtoToMap(holidayDto);
 		try {
 			int noOfRowAffected = holidayRepository.createQueryUpdateOrDelete(UPDATE_HOLIDAY_QUERY, params);
-			if (noOfRowAffected != 0)
+			if (noOfRowAffected != 0) {
 				idDto = mapToHolidayIdDto(holidayDto);
-			else
+			}
+			else {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, HolidayUpdateDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+								HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage()),"ADM-801");
 				throw new RequestException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
+			}
 
 		} catch (DataAccessException | DataAccessLayerException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, HolidayUpdateDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
+							HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage()),"ADM-802");
+		
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, HolidayUpdateDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						HolidayUpdateDto.class.getSimpleName(), idDto),"ADM-803");
 		return idDto;
 	}
 
@@ -345,6 +367,10 @@ public class HolidayServiceImpl implements HolidayService {
 		try {
 			locationList = locationRepository.findByLangCode(dto.getLanguageCode());
 		} catch (DataAccessException | DataAccessLayerException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, HolidayUpdateDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e)),"ADM-804");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
@@ -392,6 +418,10 @@ public class HolidayServiceImpl implements HolidayService {
 				pageDto = pageUtils.sortPage(resultDto, sort, pagination);
 			}
 		} else {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, HolidayUpdateDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage()),"ADM-805");
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}

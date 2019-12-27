@@ -135,7 +135,7 @@ public class DeviceController {
 	public ResponseWrapper<Device> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),"ADM-500");
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceDto.getRequest()));
 		return responseWrapper;
@@ -163,7 +163,7 @@ public class DeviceController {
 			@Valid @RequestBody RequestWrapper<DevicePutReqDto> devicePutReqDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),"ADM-502");
 		ResponseWrapper<DeviceExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.updateDevice(devicePutReqDto.getRequest()));
 
@@ -237,11 +237,11 @@ public class DeviceController {
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName());
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(),"ADM-503");
 		ResponseWrapper<PageResponseDto<DeviceSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,Device.class.getSimpleName()));
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,Device.class.getSimpleName()),"ADM-504");
 
 		return responseWrapper;
 	}
@@ -260,12 +260,12 @@ public class DeviceController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName());
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(),"ADM-505");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, DeviceDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceDto.class.getCanonicalName()));
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceDto.class.getCanonicalName()),"ADM-506");
 		return responseWrapper;
 	}
 
