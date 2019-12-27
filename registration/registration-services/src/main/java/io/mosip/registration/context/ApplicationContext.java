@@ -104,28 +104,35 @@ public class ApplicationContext {
 	 * <p>If we dont get primary and secondary languages</p>
 	 * 			<p>Then the primary language will be English and the Secondary language will be 
 	 * 				Arabic by default and the property files will be loaded based on that</p>
+	 * @return 
 	 * 
 	 * 
 	 */
-	public void loadResourceBundle() {
+	public boolean loadResourceBundle() {
+		
+		boolean isPrimaryOrSecondaryLanguageEmpty = false;
 		try {
-
+			
 			if (null != applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE)
 					&& !applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE).equals("")) {
 				applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
 			} else {
+				isPrimaryOrSecondaryLanguageEmpty = true;
 				applicationLanguge = Locale.getDefault().getDisplayLanguage() != null
 						? Locale.getDefault().getDisplayLanguage().toLowerCase().substring(0, 3)
 						: "eng";
 			}
+
 			if (null != applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE)
 					&& !applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE).equals("")) {
 				localLanguage = (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE);
 			} else {
+				isPrimaryOrSecondaryLanguageEmpty = true;
 				localLanguage = Locale.getDefault().getDisplayLanguage() != null
 						? Locale.getDefault().getDisplayLanguage().toLowerCase().substring(0, 3)
 						: "eng";
 			}
+				 
 			String rightToLeft = (String) applicationContext.getApplicationMap().get("mosip.right_to_left_orientation");
 
 			if (null != rightToLeft) {
@@ -160,6 +167,8 @@ public class ApplicationContext {
 		applicationMessagesBundle = ResourceBundle.getBundle("messages", applicationLanguageLocale);
 		localMessagesBundle = ResourceBundle.getBundle("messages", secondaryLanguageLocale);
 		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations");
+		
+		return isPrimaryOrSecondaryLanguageEmpty;
 	}
 
 
@@ -296,8 +305,8 @@ public class ApplicationContext {
 	/**
 	 * Load resources.
 	 */
-	public static void loadResources() {
-		applicationContext.loadResourceBundle();
+	public static boolean loadResources() {
+		return applicationContext.loadResourceBundle();
 	}
 
 	/**

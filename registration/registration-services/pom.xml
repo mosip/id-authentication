@@ -28,6 +28,12 @@
 			<scope>system</scope>
 		</dependency>	
  -->
+ 
+ 	<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-bioapi-provider </artifactId>
+			<version>0.10.0</version>
+		</dependency>
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -362,6 +368,10 @@
 			<artifactId>kernel-bioapi-provider </artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pdfgenerator-itext</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>

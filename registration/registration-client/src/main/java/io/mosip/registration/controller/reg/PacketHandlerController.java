@@ -649,7 +649,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
 
-			if (!validateScreenAuthorization(root.getId())) {
+			if (SessionContext.userContext().getRoles().contains(RegistrationConstants.ROLE_DEFAULT)) {
+				getScene(root);
+			} else if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				getScene(root);

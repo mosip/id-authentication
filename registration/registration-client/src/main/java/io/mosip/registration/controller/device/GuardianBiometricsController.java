@@ -127,6 +127,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private Button continueBtn;
 
 	@FXML
+	private Label dedupeMessage;
+
+	@FXML
 	private Label duplicateCheckLbl;
 
 	@FXML
@@ -267,7 +270,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		leftIrisCount = 0;
 		retries = 0;
 	}
-	
+
 	/**
 	 * Displays biometrics
 	 *
@@ -566,6 +569,20 @@ public class GuardianBiometricsController extends BaseController implements Init
 		if (detailsDTO.isCaptured()) {
 			detailsDTO.getIrises().forEach((iris) -> {
 
+				if (irisType.toLowerCase().contains(iris.getIrisType().split(" ")[0].toLowerCase())) {
+					if (iris.getIrisType().equals(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE))) {
+						leftIrisCount++;
+						retries = leftIrisCount;
+					} else {
+						rightIrisCount++;
+						retries = rightIrisCount;
+					}
+					scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
+					biometricImage.setImage(convertBytesToImage(iris.getIris()));
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
+					setCapturedValues(iris.getQualityScore(), retries, thresholdValue);
+					iris.setNumOfIrisRetry(retries);
+
 				if (iris.getIrisType().contains(RegistrationConstants.RIGHT)) {
 					rightIrisCount++;
 					retries = rightIrisCount;
@@ -598,9 +615,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 				}
 				irisDetailsDTOs.add(iris);
 
-			});
+			}});
 
 			popupStage.close();
+			dedupeMessage.setVisible(true);
 			if (validateIrisLocalDedup(detailsDTO.getIrises())) {
 				continueBtn.setDisable(true);
 				duplicateCheckLbl.setText(
@@ -608,8 +626,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 			} else {
 				continueBtn.setDisable(false);
 			}
+			dedupeMessage.setVisible(false);
 		} else
-
+			dedupeMessage.setVisible(false);
 		{
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		}
@@ -620,15 +639,15 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	private boolean validateIrisLocalDedup(List<IrisDetailsDTO> irises) {
 
-			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
-			authenticationValidatorDTO.setIrisDetails(irises);
-			authenticationValidatorDTO.setAuthValidationType("single");
-			boolean isValid = authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
-			if(null !=getValueFromApplicationContext("IDENTY_SDK")) {
-				isValid = false;
-			}
-			return isValid;
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+		authenticationValidatorDTO.setIrisDetails(irises);
+		authenticationValidatorDTO.setAuthValidationType("single");
+		boolean isValid = authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+		if (null != getValueFromApplicationContext("IDENTY_SDK")) {
+			isValid = false;
+		}
+		return isValid;
 
 	}
 
@@ -741,7 +760,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 					: detailsDTO.getQualityScore(), detailsDTO.getNumRetry(), thresholdValue);
 
 			popupStage.close();
-
+			dedupeMessage.setVisible(true);
 			if (validateFingerPrintQulaity(detailsDTO, new Double(thresholdValue))
 					&& fingerdeduplicationCheck(fingerprintDetailsDTOs)) {
 				continueBtn.setDisable(false);
@@ -750,8 +769,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 					scanBtn.setDisable(true);
 				}
 			}
+			dedupeMessage.setVisible(false);
 
 		} else {
+			dedupeMessage.setVisible(false);
 			fingerprintDetailsDTOs.remove(detailsDTO);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_DEVICE_ERROR);
 		}
@@ -1241,8 +1262,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");
-		boolean isValid =  authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
-		if(null != getValueFromApplicationContext("IDENTY_SDK")) {
+		boolean isValid = authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
+		if (null != getValueFromApplicationContext("IDENTY_SDK")) {
 			isValid = false;
 		}
 		return isValid;

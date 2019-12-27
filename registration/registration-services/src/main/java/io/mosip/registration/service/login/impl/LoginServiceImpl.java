@@ -137,8 +137,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 			auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-
-			loginModes = appAuthenticationDAO.getModesOfLogin(authType, roleList);
+			if (roleList != null && roleList.contains(RegistrationConstants.ROLE_DEFAULT)) {
+				loginModes.clear();
+				loginModes.add(RegistrationConstants.PWORD);
+			} else {
+				loginModes = appAuthenticationDAO.getModesOfLogin(authType, roleList);
+			}
 			
 			LOGGER.info(LOG_REG_LOGIN_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 					"Completed fetching list of login modes");
@@ -311,7 +315,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		}
 
 		performingAllSyncOperations(val, keyIndex, isInitialSetUp);
-
+		
 		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "completed Initial sync");
 
 		return val;
@@ -525,7 +529,8 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 						// Checking roles
 						if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
 								|| roleList.contains(RegistrationConstants.SUPERVISOR)
-								|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+								|| roleList.contains(RegistrationConstants.ADMIN_ROLE)
+								|| roleList.contains(RegistrationConstants.ROLE_DEFAULT))) {
 							setErrorResponse(responseDTO, RegistrationConstants.ROLES_EMPTY_ERROR, null);
 						} else {
 							ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
