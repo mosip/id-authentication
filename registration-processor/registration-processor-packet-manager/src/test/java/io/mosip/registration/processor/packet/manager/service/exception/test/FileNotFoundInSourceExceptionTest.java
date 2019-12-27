@@ -53,7 +53,7 @@ public class FileNotFoundInSourceExceptionTest {
 	@Test
 	public void TestFileNotFoundInSourceException() {
 
-		String fileName = "sample";
+		String fileName = "1001";
 		FileNotFoundInSourceException ex = new FileNotFoundInSourceException(
 				PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getMessage());
 
