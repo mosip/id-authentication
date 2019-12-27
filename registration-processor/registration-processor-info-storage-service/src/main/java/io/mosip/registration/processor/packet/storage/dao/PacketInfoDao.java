@@ -367,6 +367,17 @@ public class PacketInfoDao {
 	}
 
 	/**
+	 * Gets the bio ref id by reg id.
+	 *
+	 * @param regId
+	 *            the reg id
+	 * @return the bio ref id by reg id
+	 */
+	public String getRegIdByBioRefId(String bioRefId) {
+		return abisRequestRepository.getRegIdByBioRefId(bioRefId);
+	}
+
+	/**
 	 * Gets the bio ref id by reg ids.
 	 *
 	 * @param regId
