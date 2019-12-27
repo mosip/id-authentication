@@ -201,10 +201,11 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Override
 	@Transactional
-	public Device createDevice(DeviceDto deviceDto) {
+	public DeviceExtnDto createDevice(DeviceDto deviceDto) {
 		Device device = null;
 		Device entity = null;
 		DeviceHistory entityHistory = null;
+		DeviceExtnDto deviceExtnDto=new DeviceExtnDto();
 		try {
 			deviceDto = masterdataCreationUtil.createMasterData(Device.class, deviceDto);
 			if (deviceDto != null) {
@@ -217,6 +218,7 @@ public class DeviceServiceImpl implements DeviceService {
 				// entity.setId(id);
 				device = deviceRepository.create(entity);
 				deviceHistoryService.createDeviceHistory(entityHistory);
+				MapperUtils.map(device, deviceExtnDto);
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
@@ -227,7 +229,7 @@ public class DeviceServiceImpl implements DeviceService {
 		// IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		// MapperUtils.map(device, idAndLanguageCodeID);
 
-		return device;
+		return deviceExtnDto;
 
 	}
 

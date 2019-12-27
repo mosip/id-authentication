@@ -71,7 +71,7 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while saving Device
 	 */
-	public Device createDevice(DeviceDto deviceRequestDto);
+	public DeviceExtnDto createDevice(DeviceDto deviceRequestDto);
 
 	// public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
 

@@ -40,6 +40,8 @@ public enum RegistrationCenterErrorCode {
 	
 
 	LANGUAGE_EXCEPTION("KER-MSD-382", "Received language code %s is not a configured language"),
+	PRIMARY_LANGUAGE_EMPTY_EXCEPTION("KER-MSD-999", "Primary language code %s is empty or null in configuration"),
+	SECONDARY_LANGUAGE_EMPTY_EXCEPTION("KER-MSD-999", "Secondary language code %s is empty or null in configuration"),
 	REGISTRATION_CENTER_ID("KER-MSD-381","Center ID %s does not exist for primary language"),
 	
 	ID_NOT_UNIQUE("KER-MSD-362","Please make sure that all entered IDs are same-%s"),
