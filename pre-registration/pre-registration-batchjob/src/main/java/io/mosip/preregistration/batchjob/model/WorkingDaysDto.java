@@ -15,6 +15,8 @@ public class WorkingDaysDto {
 	
 	private String languagecode;
 	
+	private boolean isWorking;
+	
 	private boolean isActive;
 	
 
