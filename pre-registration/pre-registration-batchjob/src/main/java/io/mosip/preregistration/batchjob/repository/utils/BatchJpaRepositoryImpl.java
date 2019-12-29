@@ -1,6 +1,7 @@
 package io.mosip.preregistration.batchjob.repository.utils;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,26 +161,6 @@ public class BatchJpaRepositoryImpl {
 	}
 
 	/**
-	 * @param preRegId
-	 * @return RegistrationBookingEntity for given prereId
-	 *//*
-	public RegistrationBookingEntity getPreRegId(String preRegId) {
-		RegistrationBookingEntity entity = null;
-		try {
-			entity = regAppointmentRepository.getDemographicEntityPreRegistrationId(preRegId);
-			if (entity == null) {
-				log.info("sessionId", "idType", "id", "Deleted Invalid Pre-Registration ID");
-				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
-			}
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
-					ErrorMessages.REG_APPOINTMENT_TABLE_NOT_ACCESSIBLE.getMessage());
-		}
-		return entity;
-
-	}*/
-
-	/**
 	 * @param applicantDemographic
 	 * @return updated demographic details.
 	 */
@@ -232,22 +213,6 @@ public class BatchJpaRepositoryImpl {
 					ErrorMessages.REG_APPOINTMENT_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
-
-	/**
-	 * @param preregId
-	 * @return DocumentEntity for given prereId
-	 *//*
-	public List<DocumentEntity> getDocumentDetails(String preregId) {
-		List<DocumentEntity> documentList = null;
-		try {
-			documentList = documentRespository.findByDemographicEntityPreRegistrationId(preregId);
-			log.info("sessionId", "idType", "id", "In getDocumentDetails to get document details");
-			return documentList;
-		} catch (Exception e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_007.getCode(),
-					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());
-		}
-	}*/
 
 	/**
 	 * @param bookingEntityConsumed
@@ -416,10 +381,23 @@ public class BatchJpaRepositoryImpl {
 		try {
 			registrationBookingEntityList = regAppointmentRepository.findByRegId(regId, date);
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_008.getCode(),
+					ErrorMessages.REG_APPOINTMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return registrationBookingEntityList;
+	}
+
+	public List<RegistrationBookingEntity> findAllPreIdsBydateAndBetweenHours(String regCenterId, LocalDate date,
+			LocalTime fromTime, LocalTime toTime) {
+		List<RegistrationBookingEntity> entityList = null;
+		try {
+			entityList = regAppointmentRepository
+					.findByRegistrationCenterIdAndRegDateAndSlotFromTimeBetween(regCenterId, date, fromTime, toTime);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_008.getCode(),
+					ErrorMessages.REG_APPOINTMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
+		}
+		return entityList;
 	}
 
 	/**

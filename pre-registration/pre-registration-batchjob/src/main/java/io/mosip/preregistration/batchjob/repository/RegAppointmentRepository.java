@@ -5,6 +5,7 @@
 package io.mosip.preregistration.batchjob.repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -43,4 +44,6 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 */
 	@Query(preIdQuery)
 	RegistrationBookingEntity getDemographicEntityPreRegistrationId(@Param("preRegId") String preRegId);
+	
+	List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDateAndSlotFromTimeBetween(String regCenterId,LocalDate date,LocalTime fromTime,LocalTime toTime);
 }
