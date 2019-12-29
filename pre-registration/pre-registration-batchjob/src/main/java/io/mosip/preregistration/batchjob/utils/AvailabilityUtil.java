@@ -94,7 +94,7 @@ public class AvailabilityUtil {
 	@Value("${notification.url}")
 	private String notificationResourseurl;
 
-	@Value("${mosip.batch.token.authmanager.clientId}")
+	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
 
 	@Value("${mosip.batch.token.authmanager.appId}")
