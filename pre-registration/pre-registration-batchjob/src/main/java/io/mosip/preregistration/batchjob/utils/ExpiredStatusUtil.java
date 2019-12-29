@@ -50,9 +50,7 @@ public class ExpiredStatusUtil {
 
 	@Autowired
 	private AuthTokenUtil tokenUtil;
-
-	@Value("${preregistration.job.schedule.cron.expiredStatusJob}")
-	String cronExpressionForExpiredStatus;
+	
 	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
 
