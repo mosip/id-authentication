@@ -30,18 +30,6 @@ public class ConsumedStatusTasklet implements Tasklet {
 	@Autowired
 	private ConsumedStatusUtil consumeJob;
 
-
-	@Value("${mosip.batch.token.authmanager.url}")
-	String tokenUrl;
-	@Value("${mosip.batch.token.request.id}")
-	String id;
-	@Value("${mosip.batch.token.authmanager.appId}")
-	String appId;
-	@Value("${mosip.batch.token.authmanager.userName}")
-	String userName;
-	@Value("${mosip.batch.token.authmanager.password}")
-	String password;
-
 	@Value("${version}")
 	String version;
 
