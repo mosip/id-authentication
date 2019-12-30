@@ -242,7 +242,7 @@ public class DeviceProviderServiceImpl implements
 			registeredDevice = registeredDeviceRepository.findByCodeAndIsActiveIsTrue(deviceCode);
 
 			mosipDeviceService = deviceServiceRepository.findByDeviceDetail(swVersion,
-					registeredDevice.getDeviceTypeCode(), registeredDevice.getDevicesTypeCode(),
+					registeredDevice.getDeviceTypeCode(), registeredDevice.getDeviceSTypeCode(),
 					registeredDevice.getMake(), registeredDevice.getModel(), registeredDevice.getDpId());
 		} catch (DataAccessException | DataAccessLayerException e) {
 			auditUtil.auditRequest(
@@ -326,7 +326,7 @@ public class DeviceProviderServiceImpl implements
 					digitalIdDto.getType()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getDevicesTypeCode().equals(digitalIdDto.getSubType())) {
+		if (!registeredDevice.getDeviceSTypeCode().equals(digitalIdDto.getSubType())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());
@@ -423,7 +423,7 @@ public class DeviceProviderServiceImpl implements
 					digitalIdDto.getType()));
 			serviceErrors.add(serviceError);
 		}
-		if (!registeredDevice.getDevicesTypeCode().equals(digitalIdDto.getSubType())) {
+		if (!registeredDevice.getDeviceSTypeCode().equals(digitalIdDto.getSubType())) {
 			ServiceError serviceError = new ServiceError();
 			serviceError
 					.setErrorCode(DeviceProviderManagementErrorCode.PROVIDER_AND_DEVICE_CODE_NOT_MAPPED.getErrorCode());

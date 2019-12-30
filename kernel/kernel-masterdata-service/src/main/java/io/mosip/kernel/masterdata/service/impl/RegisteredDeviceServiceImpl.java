@@ -96,7 +96,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 	 */
 	@Transactional
 	@Override
-	public EncodedRegisteredDeviceResponse createRegisteredDevice(RegisteredDevicePostReqDto dto) {
+	public RegisteredDeviceExtnDto createRegisteredDevice(RegisteredDevicePostReqDto dto) {
 		RegisteredDevice entity = null;
 		RegisteredDevice mapEntity = null;
 		RegisteredDevice crtRegisteredDevice = null;
@@ -162,7 +162,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 							+ ExceptionUtils.parseException(ex));
 		}
 
-		return encodedRegisteredDeviceResponse;
+		return renRegisteredDeviceExtnDto;
 	}
 
 	// check the value of purpose and Serial Num, based on this generate the code

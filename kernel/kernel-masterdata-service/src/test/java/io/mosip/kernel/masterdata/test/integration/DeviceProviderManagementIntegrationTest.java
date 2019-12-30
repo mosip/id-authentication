@@ -137,8 +137,6 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setFirmware("firmware");
 		registeredDevice.setCertificationLevel("L0");
 		registeredDevice.setFoundationalTPId("foundationalTPId");
-		registeredDevice.setFoundationalTrustSignature("foundationalTrustSignature");
-		registeredDevice.setDeviceProviderSignature("sign");
 
 		validateDeviceDto = new ValidateDeviceDto();
 		validateDeviceDto.setDeviceCode("10001");
@@ -178,7 +176,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setModel("model-updated");
 		registeredDeviceHistory.setSerialNo("GV3434343M");
 		registeredDeviceHistory.setDeviceTypeCode("Face");
-		registeredDeviceHistory.setDevicesTypeCode("Slab");
+		registeredDeviceHistory.setDeviceSTypeCode("Slab");
 		registeredDeviceHistory.setEffectivetimes(LocalDateTime.now(ZoneOffset.UTC));
 
 		deviceProviderHistory = new DeviceProviderHistory();
@@ -384,7 +382,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setMake("make-update");
 		registeredDevice.setModel("model-update");
 		registeredDevice.setSerialNo("GV343434");
-		registeredDevice.setDevicesTypeCode("GV343434");
+		registeredDevice.setDeviceSTypeCode("GV343434");
 		registeredDevice.setDeviceTypeCode("GV343434");
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
@@ -496,7 +494,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setMake("make-update");
 		registeredDeviceHistory.setModel("model-update");
 		registeredDeviceHistory.setSerialNo("GV343434");
-		registeredDeviceHistory.setDevicesTypeCode("GV343434");
+		registeredDeviceHistory.setDeviceSTypeCode("GV343434");
 		registeredDeviceHistory.setDeviceTypeCode("GV343434");
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);
