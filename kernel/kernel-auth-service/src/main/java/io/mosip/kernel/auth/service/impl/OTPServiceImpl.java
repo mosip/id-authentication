@@ -460,7 +460,7 @@ public class OTPServiceImpl implements OTPService {
 			case AuthConstant.EMAIL:
 				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser,
 						accessTokenResponse.getAccess_token());
-				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getUserId(),
+				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(),
 						accessTokenResponse.getAccess_token());
 				break;
 			case AuthConstant.PHONE:
