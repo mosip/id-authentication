@@ -15,7 +15,9 @@ public enum DeviceRegisterErrorCode {
 	DEVICE_REGISTER_DELETED_EXCEPTION("ADM-DPM-003", "Error occured while deleted Device Register details"),
 	DATA_NOT_FOUND_EXCEPTION("ADM-DPM-038","Data not found for provided device code"),
 	DEVICE_DE_REGISTERED_ALREADY("KER-DPM-002", "Device already de-registered"),
-	DEVICE_REGISTER_NOT_FOUND_EXCEPTION("KER-DPM-001", "No register device found");
+	DEVICE_REGISTER_NOT_FOUND_EXCEPTION("KER-DPM-001", "No register device found"),
+	DEVICE_REGISTERED_STATUS_ALREADY("KER-DPM-039","Device already is in %s status");
+	
 	
 
 	
