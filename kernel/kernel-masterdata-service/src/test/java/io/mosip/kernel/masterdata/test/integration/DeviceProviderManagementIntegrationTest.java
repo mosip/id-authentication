@@ -130,7 +130,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setSerialNo("GV3434343M");
 
 		registeredDevice.setDeviceTypeCode("Face");
-		registeredDevice.setDevicesTypeCode("Slab");
+		registeredDevice.setDeviceSTypeCode("Slab");
 		registeredDevice.setStatusCode("registered");
 		registeredDevice.setDeviceSubId("1234");
 		registeredDevice.setPurpose("Auth");

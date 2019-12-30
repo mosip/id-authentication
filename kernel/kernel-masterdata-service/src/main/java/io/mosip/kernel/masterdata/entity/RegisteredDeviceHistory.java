@@ -35,7 +35,7 @@ public class RegisteredDeviceHistory extends BaseEntity {
 	private String deviceTypeCode;
 
 	@Column(name = "dstype_code")
-	private String devicesTypeCode;
+	private String deviceSTypeCode;
 
 	@Column(name = "status_code")
 	private String statusCode;

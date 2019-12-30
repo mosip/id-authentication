@@ -35,19 +35,19 @@ public class FoundationalValidator implements ConstraintValidator<ValidFoundatio
 			try {
 				if (value.getCertificationLevel().equals(RegisteredDeviceConstant.L1)) {
 					if (EmptyCheckUtils.isNullEmpty(value.getFoundationalTPId()) 
-							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustSignature()) 
-							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustCertificate())
+							/*|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustSignature()) 
+							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustCertificate())*/
 							) 
 						return false;
 				} else if (value.getCertificationLevel().equals(RegisteredDeviceConstant.L0)) {
 					if (EmptyCheckUtils.isNullEmpty(value.getFoundationalTPId())
-							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustSignature()) 
-							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustCertificate()) ) 
+							/*|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustSignature()) 
+							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustCertificate())*/ ) 
 						return true;
 				} else {
 					if (EmptyCheckUtils.isNullEmpty(value.getFoundationalTPId())
-							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustSignature()) 
-							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustCertificate()) ) 
+							/*|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustSignature()) 
+							|| EmptyCheckUtils.isNullEmpty(value.getFoundationalTrustCertificate())*/ ) 
 						return true;
 				}
 
