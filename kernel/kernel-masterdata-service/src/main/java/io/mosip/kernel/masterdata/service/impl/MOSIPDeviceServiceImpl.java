@@ -66,15 +66,15 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 
 		try {
 
-			if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
-				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, MOSIPDeviceService.class.getCanonicalName()),
-						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC,
-								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage()),"ADM-711");
-				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
-						String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
-			}
+//			if (mosipDeviceServiceRepository.findById(MOSIPDeviceService.class, dto.getId()) != null) {
+//				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, MOSIPDeviceService.class.getCanonicalName()),
+//						MasterDataConstant.AUDIT_SYSTEM,
+//						String.format(MasterDataConstant.FAILURE_DESC,
+//								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
+//								MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage()),"ADM-711");
+//				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorCode(),
+//						String.format(MOSIPDeviceServiceErrorCode.MDS_EXIST.getErrorMessage(), dto.getId()));
+//			}
 			if ((registrationDeviceTypeRepository
 					.findByCodeAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getRegDeviceTypeCode())) == null) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, MOSIPDeviceService.class.getCanonicalName()),
@@ -148,17 +148,6 @@ public class MOSIPDeviceServiceImpl implements MOSIPDeviceServices {
 				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_NOT_FOUND.getErrorCode(),
 						String.format(MOSIPDeviceServiceErrorCode.MDS_NOT_FOUND.getErrorMessage(),dto.getId()));		
 			}
-			if(dto.getDeviceProviderId() == null || dto.getId() == null || dto.getMake() == null || dto.getModel() == null
-					|| dto.getRegDeviceSubCode() == null || dto.getRegDeviceTypeCode() == null || dto.getSwBinaryHash() == null 
-					|| dto.getSwCreateDateTime() == null || dto.getSwExpiryDateTime() == null || dto.getSwVersion() == null) {
-				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, MOSIPDeviceService.class.getCanonicalName()),
-						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC,
-								MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorCode(),
-								MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorMessage()),"ADM-716");
-				throw new RequestException(MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorCode(),
-						MOSIPDeviceServiceErrorCode.MDS_PARAMETER_MISSING.getErrorMessage());
-			}	 
 			if(deviceProviderRepository.findByIdAndIsDeletedFalseorIsDeletedIsNullAndIsActiveTrue(dto.getDeviceProviderId()) == null) {
 				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, MOSIPDeviceService.class.getCanonicalName()),
 						MasterDataConstant.AUDIT_SYSTEM,

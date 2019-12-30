@@ -949,6 +949,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
+		List<ServiceError> errors = new ArrayList<>();
 
 		// List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
@@ -979,7 +980,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		 */
 
 		try {
-			List<ServiceError> errors = new ArrayList<>();
+			
 			registrationCenterValidator.validateRegCenterCreate(regCenterPostReqDto, errors);
 			if (!errors.isEmpty()) {
 				
@@ -1031,7 +1032,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * calling RegistrationCenterIdGenerator API method
 			 * generateRegistrationCenterId().
 			 * 
-			 */
+			 */try
+				{
 				if (registrationCenterEntity != null) {
 					if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
 						uniqueId = registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
@@ -1047,7 +1049,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
 					
 					registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
-				} catch (NullPointerException e) {
+				}} catch (NullPointerException e) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
@@ -1057,6 +1059,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
 							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 				}
+			try
+			{
 				if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
 					// insert 7 rows in reg_working_non_working table
 					try {
@@ -1076,7 +1080,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
 								RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 					}
-				} catch (NullPointerException e) {
+				}} catch (NullPointerException e) {
 					auditUtil.auditRequest(
 							String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
