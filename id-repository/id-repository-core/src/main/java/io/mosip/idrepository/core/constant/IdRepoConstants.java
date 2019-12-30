@@ -87,6 +87,8 @@ public class IdRepoConstants {
 	
 	public static final String VID_REACTIVATED = "mosip.idrepo.vid.reactive-status";
 	
+	public static final String FMR_ENABLED = "mosip.fingerprint.fmr.enabled";
+	
 	/** The value. */
 	private final String value;
 

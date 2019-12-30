@@ -5,6 +5,7 @@ import static io.mosip.idrepository.core.constant.IdRepoConstants.CBEFF_FORMAT;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.DATETIME_PATTERN;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.FILE_FORMAT_ATTRIBUTE;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.FILE_NAME_ATTRIBUTE;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.FMR_ENABLED;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.MODULO_VALUE;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.MOSIP_PRIMARY_LANGUAGE;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.SPLITTER;
@@ -287,8 +288,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 						docType.get(FILE_NAME_ATTRIBUTE).asText() + SPLITTER + DateUtils.getUTCCurrentDateTime())
 				.toString() + DOT + docType.get(FILE_FORMAT_ATTRIBUTE).asText();
 
-		if (StringUtils.equalsIgnoreCase(docType.get(FILE_FORMAT_ATTRIBUTE).asText(),
-				CBEFF_FORMAT)) {
+		if (StringUtils.equalsIgnoreCase(docType.get(FILE_FORMAT_ATTRIBUTE).asText(), CBEFF_FORMAT)) {
 			data = convertToFMR(doc.getCategory(), doc.getValue());
 		} else {
 			data = CryptoUtil.decodeBase64(doc.getValue());
@@ -360,13 +360,19 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	private byte[] convertToFMR(String category, String encodedCbeffFile) throws IdRepoAppException {
 		try {
 			byte[] cbeffFileData = CryptoUtil.decodeBase64(encodedCbeffFile);
-			return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(
-					cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(cbeffFileData))), cbeffFileData);
+			if (env.getProperty(FMR_ENABLED, Boolean.class, false)) {
+				return cbeffUtil.updateXML(
+						fpProvider.convertFIRtoFMR(
+								cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(cbeffFileData))),
+						cbeffFileData);
+			} else {
+				return cbeffUtil.createXML(cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(cbeffFileData)));
+			}
 		} catch (Exception e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-					INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS + " - " + category));
+			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS + " - " + category));
 		}
 	}
 
