@@ -1,5 +1,9 @@
 package io.mosip.idrepository.core.validator;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VERSION_PATTERN;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.MISSING_INPUT_PARAMETER;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -12,8 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
@@ -63,14 +65,14 @@ public abstract class BaseIdRepoValidator {
 		if (Objects.isNull(reqTime)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateReqTime",
 					"requesttime is null");
-			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
+			errors.rejectValue(REQUEST_TIME, MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 		} else {
 			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateReqTime",
 						"requesttime is InValid");
-				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
+				errors.rejectValue(REQUEST_TIME, INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 			}
 		}
 	}
@@ -84,13 +86,13 @@ public abstract class BaseIdRepoValidator {
 	protected void validateVersion(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateVersion", "version is null");
-			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
-		} else if ((!Pattern.compile(env.getProperty(IdRepoConstants.VERSION_PATTERN.getValue())).matcher(ver)
+			errors.rejectValue(VER, MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
+		} else if ((!Pattern.compile(env.getProperty(VERSION_PATTERN)).matcher(ver)
 				.matches())) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateVersion", "version is InValid");
-			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
+			errors.rejectValue(VER, INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
 		}
 	}
 
@@ -104,12 +106,12 @@ public abstract class BaseIdRepoValidator {
 	public void validateId(String id,String operation) throws IdRepoAppException {
 		if (Objects.isNull(id)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateId", "id is null");
-			throw new IdRepoAppException(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID));
+			throw new IdRepoAppException(MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getErrorMessage(), ID));
 		} else if (!this.id.get(operation).equals(id)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateId", "id is invalid");
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID));
+			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), ID));
 		}
 	}
 }

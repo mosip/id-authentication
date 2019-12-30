@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+import org.springframework.data.domain.Persistable;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +35,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @Table(schema = "idrepo")
-public class Uin {
+public class Uin implements Persistable<String> {
 
 	public Uin(String uinRefId, String uin, String uinHash, byte[] uinData, String uinDataHash, String regId,
 			String bioRefId, String statusCode, String langCode, String createdBy, LocalDateTime createdDateTime,
@@ -114,7 +115,7 @@ public class Uin {
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
 
-	@OneToMany(mappedBy = "uin", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "uin", cascade = CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
 	private List<UinBiometric> biometrics;
 
@@ -138,5 +139,15 @@ public class Uin {
 	 */
 	public void setUinData(byte[] uinData) {
 		this.uinData = uinData.clone();
+	}
+
+	@Override
+	public String getId() {
+		return uinRefId;
+	}
+
+	@Override
+	public boolean isNew() {
+		return true;
 	}
 }

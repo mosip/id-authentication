@@ -1,5 +1,8 @@
 package io.mosip.idrepository.vid.interceptor;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.SPLITTER;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +12,6 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
@@ -55,17 +56,17 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				Vid vidEntity = (Vid) entity;
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int uinIndex = propertyNamesList.indexOf("uin");
-				List<String> uinList = Arrays.asList(vidEntity.getUin().split(IdRepoConstants.SPLITTER.getValue()));
+				List<String> uinList = Arrays.asList(vidEntity.getUin().split(SPLITTER));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + IdRepoConstants.SPLITTER.getValue() + new String(encryptedUinByteWithSalt);
+				String encryptedUinWithSalt = uinList.get(0) + SPLITTER + new String(encryptedUinByteWithSalt);
 				vidEntity.setUin(encryptedUinWithSalt);
 				state[uinIndex] = vidEntity.getUin();
 				entity = vidEntity;
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppUncheckedException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
 	}
@@ -86,17 +87,17 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int uinIndex = propertyNamesList.indexOf("uin");
 				Vid vidEntity = (Vid) entity;
-				List<String> uinList = Arrays.asList(vidEntity.getUin().split(IdRepoConstants.SPLITTER.getValue()));
+				List<String> uinList = Arrays.asList(vidEntity.getUin().split(SPLITTER));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + IdRepoConstants.SPLITTER.getValue() + new String(encryptedUinByteWithSalt);
+				String encryptedUinWithSalt = uinList.get(0) + SPLITTER + new String(encryptedUinByteWithSalt);
 				vidEntity.setUin(encryptedUinWithSalt);
 				currentState[uinIndex] = vidEntity.getUin();
 				entity = vidEntity;
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onFlushDirty", "\n" + e.getMessage());
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppUncheckedException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onFlushDirty(entity, id, currentState, currentState, propertyNames, types);
 	}

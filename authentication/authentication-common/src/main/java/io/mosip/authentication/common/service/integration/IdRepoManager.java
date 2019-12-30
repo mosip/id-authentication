@@ -107,7 +107,7 @@ public class IdRepoManager {
 			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
-			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()).equalsIgnoreCase(
+			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS).equalsIgnoreCase(
 					(String) ((Map<String, Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
 				response.put(IdAuthCommonConstants.UIN, uin);
 			} else {
@@ -222,7 +222,7 @@ public class IdRepoManager {
 			}
 			buildRequest.setPathVariables(params);
 			idRepoResponse = restHelper.requestSync(buildRequest);
-			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()).equalsIgnoreCase(
+			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS).equalsIgnoreCase(
 					(String) ((Map<String, Object>) idRepoResponse.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
 				idRepoResponse.put(IdAuthCommonConstants.UIN, getUINfromIDentityResponse(idRepoResponse));
 			} else {

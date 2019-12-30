@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -100,7 +101,7 @@ public class UinDocument {
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
 	@Setter(value = AccessLevel.NONE)
 	private Uin uin;
