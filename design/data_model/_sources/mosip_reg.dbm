@@ -3138,15 +3138,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="foundational_trust_provider_id">
 		<type name="character varying" length="36"/>
 	</column>
-	<column name="foundational_trust_signature">
-		<type name="character varying" length="512"/>
-	</column>
-	<column name="foundational_trust_certificate">
-		<type name="bytea" length="0"/>
-	</column>
-	<column name="dprovider_signature">
-		<type name="character varying" length="512"/>
-	</column>
 	<column name="is_active" not-null="true">
 		<type name="boolean" length="0"/>
 	</column>
