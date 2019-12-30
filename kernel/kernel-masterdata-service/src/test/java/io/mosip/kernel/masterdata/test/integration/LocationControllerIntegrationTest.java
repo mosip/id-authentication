@@ -29,11 +29,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.utils.AuditUtil;
+import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -53,13 +56,18 @@ public class LocationControllerIntegrationTest {
 	private Location location2;
 	private Location location3;
 	private LocationDto dto1;
+	private LocationCreateDto locationCreateDto;
 	private LocationDto dto2;
 	private List<Location> parentLocList;
+	
+	@MockBean
+	MasterdataCreationUtil masterdataCreationUtil;
 
 	@Autowired
 	private ObjectMapper mapper;
 
 	private RequestWrapper<LocationDto> request;
+	private RequestWrapper<LocationCreateDto> createRequest;
 
 	@Before
 	public void setup() {
@@ -70,10 +78,15 @@ public class LocationControllerIntegrationTest {
 		location3 = new Location("", "LOCATION NAME", (short) 3, "City", "XYZ", "eng", null);
 		dto1 = new LocationDto("MMDR", "Location Name", (short) 3, "City", "XYZ", "eng", false);
 		dto2 = new LocationDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
+		locationCreateDto = new LocationCreateDto("", "Location Name", (short) 3, "City", "XYZ", "ara", false);
 		request = new RequestWrapper<>();
 		request.setId("1.0");
 		request.setRequesttime(LocalDateTime.now());
 		request.setMetadata("masterdata.location.create");
+		createRequest = new RequestWrapper<>();
+		createRequest.setId("1.0");
+		createRequest.setRequesttime(LocalDateTime.now());
+		createRequest.setMetadata("masterdata.location.create");
 		when(repo.save(Mockito.any())).thenReturn(location1);
 		when(repo.save(Mockito.any())).thenReturn(parentLoc);
 		parentLocList = new ArrayList<>();
@@ -84,8 +97,9 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void locationCreateSuccess() throws Exception {
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		//when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -96,8 +110,8 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void locationParentNotFoundSuccess() throws Exception {
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
 		//when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new MasterDataServiceException("","Parent location not found"));
 		//when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		//when(repo.create(Mockito.any())).thenReturn(location1);
@@ -111,8 +125,9 @@ public class LocationControllerIntegrationTest {
 		location1.setIsActive(true);
 		when(repo.save(Mockito.any())).thenReturn(Arrays.asList(location1));
 		dto1.setIsActive(true);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -127,6 +142,8 @@ public class LocationControllerIntegrationTest {
 		dto1.setIsActive(true);
 		request.setRequest(dto1);
 		String requestJson = mapper.writeValueAsString(request);
+		when(masterdataCreationUtil.updateMasterData(Location.class, dto1)).thenReturn(dto1);
+		when(repo.findLocationByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(location1);
 		when(repo.update(Mockito.any())).thenReturn(location1);
 		mockMvc.perform(put("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().isOk());
@@ -147,8 +164,9 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void createDefaultlangMissing() throws Exception {
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -160,8 +178,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createActiveLocationFailure() throws Exception {
 		//dto1.setIsActive(true);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -173,8 +192,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createLocationHierarchyLevelAlreadtExist() throws Exception {
 		when(repo.findByNameAndLevel(Mockito.anyString(), Mockito.anyShort())).thenReturn(Arrays.asList(location1));
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -185,8 +205,9 @@ public class LocationControllerIntegrationTest {
 	@Test
 	@WithUserDetails("global-admin")
 	public void createLocatioParentLocationnoExist() throws Exception {
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new MasterDataServiceException("","Location not Exist"));
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().is5xxServerError());
@@ -196,8 +217,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createInvalidLangCode() throws Exception {
 		dto2.setLangCode("ABC");
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -209,8 +231,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createEmptyLangCode() throws Exception {
 		dto2.setLangCode("");
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -222,8 +245,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createInvalidHierarachyLevel() throws Exception {
 		dto2.setHierarchyLevel((short) 1);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -235,8 +259,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createInvalidCode() throws Exception {
 		dto2.setCode("MNB");
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -248,8 +273,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createEmptyLocationCode() throws Exception {
 		dto2.setCode("");
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -261,8 +287,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createEmptyLocationCodePrimary() throws Exception {
 		dto1.setCode("");
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -274,8 +301,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createSaveFailure() throws Exception {
 		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.findByNameAndLevelLangCode(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(parentLocList);
 		when(repo.create(Mockito.any())).thenReturn(location1);
@@ -287,8 +315,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createLocationException() throws Exception {
 		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().is5xxServerError());
@@ -298,8 +327,9 @@ public class LocationControllerIntegrationTest {
 	@WithUserDetails("global-admin")
 	public void createLocationIllegalException() throws Exception {
 		when(repo.save(Mockito.any())).thenThrow(DataIntegrityViolationException.class);
-		request.setRequest(dto1);
-		String requestJson = mapper.writeValueAsString(request);
+		createRequest.setRequest(locationCreateDto);
+		String requestJson = mapper.writeValueAsString(createRequest);
+		when(masterdataCreationUtil.createMasterData(Location.class, locationCreateDto)).thenReturn(locationCreateDto);
 		when(repo.findLocationHierarchyByCodeAndLanguageCode(Mockito.any(),Mockito.any())).thenThrow(new IllegalArgumentException());
 		mockMvc.perform(post("/locations").contentType(MediaType.APPLICATION_JSON).content(requestJson))
 				.andExpect(status().is5xxServerError());

@@ -292,9 +292,19 @@ public class LocationServiceImpl implements LocationService {
 		LocationPutResponseDto postLocationCodeResponseDto = new LocationPutResponseDto();
 		try {
 			locationDto = masterDataCreateUtil.updateMasterData(Location.class, locationDto);
-			Location location = MetaDataUtils.setUpdateMetaData(locationDto, new Location(), true);
-			locationRepository.update(location);
-			MapperUtils.map(location, postLocationCodeResponseDto);
+			Location location = locationRepository.findLocationByCodeAndLanguageCode(locationDto.getCode(),locationDto.getLangCode());
+			if(location==null)
+			{
+				throw new MasterDataServiceException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			else
+			{
+				location = MetaDataUtils.setUpdateMetaData(locationDto, location, false);
+				locationRepository.update(location);
+				MapperUtils.map(location, postLocationCodeResponseDto);
+			}
+			
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
