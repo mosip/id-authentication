@@ -363,6 +363,7 @@ public class IdRepoServiceTest {
 		when(connection.storeFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 		when(cbeffUtil.validateXML(Mockito.any(), Mockito.any())).thenReturn(true);
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("data".getBytes());
+		when(cbeffUtil.createXML(Mockito.any())).thenReturn("data".getBytes());
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -1148,6 +1149,10 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testConvertToFMR() throws Throwable {
 		try {
+			MockEnvironment mockEnv = new MockEnvironment();
+			mockEnv.merge((ConfigurableEnvironment) env);
+			mockEnv.setProperty("mosip.fingerprint.fmr.enabled", "true");
+			ReflectionTestUtils.setField(service, "env", mockEnv);
 			when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException());
 			ReflectionTestUtils.invokeMethod(service, "convertToFMR", "123", "123");
 		} catch (UndeclaredThrowableException e) {
@@ -1188,6 +1193,7 @@ public class IdRepoServiceTest {
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
 				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
 		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
+		when(cbeffUtil.createXML(Mockito.any())).thenReturn("value".getBytes());
 		when(connection.getFile(Mockito.any(), Mockito.any()))
 				.thenReturn(IOUtils.toInputStream("dGVzdA", Charset.defaultCharset()));
 		IdResponseDTO updateIdentity = proxyService.updateIdentity(request, "1234");
@@ -1196,6 +1202,10 @@ public class IdRepoServiceTest {
 
 	@Test
 	public void testIdentityUpdateNewBioDocument() throws Exception {
+		MockEnvironment mockEnv = new MockEnvironment();
+		mockEnv.merge((ConfigurableEnvironment) env);
+		mockEnv.setProperty("mosip.fingerprint.fmr.enabled", "true");
+		ReflectionTestUtils.setField(service, "env", mockEnv);
 		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
