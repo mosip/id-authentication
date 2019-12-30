@@ -1960,3 +1960,69 @@ Thank You!",10006,Resident Services,RS_VIN_REV_FAILURE_SMS,eng,TRUE,superadmin,n
 Votre révocation de $VID a échoué. Veuillez réessayer plus tard.
 
 Merci!",10006,Resident Services,RS_VIN_REV_FAILURE_SMS,fra,TRUE,superadmin,now()
+1205,UIN Update Request Placed Successfully Email,UIN Update Request Placed Successfully Email,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""UIN Update"" has been successfully placed. Your RID (Req Number) is $RID for tracking.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1205,تم تحديث طلب تحديث UIN بنجاح,تم تحديث طلب تحديث UIN بنجاح,txt,velocity,"$fullName_ara،
+
+تم وضع طلبك لـ ""تحديث UIN"" بنجاح. RID الخاص بك (رقم الطلب) هو $RID للتتبع.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1205,E-mail de demande de mise à jour UIN placé avec succès,E-mail de demande de mise à jour UIN placé avec succès,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de «mise à jour UIN» a été envoyée avec succès. Votre RID (numéro de demande) est $RID pour le suivi.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1206,UIN Update Request Placed Successfully Email Subject,UIN Update Request Placed Successfully Email Subject,txt,velocity,UIN Update Request Placed Successfully,10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1206,تم وضع طلب تحديث UIN بنجاح بالبريد الإلكتروني,تم وضع طلب تحديث UIN بنجاح بالبريد الإلكتروني,txt,velocity,تم وضع طلب تحديث UIN بنجاح,10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1206,Sujet de la demande de mise à jour UIN placé avec succès,Sujet de la demande de mise à jour UIN placé avec succès,txt,velocity,Demande de mise à jour UIN placée avec succès,10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1207,UIN Update Request Placed Successfully SMS,UIN Update Request Placed Successfully SMS,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""UIN Update"" has been successfully placed. Your RID (Req Number) is $RID for tracking.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1207,تم تحديث طلب تحديث UIN بنجاح,تم تحديث طلب تحديث UIN بنجاح,txt,velocity,"$fullName_ara،
+
+تم وضع طلبك لـ ""تحديث UIN"" بنجاح. RID الخاص بك (رقم الطلب) هو $RID للتتبع.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1207,Demande de mise à jour UIN placée avec succès SMS,Demande de mise à jour UIN placée avec succès SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de «mise à jour UIN» a été envoyée avec succès. Votre RID (numéro de demande) est $RID pour le suivi.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1208,UIN Update Request Failed Email,UIN Update Request Failed Email,txt,velocity,"Hi $fullName_eng,
+
+We were unable to process your ""UIN Update"" request. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1208,فشل طلب تحديث UIN,فشل طلب تحديث UIN,txt,velocity,"$fullName_ara،
+
+لم نتمكن من معالجة طلبك ""تحديث UIN"". الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1208,E-mail d'échec de la demande de mise à jour UIN,E-mail d'échec de la demande de mise à jour UIN,txt,velocity,"Bonjour $fullName_fra,
+
+Nous n'avons pas pu traiter votre demande de «mise à jour UIN». Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1209,UIN Update Request Failed Email Subject,UIN Update Request Failed Email Subject,txt,velocity,UIN Update Request Failed,10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1209,فشل طلب تحديث UIN موضوع البريد الإلكتروني,فشل طلب تحديث UIN موضوع البريد الإلكتروني,txt,velocity,فشل طلب تحديث UIN,10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1209,Échec de la demande de mise à jour de l'UIN,Échec de la demande de mise à jour de l'UIN,txt,velocity,Échec de la demande de mise à jour UIN,10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1210,UIN Update Request Failed SMS,UIN Update Request Failed SMS,txt,velocity,"Hi $fullName_eng,
+
+We were unable to process your ""UIN Update"" request. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_SMS,eng,TRUE,superadmin,now()
+1210,فشل طلب تحديث UIN SMS,فشل طلب تحديث UIN SMS,txt,velocity,"$fullName_ara،
+
+لم نتمكن من معالجة طلبك ""تحديث UIN"". الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_SMS,ara,TRUE,superadmin,now()
+1210,Echec de la demande de mise à jour UIN SMS,Echec de la demande de mise à jour UIN SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Nous n'avons pas pu traiter votre demande de «mise à jour UIN». Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_SMS,fra,TRUE,superadmin,now()
