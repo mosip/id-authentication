@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Registered Device", description = "Registered Device resource")
+//@ApiModel(value = "Registered Device", description = "Registered Device resource")
 public class RegisteredDeviceExtnDto extends BaseDto{
 	
 	@NotBlank

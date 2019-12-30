@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "DeviceSpeicification", description = "DeviceSpecification Detail resource")
+//@ApiModel(value = "DeviceSpeicification", description = "DeviceSpecification Detail resource")
 public class DeviceSpecificationExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS })

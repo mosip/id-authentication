@@ -21,8 +21,7 @@ import lombok.Data;
  *
  */
 
-@Data
-@ApiModel(value = "Machine", description = "Machine Detail resource")
+@Data//@ApiModel(value = 
 public class MachinePutReqDto {
 
 	/**

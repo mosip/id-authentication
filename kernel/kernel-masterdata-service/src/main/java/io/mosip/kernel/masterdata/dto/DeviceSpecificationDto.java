@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "DeviceSpeicification", description = "DeviceSpecification Detail resource")
+//@ApiModel(value = "DeviceSpeicification", description = "DeviceSpecification Detail resource")
 public class DeviceSpecificationDto {
 
 	@NotBlank

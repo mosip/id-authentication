@@ -14,7 +14,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "BiometricAttribute", description = "BiometricAttribute resource representation")
+//@ApiModel(value = "BiometricAttribute", description = "BiometricAttribute resource representation")
 public class BiometricAttributeDto {
 	/**
 	 * Field for code

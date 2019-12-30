@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Gender types", description = "Model representing a Request")
+//@ApiModel(value = "Gender types", description = "Model representing a Request")
 public class GenderExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS })

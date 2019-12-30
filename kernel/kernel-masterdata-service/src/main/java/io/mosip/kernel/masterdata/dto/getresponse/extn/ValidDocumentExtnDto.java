@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Valid Document", description = "valid Document: Document category and Document type mapping")
+//@ApiModel(value = "Valid Document", description = "valid Document: Document category and Document type mapping")
 public class ValidDocumentExtnDto extends BaseDto {
 
 	@ApiModelProperty(value = "docTypeCode", required = true, dataType = "java.lang.String")

@@ -20,7 +20,7 @@ import lombok.Data;
  */
 
 @Data
-@ApiModel(value = "Device Type", description = "Device Type Detail resource")
+//@ApiModel(value = "Device Type", description = "Device Type Detail resource")
 public class DeviceTypeDto {
 
 	@NotBlank

@@ -17,7 +17,7 @@ import lombok.Data;
  *
  */
 @Data
-@ApiModel(value = "BiometricType", description = "BiometricType resource representation")
+//@ApiModel(value = "BiometricType", description = "BiometricType resource representation")
 public class BiometricTypeDto {
 
 	@NotBlank

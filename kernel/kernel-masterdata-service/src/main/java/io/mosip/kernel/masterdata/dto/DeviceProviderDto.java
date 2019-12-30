@@ -14,7 +14,7 @@ import lombok.Data;
  *
  */
 @Data
-@ApiModel(value = "Device Provider", description = "Device Provider Detail resource")
+//@ApiModel(value = "Device Provider", description = "Device Provider Detail resource")
 public class DeviceProviderDto {
 
 	/** The id. */

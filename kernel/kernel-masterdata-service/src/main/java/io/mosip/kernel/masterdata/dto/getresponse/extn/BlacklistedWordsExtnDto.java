@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Blacklisted word", description = "blacklisted words details")
+//@ApiModel(value = "Blacklisted word", description = "blacklisted words details")
 public class BlacklistedWordsExtnDto extends BaseDto {
 
 	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.STARTSWITH,FilterTypeEnum.CONTAINS})

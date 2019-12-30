@@ -17,8 +17,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@Data
-@ApiModel(value = "Device", description = "Device Detail resource")
+@Data//@ApiModel(value = 
 @ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId", "foundationalTrustSignature",
 		"foundationalTrustCertificate" })
 public class RegisteredDevicePostReqDto {

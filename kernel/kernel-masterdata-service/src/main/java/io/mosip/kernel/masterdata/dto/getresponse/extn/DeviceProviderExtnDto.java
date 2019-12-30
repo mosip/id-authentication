@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Device Provider", description = "Device Provider resource")
+//@ApiModel(value = "Device Provider", description = "Device Provider resource")
 public class DeviceProviderExtnDto extends BaseDto {
 
 	/** The id. */

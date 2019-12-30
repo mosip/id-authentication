@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Machine Specification", description = "Machine Specification details")
+//@ApiModel(value = "Machine Specification", description = "Machine Specification details")
 public class MachineSpecificationExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })

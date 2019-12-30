@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Holiday", description = "Holiday Detail resource")
+//@ApiModel(value = "Holiday", description = "Holiday Detail resource")
 public class HolidaySearchDto extends BaseDto {
 
 	@NotNull

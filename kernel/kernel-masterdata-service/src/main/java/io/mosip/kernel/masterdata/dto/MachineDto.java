@@ -23,7 +23,7 @@ import lombok.Data;
  */
 
 @Data
-@ApiModel(value = "Machine", description = "Machine Detail resource")
+//@ApiModel(value = "Machine", description = "Machine Detail resource")
 public class MachineDto{
 
 	/**
