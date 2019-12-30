@@ -242,12 +242,7 @@ public class LoginController extends BaseController implements Initializable {
 		 * if the primary or secondary language is not set , the application should show
 		 * err msg
 		 */
-		boolean isPrimaryOrSecondaryLanguageEmpty = ApplicationContext.loadResources();
-		if (isPrimaryOrSecondaryLanguageEmpty) {
-			generateAlert(RegistrationConstants.ERROR,
-					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
-			return;
-		}
+		ApplicationContext.loadResources();
 
 		try {
 
@@ -285,6 +280,12 @@ public class LoginController extends BaseController implements Initializable {
 
 			} else if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
+				boolean isPrimaryOrSecondaryLanguageEmpty = ApplicationContext.loadResources();
+				if (isPrimaryOrSecondaryLanguageEmpty) {
+					generateAlert(RegistrationConstants.ERROR,
+							RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+					return;
+				}
 				jobConfigurationService.startScheduler();
 			}
 
