@@ -131,7 +131,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private Label registrationNavlabel;
 	
 	@FXML
-	private Label dedupeMessage;
+	private Label dedupeMessage	;
 
 	@FXML
 	private Label photoAlert;
@@ -419,9 +419,11 @@ public class FaceCaptureController extends BaseController implements Initializab
 		FaceDetailsDTO faceDetail = new FaceDetailsDTO();
 		faceDetail.setFaceISO(isoBytes);
 		authenticationValidatorDTO.setFaceDetail(faceDetail);
-		dedupeMessage.setVisible(true);
+		if(dedupeMessage!=null)
+			dedupeMessage.setVisible(true);
 		if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) || !bioService.validateFace(authenticationValidatorDTO)) {
-		dedupeMessage.setVisible(false);
+		if(dedupeMessage!=null)
+			dedupeMessage.setVisible(false);
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && capturedImage != null) {
 			
@@ -504,7 +506,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 			saveBiometricDetailsBtn.setDisable(false);
 		}
 		}else {
-			dedupeMessage.setVisible(false);
+			if(dedupeMessage!=null)
+				dedupeMessage.setVisible(false);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FACE_DUPLICATE_ERROR);
 		}
 	}

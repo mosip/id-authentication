@@ -1553,13 +1553,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			} else {
 				if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
 					try {
-						dedupeMessage.setVisible(true);
+						if(dedupeMessage!=null)
+							dedupeMessage.setVisible(true);
 						isValid = fingerdeduplicationCheck(segmentedFingerprintDetailsDTOs, isValid,
 								fingerprintDetailsDTOs);
-						dedupeMessage.setVisible(false);
+						if(dedupeMessage!=null)
+							dedupeMessage.setVisible(false);
 					} catch (Exception exception) {
 						isValid = false;
-						dedupeMessage.setVisible(false);
+						if(dedupeMessage!=null)
+							dedupeMessage.setVisible(false);
 					}
 				}
 			}
