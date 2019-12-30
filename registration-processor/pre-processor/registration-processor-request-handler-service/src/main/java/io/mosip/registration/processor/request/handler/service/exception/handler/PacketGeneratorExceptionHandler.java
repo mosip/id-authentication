@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -71,7 +72,7 @@ public class PacketGeneratorExceptionHandler extends ResponseEntityExceptionHand
 	@ExceptionHandler(RegBaseCheckedException.class)
 	public ResponseEntity<Object> badrequest(RegBaseCheckedException e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				e.getErrorCode(), e.getCause().toString());
+				e.getErrorCode(), String.valueOf(e.getCause()));
 
 		return packetGenExceptionResponse(e);
 	}
