@@ -10,11 +10,14 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -38,9 +41,9 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
+import io.mosip.preregistration.core.exception.IllegalParamException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
-import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.JsonValidationException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageException;
@@ -54,6 +57,14 @@ import io.mosip.preregistration.transliteration.exception.UnSupportedLanguageExc
  */
 @RestControllerAdvice
 public class TransliterationExceptionHandler {
+	
+	/**  The Environment. */
+	@Autowired
+	protected  Environment env;
+	
+	/** The id. */
+	@Resource
+	protected Map<String, String> id;
 	
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimepattern;
@@ -126,7 +137,12 @@ public class TransliterationExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> recException(final InvalidRequestParameterException e) {
-		return GenericUtil.errorResponse(e, e.getMainResponseDto());
+		MainResponseDTO<?> errorRes = e.getMainResponseDto();
+		errorRes.setId(id.get(e.getOperation()));
+		errorRes.setVersion(env.getProperty("version"));
+		errorRes.setErrors(e.getExptionList());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)

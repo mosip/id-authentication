@@ -69,6 +69,7 @@ public class AuthTokenUtil {
 			HttpEntity<RequestWrapper<LoginUser>> tokenEntity = new HttpEntity<>(requestWrapper, tokenHeader);
 
 			String tokenUriBuilder = authBuilder.build().encode().toUriString();
+			System.out.println("In BookingTasklet to get token with URL- " + tokenUriBuilder);
 			log.info("sessionId", "idType", "id", "In BookingTasklet to get token with URL- " + tokenUriBuilder);
 			ResponseEntity<ResponseWrapper<AuthNResponse>> tokenResponse = restTemplate.exchange(tokenUriBuilder,
 					HttpMethod.POST, tokenEntity, new ParameterizedTypeReference<ResponseWrapper<AuthNResponse>>() {

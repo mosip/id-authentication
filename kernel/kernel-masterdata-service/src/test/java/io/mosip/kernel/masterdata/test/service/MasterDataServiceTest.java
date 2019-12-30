@@ -2094,26 +2094,6 @@ public class MasterDataServiceTest {
 
 	}
 	
-	@Test(expected = RequestException.class)
-	public void updateDocumentTypeReactivateTest() {
-
-		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
-		documentTypeDto.setCode("code");
-		documentTypeDto.setIsActive(Boolean.TRUE);
-		documentTypeDto.setLangCode("eng");
-
-		DocumentType documentType = new DocumentType();
-		documentType.setCode(documentTypeDto.getCode());
-		documentType.setIsActive(documentTypeDto.getIsActive());
-		documentType.setLangCode(documentTypeDto.getLangCode());
-
-		Mockito.when(
-				documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(), documentTypeDto.getLangCode()))
-				.thenReturn(documentType);
-
-		documentTypeService.updateDocumentType(documentTypeDto);
-
-	}
 	
 
 	/*---------------------- Blacklisted word validator----------------------*/

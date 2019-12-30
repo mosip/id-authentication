@@ -453,6 +453,7 @@
                               <GridPane fx:id="ContentHeader">
                                  <children>
                                     <Label alignment="CENTER" contentDisplay="CENTER" styleClass="paneHeader" text="%irisscan" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+                                    <Label fx:id="dedupeMessage" alignment="CENTER" contentDisplay="CENTER" styleClass="paneHeader" text="%dedupeMessage" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER" visible="false"/>
                                  </children>
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />

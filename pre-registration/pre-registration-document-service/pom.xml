@@ -72,6 +72,11 @@
 			<artifactId>kernel-virusscanner-clamav</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+			<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-auth-adapter</artifactId>
@@ -80,13 +85,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<version>${spring.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.preregistration</groupId>
+			<artifactId>pre-registration-demographic-service-impl</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -95,6 +103,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<layout>ZIP</layout>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -106,7 +117,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
 

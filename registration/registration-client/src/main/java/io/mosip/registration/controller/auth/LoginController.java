@@ -237,7 +237,17 @@ public class LoginController extends BaseController implements Initializable {
 
 		/* Save Global Param Values in Application Context's application map */
 		getGlobalParams();
-		ApplicationContext.loadResources();
+
+		/*
+		 * if the primary or secondary language is not set , the application should show
+		 * err msg
+		 */
+		boolean isPrimaryOrSecondaryLanguageEmpty = ApplicationContext.loadResources();
+		if (isPrimaryOrSecondaryLanguageEmpty) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
 
 		try {
 
@@ -381,9 +391,18 @@ public class LoginController extends BaseController implements Initializable {
 						if (isUserNewToMachine) {
 							initialSetUpOrNewUserLaunch();
 						} else {
-							loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(),
-									(Set<String>) responseDTO.getSuccessResponseDTO().getOtherAttributes()
-											.get(RegistrationConstants.ROLES_LIST));
+							Set<String> roles = (Set<String>) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+									.get(RegistrationConstants.ROLES_LIST);
+							/*
+							 * if the role is default,the login should always thru password and user onboard
+							 * has to be skipped
+							 */
+							if (roles != null && roles.contains(RegistrationConstants.ROLE_DEFAULT)) {
+								initialSetUpOrNewUserLaunch();
+								return;
+							}
+
+							loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roles);
 
 							String fingerprintDisableFlag = getValueFromApplicationContext(
 									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
@@ -462,7 +481,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		UserDTO userDTO = loginService.getUserDetail(userId.getText());
 
-		if (isInitialSetUp || isUserNewToMachine) {
+		if (isInitialSetUp) {
 
 			if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);

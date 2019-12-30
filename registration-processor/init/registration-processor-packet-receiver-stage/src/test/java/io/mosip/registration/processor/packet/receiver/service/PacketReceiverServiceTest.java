@@ -143,7 +143,7 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 		regEntity.setPacketHashValue("abcd1234");
-		BigInteger size = new BigInteger("2291584");
+		BigInteger size = new BigInteger("120");
 		regEntity.setPacketSize(size);
 
 		registrationStatusDto.setStatusCode("RESEND");
@@ -163,7 +163,7 @@ public class PacketReceiverServiceTest {
 			invalidPacket = new File(invalidFile.getParentFile() + "/file");
 			FileUtils.copyFile(invalidFile, invalidPacket);
 			byte[] bytes = new byte[1024 * 1024 * 6];
-			largerFile = new File(invalidFile.getParentFile() + "/2222.zip");
+			largerFile = new File(invalidFile.getParentFile() + "/0000.zip");
 
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
@@ -285,8 +285,10 @@ public class PacketReceiverServiceTest {
 	@Test(expected = FileSizeExceedException.class)
 	public void testFileSizeExceeded() {
 
-		regEntity.setRegistrationId("2222");
-		regEntity.setPacketSize(new BigInteger("6241828"));
+		ReflectionTestUtils.setField(packetReceiverService, "fileSize", "0");
+
+		regEntity.setRegistrationId("0000");
+		regEntity.setPacketSize(new BigInteger("120"));
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -476,7 +478,7 @@ public class PacketReceiverServiceTest {
 	@Test(expected = PacketSizeNotInSyncException.class)
 	public void testPacketSize() {
 
-		regEntity.setRegistrationId("2222");
+		regEntity.setRegistrationId("0000");
 		regEntity.setPacketSize(new BigInteger("624182"));
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
@@ -502,7 +504,7 @@ public class PacketReceiverServiceTest {
 	@Test(expected = UnequalHashSequenceException.class)
 	public void testHashSequence() {
 
-		regEntity.setRegistrationId("2222");
+		regEntity.setRegistrationId("0000");
 		regEntity.setPacketHashValue("abcd");
 		regEntity.setPacketSize(new BigInteger("624182"));
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);

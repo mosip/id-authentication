@@ -159,7 +159,7 @@ public class SessionContext {
 		}
 
 		if (null == sessionContext) {
-			if (isInitialSetUp || isUserNewToMachine) {
+			if (isInitialSetUp) {
 				return validateInitialLogin(userDTO, loginMethod);
 			} else {
 				return validateAuthMethods(userDTO, loginMethod, authenticationValidatorDTO);
@@ -498,8 +498,10 @@ public class SessionContext {
 			}
 		});
 
-		if (machineList.contains(RegistrationSystemPropertiesChecker.getMachineId())
-				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId())) {
+		/* user onboard skipped for the user with role Default */
+		if ((machineList.contains(RegistrationSystemPropertiesChecker.getMachineId())
+				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId()))
+				|| SessionContext.userContext().getRoles().contains(RegistrationConstants.ROLE_DEFAULT)) {
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, false);
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 			sessionContext.mapObject.put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,

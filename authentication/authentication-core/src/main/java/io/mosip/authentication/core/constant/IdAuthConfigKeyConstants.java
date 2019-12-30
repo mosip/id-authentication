@@ -1,5 +1,9 @@
 package io.mosip.authentication.core.constant;
 
+import java.util.function.Predicate;
+
+import org.springframework.core.env.Environment;
+
 /**
  * This Class will provide constants for all Configured properties.
  * 
@@ -95,5 +99,10 @@ public final class IdAuthConfigKeyConstants {
 	public static final String ID_TYPE_ALIAS = "mosip.%s.alias";
 	public static final String IDA_AAD_LASTBYTES_NUM = "ida.aad.lastbytes.num";
 	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
+	
+	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";
+	
+	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
+
 
 }

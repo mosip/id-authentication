@@ -9,16 +9,16 @@ import java.text.ParseException;
 
 import org.springframework.web.client.HttpServerErrorException;
 
-import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.IllegalParamException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
 import io.mosip.preregistration.notification.exception.BookingDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.DemographicDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.IOException;
-import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.JsonValidationException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.MissingRequestParameterException;
@@ -85,6 +85,10 @@ public class NotificationExceptionCatcher {
 		}
 		else if (ex instanceof ParseException) {
 			throw new InvalidRequestParameterException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_003.getCode(), io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), mainResponseDto);
+
+		}
+		else if (ex instanceof RecordNotFoundException) {
+			throw new RecordNotFoundException(((RecordNotFoundException) ex).getErrorCode(),((RecordNotFoundException) ex).getErrorText());
 
 		}
 	}
