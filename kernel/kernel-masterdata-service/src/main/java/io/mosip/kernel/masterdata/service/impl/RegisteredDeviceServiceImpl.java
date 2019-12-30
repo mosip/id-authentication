@@ -234,11 +234,17 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 					DeviceRegisterErrorCode.DEVICE_REGISTER_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-
+        
 		if (deviceRegister == null) {
 			throw new DataNotFoundException(DeviceRegisterErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceRegisterErrorCode.DATA_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
+		if(deviceRegister.getStatusCode().equalsIgnoreCase(statusCode)) {
+        	throw new MasterDataServiceException(DeviceRegisterErrorCode.DEVICE_REGISTERED_STATUS_ALREADY.getErrorCode(),
+					String.format(DeviceRegisterErrorCode.DEVICE_REGISTERED_STATUS_ALREADY.getErrorMessage(), statusCode));
+       	
+        }
+		
 		if (!Arrays.asList(REGISTERED, REVOKED, RETIRED).contains(statusCode)) {
 			throw new RequestException(DeviceRegisterErrorCode.INVALID_STATUS_CODE.getErrorCode(),
 					DeviceRegisterErrorCode.INVALID_STATUS_CODE.getErrorMessage());
