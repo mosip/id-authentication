@@ -29,11 +29,6 @@
 		</dependency>	
  -->
  
- 	<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-bioapi-provider </artifactId>
-			<version>0.10.0</version>
-		</dependency>
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -298,11 +293,6 @@
 			<groupId>com.googlecode.jfreesane</groupId>
 			<artifactId>jfreesane</artifactId>
 			<version>0.98</version>
-		</dependency>
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jvnet.com4j</groupId>
