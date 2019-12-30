@@ -14,9 +14,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -94,6 +96,12 @@ public class Utilities {
 
 	/** The Constant NEW_PACKET. */
 	private static final String NEW_PACKET = "New-packet";
+
+	@Autowired
+	private ObjectMapper objMapper;
+
+	@Autowired
+	private JSONParser jsonParser;
 
 	/** The adapter. */
 	@Autowired
@@ -304,12 +312,17 @@ public class Utilities {
 						"Utilities::retrieveIdrepoJson():: error with error message " + error.get(0).getMessage());
 				throw new IdRepoAppException(error.get(0).getMessage());
 			}
-
-			idResponseDto.getResponse().getIdentity();
-			ObjectMapper objMapper = new ObjectMapper();
+			String response = objMapper.writeValueAsString(idResponseDto.getResponse().getIdentity());
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
 					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended Successfully");
-			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
+			try {
+				return (JSONObject) jsonParser.parse(response);
+			} catch (org.json.simple.parser.ParseException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+						ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppException("Error while parsing string to JSONObject",e);
+			}
+
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
@@ -558,8 +571,14 @@ public class Utilities {
 				throw new IdRepoAppException(
 						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
 			}
-			ObjectMapper objMapper = new ObjectMapper();
-			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
+			String response = objMapper.writeValueAsString(idResponseDto.getResponse().getIdentity());
+			try {
+				return (JSONObject) jsonParser.parse(response);
+			} catch (org.json.simple.parser.ParseException e) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+						ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppException("Error while parsing string to JSONObject",e);
+			}
 
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",

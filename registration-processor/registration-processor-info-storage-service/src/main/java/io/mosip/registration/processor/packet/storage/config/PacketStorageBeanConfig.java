@@ -5,6 +5,7 @@ import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
 
+import org.json.simple.parser.JSONParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,6 +46,11 @@ public class PacketStorageBeanConfig {
 	@Bean
 	public Utilities getUtilities() {
 		return new Utilities();
+	}
+
+	@Bean
+	public JSONParser getJsonParser() {
+		return new JSONParser();
 	}
 
 	@Bean
