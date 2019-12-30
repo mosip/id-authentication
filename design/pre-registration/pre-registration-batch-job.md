@@ -22,7 +22,7 @@ The target users are -
 3.	ConsumedStatusTasklet calls ConsumedStatusUtil which first get auth token from AuthTokenUtil.
 4.	Then it will take all preIds from reg_appointment table with appointment date between date before current date and last date on which expiredStatus job ran. And update the status to Expired in applicant_demographic.
 7.	After completion availabilityUtil tasklet will update status in table, on success it will update COMPLETED in batch_job_execution table.
-5.	If found error, it will ipdate FAILED status with exit code (which will be custom error code and message).
+5.	If found error, it will update FAILED status with exit code (which will be custom error code and message).
 
 
 **Sequence Diagram**
