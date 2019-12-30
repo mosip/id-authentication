@@ -1,6 +1,7 @@
 package io.mosip.admin.packetstatusupdater;
 
 
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
@@ -15,11 +16,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,8 +34,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.TestBootApplication;
+import io.mosip.admin.packetstatusupdater.util.AuditUtil;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+
 
 @SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -59,6 +64,9 @@ public class PacketStatusIntegrationTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	@MockBean
+	private AuditUtil auditUtil;
+	
 	private List<ServiceError> validationErrorList=null;
 	
 	@Autowired
@@ -77,7 +85,7 @@ public class PacketStatusIntegrationTest {
 		serviceError.setMessage("Forbidden");
 		validationErrorList= new ArrayList<ServiceError>();
 		validationErrorList.add(serviceError);
-		
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		
 	}
 	
