@@ -48,7 +48,7 @@ public class IdaTransactionInterceptor extends EmptyInterceptor {
 			if (entity instanceof AutnTxn) {
 				AutnTxn authTxn = (AutnTxn) entity;
 				if (authTxn.getUin() != null) {
-					List<String> uinList = Arrays.asList(authTxn.getUin().split(IdRepoConstants.SPLITTER.getValue()));
+					List<String> uinList = Arrays.asList(authTxn.getUin().split(IdRepoConstants.SPLITTER));
 					byte[] encryptedUinByteWithSalt = idAuthTransactionManager
 							.encryptWithSalt(uinList.get(1).getBytes(), CryptoUtil.decodeBase64(uinList.get(2)));
 					String encryptedUinWithSalt = uinList.get(0) + IdAuthCommonConstants.UIN_MODULO_SPLITTER

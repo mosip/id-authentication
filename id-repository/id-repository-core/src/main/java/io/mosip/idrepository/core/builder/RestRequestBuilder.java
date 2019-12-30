@@ -1,5 +1,7 @@
 package io.mosip.idrepository.core.builder;
 
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_INPUT_PARAMETER;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
@@ -98,8 +99,8 @@ public class RestRequestBuilder {
 				if (requestBody instanceof MultiValueMap) {
 					request.setRequestBody(requestBody);
 				} else {
-					throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+					throw new IdRepoDataValidationException(INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
 									"requestBody"));
 				}
 			}
@@ -142,8 +143,8 @@ public class RestRequestBuilder {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
 							+ env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
-			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+			throw new IdRepoDataValidationException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
 							serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 		}
 	}
@@ -194,8 +195,8 @@ public class RestRequestBuilder {
 
 			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_RETURN_TYPE");
-			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "returnType"));
+			throw new IdRepoDataValidationException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "returnType"));
 		}
 	}
 
@@ -212,8 +213,8 @@ public class RestRequestBuilder {
 		} else {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "httpMethod",
 					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
-			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "httpMethod"));
+			throw new IdRepoDataValidationException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "httpMethod"));
 		}
 	}
 
@@ -230,8 +231,8 @@ public class RestRequestBuilder {
 		} else {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "uri",
 					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
-			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "uri"));
+			throw new IdRepoDataValidationException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "uri"));
 		}
 	}
 

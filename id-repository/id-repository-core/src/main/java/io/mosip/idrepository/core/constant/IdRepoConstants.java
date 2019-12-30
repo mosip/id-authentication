@@ -6,86 +6,88 @@ package io.mosip.idrepository.core.constant;
  *
  * @author Manoj SP
  */
-public enum IdRepoConstants {
+public class IdRepoConstants {
 
 	/** The cbeff format. */
-	CBEFF_FORMAT("cbeff"),
+	public static final String CBEFF_FORMAT = "cbeff";
 
 	/** The identity file name format. */
-	FILE_FORMAT_ATTRIBUTE("format"),
+	public static final String FILE_FORMAT_ATTRIBUTE = "format";
 
 	/** The identity file name key. */
-	FILE_NAME_ATTRIBUTE("value"),
+	public static final String FILE_NAME_ATTRIBUTE = "value";
 	
-	VID_TYPE_PATH("vidPolicies.*.vidType"),
+	public static final String VID_TYPE_PATH = "vidPolicies.*.vidType";
 	
-	VID_POLICY_PATH("vidPolicies.*.vidPolicy"),
+	public static final String VID_POLICY_PATH = "vidPolicies.*.vidPolicy";
 
 	/** The root path. */
-	ROOT_PATH("identity"),
+	public static final String ROOT_PATH = "identity";
 
 	/** The version pattern. */
-	VERSION_PATTERN("mosip.idrepo.application.version.pattern"),
+	public static final String VERSION_PATTERN = "mosip.idrepo.application.version.pattern";
 
 	/** The datetime timezone. */
-	DATETIME_TIMEZONE("mosip.idrepo.datetime.timezone"),
+	public static final String DATETIME_TIMEZONE = "mosip.idrepo.datetime.timezone";
 
 	/** The status registered. */
-	ACTIVE_STATUS("mosip.idrepo.identity.uin-status.registered"),
+	public static final String ACTIVE_STATUS = "mosip.idrepo.identity.uin-status.registered";
 
 	/** The datetime pattern. */
-	DATETIME_PATTERN("mosip.utc-datetime-pattern"),
+	public static final String DATETIME_PATTERN = "mosip.utc-datetime-pattern";
 
 	/** The application version. */
-	APPLICATION_VERSION("mosip.idrepo.identity.application.version"),
+	public static final String APPLICATION_VERSION = "mosip.idrepo.identity.application.version";
 	
 	/** The application version. */
-	APPLICATION_VERSION_VID("mosip.idrepo.vid.application.version"),
+	public static final String APPLICATION_VERSION_VID = "mosip.idrepo.vid.application.version";
 
 	/** The application id. */
-	APPLICATION_ID("mosip.idrepo.application.id"),
+	public static final String APPLICATION_ID = "mosip.idrepo.application.id";
 
 	/** The application name. */
-	APPLICATION_NAME("mosip.idrepo.application.name"),
+	public static final String APPLICATION_NAME = "mosip.idrepo.application.name";
 
 	/** The mosip primary language. */
-	MOSIP_PRIMARY_LANGUAGE("mosip.primary-language"),
+	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
 
 	/** The json schema file name. */
-	JSON_SCHEMA_FILE_NAME("mosip.idrepo.json-schema-fileName"),
+	public static final String JSON_SCHEMA_FILE_NAME = "mosip.idrepo.json-schema-fileName";
 	
 	/** The Json path value */
-	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.identity.json.path"),
+	public static final String MOSIP_KERNEL_IDREPO_JSON_PATH = "mosip.idrepo.identity.json.path";
 	
-	VID_ACTIVE_STATUS("mosip.idrepo.vid.active-status"),
+	public static final String VID_ACTIVE_STATUS = "mosip.idrepo.vid.active-status";
 	
-	VID_ALLOWED_STATUS("mosip.idrepo.vid.allowedStatus"),
+	public static final String VID_ALLOWED_STATUS = "mosip.idrepo.vid.allowedStatus";
 	
-	VID_DB_URL("mosip.idrepo.vid.db.url"),
+	public static final String VID_DB_URL = "mosip.idrepo.vid.db.url";
 	
-	VID_DB_USERNAME("mosip.idrepo.vid.db.username"),
+	public static final String VID_DB_USERNAME = "mosip.idrepo.vid.db.username";
 	
-	VID_DB_PASSWORD("mosip.idrepo.vid.db.password"),
+	public static final String VID_DB_PASSWORD = "mosip.idrepo.vid.db.password";
 	
-	VID_DB_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName"),
+	public static final String VID_DB_DRIVER_CLASS_NAME = "mosip.idrepo.vid.db.driverClassName";
 	
-	VID_POLICY_FILE_URL("mosip.idrepo.vid.policy-file-url"),
+	public static final String VID_POLICY_FILE_URL = "mosip.idrepo.vid.policy-file-url";
 	
-	VID_POLICY_SCHEMA_URL("mosip.idrepo.vid.policy-schema-url"),
+	public static final String VID_POLICY_SCHEMA_URL = "mosip.idrepo.vid.policy-schema-url";
 	
-	VID_UNLIMITED_TRANSACTION_STATUS("mosip.idrepo.vid.unlimited-txn-status"),
+	public static final String VID_UNLIMITED_TRANSACTION_STATUS = "mosip.idrepo.vid.unlimited-txn-status";
 	
-	VID_REGENERATE_ALLOWED_STATUS("mosip.idrepo.vid.regenerate.allowed-status"),
+	public static final String VID_REGENERATE_ALLOWED_STATUS = "mosip.idrepo.vid.regenerate.allowed-status";
 	
-	VID_REGENERATE_ACTIVE_STATUS("INVALIDATED"),
+	public static final String VID_REGENERATE_ACTIVE_STATUS = "INVALIDATED";
 	
-	MODULO_VALUE("mosip.idrepo.modulo-value"),
+	public static final String MODULO_VALUE = "mosip.idrepo.modulo-value";
 	
-	SPLITTER("_"),
+	public static final String SPLITTER = "_";
 	
-	VID_DEACTIVATED("mosip.idrepo.vid.deactive-status"),
+	public static final String VID_DEACTIVATED = "mosip.idrepo.vid.deactive-status";
 	
-	VID_REACTIVATED("mosip.idrepo.vid.reactive-status");
+	public static final String VID_REACTIVATED = "mosip.idrepo.vid.reactive-status";
+	
+	public static final String FMR_ENABLED = "mosip.fingerprint.fmr.enabled";
 	
 	/** The value. */
 	private final String value;

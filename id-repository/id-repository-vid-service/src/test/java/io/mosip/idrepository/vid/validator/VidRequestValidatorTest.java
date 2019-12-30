@@ -196,7 +196,7 @@ public class VidRequestValidatorTest {
 		request.setVidStatus("ACTIVE");
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE))).toLocalDateTime());
 		req.setRequest(request);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
 		assertFalse(errors.hasErrors());
@@ -209,7 +209,7 @@ public class VidRequestValidatorTest {
 		req.setRequest(null);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE))).toLocalDateTime());
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
@@ -236,7 +236,7 @@ public class VidRequestValidatorTest {
 		request.setUin(2953190571L);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE))).toLocalDateTime());
 		req.setRequest(request);
 		HashSet<String> value = new HashSet<String>();
 		value.add("Perpetual".toUpperCase());
@@ -257,7 +257,7 @@ public class VidRequestValidatorTest {
 		request.setVidType("Temp");
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE))).toLocalDateTime());
 		req.setRequest(request);
 		HashSet<String> value = new HashSet<String>();
 		value.add("Perpetual");
@@ -283,7 +283,7 @@ public class VidRequestValidatorTest {
 		request.setVidType(null);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE))).toLocalDateTime());
 		req.setRequest(request);
 		HashSet<String> value = new HashSet<String>();
 		value.add("Perpetual");
