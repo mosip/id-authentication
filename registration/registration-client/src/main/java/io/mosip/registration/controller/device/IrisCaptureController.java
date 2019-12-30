@@ -713,13 +713,15 @@ public class IrisCaptureController extends BaseController {
 					continueBtn.setDisable(false);
 				} else {
 					continueBtn.setDisable(true);
-					dedupeMessage.setVisible(true);
+					if(dedupeMessage!=null)
+						dedupeMessage.setVisible(true);
 					if (validateIrisLocalDedup(getIrises()))
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationConstants.DUPLICATE + " "
 										+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS) + " "
 										+ RegistrationConstants.FOUND);
-					dedupeMessage.setVisible(false);
+					if(dedupeMessage!=null)
+						dedupeMessage.setVisible(false);
 				}
 
 			} else {
