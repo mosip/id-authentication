@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -88,6 +89,7 @@ import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -162,6 +164,9 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private DeviceUtils deviceUtil;
+	
+	@MockBean
+	private AuditUtil auditUtil;
 
 	private List<Zone> zones;
 	private ZoneUser zoneUser;
@@ -466,6 +471,7 @@ public class MasterdataSearchIntegrationTest {
 		zoneFilter.setColumnName("zone");
 		zoneFilter.setType("equals");
 		zoneFilter.setValue("ZONE1");
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 	}
 

@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -32,6 +33,7 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,6 +42,10 @@ public class LocationControllerIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@MockBean
+	private AuditUtil auditUtil;
+	
 	@MockBean
 	private LocationRepository repo;
 	private Location parentLoc;
@@ -72,6 +78,7 @@ public class LocationControllerIntegrationTest {
 		when(repo.save(Mockito.any())).thenReturn(parentLoc);
 		parentLocList = new ArrayList<>();
 		parentLocList.add(parentLoc);
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test

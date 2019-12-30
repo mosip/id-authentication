@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.controller;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,6 +93,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestBootApplication.class)
@@ -109,6 +111,9 @@ public class MasterdataControllerTest {
 
 	@Autowired
 	public MockMvc mockMvc;
+
+	@MockBean
+	AuditUtil aditUtil;
 
 	@MockBean
 	private RestTemplate restTemplate;
@@ -134,7 +139,7 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private RegWorkingNonWorkingService regWorkingNonWorkingService;
-	
+
 	@MockBean
 	private ExceptionalHolidayService exceptionalHolidayService;
 
@@ -225,16 +230,16 @@ public class MasterdataControllerTest {
 	private TemplateFileFormatService templateFileFormatService;
 
 	private ObjectMapper mapper;
-	
-	WeekDaysResponseDto weekDaysResponseDto=new WeekDaysResponseDto();
-	WorkingDaysResponseDto workingDaysResponseDto=new WorkingDaysResponseDto();
-	ExceptionalHolidayResponseDto exceptionalHolidayResponseDto=new ExceptionalHolidayResponseDto();
+
+	WeekDaysResponseDto weekDaysResponseDto = new WeekDaysResponseDto();
+	WorkingDaysResponseDto workingDaysResponseDto = new WorkingDaysResponseDto();
+	ExceptionalHolidayResponseDto exceptionalHolidayResponseDto = new ExceptionalHolidayResponseDto();
 
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-
+		doNothing().when(aditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_STRING_RESPONSE);
 		biometricTypeSetup();
 
@@ -255,9 +260,9 @@ public class MasterdataControllerTest {
 		templateSetup();
 
 		templateFileFormatSetup();
-		
+
 		regWorkingDaySetup();
-		
+
 		exceptionalHolidaySetUp();
 
 	}
@@ -268,10 +273,10 @@ public class MasterdataControllerTest {
 		WeekDaysDto weekDaysDto = new WeekDaysDto();
 		WeekDaysResponseList.add(weekDaysDto);
 	}
-	
+
 	public void exceptionalHolidaySetUp() {
-		List<ExceptionalHolidayDto> exceptionalHolidayList=new ArrayList<>();
-		ExceptionalHolidayDto exceptionalHolidayDto=new ExceptionalHolidayDto();
+		List<ExceptionalHolidayDto> exceptionalHolidayList = new ArrayList<>();
+		ExceptionalHolidayDto exceptionalHolidayDto = new ExceptionalHolidayDto();
 		exceptionalHolidayList.add(exceptionalHolidayDto);
 	}
 
@@ -331,9 +336,9 @@ public class MasterdataControllerTest {
 
 		holidays.add(holiday);
 	}
-	
-	LocationPostResponseDto locationPostResponseDto=null;
-	LocationPutResponseDto locationPutResponseDto=null;
+
+	LocationPostResponseDto locationPostResponseDto = null;
+	LocationPutResponseDto locationPutResponseDto = null;
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
@@ -366,7 +371,7 @@ public class MasterdataControllerTest {
 		locationHierarchyDtos.add(locationHierarchyDto);
 		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
-		
+
 		locationCodeDto = new PostLocationCodeResponseDto();
 		locationCodeDto.setCode("TN");
 		locationCodeDto.setLangCode("eng");
@@ -374,7 +379,7 @@ public class MasterdataControllerTest {
 		requestDto.setId("mosip.create.location");
 		requestDto.setVersion("1.0.0");
 		requestDto.setRequest(locationDto);
-		
+
 		locationPostResponseDto = new LocationPostResponseDto();
 		locationPostResponseDto.setCode("KAR");
 		locationPostResponseDto.setName("KARNATAKA");
@@ -383,7 +388,7 @@ public class MasterdataControllerTest {
 		locationPostResponseDto.setParentLocCode("IND");
 		locationPostResponseDto.setLangCode("eng");
 		locationPostResponseDto.setIsActive(true);
-		
+
 		locationPutResponseDto = new LocationPutResponseDto();
 		locationPutResponseDto.setCode("KAR");
 		locationPutResponseDto.setName("KARNATAKA");
@@ -1169,13 +1174,14 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/workingdays/10001/101")).andExpect(status().isOk());
 
 	}
-	
+
 	// -----------------------------ExceptionalHolidayControllerTest------------------------
 	@Test
 	@WithUserDetails("reg-processor")
 	public void exceptionalHolidayControllerTest() throws Exception {
 
-		Mockito.when(exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng")).thenReturn(exceptionalHolidayResponseDto);
+		Mockito.when(exceptionalHolidayService.getAllExceptionalHolidays("10001", "eng"))
+				.thenReturn(exceptionalHolidayResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/exceptionalholidays/10001/eng")).andExpect(status().isOk());
 
 	}

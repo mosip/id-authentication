@@ -14,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterUserErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.masterdata.dto.UserAndRegCenterMappingResponseDto;
+import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUser;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserHistory;
@@ -32,6 +34,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterUserService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
@@ -44,7 +47,8 @@ import io.mosip.kernel.masterdata.utils.ZoneUtils;
 
 @Service
 public class RegistrationCenterUserServiceImpl implements RegistrationCenterUserService {
-
+	@Autowired
+	AuditUtil auditUtil;
 	@Autowired
 	RegistrationCenterUserRepository registrationCenterUserRepository;
 
@@ -88,6 +92,16 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 				validateRegistrationCenterUserIdZones(userId, regCenterId);
 
 				if (!registrationCenterUser.getIsActive()) {
+					auditUtil.auditRequest(
+							String.format(
+									MasterDataConstant.FAILURE_UNMAP, RegistrationCenterUser.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_ALREADY_UNMAPPED_EXCEPTION
+											.getErrorCode(),
+									RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_ALREADY_UNMAPPED_EXCEPTION
+											.getErrorMessage()),
+							"ADM-767");
 					throw new RequestException(
 							RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_ALREADY_UNMAPPED_EXCEPTION
 									.getErrorCode(),
@@ -125,6 +139,16 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 				}
 
 			} else {
+				auditUtil.auditRequest(
+						String.format(
+								MasterDataConstant.FAILURE_UNMAP, RegistrationCenterUser.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterUserErrorCode.USER_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
+										.getErrorCode(),
+								RegistrationCenterUserErrorCode.USER_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
+										.getErrorMessage()),
+						"ADM-768");
 				throw new RequestException(
 						RegistrationCenterUserErrorCode.USER_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION.getErrorCode(),
 						String.format(RegistrationCenterUserErrorCode.USER_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION
@@ -132,6 +156,14 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterUser.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_UNMAPPING_EXCEPTION.getErrorCode(),
+							RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_UNMAPPING_EXCEPTION
+									.getErrorMessage()),
+					"ADM-769");
 			throw new MasterDataServiceException(
 					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_UNMAPPING_EXCEPTION.getErrorCode(),
 					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_UNMAPPING_EXCEPTION.getErrorMessage());
@@ -161,6 +193,16 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 
 				// given user id has already mapped with given registration center id
 				if (registrationCenterUser.getIsActive()) {
+					auditUtil.auditRequest(
+							String.format(
+									MasterDataConstant.FAILURE_MAP, RegistrationCenterUser.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_ALREADY_MAPPED_EXCEPTION
+											.getErrorCode(),
+									RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_ALREADY_MAPPED_EXCEPTION
+											.getErrorMessage()),
+							"ADM-765");
 					throw new RequestException(
 							RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_ALREADY_MAPPED_EXCEPTION
 									.getErrorCode(),
@@ -201,6 +243,14 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 			} else {
 
 				if (!((registrationCenterUserRepository.findByUserId(userId)).isEmpty())) {
+					auditUtil.auditRequest(
+							String.format(
+									MasterDataConstant.FAILURE_MAP, RegistrationCenterUser.class.getCanonicalName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterUserErrorCode.USER_MAPPED_REGISTRATION_CENTER.getErrorCode(),
+									RegistrationCenterUserErrorCode.USER_MAPPED_REGISTRATION_CENTER.getErrorMessage()),
+							"ADM-766");
 					throw new MasterDataServiceException(
 							RegistrationCenterUserErrorCode.USER_MAPPED_REGISTRATION_CENTER.getErrorCode(),
 							RegistrationCenterUserErrorCode.USER_MAPPED_REGISTRATION_CENTER.getErrorMessage());
@@ -221,6 +271,14 @@ public class RegistrationCenterUserServiceImpl implements RegistrationCenterUser
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterUser.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_MAPPING_EXCEPTION.getErrorCode(),
+							RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_MAPPING_EXCEPTION
+									.getErrorMessage()),
+					"ADM-767");
 			throw new MasterDataServiceException(
 					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_MAPPING_EXCEPTION.getErrorCode(),
 					RegistrationCenterUserErrorCode.REGISTRATION_CENTER_USER_MAPPING_EXCEPTION.getErrorMessage());
