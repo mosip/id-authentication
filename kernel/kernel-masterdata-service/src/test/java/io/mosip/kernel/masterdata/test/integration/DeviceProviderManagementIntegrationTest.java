@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +46,7 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 /**
  * 
@@ -77,6 +79,9 @@ public class DeviceProviderManagementIntegrationTest {
 
 	@Autowired
 	private MockMvc mockBean;
+	
+	@MockBean
+	private AuditUtil auditUtil;
 
 	private MOSIPDeviceService deviceService;
 
@@ -208,7 +213,7 @@ public class DeviceProviderManagementIntegrationTest {
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
 		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
-
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 	
 	@WithUserDetails("zonal-admin")

@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -118,6 +119,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
@@ -348,6 +350,7 @@ public class MasterDataServiceTest {
 		updateRegistrationCenter();
 
 		registrationCenterMachineDeviceHistorySetup();
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 	}
 
@@ -689,6 +692,10 @@ public class MasterDataServiceTest {
 
 	@MockBean
 	ZoneUtils zoneUtils;
+	
+	@MockBean
+	private AuditUtil auditUtil;
+	
 	List<Zone> zones = null;
 
 	private void registrationCenterSetup() {
