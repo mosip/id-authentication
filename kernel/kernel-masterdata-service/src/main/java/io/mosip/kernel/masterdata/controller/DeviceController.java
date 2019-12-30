@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,7 +119,7 @@ public class DeviceController {
 	 * Post API to insert a new row of Device data
 	 * 
 	 * @param request
-	 *            
+	 * 
 	 * 
 	 * @return responseWrapper
 	 */
@@ -131,12 +130,11 @@ public class DeviceController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Device successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 500, message = "While creating device any error occured") })
-	public ResponseWrapper<Device> createDevice(
-			@RequestBody RequestWrapper<DeviceDto> request) {
-	public ResponseWrapper<Device> createDevice(@Valid @RequestBody RequestWrapper<DeviceDto> deviceDto) {
+	public ResponseWrapper<Device> createDevice(@RequestBody RequestWrapper<DeviceDto> request) {
+
 		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),"ADM-500");
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(), "ADM-500");
 		ResponseWrapper<Device> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(request.getRequest()));
 		return responseWrapper;
@@ -164,7 +162,7 @@ public class DeviceController {
 			@Valid @RequestBody RequestWrapper<DevicePutReqDto> devicePutReqDto) {
 		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(),"ADM-502");
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceDto.class.getCanonicalName(), "ADM-502");
 		ResponseWrapper<DeviceExtnDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.updateDevice(devicePutReqDto.getRequest()));
 		return responseWrapper;
@@ -237,11 +235,12 @@ public class DeviceController {
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(),"ADM-503");
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceDto.class.getSimpleName(), "ADM-503");
 		ResponseWrapper<PageResponseDto<DeviceSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceDto.class.getSimpleName()),
-				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,Device.class.getSimpleName()),"ADM-504");
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, Device.class.getSimpleName()), "ADM-504");
 
 		return responseWrapper;
 	}
@@ -260,12 +259,13 @@ public class DeviceController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(),"ADM-505");
+				MasterDataConstant.FILTER_API_IS_CALLED + DeviceDto.class.getCanonicalName(), "ADM-505");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, DeviceDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceDto.class.getCanonicalName()),"ADM-506");
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, DeviceDto.class.getCanonicalName()),
+				"ADM-506");
 		return responseWrapper;
 	}
 

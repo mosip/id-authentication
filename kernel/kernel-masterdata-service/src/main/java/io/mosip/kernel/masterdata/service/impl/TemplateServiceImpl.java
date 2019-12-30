@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
-import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
@@ -31,7 +28,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -214,7 +210,7 @@ public class TemplateServiceImpl implements TemplateService {
 				idAndLanguageCodeID.setLangCode(entity.getLangCode());
 			} else {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_UPDATE, TemplateDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 								TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage()),"ADM-814");
@@ -223,7 +219,7 @@ public class TemplateServiceImpl implements TemplateService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_UPDATE, TemplateDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 							TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
 							TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e)),"ADM-815");

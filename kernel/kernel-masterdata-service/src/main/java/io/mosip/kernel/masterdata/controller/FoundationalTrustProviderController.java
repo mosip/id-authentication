@@ -50,10 +50,7 @@ public class FoundationalTrustProviderController {
 				MasterDataConstant.AUDIT_SYSTEM,
 				MasterDataConstant.CREATE_API_IS_CALLED + FoundationalTrustProviderDto.class.getCanonicalName(),"ADM-701");
 		ResponseWrapper<FoundationalTrustProviderResDto> response=foundationalTrustProviderService.registerFoundationalTrustProvider(foundationalTrustProviderDto.getRequest());
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE, FoundationalTrustProviderDto.class.getCanonicalName()),
-				MasterDataConstant.AUDIT_SYSTEM,
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, FoundationalTrustProviderDto.class.getCanonicalName()),"ADM-702");
+		
 		return response;
 	}
 	

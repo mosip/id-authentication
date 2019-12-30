@@ -18,7 +18,11 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
@@ -31,16 +35,16 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -91,9 +95,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
 	@Autowired
 	private PageUtils pageUtils;
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
+
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -130,8 +137,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Override
 	public DocumentTypePostResponseDto createDocumentType(DocumentTypeDto documentTypeDto) {
-	
-		
+
 		DocumentType documentType = new DocumentType();
 		DocumentTypePostResponseDto documentTypePostResponseDto = new DocumentTypePostResponseDto();
 		try {
@@ -141,21 +147,31 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			MapperUtils.map(documentType, documentTypePostResponseDto);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-		auditUtil.auditRequest(
+			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorMessage()), "ADM-687");
+							DocumentTypeErrorCode.DOCUMENT_TYPE_INSERT_EXCEPTION.getErrorMessage()),
+					"ADM-687");
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e));
-		}
-		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
+							ExceptionUtils.parseException(e1)),
+					"ADM-824");
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
 					ExceptionUtils.parseException(e1));
 		}
 
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceTypeDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						DeviceTypeDto.class.getSimpleName(), documentTypePostResponseDto.getCode()),
+				"ADM-825");
 		return documentTypePostResponseDto;
 	}
 
@@ -173,50 +189,55 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 					documentTypeDto.getLangCode());
 			if (documentType != null) {
 
-//				if ((documentTypeDto.getIsActive() == Boolean.TRUE) && (documentType.getIsActive() == Boolean.TRUE)) {
-//					throw new RequestException(
-//							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
-//							DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
-//				} else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
-//						&& (documentType.getIsActive() == Boolean.FALSE)) {
-//					throw new RequestException(
-//							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
-//							DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
-//				}
+				// if ((documentTypeDto.getIsActive() == Boolean.TRUE) &&
+				// (documentType.getIsActive() == Boolean.TRUE)) {
+				// throw new RequestException(
+				// DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorCode(),
+				// DocumentTypeErrorCode.DOCUMENT_TYPE_REACTIVATION_EXCEPTION.getErrorMessage());
+				// } else if ((documentTypeDto.getIsActive() == Boolean.FALSE)
+				// && (documentType.getIsActive() == Boolean.FALSE)) {
+				// throw new RequestException(
+				// DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorCode(),
+				// DocumentTypeErrorCode.DOCUMENT_TYPE_REDEACTIVATION_EXCEPTION.getErrorMessage());
+				// }
 				documentTypeDto = masterdataCreationUtil.updateMasterData(DocumentType.class, documentTypeDto);
-				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType,true);
+				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, true);
 				documentTypeRepository.update(documentType);
 			} else {
-			auditUtil.auditRequest(
+				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
-								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION
-										.getErrorMessage()), "ADM-690");
+								DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage()),
+						"ADM-690");
 				throw new RequestException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
-		auditUtil.auditRequest(
+			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, DocumentTypeDto.class.getCanonicalName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
-							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION
-									.getErrorMessage()), "ADM-691");
+							DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage()),
+					"ADM-691");
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorCode(),
 					DocumentTypeErrorCode.DOCUMENT_TYPE_UPDATE_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
-		}
-		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
 			e1.printStackTrace();
 		}
 		DocumentTypePutResponseDto documentTypePutResponseDto = new DocumentTypePutResponseDto();
 
 		MapperUtils.mapFieldValues(documentTypeDto, documentTypePutResponseDto);
-
+		auditUtil
+				.auditRequest(
+						String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DocumentTypeDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+								DocumentTypeDto.class.getSimpleName(), documentTypePutResponseDto.getCode()),
+						"ADM-826");
 		return documentTypePutResponseDto;
 	}
 

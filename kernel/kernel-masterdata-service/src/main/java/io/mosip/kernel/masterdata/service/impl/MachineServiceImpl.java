@@ -421,7 +421,8 @@ public class MachineServiceImpl implements MachineService {
 								MasterDataConstant.AUDIT_SYSTEM,
 								String.format(MasterDataConstant.FAILURE_DESC,
 										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
-										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage()),"ADM-534");
+										MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage()),
+								"ADM-534");
 						throw new RequestException(
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
 								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage());
@@ -445,18 +446,20 @@ public class MachineServiceImpl implements MachineService {
 		}
 		if (flag) {
 			zones = zoneUtils.getUserZones();
-			if (zones != null && !zones.isEmpty())
+			if (zones != null && !zones.isEmpty()) {
 				zoneFilter.addAll(buildZoneFilter(zones));
-			else
+			} else {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.SEARCH_FAILED, MachineSearchDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
 						String.format(MasterDataConstant.FAILURE_DESC,
 								MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
-								MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage()),"ADM-535");
+								MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage()),
+						"ADM-535");
 
 				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
+			}
 		}
 		pageUtils.validateSortField(MachineSearchDto.class, Machine.class, dto.getSort());
 		dto.getFilters().removeAll(removeList);
@@ -635,7 +638,6 @@ public class MachineServiceImpl implements MachineService {
 		return Collections.emptyList();
 	}
 
-
 	/**
 	 * This method return Machine Specification list filters.
 	 * 
@@ -726,7 +728,8 @@ public class MachineServiceImpl implements MachineService {
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MasterDataConstant.FAILURE_DESC,
 							MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
-							String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId)),"ADM-536");
+							String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId)),
+					"ADM-536");
 			throw new RequestException(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorCode(),
 					String.format(MachineErrorCode.MACHINE_NOT_EXIST_EXCEPTION.getErrorMessage(), machineId));
 		}
@@ -736,8 +739,10 @@ public class MachineServiceImpl implements MachineService {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
-							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()),"ADM-537");
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
+							MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()),
+					"ADM-537");
 			throw new RequestException(MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
 					MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage());
 		}
@@ -747,8 +752,10 @@ public class MachineServiceImpl implements MachineService {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
-								MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()),"ADM-538");
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorCode(),
+								MachineErrorCode.INVALIDE_MACHINE_ZONE.getErrorMessage()),
+						"ADM-538");
 				throw new RequestException(MachineErrorCode.MAPPED_TO_REGCENTER.getErrorCode(),
 						MachineErrorCode.MAPPED_TO_REGCENTER.getErrorMessage());
 			}
@@ -773,7 +780,8 @@ public class MachineServiceImpl implements MachineService {
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineSearchDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
 					String.format(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
-							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()),"ADM-539");
+							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()),
+					"ADM-539");
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause());
 		}
@@ -829,16 +837,18 @@ public class MachineServiceImpl implements MachineService {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_DECOMMISSION, MachineDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
-							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()),"ADM-540");
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + exception.getCause()),
+					"ADM-540");
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineDto.class.getSimpleName()),
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, MachineDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						MachineDto.class.getSimpleName(), crtMachine.getId()),"ADM-541");
+						MachineDto.class.getSimpleName(), crtMachine.getId()),
+				"ADM-541");
 		return MapperUtils.map(crtMachine, MachineExtnDto.class);
 
 	}
@@ -908,8 +918,10 @@ public class MachineServiceImpl implements MachineService {
 				auditUtil.auditRequest(
 						String.format(MasterDataConstant.FAILURE_UPDATE, MachinePutReqDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM,
-						String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage()),"ADM-542");
+						String.format(MasterDataConstant.FAILURE_DESC,
+								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage()),
+						"ADM-542");
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -918,17 +930,19 @@ public class MachineServiceImpl implements MachineService {
 			auditUtil.auditRequest(
 					String.format(MasterDataConstant.FAILURE_UPDATE, MachinePutReqDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM,
-					String.format(MasterDataConstant.FAILURE_DESC,MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception)),"ADM-543");
+					String.format(MasterDataConstant.FAILURE_DESC,
+							MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+							MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
+									+ ExceptionUtils.parseException(exception)),
+					"ADM-543");
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineDto.class.getSimpleName()),
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, MachineDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						MachineDto.class.getSimpleName(), updMachine.getId()),"ADM-544");
+						MachineDto.class.getSimpleName(), updMachine.getId()),
+				"ADM-544");
 		return MapperUtils.map(updMachine, MachineExtnDto.class);
 
 	}

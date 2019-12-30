@@ -339,7 +339,7 @@ public class DeviceProviderServiceImpl implements
 			auditUtil.auditRequest(
 					MasterDataConstant.DEVICE_VALIDATION_FAILURE + ValidateDeviceDto.class.getSimpleName(),
 					MasterDataConstant.AUDIT_SYSTEM,String.format(
-					MasterDataConstant.FAILURE_DESC,serviceErrors.toString()) , "ADM-613");
+					MasterDataConstant.FAILURE_DESC,"KER-ADM-999",serviceErrors.toString()) , "ADM-613");
 			throw new ValidationException(serviceErrors);
 		} else {
 			serviceErrors = null;
@@ -436,7 +436,7 @@ public class DeviceProviderServiceImpl implements
 			auditUtil.auditRequest(
 					MasterDataConstant.DEVICE_VALIDATION_FAILURE + ValidateDeviceDto.class.getSimpleName(),
 					MasterDataConstant.AUDIT_SYSTEM,String.format(
-					MasterDataConstant.FAILURE_DESC,serviceErrors.toString()) , "ADM-613");
+					MasterDataConstant.FAILURE_DESC,"KER-ADM-999",serviceErrors.toString()) , "ADM-613");
 			throw new ValidationException(serviceErrors);
 		} else {
 			serviceErrors = null;

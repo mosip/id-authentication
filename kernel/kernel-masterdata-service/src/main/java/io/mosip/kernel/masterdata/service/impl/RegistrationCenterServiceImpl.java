@@ -37,7 +37,6 @@ import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
@@ -992,7 +991,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							regCenterPostReqDto.getLangCode());
 			if (regCenterType == null) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 								MasterDataConstant.INVALID_REG_CENTER_TYPE),"ADM-525");
@@ -1004,7 +1003,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPostReqDto.getLocationCode(), regCenterPostReqDto.getLangCode());
 			if (CollectionUtils.isEmpty(location)) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 								MasterDataConstant.INVALID_LOCATION_CODE),"ADM-526");
@@ -1056,6 +1055,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						createRegWorkingNonWorking(regCenterPostReqDto.getWorkingNonWorkingDays(), registrationCenterEntity);
 					}
 				} catch (NullPointerException e) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+									RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage()),"ADM-827");
+
 					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
 							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 				}
@@ -1065,6 +1070,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
 					}
 				} catch (NullPointerException e) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+									RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()),"ADM-828");
 					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
 							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 				}
@@ -1088,7 +1098,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage()),"ADM-527");
@@ -1098,7 +1108,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(exception));
 		}
 		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, RegCenterPostReqDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
 						RegistrationCenterSearchDto.class.getSimpleName(), registrationCenterExtnDto.getId()),"ADM-528");
 		return registrationCenterExtnDto;
@@ -1255,7 +1265,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							regCenterPutReqDto.getLangCode());
 			if (regCenterType == null) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 								"Invalid centerTypeCode"),"ADM-529");
@@ -1268,7 +1278,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					regCenterPutReqDto.getLocationCode(), regCenterPutReqDto.getLangCode());
 			if (CollectionUtils.isEmpty(location)) {
 				auditUtil.auditRequest(
-						String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+						String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
 						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 								"Invalid Location Code"),"ADM-530");
@@ -1285,7 +1295,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 								regCenterPutReqDto.getLangCode());
 				if (renRegistrationCenter == null && primaryLang.equals(regCenterPutReqDto.getLangCode())) {
 					auditUtil.auditRequest(
-							String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+							String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
 							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 									RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
 									RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage()),"ADM-531");
@@ -1346,7 +1356,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
 			auditUtil.auditRequest(
-					String.format(MasterDataConstant.FAILURE_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
 					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()),"ADM-532");
@@ -1356,9 +1366,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(exception));
 		}
 		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, RegistrationCenterSearchDto.class.getSimpleName()),
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						RegistrationCenterSearchDto.class.getSimpleName(), registrationCenterExtnDto.getId()),"ADM-533");
+						RegCenterPutReqDto.class.getSimpleName(), registrationCenterExtnDto.getId()),"ADM-533");
 		return registrationCenterExtnDto;
 
 	}

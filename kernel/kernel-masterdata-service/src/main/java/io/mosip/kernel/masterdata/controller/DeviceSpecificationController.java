@@ -142,11 +142,7 @@ public class DeviceSpecificationController {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceSpecificationService.createDeviceSpecification(deviceSpecification.getRequest()));
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceSpecificationDto.class.getCanonicalName()),
-				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						DeviceSpecificationDto.class.getCanonicalName()),
-				"ADM-639");
+		
 		return responseWrapper;
 	}
 
@@ -167,11 +163,7 @@ public class DeviceSpecificationController {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceSpecificationService.updateDeviceSpecification(deviceSpecification.getRequest()));
-		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DeviceSpecificationDto.class.getCanonicalName()),
-				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
-						DeviceSpecificationDto.class.getCanonicalName()),
-				"ADM-641");
+		
 		return responseWrapper;
 	}
 
@@ -225,15 +217,15 @@ public class DeviceSpecificationController {
 	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
 			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper) {
 		auditUtil.auditRequest(
-				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(),
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationExtnDto.class.getCanonicalName(),
 				MasterDataConstant.AUDIT_SYSTEM,
-				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationDto.class.getCanonicalName(), "ADM-642");
+				MasterDataConstant.SEARCH_API_IS_CALLED + DeviceSpecificationExtnDto.class.getCanonicalName(), "ADM-642");
 		ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceSpecificationService.searchDeviceSpec(requestWrapper.getRequest()));
 		auditUtil.auditRequest(
-				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceSpecificationDto.class.getCanonicalName()),
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, DeviceSpecificationExtnDto.class.getCanonicalName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC,
-						DeviceSpecificationDto.class.getCanonicalName()),
+						DeviceSpecificationExtnDto.class.getCanonicalName()),
 				"ADM-643");
 		return responseWrapper;
 	}

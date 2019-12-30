@@ -23,7 +23,6 @@ import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.masterdata.util.model.Node;
 import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -273,7 +272,7 @@ public class LocationServiceImpl implements LocationService {
 		}
 		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, LocationDto.class.getSimpleName()),
 				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
-						LocationDto.class.getSimpleName(), response.getId()),"ADM-578");
+						LocationDto.class.getSimpleName(), locationPostResponseDto.getCode()),"ADM-578");
 		return locationPostResponseDto;
 	}
 
