@@ -256,9 +256,11 @@ public class IdRepoServiceTest {
 		req.setIdentity(obj);
 		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
+		uinObj.setUinData("".getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg	");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		IdResponseDTO addIdentity = proxyService.addIdentity(request, "1234");
@@ -338,7 +340,7 @@ public class IdRepoServiceTest {
 			uinObj.setUinRefId("1234");
 			RequestDTO req = mapper
 					.readValue(("{\"identity\":{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-							+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+							+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 							+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
 									.getBytes(),
 							RequestDTO.class);
@@ -367,15 +369,17 @@ public class IdRepoServiceTest {
 		uinObj.setStatusCode(ACTIVATED);
 		RequestDTO req = mapper
 				.readValue(("{\"identity\":{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
 		 req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
+		uinObj.setUinData("".getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		IdResponseDTO addIdentity = proxyService.addIdentity(request, "1234");
@@ -910,6 +914,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(mapper.writeValueAsBytes(obj2));
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.updateIdentity(request, "234").getResponse().equals(obj2);
@@ -973,6 +978,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.updateIdentity(request, "234").getResponse().equals(obj2);
@@ -1081,6 +1087,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(new byte[] { 0 });
 		uinObj.setUinDataHash("");
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
@@ -1157,7 +1164,7 @@ public class IdRepoServiceTest {
 		uinObj.setStatusCode(ACTIVATED);
 		RequestDTO req = mapper
 				.readValue(("{\"identity\":{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
@@ -1171,10 +1178,11 @@ public class IdRepoServiceTest {
 		uinObj.setBiometrics(Collections.singletonList(biometrics));
 		uinObj.setUinData(
 				("{\"status\": \"ACTIVATED\",\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1195,7 +1203,7 @@ public class IdRepoServiceTest {
 		uinObj.setStatusCode(ACTIVATED);
 		RequestDTO req = mapper
 				.readValue(("{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
@@ -1209,10 +1217,11 @@ public class IdRepoServiceTest {
 		biometrics.setBiometricFileName("name");
 		uinObj.setBiometrics(Lists.newArrayList(biometrics));
 		uinObj.setUinData(("{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1231,7 +1240,7 @@ public class IdRepoServiceTest {
 		uinObj.setStatusCode(ACTIVATED);
 		RequestDTO req = mapper
 				.readValue(("{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"pdf\",\"version\":1.0,\""
-						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
@@ -1244,10 +1253,11 @@ public class IdRepoServiceTest {
 		biometrics.setBiometricFileName("name");
 		uinObj.setBiometrics(Lists.newArrayList(biometrics));
 		uinObj.setUinData(("{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\""
-				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1382,7 +1392,7 @@ public class IdRepoServiceTest {
 		uinObj.setStatusCode(ACTIVATED);
 		RequestDTO req = mapper
 				.readValue(("{\"identity\":{\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"1.0\",\""
-						+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+						+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfRelationship\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
@@ -1395,10 +1405,11 @@ public class IdRepoServiceTest {
 		document.setDocName("name");
 		uinObj.setDocuments(Lists.newArrayList(document));
 		uinObj.setUinData(("{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\""
-				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
 				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
@@ -1415,7 +1426,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinRefId("1234");
 		uinObj.setStatusCode(ACTIVATED);
 		RequestDTO req = mapper.readValue(("{\"identity\":{\"ProofOfIdentity\":{\"format\":\"pdf\",\"type\":\"1.0\",\""
-				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE
 				+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"ProofOfIdentity\",\"value\":\"dGVzdA\"}]}")
 						.getBytes(),
 				RequestDTO.class);
@@ -1428,10 +1439,11 @@ public class IdRepoServiceTest {
 		document.setDocName("name");
 		uinObj.setDocuments(Lists.newArrayList(document));
 		uinObj.setUinData(("{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\""
-				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
+				+ IdRepoConstants.FILE_NAME_ATTRIBUTE + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
 				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));

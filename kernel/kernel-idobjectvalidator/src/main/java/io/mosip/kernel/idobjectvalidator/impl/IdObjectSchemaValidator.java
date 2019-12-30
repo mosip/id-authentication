@@ -52,7 +52,6 @@ import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailed
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.util.StringUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * This class provides the implementation for JSON validation against the
  * schema.
