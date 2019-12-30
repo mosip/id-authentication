@@ -430,8 +430,14 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void createPacket() {
 
 		BioServiceImpl.clearAllCaptures();
+		
+			if (isPrimaryOrSecondaryLanguageEmpty()) {
+				generateAlert(RegistrationConstants.ERROR,
+						RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+				return;
+			}
 			if (isMachineRemapProcessStarted()) {
-
+	
 				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 				return;
@@ -488,13 +494,19 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void lostUIN() {
 
 		BioServiceImpl.clearAllCaptures();
-		
-			if (isMachineRemapProcessStarted()) {
 
-				LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-				return;
-			}
+		if (isPrimaryOrSecondaryLanguageEmpty()) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
+
+		if (isMachineRemapProcessStarted()) {
+
+			LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+			return;
+		}
 			String fingerPrintDisableFlag = getValueFromApplicationContext(
 					RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
 			String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
@@ -629,6 +641,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Approve, Reject and Hold packets
 	 */
 	public void approvePacket() {
+		
+		if (isPrimaryOrSecondaryLanguageEmpty()) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
+		
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -669,6 +688,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Validating screen authorization and Uploading packets to FTP server
 	 */
 	public void uploadPacket() {
+		
+		if (isPrimaryOrSecondaryLanguageEmpty()) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
 
 		if (isMachineRemapProcessStarted()) {
 
@@ -708,8 +733,15 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void updateUIN() {
 
 		BioServiceImpl.clearAllCaptures();
+		
+			if (isPrimaryOrSecondaryLanguageEmpty()) {
+				generateAlert(RegistrationConstants.ERROR,
+						RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+				return;
+			}
+	
 			if (isMachineRemapProcessStarted()) {
-
+	
 				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 				return;
@@ -791,6 +823,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		BioServiceImpl.clearAllCaptures();
 		
+		if (isPrimaryOrSecondaryLanguageEmpty()) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
+
 		if (isMachineRemapProcessStarted()) {
 
 			LOGGER.info("REGISTRATION - ONBOARD_USER_UPDATE - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
@@ -959,6 +997,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void loadReRegistrationScreen() {
 
 		BioServiceImpl.clearAllCaptures();
+		
+		if (isPrimaryOrSecondaryLanguageEmpty()) {
+			generateAlert(RegistrationConstants.ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET);
+			return;
+		}
 		
 		if (isMachineRemapProcessStarted()) {
 

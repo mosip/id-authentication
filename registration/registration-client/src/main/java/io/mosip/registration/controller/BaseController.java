@@ -1481,6 +1481,19 @@ public class BaseController {
 
 	}
 
+	public boolean isPrimaryOrSecondaryLanguageEmpty() {
+
+		if (null == ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)
+				|| ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE).equals("")) {
+			return true;
+		}
+		if (null == ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
+				|| ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE).equals("")) {
+			return true;
+		}
+		return false;
+	}
+	
 	protected String getThresholdKeyByBioType(String bioType) {
 		return bioType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
 				? RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD
