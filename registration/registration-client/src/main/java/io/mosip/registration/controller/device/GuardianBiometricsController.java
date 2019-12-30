@@ -618,7 +618,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}});
 
 			popupStage.close();
-			dedupeMessage.setVisible(true);
+			if(dedupeMessage!=null)
+				dedupeMessage.setVisible(true);
 			if (validateIrisLocalDedup(detailsDTO.getIrises())) {
 				continueBtn.setDisable(true);
 				duplicateCheckLbl.setText(
@@ -626,9 +627,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 			} else {
 				continueBtn.setDisable(false);
 			}
-			dedupeMessage.setVisible(false);
+			if(dedupeMessage!=null)
+				dedupeMessage.setVisible(false);
 		} else
-			dedupeMessage.setVisible(false);
+			if(dedupeMessage!=null)
+				dedupeMessage.setVisible(false);
 		{
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 		}
