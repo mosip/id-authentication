@@ -45,7 +45,7 @@ public class RegisteredDevicePostReqDto {
 	 * “Retired”, “Revoked”
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "statusCode", required = true, dataType = "java.lang.String")
 	@ValidStatusCode(message = "Invalid Status received")
 	private String statusCode;
@@ -54,7 +54,7 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 256)
+	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "deviceId", required = true, dataType = "java.lang.String")
 	private String deviceId;
 
@@ -71,7 +71,7 @@ public class RegisteredDevicePostReqDto {
 	 * “Registration” or “Auth”.
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "purpose", required = true, dataType = "java.lang.String")
 	@ValidPurpose(message = "Invalid Purpose received")
 	private String purpose;
@@ -80,7 +80,7 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
 	@ApiModelProperty(value = "firmware", required = true, dataType = "java.lang.String")
 	private String firmware;
 	
@@ -95,7 +95,7 @@ public class RegisteredDevicePostReqDto {
 	 * or “L1”
 	 */
 	@NotBlank
-	@Size(min = 1, max = 3)
+	@Size(min = 0, max = 3)
 	@ApiModelProperty(value = "certificationLevel", required = true, dataType = "java.lang.String")
 	@ValidCertificateLevel(message = "Invalid Certification level received")
 	private String certificationLevel;
