@@ -23,27 +23,27 @@ import lombok.Data;
 public class MOSIPDeviceServiceDto {
 
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "softwareVersion", required = true, dataType = "java.lang.String")
 	private String swVersion;
 
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "providerId", required = true, dataType = "java.lang.String")
 	private String deviceProviderId;
 
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String regDeviceTypeCode;
 
 	@NotBlank
-	@Size(min = 1, max = 36)
+	@Size(min = 0, max = 36)
 	@ApiModelProperty(value = "deviceSubCode", required = true, dataType = "java.lang.String")
 	private String regDeviceSubCode;
 
