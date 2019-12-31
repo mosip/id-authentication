@@ -10,11 +10,14 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -33,36 +36,36 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
-import io.mosip.preregistration.booking.exception.AppointmentBookingFailedException;
-import io.mosip.preregistration.booking.exception.AppointmentCannotBeBookedException;
-import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
-import io.mosip.preregistration.booking.exception.AppointmentReBookingFailedException;
-import io.mosip.preregistration.booking.exception.AvailabilityTableNotAccessableException;
-import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingDateNotSeletectedException;
-import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
-import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
-import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
-import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
-import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
-import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
-import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
-import io.mosip.preregistration.booking.exception.JsonException;
-import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
-import io.mosip.preregistration.booking.exception.NotificationException;
-import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
-import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
-import io.mosip.preregistration.booking.exception.RecordNotFoundException;
-import io.mosip.preregistration.booking.exception.RestCallException;
-import io.mosip.preregistration.booking.exception.TimeSpanException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AppointmentAlreadyCanceledException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AppointmentBookingFailedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AppointmentCannotBeBookedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AppointmentCannotBeCanceledException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AppointmentReBookingFailedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AvailabilityTableNotAccessableException;
+import io.mosip.preregistration.booking.serviceimpl.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.serviceimpl.exception.BookingDataNotFoundException;
+import io.mosip.preregistration.booking.serviceimpl.exception.BookingDateNotSeletectedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.BookingPreIdNotFoundException;
+import io.mosip.preregistration.booking.serviceimpl.exception.BookingRegistrationCenterIdNotFoundException;
+import io.mosip.preregistration.booking.serviceimpl.exception.BookingTimeSlotAlreadyBooked;
+import io.mosip.preregistration.booking.serviceimpl.exception.BookingTimeSlotNotSeletectedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.CancelAppointmentFailedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.DemographicGetStatusException;
+import io.mosip.preregistration.booking.serviceimpl.exception.DemographicStatusUpdationException;
+import io.mosip.preregistration.booking.serviceimpl.exception.DocumentNotFoundException;
+import io.mosip.preregistration.booking.serviceimpl.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.serviceimpl.exception.JsonException;
+import io.mosip.preregistration.booking.serviceimpl.exception.OperationNotAllowedException;
+import io.mosip.preregistration.booking.serviceimpl.exception.RecordNotFoundException;
+import io.mosip.preregistration.booking.serviceimpl.exception.TimeSpanException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.core.exception.NotificationException;
+import io.mosip.preregistration.core.exception.RecordFailedToDeleteException;
+import io.mosip.preregistration.core.exception.RestCallException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
 
@@ -76,6 +79,15 @@ import io.mosip.preregistration.core.util.GenericUtil;
  */
 @RestControllerAdvice
 public class BookingExceptionHandler {
+	
+	/**  The Environment. */
+	@Autowired
+	protected  Environment env;
+	
+	/** The id. */
+	@Resource
+	protected Map<String, String> id;
+
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
@@ -215,7 +227,12 @@ public class BookingExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDateNotSelected(final InvalidRequestParameterException e) {
-		return GenericUtil.errorResponse(e, e.getMainResponseDto());
+		MainResponseDTO<?> errorRes = e.getMainResponseDto();
+		errorRes.setId(id.get(e.getOperation()));
+		errorRes.setVersion(env.getProperty("version"));
+		errorRes.setErrors(e.getExptionList());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**

@@ -1,5 +1,10 @@
 package io.mosip.idrepository.vid.config;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_DB_DRIVER_CLASS_NAME;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_DB_PASSWORD;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_DB_URL;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_DB_USERNAME;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -106,11 +110,10 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource(
-				env.getProperty(IdRepoConstants.VID_DB_URL.getValue()));
-		dataSource.setUsername(env.getProperty(IdRepoConstants.VID_DB_USERNAME.getValue()));
-		dataSource.setPassword(env.getProperty(IdRepoConstants.VID_DB_PASSWORD.getValue()));
-		dataSource.setDriverClassName(env.getProperty(IdRepoConstants.VID_DB_DRIVER_CLASS_NAME.getValue()));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(VID_DB_URL));
+		dataSource.setUsername(env.getProperty(VID_DB_USERNAME));
+		dataSource.setPassword(env.getProperty(VID_DB_PASSWORD));
+		dataSource.setDriverClassName(env.getProperty(VID_DB_DRIVER_CLASS_NAME));
 		return dataSource;
 	}
 }

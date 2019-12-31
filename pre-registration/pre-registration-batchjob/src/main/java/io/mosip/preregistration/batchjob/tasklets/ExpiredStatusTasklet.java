@@ -10,7 +10,6 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -29,21 +28,6 @@ public class ExpiredStatusTasklet implements Tasklet {
 
 	@Autowired
 	private ExpiredStatusUtil expiredUtil;
-
-
-	@Value("${mosip.batch.token.authmanager.url}")
-	String tokenUrl;
-	@Value("${mosip.batch.token.request.id}")
-	String id;
-	@Value("${mosip.batch.token.authmanager.appId}")
-	String appId;
-	@Value("${mosip.batch.token.authmanager.userName}")
-	String userName;
-	@Value("${mosip.batch.token.authmanager.password}")
-	String password;
-
-	@Value("${version}")
-	String version;
 
 	private Logger log = LoggerConfiguration.logConfig(ExpiredStatusTasklet.class);
 

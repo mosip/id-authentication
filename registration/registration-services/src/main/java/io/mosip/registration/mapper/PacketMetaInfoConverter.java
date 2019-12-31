@@ -358,6 +358,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Get RegistrationMetaDataDTO
 		RegistrationMetaDataDTO metaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 
+		// Add reg client version
+		metaData.add(
+				buildFieldValue("regClientVersionNumber", String.valueOf(metaDataDTO.getRegClientVersionNumber())));
 		// Add Geo-location Latitude
 		metaData.add(buildFieldValue("geoLocLatitude", String.valueOf(metaDataDTO.getGeoLatitudeLoc())));
 		// Add Geo-location Longitude

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -16,6 +17,8 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -54,7 +57,7 @@ public interface LocationService {
 	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public ResponseWrapper<Location> createLocation(
+	public LocationPostResponseDto createLocation(
 			LocationCreateDto locationDto);
 
 
@@ -72,7 +75,7 @@ public interface LocationService {
 	 *            - location request DTO
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
-	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationRequestDto);
+	public LocationPutResponseDto updateLocationDetails(LocationDto locationRequestDto);
 
 	/**
 	 * 
@@ -154,4 +157,6 @@ public interface LocationService {
 	 * @return names corresponding to the eneted filter dto
 	 */
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto);
+	
+	public LocationLevelResponseDto getLocationCodeByLangCode(String langCode);
 }

@@ -28,7 +28,8 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 * @param currentdate
 	 * @return List of RegistrationBookingEntity before current date.
 	 */
-	List<RegistrationBookingEntity> findByRegDateBetween(LocalDate currentdate, LocalDate tillDate);
+	@Query("SELECT u FROM RegistrationBookingEntity u WHERE u.demographicEntity.statusCode = ?1 and u.regDate<?2")
+	List<RegistrationBookingEntity> findByRegDateBetween(String statusCode, LocalDate currentDate);
 
 	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDate(String registrationCenterId,
 			LocalDate regDate);

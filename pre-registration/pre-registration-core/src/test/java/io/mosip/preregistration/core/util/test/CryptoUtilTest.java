@@ -21,9 +21,8 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
-import io.mosip.preregistration.core.exception.DecryptionFailedException;
-import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.util.CryptoUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
 
 /**
  * CryptoUtil Test
@@ -38,8 +37,11 @@ public class CryptoUtilTest {
 
 	@Autowired
 	CryptoUtil crypto;
-
+	
 	@MockBean
+	private RequestValidator validator;
+
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 	
 	@Value("${cryptoResource.url}")

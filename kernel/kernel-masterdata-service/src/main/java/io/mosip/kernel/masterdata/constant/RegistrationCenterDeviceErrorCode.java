@@ -15,6 +15,7 @@ public enum RegistrationCenterDeviceErrorCode {
 	REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND("KER-MSD-115", "Mapping for Device and Center not found"),
 	REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION("KER-MSD-105",
 			"Error occurred while deleting a mapping of Device and Center"),
+	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-441", "Registration Center and Device Not Found"),
 	REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION("KER-MSD-433","Error occurred while fetching Center Device details"),
 	REGISTRATION_CENTER_DEVICE_ALREADY_UNMAPPED_EXCEPTION("KER-MSD-434", "Device-Registration Center un-mapping already exist"),
 	DEVICE_AND_REG_CENTER_MAPPING_NOT_FOUND_EXCEPTION("KER-MSD-435","Device Id %s - Center Id %s mapping does not exist"),

@@ -37,7 +37,6 @@ import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
-import io.mosip.kernel.masterdata.dto.ExceptionalHolidayDto;
 import io.mosip.kernel.masterdata.dto.ExceptionalHolidayPutPostDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
@@ -91,6 +90,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -190,22 +190,22 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private LocationRepository locationRepository;
 	/**
-	 * get list of secondary languages supported by MOSIP from configuration
-	 * file
+	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
 	@Value("${mosip.primary-language}")
 	private String primaryLang;
 
+	@Autowired
+	private AuditUtil auditUtil;
+
 	/**
-	 * get list of secondary languages supported by MOSIP from configuration
-	 * file
+	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
 
 	/**
-	 * get list of secondary languages supported by MOSIP from configuration
-	 * file
+	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
 	@Value("#{'${mosip.secondary-language}'.split(',')}")
 	private Set<String> secondaryLangList;
@@ -307,8 +307,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * getRegistrationCentersByCoordinates(double, double, int,
-	 * java.lang.String)
+	 * getRegistrationCentersByCoordinates(double, double, int, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCentersByCoordinates(double longitude, double latitude,
@@ -476,8 +475,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * validateTimestampWithRegistrationCenter(java.lang.String,
-	 * java.lang.String)
+	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode,
@@ -496,8 +494,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
 			/**
-			 * a query is written in RegistrationCenterRepository which would
-			 * check if the date is not a holiday for that center
+			 * a query is written in RegistrationCenterRepository which would check if the
+			 * date is not a holiday for that center
 			 *
 			 */
 			RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
@@ -746,8 +744,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request.
-	 * SearchDto)
+	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request. SearchDto)
 	 */
 	@Override
 	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto) {
@@ -779,19 +776,15 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					List<Location> leaves = descendants.parallelStream().filter(child -> child.getHierarchyLevel() == 5)
 							.collect(Collectors.toList());
 					locationFilter.addAll(serviceHelper.buildLocationSearchFilter(leaves));
-				}
-				else
-				{
-					flag= false;
+				} else {
+					flag = false;
 				}
 				removeList.add(filter);
 			}
 			/*
-			 * // if zone based search if
-			 * (MasterDataConstant.ZONE.equalsIgnoreCase(column)) { Location
-			 * zone = serviceHelper.getZone(filter); if (zone != null) {
-			 * List<Location> descendants =
-			 * locationUtils.getDescedants(locations, zone); }
+			 * // if zone based search if (MasterDataConstant.ZONE.equalsIgnoreCase(column))
+			 * { Location zone = serviceHelper.getZone(filter); if (zone != null) {
+			 * List<Location> descendants = locationUtils.getDescedants(locations, zone); }
 			 * removeList.add(filter); flag = false; }
 			 */
 		}
@@ -853,6 +846,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Transactional
 	public IdResponseDto decommissionRegCenter(String regCenterID) {
 		if (regCenterID.length() != regCenterIDLength) {
+			auditException(RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorCode(),
+					RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorMessage());
 			throw new RequestException(RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorCode(),
 					RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorMessage());
 		}
@@ -865,6 +860,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter regCenterZone = registrationCenterRepository.findByLangCodeAndId(regCenterID, primaryLang);
 
 		if (regCenterZone == null) {
+			auditException(RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
+					RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage());
 			throw new RequestException(RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
 					RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage());
 		}
@@ -872,6 +869,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		// check the given device and registration center zones are come under
 		// user zone
 		if (!zoneIds.contains(regCenterZone.getZoneCode())) {
+			auditException(RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorCode(),
+					RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorMessage());
 			throw new RequestException(RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorCode(),
 					RegistrationCenterErrorCode.REG_CENTER_INVALIDE_ZONE.getErrorMessage());
 		}
@@ -880,16 +879,24 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		int decommissionedDevices = 0;
 		try {
 			if (!registrationCenterUserRepository.registrationCenterUserMappings(regCenterID).isEmpty()) {
+				auditException(RegistrationCenterErrorCode.MAPPED_TO_USER.getErrorCode(),
+						RegistrationCenterErrorCode.MAPPED_TO_USER.getErrorMessage());
 				throw new RequestException(RegistrationCenterErrorCode.MAPPED_TO_USER.getErrorCode(),
 						RegistrationCenterErrorCode.MAPPED_TO_USER.getErrorMessage());
 			} else if (!registrationCenterMachineRepository.findRegCenterMachineMappings(regCenterID).isEmpty()) {
+				auditException(RegistrationCenterErrorCode.MAPPED_TO_MACHINE.getErrorCode(),
+						RegistrationCenterErrorCode.MAPPED_TO_MACHINE.getErrorMessage());
 				throw new RequestException(RegistrationCenterErrorCode.MAPPED_TO_MACHINE.getErrorCode(),
 						RegistrationCenterErrorCode.MAPPED_TO_MACHINE.getErrorMessage());
 			} else if (!registrationCenterDeviceRepository.registrationCenterDeviceMappings(regCenterID).isEmpty()) {
+				auditException(RegistrationCenterErrorCode.MAPPED_TO_DEVICE.getErrorCode(),
+						RegistrationCenterErrorCode.MAPPED_TO_DEVICE.getErrorMessage());
 				throw new RequestException(RegistrationCenterErrorCode.MAPPED_TO_DEVICE.getErrorCode(),
 						RegistrationCenterErrorCode.MAPPED_TO_DEVICE.getErrorMessage());
 			} else {
 				if (registrationCenterRepository.findByRegIdAndIsDeletedFalseOrNull(regCenterID).isEmpty()) {
+					auditException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 					throw new DataNotFoundException(
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
@@ -898,20 +905,36 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						MetaDataUtils.getContextUser(), MetaDataUtils.getCurrentDateTime());
 			}
 		} catch (DataAccessException | DataAccessLayerException exception) {
+			auditException(RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorCode(),
+					RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorMessage() + exception.getCause());
 			throw new MasterDataServiceException(RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorCode(),
 					RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorMessage() + exception.getCause());
 		}
 		if (decommissionedDevices > 0) {
 			idResponseDto.setId(regCenterID);
 		}
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, RegistrationCenterSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						RegistrationCenterSearchDto.class.getSimpleName(), idResponseDto.getId()),"ADM-523");
 		return idResponseDto;
+	}
+
+	/**
+	 * @param exception
+	 */
+	private void auditException(String errorCode,String errorMessage) {
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.FAILURE_DECOMMISSION, RegistrationCenterSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+						errorCode,errorMessage),"ADM-524");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * <<<<<<< HEAD createRegistrationCenterAdminPriSecLang(java.util.List)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService# <<<<<<<
+	 * HEAD createRegistrationCenterAdminPriSecLang(java.util.List)
 	 */
 	@Transactional
 	@Override
@@ -926,6 +949,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter = null;
 		RegistrationCenterExtnDto registrationCenterExtnDto = new RegistrationCenterExtnDto();
 		List<ExceptionalHolidayPutPostDto> exceptionalHolidayPutPostDtoList = new ArrayList<>();
+		List<ServiceError> errors = new ArrayList<>();
 
 		// List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		// List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
@@ -956,9 +980,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		 */
 
 		try {
-			List<ServiceError> errors = new ArrayList<>();
+			
 			registrationCenterValidator.validateRegCenterCreate(regCenterPostReqDto, errors);
 			if (!errors.isEmpty()) {
+				
 				throw new ValidationException(errors);
 			}
 			// validate zone, Center start and end time and holidayCode
@@ -966,6 +991,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(regCenterPostReqDto.getCenterTypeCode(),
 							regCenterPostReqDto.getLangCode());
 			if (regCenterType == null) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+								MasterDataConstant.INVALID_REG_CENTER_TYPE),"ADM-525");
 				throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 						MasterDataConstant.INVALID_REG_CENTER_TYPE);
@@ -973,6 +1003,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			List<Location> location = locationRepository.findLocationHierarchyByCodeAndLanguageCode(
 					regCenterPostReqDto.getLocationCode(), regCenterPostReqDto.getLangCode());
 			if (CollectionUtils.isEmpty(location)) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+								MasterDataConstant.INVALID_LOCATION_CODE),"ADM-526");
 				throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 						MasterDataConstant.INVALID_LOCATION_CODE);
@@ -987,6 +1022,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterEntity = new RegistrationCenter();
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(regCenterPostReqDto,
 						registrationCenterEntity.getClass());
+				registrationCenterExtnDto = MapperUtils.map(registrationCenterEntity, RegistrationCenterExtnDto.class);
 			}
 			// registrationCenterValidator.mapBaseDtoEntity(registrationCenterEntity,
 			// registrationCenterDto);
@@ -996,67 +1032,97 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			 * calling RegistrationCenterIdGenerator API method
 			 * generateRegistrationCenterId().
 			 * 
-			 */
+			 */try
+				{
+				if (registrationCenterEntity != null) {
+					if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
+						uniqueId = registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
+						registrationCenterEntity.setId(uniqueId);
+					}
+					/*
+					 * at the time of creation of new Registration Center Number of Kiosks value
+					 * will be Zero always
+					 */
+					registrationCenterEntity.setNumberOfKiosks((short) 0);
 
-			if (registrationCenterEntity != null) {
+					// registrationCenterEntity.setIsActive(false);
+					registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+					
+					registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
+				}} catch (NullPointerException e) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+									RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage()),"ADM-827");
+
+					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
+				}
+			try
+			{
 				if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
-					uniqueId = registrationCenterValidator.generateIdOrvalidateWithDB(uniqueId);
-					registrationCenterEntity.setId(uniqueId);
-				}
-				/*
-				 * at the time of creation of new Registration Center Number of Kiosks value
-				 * will be Zero always
-				 */
-				registrationCenterEntity.setNumberOfKiosks((short) 0);
-
-				// registrationCenterEntity.setIsActive(false);
-				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-				
-				registrationCenterExtnDto = MapperUtils.map(registrationCenter, RegistrationCenterExtnDto.class);
-			}
-			if (StringUtils.isNotEmpty(primaryLang) && primaryLang.equals(regCenterPostReqDto.getLangCode())) {
-				// insert 7 rows in reg_working_non_working table
-				try {
-					if (regCenterPostReqDto.getWorkingNonWorkingDays() != null) {
-						createRegWorkingNonWorking(regCenterPostReqDto.getWorkingNonWorkingDays(), registrationCenterEntity);
+					// insert 7 rows in reg_working_non_working table
+					try {
+						if (regCenterPostReqDto.getWorkingNonWorkingDays() != null) {
+							createRegWorkingNonWorking(regCenterPostReqDto.getWorkingNonWorkingDays(), registrationCenterEntity);
+						}
+					} catch (NullPointerException e) {
+						errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+								RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 					}
-				} catch (NullPointerException e) {
+					try {
+						if (!regCenterPostReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
+							// Exceptional holiday create
+							createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
+						}
+					} catch (NullPointerException e) {
+						errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+								RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
+					}
+				}} catch (NullPointerException e) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
+									RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()),"ADM-828");
 					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
 							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
 				}
-				try {
-					if (!regCenterPostReqDto.getExceptionalHolidayPutPostDto().isEmpty()) {
-						// Exceptional holiday create
-						createExpHoliday(regCenterPostReqDto.getExceptionalHolidayPutPostDto(), regCenterPostReqDto.getHolidayLocationCode(),registrationCenterEntity);
-					}
-				} catch (NullPointerException e) {
-					errors.add(new ServiceError(RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorCode(),
-							RegistrationCenterErrorCode.WORKING_NON_WORKING_NULL.getErrorMessage()));
+					
+				if(((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode()))){
+					//set response for working_non_working for both primary and sencodary language
+					setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
+					setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
 				}
-			}
-				
-			if((primaryLang.equals(regCenterPostReqDto.getLangCode()) || regCenterPostReqDto.getWorkingNonWorkingDays() != null)  || secondaryLang.equals(regCenterPostReqDto.getLangCode())  ){
-				//set response for working_non_working for both primary and sencodary language
-				setResponseDtoWorkingNonWorking(registrationCenter, registrationCenterExtnDto);
-			}
-				//set ExpHoliday Dto
-				setRegExpHolidayDto(registrationCenter, registrationCenterExtnDto, exceptionalHolidayPutPostDtoList);
-				
+					//set ExpHoliday Dto
+					
+					
 
-				// creating registration center history
-				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
-						RegistrationCenterHistory.class);
-				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
-				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
-				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+					// creating registration center history
+					registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+							RegistrationCenterHistory.class);
+					registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+					registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+					registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+		
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage()),"ADM-527");
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
 		}
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, RegCenterPostReqDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						RegistrationCenterSearchDto.class.getSimpleName(), registrationCenterExtnDto.getId()),"ADM-528");
 		return registrationCenterExtnDto;
 
 	}
@@ -1203,12 +1269,18 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			registrationCenterValidator.validateRegCenterUpdate(regCenterPutReqDto, errors);
 			if (!errors.isEmpty()) {
+				
 				throw new ValidationException(errors);
 			}
 			RegistrationCenterType regCenterType = registrationCenterTypeRepository
 					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(regCenterPutReqDto.getCenterTypeCode(),
 							regCenterPutReqDto.getLangCode());
 			if (regCenterType == null) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+								"Invalid centerTypeCode"),"ADM-529");
 				throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 						"Invalid centerTypeCode");
@@ -1217,6 +1289,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			List<Location> location = locationRepository.findLocationHierarchyByCodeAndLanguageCode(
 					regCenterPutReqDto.getLocationCode(), regCenterPutReqDto.getLangCode());
 			if (CollectionUtils.isEmpty(location)) {
+				auditUtil.auditRequest(
+						String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+								"Invalid Location Code"),"ADM-530");
 				throw new MasterDataServiceException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
 						"Invalid Location Code");
@@ -1229,6 +1306,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						.findByIdAndLangCodeAndIsDeletedTrue(regCenterPutReqDto.getId(),
 								regCenterPutReqDto.getLangCode());
 				if (renRegistrationCenter == null && primaryLang.equals(regCenterPutReqDto.getLangCode())) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+									RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
+									RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage()),"ADM-531");
 					throw new MasterDataServiceException(RegistrationCenterErrorCode.DECOMMISSIONED.getErrorCode(),
 							RegistrationCenterErrorCode.DECOMMISSIONED.getErrorMessage());
 				} else if (renRegistrationCenter == null && secondaryLang.equals(regCenterPutReqDto.getLangCode())) {
@@ -1285,12 +1367,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		} catch (DataAccessLayerException | DataAccessException | IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException exception) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()),"ADM-532");
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
-
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, RegCenterPutReqDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						RegCenterPutReqDto.class.getSimpleName(), registrationCenterExtnDto.getId()),"ADM-533");
 		return registrationCenterExtnDto;
 
 	}

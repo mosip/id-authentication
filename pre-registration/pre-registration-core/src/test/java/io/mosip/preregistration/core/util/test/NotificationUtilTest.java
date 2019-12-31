@@ -34,6 +34,7 @@ import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 import io.mosip.preregistration.core.util.NotificationUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.core.util.TemplateUtil;
 
 @RunWith(SpringRunner.class)
@@ -46,13 +47,16 @@ public class NotificationUtilTest {
 	@Value("${smsResourse.url}")
 	private String smsResourseUrl;
 	
+	@MockBean
+	private RequestValidator validator;
+	
 	@Autowired
 	private TemplateUtil templateUtil;
 	
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@MockBean
+	@MockBean(name="restTemplate")
 	RestTemplate restTemplate;
 	
 	@Autowired

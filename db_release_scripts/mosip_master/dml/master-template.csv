@@ -283,7 +283,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Name&nbsp;:&nbsp;</b></label> 
-<span class=""name-color""> $!name_eng</span>
+<span class=""name-color""> $!fullName_eng</span>
 </div>
 </td>
 </tr>
@@ -291,7 +291,7 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> 
-<span>$!name_ara</span>
+<span>$!fullName_ara</span>
 </div>
 </td>
 </tr>
@@ -299,8 +299,8 @@ vous recevrez également les détails sur votre adresse email enregistrée",1000
 <tr>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
-<label class=""name-head-color""><b>Date/تاريخ&nbsp;:&nbsp;</b></label>
-<span>$!dob</span>
+<label class=""name-head-color""><b>DOB/تاريخ&nbsp;:&nbsp;</b></label>
+<span>$!dateOfBirth</span>
 </div>
 </td>
 </tr>
@@ -429,7 +429,7 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Prénom&nbsp;:&nbsp;</b></label> 
-<span class=""name-color""> $!name_eng</span>
+<span class=""name-color""> $!fullName_fra</span>
 </div>
 </td>
 </tr>
@@ -437,7 +437,7 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> 
-<span>$!name_ara</span>
+<span>$!fullName_ara</span>
 </div>
 </td>
 </tr>
@@ -446,14 +446,14 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
-<span>$!dob</span>
+<span>$!dateOfBirth</span>
 </div>
 </td>
 </tr>
 <tr>
 <td colspan=""2"">
 <div class=""block top-buffer"">
-<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_eng</span>
+<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_fra</span>
 &nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
 <span>$!gender_ara</span>
 </div>
@@ -468,8 +468,8 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <tr>
 <td><label class=""name-head-color""><b>Adresse&nbsp;:&nbsp;</b></label>
 </td>
-<td><span>$!addressLine1_eng, $!addressLine2_eng,
-		$!addressLine3_eng, $!region_eng, $!province_eng, $!city_eng,
+<td><span>$!addressLine1_fra, $!addressLine2_fra,
+		$!addressLine3_fra, $!region_fra, $!province_fra, $!city_fra,
 		$!postalCode </span></td>
 </tr>
 <tr>
@@ -575,7 +575,7 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Prénom&nbsp;:&nbsp;</b></label> 
-<span class=""name-color""> $!name_eng</span>
+<span class=""name-color""> $!fullName_fra</span>
 </div>
 </td>
 </tr>
@@ -583,7 +583,7 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> 
-<span>$!name_ara</span>
+<span>$!fullName_ara</span>
 </div>
 </td>
 </tr>
@@ -592,14 +592,14 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
-<span>$!dob</span>
+<span>$!dateOfBirth</span>
 </div>
 </td>
 </tr>
 <tr>
 <td colspan=""2"">
 <div class=""block top-buffer"">
-<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_eng</span>
+<label class=""name-head-color""><b>Le sexe&nbsp;:&nbsp;</b></label> <span>$!gender_fra</span>
 &nbsp;&nbsp; <label class=""name-head-color""><b>جنس&nbsp;:&nbsp;</b></label>
 <span>$!gender_ara</span>
 </div>
@@ -614,8 +614,8 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <tr>
 <td><label class=""name-head-color""><b>Adresse&nbsp;:&nbsp;</b></label>
 </td>
-<td><span>$!addressLine1_eng, $!addressLine2_eng,
-		$!addressLine3_eng, $!region_eng, $!province_eng, $!city_eng,
+<td><span>$!addressLine1_fra, $!addressLine2_fra,
+		$!addressLine3_fra, $!region_fra, $!province_fra, $!city_fra,
 		$!postalCode </span></td>
 </tr>
 <tr>
@@ -966,9 +966,30 @@ registrationclient,otp service,OTP Send Service,txt,string,Please find the OTP $
 1153,Template for OTP in SMS ,Template for OTP in SMS ,txt,model,OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs),10004,ID Authentication,ida-auth-otp-sms-template,eng,TRUE,superadmin,now()
 1153,قالب كلمة المرور لمرة واحدة في الرسالة,قالب كلمة المرور لمرة واحدة في الرسالة,txt,model,OTP لـ UIN $uin هو $otp وهو صالح لمدة $validTime دقيقة. (التي تم إنشاؤها على $date في $time ساعات),10004,مصادقة الهوية,ida-auth-otp-sms-template,ara,TRUE,superadmin,now()
 1153,Modèle pour OTP dans SMS,Modèle pour OTP dans SMS,txt,model,OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs),10004,Authentification ID,ida-auth-otp-sms-template,fra,TRUE,superadmin,now()
-1154,Consent,Consent,txt,,To provide consent for storage and utilization of personal information as given,10001,Pre-Registration,consent,eng ,TRUE,superadmin,now()
-1154,موافقة,موافقة,txt,,لتقديم موافقة لتخزين واستخدام المعلومات الشخصية على النحو الوارد,10001,ما قبل التسجيل,consent,ara,TRUE,superadmin,now()
-1154,Consentement,Consentement,txt,,Donner son ement pour le stockage et l'utilisation des informations personnelles telles qu'elles sont données,10001,Pré-inscription,consent,fra,TRUE,superadmin,now()
+1154,Consent,Consent,txt,,"I understand that the data collected about me during pre-registration by the said authority includes my -  
+•                     Name
+•                     Date of birth
+•                     Gender
+•                     Address
+•                     Contact details
+•                     Documents
+I also understand that this information will be stored and processed for the purpose of verifying my identity in order to access various services, or to comply with a legal obligation. I give my consent for the collection of this data for this purpose.",10001,Pre-Registration,consent,eng ,TRUE,superadmin,now()
+1154,موافقة,موافقة,txt,,"وأنا أفهم أن البيانات التي تم جمعها عني خلال التسجيل المسبق من قبل السلطة المذكورة تشمل بلدي -
+• الاسم
+• تاريخ الميلاد
+• نوع الجنس
+• العنوان
+• تفاصيل الاتصال
+• الوثائق
+كما أفهم أنه سيتم تخزين هذه المعلومات ومعالجتها بغرض التحقق من هويتي من أجل الوصول إلى خدمات مختلفة، أو الامتثال لالتزام قانوني. وأوافق على جمع هذه البيانات لهذا الغرض.",10001,ما قبل التسجيل,consent,ara,TRUE,superadmin,now()
+1154,Consentement,Consentement,txt,,"Je comprends que les données recueillies à mon sujet lors de la pré-enregistrèrent par ladite autorité comprennent mon -
+•                     nom
+•                     Date de naissance
+•                     genre
+•                     adresse
+•                     coordonnées
+•                     Documents
+Je comprends également que ces informations seront stockées et traitées dans le but de vérifier mon identité afin d'accéder à divers services, ou de se conformer à une obligation légale. Je donne mon consentement pour la collecte de ces données à cette fin.",10001,Pré-inscription,consent,fra,TRUE,superadmin,now()
 1155,اعتراف قالب البريد الإلكتروني,تسجيل قالب الاعتراف,txt,velocity,"العزيز ${ResidentName}, شكرًا لك على تحديث التفاصيل الخاصة بك باستخدام نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"".",10005,التسجيل,updateUIN-email-notification,ara,TRUE,superadmin,now()
 1155,Acknowledgement Email Template,Registration Acknowledgement Template,txt,velocity,"Dear ${ResidentName}, Thank you for updating your details with Digital Identity platform. Your registration id is ""${RID}"".",10005,Registration,updateUIN-email-notification,eng,TRUE,superadmin,now()
 1155,Modèle d'email de reconnaissance,Modèle de confirmation d'inscription,txt,velocity,"Dear ${ResidentName}, Merci de mettre à jour vos coordonnées avec la plateforme d’identité numérique. Votre identifiant d'inscription est ""${RID}"".",10005,Inscription,updateUIN-email-notification,fra,TRUE,superadmin,now()
@@ -1002,7 +1023,7 @@ Your UIN is Found. You will receive your UIN Card soon at your Postal Address.",
 1160,فقدت رسالة إعلام UIN,فقدت رسالة إعلام UIN,txt,velocity,"$!name_ara،
 
 تم العثور على UIN الخاص بك. ستتلقى بطاقة UIN الخاصة بك قريبًا على عنوانك البريدي.",10003,معالج التسجيل,RPR_LOST_UIN_SMS,ara,TRUE,superadmin,now()
-1160,SMS de notification UIN perdu,SMS de notification UIN perdu,txt,velocity,"Cher $!name_fra,
+1160,SMS de notification UIN perdu,SMS de notification UIN perdu,txt,velocity,"Cher $!name_fr+F180a,
 
 Votre UIN est trouvé. Vous recevrez bientôt votre carte UIN à votre adresse postale.",10003,Processeur dinscription,RPR_LOST_UIN_SMS,fra,TRUE,superadmin,now()
 1161,Lost UIN Notification Email,Lost UIN Notification Email,txt,velocity,"Dear $name_eng,
@@ -1091,14 +1112,14 @@ Merci",10003,Processeur dinscription,RPR_LOST_UIN_EMAIL,fra,TRUE,superadmin,now(
 <tr>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
-<label class=""name-head-color""><b>Name&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!name_eng</span>
+<label class=""name-head-color""><b>Name&nbsp;:&nbsp;</b></label> <span class=""name-color""> $!fullName_eng</span>
 </div>
 </td>
 </tr>
 <tr>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
-<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span> $!name_ara</span>
+<label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> <span> $!fullName_ara</span>
 </div>
 </td>
 </tr>
@@ -1106,7 +1127,7 @@ Merci",10003,Processeur dinscription,RPR_LOST_UIN_EMAIL,fra,TRUE,superadmin,now(
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Date/تاريخ&nbsp;:&nbsp;</b></label>
-<span>$!dob</span>
+<span>$!dateOfBirth</span>
 </div>
 </td>
 </tr>
@@ -1240,7 +1261,7 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Prénom&nbsp;:&nbsp;</b></label> 
-<span class=""name-color""> $!name_eng</span>
+<span class=""name-color""> $!fullName_fra</span>
 </div>
 </td>
 </tr>
@@ -1248,7 +1269,7 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> 
-<span>$!name_ara</span>
+<span>$!fullName_ara</span>
 </div>
 </td>
 </tr>
@@ -1257,7 +1278,7 @@ Tech Park, Mysore Rd,RVCE,Bengaluru, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
-<span>$!dob</span>
+<span>$!dateOfBirth</span>
 </div>
 </td>
 </tr>
@@ -1393,7 +1414,7 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Prénom&nbsp;:&nbsp;</b></label> 
-<span class=""name-color""> $!name_eng</span>
+<span class=""name-color""> $!fullName_fra</span>
 </div>
 </td>
 </tr>
@@ -1401,7 +1422,7 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>اسم&nbsp;:&nbsp;</b></label> 
-<span>$!name_ara</span>
+<span>$!fullName_ara</span>
 </div>
 </td>
 </tr>
@@ -1410,7 +1431,7 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 <td rowspan=""1"">
 <div class=""block top-buffer"">
 <label class=""name-head-color""><b>Rendez-vous amoureux/تاريخ&nbsp;:&nbsp;</b></label>
-<span>$!dob</span>
+<span>$!dateOfBirth</span>
 </div>
 </td>
 </tr>
@@ -1477,3 +1498,531 @@ Parc technologique, Mysore Rd, RVCE, Bangalore, Karnataka 560059<br>
 </table>
 </body>
 </html>",10003,Processeur dinscription,RPR_MASKED_UIN_CARD_TEMPLATE,fra,TRUE,superadmin,now()
+1163,Authentication History Request Success Email,Authentication History Request Success Email,txt,velocity,"Hi $fullName_eng,
+
+Your Request for Authentication History has been processed successfully.
+
+Thank You!",10006,Resident Services,RS_AUTH_HIST_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1163,تاريخ طلب المصادقة,تاريخ طلب المصادقة,txt,velocity,"$fullName_ara،
+
+تمت معالجة طلب محفوظات المصادقة بنجاح.
+
+شكرا!",10006,Resident Services,RS_AUTH_HIST_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1163,E-mail de réussite de la demande d'historique d'authentification,E-mail de réussite de la demande d'historique d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande d'historique d'authentification a été traitée avec succès.
+
+Merci!",10006,Resident Services,RS_AUTH_HIST_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1164,Authentication History Request Success SMS,Authentication History Request Success SMS,txt,velocity,"Hi $fullName_eng,
+
+Your Request for Authentication History has been processed successfully.
+
+Thank You!",10006,Resident Services,RS_AUTH_HIST_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1164,تاريخ المصادقة طلب النجاح SMS,تاريخ المصادقة طلب النجاح SMS,txt,velocity,"$fullName_ara،
+
+تمت معالجة طلب محفوظات المصادقة بنجاح.
+
+شكرا!",10006,Resident Services,RS_AUTH_HIST_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1164,Historique de l'authentification des services résidents SMS de transcation,SMS de réussite de la demande d'historique d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande d'historique d'authentification a été traitée avec succès.
+
+Merci!",10006,Resident Services,RS_AUTH_HIST_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1165,Authentication History Request Success EMAIL Subject,Authentication History Request Success EMAIL Subject,txt,velocity,Authentication History Request Success,10006,Resident Services,RS_AUTH_HIST_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1165,طلب سجل المصادقة النجاح عنوان البريد الإلكتروني,طلب سجل المصادقة النجاح عنوان البريد الإلكتروني,txt,velocity,طلب محفوظات المصادقة,10006,Resident Services,RS_AUTH_HIST_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1165,Succès EMAIL de la demande d'historique d'authentification,Succès EMAIL de la demande d'historique d'authentification,txt,velocity,Demande d'historique d'authentification,10006,Resident Services,RS_AUTH_HIST_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1166,Successful Download of e-UIN Email,Successful Download of e-UIN Email,txt,velocity,"Hi $fullName_eng,
+
+Congratulations your request is processed. The request for downloading your e-UIN is Successful.
+
+Thank You!",10006,Resident Services,RS_DOW_UIN_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1166,تنزيل ناجح للبريد الإلكتروني,تنزيل ناجح للبريد الإلكتروني,txt,velocity,"<$fullName_ara>،
+
+مبروك تتم معالجة طلبك. طلب تنزيل e-UIN ناجح.
+
+شكرا!",10006,Resident Services,RS_DOW_UIN_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1166,Téléchargement réussi du courriel e-UIN,Téléchargement réussi du courriel e-UIN,txt,velocity,"Bonjour $fullName_fra,
+
+Félicitations, votre demande est traitée. La demande de téléchargement de votre e-UIN a abouti.
+
+Merci!",10006,Resident Services,RS_DOW_UIN_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1167,Successful Download of e-UIN Email Subject,Download e-UIN Status Email Subject,txt,velocity,Download e-UIN is Successful,10006,Resident Services,RS_DOW_UIN_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1167,تنزيل ناجح لموضوع البريد الإلكتروني UIN,تنزيل ناجح لموضوع البريد الإلكتروني UIN,txt,velocity,قم بتنزيل e-UIN بنجاح,10006,Resident Services,RS_DOW_UIN_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1167,Téléchargement réussi de l'objet de l'e-UIN,Téléchargement réussi de l'objet de l'e-UIN,txt,velocity,Télécharger e-UIN est réussi,10006,Resident Services,RS_DOW_UIN_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1168,Successful Download of e-UIN SMS,Successful Download of e-UIN SMS,txt,velocity,"Hi $fullName_eng,
+
+Congratulations your request is processed. The request for downloading your e-UIN is Successful.
+
+Thank You!",10006,Resident Services,RS_DOW_UIN_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1168,تنزيل ناجح لرسائل e-UIN SMS,تنزيل ناجح لرسائل e-UIN SMS,txt,velocity,"<$fullName_ara>،
+
+مبروك تتم معالجة طلبك. طلب تنزيل e-UIN ناجح.
+
+شكرا!",10006,Resident Services,RS_DOW_UIN_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1168,Téléchargement réussi de l'e-UIN SMS,Téléchargement réussi de l'e-UIN SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Félicitations, votre demande est traitée. La demande de téléchargement de votre e-UIN a abouti.
+
+Merci!",10006,Resident Services,RS_DOW_UIN_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1169,Successful Locking of Auth Types Email,Successful Locking of Auth Types Email,txt,velocity,"Hi $fullName_eng,
+
+Your requested AUTH type(s) have been locked successfully.
+
+Thank You!",10006,Resident Services,RS_LOCK_AUTH_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1169,قفل ناجح لأنواع مصادقة البريد الإلكتروني,قفل ناجح لأنواع مصادقة البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+تم تأمين نوع (أنواع) AUTH المطلوب بنجاح.
+
+شكرا!",10006,Resident Services,RS_LOCK_AUTH_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1169,Verrouillage réussi des e-mails des types d'authentification,Verrouillage réussi des e-mails des types d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Le ou les types AUTH que vous avez demandés ont été verrouillés avec succès.
+
+Merci!",10006,Resident Services,RS_LOCK_AUTH_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1170,Successful Locking of Auth Types Email Subject,Successful Locking of Auth Types Email Subject,txt,velocity,Successfully Locked the AUTH Type(s),10006,Resident Services,RS_LOCK_AUTH_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1170,قفل ناجح لأنواع مصادقة البريد الإلكتروني الموضوع,قفل ناجح لأنواع مصادقة البريد الإلكتروني الموضوع,txt,velocity,تم قفل نوع AUTH بنجاح,10006,Resident Services,RS_LOCK_AUTH_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1170,Succès du verrouillage des types d'authentification,Succès du verrouillage des types d'authentification,txt,velocity,Le ou les types AUTH ont été verrouillés avec succès,10006,Resident Services,RS_LOCK_AUTH_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1171,Successful Locking of Auth Types SMS,Successful Locking of Auth Types SMS,txt,velocity,"Hi $fullName_eng,
+
+Your requested AUTH type(s) have been locked successfully.
+
+Thank You!",10006,Resident Services,RS_LOCK_AUTH_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1171,قفل ناجح لأنواع مصادقة الرسائل القصيرة,قفل ناجح لأنواع مصادقة الرسائل القصيرة,txt,velocity,"$fullName_ara،
+
+تم تأمين نوع (أنواع) AUTH المطلوب بنجاح.
+
+شكرا!",10006,Resident Services,RS_LOCK_AUTH_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1171,Verrouillage réussi des types d'authentification SMS,Verrouillage réussi des types d'authentification SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Le ou les types AUTH que vous avez demandés ont été verrouillés avec succès.
+
+Merci!",10006,Resident Services,RS_LOCK_AUTH_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1172,Successful Unlocking of Auth Types Email,Successful Unlocking of Auth Types Email,txt,velocity,"Hi $fullName_eng,
+
+Your requested AUTH type(s) have been unlocked successfully.
+
+Thank You!",10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1172,فتح ناجح لأنواع مصادقة البريد الإلكتروني,فتح ناجح لأنواع مصادقة البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+تم إلغاء تأمين نوع (أنواع) AUTH المطلوبة بنجاح.
+
+شكرا!",10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1172,Déverrouillage réussi des types d'authentification,Déverrouillage réussi des types d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Le ou les types AUTH demandés ont été déverrouillés avec succès.
+
+Merci!",10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1173,Successful Unlocking of Auth Types Email Subject,Successful Unlocking of Auth Types Email Subject,txt,velocity,Successfully Unlocked the AUTH Type(s),10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1173,فتح ناجح لأنواع مصادقة البريد الإلكتروني الموضوع,فتح ناجح لأنواع مصادقة البريد الإلكتروني الموضوع,txt,velocity,تم إلغاء تأمين نوع AUTH بنجاح,10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1173,Déverrouillage réussi des types d'authentification Objet de l'e-mail,Déverrouillage réussi des types d'authentification Objet de l'e-mail,txt,velocity,Déverrouillé avec succès le (s) type (s) AUTH,10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1174,Successful Unlocking of Auth Types SMS,Successful Unlocking of Auth Types SMS,txt,velocity,"Hi $fullName_eng,
+
+Your requested AUTH type(s) have been unlocked successfully.
+
+Thank You!",10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1174,فتح ناجح لأنواع مصادقة الرسائل القصيرة,فتح ناجح لأنواع مصادقة الرسائل القصيرة,txt,velocity,"$fullName_ara،
+
+تم إلغاء تأمين نوع (أنواع) AUTH المطلوبة بنجاح.
+
+شكرا!",10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1174,Déverrouillage réussi des types d'authentification SMS,Déverrouillage réussi des types d'authentification SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Le ou les types AUTH demandés ont été déverrouillés avec succès.
+
+Merci!",10006,Resident Services,RS_UNLOCK_AUTH_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1175,VID Generation Success Email,VID Generation Success Email,txt,velocity,"Hi $fullName_eng,
+
+Your VID for your UIN has been successfully generated. Your VID number is $VID.
+
+Thank You!",10006,Resident Services,RS_VIN_GEN_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1175,VID جيل النجاح البريد الإلكتروني,VID جيل النجاح البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+تم إنشاء VID الخاص بك لرقم UIN الخاص بك بنجاح. رقم VID الخاص بك هو $VID.
+
+شكرا!",10006,Resident Services,RS_VIN_GEN_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1175,E-mail de réussite de la génération VID,E-mail de réussite de la génération VID,txt,velocity,"Bonjour $fullName_fra,
+
+Votre VID pour votre UIN a été généré avec succès. Votre numéro VID est $VID.
+
+Merci!",10006,Resident Services,RS_VIN_GEN_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1176,VID Generation Success Email Subject,VID Generation Success Email Subject,txt,velocity,Successful Generation of VID,10006,Resident Services,RS_VIN_GEN_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1176,VID جيل النجاح البريد الإلكتروني الموضوع,VID جيل النجاح البريد الإلكتروني الموضوع,txt,velocity,الجيل الناجح من VID,10006,Resident Services,RS_VIN_GEN_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1176,Sujet de l'e-mail de réussite de la génération VID,Sujet de l'e-mail de réussite de la génération VID,txt,velocity,Génération réussie de VID,10006,Resident Services,RS_VIN_GEN_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1177,VID Generation Success SMS,VID Generation Success SMS,txt,velocity,"Hi $fullName_eng,
+
+Your VID for your UIN has been successfully generated. Your VID number is $VID.
+
+Thank You!",10006,Resident Services,RS_VIN_GEN_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1177,VID جيل النجاح SMS,VID جيل النجاح SMS,txt,velocity,"$fullName_ara،
+
+تم إنشاء VID الخاص بك لرقم UIN الخاص بك بنجاح. رقم VID الخاص بك هو $VID.
+
+شكرا!",10006,Resident Services,RS_VIN_GEN_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1177,SMS de réussite de génération VID,SMS de réussite de génération VID,txt,velocity,"Bonjour $fullName_fra,
+
+Votre VID pour votre UIN a été généré avec succès. Votre numéro VID est $VID.
+
+Merci!",10006,Resident Services,RS_VIN_GEN_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1178,VID Revocation Success Email,VID Revocation Success Email,txt,velocity,"Hi $fullName_eng,
+
+Your $VID has been successfully revoked.
+
+Thank You!",10006,Resident Services,RS_VIN_REV_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1178,VID إبطال نجاح البريد الإلكتروني,VID إبطال نجاح البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+تم إلغاء $VID الخاص بك بنجاح.
+
+شكرا!",10006,Resident Services,RS_VIN_REV_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1178,E-mail de réussite de la révocation de VID,E-mail de réussite de la révocation de VID,txt,velocity,"Bonjour $fullName_fra,
+
+Votre $VID a bien été révoqué.
+
+Merci!",10006,Resident Services,RS_VIN_REV_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1179,VID Revocation Success Email Subject,VID Revocation Success Email Subject,txt,velocity,Successful Revocation of VID,10006,Resident Services,RS_VIN_REV_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1179,VID إبطال نجاح البريد الإلكتروني الموضوع,VID إبطال نجاح البريد الإلكتروني الموضوع,txt,velocity,إبطال نجاح VID,10006,Resident Services,RS_VIN_REV_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1179,Sujet de l'e-mail de réussite de la révocation de VID,Sujet de l'e-mail de réussite de la révocation de VID,txt,velocity,Révocation réussie de VID,10006,Resident Services,RS_VIN_REV_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1180,VID Revocation Success SMS,VID Revocation Success SMS,txt,velocity,"Hi $fullName_eng,
+
+Your $VID has been successfully revoked.
+
+Thank You!",10006,Resident Services,RS_VIN_REV_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1180,VID إبطال نجاح الرسائل القصيرة,VID إبطال نجاح الرسائل القصيرة,txt,velocity,"$fullName_ara،
+
+تم إلغاء $VID الخاص بك بنجاح.
+
+شكرا!",10006,Resident Services,RS_VIN_REV_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1180,SMS de succès de révocation VID,SMS de succès de révocation VID,txt,velocity,"Bonjour $fullName_fra,
+
+Votre $VID a bien été révoqué.
+
+Merci!",10006,Resident Services,RS_VIN_REV_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1181,Reprint Request Success Email,Reprint Request Success Email,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""Reprint Of UIN"" has been successfully placed. Your RID (Req Number) is $RID.
+
+Thank You!",10006,Resident Services,RS_UIN_RPR_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1181,طبع طلب النجاح البريد الإلكتروني,طبع طلب النجاح البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+تم وضع طلبك لـ ""Reprint Of UIN"" بنجاح. RID الخاص بك (رقم Req) هو $RID.
+
+شكرا!",10006,Resident Services,RS_UIN_RPR_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1181,Réimpression de l'e-mail de réussite de la demande,Réimpression de l'e-mail de réussite de la demande,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de ""Réimpression d'UIN"" a été placée avec succès. Votre RID (numéro de demande) est $RID.
+
+Merci!",10006,Resident Services,RS_UIN_RPR_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1182,Reprint Request Success Email Subject,Reprint Request Success Email Subject,txt,velocity,Reprint Request Successful,10006,Resident Services,RS_UIN_RPR_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1182,طبع طلب النجاح البريد الإلكتروني الموضوع,طبع طلب النجاح البريد الإلكتروني الموضوع,txt,velocity,إعادة طبع طلب ناجح,10006,Resident Services,RS_UIN_RPR_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1182,Sujet de l'e-mail de demande de réimpression réussie,Sujet de l'e-mail de demande de réimpression réussie,txt,velocity,Réimpression de la demande réussie,10006,Resident Services,RS_UIN_RPR_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1183,Reprint Request Success SMS,Reprint Request Success SMS,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""Reprint Of UIN"" has been successfully placed. Your RID (Req Number) is $RID.
+
+Thank You!",10006,Resident Services,RS_UIN_RPR_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1183,إعادة طبع طلب النجاح SMS,إعادة طبع طلب النجاح SMS,txt,velocity,"$fullName_ara،
+
+تم وضع طلبك لـ ""Reprint Of UIN"" بنجاح. RID الخاص بك (رقم Req) هو $RID.
+
+شكرا!",10006,Resident Services,RS_UIN_RPR_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1183,Réimpression SMS de réussite de la demande,Réimpression SMS de réussite de la demande,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de ""Réimpression d'UIN"" a été placée avec succès. Votre RID (numéro de demande) est $RID.
+
+Merci!",10006,Resident Services,RS_UIN_RPR_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1184,Authentication History Request Failure Email,Authentication History Request Failure Email,txt,velocity,"Hi $fullName_eng,
+
+Your Request to fetch your Authentication History details has failed.
+
+Thank You!",10006,Resident Services,RS_AUTH_HIST_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1184,فشل طلب سجل المصادقة,فشل طلب سجل المصادقة,txt,velocity,"$fullName_ara،
+
+فشل طلب جلب تفاصيل سجل المصادقة.
+
+شكرا!",10006,Resident Services,RS_AUTH_HIST_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1184,E-mail d'échec de la demande d'historique d'authentification,E-mail d'échec de la demande d'historique d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de récupération des détails de votre historique d'authentification a échoué.
+
+Merci!",10006,Resident Services,RS_AUTH_HIST_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1185,Authentication History Request Failure Email Subject,Authentication History Request Failure Email Subject,txt,velocity,Authentication History Request Failure,10006,Resident Services,RS_AUTH_HIST_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1185,فشل طلب سجل المصادقة,فشل طلب سجل المصادقة,txt,velocity,فشل طلب سجل المصادقة,10006,Resident Services,RS_AUTH_HIST_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1185,Objet de l'e-mail d'échec de la demande d'historique d'authentification,Objet de l'e-mail d'échec de la demande d'historique d'authentification,txt,velocity,Échec de la demande d'historique d'authentification,10006,Resident Services,RS_AUTH_HIST_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1186,Authentication History Request Failure SMS,Authentication History Request Failure SMS,txt,velocity,"Hi $fullName_eng,
+
+Your Request for Authentication History has failed.
+
+Thank You!",10006,Resident Services,RS_AUTH_HIST_FAILURE_SMS,eng,TRUE,superadmin,now()
+1186,فشل طلب سجل المصادقة,فشل طلب سجل المصادقة,txt,velocity,"$fullName_ara،
+
+فشل طلب جلب تفاصيل سجل المصادقة.
+
+شكرا!",10006,Resident Services,RS_AUTH_HIST_FAILURE_SMS,ara,TRUE,superadmin,now()
+1186,SMS d'échec de la demande d'historique d'authentification,SMS d'échec de la demande d'historique d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de récupération des détails de votre historique d'authentification a échoué.
+
+Merci!",10006,Resident Services,RS_AUTH_HIST_FAILURE_SMS,fra,TRUE,superadmin,now()
+1187,Download e-UIN Failure Email,Download e-UIN Failure Email,txt,velocity,"Hi $fullName_eng,
+
+Your request for downloading your e-UIN has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_DOW_UIN_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1187,تنزيل فشل البريد الإلكتروني,تنزيل فشل البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+فشل طلبك لتنزيل e-UIN الخاص بك. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_DOW_UIN_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1187,Télécharger l'e-mail d'échec e-UIN,Télécharger l'e-mail d'échec e-UIN,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de téléchargement de votre e-UIN a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_DOW_UIN_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1188,Download e-UIN Failure Email Subject,Download e-UIN Failure Email Subject,txt,velocity,Download e-UIN Failure,10006,Resident Services,RS_DOW_UIN_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1188,قم بتنزيل موضوع فشل البريد الإلكتروني,قم بتنزيل موضوع فشل البريد الإلكتروني,txt,velocity,تنزيل فشل UIN الإلكتروني,10006,Resident Services,RS_DOW_UIN_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1188,Télécharger le sujet de l'e-mail d'échec e-UIN,Télécharger le sujet de l'e-mail d'échec e-UIN,txt,velocity,Échec du téléchargement de l'e-UIN,10006,Resident Services,RS_DOW_UIN_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1189,Download e-UIN Failure SMS,Download e-UIN Failure SMS,txt,velocity,"Hi $fullName_eng,
+
+Your request for downloading your e-UIN has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_DOW_UIN_FAILURE_SMS,eng,TRUE,superadmin,now()
+1189,قم بتنزيل SMS Failure SMS,قم بتنزيل SMS Failure SMS,txt,velocity,"$fullName_ara،
+
+فشل طلبك لتنزيل e-UIN الخاص بك. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_DOW_UIN_FAILURE_SMS,ara,TRUE,superadmin,now()
+1189,Télécharger le SMS d'échec e-UIN,Télécharger le SMS d'échec e-UIN,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de téléchargement de votre e-UIN a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_DOW_UIN_FAILURE_SMS,fra,TRUE,superadmin,now()
+1190,Failure in Locking of Auth Types Email,Failure in Locking of Auth Types Email,txt,velocity,"Hi $fullName_eng,
+
+Your requested for Locking AUTH type(s) has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_LOCK_AUTH_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1190,فشل في قفل البريد الإلكتروني لأنواع المصادقة,فشل في قفل البريد الإلكتروني لأنواع المصادقة,txt,velocity,"$fullName_ara،
+
+فشل طلب (أنواع) تأمين AUTH الخاص بك. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_LOCK_AUTH_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1190,Échec du verrouillage des e-mails des types d'authentification,Échec du verrouillage des e-mails des types d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Votre ou vos types de verrouillage AUTH demandés ont échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_LOCK_AUTH_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1191,Failure in Locking of Auth Types Email Subject,Failure in Locking of Auth Types Email Subject,txt,velocity,Locking of AUTH Type(s) Failed,10006,Resident Services,RS_LOCK_AUTH_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1191,فشل في قفل أنواع مصادقة البريد الإلكتروني الموضوع,فشل في قفل أنواع مصادقة البريد الإلكتروني الموضوع,txt,velocity,فشل قفل نوع (أنواع) AUTH,10006,Resident Services,RS_LOCK_AUTH_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1191,Échec du verrouillage des types d'authentification Objet de l'e-mail,Échec du verrouillage des types d'authentification Objet de l'e-mail,txt,velocity,Échec du verrouillage du ou des types AUTH,10006,Resident Services,RS_LOCK_AUTH_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1192,Failure in Locking of Auth Types SMS,Failure in Locking of Auth Types SMS,txt,velocity,"Hi $fullName_eng,
+
+Your requested for Locking AUTH type(s) has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_LOCK_AUTH_FAILURE_SMS,eng,TRUE,superadmin,now()
+1192,فشل في قفل أنواع مصادقة الرسائل القصيرة,فشل في قفل أنواع مصادقة الرسائل القصيرة,txt,velocity,"$fullName_ara،
+
+فشل طلب (أنواع) تأمين AUTH الخاص بك. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_LOCK_AUTH_FAILURE_SMS,ara,TRUE,superadmin,now()
+1192,Échec du verrouillage des types d'authentification SMS,Échec du verrouillage des types d'authentification SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Votre ou vos types de verrouillage AUTH demandés ont échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_LOCK_AUTH_FAILURE_SMS,fra,TRUE,superadmin,now()
+1193,Reprint Request Failure Email,Reprint Request Failure Email,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""Reprint of UIN Card"" has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UIN_RPR_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1193,إعادة طبع فشل طلب البريد الإلكتروني,إعادة طبع فشل طلب البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+فشل طلبك لـ ""إعادة طباعة بطاقة UIN"". الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UIN_RPR_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1193,E-mail d'échec de la demande de réimpression,E-mail d'échec de la demande de réimpression,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de «réimpression de la carte UIN» a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UIN_RPR_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1194,Reprint Request Failure Email Subject,Reprint Request Failure Email Subject,txt,velocity,Reprint Request Failure,10006,Resident Services,RS_UIN_RPR_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1194,إعادة طبع فشل طلب البريد الإلكتروني,إعادة طبع فشل طلب البريد الإلكتروني,txt,velocity,إعادة طبع فشل الطلب,10006,Resident Services,RS_UIN_RPR_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1194,Échec de la demande de réimpression Objet de l'e-mail,Échec de la demande de réimpression Objet de l'e-mail,txt,velocity,Échec de la demande de réimpression,10006,Resident Services,RS_UIN_RPR_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1195,Reprint Request Failure SMS,Reprint Request Failure SMS,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""Reprint of UIN Card"" has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UIN_RPR_FAILURE_SMS,eng,TRUE,superadmin,now()
+1195,إعادة طلب فشل الرسائل القصيرة,إعادة طلب فشل الرسائل القصيرة,txt,velocity,"$fullName_ara،
+
+فشل طلبك لـ ""إعادة طباعة بطاقة UIN"". الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UIN_RPR_FAILURE_SMS,ara,TRUE,superadmin,now()
+1195,SMS d'échec de la demande de réimpression,SMS d'échec de la demande de réimpression,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de «réimpression de la carte UIN» a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UIN_RPR_FAILURE_SMS,fra,TRUE,superadmin,now()
+1196,Failure in Unlocking of Auth Types Email,Failure in Unlocking of Auth Types Email,txt,velocity,"Hi $fullName_eng,
+
+Your requested for unlocking AUTH type(s) has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1196,فشل في فتح البريد الإلكتروني لأنواع مصادقة,فشل في فتح البريد الإلكتروني لأنواع مصادقة,txt,velocity,"$fullName_ara،
+
+فشل طلب إلغاء تأمين نوع (أنواع) AUTH. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1196,Échec du déverrouillage de la messagerie électronique des types d'authentification,Échec du déverrouillage de la messagerie électronique des types d'authentification,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de déverrouillage de type (s) AUTH a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1197,Failure in Unlocking of Auth Types Email Subject,Failure in Unlocking of Auth Types Email Subject,txt,velocity,Unlocking of AUTH Type(s) Failed,10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1197,فشل في فتح أنواع مصادقة البريد الإلكتروني الموضوع,فشل في فتح أنواع مصادقة البريد الإلكتروني الموضوع,txt,velocity,فشل فتح نوع (أنواع) AUTH,10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1197,Échec du déverrouillage du sujet de l'e-mail des types d'authentification,Échec du déverrouillage du sujet de l'e-mail des types d'authentification,txt,velocity,Le déverrouillage du ou des types AUTH a échoué,10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1198,Failure in Unlocking of Auth Types SMS,Failure in Unlocking of Auth Types SMS,txt,velocity,"Hi $fullName_eng,
+
+Your requested for unlocking AUTH type(s) has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_SMS,eng,TRUE,superadmin,now()
+1198,فشل في فتح أنواع مصادقة الرسائل القصيرة,فشل في فتح أنواع مصادقة الرسائل القصيرة,txt,velocity,"$fullName_ara،
+
+فشل طلب إلغاء تأمين نوع (أنواع) AUTH. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_SMS,ara,TRUE,superadmin,now()
+1198,Échec de déverrouillage des types d'authentification SMS,Échec de déverrouillage des types d'authentification SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de déverrouillage de type (s) AUTH a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UNLOCK_AUTH_FAILURE_SMS,fra,TRUE,superadmin,now()
+1199,VID Generation Failure Email,VID Generation Failure Email,txt,velocity,"Hi $fullName_eng,
+
+VID generation for your UIN failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_VIN_GEN_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1199,VID الجيل فشل البريد الإلكتروني,VID الجيل فشل البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+فشل إنشاء VID لجهاز UIN. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_VIN_GEN_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1199,E-mail d'échec de génération de VID,E-mail d'échec de génération de VID,txt,velocity,"Bonjour $fullName_fra,
+
+La génération de VID pour votre UIN a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_VIN_GEN_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1200,VID Generation Failure Email Subject,VID Generation Failure Email Subject,txt,velocity,VID Generation Failure,10006,Resident Services,RS_VIN_GEN_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1200,VID الجيل فشل البريد الإلكتروني الموضوع,VID الجيل فشل البريد الإلكتروني الموضوع,txt,velocity,فشل فيد الجيل,10006,Resident Services,RS_VIN_GEN_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1200,Objet de l'e-mail d'échec de génération de VID,Objet de l'e-mail d'échec de génération de VID,txt,velocity,Échec de génération de VID,10006,Resident Services,RS_VIN_GEN_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1201,VID Generation Failure SMS,VID Generation Failure SMS,txt,velocity,"Hi $fullName_eng,
+
+VID generation for your UIN failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_VIN_GEN_FAILURE_SMS,eng,TRUE,superadmin,now()
+1201,فشل إنشاء VID SMS,فشل إنشاء VID SMS,txt,velocity,"$fullName_ara،
+
+فشل إنشاء VID لجهاز UIN. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_VIN_GEN_FAILURE_SMS,ara,TRUE,superadmin,now()
+1201,SMS d'échec de génération de VID,SMS d'échec de génération de VID,txt,velocity,"Bonjour $fullName_fra,
+
+La génération de VID pour votre UIN a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_VIN_GEN_FAILURE_SMS,fra,TRUE,superadmin,now()
+1202,VID Revocation Failure Email,VID Revocation Failure Email,txt,velocity,"Hi $fullName_eng,
+
+Your $VID revokation has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_VIN_REV_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1202,VID إبطال فشل البريد الإلكتروني,VID إبطال فشل البريد الإلكتروني,txt,velocity,"$fullName_ara،
+
+فشل إبطال $VID الخاص بك. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_VIN_REV_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1202,E-mail d'échec de révocation de VID,E-mail d'échec de révocation de VID,txt,velocity,"Bonjour $fullName_fra,
+
+Votre révocation de $VID a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_VIN_REV_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1203,VID Revocation Failure Email Subject,VID Revocation Failure Email Subject,txt,velocity,VID Revokation Failure,10006,Resident Services,RS_VIN_REV_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1203,فيد إلغاء فشل البريد الإلكتروني الموضوع,فيد إلغاء فشل البريد الإلكتروني الموضوع,txt,velocity,فشل إلغاء VID,10006,Resident Services,RS_VIN_REV_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1203,Objet de l'e-mail d'échec de la révocation du VID,Objet de l'e-mail d'échec de la révocation du VID,txt,velocity,Échec de révocation de VID,10006,Resident Services,RS_VIN_REV_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1204,VID Revocation Failure SMS,VID Revocation Failure SMS,txt,velocity,"Hi $fullName_eng,
+
+Your $VID revokation has failed. Please try again later.
+
+Thank You!",10006,Resident Services,RS_VIN_REV_FAILURE_SMS,eng,TRUE,superadmin,now()
+1204,فشل إلغاء VID SMS,فشل إلغاء VID SMS,txt,velocity,"$fullName_ara،
+
+فشل إبطال $VID الخاص بك. الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_VIN_REV_FAILURE_SMS,ara,TRUE,superadmin,now()
+1204,SMS d'échec de révocation de VID,SMS d'échec de révocation de VID,txt,velocity,"Bonjour $fullName_fra,
+
+Votre révocation de $VID a échoué. Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_VIN_REV_FAILURE_SMS,fra,TRUE,superadmin,now()
+1205,UIN Update Request Placed Successfully Email,UIN Update Request Placed Successfully Email,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""UIN Update"" has been successfully placed. Your RID (Req Number) is $RID for tracking.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL,eng,TRUE,superadmin,now()
+1205,تم تحديث طلب تحديث UIN بنجاح,تم تحديث طلب تحديث UIN بنجاح,txt,velocity,"$fullName_ara،
+
+تم وضع طلبك لـ ""تحديث UIN"" بنجاح. RID الخاص بك (رقم الطلب) هو $RID للتتبع.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL,ara,TRUE,superadmin,now()
+1205,E-mail de demande de mise à jour UIN placé avec succès,E-mail de demande de mise à jour UIN placé avec succès,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de «mise à jour UIN» a été envoyée avec succès. Votre RID (numéro de demande) est $RID pour le suivi.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL,fra,TRUE,superadmin,now()
+1206,UIN Update Request Placed Successfully Email Subject,UIN Update Request Placed Successfully Email Subject,txt,velocity,UIN Update Request Placed Successfully,10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL_SUB,eng,TRUE,superadmin,now()
+1206,تم وضع طلب تحديث UIN بنجاح بالبريد الإلكتروني,تم وضع طلب تحديث UIN بنجاح بالبريد الإلكتروني,txt,velocity,تم وضع طلب تحديث UIN بنجاح,10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL_SUB,ara,TRUE,superadmin,now()
+1206,Sujet de la demande de mise à jour UIN placé avec succès,Sujet de la demande de mise à jour UIN placé avec succès,txt,velocity,Demande de mise à jour UIN placée avec succès,10006,Resident Services,RS_UIN_UPDATE_SUCCESS_EMAIL_SUB,fra,TRUE,superadmin,now()
+1207,UIN Update Request Placed Successfully SMS,UIN Update Request Placed Successfully SMS,txt,velocity,"Hi $fullName_eng,
+
+Your request for ""UIN Update"" has been successfully placed. Your RID (Req Number) is $RID for tracking.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_SMS,eng,TRUE,superadmin,now()
+1207,تم تحديث طلب تحديث UIN بنجاح,تم تحديث طلب تحديث UIN بنجاح,txt,velocity,"$fullName_ara،
+
+تم وضع طلبك لـ ""تحديث UIN"" بنجاح. RID الخاص بك (رقم الطلب) هو $RID للتتبع.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_SMS,ara,TRUE,superadmin,now()
+1207,Demande de mise à jour UIN placée avec succès SMS,Demande de mise à jour UIN placée avec succès SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Votre demande de «mise à jour UIN» a été envoyée avec succès. Votre RID (numéro de demande) est $RID pour le suivi.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_SUCCESS_SMS,fra,TRUE,superadmin,now()
+1208,UIN Update Request Failed Email,UIN Update Request Failed Email,txt,velocity,"Hi $fullName_eng,
+
+We were unable to process your ""UIN Update"" request. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL,eng,TRUE,superadmin,now()
+1208,فشل طلب تحديث UIN,فشل طلب تحديث UIN,txt,velocity,"$fullName_ara،
+
+لم نتمكن من معالجة طلبك ""تحديث UIN"". الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL,ara,TRUE,superadmin,now()
+1208,E-mail d'échec de la demande de mise à jour UIN,E-mail d'échec de la demande de mise à jour UIN,txt,velocity,"Bonjour $fullName_fra,
+
+Nous n'avons pas pu traiter votre demande de «mise à jour UIN». Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL,fra,TRUE,superadmin,now()
+1209,UIN Update Request Failed Email Subject,UIN Update Request Failed Email Subject,txt,velocity,UIN Update Request Failed,10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL_SUB,eng,TRUE,superadmin,now()
+1209,فشل طلب تحديث UIN موضوع البريد الإلكتروني,فشل طلب تحديث UIN موضوع البريد الإلكتروني,txt,velocity,فشل طلب تحديث UIN,10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL_SUB,ara,TRUE,superadmin,now()
+1209,Échec de la demande de mise à jour de l'UIN,Échec de la demande de mise à jour de l'UIN,txt,velocity,Échec de la demande de mise à jour UIN,10006,Resident Services,RS_UIN_UPDATE_FAILURE_EMAIL_SUB,fra,TRUE,superadmin,now()
+1210,UIN Update Request Failed SMS,UIN Update Request Failed SMS,txt,velocity,"Hi $fullName_eng,
+
+We were unable to process your ""UIN Update"" request. Please try again later.
+
+Thank You!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_SMS,eng,TRUE,superadmin,now()
+1210,فشل طلب تحديث UIN SMS,فشل طلب تحديث UIN SMS,txt,velocity,"$fullName_ara،
+
+لم نتمكن من معالجة طلبك ""تحديث UIN"". الرجاء معاودة المحاولة في وقت لاحق.
+
+شكرا!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_SMS,ara,TRUE,superadmin,now()
+1210,Echec de la demande de mise à jour UIN SMS,Echec de la demande de mise à jour UIN SMS,txt,velocity,"Bonjour $fullName_fra,
+
+Nous n'avons pas pu traiter votre demande de «mise à jour UIN». Veuillez réessayer plus tard.
+
+Merci!",10006,Resident Services,RS_UIN_UPDATE_FAILURE_SMS,fra,TRUE,superadmin,now()

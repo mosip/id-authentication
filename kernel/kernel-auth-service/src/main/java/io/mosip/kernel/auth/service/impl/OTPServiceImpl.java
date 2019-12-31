@@ -412,34 +412,78 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	@Override
-	public AuthNResponseDto sendOTPForUin(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
+	public AuthNResponseDto sendOTPForUin(MosipUserDto mosipUser, OtpUser otpUser, String appId) {
 		AuthNResponseDto authNResponseDto = null;
 		OtpEmailSendResponseDto otpEmailSendResponseDto = null;
 		SmsResponseDto otpSmsSendResponseDto = null;
-		String emailMessage = null, mobileMessage = null;
-		String token = null;
+		String mobileMessage = null;
+		OTPEmailTemplate emailTemplate = null;
 		AccessTokenResponse accessTokenResponse = null;
+		authOtpValidator.validateOTPUser(otpUser);
 		try {
 			// token = tokenService.getInternalTokenGenerationService();
 			accessTokenResponse = getAuthAccessToken(idaClientID, idaSecret);
-			token = accessTokenResponse.getAccess_token();
-		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
-		}
-		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, token);
-		for (String channel : otpChannel) {
-			switch (channel) {
-			case AuthConstant.EMAIL:
-				emailMessage = getOtpEmailMessage(otpGenerateResponseDto, appId, token);
-				otpEmailSendResponseDto = sendOtpByEmail(emailMessage, mosipUserDto.getMail(), token);
-			case AuthConstant.PHONE:
-				mobileMessage = getOtpSmsMessage(otpGenerateResponseDto, appId, token);
-				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUserDto.getMobile(), token);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+							AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
 		}
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser,
+				accessTokenResponse.getAccess_token());
+		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
+			authNResponseDto.setMessage(otpGenerateResponseDto.getStatus());
+			return authNResponseDto;
+		}
+		for (String channel : otpUser.getOtpChannel()) {
+			switch (channel.toLowerCase()) {
+			case AuthConstant.EMAIL:
+				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser,
+						accessTokenResponse.getAccess_token());
+				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(),
+						accessTokenResponse.getAccess_token());
+				break;
+			case AuthConstant.PHONE:
+				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser,
+						accessTokenResponse.getAccess_token());
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(),
+						accessTokenResponse.getAccess_token());
+				break;
+			}
+		}
+
 		if (otpEmailSendResponseDto != null && otpSmsSendResponseDto != null) {
-			AuthNResponseDto authResponseDto = new AuthNResponseDto();
-			authResponseDto.setMessage(AuthConstant.UIN_NOTIFICATION_MESSAGE);
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
+			authNResponseDto.setMessage(AuthConstant.ALL_CHANNELS_MESSAGE);
+		} else if (otpEmailSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpEmailSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpEmailSendResponseDto.getMessage());
+		} else if (otpSmsSendResponseDto != null) {
+			authNResponseDto = new AuthNResponseDto();
+			authNResponseDto.setStatus(otpSmsSendResponseDto.getStatus());
+			authNResponseDto.setMessage(otpSmsSendResponseDto.getMessage());
 		}
 		return authNResponseDto;
 	}
@@ -499,7 +543,7 @@ public class OTPServiceImpl implements OTPService {
 			case AuthConstant.PHONE:
 				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser,
 						accessTokenResponse.getAccess_token());
-				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(),
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getUserId(),
 						accessTokenResponse.getAccess_token());
 				break;
 			}

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.3</version>
 	</parent>
 	<artifactId>registration-services</artifactId>
 	<name>registration-services</name>
@@ -28,6 +28,7 @@
 			<scope>system</scope>
 		</dependency>	
  -->
+ 
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -294,11 +295,6 @@
 			<version>0.98</version>
 		</dependency>
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.0.6</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jvnet.com4j</groupId>
 			<artifactId>com4j</artifactId>
 			<version>2.1</version>
@@ -362,6 +358,10 @@
 			<artifactId>kernel-bioapi-provider </artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pdfgenerator-itext</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>

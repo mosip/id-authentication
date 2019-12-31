@@ -1,5 +1,10 @@
 package io.mosip.idrepository.core.security;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.APPLICATION_ID;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.APPLICATION_VERSION;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.DATETIME_PATTERN;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -12,8 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
@@ -114,18 +117,18 @@ public class IdRepoSecurityManager {
 			RequestWrapper<ObjectNode> baseRequest = new RequestWrapper<>();
 			baseRequest.setId("string");
 			baseRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
-			baseRequest.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+			baseRequest.setVersion(env.getProperty(APPLICATION_VERSION));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("applicationId", env.getProperty(APPLICATION_ID));
 			request.put("timeStamp",
-					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
 			baseRequest.setRequest(request);
 			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT,
 					baseRequest, ObjectNode.class));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 	
@@ -142,11 +145,11 @@ public class IdRepoSecurityManager {
 			RequestWrapper<ObjectNode> baseRequest = new RequestWrapper<>();
 			baseRequest.setId("string");
 			baseRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
-			baseRequest.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+			baseRequest.setVersion(env.getProperty(APPLICATION_VERSION));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("applicationId", env.getProperty(APPLICATION_ID));
 			request.put("timeStamp",
-					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
 			request.put("salt", CryptoUtil.encodeBase64(saltToEncrypt));
 			baseRequest.setRequest(request);
@@ -154,7 +157,7 @@ public class IdRepoSecurityManager {
 					baseRequest, ObjectNode.class));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 
@@ -170,18 +173,18 @@ public class IdRepoSecurityManager {
 			RequestWrapper<ObjectNode> baseRequest = new RequestWrapper<>();
 			baseRequest.setId("string");
 			baseRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
-			baseRequest.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+			baseRequest.setVersion(env.getProperty(APPLICATION_VERSION));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("applicationId", env.getProperty(APPLICATION_ID));
 			request.put("timeStamp",
-					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", new String(dataToDecrypt));
 			baseRequest.setRequest(request);
 			return CryptoUtil.decodeBase64(new String(encryptDecryptData(restBuilder
 					.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, baseRequest, ObjectNode.class))));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 	
@@ -198,11 +201,11 @@ public class IdRepoSecurityManager {
 			RequestWrapper<ObjectNode> baseRequest = new RequestWrapper<>();
 			baseRequest.setId("string");
 			baseRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
-			baseRequest.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+			baseRequest.setVersion(env.getProperty(APPLICATION_VERSION));
 			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("applicationId", env.getProperty(APPLICATION_ID));
 			request.put("timeStamp",
-					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)));
 			request.put("data", CryptoUtil.encodeBase64(dataToDecrypt));
 			request.put("salt", CryptoUtil.encodeBase64(saltToDecrypt));
 			baseRequest.setRequest(request);
@@ -210,7 +213,7 @@ public class IdRepoSecurityManager {
 					.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, baseRequest, ObjectNode.class))));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 
@@ -232,11 +235,11 @@ public class IdRepoSecurityManager {
 			} else {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA,
 						"No data block found in response");
-				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
+				throw new IdRepoAppException(ENCRYPTION_DECRYPTION_FAILED);
 			}
 		} catch (RestServiceException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
-			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+			throw new IdRepoAppException(ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
 }

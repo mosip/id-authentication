@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 
 /**
@@ -72,5 +73,16 @@ public interface MOSIPDeviceServiceRepository extends BaseRepository<MOSIPDevice
 	@Query(value = "select * from mosip_device_service where sw_version=?1 and dtype_code=?2 and dstype_code=?3 and make=?4 and model=?5 and dprovider_id=?6", nativeQuery = true)
 	MOSIPDeviceService findByDeviceDetail(String version, String deviceTypeCode, String devicesTypeCode, String make,
 			String model, String dp);
+	
+	
+	/**
+	 * This method trigger query to fetch the Device detail for the given id.
+	 * 
+	 * @param id
+	 *            the id of device
+	 * @return the device detail
+	 */
+	@Query("FROM MOSIPDeviceService d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false)")
+	MOSIPDeviceService findByIdAndIsDeletedFalseOrIsDeletedIsNull(String id);
 
 }

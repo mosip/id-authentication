@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
@@ -25,9 +28,12 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TitleService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,17 +55,26 @@ public class TitleController {
 	@Autowired
 	private TitleService titleService;
 
+	@Autowired
+	private AuditUtil auditUtil;
+
 	/**
 	 * Method to return list of all titles
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','ZONAL_ADMIN','ZONAL_APPROVER','RESIDENT')")
 	@ResponseFilter
 	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL, TitleDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.GET_ALL, TitleDto.class.getSimpleName()));
 		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getAllTitles());
+		auditUtil.auditRequest(String.format(MasterDataConstant.GET_ALL_SUCCESS, TitleDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.GET_ALL_SUCCESS_DESC, TitleDto.class.getSimpleName()));
 		return responseWrapper;
 	}
 
@@ -91,7 +106,9 @@ public class TitleController {
 	@PostMapping("/title")
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
-
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + TitleDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + TitleDto.class.getSimpleName(), "ADM-817");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.saveTitle(title.getRequest()));
 		return responseWrapper;
@@ -113,7 +130,9 @@ public class TitleController {
 			@ApiResponse(code = 500, message = "While updating title any error occured") })
 	public ResponseWrapper<CodeAndLanguageCodeID> updateTitle(
 			@ApiParam("Title DTO to update") @Valid @RequestBody RequestWrapper<TitleDto> titles) {
-
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + TitleDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + TitleDto.class.getSimpleName(), "ADM-818");
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.updateTitle(titles.getRequest()));
 		return responseWrapper;
@@ -165,8 +184,10 @@ public class TitleController {
 			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
 			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+
 		ResponseWrapper<PageDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getTitles(pageNumber, pageSize, sortBy, orderBy.name()));
+
 		return responseWrapper;
 	}
 
@@ -177,7 +198,7 @@ public class TitleController {
 	 *            the request
 	 * @return response wrapper
 	 */
-	
+
 	@ResponseFilter
 	@PostMapping("title/search")
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
@@ -186,15 +207,22 @@ public class TitleController {
 			@ApiResponse(code = 500, message = "Error occured while searching title") })
 	public ResponseWrapper<PageResponseDto<TitleExtnDto>> searchTitles(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TitleDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, TitleDto.class.getSimpleName()),"ADM-819");
 		ResponseWrapper<PageResponseDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.searchTitles(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_SEARCH, TitleDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, TitleDto.class.getSimpleName()),"ADM-820");
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Filter templates.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 * @return {@link FilterResponseDto}
 	 */
 	@ResponseFilter
@@ -205,8 +233,14 @@ public class TitleController {
 			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
 	public ResponseWrapper<FilterResponseDto> filterTemplates(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_API_IS_CALLED, TitleDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.FILTER_API_IS_CALLED, TitleDto.class.getSimpleName()),"ADM-821");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.filterTitles(request.getRequest()));
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_FILTER, TitleDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_FILTER_DESC, TitleDto.class.getSimpleName()),"ADM-822");
 		return responseWrapper;
 	}
 }

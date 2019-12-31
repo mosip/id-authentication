@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +23,6 @@ import org.springframework.util.CollectionUtils;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.masterdata.util.model.Node;
 import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -31,6 +32,8 @@ import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationLevelDto;
+import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
@@ -38,7 +41,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
@@ -47,25 +49,23 @@ import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.entity.Zone;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataCreationUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
-
-import io.mosip.kernel.masterdata.utils.ZoneUtils;
-
 import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -105,15 +105,17 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private PageUtils pageUtils;
 	private List<Location> childHierarchyList = null;
-	private List<Location> hierarchyChildList = null;
 	private List<Location> parentHierarchyList = null;
 	private List<String> childList = null;
 
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
-	
+
+	@Value("${mosip.level:4}")
+	private short level;
+
 	@Autowired
-	private ZoneUtils zoneUtils;
+	private AuditUtil auditUtil;
 
 	/**
 	 * This method will all location details from the Database. Refers to
@@ -123,8 +125,7 @@ public class LocationServiceImpl implements LocationService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#getLocationDetails(
+	 * @see io.mosip.kernel.masterdata.service.LocationService#getLocationDetails(
 	 * java. lang.String)
 	 */
 	@Override
@@ -152,9 +153,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method will fetch location hierarchy based on location code and
-	 * language code Refers to {@link LocationRepository} for fetching location
-	 * hierarchy
+	 * This method will fetch location hierarchy based on location code and language
+	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
 	 * @param locCode
 	 *            - location code
@@ -208,9 +208,10 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	@Transactional
-	public ResponseWrapper<Location> createLocation(LocationCreateDto dto) {
+	public LocationPostResponseDto createLocation(LocationCreateDto dto) {
 		List<ServiceError> errors = new ArrayList<>();
 		Location locationEntity = null;
+		LocationPostResponseDto locationPostResponseDto = new LocationPostResponseDto();
 
 		try {
 			if (dto != null) {
@@ -219,6 +220,12 @@ public class LocationServiceImpl implements LocationService {
 					List<Location> parentLocList = locationRepository
 							.findLocationHierarchyByCodeAndLanguageCode(dto.getParentLocCode(), dto.getLangCode());
 					if (CollectionUtils.isEmpty(parentLocList)) {
+						auditUtil.auditRequest(
+								String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
+								MasterDataConstant.AUDIT_SYSTEM,
+								String.format(MasterDataConstant.FAILURE_DESC,
+										LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
+										LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage()),"ADM-574");
 						throw new MasterDataServiceException(LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorCode(),
 								LocationErrorCode.PARENT_LOC_NOT_FOUND.getErrorMessage());
 					}
@@ -226,6 +233,14 @@ public class LocationServiceImpl implements LocationService {
 				List<Location> list = locationRepository.findByNameAndLevelLangCode(dto.getName(),
 						dto.getHierarchyLevel(), dto.getLangCode());
 				if (list != null && !list.isEmpty()) {
+					auditUtil.auditRequest(
+							String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,
+									LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
+									String.format(
+											LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
+											dto.getName())),"ADM-575");
 					throw new RequestException(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorCode(),
 							String.format(LocationErrorCode.LOCATION_ALREDAY_EXIST_UNDER_HIERARCHY.getErrorMessage(),
 									dto.getName()));
@@ -233,19 +248,32 @@ public class LocationServiceImpl implements LocationService {
 
 				locationEntity = MetaDataUtils.setCreateMetaData(dto, Location.class);
 				locationEntity = locationRepository.create(locationEntity);
+				MapperUtils.map(locationEntity, locationPostResponseDto);
 			}
 		} catch (DataAccessLayerException | DataAccessException ex) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage()
+									+ ExceptionUtils.parseException(ex)),"ADM-576");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage()),"ADM-577");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage());
 		}
-		ResponseWrapper<Location> response = new ResponseWrapper<>();
-		response.setErrors(errors);
-		response.setResponse(locationEntity);
-		return response;
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_CREATE, LocationDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC,
+						LocationDto.class.getSimpleName(), locationPostResponseDto.getCode()),"ADM-578");
+		return locationPostResponseDto;
 	}
 
 	/**
@@ -255,26 +283,41 @@ public class LocationServiceImpl implements LocationService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#updateLocationDetails(
-	 * io. mosip.kernel.masterdata.dto.RequestDto)
+	 * io.mosip.kernel.masterdata.service.LocationService#updateLocationDetails( io.
+	 * mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto updateLocationDetails(LocationDto locationDto) {
-		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
-		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
-		locationId.setCode(locationDto.getCode());
-		locationId.setLangCode(locationDto.getLangCode());
+	public LocationPutResponseDto updateLocationDetails(LocationDto locationDto) {
+		LocationPutResponseDto postLocationCodeResponseDto = new LocationPutResponseDto();
 		try {
-			masterDataCreateUtil.updateMasterData(Location.class, locationDto);
-			Location location = MetaDataUtils.setUpdateMetaData(locationDto, new Location(), true);
-			MapperUtils.map(location, postLocationCodeResponseDto);
-
+			locationDto = masterDataCreateUtil.updateMasterData(Location.class, locationDto);
+			Location location = locationRepository.findLocationByCodeAndLanguageCode(locationDto.getCode(),locationDto.getLangCode());
+			if(location==null)
+			{
+				throw new MasterDataServiceException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			else
+			{
+				location = MetaDataUtils.setUpdateMetaData(locationDto, location, false);
+				locationRepository.update(location);
+				MapperUtils.map(location, postLocationCodeResponseDto);
+			}
+			
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()
+									+ ExceptionUtils.parseException(e)),"ADM-579");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
-
+		auditUtil.auditRequest(String.format(MasterDataConstant.SUCCESSFUL_UPDATE, LocationDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM, String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC,
+						LocationDto.class.getSimpleName(), postLocationCodeResponseDto.getCode()),"ADM-580");
 		return postLocationCodeResponseDto;
 	}
 
@@ -311,8 +354,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * Method creates location hierarchy data into the table based on the
-	 * request parameter sent {@inheritDoc}
+	 * Method creates location hierarchy data into the table based on the request
+	 * parameter sent {@inheritDoc}
 	 */
 	/*
 	 * (non-Javadoc)
@@ -349,8 +392,7 @@ public class LocationServiceImpl implements LocationService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.LocationService#
-	 * getImmediateChildrenByLocCodeAndLangCode(java.lang.String,
-	 * java.lang.String)
+	 * getImmediateChildrenByLocCodeAndLangCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode) {
@@ -374,8 +416,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * fetches location hierarchy details from database based on location code
-	 * and language code
+	 * fetches location hierarchy details from database based on location code and
+	 * language code
 	 * 
 	 * @param locCode
 	 *            - location code
@@ -405,8 +447,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method fetches child hierarchy details of the location based on
-	 * location code
+	 * This method fetches child hierarchy details of the location based on location
+	 * code
 	 * 
 	 * @param locCode
 	 *            - location code
@@ -427,8 +469,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method fetches parent hierarchy details of the location based on
-	 * parent Location code
+	 * This method fetches parent hierarchy details of the location based on parent
+	 * Location code
 	 * 
 	 * @param locCode
 	 *            - location code
@@ -474,8 +516,7 @@ public class LocationServiceImpl implements LocationService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#validateLocationName(
+	 * @see io.mosip.kernel.masterdata.service.LocationService#validateLocationName(
 	 * java. lang.String)
 	 */
 	@Override
@@ -524,68 +565,10 @@ public class LocationServiceImpl implements LocationService {
 		return pageDto;
 	}
 
-	/**
-	 * This method to find, is there any child of given Location isActive is
-	 * true then return true and break the loop. Otherwise if all children of
-	 * the given location are false the return false.
-	 * 
-	 * @param location
-	 * @return boolean return true or false
-	 */
-	public boolean findIsActiveInHierarchy(Location location) {
-		boolean flag = false;
-		String locCode = location.getCode();
-		String langCode = location.getLangCode();
-
-		List<Location> childList = new ArrayList<>();
-		hierarchyChildList = new ArrayList<>();
-		childList = getIsActiveChildList(locCode, langCode);
-		if (!childList.isEmpty())
-			return true;
-		return flag;
-	}
 
 	/**
-	 * This method fetches child hierarchy details of the location based on
-	 * location code, here child isActive can true or false
-	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
-	 * @return List<Location>
-	 */
-	private List<Location> getIsActiveChildList(String locCode, String langCode) {
-
-		if (locCode != null && !locCode.isEmpty()) {
-			List<Location> childLocHierList = getIsActiveLocationChildHierarchyList(locCode, langCode);
-			hierarchyChildList.addAll(childLocHierList);
-			childLocHierList.parallelStream().filter(entity -> entity.getCode() != null && !entity.getCode().isEmpty())
-					.map(entity -> getIsActiveChildList(entity.getCode(), langCode)).collect(Collectors.toList());
-		}
-		return hierarchyChildList;
-
-	}
-
-	/**
-	 * fetches location hierarchy details from database based on parent location
-	 * code and language code, children's isActive is either true or false
-	 * 
-	 * @param locCode
-	 *            - location code
-	 * @param langCode
-	 *            - language code
-	 * @return List<LocationHierarchy>
-	 */
-	private List<Location> getIsActiveLocationChildHierarchyList(String locCode, String langCode) {
-
-		return locationRepository.findDistinctByparentLocCode(locCode, langCode);
-
-	}
-
-	/**
-	 * This method fetches child hierarchy details of the location based on
-	 * location code, here child isActive can true or false
+	 * This method fetches child hierarchy details of the location based on location
+	 * code, here child isActive can true or false
 	 * 
 	 * @param locCode
 	 *            - location code
@@ -627,15 +610,13 @@ public class LocationServiceImpl implements LocationService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.
+	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.
 	 * mosip. kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
 	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationSearchDto> pageDto = null;
 		String active = null;
-		List<Zone> zones = null;
 		boolean isActive = true;
 		List<LocationSearchDto> responseDto = new ArrayList<>();
 
@@ -669,6 +650,11 @@ public class LocationServiceImpl implements LocationService {
 						if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
 							responseDto = getStartsWithLocationSearch(filter, dto, tree, isActive);
 						} else {
+							auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+									MasterDataConstant.AUDIT_SYSTEM,
+									String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+											String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+													filter.getColumnName(), filter.getType())),"ADM-581");
 							throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
 									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
 											filter.getColumnName(), filter.getType()));
@@ -693,11 +679,20 @@ public class LocationServiceImpl implements LocationService {
 				if (filter.getType() != null && !filter.getType().trim().isEmpty()) {
 					return true;
 				} else {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
+									String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
+											filter.getColumnName())),"ADM-582");
 					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
 							String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
 									filter.getColumnName()));
 				}
 			} else {
+				auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+										MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()),"ADM-583");
 				throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
 						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
 			}
@@ -867,8 +862,7 @@ public class LocationServiceImpl implements LocationService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(
+	 * @see io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(
 	 * io. mosip.kernel.masterdata.dto.request.FilterValueDto)
 	 */
 	@Override
@@ -883,14 +877,27 @@ public class LocationServiceImpl implements LocationService {
 				String columnName = filter.getColumnName();
 				String type = filter.getType();
 				if (EmptyCheckUtils.isNullEmpty(type)) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
+									ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorMessage()),"ADM-584");
+									
 					throw new RequestException(ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorCode(),
 							ValidationErrorCode.NO_FILTER_COLUMN_FOUND.getErrorMessage());
 				}
 				if (!type.equals(FilterColumnEnum.UNIQUE.toString()) && !type.equals(FilterColumnEnum.ALL.toString())) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
+									ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage()),"ADM-585");
 					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
 							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
 				}
 				if (!hierarchyNames.contains(columnName) && !columnName.equals(MasterDataConstant.IS_ACTIVE)) {
+					auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
+							MasterDataConstant.AUDIT_SYSTEM,
+							String.format(MasterDataConstant.FAILURE_DESC,ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(), String
+									.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())),"ADM-586");
 					throw new RequestException(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(), String
 							.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName()));
 				}
@@ -955,10 +962,14 @@ public class LocationServiceImpl implements LocationService {
 			}
 			filterResponseDto.setFilters(columnValueList);
 		} catch (DataAccessLayerException e) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FILTER_FAILED, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+							LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()),"ADM-587");
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 		}
-
+		
 		return filterResponseDto;
 	}
 
@@ -996,10 +1007,44 @@ public class LocationServiceImpl implements LocationService {
 			}
 		}
 		if ("0".equals(level)) {
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, LocationDto.class.getSimpleName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+							MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage()),"ADM-588");
+
 			throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
 					MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
 		}
 		return level;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LocationService#getLocationCodeByLangCode(
+	 * java.lang.String)
+	 */
+	@Override
+	public LocationLevelResponseDto getLocationCodeByLangCode(String langCode) {
+		Set<Location> locationList = null;
+		List<LocationLevelDto> locationLevelDtoList = null;
+		LocationLevelResponseDto locationLevelResponseDto = new LocationLevelResponseDto();
+		try {
+			locationList = locationRepository.findLocationByLangCodeLevel(langCode, level);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (locationList != null && !locationList.isEmpty()) {
+			locationLevelDtoList = MapperUtils.mapAll(locationList, LocationLevelDto.class);
+
+		} else {
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		locationLevelResponseDto.setLocations(locationLevelDtoList);
+		return locationLevelResponseDto;
 	}
 
 }

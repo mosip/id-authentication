@@ -61,7 +61,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * 
+ * @author Manoj SP
  * @author Prem Kumar
  *
  */
@@ -520,7 +520,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRetrieveUinByVid() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "461_null",
 				"461_3920450236_7C9JlRD32RnFTzAmeTfIzg", "perpetual", currentTime, currentTime, "ACTIVE", "IdRepo",
@@ -546,7 +546,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRetrieveUinByVidExpired() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime();
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "461_null",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual", currentTime, currentTime, "ACTIVATED", "IdRepo",
@@ -569,7 +569,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRetrieveUinHashNotMatching() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime();
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual",
@@ -592,7 +592,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRetrieveUinByVidBlocked() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "461_null",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual", currentTime, currentTime, "Blocked", "IdRepo",
@@ -629,7 +629,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testUpdateVidvalid() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "461_3920450236",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual", currentTime, currentTime, "ACTIVE", "IdRepo",
@@ -657,7 +657,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testUpdateVidvalidREVOKE() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "461_null",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual", currentTime, currentTime, "ACTIVE", "IdRepo",
@@ -717,7 +717,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRegenerate_Valid() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		String vidValue = "2015642902372691";
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", vidValue, "461_null",
@@ -774,7 +774,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRegenerateVid_InValidStatus() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual",
@@ -817,7 +817,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRegenerate_IdRepoAppUncheckedException() throws Throwable {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "461_null",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual", currentTime, currentTime, "ACTIVE", "IdRepo",
@@ -858,7 +858,7 @@ public class VidServiceImplTest {
 	@Test
 	public void testRegenerate_AutoRestoreNotAllowed() throws Throwable {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE)))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691",
 				"461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual",

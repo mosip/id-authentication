@@ -43,6 +43,8 @@ public class RegistrationUIConstants {
 	public static final String FAILURE = bundle.getString("FAILURE");
 
 	// LOGIN
+	public static final String UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET = bundle
+			.getString("UNABLE_LOAD_LOGIN_SCREEN_LANGUAGE_NOT_SET");
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
 	public static final String BIOMETRIC_DISABLE_SCREEN_1 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_1");
 	public static final String BIOMETRIC_DISABLE_SCREEN_2 = bundle.getString("BIOMETRIC_DISABLE_SCREEN_2");
