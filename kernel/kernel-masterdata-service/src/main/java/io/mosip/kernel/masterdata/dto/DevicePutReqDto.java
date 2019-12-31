@@ -22,7 +22,6 @@ import lombok.Data;
  */
 
 @Data
-@ApiModel(value = "Device", description = "Device Detail resource")
 public class DevicePutReqDto {
 
 	/**

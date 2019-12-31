@@ -20,7 +20,7 @@ import lombok.Data;
  *
  */
 @Data
-@ApiModel(value = "DocumentCategoryAndTypeResponse", description = "DocumentCategory having list of suppoted document types")
+//@ApiModel(value = "DocumentCategoryAndTypeResponse", description = "DocumentCategory having list of suppoted document types")
 public class DocumentCategoryAndTypeResponseDto {
 
 	/**

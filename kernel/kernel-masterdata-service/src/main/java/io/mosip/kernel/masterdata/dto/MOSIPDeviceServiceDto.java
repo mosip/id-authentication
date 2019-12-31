@@ -19,7 +19,7 @@ import lombok.Data;
  */
 
 @Data
-@ApiModel(value = "MOSIP Device Service", description = "MOSIP Device Service Detail resource")
+//@ApiModel(value = "MOSIP Device Service", description = "MOSIP Device Service Detail resource")
 public class MOSIPDeviceServiceDto {
 
 	/*@NotBlank

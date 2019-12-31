@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "Device", description = "Device Detail resource")
+//@ApiModel(value = "Device", description = "Device Detail resource")
 @ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId" })
 		/*"foundationalTrustSignature",
 		"foundationalTrustCertificate"*/ 

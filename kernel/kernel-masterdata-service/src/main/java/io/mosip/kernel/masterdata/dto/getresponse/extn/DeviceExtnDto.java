@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Device", description = "Device Detail resource")
+//@ApiModel(value = "Device", description = "Device Detail resource")
 public class DeviceExtnDto extends BaseDto {
 	
 	/**

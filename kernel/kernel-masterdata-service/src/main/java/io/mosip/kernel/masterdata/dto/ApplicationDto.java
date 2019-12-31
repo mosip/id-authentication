@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "Application", description = "Application resource representation")
+//@ApiModel(value = "Application", description = "Application resource representation")
 public class ApplicationDto {
 
 	@NotBlank

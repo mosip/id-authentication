@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Holiday", description = "Holiday details")
+//@ApiModel(value = "Holiday", description = "Holiday details")
 public class HolidayExtnDto extends BaseDto {
 
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.Integer")

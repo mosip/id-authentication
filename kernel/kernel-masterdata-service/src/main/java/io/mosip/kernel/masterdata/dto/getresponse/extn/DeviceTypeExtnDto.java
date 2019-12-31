@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Device Type", description = "Device Type Detail resource")
+//@ApiModel(value = "Device Type", description = "Device Type Detail resource")
 public class DeviceTypeExtnDto extends BaseDto {
 
 	/**

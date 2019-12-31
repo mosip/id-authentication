@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Data
 
-@ApiModel(value = "Language", description = "Language resource representation")
+//@ApiModel(value = "Language", description = "Language resource representation")
 public class LanguageDto {
 
 	/**

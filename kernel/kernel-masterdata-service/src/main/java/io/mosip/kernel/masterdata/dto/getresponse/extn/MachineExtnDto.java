@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@ApiModel(value = "Machine", description = "Machine Detail resource")
+//@ApiModel(value = "Machine", description = "Machine Detail resource")
 @EqualsAndHashCode(callSuper = true)
 public class MachineExtnDto extends BaseDto {
 	/**

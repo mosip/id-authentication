@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Device", description = "Device Detail resource")
+//@ApiModel(value = "Device", description = "Device Detail resource")
 public class IdDto {
 
 	@NotBlank
