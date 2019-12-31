@@ -32,6 +32,7 @@ CMD if [ "$active_profile_env" = "c3a9236e12bb95f086275ff4647a7909dc8a0636e44b1a
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
     
+    
     sed -i 's/<service_name>/kernel-applicanttype-service/g' glowroot/glowroot.properties ; \
     java -jar  -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" kernel-applicanttype-service.jar ; \
     else \
