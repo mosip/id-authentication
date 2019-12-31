@@ -115,7 +115,7 @@ public final class IdAuthCommonConstants {
 	
 	public static final String SW_ID_VERIFICATION_FAILED = "ADM-DPM-007";
 	
-	public static final String DP_ID_VERIFICATION_FAILED = "ADM-DPM-008";
+	public static final String FIELD_VALIDATION_FAILED = "ADM-DPM-008";
 	
 	public static final String BIO_PATH = "request/biometrics/%s/%s";
 	
