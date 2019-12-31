@@ -309,6 +309,22 @@ public class BatchJpaRepositoryImpl {
 		}
 		return deletedSlots;
 	}
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteSlotsBetweenHours(String regId, LocalDate regDate,LocalTime fromTime,LocalTime toTime) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = availabilityRepository.deleteByRegcntrIdAndRegDateAndFromTimeBetween(regId, regDate,fromTime,toTime);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
 
 	/**
 	 * 
