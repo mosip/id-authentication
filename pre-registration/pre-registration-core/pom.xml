@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.3</version>
 	</parent>
 
 	<artifactId>pre-registration-core</artifactId>
@@ -53,7 +53,7 @@
 					<groupId>antlr</groupId>
 					<artifactId>antlr</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions> 
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

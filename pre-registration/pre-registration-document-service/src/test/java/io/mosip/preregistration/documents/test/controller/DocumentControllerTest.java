@@ -1,7 +1,5 @@
 package io.mosip.preregistration.documents.test.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
@@ -15,6 +13,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +33,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
-import io.mosip.preregistration.documents.code.DocumentStatusMessages;
-import io.mosip.preregistration.documents.config.AuthTokenUtil;
-import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
-import io.mosip.preregistration.documents.service.DocumentService;
-import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
+import io.mosip.preregistration.core.util.AuthTokenUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
+import io.mosip.preregistration.demographic.service.DemographicServiceIntf;
+import io.mosip.preregistration.document.code.DocumentStatusMessages;
+import io.mosip.preregistration.document.dto.DocumentRequestDTO;
+import io.mosip.preregistration.document.dto.DocumentResponseDTO;
+import io.mosip.preregistration.document.service.DocumentServiceIntf;
+import io.mosip.preregistration.document.service.util.DocumentServiceUtil;
 import io.mosip.preregistration.documents.test.DocumentTestApplication;
 
 /**
@@ -73,15 +75,28 @@ public class DocumentControllerTest {
 	
 	@MockBean
 	private AuthTokenUtil authTokenUtil;
+	
+	@Mock
+	private RequestValidator requestValidator;
 
 
 	private MockMultipartFile mockMultipartFile;
 
+
+	/**
+	 * Creating Mock Bean for DemographicService
+	 */
+	@MockBean
+	private DemographicServiceIntf preRegistrationService;
+	
 	/**
 	 * Creating Mock Bean for DocumentUploadService
 	 */
 	@MockBean
-	private DocumentService service;
+	private DocumentServiceIntf service;
+	
+	@MockBean
+	private BookingServiceIntf bookingServiceIntf;
 
 	@MockBean
 	private DocumentServiceUtil serviceutil;
@@ -190,9 +205,9 @@ public class DocumentControllerTest {
 	public void getAllDocumentforPreidTest() throws Exception {
 		String preRegistrationId = "48690172097498";
 		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
-		mockMvc.perform(
-				get("/documents/preregistration/{preRegistrationId}", preRegistrationId).contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(status().isOk());
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/documents/preregistration/{preRegistrationId}", preRegistrationId).contentType(MediaType.APPLICATION_JSON_VALUE);
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
 	
@@ -273,8 +288,9 @@ public class DocumentControllerTest {
 	@Test(expected = Exception.class)
 	public void failureGetAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("2")).thenThrow(Exception.class);
-		mockMvc.perform(get("/documents").contentType(MediaType.APPLICATION_JSON_VALUE).param("preId", "2"))
-				.andExpect(status().isInternalServerError());
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/documents").contentType(MediaType.APPLICATION_JSON_VALUE).param("preId", "2");
+		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
+		
 
 	}
 
@@ -287,10 +303,10 @@ public class DocumentControllerTest {
 		Mockito.when(service.copyDocument(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(Exception.class);
 
-		mockMvc.perform(post("/documents/copy").contentType(MediaType.APPLICATION_JSON_VALUE)
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/documents/copy").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("catCype", Mockito.anyString()).param("sourcePrId", Mockito.anyString())
-				.param("destinationPreId", Mockito.anyString())).andExpect(status().isBadRequest());
-
+				.param("destinationPreId", Mockito.anyString());
+		mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
 	}
 
 }

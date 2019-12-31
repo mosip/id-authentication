@@ -1,5 +1,7 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -37,6 +39,7 @@ import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.security.AuthenticationService;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -129,6 +132,9 @@ public class IrisCaptureController extends BaseController {
 
 	@FXML
 	private Button continueBtn;
+	
+	@FXML
+	private Label dedupeMessage;
 
 	@FXML
 	private Button backBtn;
@@ -147,10 +153,10 @@ public class IrisCaptureController extends BaseController {
 
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
-	
+
 	@Autowired
 	Streamer streamer;
-	
+
 	@Autowired
 	private AuthenticationService authenticationService;
 
@@ -313,12 +319,21 @@ public class IrisCaptureController extends BaseController {
 
 	private void displayCapturedIris() {
 		for (IrisDetailsDTO capturedIris : getIrises()) {
+
+			String qualityScore = getQualityScore(bioservice.isMdmEnabled()
+					? bioservice.getBioQualityScores(capturedIris.getIrisType(), capturedIris.getNumOfIrisRetry())
+					: capturedIris.getQualityScore());
+
 			if (capturedIris.getIrisType().contains(RegistrationConstants.LEFT)) {
-				leftIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
-				leftIrisQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
+				leftIrisImage.setImage(bioservice.isMdmEnabled()
+						? bioservice.getBioStreamImage(capturedIris.getIrisType(), capturedIris.getNumOfIrisRetry())
+						: convertBytesToImage(capturedIris.getIris()));
+				leftIrisQualityScore.setText(qualityScore);
 			} else if (capturedIris.getIrisType().contains(RegistrationConstants.RIGHT)) {
-				rightIrisImage.setImage(convertBytesToImage(capturedIris.getIris()));
-				rightIrisQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
+				rightIrisImage.setImage(bioservice.isMdmEnabled()
+						? bioservice.getBioStreamImage(capturedIris.getIrisType(), capturedIris.getNumOfIrisRetry())
+						: convertBytesToImage(capturedIris.getIris()));
+				rightIrisQualityScore.setText(qualityScore);
 			}
 		}
 	}
@@ -352,12 +367,82 @@ public class IrisCaptureController extends BaseController {
 				}
 				irisProgress.setProgress(0);
 
+				final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<MouseEvent>() {
+					public void handle(final MouseEvent mouseEvent) {
+						LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+								"Mouse Event by attempt Started");
+						try {
+							if (bioservice.isMdmEnabled()) {
+								IrisDetailsDTO detailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
+
+								if (detailsDTO != null) {
+									String eventString = mouseEvent.toString();
+									int index = eventString.indexOf(RegistrationConstants.RETRY_ATTEMPT_ID);
+
+									if (index == -1) {
+										String text = "Text[text=";
+										index = eventString.indexOf(text) + text.length() + 1;
+
+									} else {
+										index = index + RegistrationConstants.RETRY_ATTEMPT_ID.length();
+									}
+
+									if (index != -1) {
+
+										int attempt = Character.getNumericValue(eventString.charAt(index));
+										LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+												"Updating bio info for bioTye : " + detailsDTO.getIrisType()
+														+ " , for attempt : " + attempt);
+
+										ImageView streamImage;
+										Label qualityText;
+										ProgressBar progressBar;
+										Label qualityScore;
+										if (detailsDTO.getIrisType().contains(RegistrationConstants.LEFT)) {
+
+											// Set Stream image
+											streamImage = leftIrisImage;
+
+											qualityText = leftIrisQualityScore;
+
+										} else {
+											// Set Stream image
+											streamImage = rightIrisImage;
+
+											qualityText = rightIrisQualityScore;
+
+										}
+
+										progressBar = irisProgress;
+										qualityScore = irisQuality;
+
+										updateByAttempt(getIrisBySelectedPane().findFirst().get().getIrisType(),
+												attempt, streamImage, qualityText, progressBar, qualityScore);
+										
+										LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+												"Mouse Event by attempt Ended");
+									}
+								}
+							}
+						} catch (RuntimeException runtimeException) {
+							LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+									runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+						}
+					}
+
+				};
+
 				for (int attempt = 0; attempt < Integer
 						.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)); attempt++) {
 					irisRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1)).getStyleClass().clear();
 					irisRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1)).getStyleClass()
 							.add(RegistrationConstants.QUALITY_LABEL_GREY);
+
+					irisRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (attempt + 1))
+							.setOnMouseClicked(mouseEventHandler);
 				}
+
 			}
 			// Get the Iris from RegistrationDTO based on selected Iris Pane
 			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
@@ -376,9 +461,13 @@ public class IrisCaptureController extends BaseController {
 			// 3. If iris is not forced captured
 			// 4. If iris is an exception iris
 			int retries = 0;
+			double qualityScore = 0;
 			if (irisDetailsDTO != null) {
 				retries = irisDetailsDTO.getIrisType().contains(RegistrationConstants.LEFT) ? leftIrisCount
 						: rightIrisCount;
+				qualityScore = bioservice.isMdmEnabled()
+						? bioservice.getBioQualityScores(irisDetailsDTO.getIrisType(), retries)
+						: irisDetailsDTO.getQualityScore();
 			}
 			if (!isExceptionIris && (irisDetailsDTO == null
 					|| (retries < Integer
@@ -387,14 +476,17 @@ public class IrisCaptureController extends BaseController {
 				scanIris.setDisable(false);
 			}
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore() / 100 : 0);
-				irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int) irisDetailsDTO.getQualityScore())
-						.concat(RegistrationConstants.PERCENTAGE) : RegistrationConstants.EMPTY);
+				irisProgress.setProgress(irisDetailsDTO != null ? qualityScore / 100 : 0);
+				irisQuality.setText(irisDetailsDTO != null
+						? getQualityScore(qualityScore)
+						: RegistrationConstants.EMPTY);
 
 				if (irisDetailsDTO != null) {
-					updateRetriesBox(irisDetailsDTO.getQualityScore(),
+
+					displayCapturedIris();
+					updateRetriesBox(irisDetailsDTO,
 							Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)),
-							irisDetailsDTO.getNumOfIrisRetry());
+							retries);
 				}
 			}
 
@@ -415,29 +507,26 @@ public class IrisCaptureController extends BaseController {
 		rightIrisCount = 0;
 	}
 
-	private void updateRetriesBox(double quality, double threshold, int retries) {
-		if (quality >= threshold) {
-			clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, retries);
-			irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
-			irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
-			irisQuality.getStyleClass().removeAll(RegistrationConstants.LABEL_RED);
-			irisQuality.getStyleClass().add(RegistrationConstants.LABEL_GREEN);
-		} else {
-			clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, retries);
-			irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
-			irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
-			irisQuality.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
-			irisQuality.getStyleClass().add(RegistrationConstants.LABEL_RED);
-		}
-		if (retries > 1 && quality < threshold) {
-			for (int ret = retries; ret > 0; --ret) {
-				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, ret);
+	private void updateRetriesBox(IrisDetailsDTO irisDetailsDTO, double threshold, int retries) {
+
+		for (int attempt = 1; attempt <= retries; attempt++) {
+			double qualityScore = bioservice.isMdmEnabled() ? bioservice.getBioQualityScores(irisDetailsDTO.getIrisType(), attempt) : irisDetailsDTO.getQualityScore();
+			if (qualityScore >= threshold) {
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, attempt);
+				irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
+				irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
+				irisQuality.getStyleClass().removeAll(RegistrationConstants.LABEL_RED);
+				irisQuality.getStyleClass().add(RegistrationConstants.LABEL_GREEN);
+			} else {
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, attempt);
+				irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_GREEN);
+				irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
+				irisQuality.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
+				irisQuality.getStyleClass().add(RegistrationConstants.LABEL_RED);
 			}
-		} else if (retries > 1 && quality >= threshold) {
-			for (int ret = retries; ret > 0; --ret) {
-				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, ret);
-			}
+
 		}
+
 	}
 
 	/**
@@ -472,7 +561,8 @@ public class IrisCaptureController extends BaseController {
 				if (bioservice.isMdmEnabled()) {
 					streamer.startStream(new RequestDetail(RegistrationConstants.IRIS_DOUBLE,
 							getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2,
-							getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), irisException), scanPopUpViewController.getScanImage(), irisClickedImage);
+							getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), irisException),
+							scanPopUpViewController.getScanImage(), irisClickedImage);
 				}
 			}
 			// Disable the scan button
@@ -509,7 +599,7 @@ public class IrisCaptureController extends BaseController {
 			try {
 				leftTempIrisDetail = getIrises().stream()
 						.filter((iris) -> iris.getIrisType().contains(RegistrationConstants.LEFT)).findFirst().get();
-				
+
 				getIrises().remove(leftTempIrisDetail);
 
 				rightTempIrisDetail = getIrises().stream()
@@ -519,18 +609,22 @@ public class IrisCaptureController extends BaseController {
 			} catch (Exception exception) {
 			}
 
+			int leftEyeAttempt = leftTempIrisDetail != null ? leftTempIrisDetail.getNumOfIrisRetry() + 1 : 1;
+			int rightEyeAttempt = rightTempIrisDetail != null ? rightTempIrisDetail.getNumOfIrisRetry() + 1 : 1;
+
 			try {
-				bioservice.getIrisImageAsDTO(irisDetailsDTO, new RequestDetail(
-						irisType.concat(RegistrationConstants.EYE),
-						getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2, 
-						getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), irisException));
+				bioservice.getIrisImageAsDTO(irisDetailsDTO,
+						new RequestDetail(irisType.concat(RegistrationConstants.EYE),
+								getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT), 2,
+								getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD), irisException),
+						leftEyeAttempt, rightEyeAttempt);
 				streamer.stop();
 			} catch (RegBaseCheckedException | IOException runtimeException) {
 				streamer.stop();
-				
+
 				getIrises().add(leftTempIrisDetail);
 				getIrises().add(rightTempIrisDetail);
-				
+
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
@@ -544,48 +638,61 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisDetailsDTO.isCaptured()) {
 
-				
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				if (!bioservice.isMdmEnabled()) {
-					
-					if(irisType.contains(RegistrationConstants.LEFT) && rightTempIrisDetail!=null) {
+
+					if (irisType.contains(RegistrationConstants.LEFT) && rightTempIrisDetail != null) {
 						getIrises().add(rightTempIrisDetail);
-					} else if(leftTempIrisDetail!=null){
+					} else if (leftTempIrisDetail != null) {
 						getIrises().add(leftTempIrisDetail);
 					}
 					scanPopUpViewController.getScanImage()
 							.setImage(convertBytesToImage(irisDetailsDTO.getIrises().get(0).getIris()));
-				} else {
-					streamer.setStreamImageToImageView();
 				}
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 				irisDetailsDTO.getIrises().forEach((iris) -> {
-					if (!bioservice.isMdmEnabled())
+					if (!bioservice.isMdmEnabled()) {
 						scanPopUpViewController.getScanImage().setImage(convertBytesToImage(iris.getIris()));
+					}
 					String typeIris = iris.getIrisType();
+					int attempt = typeIris.equals(RegistrationConstants.LEFT_EYE) ? leftEyeAttempt : rightEyeAttempt;
+
+//					// Add Bio Stream image
+//					streamer.setBioStreamImages(convertBytesToImage(iris.getIris()), iris.getIrisType(), attempt);
+
+					double qualityScore = bioservice.isMdmEnabled() ? bioservice.getBioQualityScores(typeIris, attempt)
+							: iris.getQualityScore();
 					if (typeIris.contains(RegistrationConstants.LEFT)) {
 						leftIrisCount++;
 						iris.setNumOfIrisRetry(leftIrisCount);
-						leftIrisImage.setImage(convertBytesToImage(iris.getIris()));
+						leftIrisImage.setImage(
+								bioservice.isMdmEnabled() ? bioservice.getBioStreamImage(iris.getIrisType(), attempt)
+										: convertBytesToImage(iris.getIris()));
 						leftIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
-						leftIrisQualityScore.setText(getQualityScore(iris.getQualityScore()));
+						leftIrisQualityScore.setText(getQualityScore(qualityScore));
 						leftIrisAttempts.setText(String.valueOf(iris.getNumOfIrisRetry()));
+
 					} else {
 						rightIrisCount++;
 						iris.setNumOfIrisRetry(rightIrisCount);
-						rightIrisImage.setImage(convertBytesToImage(iris.getIris()));
+						rightIrisImage.setImage(
+								bioservice.isMdmEnabled() ? bioservice.getBioStreamImage(iris.getIrisType(), attempt)
+										: convertBytesToImage(iris.getIris()));
 						rightIrisPane.getStyleClass().add(RegistrationConstants.IRIS_PANES_SELECTED);
-						rightIrisQualityScore.setText(getQualityScore(iris.getQualityScore()));
+						rightIrisQualityScore.setText(getQualityScore(qualityScore));
 						rightIrisAttempts.setText(String.valueOf(iris.getNumOfIrisRetry()));
+
 					}
+
 					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-						irisProgress.setProgress(Double.valueOf(
-								getQualityScore(iris.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0])
-								/ 100);
-						irisQuality.setText(getQualityScore(iris.getQualityScore()));
-						if (Double.valueOf(getQualityScore(iris.getQualityScore())
-								.split(RegistrationConstants.PERCENTAGE)[0]) >= Double.valueOf(
-										getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD))) {
+						irisProgress.setProgress(
+								Double.valueOf(getQualityScore(qualityScore).split(RegistrationConstants.PERCENTAGE)[0])
+										/ 100);
+						irisQuality.setText(getQualityScore(qualityScore));
+						if (Double.valueOf(
+								getQualityScore(qualityScore).split(RegistrationConstants.PERCENTAGE)[0]) >= Double
+										.valueOf(
+												getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD))) {
 							clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, iris.getNumOfIrisRetry());
 							irisProgress.getStyleClass().removeAll(RegistrationConstants.PROGRESS_BAR_RED);
 							irisProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_GREEN);
@@ -604,10 +711,17 @@ public class IrisCaptureController extends BaseController {
 				});
 				if (validateIris()) {
 					continueBtn.setDisable(false);
-				}else {
+				} else {
 					continueBtn.setDisable(true);
-					if(validateIrisLocalDedup(getIrises()))
-						generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.DUPLICATE+" "+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS)+" "+RegistrationConstants.FOUND);
+					if(dedupeMessage!=null)
+						dedupeMessage.setVisible(true);
+					if (validateIrisLocalDedup(getIrises()))
+						generateAlert(RegistrationConstants.ALERT_INFORMATION,
+								RegistrationConstants.DUPLICATE + " "
+										+ (String) SessionContext.map().get(RegistrationConstants.DUPLICATE_IRIS) + " "
+										+ RegistrationConstants.FOUND);
+					if(dedupeMessage!=null)
+						dedupeMessage.setVisible(false);
 				}
 
 			} else {
@@ -626,24 +740,23 @@ public class IrisCaptureController extends BaseController {
 		} finally {
 			selectedIris.requestFocus();
 
-			
 		}
 	}
-	
+
 	private boolean validateIrisLocalDedup(List<IrisDetailsDTO> irises) {
 
-		if((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
+		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))
 			return true;
-		
-			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-			authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
-			authenticationValidatorDTO.setIrisDetails(irises);
-			authenticationValidatorDTO.setAuthValidationType("multiple");
-			boolean isValid =  authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
-			if(null != getValueFromApplicationContext("IDENTY_SDK")) {
-				isValid = false;
-			}
-			return isValid;
+
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+		authenticationValidatorDTO.setIrisDetails(irises);
+		authenticationValidatorDTO.setAuthValidationType("multiple");
+		boolean isValid = authenticationService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
+		if (null != getValueFromApplicationContext("IDENTY_SDK")) {
+			isValid = false;
+		}
+		return isValid;
 	}
 
 	/**
@@ -830,8 +943,11 @@ public class IrisCaptureController extends BaseController {
 			}
 			if (retries == 0)
 				retries = 3;
-			return irisDetailsDTO.getQualityScore() >= irisThreshold
-					|| (Double.compare(irisDetailsDTO.getQualityScore(), irisThreshold) < 0 && retries == numOfRetries)
+			double qualityScore = bioservice.isMdmEnabled()
+					? bioservice.getHighQualityScoreByBioType(irisDetailsDTO.getIrisType())
+					: irisDetailsDTO.getQualityScore();
+			return qualityScore >= irisThreshold
+					|| (Double.compare(qualityScore, irisThreshold) < 0 && retries == numOfRetries)
 					|| irisDetailsDTO.isForceCaptured();
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCORE_VALIDATION_EXP,
@@ -862,7 +978,7 @@ public class IrisCaptureController extends BaseController {
 
 	public void clearIrisData() {
 
-		BioServiceImpl.clearCaptures(RegistrationConstants.TWO_IRIS);
+		clearBiometrics(RegistrationConstants.IRIS);
 
 		leftIrisCount = 0;
 		rightIrisCount = 0;
@@ -946,7 +1062,7 @@ public class IrisCaptureController extends BaseController {
 
 		if (anyIrisException(RegistrationConstants.LEFT) && anyIrisException(RegistrationConstants.RIGHT)) {
 			continueBtn.setDisable(false);
-		}else {
+		} else {
 			populateException();
 		}
 
@@ -1012,4 +1128,5 @@ public class IrisCaptureController extends BaseController {
 		irisRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (retries)).getStyleClass().clear();
 		irisRetryBox.lookup(RegistrationConstants.RETRY_ATTEMPT + (retries)).getStyleClass().add(styleClass);
 	}
+
 }

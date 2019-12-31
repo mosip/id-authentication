@@ -590,8 +590,8 @@ public class MapperUtils {
 	public static RegisteredDevice mapRegisteredDeviceDto(RegisteredDevicePostReqDto dto, String digitalIdJson) {
 		
 		RegisteredDevice entity = new RegisteredDevice();
-		entity.setDeviceTypeCode(dto.getDeviceTypeCode());
-        entity.setDevicesTypeCode(dto.getDeviceSTypeCode());
+		entity.setDeviceTypeCode(dto.getDigitalIdDto().getDeviceTypeCode());
+        entity.setDeviceSTypeCode(dto.getDigitalIdDto().getDeviceSTypeCode());
         entity.setStatusCode(dto.getStatusCode());
         entity.setDeviceId(dto.getDeviceId());
 		entity.setDeviceSubId(dto.getDeviceSubId());
@@ -610,9 +610,9 @@ public class MapperUtils {
 		entity.setExpiryDate(dto.getExpiryDate());
 		entity.setCertificationLevel(dto.getCertificationLevel());
         entity.setFoundationalTPId(dto.getFoundationalTPId());
-        entity.setFoundationalTrustSignature(dto.getFoundationalTrustSignature());
+       /* entity.setFoundationalTrustSignature(dto.getFoundationalTrustSignature());
         entity.setFoundationalTrustCertificate(dto.getFoundationalTrustCertificate());      
-        entity.setDeviceProviderSignature(dto.getDeviceProviderSignature());
+        entity.setDeviceProviderSignature(dto.getDeviceProviderSignature());*/
 		
 		return entity;
 		

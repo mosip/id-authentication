@@ -1,4 +1,5 @@
 package io.mosip.authentication.common.service.validator;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -249,9 +250,16 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateCount(AuthRequestDTO authRequestDTO, Errors errors, List<DataDTO> bioData) {
 		if (!errors.hasErrors()) {
-			if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_IMG_COMPOSITE)) {
+			BioAuthType[] fingerTypes;
+			if(FMR_ENABLED_TEST.test(env)) {
+				fingerTypes = new BioAuthType[] {BioAuthType.FGR_IMG, BioAuthType.FGR_MIN, BioAuthType.FGR_IMG_COMPOSITE, BioAuthType.FGR_MIN_COMPOSITE};
+			} else {
+				fingerTypes = new BioAuthType[] {BioAuthType.FGR_IMG, BioAuthType.FGR_IMG_COMPOSITE};
+			}
+			if (isAuthtypeEnabled(fingerTypes)) {
 				validateFinger(authRequestDTO, bioData, errors);
 			}
+			
 			if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
 				validateIris(authRequestDTO, bioData, errors);
 			}
@@ -393,7 +401,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<DataDTO> bioInfo, Errors errors) {
-		if (isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)) {
+		if (FMR_ENABLED_TEST.test(env) && isAvailableBioType(bioInfo, BioAuthType.FGR_MIN)) {
 			validateFingerRequestCount(authRequestDTO, errors, BioAuthType.FGR_MIN.getType());
 		}
 		if (isAvailableBioType(bioInfo, BioAuthType.FGR_IMG)) {

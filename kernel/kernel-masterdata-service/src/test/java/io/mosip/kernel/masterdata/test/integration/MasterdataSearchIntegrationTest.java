@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -88,6 +89,7 @@ import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DeviceUtils;
 import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -162,6 +164,9 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private DeviceUtils deviceUtil;
+	
+	@MockBean
+	private AuditUtil auditUtil;
 
 	private List<Zone> zones;
 	private ZoneUser zoneUser;
@@ -201,6 +206,7 @@ public class MasterdataSearchIntegrationTest {
 	private SearchDto templateSearchDto;
 	private SearchDto titleSearchDto;
 	private SearchDto holidaySearchDto;
+	private SearchDto locationSearchDto;
 	private RequestWrapper<SearchDto> request;
 	private RequestWrapper<SearchDto> machineRequestDto;
 	private RequestWrapper<SearchDto> deviceRequestDto;
@@ -209,6 +215,9 @@ public class MasterdataSearchIntegrationTest {
 	private RequestWrapper<SearchDto> templateRequestDto;
 	private RequestWrapper<SearchDto> titleRequestDto;
 	private RequestWrapper<SearchDto> holidayRequestDto;
+	private RequestWrapper<SearchDto> locationRequestDto;
+	
+	private SearchFilter locationFilter;
 
 	private DocumentType documentType;
 	private List<DocumentType> documentTypes;
@@ -396,7 +405,19 @@ public class MasterdataSearchIntegrationTest {
 		holidaySearchDto.setLanguageCode("ara");
 		holidaySearchDto.setSort(Arrays.asList());
 		holidaySearchDto.setPagination(pagination);
-		docCatTypeRequestDto.setRequest(holidaySearchDto);
+		holidayRequestDto.setRequest(holidaySearchDto);
+		
+		locationRequestDto = new RequestWrapper<>();
+		locationFilter = new SearchFilter();
+		locationFilter.setColumnName("isActive");
+		locationFilter.setType("equals");
+		locationFilter.setValue("true");
+		locationSearchDto = new SearchDto();
+		locationSearchDto.setFilters(Arrays.asList(locationFilter));
+		locationSearchDto.setLanguageCode("eng");
+		locationSearchDto.setSort(Arrays.asList());
+		locationSearchDto.setPagination(pagination);
+		locationRequestDto.setRequest(locationSearchDto);
 		
 		machines=new ArrayList<>();
 		Machine machine=new Machine();
@@ -450,6 +471,7 @@ public class MasterdataSearchIntegrationTest {
 		zoneFilter.setColumnName("zone");
 		zoneFilter.setType("equals");
 		zoneFilter.setValue("ZONE1");
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 	}
 
@@ -2300,5 +2322,36 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/holidays/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void filterLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("Region");
+		filterDto.setType("all");
+		filterDto.setText("");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(filterColumnValidator.validate(Mockito.eq(FilterDto.class), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList("true", "false"));
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("global-admin")
+	public void SearchLocationTest() throws Exception
+	{
+		//Page<Location> pageContentData = new PageImpl<>(Arrays.asList(locationRegionEntity));
+		String json = objectMapper.writeValueAsString(locationRequestDto);
+		//when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+		//.thenReturn(pageContentData);
+		mockMvc.perform(post("/locations/search").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
+	}
 }

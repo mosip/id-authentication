@@ -13,13 +13,14 @@ import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
-
 
 /**
  * Device provider management controller
@@ -33,16 +34,28 @@ import io.swagger.annotations.Api;
 public class DeviceProviderManagementController {
 
 	@Autowired
-	private DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> deviceProviderService;
+	private AuditUtil auditUtil;
 
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
+	@Autowired
+	private DeviceProviderService<ResponseDto, ValidateDeviceDto, ValidateDeviceHistoryDto, DeviceProviderDto, DeviceProviderExtnDto> deviceProviderService;
+
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR','RESIDENT')")
 	@PostMapping("/validate")
 	@ResponseFilter
 	public ResponseWrapper<ResponseDto> validateDeviceProvider(
 			@RequestBody @Valid RequestWrapper<ValidateDeviceDto> request) {
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(
-				deviceProviderService.validateDeviceProviders(request.getRequest()));
+		auditUtil.auditRequest(
+				MasterDataConstant.DEVICE_VALIDATION_API_CALLED + ValidateDeviceDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DEVICE_VALIDATION_API_CALLED + ValidateDeviceDto.class.getSimpleName(), "ADM-600");
+		responseWrapper.setResponse(deviceProviderService.validateDeviceProviders(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.DEVICE_VALIDATION_SUCCESS, ValidateDeviceDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS_DESC,
+						ValidateDeviceDto.class.getSimpleName()),
+				"ADM-601");
 		return responseWrapper;
 
 	}
@@ -50,9 +63,22 @@ public class DeviceProviderManagementController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
 	@PostMapping("/validate/history")
 	@ResponseFilter
-	public ResponseWrapper<ResponseDto> validateDeviceProviderHistory(@RequestBody @Valid RequestWrapper<ValidateDeviceHistoryDto> request) {
+	public ResponseWrapper<ResponseDto> validateDeviceProviderHistory(
+			@RequestBody @Valid RequestWrapper<ValidateDeviceHistoryDto> request) {
+		auditUtil.auditRequest(
+				MasterDataConstant.DEVICE_VALIDATION_HISTORY_API_CALLED
+						+ ValidateDeviceHistoryDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM, MasterDataConstant.DEVICE_VALIDATION_HISTORY_API_CALLED
+						+ ValidateDeviceHistoryDto.class.getSimpleName(),
+				"ADM-602");
+
 		ResponseWrapper<ResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceProviderService.validateDeviceProviderHistory(request.getRequest()));
+		auditUtil.auditRequest(
+				MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS + ValidateDeviceHistoryDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.DEVICE_VALIDATION_HISTORY_SUCCESS_DESC + ValidateDeviceDto.class.getSimpleName(), "ADM-604");
+
 		return responseWrapper;
 	}
 

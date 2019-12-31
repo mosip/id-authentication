@@ -1,18 +1,15 @@
 package io.mosip.preregistration.batchjob.utils;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjob.audit.AuditUtil;
 import io.mosip.preregistration.batchjob.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjob.repository.utils.BatchJpaRepositoryImpl;
@@ -23,9 +20,9 @@ import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.AuthTokenUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
@@ -50,7 +47,7 @@ public class ExpiredStatusUtil {
 
 	@Autowired
 	AuditUtil auditLogUtil;
-	
+
 	@Autowired
 	private AuthTokenUtil tokenUtil;
 
@@ -58,42 +55,36 @@ public class ExpiredStatusUtil {
 	String cronExpressionForExpiredStatus;
 	@Value("${mosip.batch.token.authmanager.userName}")
 	private String auditUsername;
-	
+
 	@Value("${mosip.batch.token.authmanager.appId}")
 	private String auditUserId;
-
 
 	/**
 	 * @return Response dto
 	 */
 
 	public MainResponseDTO<String> expireAppointments() {
-		
-		HttpHeaders headers=tokenUtil.getTokenHeader();
 
-		LocalDate currentDate = LocalDate.now();
+		HttpHeaders headers = tokenUtil.getTokenHeader();
+
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 		List<RegistrationBookingEntity> bookedPreIdList = null;
 
-		CronSequenceGenerator generator = new CronSequenceGenerator(cronExpressionForExpiredStatus);
-		Date nextExecutionDate = generator.next(new Date());
-		LocalDate nextExecutionLocalDate = nextExecutionDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		long dateDiff = ChronoUnit.DAYS.between(LocalDate.now(), nextExecutionLocalDate);
-
 		try {
-			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate, dateDiff);
+			bookedPreIdList = batchServiceDAO.getAllOldDateBooking();
 
 			bookedPreIdList.forEach(iterate -> {
 				String preRegId = iterate.getDemographicEntity().getPreRegistrationId();
-				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
-				if (demographicEntity != null) {
+				if (iterate.getDemographicEntity() != null) {
 
-					if (demographicEntity.getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
-						demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
-						batchServiceDAO.updateApplicantDemographic(demographicEntity);
+					if (iterate.getDemographicEntity().getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
+						iterate.getDemographicEntity().setStatusCode(StatusCodes.EXPIRED.getCode());
+						iterate.getDemographicEntity().setUpdatedBy(auditUserId);
+						iterate.getDemographicEntity().setUpdateDateTime(DateUtils.parseDateToLocalDateTime(new Date()));
+						batchServiceDAO.updateApplicantDemographic(iterate.getDemographicEntity());
 					}
 					log.info("sessionId", "idType", "id",
 							"Update the status successfully into Registration Appointment table and Demographic table for Pre-RegistrationId: "
@@ -110,11 +101,11 @@ public class ExpiredStatusUtil {
 						EventType.BUSINESS.toString(),
 						"Updated the expired status & the expired PreRegistration ids successfully saved in the database",
 						AuditLogVariables.PRE_REGISTRATION_ID.toString(), auditUserId,
-						auditUsername, null,headers);
+						auditUsername, null, headers);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Expired status failed to update", AuditLogVariables.NO_ID.toString(),
-						auditUserId, auditUsername, null,headers);
+						auditUserId, auditUsername, null, headers);
 			}
 		}
 		response.setResponsetime(GenericUtil.getCurrentResponseTime());
@@ -132,7 +123,7 @@ public class ExpiredStatusUtil {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
-			String userId, String userName, String refId,HttpHeaders headers) {
+			String userId, String userName, String refId, HttpHeaders headers) {
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -145,7 +136,7 @@ public class ExpiredStatusUtil {
 		auditRequestDto.setModuleId(AuditLogVariables.BAT.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.EXPIRED_BATCH_SERVICE.toString());
 
-		auditLogUtil.saveAuditDetails(auditRequestDto,headers);
+		auditLogUtil.saveAuditDetails(auditRequestDto, headers);
 	}
 
 }

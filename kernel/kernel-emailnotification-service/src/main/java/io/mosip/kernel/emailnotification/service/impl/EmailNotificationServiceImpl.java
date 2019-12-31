@@ -50,6 +50,10 @@ public class EmailNotificationServiceImpl implements EmailNotification<Multipart
 	public ResponseDto sendEmail(String[] mailTo, String[] mailCc, String mailSubject, String mailContent,
 			MultipartFile[] attachments) {
 		ResponseDto dto = new ResponseDto();
+		if(mailTo!=null)
+		{
+			System.out.println("To Request : "+String.join(",", mailTo));
+		}
 		send(mailTo, mailCc, mailSubject, mailContent, attachments);
 		dto.setStatus(MailNotifierConstants.MESSAGE_SUCCESS_STATUS.getValue());
 		dto.setMessage(MailNotifierConstants.MESSAGE_REQUEST_SENT.getValue());

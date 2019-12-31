@@ -127,13 +127,52 @@ Response response = client.newCall(request).execute();
     "symmetricKey": "sq9oJCdwV-mHEdxEXRh91WkQcGJ6Q83quNaP9OZa_p0"
  }
   ```
+  *Sign pdf*
   
+  *Request*
+  
+  ```
+final String DEST = DEST;
+final String SRC = SRC;
+File outFile = new File(DEST);
+File inFile = new File(SRC);
+RestTemplate restTemplate = new RestTemplate();
+RequestWrapper<PDFSignatureRequestDto> requestWrapper = new RequestWrapper<>();
+PDFSignatureRequestDto request = new PDFSignatureRequestDto(400, 400, 600, 600, "signing", 1, "password");
+		request.setApplicationId("KERNEL");
+		request.setReferenceId("SIGN");
+		request.setData(Base64.encodeBase64String(FileUtils.readFileToByteArray(inFile)));
+		request.setTimeStamp("2019-12-10T06:12:52.994Z");
+		requestWrapper.setRequest(request);
+		HttpHeaders headers= new HttpHeaders();
+		headers.add("Cookie", Token);
+HttpEntity<RequestWrapper<PDFSignatureRequestDto>> httpEntity = new HttpEntity<RequestWrapper<PDFSignatureRequestDto>>(requestWrapper, headers);
+ResponseEntity<String> responseEntity =restTemplate.exchange("http://HOST:PORT/v1/keymanager/pdf/sign", HttpMethod.POST, httpEntity, String.class);
+ObjectMapper mapper= new ObjectMapper();
+JsonNode jsonNode= mapper.readTree(responseEntity.getBody());
+SignatureResponseDto signatureResponseDto=mapper.readValue(jsonNode.get("response").toString(), SignatureResponseDto.class);
+FileUtils.writeByteArrayToFile(outFile,Base64.decodeBase64(signatureResponseDto.getData()));
+ ```
+ 
+*Response*
+  
+Status:200
+  
+```
+ {
+    "data": "sq9oJCdwV-mHEdxEXRh91WkQcGJ6Q83quNaP9OZa_p0"
+ }
+```
+  
+ 
+    
   
 ## Setup steps:
 
 ### Linux (Docker)
 
 1. (First time only) Rename the  kernel-keymanager-softhsm Dockerfile in softhsm directory to `Dockerfile`. Build kernel-keymanager-softhsm docker image using this Dockerfile with command:
+
 ```
 docker build --build-arg softhsm_pin=1234 --tag kernel-keymanager-softhsm:0.1 .
 ```

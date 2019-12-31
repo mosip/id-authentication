@@ -1,5 +1,9 @@
 package io.mosip.idrepository.identity.httpfilter;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.APPLICATION_VERSION;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_REQUEST;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.UNKNOWN_ERROR;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -13,8 +17,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.httpfilter.BaseIdRepoFilter;
@@ -72,14 +74,14 @@ public final class IdRepoFilter extends BaseIdRepoFilter {
 			try {
 				IdResponseDTO idResponse = new IdResponseDTO();
 				idResponse.setId(id.get(READ));
-				idResponse.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-				ServiceError errors = new ServiceError(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
-						IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
+				idResponse.setVersion(env.getProperty(APPLICATION_VERSION));
+				ServiceError errors = new ServiceError(INVALID_REQUEST.getErrorCode(),
+						INVALID_REQUEST.getErrorMessage());
 				idResponse.setErrors(Collections.singletonList(errors));
 				return mapper.writeValueAsString(idResponse);
 			} catch (IOException e) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
-				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UNKNOWN_ERROR);
+				throw new IdRepoAppUncheckedException(UNKNOWN_ERROR);
 			}
 		} else {
 			return null;

@@ -17,23 +17,27 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.LocationCreateDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPostResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationPutResponseDto;
 import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,6 +65,9 @@ public class LocationController {
 	@Autowired
 	private LocationService locationHierarchyService;
 
+	@Autowired
+	private AuditUtil auditUtil;
+
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
 	 * 
@@ -68,7 +75,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','RESIDENT')")
 	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public ResponseWrapper<LocationHierarchyResponseDto> getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -76,13 +83,27 @@ public class LocationController {
 		responseWrapper.setResponse(locationHierarchyService.getLocationDetails(langcode));
 		return responseWrapper;
 	}
+	
+
+	/**
+	 * 
+	 * @param RequestWrapper<LocationDto>
+	 *            
+	 * @return ResponseWrapper<LocationPostResponseDto>
+	 */
+	
 
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
-	public ResponseWrapper<Location> createLocationHierarchyDetails(
+	public ResponseWrapper<LocationPostResponseDto> createLocationHierarchyDetails(
 			@RequestBody @Valid RequestWrapper<LocationCreateDto> locationRequestDto) {
-		return locationHierarchyService.createLocation(locationRequestDto.getRequest());
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + LocationCreateDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + LocationCreateDto.class.getSimpleName(), "ADM-568");
+		ResponseWrapper<LocationPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.createLocation(locationRequestDto.getRequest()));
+		return responseWrapper;
 	}
 
 	/**
@@ -108,7 +129,7 @@ public class LocationController {
 	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','RESIDENT')")
 	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public ResponseWrapper<LocationResponseDto> getLocationDataByHierarchyName(
@@ -122,17 +143,19 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationRequestDto
-	 *            - location request DTO
-	 * @return PostLocationCodeResponseDto
+	 * @param RequestWrapper<LocationDto>
+	 *            
+	 * @return ResponseWrapper<LocationPutResponseDto>
 	 */
 	@ResponseFilter
 	@PutMapping
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
-	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
+	public ResponseWrapper<LocationPutResponseDto> updateLocationHierarchyDetails(
 			@Valid @RequestBody RequestWrapper<LocationDto> locationRequestDto) {
-
-		ResponseWrapper<PostLocationCodeResponseDto> responseWrapper = new ResponseWrapper<>();
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + LocationDto.class.getSimpleName(), "ADM-569");
+		ResponseWrapper<LocationPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.updateLocationDetails(locationRequestDto.getRequest()));
 		return responseWrapper;
 	}
@@ -232,8 +255,15 @@ public class LocationController {
 	@PostMapping("/search")
 	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.SEARCH_API_IS_CALLED + LocationSearchDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SEARCH_API_IS_CALLED + LocationSearchDto.class.getSimpleName(),"ADM-570");
 		ResponseWrapper<PageResponseDto<LocationSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, LocationSearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, LocationSearchDto.class.getSimpleName()),"ADM-571");
 		return responseWrapper;
 	}
 
@@ -249,8 +279,31 @@ public class LocationController {
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> locationFilterValues(
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		auditUtil.auditRequest(MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.FILTER_API_IS_CALLED + LocationDto.class.getSimpleName(),"ADM-572");
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.locationFilterValues(request.getRequest()));
+		auditUtil.auditRequest(MasterDataConstant.SUCCESSFUL_FILTER + LocationDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.SUCCESSFUL_FILTER_DESC + LocationDto.class.getSimpleName(),"ADM-573");
+		return responseWrapper;
+	}
+	
+	/**
+	 * This method returns a list of holidays containing a particular language code
+	 * for the given country level
+	 * 
+	 * @param langCode
+	 *            input parameter language code
+	 * @return {@link LocationLevelResponseDto}
+	 */
+	@ResponseFilter
+	@GetMapping("level/{langcode}")
+	public ResponseWrapper<LocationLevelResponseDto> getLocationCodeByLangCode(
+			@PathVariable("langcode") String langCode) {
+		ResponseWrapper<LocationLevelResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.getLocationCodeByLangCode(langCode));
 		return responseWrapper;
 	}
 

@@ -71,6 +71,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	private String DMZ_SERVER_PASSWORD = "registration.processor.dmz.server.password";
 
 	private String REGPROC_PPK = "registration.processor.vm.ppk";
+	
+	private final String CREATING_NEW_CONNECTION = "creating new channelSftp connection";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -371,7 +373,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				"FileManagerImpl::getSftpConnection()::entry");
 		synchronized (this) {
 			if (channelSftp != null && channelSftp.isConnected() && !channelSftp.isClosed()) {
-				return channelSftp;
+				try {
+					if (channelSftp.pwd().length() > 0) {
+						return channelSftp;
+					}
+				} catch (SftpException e) {
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+							"", "FileManagerImpl::getSftpConnection()::" + CREATING_NEW_CONNECTION);
+				}
 			}
 		}
 		String dmzServerPwd = env.getProperty(DMZ_SERVER_PASSWORD);

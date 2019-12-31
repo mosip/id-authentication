@@ -1,5 +1,11 @@
 package io.mosip.idrepository.identity.controller;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.DATA_VALIDATION_FAILED;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_REQUEST;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.MISSING_INPUT_PARAMETER;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
@@ -49,6 +53,9 @@ import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The Class IdRepoController - Controller class for Identity service.
+ * These services is used by Registration Processor to store/update during 
+ * registration process and ID Authentication to retrieve Identity of an 
+ * Individual for their authentication.
  *
  * @author Manoj SP
  */
@@ -129,7 +136,8 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Adds the identity.
+	 * This service will create a new ID record in ID repository and store corresponding demographic 
+	 * and bio-metric documents.
 	 *
 	 * @param request the request
 	 * @param errors  the errors
@@ -148,7 +156,7 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, ADD_IDENTITY, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw new IdRepoAppException(DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -156,7 +164,7 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Retrieve identity.
+	 * This service will retrieve an ID record from ID repository for a given UIN and identity type as bio/demo/all.
 	 *
 	 * @param uin  the uin
 	 * @param type the type
@@ -164,7 +172,7 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'ID_AUTHENTICATION','RESIDENT')")
 	@GetMapping(path = "/uin/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByUin(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -179,15 +187,14 @@ public class IdRepoController {
 	}
 
 	/**
-	 * This Method will accept rid and type,it will return an response of
-	 * IdResponseDTO.
+	 * This operation will retrieve an ID record from ID repository for a given RID and identity type as bio/demo/all.
 	 *
 	 * @param rid the rid
 	 * @param type the type
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','RESIDENT')")
 	@GetMapping(path = "/rid/{rid}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByRid(@PathVariable String rid,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -197,8 +204,8 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByRid(rid, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
+			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -206,7 +213,7 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Update identity.
+	 * This operation will update an existing ID record in the ID repository for a given UIN.
 	 *
 	 * @param request the request
 	 * @param errors  the errors
@@ -225,7 +232,7 @@ public class IdRepoController {
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, UPDATE_IDENTITY, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw new IdRepoAppException(DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -233,20 +240,20 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Validate type.
+	 * Validate type query parameter.
 	 *
 	 * @param type the type
 	 * @return the string
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	public String validateType(String type) throws IdRepoAppException {
+	private String validateType(String type) throws IdRepoAppException {
 		if (Objects.nonNull(type)) {
 			List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
 			if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, CHECK_TYPE,
-						IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
-				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
+						INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
+				throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 			} else {
 				typeList.contains(allowedTypes.get(0));
 				if (typeList.contains(ALL) || allowedTypes.parallelStream()
@@ -254,9 +261,9 @@ public class IdRepoController {
 					type = ALL;
 				} else if (!allowedTypes.containsAll(typeList)) {
 					mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, CHECK_TYPE,
-							IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
-					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
+							INVALID_INPUT_PARAMETER.getErrorMessage() + typeList);
+					throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 				}
 			}
 		}
@@ -272,7 +279,7 @@ public class IdRepoController {
 	 */
 	private String getUin(Object request) throws IdRepoAppException {
 		Object uin = null;
-		String pathOfUin = env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue());
+		String pathOfUin = env.getProperty(MOSIP_KERNEL_IDREPO_JSON_PATH);
 		try {
 			String identity = mapper.writeValueAsString(request);
 			JsonPath jsonPath = JsonPath.compile(pathOfUin);
@@ -280,11 +287,11 @@ public class IdRepoController {
 			return String.valueOf(uin);
 		} catch (JsonProcessingException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, "getUin", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, e);
+			throw new IdRepoAppException(INVALID_REQUEST, e);
 		} catch (JsonPathException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_CONTROLLER, "getUin", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
-					IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "/" + pathOfUin.replace(".", "/")));
+			throw new IdRepoAppException(MISSING_INPUT_PARAMETER.getErrorCode(), String.format(
+					MISSING_INPUT_PARAMETER.getErrorMessage(), "/" + pathOfUin.replace(".", "/")));
 		}
 	}
 }

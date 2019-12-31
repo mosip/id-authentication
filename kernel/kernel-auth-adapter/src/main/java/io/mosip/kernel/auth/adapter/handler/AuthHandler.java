@@ -1,3 +1,4 @@
+  
 package io.mosip.kernel.auth.adapter.handler;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

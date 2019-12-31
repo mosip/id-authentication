@@ -28,7 +28,7 @@ public interface RegistrationCenterUserRepository
 	 *            the center ID of the reg-center which needs to be decommissioned.
 	 * @return the list of registration centers mapped to users.
 	 */
-	@Query(value = "FROM RegistrationCenterUser ru WHERE ru.registrationCenterUserID.regCenterId =?1 and (ru.isDeleted is null or ru.isDeleted =false) and ru.isActive = true")
+	@Query(value = "FROM RegistrationCenterUser ru WHERE ru.registrationCenterUserID.regCenterId =?1 and (ru.isDeleted is null or ru.isDeleted =false) ")
 	public List<RegistrationCenterUser> registrationCenterUserMappings(String regCenterID);
 
 	/**

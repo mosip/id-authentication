@@ -214,6 +214,7 @@ public class VidControllerTest {
 		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		VidRequestDTO request = new VidRequestDTO();
 		request.setUin(2953190571L);
+		request.setVidType("");
 		req.setRequest(request);
 		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
 		Mockito.when(vidService.generateVid(Mockito.any())).thenReturn(value);
@@ -229,6 +230,7 @@ public class VidControllerTest {
 			RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 			VidRequestDTO request = new VidRequestDTO();
 			request.setUin(2953190571L);
+			request.setVidType("");
 			req.setRequest(request);
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
 			Mockito.when(vidService.generateVid(Mockito.any()))
@@ -286,7 +288,7 @@ public class VidControllerTest {
 
 	@Test
 	public void testData() throws JsonParseException, JsonMappingException, IOException {
-		String s = "{\"ara\":[\"MDDR\",\"أكدال\",\"منَسرَ \",\"QRHS\",\"حي الرياض\",\"HARD\",\"علال التازي\",\"مڭرن\",\"العصام\",\"سيدي الطيبي\",\"مدينة العرفان\",\"ASSM\",\"اولاد اوجيه\",\"ELYF\",\"SDTB\",\"SOUS\",\"OLOJ\",\"بن منصور\",\"مدينة\",\"اليوسفية\",\"مهدية\",\"MOGR\",\"السويسي\",\"BNMR\",\"MEHD\",\"AGDL\",\"SATZ\",\"MNAS\",\"حي حسان\",\"MADI\"],\"fra\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"Médina de Rabat\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\"],\"eng\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\",\"Medina de Rabat\"]}";
+		String s = "{\"ara\":[\"MDDR\",\"أكدال\",\"منَسرَ \",\"QRHS\",\"حي الرياض\",\"HARD\",\"علال التازي\",\"مڭرن\",\"العصام\",\"سيدي الطيبي\",\"مدينة العرفان\",\"ASSM\",\"اولاد اوجيه\",\"ELYF\",\"SDTB\",\"SOUS\",\"OLOJ\",\"بن منصور\",\"مدينة\",\"اليوسفية\",\"مهدية\",\"MOGR\",\"السويسي\",\"BNMR\",\"MEHD\",\"AGDL\",\"SATZ\",\"MNAS\",\"حي حسان\",\"MADI\"],\"fra\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"Médina de Rabat\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\"],\"eng\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\",\"Medina de Rabat\"]}";
 		Map<String, Set<String>> locationDetails = new ObjectMapper().readValue(s,
 				new TypeReference<Map<String, Set<String>>>() {
 				});
