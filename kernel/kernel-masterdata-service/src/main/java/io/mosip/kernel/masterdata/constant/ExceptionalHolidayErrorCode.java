@@ -2,8 +2,8 @@ package io.mosip.kernel.masterdata.constant;
 
 public enum ExceptionalHolidayErrorCode {
 	
-	EXCEPTIONAL_HOLIDAY_FETCH_EXCEPTION("KER-WKDS-019", "Error occured while fetching Exceptional Holidays"),
-	EXCEPTIONAL_HOLIDAY_NOTFOUND("KER-WKDS-020", "Exceptional Holiday not found");
+	EXCEPTIONAL_HOLIDAY_FETCH_EXCEPTION("KER-EHD-001", "Error occured while fetching Exceptional Holidays"),
+	EXCEPTIONAL_HOLIDAY_NOTFOUND("KER-EHD-002", "Exceptional Holiday not found");
 
 	private final String errorCode;
 	private final String errorMessage;
