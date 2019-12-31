@@ -19,7 +19,7 @@ import lombok.Data;
  *
  */
 @Data
-@ApiModel(value = "Machine Type", description = "Machine Type resource")
+//@ApiModel(value = "Machine Type", description = "Machine Type resource")
 public class MachineTypeDto {
 
 	@NotBlank

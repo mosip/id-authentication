@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "DocumentType", description = "DocumentType resource representation")
+//@ApiModel(value = "DocumentType", description = "DocumentType resource representation")
 public class DocumentTypeExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS})

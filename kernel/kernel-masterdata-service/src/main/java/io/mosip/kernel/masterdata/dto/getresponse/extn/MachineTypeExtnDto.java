@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Machine Type", description = "Machine Type resource")
+//@ApiModel(value = "Machine Type", description = "Machine Type resource")
 public class MachineTypeExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS })

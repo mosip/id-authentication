@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Title", description = "Title details")
+//@ApiModel(value = "Title", description = "Title details")
 public class TitleExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS })

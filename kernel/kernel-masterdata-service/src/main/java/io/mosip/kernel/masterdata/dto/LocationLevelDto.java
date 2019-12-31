@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "LocationList", description = "Location list for the country level")
+//@ApiModel(value = "LocationList", description = "Location list for the country level")
 public class LocationLevelDto {
 	
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")

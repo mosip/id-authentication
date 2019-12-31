@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Registration Centers", description = "Registration centers")
+//@ApiModel(value = "Registration Centers", description = "Registration centers")
 public class RegistrationCenterExtnDto extends BaseDto {
 	
 	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.STARTSWITH,FilterTypeEnum.CONTAINS})

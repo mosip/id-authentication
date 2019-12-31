@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Template", description = "Template resource representation")
+//@ApiModel(value = "Template", description = "Template resource representation")
 public class TemplateExtnDto extends BaseDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS })

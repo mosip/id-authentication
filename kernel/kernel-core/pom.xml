@@ -100,6 +100,11 @@
 			<artifactId>swagger-annotations</artifactId>
 			<version>${swagger.annotations.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-models</artifactId>
+			<version>${swagger.annotations.version}</version>
+		</dependency>
 	</dependencies>
 
 

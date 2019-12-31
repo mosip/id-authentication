@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "DocumentCategoryTypeMapping", description = "DocumentCategoryTypeMapping resource representation")
+//@ApiModel(value = "DocumentCategoryTypeMapping", description = "DocumentCategoryTypeMapping resource representation")
 public class DocumentCategoryTypeMappingExtnDto {
 
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })

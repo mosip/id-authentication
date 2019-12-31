@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Data
-@ApiModel(value = "MOSIPDeviceService", description = "MOSIP Device Service resource")
+//@ApiModel(value = "MOSIPDeviceService", description = "MOSIP Device Service resource")
 @EqualsAndHashCode(callSuper = true)
 public class MOSIPDeviceServiceExtDto extends BaseDto {
 

@@ -15,7 +15,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "base dto", description = "this class will contains metadata")
+//@ApiModel(value = "base dto", description = "this class will contains metadata")
 public class BaseDto {
 	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")

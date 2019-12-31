@@ -20,7 +20,7 @@ import lombok.Data;
  *
  */
 @Data
-@ApiModel(value = "DocumentCType", description = "DocumentType resource representation")
+//@ApiModel(value = "DocumentCType", description = "DocumentType resource representation")
 public class DocumentTypeDto {
 
 	@NotBlank
