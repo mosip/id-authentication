@@ -18,6 +18,7 @@ import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.core.exception.PreIdInvalidForUserIdException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.document.errorcodes.ErrorCodes;
 import io.mosip.preregistration.document.errorcodes.ErrorMessages;
@@ -121,6 +122,9 @@ public class DocumentExceptionCatcher {
 					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),
 					response);
 
+		}else if (ex instanceof PreIdInvalidForUserIdException) {
+			throw new PreIdInvalidForUserIdException(((PreIdInvalidForUserIdException) ex).getErrorCode(),
+					((PreIdInvalidForUserIdException) ex).getErrorText());
 		}
 
 	}
