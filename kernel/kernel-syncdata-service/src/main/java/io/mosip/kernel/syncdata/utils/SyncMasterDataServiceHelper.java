@@ -1758,7 +1758,6 @@ public class SyncMasterDataServiceHelper {
 			registeredDevices.stream().forEach(regDevice -> {
 				RegisteredDeviceDto registeredDeviceDto=new RegisteredDeviceDto();
 				registeredDeviceDto.setExpiryDate(DateUtils.toISOString(regDevice.getExpiryDate()));
-				registeredDeviceDto.setDProviderSignature(CryptoUtil.encodeBase64(regDevice.getDProviderSignature()));
 				MapperUtils.map(regDevice, registeredDeviceDto);
 				registeredDeviceDtos.add(registeredDeviceDto);
 			});

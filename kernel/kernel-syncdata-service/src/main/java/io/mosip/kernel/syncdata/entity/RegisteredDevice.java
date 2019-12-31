@@ -79,13 +79,4 @@ public class RegisteredDevice extends BaseEntity {
 	@Column(name = "foundational_trust_provider_id")
 	private String foundationalTPId;
 
-	@Column(name = "foundational_trust_signature")
-	private String foundationalTrustSignature;
-
-	@Column(name = "foundational_trust_certificate")
-	private String foundationalTrustCertificate;
-
-	@Column(name = "dprovider_signature")
-	private byte[] dProviderSignature;
-
 }

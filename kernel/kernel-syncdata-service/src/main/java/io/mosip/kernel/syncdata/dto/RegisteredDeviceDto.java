@@ -52,9 +52,4 @@ public class RegisteredDeviceDto extends BaseDto {
 
 	private String foundationalTPId;
 
-	private String foundationalTrustSignature;
-
-	private String foundationalTrustCertificate;
-
-	private String dProviderSignature;
 }
