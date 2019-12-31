@@ -124,7 +124,6 @@ public enum IdAuthenticationErrorConstants {
 	// Device verification validation
 	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
 	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
-	PROVIDER_ID_VERIFICATION_FAILED("IDA-DPM-003", "Device Provider is not registered with MOSIP")
 
 	;
 
