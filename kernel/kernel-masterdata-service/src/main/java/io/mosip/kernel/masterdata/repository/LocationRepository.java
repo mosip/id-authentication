@@ -27,6 +27,9 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 
 	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive = true")
 	List<Location> findLocationHierarchyByCodeAndLanguageCode(String locCode, String languagecode);
+	
+	@Query(value = "FROM Location l where l.code=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
+	Location findLocationByCodeAndLanguageCode(String locCode, String languagecode);
 
 	@Query(value = "FROM Location l where parentLocCode=?1 and langCode=?2 and (l.isDeleted is null or l.isDeleted=false) and l.isActive=true")
 	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCode(String parentLocCode, String languageCode);

@@ -92,7 +92,7 @@ public interface AvailabilityRepository extends BaseRepository<AvailibityEntity,
 	 * @param regcntrId
 	 * @return list of AvailibityEntity
 	 */
-	@Query("SELECT DISTINCT e FROM AvailibityEntity e  WHERE e.regDate= ?1 and e.regcntrId=?2")
+	@Query("SELECT DISTINCT e FROM AvailibityEntity e  WHERE e.regDate= ?1 and e.regcntrId=?2 order by e.fromTime ")
 	public List<AvailibityEntity> findAvaialableSlots(LocalDate regDate, String regcntrId);
 	
 	
@@ -103,6 +103,13 @@ public interface AvailabilityRepository extends BaseRepository<AvailibityEntity,
 	 * @return deleted number of slots
 	 */
 	public int deleteByRegcntrIdAndRegDate( String regcntrId ,LocalDate regDate);
+	/**
+	 * 
+	 * @param regDate
+	 * @param regcntrId
+	 * @return deleted number of slots
+	 */
+	public int deleteByRegcntrIdAndRegDateAndFromTimeBetween( String regcntrId ,LocalDate regDate, LocalTime startTime,LocalTime endTime);
 	
 	/**
 	 * 

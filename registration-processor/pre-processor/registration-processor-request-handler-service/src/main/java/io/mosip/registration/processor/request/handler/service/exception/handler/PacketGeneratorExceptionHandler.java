@@ -71,7 +71,7 @@ public class PacketGeneratorExceptionHandler extends ResponseEntityExceptionHand
 	@ExceptionHandler(RegBaseCheckedException.class)
 	public ResponseEntity<Object> badrequest(RegBaseCheckedException e) {
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-				e.getErrorCode(), e.getCause().toString());
+				e.getErrorCode(), String.valueOf(e.getCause()));
 
 		return packetGenExceptionResponse(e);
 	}

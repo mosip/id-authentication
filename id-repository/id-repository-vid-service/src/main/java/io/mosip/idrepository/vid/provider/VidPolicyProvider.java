@@ -1,5 +1,10 @@
 package io.mosip.idrepository.vid.provider;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_POLICY_FILE_URL;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_POLICY_PATH;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_POLICY_SCHEMA_URL;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.VID_TYPE_PATH;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -24,7 +29,6 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.dto.VidPolicy;
 
 /**
@@ -60,16 +64,12 @@ public class VidPolicyProvider {
 	 */
 	@PostConstruct
 	public void loadPolicyDetails() throws IOException, ProcessingException {
-		JsonNode policyJson = mapper.readValue(new URL(env.getProperty(IdRepoConstants.VID_POLICY_FILE_URL.getValue())),
-				JsonNode.class);
-		JsonNode schema = mapper.readValue(new URL(env.getProperty(IdRepoConstants.VID_POLICY_SCHEMA_URL.getValue())),
-				JsonNode.class);
+		JsonNode policyJson = mapper.readValue(new URL(env.getProperty(VID_POLICY_FILE_URL)), JsonNode.class);
+		JsonNode schema = mapper.readValue(new URL(env.getProperty(VID_POLICY_SCHEMA_URL)), JsonNode.class);
 		final JsonSchema jsonSchema = JsonSchemaFactory.byDefault().getJsonSchema(schema);
 		jsonSchema.validate(policyJson);
-		List<String> vidType = JsonPath.compile(IdRepoConstants.VID_TYPE_PATH.getValue()).read(policyJson.toString(),
-				READ_LIST_OPTIONS);
-		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH.getValue())
-				.read(policyJson.toString(), READ_LIST_OPTIONS);
+		List<String> vidType = JsonPath.compile(VID_TYPE_PATH).read(policyJson.toString(), READ_LIST_OPTIONS);
+		List<Object> vidPolicy = JsonPath.compile(VID_POLICY_PATH).read(policyJson.toString(), READ_LIST_OPTIONS);
 		vidPolicies = IntStream.range(0, vidType.size()).boxed().collect(Collectors
 				.toMap(i -> vidType.get(i).toUpperCase(), i -> mapper.convertValue(vidPolicy.get(i), VidPolicy.class)));
 	}

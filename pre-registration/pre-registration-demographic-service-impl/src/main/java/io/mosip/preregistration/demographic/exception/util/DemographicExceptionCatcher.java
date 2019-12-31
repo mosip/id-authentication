@@ -4,6 +4,7 @@
  */
 package io.mosip.preregistration.demographic.exception.util;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -26,6 +27,7 @@ import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.PreIdInvalidForUserIdException;
 import io.mosip.preregistration.core.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.core.exception.RestCallException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
@@ -40,7 +42,6 @@ import io.mosip.preregistration.demographic.exception.IdValidationException;
 import io.mosip.preregistration.demographic.exception.InvalidDateFormatException;
 import io.mosip.preregistration.demographic.exception.MissingRequestParameterException;
 import io.mosip.preregistration.demographic.exception.OperationNotAllowedException;
-import io.mosip.preregistration.demographic.exception.PreIdInvalidForUserIdException;
 import io.mosip.preregistration.demographic.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.demographic.exception.RecordNotFoundException;
 import io.mosip.preregistration.demographic.exception.RecordNotFoundForPreIdsException;
@@ -180,6 +181,8 @@ public class DemographicExceptionCatcher {
 					((NoSuchAlgorithmException) ex).getErrorText(), mainResponsedto);
 		}
 		else if (ex instanceof DataIntegrityViolationException ) {
+			throw new DuplicatePridKeyException(ErrorCodes.PRG_PAM_APP_021.getCode(),ErrorMessages.DUPLICATE_KEY.getMessage(), mainResponsedto);
+		}else if (ex instanceof ConstraintViolationException ) {
 			throw new DuplicatePridKeyException(ErrorCodes.PRG_PAM_APP_021.getCode(),ErrorMessages.DUPLICATE_KEY.getMessage(), mainResponsedto);
 		}
 

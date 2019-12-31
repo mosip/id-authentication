@@ -12,9 +12,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
-import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
@@ -25,12 +24,12 @@ import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -52,6 +51,9 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 @Service
 public class DeviceTypeServiceImpl implements DeviceTypeService {
 
+	@Autowired
+	AuditUtil auditUtil;
+
 	/**
 	 * Reference to DeviceTypeRepository.
 	 */
@@ -72,7 +74,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 	@Autowired
 	private PageUtils pageUtils;
-	
+
 	@Autowired
 	private MasterdataCreationUtil masterdataCreationUtil;
 
@@ -87,11 +89,18 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 	public CodeAndLanguageCodeID createDeviceType(DeviceTypeDto deviceType) {
 		DeviceType renDeviceType = null;
 		try {
-			deviceType = masterdataCreationUtil.createMasterData(DeviceType.class,
-					deviceType);
+			deviceType = masterdataCreationUtil.createMasterData(DeviceType.class, deviceType);
 			DeviceType entity = MetaDataUtils.setCreateMetaData(deviceType, DeviceType.class);
 			renDeviceType = deviceTypeRepository.create(entity);
-		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException | IllegalArgumentException | SecurityException  e) {
+		} catch (DataAccessLayerException | IllegalAccessException | NoSuchFieldException | DataAccessException
+				| IllegalArgumentException | SecurityException e) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_CREATE, DeviceType.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
+							DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()),
+					"ADM-637");
 			throw new MasterDataServiceException(DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceTypeErrorCode.DEVICE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));

@@ -21,6 +21,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
 import io.mosip.kernel.masterdata.dto.DeviceRegisterResponseDto;
+import io.mosip.kernel.masterdata.dto.EncodedRegisteredDeviceResponse;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;
@@ -88,8 +89,8 @@ public class RegisteredDeviceController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ApiOperation(value = "Update status of the devive")
 	@PutMapping("/update/status")
-	public ResponseEntity<ResponseDto> deRegisterDevice(@NotBlank @RequestParam(value="devicecode",required=true) String deviceCode,
-			@NotBlank @RequestParam(value="statuscode",required=true) String statusCode) {
+	public ResponseEntity<ResponseDto> deRegisterDevice(@NotBlank @RequestParam(name="deviceCode",required=true) String deviceCode,
+			@NotBlank @RequestParam(name="statusCode",required=true) String statusCode) {
 		return new ResponseEntity<>(registeredDeviceService.updateStatus(deviceCode, statusCode), HttpStatus.OK);
 	}
 

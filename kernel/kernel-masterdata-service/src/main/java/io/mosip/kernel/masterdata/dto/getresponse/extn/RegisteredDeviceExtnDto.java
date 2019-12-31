@@ -42,7 +42,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "devicesTypeCode", required = true, dataType = "java.lang.String")
-	private String devicesTypeCode;
+	private String deviceSTypeCode;
 	
 	
 	/**
@@ -112,27 +112,29 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 
 	/**
 	 * Field for device name
-	 */
+	 *//*
 	
 	@Size(min = 0, max = 512)
 	@ApiModelProperty(value = "foundationalTrustSignature", required = true, dataType = "java.lang.String")
 	private String foundationalTrustSignature;
 
-	/**
+	*//**
 	 * Field for device name
-	 */
+	 *//*
 	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.String")
 	private byte[] foundationalTrustCertificate;
 
-	/**
+	*//**
 	 * Field for device name
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 512)
 	@ApiModelProperty(value = "dProviderSignature", required = true, dataType = "java.lang.String")
-	private String deviceProviderSignature;
+	private String deviceProviderSignature;*/
 	
 	
 	private DigitalIdDto digitalIdDto;
+	
+	private String ecodedEntity;
 
 }

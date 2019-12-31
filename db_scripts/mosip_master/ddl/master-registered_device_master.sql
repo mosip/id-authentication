@@ -8,7 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+-- 30-Dec-2019          Sadanandegowda      Removed some attributes as per the new API specs
 -- ------------------------------------------------------------------------------------------
 
 -- object: master.registered_device_master | type: TABLE --
@@ -31,9 +31,6 @@ CREATE TABLE master.registered_device_master(
 	expiry_date timestamp,
 	certification_level character varying(3),
 	foundational_trust_provider_id character varying(36),
-	foundational_trust_signature character varying(512),
-	foundational_trust_certificate bytea,
-	dprovider_signature character varying(512),
 	is_active boolean NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
@@ -79,12 +76,6 @@ COMMENT ON COLUMN master.registered_device_master.expiry_date IS 'Expiry Date: e
 COMMENT ON COLUMN master.registered_device_master.certification_level IS 'Certification Level: Certification level for the device, This can be L0 or L1 devices';
 -- ddl-end --
 COMMENT ON COLUMN master.registered_device_master.foundational_trust_provider_id IS 'Foundational Trust Provider ID: Foundational trust provider ID, This will be soft referenced from master.foundational_trust_provider.id. Required only for L1 devices.';
--- ddl-end --
-COMMENT ON COLUMN master.registered_device_master.foundational_trust_signature IS 'Foundational Trust Signature: Signature of the foundational trust which is asigned to the device';
--- ddl-end --
-COMMENT ON COLUMN master.registered_device_master.foundational_trust_certificate IS 'Foundational Trust Certificate: Certificate of the foundational trust  which is assigned to the device';
--- ddl-end --
-COMMENT ON COLUMN master.registered_device_master.dprovider_signature IS 'Device Provider Sugnature: Signature of the device provider, Provided by device provider for each device with date and time stamp';
 -- ddl-end --
 COMMENT ON COLUMN master.registered_device_master.is_active IS 'IS_Active : Flag to mark whether the record/device is Active or In-active';
 -- ddl-end --

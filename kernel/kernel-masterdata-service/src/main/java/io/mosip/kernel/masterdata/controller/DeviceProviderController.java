@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.deviceprovidermanager.spi.DeviceProviderService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.DeviceProviderDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceDto;
 import io.mosip.kernel.masterdata.dto.ValidateDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceProviderExtnDto;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,6 +37,9 @@ import io.swagger.annotations.ApiResponses;
 public class DeviceProviderController {
 
 	@Autowired
+	AuditUtil auditUtil;
+	
+	@Autowired
 	private DeviceProviderService<ResponseDto,ValidateDeviceDto,ValidateDeviceHistoryDto,DeviceProviderDto,DeviceProviderExtnDto> deviceProviderSerice;
 
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
@@ -46,8 +51,15 @@ public class DeviceProviderController {
 			@ApiResponse(code = 500, message = "While creating Device Provider any error occured") })
 	public ResponseWrapper<DeviceProviderExtnDto> createDeviceProvider(
 			@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),"ADM-719");
 		ResponseWrapper<DeviceProviderExtnDto> response = new ResponseWrapper<>();
 		response.setResponse(deviceProviderSerice.createDeviceProvider(deviceProviderDto.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE, DeviceProviderDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_CREATE_DESC, DeviceProviderDto.class.getCanonicalName()),"ADM-720");
 		return response;
 	}
 	
@@ -60,8 +72,15 @@ public class DeviceProviderController {
 			@ApiResponse(code = 500, message = "While creating Device Provider any error occured") })
 	public ResponseWrapper<DeviceProviderExtnDto> updateDeviceProvider(
 			@Valid @RequestBody RequestWrapper<DeviceProviderDto> deviceProviderDto) {
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + DeviceProviderDto.class.getCanonicalName(),"ADM-721");
 		ResponseWrapper<DeviceProviderExtnDto> response = new ResponseWrapper<>();
 		response.setResponse(deviceProviderSerice.updateDeviceProvider(deviceProviderDto.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE, DeviceProviderDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_UPDATE_DESC, DeviceProviderDto.class.getCanonicalName()),"ADM-722");
 		return response;
 	}
 

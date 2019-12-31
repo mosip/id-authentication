@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.integration;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,6 +41,7 @@ import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 
@@ -79,6 +81,9 @@ public class LocationSearchFilterIntegrationTest {
 	private SearchFilter filter;
 
 	private RequestWrapper<SearchDto> request;
+	
+	@MockBean
+	private AuditUtil auditUtil;
 
 	@Before
 	public void setup() throws JsonProcessingException {
@@ -97,6 +102,7 @@ public class LocationSearchFilterIntegrationTest {
 		searchDto.setPagination(pagination);
 		searchDto.setSort(Arrays.asList(sort));
 		request.setRequest(searchDto);
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 	}
 

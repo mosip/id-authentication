@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +46,7 @@ import io.mosip.kernel.masterdata.repository.MOSIPDeviceServiceRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegisteredDeviceRepository;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 
 /**
  * 
@@ -77,6 +79,9 @@ public class DeviceProviderManagementIntegrationTest {
 
 	@Autowired
 	private MockMvc mockBean;
+	
+	@MockBean
+	private AuditUtil auditUtil;
 
 	private MOSIPDeviceService deviceService;
 
@@ -125,15 +130,13 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setSerialNo("GV3434343M");
 
 		registeredDevice.setDeviceTypeCode("Face");
-		registeredDevice.setDevicesTypeCode("Slab");
+		registeredDevice.setDeviceSTypeCode("Slab");
 		registeredDevice.setStatusCode("registered");
 		registeredDevice.setDeviceSubId("1234");
 		registeredDevice.setPurpose("Auth");
 		registeredDevice.setFirmware("firmware");
 		registeredDevice.setCertificationLevel("L0");
 		registeredDevice.setFoundationalTPId("foundationalTPId");
-		registeredDevice.setFoundationalTrustSignature("foundationalTrustSignature");
-		registeredDevice.setDeviceProviderSignature("sign");
 
 		validateDeviceDto = new ValidateDeviceDto();
 		validateDeviceDto.setDeviceCode("10001");
@@ -173,7 +176,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setModel("model-updated");
 		registeredDeviceHistory.setSerialNo("GV3434343M");
 		registeredDeviceHistory.setDeviceTypeCode("Face");
-		registeredDeviceHistory.setDevicesTypeCode("Slab");
+		registeredDeviceHistory.setDeviceSTypeCode("Slab");
 		registeredDeviceHistory.setEffectivetimes(LocalDateTime.now(ZoneOffset.UTC));
 
 		deviceProviderHistory = new DeviceProviderHistory();
@@ -208,7 +211,7 @@ public class DeviceProviderManagementIntegrationTest {
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
 		when(deviceServiceRepository.findByDeviceProviderIdAndSwVersionAndMakeAndModel(Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(deviceService);
-
+		doNothing().when(auditUtil).auditRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 	
 	@WithUserDetails("zonal-admin")
@@ -379,7 +382,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDevice.setMake("make-update");
 		registeredDevice.setModel("model-update");
 		registeredDevice.setSerialNo("GV343434");
-		registeredDevice.setDevicesTypeCode("GV343434");
+		registeredDevice.setDeviceSTypeCode("GV343434");
 		registeredDevice.setDeviceTypeCode("GV343434");
 		requestWrapper.setRequest(validateDeviceDto);
 		String req = objectMapper.writeValueAsString(requestWrapper);
@@ -491,7 +494,7 @@ public class DeviceProviderManagementIntegrationTest {
 		registeredDeviceHistory.setMake("make-update");
 		registeredDeviceHistory.setModel("model-update");
 		registeredDeviceHistory.setSerialNo("GV343434");
-		registeredDeviceHistory.setDevicesTypeCode("GV343434");
+		registeredDeviceHistory.setDeviceSTypeCode("GV343434");
 		registeredDeviceHistory.setDeviceTypeCode("GV343434");
 		requestWrapperHistory.setRequest(validateDeviceHistoryDto);
 		String req = objectMapper.writeValueAsString(requestWrapperHistory);

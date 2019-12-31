@@ -13,8 +13,8 @@ import io.mosip.kernel.core.masterdata.util.spi.UBtree;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.DefaultSort;
-
 
 /**
  * Config class with beans for modelmapper and request logging
@@ -71,6 +71,10 @@ public class CommonConfig {
 	public DefaultSort defaultSort() {
 		return new DefaultSort();
 	}
-	
-	
+
+	@Bean
+	public AuditUtil auditUtil() {
+		return new AuditUtil();
+	}
+
 }

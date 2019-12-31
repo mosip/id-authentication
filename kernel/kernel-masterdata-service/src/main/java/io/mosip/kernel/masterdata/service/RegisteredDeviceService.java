@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
+import io.mosip.kernel.masterdata.dto.EncodedRegisteredDeviceResponse;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegisteredDeviceExtnDto;

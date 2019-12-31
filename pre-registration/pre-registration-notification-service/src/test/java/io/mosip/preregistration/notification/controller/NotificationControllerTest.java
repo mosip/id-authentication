@@ -102,6 +102,7 @@ public class NotificationControllerTest {
 	 * 
 	 * @throws Exception
 	 */
+	//
 	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void sendNotificationTest() throws Exception {

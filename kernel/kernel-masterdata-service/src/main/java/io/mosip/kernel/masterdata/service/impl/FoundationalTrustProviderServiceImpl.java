@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.FoundationalTrustProviderErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.FoundationalTrustProviderDto;
 import io.mosip.kernel.masterdata.dto.FoundationalTrustProviderPutDto;
 import io.mosip.kernel.masterdata.dto.getresponse.FoundationalTrustProviderResDto;
@@ -21,6 +22,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.FoundationalTrustProviderRepository;
 import io.mosip.kernel.masterdata.repository.FoundationalTrustProviderRepositoryHistory;
 import io.mosip.kernel.masterdata.service.FoundationalTrustProviderService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
@@ -29,6 +31,9 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  */
 @Component
 public class FoundationalTrustProviderServiceImpl implements FoundationalTrustProviderService {
+	
+	@Autowired
+	AuditUtil auditUtil;
 	
 	@Autowired
 	private FoundationalTrustProviderRepository foundationalTrustProviderRepository;
@@ -47,6 +52,11 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 		foundationalTrustProvider = foundationalTrustProviderRepository.findByDetails(foundationalTrustProviderDto.getName(),foundationalTrustProviderDto.getEmail(),foundationalTrustProviderDto.getAddress(),foundationalTrustProviderDto.getCertAlias(),foundationalTrustProviderDto.isActive());
 		if(foundationalTrustProvider!=null)
 		{
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_CREATE, FoundationalTrustProvider.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),
+							FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage()),"ADM-705");
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.FTP_ALREADY_PRESENT.getErrorMessage());
 		}
 		else
@@ -81,6 +91,11 @@ public class FoundationalTrustProviderServiceImpl implements FoundationalTrustPr
 		updateFoundationalTrustProvider = foundationalTrustProviderRepository.findById(FoundationalTrustProvider.class, foundationalTrustProviderPutDto.getId());
 		if(updateFoundationalTrustProvider==null)
 		{
+			auditUtil.auditRequest(String.format(MasterDataConstant.FAILURE_UPDATE, FoundationalTrustProvider.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorCode(),
+							FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorMessage()),"ADM-706");
 			throw new MasterDataServiceException(FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorCode(),FoundationalTrustProviderErrorCode.ID_NOT_PRESENT.getErrorMessage());
 		}
 		updateFoundationalTrustProvider = MetaDataUtils.setUpdateMetaData(foundationalTrustProviderPutDto, updateFoundationalTrustProvider,  false);

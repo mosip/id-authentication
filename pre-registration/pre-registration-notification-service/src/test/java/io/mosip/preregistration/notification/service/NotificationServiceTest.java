@@ -205,6 +205,7 @@ public class NotificationServiceTest {
 	 * @throws IOException
 	 * @throws java.io.IOException
 	 */
+	//
 	@Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
