@@ -29,6 +29,8 @@ import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
+import org.json.simple.parser.JSONParser;
+
 
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
@@ -102,5 +104,10 @@ public class PrintServiceBeanConfig {
 	public ResponseDTO responseDTO() {
 		return new ResponseDTO();
 	}
+	@Bean
+	public JSONParser getJsonParser() {
+		return new JSONParser();
+	}
+
 
 }
