@@ -8,6 +8,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.json.simple.parser.JSONParser;
 
 @Configuration
 @EnableSwagger2
@@ -23,6 +24,10 @@ public class PrintApiConfig {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Print PDF").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.printing.api.controller"))
 				.paths(PathSelectors.ant("/*")).build();
+	}
+	@Bean
+	public JSONParser getJsonParser() {
+		return new JSONParser();
 	}
 
 }
