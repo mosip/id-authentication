@@ -40,6 +40,7 @@ COPY ./target/kernel-keymanager-service-*.jar kernel-keymanager-service.jar
 VOLUME /softhsm
 
 EXPOSE 8088
+EXPOSE 9010
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
