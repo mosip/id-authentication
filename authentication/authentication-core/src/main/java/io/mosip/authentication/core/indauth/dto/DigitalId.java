@@ -2,7 +2,9 @@ package io.mosip.authentication.core.indauth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 /**
  * @author Manoj SP
@@ -21,11 +23,27 @@ public class DigitalId {
 	
 	private String subType;
 	
-	@JsonProperty("dp")
+	@Setter(AccessLevel.NONE)
 	private String deviceProvider;
 	
-	@JsonProperty("dpId")
+	@Setter(AccessLevel.NONE)
+	private String dp;
+	
+	@Setter(AccessLevel.NONE)
+	private String dpId;
+	
+	@Setter(AccessLevel.NONE)
 	private String deviceProviderId;
 	
 	private String dateTime;
+	
+	public void setDeviceProvider(String deviceProvider) {
+		this.deviceProvider = deviceProvider;
+		this.dp = deviceProvider;
+	}
+	
+	public void setDeviceProviderId(String deviceProviderId) {
+		this.deviceProviderId = deviceProviderId;
+		this.dpId = deviceProviderId;
+	}
 }
