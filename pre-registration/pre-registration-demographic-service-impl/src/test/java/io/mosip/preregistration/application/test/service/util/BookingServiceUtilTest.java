@@ -63,6 +63,7 @@ import io.mosip.preregistration.booking.serviceimpl.exception.BookingRegistratio
 import io.mosip.preregistration.booking.serviceimpl.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.serviceimpl.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.serviceimpl.exception.DemographicStatusUpdationException;
+import io.mosip.preregistration.booking.serviceimpl.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.serviceimpl.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.serviceimpl.exception.TimeSpanException;
 import io.mosip.preregistration.booking.serviceimpl.repository.BookingAvailabilityRepository;
@@ -77,7 +78,6 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
-import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.core.exception.RestCallException;
 import io.mosip.preregistration.core.util.RequestValidator;
@@ -319,7 +319,7 @@ public class BookingServiceUtilTest {
 		assertEquals(Boolean.TRUE, isValid);
 	}
 
-	@Test(expected = InvalidRequestParameterException.class)
+	@Test(expected = InvalidDateTimeFormatException.class)
 	public void validateAppointmentDateExceptionTest() {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -1);
@@ -331,7 +331,7 @@ public class BookingServiceUtilTest {
 		assertEquals(Boolean.FALSE, isValid);
 	}
 
-	@Test(expected = InvalidRequestParameterException.class)
+	@Test(expected = InvalidDateTimeFormatException.class)
 	public void validateAppointmentTimeExceptionTest() {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -535,7 +535,7 @@ public class BookingServiceUtilTest {
 		serviceUtil.validateFromDateAndToDate(fromdate, todate, format);
 	}
 	
-	@Test(expected=InvalidRequestParameterException.class)
+	@Test(expected=InvalidDateTimeFormatException.class)
 	public void validateFromDateAndToDateTestEx1(){
 		String format="yyyy-MM-dd";
 		String todate = "2019-11-15";
@@ -543,7 +543,7 @@ public class BookingServiceUtilTest {
 		serviceUtil.validateFromDateAndToDate(fromdate, todate, format);
 	}
 	
-	@Test(expected=InvalidRequestParameterException.class)
+	@Test(expected=InvalidDateTimeFormatException.class)
 	public void validateFromDateAndToDateTestEx2(){
 		String format="yyyy-MM-dd";
 		String todate = "2019-11-15";
@@ -551,7 +551,7 @@ public class BookingServiceUtilTest {
 		serviceUtil.validateFromDateAndToDate(fromdate, todate, format);
 	}
 	
-	@Test(expected=InvalidRequestParameterException.class)
+	@Test(expected=InvalidDateTimeFormatException.class)
 	public void validateFromDateAndToDateTestEx3(){
 		String format="yyyy-MM-dd";
 		String todate = "2019-11-05";

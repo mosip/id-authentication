@@ -62,6 +62,7 @@ import io.mosip.preregistration.booking.serviceimpl.exception.BookingRegistratio
 import io.mosip.preregistration.booking.serviceimpl.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.serviceimpl.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.serviceimpl.exception.DemographicStatusUpdationException;
+import io.mosip.preregistration.booking.serviceimpl.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.serviceimpl.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.serviceimpl.exception.TimeSpanException;
 import io.mosip.preregistration.core.code.StatusCodes;
@@ -76,7 +77,6 @@ import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.core.exception.NotificationException;
 import io.mosip.preregistration.core.exception.RestCallException;
@@ -567,7 +567,7 @@ public class BookingServiceUtil {
 				LocalDate date = currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDate();
 
 				if (localDate.isBefore(date)) {
-					throw new InvalidRequestParameterException(
+					throw new InvalidDateTimeFormatException(
 							ErrorCodes.PRG_BOOK_RCI_031.getCode(), ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()
 									+ " found for - " + requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
 							null);
@@ -576,7 +576,7 @@ public class BookingServiceUtil {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
 					LocalTime time = currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalTime();
 					if (localTime.isBefore(time)) {
-						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
+						throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for - "
 										+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
 								null);
@@ -585,7 +585,7 @@ public class BookingServiceUtil {
 			}
 		} catch (Exception ex) {
 			log.debug("sessionId", "idType", "id", ExceptionUtils.getStackTrace(ex));
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
+			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for preregistration id - "
 							+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
 					null);
@@ -605,17 +605,17 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
 
 		if (isNull(fromDate) || !ValidationUtil.parseDate(fromDate, format)) {
-			throw new InvalidRequestParameterException(
+			throw new InvalidDateTimeFormatException(
 					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
 					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
 		} else if (!isNull(toDate) && !ValidationUtil.parseDate(toDate, format)) {
-			throw new InvalidRequestParameterException(
+			throw new InvalidDateTimeFormatException(
 					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
 					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
 		} else if (!isNull(fromDate) && !isNull(toDate)
 				&& ((LocalDate.parse(fromDate)).isAfter(LocalDate.parse(toDate)))) {
-			throw new InvalidRequestParameterException(
-					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_020.toString(),
+			throw new InvalidDateTimeFormatException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_020.getCode(),
 					io.mosip.preregistration.core.errorcodes.ErrorMessages.FROM_DATE_GREATER_THAN_TO_DATE.getMessage(),
 					null);
 		}
