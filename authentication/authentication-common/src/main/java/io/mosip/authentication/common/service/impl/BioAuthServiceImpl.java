@@ -30,8 +30,8 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.DigitalIdDTO;
 import io.mosip.authentication.core.dto.ValidateDeviceDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -41,14 +41,15 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
-import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Bio-service to implement Biometric Authentication.
@@ -59,6 +60,8 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 
 @Service
 public class BioAuthServiceImpl implements BioAuthService {
+	
+	private static Logger logger = IdaLogger.getLogger(BioAuthServiceImpl.class);
 
 	/** Id Info helper. */
 	@Autowired
@@ -95,6 +98,9 @@ public class BioAuthServiceImpl implements BioAuthService {
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
 			Map<String, List<IdentityInfoDTO>> bioIdentity, String partnerId, boolean isAuth) throws IdAuthenticationBusinessException {
 		if (bioIdentity == null || bioIdentity.isEmpty()) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), 
+					"authenticate",
+					"throw new IdAuthenticationBusinessException - SERVER_ERROR - bioIdentity is null or empty");
 			throw new IdAuthenticationBusinessException(SERVER_ERROR);
 		} else {
 			if (isAuth) {
@@ -126,11 +132,8 @@ public class BioAuthServiceImpl implements BioAuthService {
 				try {
 					DataDTO data = bioRequest.get(index).getData();
 					ValidateDeviceDTO request = new ValidateDeviceDTO();
-					DigitalId digitalId = data.getDigitalId();
 					request.setDeviceCode(data.getDeviceCode());
-					request.setDigitalId(new DigitalIdDTO(digitalId.getSerialNo(), digitalId.getMake(),
-							digitalId.getModel(), digitalId.getType(), digitalId.getDeviceProvider(),
-							digitalId.getDeviceProviderId(), digitalId.getDateTime()));
+					request.setDigitalId(data.getDigitalId());
 					request.setDeviceServiceVersion(data.getDeviceServiceVersion());
 					RequestWrapper<ValidateDeviceDTO> requestWrapper = new RequestWrapper<>();
 					requestWrapper.setRequest(request);
@@ -145,24 +148,42 @@ public class BioAuthServiceImpl implements BioAuthService {
 									|| serviceError.getErrorCode().equals(DEVICE_REVOKED_OR_RETIRED)
 									|| serviceError.getErrorCode().equals(DEVICE_PROVIDER_NOT_EXIST)
 									|| serviceError.getErrorCode().equals(DEVICE_PROVIDER_INACTIVE)) {
+								logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+										"verifyBiometricDevice",
+										"throwing IdAuthUncheckedException - DEVICE_VERIFICATION_FAILED");
 								throw new IdAuthUncheckedException(DEVICE_VERIFICATION_FAILED);
 							} else if (serviceError.getErrorCode().equals(MDS_DOES_NOT_EXIST)
 									|| serviceError.getErrorCode().equals(MDS_INACTIVE_STATE)
 									|| serviceError.getErrorCode().equals(SW_ID_VERIFICATION_FAILED)) {
+								logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+										"verifyBiometricDevice",
+										"throwing IdAuthUncheckedException - MDS_VERIFICATION_FAILED");
 								throw new IdAuthUncheckedException(MDS_VERIFICATION_FAILED);
 							} else if (serviceError.getErrorCode().equals(FIELD_VALIDATION_FAILED)) {
+								logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+										"verifyBiometricDevice",
+										"throwing IdAuthUncheckedException - INVALID_INPUT_PARAMETER");
 								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
 												String.format(BIO_PATH, index, "digitalId/" + serviceError.getMessage()
 														.substring(serviceError.getMessage().lastIndexOf(' ') + 1))));
 							} else {
+								logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+										"verifyBiometricDevice",
+										"throwing IdAuthUncheckedException - UNABLE_TO_PROCESS");
 								throw new IdAuthUncheckedException(UNABLE_TO_PROCESS);
 							}
 						});
 					} else {
+						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+								"verifyBiometricDevice",
+								"no rest response body - throwing IdAuthUncheckedException - UNABLE_TO_PROCESS");
 						throw new IdAuthUncheckedException(UNABLE_TO_PROCESS);
 					}
 				} catch (IDDataValidationException e) {
+					logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+							"verifyBiometricDevice",
+							"IDDataValidationException - throwing IdAuthUncheckedException - UNABLE_TO_PROCESS");
 					throw new IdAuthUncheckedException(UNABLE_TO_PROCESS, e);
 				}
 			});
