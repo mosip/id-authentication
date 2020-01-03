@@ -26,7 +26,7 @@ public enum AuditModules {
 	EKYC_AUTH("IDA-EKA", "Request/Response, UIN/VID to be masked", "eKYC Authenticator"),
 	
 	/** The otp request. */
-	OTP_REQUEST("IDA-OTR","Request/Response, UIN/VID to be masked", "Otp Requestor"),
+	OTP_REQUEST("IDA-OTR","Request/Response, UIN/VID to be masked", "OTP Requestor"),
 	
 	/** The pin auth. */
 	PIN_AUTH("IDA-MOD-106","Pin Authentication requested", ""), //not applicable for release v1
