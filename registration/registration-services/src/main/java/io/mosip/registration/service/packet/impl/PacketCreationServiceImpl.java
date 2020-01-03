@@ -568,6 +568,7 @@ public class PacketCreationServiceImpl extends BaseService implements PacketCrea
 				digitalId.setSerialNo(device.getDeviceId());
 				digitalId.setMake(device.getDeviceMake());
 				digitalId.setType(device.getDeviceType());
+				digitalId.setSubType(device.getDeviceSubType());
 				digitalId.setModel(device.getDeviceModel());
 				digitalId.setDp(device.getDeviceProviderName());
 				digitalId.setDpId(device.getDeviceProviderId());
