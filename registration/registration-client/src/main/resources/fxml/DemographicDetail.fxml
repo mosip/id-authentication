@@ -209,7 +209,7 @@
 																						</VBox>
 																					</children>
 																				</GridPane>
-																				<GridPane GridPane.columnIndex="2">
+																				<GridPane fx:id="localFullNameBox" GridPane.columnIndex="2">
 																					<children>
 																						<VBox fx:id="localFullName" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 																							<children>
@@ -762,7 +762,7 @@
 																																<Label fx:id="localAdminAuthorityLabel" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="false">
 				                                                                                      </Label>
 																												<ComboBox fx:id="localAdminAuthority" onAction="#populatePincode" prefWidth="${applicationCityHbox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox">
-																												<tooltip><Tooltip text="%localAdminAuthority" styleClass="toolTip_address"/></tooltip></ComboBox>
+																												<tooltip><Tooltip styleClass="toolTip_address" text="%localAdminAuthority" /></tooltip></ComboBox>
 																												<Label fx:id="localAdminAuthorityMessage" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="false" />
 																											</children>
 																										</VBox>
@@ -1051,7 +1051,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane GridPane.columnIndex="2">
+                                                            <GridPane fx:id="localLanguageParentDetailPane" GridPane.columnIndex="2">
                                                                <children>
                                                                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
                                                                      <children>

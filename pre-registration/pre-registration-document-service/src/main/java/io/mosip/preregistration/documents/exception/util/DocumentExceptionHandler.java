@@ -44,25 +44,25 @@ import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.core.exception.PreIdInvalidForUserIdException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.GenericUtil;
-import io.mosip.preregistration.documents.code.DocumentStatusMessages;
-import io.mosip.preregistration.documents.controller.DocumentController;
-import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
-import io.mosip.preregistration.documents.exception.DTOMappigException;
-import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
-import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
-import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
-import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
-import io.mosip.preregistration.documents.exception.DocumentNotValidException;
-import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
-import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
-import io.mosip.preregistration.documents.exception.FSServerException;
-import io.mosip.preregistration.documents.exception.FileNotFoundException;
-import io.mosip.preregistration.documents.exception.InvalidDocumentIdExcepion;
-import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
-import io.mosip.preregistration.documents.exception.ParsingException;
-import io.mosip.preregistration.documents.exception.PrimaryKeyValidationException;
+import io.mosip.preregistration.document.code.DocumentStatusMessages;
+import io.mosip.preregistration.document.errorcodes.ErrorCodes;
+import io.mosip.preregistration.document.exception.DTOMappigException;
+import io.mosip.preregistration.document.exception.DemographicGetDetailsException;
+import io.mosip.preregistration.document.exception.DocumentFailedToCopyException;
+import io.mosip.preregistration.document.exception.DocumentFailedToUploadException;
+import io.mosip.preregistration.document.exception.DocumentNotFoundException;
+import io.mosip.preregistration.document.exception.DocumentNotValidException;
+import io.mosip.preregistration.document.exception.DocumentSizeExceedException;
+import io.mosip.preregistration.document.exception.DocumentVirusScanException;
+import io.mosip.preregistration.document.exception.FSServerException;
+import io.mosip.preregistration.document.exception.FileNotFoundException;
+import io.mosip.preregistration.document.exception.InvalidDocumentIdExcepion;
+import io.mosip.preregistration.document.exception.MandatoryFieldNotFoundException;
+import io.mosip.preregistration.document.exception.ParsingException;
+import io.mosip.preregistration.document.exception.PrimaryKeyValidationException;
 
 /**
  * This class is defines the Exception handler for Document service
@@ -103,6 +103,11 @@ public class DocumentExceptionHandler {
 		log.info("sessionId", "idType", "id",
 				"In fileUpload method of document controller to upload the document for request " );
 		return GenericUtil.errorResponse(e, e.getMainResposneDTO());
+	}
+	
+	@ExceptionHandler(PreIdInvalidForUserIdException.class)
+	public ResponseEntity<MainResponseDTO<?>> invalidUserException(final PreIdInvalidForUserIdException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
 	}
 
 	/**

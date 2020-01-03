@@ -5,6 +5,7 @@
 package io.mosip.preregistration.batchjob.repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -28,7 +29,8 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 * @param currentdate
 	 * @return List of RegistrationBookingEntity before current date.
 	 */
-	List<RegistrationBookingEntity> findByRegDateBetween(LocalDate currentdate, LocalDate tillDate);
+	@Query("SELECT u FROM RegistrationBookingEntity u WHERE u.demographicEntity.statusCode = ?1 and u.regDate<?2")
+	List<RegistrationBookingEntity> findByRegDateBetween(String statusCode, LocalDate currentDate);
 
 	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDate(String registrationCenterId,
 			LocalDate regDate);
@@ -42,4 +44,6 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 */
 	@Query(preIdQuery)
 	RegistrationBookingEntity getDemographicEntityPreRegistrationId(@Param("preRegId") String preRegId);
+	
+	List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDateAndSlotFromTimeBetween(String regCenterId,LocalDate date,LocalTime fromTime,LocalTime toTime);
 }

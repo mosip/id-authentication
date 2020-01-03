@@ -90,14 +90,20 @@ public class MosipBioDeviceManager {
 	 *             - generalised exception with errorCode and errorMessage
 	 */
 	@SuppressWarnings("unchecked")
-	public void init() throws RegBaseCheckedException {
+	public void init() {
 
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 				"Entering init method for preparing device registry");
 
 		for (int port = portFrom; port <= portTo; port++) {
 
-			initByPort(port);
+			try {
+				initByPort(port);
+			} catch (RegBaseCheckedException exception) {
+				LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
+						String.format("Exception while mapping the response",
+								exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
+			}
 
 		}
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
@@ -187,7 +193,7 @@ public class MosipBioDeviceManager {
 
 			} catch (IOException exception) {
 				LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
-						String.format("%s -> Exception while mapping the response  %s",
+						String.format(" Exception while mapping the response ",
 								exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
 				auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE,
 						RegistrationConstants.APPLICATION_NAME,

@@ -11,6 +11,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.RequestDetail;
+import javafx.scene.image.Image;
 
 /**
  * This class {@code BioService} handles all the biometric captures and
@@ -22,19 +23,24 @@ import io.mosip.registration.mdm.dto.RequestDetail;
 public interface BioService {
 
 	/**
-	 * Returns Authentication validator Dto that will be passed 
+	 * Returns Authentication validator Dto that will be passed
 	 * 
 	 * <p>
-	 * The method will return fingerPrint validator Dto that will be passed to 
+	 * The method will return fingerPrint validator Dto that will be passed to
 	 * finger print authentication method for fingerPrint validator
-	 * </p>.
+	 * </p>
+	 * .
 	 *
-	 * @param userId            - the user ID
+	 * @param userId
+	 *            - the user ID
 	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
-	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
-	 * @throws IOException             - Exception that may occur while reading the resource
+	 * @throws RegBaseCheckedException
+	 *             - the exception that handles all checked exceptions
+	 * @throws IOException
+	 *             - Exception that may occur while reading the resource
 	 */
-	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId, RequestDetail requestDetail)
+			throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validates FingerPrint after getting the scanned data for the particular given
@@ -43,28 +49,35 @@ public interface BioService {
 	 * <p>
 	 * The MDM service will be triggered to capture the user fingerprint which will
 	 * be validated against the stored fingerprint from the DB
-	 * </p>.
+	 * </p>
+	 * .
 	 *
-	 * @param authenticationValidatorDTO            - authenticationValidatorDto
+	 * @param authenticationValidatorDTO
+	 *            - authenticationValidatorDto
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
 	 */
-	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO) ;
-	
+	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO);
+
 	/**
-	 * Returns Authentication validator Dto that will be passed 
+	 * Returns Authentication validator Dto that will be passed
 	 * 
 	 * <p>
-	 * The method will return iris validator Dto that will be passed to 
-	 * finger print authentication method for iris validator
-	 * </p>.
+	 * The method will return iris validator Dto that will be passed to finger print
+	 * authentication method for iris validator
+	 * </p>
+	 * .
 	 *
-	 * @param userId            - the user ID
+	 * @param userId
+	 *            - the user ID
 	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
-	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
-	 * @throws IOException             - Exception that may occur while reading the resource
+	 * @throws RegBaseCheckedException
+	 *             - the exception that handles all checked exceptions
+	 * @throws IOException
+	 *             - Exception that may occur while reading the resource
 	 */
-	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId, RequestDetail requestDetail)
+			throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validates Iris after getting the scanned data for the given user ID
@@ -73,28 +86,33 @@ public interface BioService {
 	 * <p>
 	 * The MDM service will be triggered to capture the user Iris data which will be
 	 * validated against the stored iris from the DB through auth validator service
-	 * </p>.
+	 * </p>
+	 * .
 	 *
-	 * @param authenticationValidatorDTO            - authenticationValidtorDto
+	 * @param authenticationValidatorDTO
+	 *            - authenticationValidtorDto
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
 	 */
-	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO) ;
-	
-	
+	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO);
+
 	/**
 	 * Gets the finger print image as DTO from the MDM service based on the
 	 * fingerType
-	 *
-	 *
+	 * 
 	 * @param fpDetailsDTO
 	 *            the fp details DTO
-	 * @param fingerType
-	 *            the finger type
+	 * @param requestDetail
+	 *            FP Request Detail
+	 * @param attempt
+	 *            attempt number
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
+	 * @throws IOException
+	 *             the IOexception
 	 */
-	void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
+	void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, RequestDetail requestDetail, int attempt)
+			throws RegBaseCheckedException, IOException;
 
 	/**
 	 * checks if the MDM service is enabled
@@ -107,10 +125,14 @@ public interface BioService {
 	/**
 	 * invokes the MDM service and gets the Segmented finger print images.
 	 *
-	 * @param fingerprintDetailsDTO            the fingerprint details DTO
-	 * @param filePath            the file path
-	 * @param fingerType the finger type
-	 * @throws RegBaseCheckedException             the reg base checked exception
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param filePath
+	 *            the file path
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath, String fingerType)
 			throws RegBaseCheckedException;
@@ -127,28 +149,35 @@ public interface BioService {
 	boolean validateFace(AuthenticationValidatorDTO authenticationValidatorDTO);
 
 	/**
-	 * Returns Authentication validator Dto that will be passed 
+	 * Returns Authentication validator Dto that will be passed
 	 * 
 	 * <p>
-	 * The method will return face validator Dto that will be passed to 
-	 * finger print authentication method for face validator
-	 * </p>.
+	 * The method will return face validator Dto that will be passed to finger print
+	 * authentication method for face validator
+	 * </p>
+	 * .
 	 *
-	 * @param userId            - the user ID
+	 * @param userId
+	 *            - the user ID
 	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
 	 */
-	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId, RequestDetail requestDetail)
+			throws RegBaseCheckedException, IOException;
+
 	/**
 	 * Gets the iris stub image as DTO.
 	 *
 	 * @param irisDetailsDTO
 	 *            the iris details DTO
-	 * @param irisType
-	 *            the iris type
+	 * @param requestDetail details of iris request
+	 * @param leftEyeAttempt leftEye attempt number
+	 * @param rightEyeAttempt right eye attempt number
+	 * @throws IOException  the IO exception
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, RequestDetail requestDetail) throws RegBaseCheckedException, IOException;
+	void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, RequestDetail requestDetail, int leftEyeAttempt,
+			int rightEyeAttempt) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validate the Input Finger with the finger that is fetched from the Database.
@@ -171,6 +200,7 @@ public interface BioService {
 
 	/**
 	 * Returns single biometric bio value
+	 * 
 	 * @param CaptureResponseDto
 	 *            capture respsone dto
 	 * @return byte[]
@@ -179,10 +209,35 @@ public interface BioService {
 
 	/**
 	 * Returns single biometric iso template
+	 * 
 	 * @param CaptureResponseDto
-	 * 					catpure response dto
+	 *            catpure response dto
 	 * @return byte[]
 	 */
 	byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto);
+
+	/**
+	 * @param bioType
+	 *            biometricType
+	 * 
+	 * @param attempt
+	 *            attemptNumber
+	 * @return QualityScore
+	 */
+	public double getBioQualityScores(String bioType, int attempt);
+
+	/**
+	 * @param bioType
+	 *            biometricType
+	 * @return quality score
+	 */
+	public double getHighQualityScoreByBioType(String bioType);
+	
+	/**
+	 * @param bioType  biometricType
+	 * @param attempt attempt number
+	 * @return
+	 */
+	public Image getBioStreamImage(String bioType, int attempt);
 
 }

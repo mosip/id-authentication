@@ -1,5 +1,11 @@
 package io.mosip.idrepository.core.exception;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.APPLICATION_VERSION;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.AUTHORIZATION_FAILED;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_INPUT_PARAMETER;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.INVALID_REQUEST;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.UNKNOWN_ERROR;
+
 import java.nio.file.AccessDeniedException;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -26,8 +32,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
@@ -92,7 +96,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
-		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
+		IdRepoUnknownException e = new IdRepoUnknownException(UNKNOWN_ERROR);
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod(), null),
 				HttpStatus.OK);
@@ -136,7 +140,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
 		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
-		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.AUTHORIZATION_FAILED);
+		IdRepoUnknownException e = new IdRepoUnknownException(AUTHORIZATION_FAILED);
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod(), null),
 				HttpStatus.OK);
@@ -178,8 +182,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				"handleExceptionInternal - \n" + ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof HttpMessageNotReadableException && org.apache.commons.lang3.exception.ExceptionUtils
 				.getRootCause(ex).getClass().isAssignableFrom(DateTimeParseException.class)) {
-			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
+			ex = new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 			if (request instanceof ServletWebRequest
 					&& ((ServletWebRequest) request).getRequest().getRequestURI().endsWith(DEACTIVATE)) {
 				return new ResponseEntity<>(
@@ -196,8 +200,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			}
 		} else if (ex instanceof HttpMessageNotReadableException || ex instanceof ServletException
 				|| ex instanceof BeansException) {
-			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
-					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
+			ex = new IdRepoAppException(INVALID_REQUEST.getErrorCode(),
+					INVALID_REQUEST.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), null),
 					HttpStatus.OK);
@@ -289,7 +293,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setErrors(errors);
 		}
 
-		response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+		response.setVersion(env.getProperty(APPLICATION_VERSION));
 
 		return response;
 	}

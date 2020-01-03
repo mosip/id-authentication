@@ -1,6 +1,7 @@
 
 package io.mosip.preregistration.application.test.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -25,27 +26,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.preregistration.application.DemographicTestApplication;
-import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
-import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
-import io.mosip.preregistration.application.dto.DemographicMetadataDTO;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
-import io.mosip.preregistration.application.dto.DemographicViewDTO;
-import io.mosip.preregistration.application.service.DemographicService;
+import io.mosip.preregistration.application.controller.DemographicController;
+import io.mosip.preregistration.booking.serviceimpl.dto.BookingStatusDTO;
+import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.util.RequestValidator;
+import io.mosip.preregistration.demographic.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.demographic.dto.DemographicCreateResponseDTO;
+import io.mosip.preregistration.demographic.dto.DemographicMetadataDTO;
+import io.mosip.preregistration.demographic.dto.DemographicRequestDTO;
+import io.mosip.preregistration.demographic.dto.DemographicUpdateResponseDTO;
+import io.mosip.preregistration.demographic.dto.DemographicViewDTO;
+import io.mosip.preregistration.demographic.service.DemographicServiceIntf;
+import io.mosip.preregistration.document.service.DocumentServiceIntf;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
@@ -73,13 +83,25 @@ public class DemographicControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Mock
+	private RequestValidator requestValidator;
+
 	String preRegistrationId = "";
 
 	/**
 	 * Creating Mock Bean for DemographicService
 	 */
 	@MockBean
-	private DemographicService preRegistrationService;
+	private DemographicServiceIntf preRegistrationService;
+
+	@MockBean
+	private DocumentServiceIntf documentServiceIntf;
+
+	@MockBean
+	private BookingServiceIntf bookingServiceIntf;
+
+	@MockBean
+	private PridGenerator<String> pridGenerator;
 
 	@Mock
 	private AuthUserDetails authUserDetails;
@@ -87,7 +109,11 @@ public class DemographicControllerTest {
 
 	private Object jsonObject = null;
 
+	@Autowired
+	private DemographicController controller;
+
 	String userId = "";
+	MainRequestDTO<DemographicRequestDTO> reqDto = new MainRequestDTO<>();
 
 	/**
 	 * @throws FileNotFoundException
@@ -125,34 +151,21 @@ public class DemographicControllerTest {
 
 		createDto.setPreRegistrationId("98746563542672");
 		// saveList.add(createDto);
+		DemographicRequestDTO req= new DemographicRequestDTO();
+		req.setLangCode("eng");
 		response.setResponse(createDto);
-
+		reqDto.setId("mosip.pre-registration.demographic.create");
+		reqDto.setVersion("1.0");
+		reqDto.setRequesttime(new Date());
+		reqDto.setRequest(req);
 		Mockito.when(preRegistrationService.addPreRegistration(Mockito.any())).thenReturn(response);
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/applications")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
-		logger.info("Resonse " + response);
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(reqDto,
+				"MainRequestDTO<DemographicRequestDTO>");
+		ResponseEntity<MainResponseDTO<DemographicCreateResponseDTO>> responseEntity = controller.register(reqDto,
+				errors);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
-	// /**
-	// * @throws Exception
-	// * on error
-	// */
-	// @WithUserDetails("INDIVIDUAL")
-	// @Test
-	// public void failureSave() throws Exception {
-	// logger.info("----------Unsuccessful save of application-------");
-	// Mockito.doThrow(new
-	// TableNotAccessibleException("ex")).when(preRegistrationService)
-	// .addPreRegistration(Mockito.any());
-	//
-	// RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/applications")
-	// .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-	// .accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
-	// mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	// }
 
 	/**
 	 * @throws Exception
@@ -181,12 +194,18 @@ public class DemographicControllerTest {
 		Mockito.when(preRegistrationService.updatePreRegistration(request, preRegistrationId, userId))
 				.thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/applications/{preRegistrationId}", preRegistrationId)
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
-		logger.info("Resonse " + response);
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		DemographicRequestDTO req= new DemographicRequestDTO();
+		req.setLangCode("eng");
+		response.setResponse(createDto);
+		reqDto.setId("mosip.pre-registration.demographic.update");
+		reqDto.setVersion("1.0");
+		reqDto.setRequesttime(new Date());
+		reqDto.setRequest(req);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(reqDto,
+				"MainRequestDTO<DemographicRequestDTO>");
+		ResponseEntity<MainResponseDTO<DemographicUpdateResponseDTO>> responseEntity = controller.update(preRegistrationId,reqDto,
+				errors);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 	/**
@@ -343,11 +362,18 @@ public class DemographicControllerTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("preids.json").getFile());
 		jsonObject = parser.parse(new FileReader(file));
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/applications/updatedTime/")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
-
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		PreRegIdsByRegCenterIdDTO input= new PreRegIdsByRegCenterIdDTO();
+		input.setRegistrationCenterId("10001");
+		MainRequestDTO<PreRegIdsByRegCenterIdDTO> reqDto= new MainRequestDTO<>();
+		reqDto.setId("mosip.pre-registration.demographic.retrieve.date");
+		reqDto.setVersion("1.0");
+		reqDto.setRequesttime(new Date());
+		reqDto.setRequest(input);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(reqDto,
+				"MainRequestDTO<PreRegIdsByRegCenterIdDTO>");
+		ResponseEntity<MainResponseDTO<Map<String, String>>> responseEntity = controller.getUpdatedDateTimeByPreIds(reqDto,
+				errors);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 }

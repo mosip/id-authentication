@@ -33,8 +33,7 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.common.service.impl.OTPServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
@@ -52,6 +51,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
@@ -62,7 +62,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
-		IDAMappingFactory.class })
+		IDAMappingFactory.class, PartnerServiceImpl.class })
 @WebMvcTest
 public class OTPServiceImplTest {
 
@@ -114,6 +114,9 @@ public class OTPServiceImplTest {
 	@Mock
 	private IdAuthTransactionManager idAuthTransactionManager;
 	
+	@Autowired
+	PartnerService partnerService;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
@@ -130,6 +133,8 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(otpServiceImpl, "auditHelper", auditHelper);
+		ReflectionTestUtils.setField(otpServiceImpl, "partnerService", partnerService);
+
 	}
 
 	@SuppressWarnings("rawtypes")

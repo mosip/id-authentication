@@ -23,6 +23,7 @@ import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
@@ -59,7 +60,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,IdObjectPatternValidator.class,
 		BioMatcherUtil.class, BioApiImpl.class,DemoNormalizerImpl.class,IdaTransactionInterceptor.class,
-		IdAuthTransactionManager.class,AuthtypeStatusImpl.class, JWSValidation.class })
+		IdAuthTransactionManager.class,AuthtypeStatusImpl.class, JWSValidation.class,
+		PartnerServiceImpl.class })
 public class KycAuthenticationApplication {
 
 	/**

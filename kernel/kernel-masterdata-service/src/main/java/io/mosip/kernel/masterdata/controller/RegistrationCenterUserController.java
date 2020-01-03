@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.masterdata.dto.UserAndRegCenterMappingResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterUserService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 
 /**
@@ -25,7 +28,8 @@ import io.swagger.annotations.Api;
 @RequestMapping("/registrationcenteruser")
 @Api(value = "Operation related to mapping of registration center and users", tags = { "RegistrationCenterUser" })
 public class RegistrationCenterUserController {
-
+	@Autowired
+	AuditUtil auditUtil;
 	@Autowired
 	RegistrationCenterUserService registrationCenterUserService;
 
@@ -45,8 +49,17 @@ public class RegistrationCenterUserController {
 			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
+		auditUtil.auditRequest(
+				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UNMAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(), "ADM-763");
 		ResponseWrapper<UserAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterUserService.unmapUserRegCenter(userId, regCenterId));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_UNMAP, RegistrationCenterUserDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_UNMAP, RegistrationCenterUserDto.class.getCanonicalName()),
+				"ADM-764");
 		return responseWrapper;
 	}
 
@@ -66,8 +79,17 @@ public class RegistrationCenterUserController {
 			@PathVariable("userid") @NotBlank @Size(min = 1, max = 36) String userId,
 			@PathVariable("regcenterid") @NotBlank @Size(min = 1, max = 10) String regCenterId) {
 
+		auditUtil.auditRequest(
+				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.MAP_API_IS_CALLED + RegistrationCenterUserDto.class.getCanonicalName(), "ADM-761");
 		ResponseWrapper<UserAndRegCenterMappingResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterUserService.mapUserRegCenter(userId, regCenterId));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterUserDto.class.getCanonicalName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_MAP, RegistrationCenterUserDto.class.getCanonicalName()),
+				"ADM-762");
 		return responseWrapper;
 	}
 

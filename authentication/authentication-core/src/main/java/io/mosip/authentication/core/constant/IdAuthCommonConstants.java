@@ -113,9 +113,9 @@ public final class IdAuthCommonConstants {
 	
 	public static final String MDS_INACTIVE_STATE = "ADM-DPM-006";
 	
-	public static final String SOFTWARE_VERSION_IS_NOT_A_MATCH = "ADM-DPM-007";
+	public static final String SW_ID_VERIFICATION_FAILED = "ADM-DPM-007";
 	
-	public static final String PROVIDER_AND_DEVICE_CODE_NOT_MAPPED = "ADM-DPM-008";
+	public static final String FIELD_VALIDATION_FAILED = "ADM-DPM-008";
 	
 	public static final String BIO_PATH = "request/biometrics/%s/%s";
 	

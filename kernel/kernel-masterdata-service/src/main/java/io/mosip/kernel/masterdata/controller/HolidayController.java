@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
@@ -31,6 +32,7 @@ import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.HolidaySearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -52,6 +54,9 @@ public class HolidayController {
 
 	@Autowired
 	private HolidayService holidayService;
+	
+	@Autowired
+	private AuditUtil auditUtil;
 
 	/**
 	 * This method returns all holidays present in master db
@@ -113,6 +118,9 @@ public class HolidayController {
 	@PostMapping
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	public ResponseWrapper<HolidayIDDto> saveHoliday(@Valid @RequestBody RequestWrapper<HolidayDto> holiday) {
+		auditUtil.auditRequest(MasterDataConstant.CREATE_API_IS_CALLED + HolidayDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.CREATE_API_IS_CALLED + HolidayDto.class.getSimpleName(), "ADM-593");
 		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.saveHoliday(holiday.getRequest()));
 		return responseWrapper;
@@ -130,6 +138,9 @@ public class HolidayController {
 	@PreAuthorize("hasAnyRole('GLOBAL_ADMIN')")
 	@ApiOperation(value = "to update a holiday", response = HolidayIDDto.class)
 	public ResponseWrapper<HolidayIDDto> updateHoliday(@Valid @RequestBody RequestWrapper<HolidayUpdateDto> holiday) {
+		auditUtil.auditRequest(MasterDataConstant.UPDATE_API_IS_CALLED + HolidayUpdateDto.class.getSimpleName(),
+				MasterDataConstant.AUDIT_SYSTEM,
+				MasterDataConstant.UPDATE_API_IS_CALLED + HolidayUpdateDto.class.getSimpleName(), "ADM-594");
 		ResponseWrapper<HolidayIDDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.updateHoliday(holiday.getRequest()));
 		return responseWrapper;
@@ -195,8 +206,16 @@ public class HolidayController {
 	public ResponseWrapper<PageResponseDto<HolidaySearchDto>> searchMachine(
 
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+			auditUtil.auditRequest(
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SEARCH_API_IS_CALLED, HolidaySearchDto.class.getSimpleName()),"ADM-595");
 		ResponseWrapper<PageResponseDto<HolidaySearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.searchHolidays(request.getRequest()));
+		auditUtil.auditRequest(
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH, HolidaySearchDto.class.getSimpleName()),
+				MasterDataConstant.AUDIT_SYSTEM,
+				String.format(MasterDataConstant.SUCCESSFUL_SEARCH_DESC, HolidaySearchDto.class.getSimpleName()),"ADM-596");
 		return responseWrapper;
 	}
 
@@ -216,5 +235,8 @@ public class HolidayController {
 		responseWrapper.setResponse(holidayService.holidaysFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
+	
+
+	
 
 }

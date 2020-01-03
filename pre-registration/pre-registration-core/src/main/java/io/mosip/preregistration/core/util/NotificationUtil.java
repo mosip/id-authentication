@@ -67,7 +67,7 @@ public class NotificationUtil {
 	public MainResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,
 			String langCode, MultipartFile file) throws IOException  {
 		
-		log.info("sessionId", "idType", "id", "In notify method of NotificationUtil service");
+		log.info("sessionId", "idType", "id", "In notify method of NotificationUtil service:"+notificationType);
 		
 		MainResponseDTO<NotificationResponseDTO> response=new MainResponseDTO<>();
 		if(notificationType.equals(RequestCodes.SMS))  {

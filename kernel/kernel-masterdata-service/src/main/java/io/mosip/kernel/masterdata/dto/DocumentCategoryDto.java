@@ -19,7 +19,7 @@ import lombok.Data;
  *
  */
 @Data
-@ApiModel(value = "DocumentCategory", description = "DocumentCategory resource representation")
+//@ApiModel(value = "DocumentCategory", description = "DocumentCategory resource representation")
 public class DocumentCategoryDto {
 
 	/**

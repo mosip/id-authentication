@@ -30,6 +30,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
 
+
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
 @Import({ HibernateDaoConfig.class })
@@ -102,5 +103,6 @@ public class PrintServiceBeanConfig {
 	public ResponseDTO responseDTO() {
 		return new ResponseDTO();
 	}
+
 
 }

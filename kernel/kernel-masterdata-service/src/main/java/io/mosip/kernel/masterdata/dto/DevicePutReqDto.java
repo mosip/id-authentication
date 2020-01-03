@@ -22,7 +22,6 @@ import lombok.Data;
  */
 
 @Data
-@ApiModel(value = "Device", description = "Device Detail resource")
 public class DevicePutReqDto {
 
 	/**
@@ -87,13 +86,4 @@ public class DevicePutReqDto {
 	@Size(min = 1, max = 36)
 	private String zoneCode;
 	
-	/**
-	 * Device Type name of Device.
-	 */
-	private String deviceTypeName;
-
-	/**
-	 * Device center mapping status.
-	 */
-	private String mapStatus;
 }

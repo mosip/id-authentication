@@ -1,8 +1,6 @@
 package io.mosip.authentication.core.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * The Class ValidateDeviceDto.
- * @author Srinivasan
- * @since 1.0.0
+ * @author Manoj SP
  */
 @Data
 @NoArgsConstructor
@@ -19,14 +16,11 @@ import lombok.NoArgsConstructor;
 public class ValidateDeviceDTO {
 
 	/** The device code. */
-	@NotBlank
 	private String deviceCode;
 
 	/** The digital id. */
-	@Valid
-	private DigitalIdDTO digitalId;
+	private DigitalId digitalId;
 
 	/** The device service version. */
-	@NotBlank 
 	private String deviceServiceVersion;
 }

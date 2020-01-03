@@ -1,6 +1,6 @@
 package io.mosip.authentication.service.config;
-
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +16,9 @@ public class AuthConfig extends IdAuthConfig {
 	protected Environment environment;
 
 	protected boolean isFingerAuthEnabled() {
-		return (environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_MIN.getConfigNameValue())
-				|| environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue()));
+		return (environment.getProperty(ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue())
+				|| (FMR_ENABLED_TEST.test(environment) && environment.getProperty(ALLOWED_AUTH_TYPE)
+						.contains(BioAuthType.FGR_MIN.getConfigNameValue())));
 	}
 	
 	protected boolean isFaceAuthEnabled() {

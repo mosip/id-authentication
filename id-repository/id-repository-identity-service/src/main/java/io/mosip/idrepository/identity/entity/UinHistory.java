@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
+import org.springframework.data.domain.Persistable;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -27,7 +28,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "uin_h", schema = "idrepo")
 @IdClass(HistoryPK.class)
-public class UinHistory {
+public class UinHistory implements Persistable<String> {
 	
 	/**
 	 * Instantiates a new uin history.
@@ -156,6 +157,16 @@ public class UinHistory {
 	 */
 	public void setUinData(byte[] uinData) {
 		this.uinData = uinData.clone();
+	}
+
+	@Override
+	public String getId() {
+		return uinRefId;
+	}
+
+	@Override
+	public boolean isNew() {
+		return true;
 	}
 
 }

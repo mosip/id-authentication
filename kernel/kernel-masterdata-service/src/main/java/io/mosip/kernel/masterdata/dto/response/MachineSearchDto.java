@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Machine", description = "Machine Detail resource")
+//@ApiModel(value = "Machine", description = "Machine Detail resource")
 public class MachineSearchDto extends BaseDto {
 	/**
 	 * Field for machine id

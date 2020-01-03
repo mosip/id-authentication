@@ -1,6 +1,7 @@
 package io.mosip.preregistration.batchjob.repository.utils;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +33,10 @@ import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+
 @Component
 public class BatchJpaRepositoryImpl {
-	
+
 	/** The Constant LOGGER. */
 	private Logger log = LoggerConfiguration.logConfig(BatchJpaRepositoryImpl.class);
 
@@ -44,7 +46,7 @@ public class BatchJpaRepositoryImpl {
 	@Autowired
 	@Qualifier("demographicRepository")
 	private DemographicRepository demographicRepository;
-	
+
 	/** Autowired reference for {@link #bookingRepository}. */
 	@Autowired
 	@Qualifier("availabilityRepository")
@@ -139,57 +141,23 @@ public class BatchJpaRepositoryImpl {
 	 * @param currentdate
 	 * @return List of RegistrationBookingEntity based date less then currentDate
 	 */
-	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate, long executionDiff) {
+	public List<RegistrationBookingEntity> getAllOldDateBooking() {
 		List<RegistrationBookingEntity> entityList = null;
-		DemographicEntity demographicEntity;
-		int bookedCount = 0;
+
 		try {
-			LocalDate tillDate = LocalDate.now().minusDays(executionDiff + 1);
-			entityList = regAppointmentRepository.findByRegDateBetween(currentdate.minusDays(1), tillDate);
+			entityList = regAppointmentRepository.findByRegDateBetween(StatusCodes.BOOKED.getCode(), LocalDate.now());
 			if (entityList == null || entityList.isEmpty()) {
 				log.info("sessionId", "idType", "id",
 						"There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
 			}
-			for (RegistrationBookingEntity registrationBookingEntity : entityList) {
-				demographicEntity = getApplicantDemographicDetails(
-						registrationBookingEntity.getDemographicEntity().getPreRegistrationId());
-				if (demographicEntity.getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
-					bookedCount++;
-				}
-			}
-			if (bookedCount == 0) {
-				log.info("sessionId", "idType", "id",
-						"There are currently no Pre-Registration-Ids to update status to consumed");
-				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
-						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
-			}
+
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
 					ErrorMessages.REG_APPOINTMENT_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return entityList;
-	}
-
-	/**
-	 * @param preRegId
-	 * @return RegistrationBookingEntity for given prereId
-	 */
-	public RegistrationBookingEntity getPreRegId(String preRegId) {
-		RegistrationBookingEntity entity = null;
-		try {
-			entity = regAppointmentRepository.getDemographicEntityPreRegistrationId(preRegId);
-			if (entity == null) {
-				log.info("sessionId", "idType", "id", "Deleted Invalid Pre-Registration ID");
-				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
-			}
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_005.getCode(),
-					ErrorMessages.REG_APPOINTMENT_TABLE_NOT_ACCESSIBLE.getMessage());
-		}
-		return entity;
-
 	}
 
 	/**
@@ -247,22 +215,6 @@ public class BatchJpaRepositoryImpl {
 	}
 
 	/**
-	 * @param preregId
-	 * @return DocumentEntity for given prereId
-	 */
-	public List<DocumentEntity> getDocumentDetails(String preregId) {
-		List<DocumentEntity> documentList = null;
-		try {
-			documentList = documentRespository.findByDemographicEntityPreRegistrationId(preregId);
-			log.info("sessionId", "idType", "id", "In getDocumentDetails to get document details");
-			return documentList;
-		} catch (Exception e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_007.getCode(),
-					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());
-		}
-	}
-
-	/**
 	 * @param bookingEntityConsumed
 	 * @return true if consumed table of booking updated.
 	 */
@@ -307,7 +259,7 @@ public class BatchJpaRepositoryImpl {
 					ErrorMessages.DOCUMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param regDate
@@ -323,6 +275,7 @@ public class BatchJpaRepositoryImpl {
 		}
 		return regCenterList;
 	}
+
 	/**
 	 * 
 	 * @param regDate
@@ -339,6 +292,7 @@ public class BatchJpaRepositoryImpl {
 		}
 		return localDatList;
 	}
+
 	/**
 	 * 
 	 * @param regId
@@ -355,7 +309,23 @@ public class BatchJpaRepositoryImpl {
 		}
 		return deletedSlots;
 	}
-	
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteSlotsBetweenHours(String regId, LocalDate regDate,LocalTime fromTime,LocalTime toTime) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = availabilityRepository.deleteByRegcntrIdAndRegDateAndFromTimeBetween(regId, regDate,fromTime,toTime);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
+
 	/**
 	 * 
 	 * @param regDate
@@ -372,7 +342,7 @@ public class BatchJpaRepositoryImpl {
 		}
 		return localDatList;
 	}
-	
+
 	/**
 	 * 
 	 * @param regId
@@ -390,6 +360,7 @@ public class BatchJpaRepositoryImpl {
 		}
 		return registrationBookingEntityList;
 	}
+
 	/**
 	 * 
 	 * This method will update the booking status in applicant table.
@@ -414,7 +385,7 @@ public class BatchJpaRepositoryImpl {
 		return demographicEntity.getStatusCode();
 
 	}
-	
+
 	/**
 	 * 
 	 * @param regId
@@ -426,12 +397,25 @@ public class BatchJpaRepositoryImpl {
 		try {
 			registrationBookingEntityList = regAppointmentRepository.findByRegId(regId, date);
 		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_008.getCode(),
+					ErrorMessages.REG_APPOINTMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
 		return registrationBookingEntityList;
 	}
-	
+
+	public List<RegistrationBookingEntity> findAllPreIdsBydateAndBetweenHours(String regCenterId, LocalDate date,
+			LocalTime fromTime, LocalTime toTime) {
+		List<RegistrationBookingEntity> entityList = null;
+		try {
+			entityList = regAppointmentRepository
+					.findByRegistrationCenterIdAndRegDateAndSlotFromTimeBetween(regCenterId, date, fromTime, toTime);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_008.getCode(),
+					ErrorMessages.REG_APPOINTMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
+		}
+		return entityList;
+	}
+
 	/**
 	 * 
 	 * Aparam regId
@@ -449,7 +433,7 @@ public class BatchJpaRepositoryImpl {
 		}
 		return deletedSlots;
 	}
-	
+
 	/**
 	 * @param entity
 	 * @return boolean
@@ -457,8 +441,5 @@ public class BatchJpaRepositoryImpl {
 	public boolean saveAvailability(AvailibityEntity entity) {
 		return availabilityRepository.save(entity) != null;
 	}
-
-	
-	
 
 }

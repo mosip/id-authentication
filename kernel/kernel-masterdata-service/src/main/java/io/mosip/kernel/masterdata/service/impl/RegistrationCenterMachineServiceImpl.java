@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResponseDto;
+import io.mosip.kernel.masterdata.entity.MOSIPDeviceService;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
@@ -39,6 +40,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineHistoryRep
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
+import io.mosip.kernel.masterdata.utils.AuditUtil;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -54,7 +56,8 @@ import io.mosip.kernel.masterdata.utils.ZoneUtils;
  */
 @Service
 public class RegistrationCenterMachineServiceImpl implements RegistrationCenterMachineService {
-
+	@Autowired
+	AuditUtil auditUtil;
 	/**
 	 * {@link RegistrationCenterMachineRepository} instance
 	 */
@@ -183,6 +186,14 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		}
 
 		if (!isMachineMappedToUserZone || !isRegCenterMappedToUserZone) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID
+									.getErrorMessage()),
+					"ADM-750");
 			throw new RequestException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID.getErrorMessage());
@@ -192,6 +203,15 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		List<String> zoneHierarchy = Arrays.asList(hierarchyPath.split("/"));
 		isInSameHierarchy = zoneHierarchy.stream().anyMatch(zone -> zone.equals(machine.getZoneCode()));
 		if (!isInSameHierarchy) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
+									.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
+									.getErrorMessage()),
+					"ADM-751");
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
@@ -200,6 +220,15 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		RegistrationCenterMachine registrationCenterMachine = registrationCenterMachineRepository
 				.findByRegIdAndMachineId(regCenterId, machineId, primaryLang);
 		if (registrationCenterMachine == null) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND
+									.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND
+									.getErrorMessage()),
+					"ADM-752");
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorMessage());
@@ -209,6 +238,13 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 			registrationCenterMachine.setIsActive(false);
 			updateAndCreateHistoryInRegistrationCenterMachine(registrationCenterMachine, registrationCenters);
 		} else {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_UNMAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorMessage()),
+					"ADM-753");
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_STATUS.getErrorMessage());
@@ -335,6 +371,14 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		}
 
 		if (!isMachineMappedToUserZone || !isRegCenterMappedToUserZone) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID
+									.getErrorMessage()),
+					"ADM-745");
 			throw new RequestException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ZONE_INVALID.getErrorMessage());
@@ -344,6 +388,15 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		List<String> zoneHierarchy = Arrays.asList(hierarchyPath.split("/"));
 		isInSameHierarchy = zoneHierarchy.stream().anyMatch(zone -> zone.equals(machine.getZoneCode()));
 		if (!isInSameHierarchy) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
+									.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
+									.getErrorMessage()),
+					"ADM-746");
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_NOT_IN_SAME_HIERARCHY
@@ -351,6 +404,15 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		}
 		if ((!machine.getIsActive() && machine.getIsDeleted())
 				|| (!registrationCenters.get(0).getIsActive() && registrationCenters.get(0).getIsDeleted())) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DECOMMISIONED_STATE
+									.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DECOMMISIONED_STATE
+									.getErrorMessage()),
+					"ADM-747");
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DECOMMISIONED_STATE.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DECOMMISIONED_STATE
@@ -360,6 +422,15 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		RegistrationCenterMachine registrationCenterMachine = registrationCenterMachineRepository
 				.findByRegIdAndMachineId(regCenterId, machineId, primaryLang);
 		if (registrationCenterMachine != null && registrationCenterMachine.getIsActive()) {
+			auditUtil.auditRequest(
+					String.format(MasterDataConstant.FAILURE_MAP, RegistrationCenterMachine.class.getCanonicalName()),
+					MasterDataConstant.AUDIT_SYSTEM,
+					String.format(MasterDataConstant.FAILURE_DESC,
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE
+									.getErrorCode(),
+							RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE
+									.getErrorMessage()),
+					"ADM-748");
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE.getErrorMessage());
@@ -368,6 +439,16 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 			updateRegMachineAndCreateInHistory(registrationCenterMachine, registrationCenters.get(0));
 		} else {
 			if (getRegistrationDeviceMapping(machineId) != null) {
+				auditUtil.auditRequest(
+						String.format(
+								MasterDataConstant.FAILURE_MAP, RegistrationCenterMachine.class.getCanonicalName()),
+						MasterDataConstant.AUDIT_SYSTEM,
+						String.format(MasterDataConstant.FAILURE_DESC,
+								RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE
+										.getErrorCode(),
+								RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE
+										.getErrorMessage()),
+						"ADM-749");
 				throw new MasterDataServiceException(
 						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE.getErrorCode(),
 						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_ALREADY_ACTIVE

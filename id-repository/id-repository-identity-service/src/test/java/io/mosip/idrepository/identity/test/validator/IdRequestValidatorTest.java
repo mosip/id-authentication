@@ -114,7 +114,7 @@ public class IdRequestValidatorTest {
 
 	@Before
 	public void setup() {
-		uinStatus.add(env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()));
+		uinStatus.add(env.getProperty(IdRepoConstants.ACTIVE_STATUS));
 		allowedTypes.add("bio,demo,all");
 		ReflectionTestUtils.setField(validator, "id", id);
 		ReflectionTestUtils.setField(validator, "uinStatus", uinStatus);
@@ -434,7 +434,7 @@ public class IdRequestValidatorTest {
 	} catch (IdRepoAppException e) {
 		assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
 		assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-				 env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
+				 env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH))
 				.replace(".", "/"),
 				e.getErrorText());
 	}

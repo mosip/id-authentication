@@ -18,33 +18,34 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "Device", description = "Device Detail resource")
-@ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId", "foundationalTrustSignature",
-		"foundationalTrustCertificate" })
+//@ApiModel(value = "Device", description = "Device Detail resource")
+@ValidFoundational(baseField = "certificationLevel", matchField = { "foundationalTPId" })
+		/*"foundationalTrustSignature",
+		"foundationalTrustCertificate"*/ 
 public class RegisteredDevicePostReqDto {
 
-	/**
+/*	*//**
 	 * Field for deviceTypeCode
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String deviceTypeCode;
 
-	/**
+	*//**
 	 * Field for deviceSubTypeCode
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceSTypeCode", required = true, dataType = "java.lang.String")
-	private String deviceSTypeCode;
+	private String deviceSTypeCode;*/
 
 	/**
 	 * Field for Status Code Status should only have standard values - “Registered”,
 	 * “Retired”, “Revoked”
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "statusCode", required = true, dataType = "java.lang.String")
 	@ValidStatusCode(message = "Invalid Status received")
 	private String statusCode;
@@ -53,7 +54,7 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 256)
+	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "deviceId", required = true, dataType = "java.lang.String")
 	private String deviceId;
 
@@ -70,7 +71,7 @@ public class RegisteredDevicePostReqDto {
 	 * “Registration” or “Auth”.
 	 */
 	@NotBlank
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	@ApiModelProperty(value = "purpose", required = true, dataType = "java.lang.String")
 	@ValidPurpose(message = "Invalid Purpose received")
 	private String purpose;
@@ -79,7 +80,7 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 	@NotBlank
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
 	@ApiModelProperty(value = "firmware", required = true, dataType = "java.lang.String")
 	private String firmware;
 	
@@ -94,7 +95,7 @@ public class RegisteredDevicePostReqDto {
 	 * or “L1”
 	 */
 	@NotBlank
-	@Size(min = 1, max = 3)
+	@Size(min = 0, max = 3)
 	@ApiModelProperty(value = "certificationLevel", required = true, dataType = "java.lang.String")
 	@ValidCertificateLevel(message = "Invalid Certification level received")
 	private String certificationLevel;
@@ -111,24 +112,24 @@ public class RegisteredDevicePostReqDto {
 	 * Field for device name
 	 */
 
-	@Size(min = 0, max = 512)
+	/*@Size(min = 0, max = 512)
 	@ApiModelProperty(value = "foundationalTrustSignature", required = true, dataType = "java.lang.String")
 	private String foundationalTrustSignature;
 
-	/**
+	*//**
 	 * Field for device name
-	 */
+	 *//*
 
 	@ApiModelProperty(value = "foundationalTrustCertificate", required = true, dataType = "java.lang.byte")
 	private byte[] foundationalTrustCertificate;
 
-	/**
+	*//**
 	 * Field for device name
-	 */
+	 *//*
 	@NotBlank
 	@Size(min = 1, max = 512)
 	@ApiModelProperty(value = "dProviderSignature", required = true, dataType = "java.lang.String")
-	private String deviceProviderSignature;
+	private String deviceProviderSignature;*/
 	
 	@NotNull
 	@Valid

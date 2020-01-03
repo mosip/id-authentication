@@ -636,7 +636,11 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private GridPane localResidence;
 	@FXML
+	private GridPane localFullNameBox;
+	@FXML
 	private GridPane localAddressPane;
+	@FXML
+	private GridPane localLanguageParentDetailPane;
 	@FXML
 	private GridPane preRegParentPane;
 	@FXML
@@ -894,6 +898,18 @@ public class DemographicDetailController extends BaseController {
 		localUinIdPane.setDisable(true);
 		localRidPane.setDisable(true);
 		localRidOrUinToggle.setDisable(true);
+		
+		disableLocalFieldOnSameLanguage();
+	}
+
+	private void disableLocalFieldOnSameLanguage() {
+		//if primary and secondary language is same
+		if(applicationContext.getApplicationLanguage().equals(applicationContext.getLocalLanguage())) {
+			localFullNameBox.setDisable(true);
+			localAddressPane.setDisable(true);
+			localLanguageParentDetailPane.setDisable(true);
+			
+		}
 	}
 
 	/**
@@ -1802,6 +1818,7 @@ public class DemographicDetailController extends BaseController {
 			}
 
 			enableParentUIN();
+			disableLocalFieldOnSameLanguage();
 		}
 	}
 

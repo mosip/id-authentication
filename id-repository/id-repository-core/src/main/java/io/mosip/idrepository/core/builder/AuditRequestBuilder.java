@@ -1,5 +1,8 @@
 package io.mosip.idrepository.core.builder;
 
+import static io.mosip.idrepository.core.constant.IdRepoConstants.APPLICATION_ID;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.APPLICATION_NAME;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
@@ -10,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
-import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
@@ -76,8 +78,8 @@ public class AuditRequestBuilder {
 		auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 		auditRequest.setHostName(hostName);
 		auditRequest.setHostIp(hostAddress);
-		auditRequest.setApplicationId(env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
-		auditRequest.setApplicationName(env.getProperty(IdRepoConstants.APPLICATION_NAME.getValue()));
+		auditRequest.setApplicationId(env.getProperty(APPLICATION_ID));
+		auditRequest.setApplicationName(env.getProperty(APPLICATION_NAME));
 		auditRequest.setSessionUserId("sessionUserId");
 		auditRequest.setSessionUserName("sessionUserName");
 		auditRequest.setId(id);

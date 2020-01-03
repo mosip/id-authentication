@@ -38,7 +38,7 @@ public class RegisteredDevice extends BaseEntity {
 	private String deviceTypeCode;
 
 	@Column(name = "dstype_code", length=36)
-	private String devicesTypeCode;
+	private String deviceSTypeCode;
 
 	@Column(name = "status_code", length=64)
 	private String statusCode;
@@ -87,17 +87,7 @@ public class RegisteredDevice extends BaseEntity {
 	private String certificationLevel;
 
 	@Column(name = "foundational_trust_provider_id", length=36)
-	private String foundationalTPId;
-
-	@Column(name = "foundational_trust_signature", length=512)
-	private String foundationalTrustSignature;
-
-	@Column(name = "foundational_trust_certificate")
-	private byte[] foundationalTrustCertificate;
-
-	@Column(name = "dprovider_signature", length=512)
-	private String deviceProviderSignature;
-	
+	private String foundationalTPId;	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "provider_id", referencedColumnName = "id", insertable = false, updatable = false)

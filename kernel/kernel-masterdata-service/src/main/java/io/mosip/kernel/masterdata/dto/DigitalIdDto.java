@@ -20,42 +20,49 @@ public class DigitalIdDto {
 
 	/** The serial no. */
 	@NotBlank
-	@Size(min=1, max=64)
+	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "serialNo", required = true, dataType = "java.lang.String")
 	private String serialNo;
-	
-	
+
 	/** The Device Provider Name. */
 	@NotBlank
-	@Size(min=1, max=128)
+	@Size(min = 1, max = 128)
 	@ApiModelProperty(value = "dp", required = true, dataType = "java.lang.String")
 	private String dp;
-	
 
 	/** The Device Provider id. */
 	@NotBlank
-	@Size(min=1, max=36)
+	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "dpId", required = true, dataType = "java.lang.String")
 	private String dpId;
-	
-	
+
 	/** The make. */
 	@NotBlank
-	@Size(min=1, max=36)
+	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "make", required = true, dataType = "java.lang.String")
 	private String make;
 
 	/** The model. */
 	@NotBlank
-	@Size(min=1, max=36)
+	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "mpdel", required = true, dataType = "java.lang.String")
 	private String model;
 
-	/** type */
+	/** type *//*
 	@ApiModelProperty(value = "type", dataType = "java.lang.String")
+	private String type;
+	
+	/** type */
+	@NotBlank
+	@ApiModelProperty(value = "subType", dataType = "java.lang.String")
+	private String subType;
 	//@ValidType(message = "Type Value is Invalid")
+	@NotBlank
+	@ApiModelProperty(value = "type", dataType = "java.lang.String")
 	private String type;
 
 	/** The date time. */
+	
 	private String dateTime;
+	
 }

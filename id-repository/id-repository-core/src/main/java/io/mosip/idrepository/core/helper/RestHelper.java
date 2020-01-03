@@ -1,5 +1,10 @@
 package io.mosip.idrepository.core.helper;
 
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CLIENT_ERROR;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CONNECTION_TIMED_OUT;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.SERVER_ERROR;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.UNKNOWN_ERROR;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
@@ -117,11 +121,11 @@ public class RestHelper {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
-				throw new RestServiceException(IdRepoErrorConstants.CONNECTION_TIMED_OUT, e);
+				throw new RestServiceException(CONNECTION_TIMED_OUT, e);
 			} else {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
-				throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
+				throw new RestServiceException(UNKNOWN_ERROR, e);
 			}
 		} finally {
 			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
@@ -210,13 +214,13 @@ public class RestHelper {
 			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
 			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
 					&& responseNode.get(ERRORS).size() > 0) {
-				throw new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, responseNode.toString(),
+				throw new RestServiceException(CLIENT_ERROR, responseNode.toString(),
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
 			}
 		} catch (IOException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
-			throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
+			throw new RestServiceException(UNKNOWN_ERROR, e);
 		}
 	}
 
@@ -246,19 +250,19 @@ public class RestHelper {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - CLIENT_ERROR -- "
 								+ e.getResponseBodyAsString());
-				return new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e.getResponseBodyAsString(),
+				return new RestServiceException(CLIENT_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 				}
 			} else {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR -- "
 								+ e.getResponseBodyAsString());
-				return new RestServiceException(IdRepoErrorConstants.SERVER_ERROR, e.getResponseBodyAsString(),
+				return new RestServiceException(SERVER_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, ex.getMessage());
-			return new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, ex);
+			return new RestServiceException(UNKNOWN_ERROR, ex);
 		}
 
 	}

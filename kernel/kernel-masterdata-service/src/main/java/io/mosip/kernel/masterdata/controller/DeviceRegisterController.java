@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = "/device")
-@Api(tags = { "DeviceRegister" })
+@Api(tags = { "DeviceRegister-Decommissioned" })
 public class DeviceRegisterController {
 	/**
 	 * Reference to {@link DeviceRegisterService}.

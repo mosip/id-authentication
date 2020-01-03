@@ -24,6 +24,7 @@ public class InvalidRequestParameterException extends BaseUncheckedException {
 	
 	private MainResponseDTO<?> mainResponseDto;
 	private List<ExceptionJSONInfoDTO> exptionList;
+	private String operation;
 	
 	public InvalidRequestParameterException() {
 		super();
@@ -42,5 +43,11 @@ public class InvalidRequestParameterException extends BaseUncheckedException {
 	public InvalidRequestParameterException(List<ExceptionJSONInfoDTO> exptionList,MainResponseDTO<?> response) {
 		this.mainResponseDto=response;
 		this.exptionList=exptionList;
+	}
+	
+	public InvalidRequestParameterException(List<ExceptionJSONInfoDTO> exptionList,String operation,MainResponseDTO<?> response) {
+		this.mainResponseDto=response;
+		this.exptionList=exptionList;
+		this.operation=operation;
 	}
 }

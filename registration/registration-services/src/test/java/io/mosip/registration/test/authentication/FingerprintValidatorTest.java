@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +29,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
@@ -63,7 +63,9 @@ public class FingerprintValidatorTest {
 	private BioService bioService;
 
 	@Mock
-	private IBioApi bioApiImpl;
+	private IBioApi ibioApi;
+	
+	
 
 	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 	private ApplicationContext applicationContext = ApplicationContext.getInstance();
@@ -93,11 +95,21 @@ public class FingerprintValidatorTest {
 		fingerPrintDetails.add(fingerprintDetailsDTO);
 		authenticationValidatorDTO.setFingerPrintDetails(fingerPrintDetails);
 	}
-
+	
 	@Test
 	public void validateSingleTest() throws BiometricException {
-		// FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
-		// fingerprintDetailsDTO.setFingerType("right index");
+		Map<String, Object> applicationMap = new HashMap<>();	
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.DISABLE);
+		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
+	}
+	
+	@Test
+	public void validateSingleTestWithBioDedup() throws BiometricException {
+		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.SINGLE);
+		FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
+		fingerprintDetailsDTO.setFingerType("right index");
 		UserBiometric userBiometric = new UserBiometric();
 		userBiometric.setQualityScore(91);
 		List<UserBiometric> userBiometrics = new ArrayList<>();
@@ -106,17 +118,16 @@ public class FingerprintValidatorTest {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(authenticationValidatorDTO.getFingerPrintDetails().get(0).getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
-		userBiometric.setBioMinutia(minutiae);
-		// capturedBir.setBDB(minutiae.getBytes());
+      	userBiometric.setBioMinutia(minutiae);
+        //capturedBir.setBDB(minutiae.getBytes());
 		Map<String, Object> applicationMap = new HashMap<>();	
 		PowerMockito.mockStatic(ApplicationContext.class);
 		when(ApplicationContext.map()).thenReturn(applicationMap);
-		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.DISABLE);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.ENABLE);
 
 		when(userDetailDAO.getUserSpecificBioDetails("mosip", "FIN")).thenReturn(userBiometrics);
 		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))
 				.thenReturn(true);
-		authenticationValidatorDTO.setAuthValidationType("single");
 		BIR bir = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
 		BIR biType[] = new BIR[userBiometrics.size()];
 		BIR b = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
@@ -125,14 +136,90 @@ public class FingerprintValidatorTest {
 		Score score2 = new Score();
 		score2.setInternalScore(30);
 		score[0] = score2;
-		when(bioApiImpl.match(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(score);
+		CompositeScore c=new CompositeScore();
+		c.setIndividualScores(score);
+		when(ibioApi.compositeMatch(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(c);
+		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));	
+	}
+	
+	@Test
+	public void validateSingleTestWithBioDedupGoodQuality() throws BiometricException {
+		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.SINGLE);
+		FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
+		fingerprintDetailsDTO.setFingerType("right index");
+		UserBiometric userBiometric = new UserBiometric();
+		userBiometric.setQualityScore(91);
+		List<UserBiometric> userBiometrics = new ArrayList<>();
+		userBiometrics.add(userBiometric);
+
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
+				.convert(authenticationValidatorDTO.getFingerPrintDetails().get(0).getFingerPrint());
+		String minutiae = fingerprintTemplate.serialize();
+      	userBiometric.setBioMinutia(minutiae);
+        //capturedBir.setBDB(minutiae.getBytes());
+		Map<String, Object> applicationMap = new HashMap<>();	
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.ENABLE);
+
+		when(userDetailDAO.getUserSpecificBioDetails("mosip", "FIN")).thenReturn(userBiometrics);
+		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))
+				.thenReturn(true);
+		BIR bir = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
+		BIR biType[] = new BIR[userBiometrics.size()];
+		BIR b = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
+		biType[0] = b;
+		Score score[] = new Score[1];
+		Score score2 = new Score();
+		score2.setScaleScore(90);
+		score[0] = score2;
+		CompositeScore c=new CompositeScore();
+		c.setIndividualScores(score);
+		when(ibioApi.compositeMatch(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(c);
+		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));	
+	}
+	
+	@Test
+	public void validateSingleTestWithBioDedupException() throws BiometricException {
+		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.SINGLE);
+		FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
+		fingerprintDetailsDTO.setFingerType("right index");
+		UserBiometric userBiometric = new UserBiometric();
+		userBiometric.setQualityScore(91);
+		List<UserBiometric> userBiometrics = new ArrayList<>();
+		userBiometrics.add(userBiometric);
+
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
+				.convert(authenticationValidatorDTO.getFingerPrintDetails().get(0).getFingerPrint());
+		String minutiae = fingerprintTemplate.serialize();
+      	userBiometric.setBioMinutia(minutiae);
+        //capturedBir.setBDB(minutiae.getBytes());
+		Map<String, Object> applicationMap = new HashMap<>();	
+		PowerMockito.mockStatic(ApplicationContext.class);
+		when(ApplicationContext.map()).thenReturn(applicationMap);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.ENABLE);
+
+		when(userDetailDAO.getUserSpecificBioDetails("mosip", "FIN")).thenReturn(userBiometrics);
+		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))
+				.thenReturn(true);
+		BIR bir = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
+		BIR biType[] = new BIR[userBiometrics.size()];
+		BIR b = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
+		biType[0] = b;
+		Score score[] = new Score[1];
+		Score score2 = new Score();
+		score2.setScaleScore(90);
+		score[0] = score2;
+		CompositeScore c=new CompositeScore();
+		c.setIndividualScores(score);
+		when(ibioApi.compositeMatch(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenThrow(BiometricException.class);
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
 	}
-
+	
 	@Test
 	public void validateMultipleTest() throws BiometricException {
 		
-		authenticationValidatorDTO.setAuthValidationType("multiple");
+		authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.MULTIPLE);
 		FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 		fingerprintDetailsDTO.setFingerType("right index");
 		UserBiometric userBiometric = new UserBiometric();
@@ -146,12 +233,11 @@ public class FingerprintValidatorTest {
 		Map<String, Object> applicationMap = new HashMap<>();	
 		PowerMockito.mockStatic(ApplicationContext.class);
 		when(ApplicationContext.map()).thenReturn(applicationMap);
-		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.DISABLE);
+		ApplicationContext.map().put(RegistrationConstants.DEDUPLICATION_FINGERPRINT_ENABLE_FLAG, RegistrationConstants.ENABLE);
 
 		when(userDetailDAO.getUserSpecificBioDetail("mosip", "FIN", "fingerType")).thenReturn(userBiometric);
 		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))
 				.thenReturn(true);
-		authenticationValidatorDTO.setAuthValidationType("multiple");
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(authenticationValidatorDTO.getFingerPrintDetails().get(0).getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
@@ -162,20 +248,16 @@ public class FingerprintValidatorTest {
 		biType[0] = b;
 		Score score[] = new Score[1];
 		Score score2 = new Score();
-		score2.setInternalScore(30);
+		score2.setScaleScore(90);;
 		score[0] = score2;
-		when(bioApiImpl.match(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(score);
-		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
+		CompositeScore c=new CompositeScore();
+		c.setIndividualScores(score);
+		when(ibioApi.compositeMatch(Mockito.any(), Mockito.any(), (KeyValuePair[]) Mockito.isNull())).thenReturn(c);
+		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
 	}
 
 	@Test
-	public void validateTest() {
-		authenticationValidatorDTO.setAuthValidationType("");
-		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
-	}
-	
-	@Test
 	public void validateAuthTest() {
-		assertNull(fingerprintValidator.validate("mosip","123", true));
+		assertNull(fingerprintValidator.validate("mosip", "123", true));
 	}
 }

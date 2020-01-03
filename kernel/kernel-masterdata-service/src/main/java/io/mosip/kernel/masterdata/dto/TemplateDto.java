@@ -16,7 +16,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-@ApiModel(value = "Template", description = "Template resource representation")
+//@ApiModel(value = "Template", description = "Template resource representation")
 public class TemplateDto {
 
 	@NotBlank

@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Location", description = "Location details")
+//@ApiModel(value = "Location", description = "Location details")
 public class LocationExtnDto extends BaseDto {
 	@FilterType(types = { FilterTypeEnum.EQUALS})
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")

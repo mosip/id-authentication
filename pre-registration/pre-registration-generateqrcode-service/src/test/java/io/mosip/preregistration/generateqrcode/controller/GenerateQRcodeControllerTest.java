@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.generateqrcode.GenerateQRcodeApplicationTests;
 import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.generateqrcode.service.GenerateQRcodeService;
@@ -53,6 +55,9 @@ public class GenerateQRcodeControllerTest {
 
 	@MockBean
 	private GenerateQRcodeServiceUtil serviceUtil;
+	
+	@Mock
+	private RequestValidator requestValidator;
 	
 
 	private NotificationDTO notificationDTO;

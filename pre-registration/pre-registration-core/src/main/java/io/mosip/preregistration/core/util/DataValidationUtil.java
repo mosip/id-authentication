@@ -29,7 +29,7 @@ public final class DataValidationUtil {
 	 * @param errors the errors
 	 * @throws InvalidRequestParameterException the InvalidRequestParameterException
 	 */
-	public static void validate(Errors errors, String operation) throws InvalidRequestParameterException {
+	public static void validate(Errors errors, String operation) {
 		MainResponseDTO<?> response= new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		
@@ -37,11 +37,11 @@ public final class DataValidationUtil {
 			errors.getAllErrors().stream()
 					.forEach(error ->{
 						ExceptionJSONInfoDTO ex= new ExceptionJSONInfoDTO();
-						ex.setErrorCode(error.getCode().toString());
+						ex.setErrorCode(error.getCode());
 						ex.setMessage(error.getDefaultMessage());
 						errorList.add(ex);
 					} );
-			throw new InvalidRequestParameterException(errorList, response);
+			throw new InvalidRequestParameterException(errorList, operation,response);
 		}
 	}
 

@@ -8,6 +8,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.json.simple.parser.JSONParser;
 
 /**
  * The Class BioDedupeConfig.
@@ -27,5 +28,10 @@ public class BioDedupeConfig {
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.bio.dedupe.api.controller"))
 				.paths(PathSelectors.ant("/biometricfile/*")).build();
 	}
-
+	
+        @Bean
+	public JSONParser getJsonParser() {
+		return new JSONParser();
+	}
+	
 }

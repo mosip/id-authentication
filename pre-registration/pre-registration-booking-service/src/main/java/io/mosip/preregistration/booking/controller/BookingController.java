@@ -10,9 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,12 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.preregistration.booking.dto.AvailabilityDto;
-import io.mosip.preregistration.booking.dto.BookingRequestDTO;
-import io.mosip.preregistration.booking.dto.BookingStatus;
-import io.mosip.preregistration.booking.dto.BookingStatusDTO;
-import io.mosip.preregistration.booking.dto.MultiBookingRequest;
-import io.mosip.preregistration.booking.service.BookingService;
+import io.mosip.preregistration.booking.serviceimpl.dto.AvailabilityDto;
+import io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.serviceimpl.dto.BookingStatus;
+import io.mosip.preregistration.booking.serviceimpl.dto.BookingStatusDTO;
+import io.mosip.preregistration.booking.serviceimpl.dto.MultiBookingRequest;
+import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
@@ -36,10 +40,13 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.DataValidationUtil;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * This class provides different API's to perform operations on Booking
@@ -59,24 +66,28 @@ public class BookingController {
 
 	/** Autowired reference for {@link #bookingService}. */
 	@Autowired
-	private BookingService bookingService;
+	private BookingServiceIntf bookingService;
+	
+	@Autowired
+	private RequestValidator requestValidator;
+	
+	/** The Constant CREATE application. */
+	private static final String BOOKING = "book";
+	
+	
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(requestValidator);
+	}
+
 
 	private Logger log = LoggerConfiguration.logConfig(BookingController.class);
 
-	/**
-	 * Get API to save availability.
-	 * 
-	 * @return MainResponseDto .
-	 */
-	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR')")
-	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Sync master Data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful") })
-	public ResponseEntity<MainResponseDTO<String>> saveAvailability() {
-		log.info("sessionId", "idType", "id",
-				"In saveAvailability method of Booking controller for synching master data to get availability ");
-		return ResponseEntity.status(HttpStatus.OK).body(bookingService.addAvailability());
-	}
 
 	/**
 	 * Get API to get availability details.
@@ -110,9 +121,11 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully") })
 	public ResponseEntity<MainResponseDTO<BookingStatusDTO>> bookAppoinment(
 			@PathVariable("preRegistrationId") String preRegistrationId,
-			@RequestBody(required = true) MainRequestDTO<BookingRequestDTO> bookingDTO) {
+			@Validated @RequestBody(required = true) MainRequestDTO<BookingRequestDTO> bookingDTO, @ApiIgnore Errors errors ) {
 		log.info("sessionId", "idType", "id",
 				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingDTO);
+		requestValidator.validateId(BOOKING, bookingDTO.getId(), errors);
+		DataValidationUtil.validate(errors,BOOKING);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookAppointment(bookingDTO, preRegistrationId));
 	}
 	
@@ -129,9 +142,11 @@ public class BookingController {
 	@ApiOperation(value = "Booking Appointment")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully") })
 	public ResponseEntity<MainResponseDTO<BookingStatus>> bookMultiAppoinment(
-			@RequestBody(required = true) MainRequestDTO<MultiBookingRequest> bookingRequest) {
+			@Validated @RequestBody(required = true) MainRequestDTO<MultiBookingRequest> bookingRequest, @ApiIgnore Errors errors) {
 		log.info("sessionId", "idType", "id",
 				"In bookAppoinment method of Booking controller to book an appointment for object: " + bookingRequest);
+		requestValidator.validateId(BOOKING, bookingRequest.getId(), errors);
+		DataValidationUtil.validate(errors,BOOKING);
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.bookMultiAppointment(bookingRequest));
 	}
 

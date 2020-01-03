@@ -13,11 +13,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.util.RequestValidator;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 @RunWith(SpringRunner.class)
@@ -29,6 +31,8 @@ public class ValidationUtilTest {
 
 	@Autowired
 	ValidationUtil validationUtil;	
+	@MockBean
+	private RequestValidator validator;
 
 	@Before
 	public void setUp() throws Exception {

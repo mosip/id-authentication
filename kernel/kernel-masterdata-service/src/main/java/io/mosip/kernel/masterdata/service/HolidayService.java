@@ -111,7 +111,7 @@ public interface HolidayService {
 	 * @return the response i.e. pages containing the holidays
 	 */
 	public PageDto<HolidayExtnDto> getHolidays(int pageNumber, int pageSize, String sortBy, String orderBy);
-	
+
 	/**
 	 * Method to search holidays based on filters provided.
 	 * 
@@ -129,4 +129,5 @@ public interface HolidayService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto holidaysFilterValues(FilterValueDto filterValueDto);
+
 }
