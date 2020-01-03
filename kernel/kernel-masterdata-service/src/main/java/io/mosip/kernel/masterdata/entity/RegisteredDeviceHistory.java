@@ -76,15 +76,6 @@ public class RegisteredDeviceHistory extends BaseEntity {
 	@Column(name = "foundational_trust_provider_id")
 	private String foundationalTPId;
 
-	@Column(name = "foundational_trust_signature")
-	private String foundationalTrustSignature;
-
-	@Column(name = "foundational_trust_certificate")
-	private byte[] foundationalTrustCertificate;
-
-	@Column(name = "dprovider_signature")
-	private String dProviderSignature;
-
 	@Column(name = "eff_dtimes")
 	private LocalDateTime effectivetimes;
 
