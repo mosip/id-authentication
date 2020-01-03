@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -19,8 +21,10 @@ public class DigitalId {
 	
 	private String subType;
 	
+	@JsonProperty("dp")
 	private String deviceProvider;
 	
+	@JsonProperty("dpId")
 	private String deviceProviderId;
 	
 	private String dateTime;
