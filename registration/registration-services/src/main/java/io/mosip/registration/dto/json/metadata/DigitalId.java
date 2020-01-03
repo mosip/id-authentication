@@ -11,5 +11,6 @@ public class DigitalId {
 	private String type;
 	private String dpId;
 	private String dp;
+	private String subType;
 	private String dateTime;
 }
