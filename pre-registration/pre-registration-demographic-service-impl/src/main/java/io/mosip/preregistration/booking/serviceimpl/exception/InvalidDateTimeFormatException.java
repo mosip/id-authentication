@@ -35,9 +35,10 @@ public class InvalidDateTimeFormatException extends BaseUncheckedException {
 		this.mainResponseDTO=response;
 	}
 
-	public InvalidDateTimeFormatException(String errorCode, String errorMessage, Throwable rootCause) {
+	public InvalidDateTimeFormatException(String errorCode, String errorMessage, Throwable rootCause,MainResponseDTO<?> response) {
 		super(errorCode, errorMessage, rootCause);
-	}
+		this.mainResponseDTO=response;
+	} 
 
 	public InvalidDateTimeFormatException() {
 		super();

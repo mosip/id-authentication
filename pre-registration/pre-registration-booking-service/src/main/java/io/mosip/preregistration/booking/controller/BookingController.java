@@ -32,7 +32,6 @@ import io.mosip.preregistration.booking.serviceimpl.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.serviceimpl.dto.BookingStatus;
 import io.mosip.preregistration.booking.serviceimpl.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.serviceimpl.dto.MultiBookingRequest;
-import io.mosip.preregistration.booking.serviceimpl.service.BookingService;
 import io.mosip.preregistration.booking.serviceimpl.service.BookingServiceIntf;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.CancelBookingResponseDTO;
