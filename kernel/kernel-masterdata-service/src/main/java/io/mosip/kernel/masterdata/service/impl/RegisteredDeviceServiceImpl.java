@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.constant.DeviceRegisterErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegisteredDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDeRegisterResponse;
+import io.mosip.kernel.masterdata.dto.DigitalIdDeviceRegisterDto;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
 import io.mosip.kernel.masterdata.dto.EncodedRegisteredDeviceResponse;
 import io.mosip.kernel.masterdata.dto.RegisteredDevicePostReqDto;
@@ -103,6 +104,7 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 		RegisteredDeviceExtnDto renRegisteredDeviceExtnDto = null;
 		EncodedRegisteredDeviceResponse encodedRegisteredDeviceResponse = new EncodedRegisteredDeviceResponse();
 		DigitalIdDto digitalIdDto = null;
+		DigitalIdDeviceRegisterDto digitalIdDeviceRegisterDto=null;
 		String digitalIdJson;
 		String ecodedRegisteredDeviceExtnDto;
 		String strRegisteredDeviceExtnDto;
@@ -145,15 +147,15 @@ public class RegisteredDeviceServiceImpl implements RegisteredDeviceService {
 			entityHistory.setCreatedDateTime(crtRegisteredDevice.getCreatedDateTime());
 			registeredDeviceHistoryRepo.create(entityHistory);
 
-			digitalIdDto = mapper.readValue(digitalIdJson, DigitalIdDto.class);
+			digitalIdDeviceRegisterDto = mapper.readValue(digitalIdJson, DigitalIdDeviceRegisterDto.class);
 
 			renRegisteredDeviceExtnDto = MapperUtils.map(crtRegisteredDevice, RegisteredDeviceExtnDto.class);
-			renRegisteredDeviceExtnDto.setDigitalIdDto(digitalIdDto);
+			renRegisteredDeviceExtnDto.setDigitalIdDto(digitalIdDeviceRegisterDto);
 			// DTO to String
 			strRegisteredDeviceExtnDto = mapper.writeValueAsString(renRegisteredDeviceExtnDto);
-			ecodedRegisteredDeviceExtnDto = CryptoUtil.encodeBase64(strRegisteredDeviceExtnDto.getBytes());
+			//ecodedRegisteredDeviceExtnDto = CryptoUtil.encodeBase64(strRegisteredDeviceExtnDto.getBytes());
 
-			encodedRegisteredDeviceResponse.setEnocodedResponse(ecodedRegisteredDeviceExtnDto);
+			//encodedRegisteredDeviceResponse.setEnocodedResponse(ecodedRegisteredDeviceExtnDto);
 
 		} catch (DataAccessLayerException | DataAccessException | IOException ex) {
 			throw new MasterDataServiceException(
