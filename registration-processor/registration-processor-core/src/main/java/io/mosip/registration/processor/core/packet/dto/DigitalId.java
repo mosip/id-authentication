@@ -12,6 +12,7 @@ public class DigitalId {
 	private String make;
 	private String model;
 	private String type;
+	private String subType;
 	private String dpId;
 	private String dp;
 	private String dateTime;
