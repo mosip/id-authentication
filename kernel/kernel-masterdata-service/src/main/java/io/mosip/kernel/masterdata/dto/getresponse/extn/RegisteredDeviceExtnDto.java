@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.dto.DigitalIdDeviceRegisterDto;
 import io.mosip.kernel.masterdata.dto.DigitalIdDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -133,7 +134,7 @@ public class RegisteredDeviceExtnDto extends BaseDto{
 	private String deviceProviderSignature;*/
 	
 	
-	private DigitalIdDto digitalIdDto;
+	private DigitalIdDeviceRegisterDto digitalIdDto;
 	
 	private String ecodedEntity;
 
