@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane id="anchor-pane-acknowledgement" fx:id="rootPane" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.AckReceiptController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" percentHeight="5.5" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" percentHeight="7.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane fx:id="headerPage" styleClass="headerFooter">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                    <fx:include fx:id="Header" prefHeight="${headerPage.height}" prefWidth="${headerPage.width}" source="Header.fxml" />
+               </children>
+            </GridPane>
+            <GridPane id="ackScreen-anchor-pane" styleClass="ackMenu" GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.0" minWidth="10.0" percentWidth="20.0" prefWidth="288.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="378.0" minWidth="10.0" percentWidth="40.0" prefWidth="378.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="3.0" GridPane.valignment="CENTER">
+                     <children>
+                        <Text onMouseClicked="#goToHomeAckTemplate" text="%home" />
+                        <Text fx:id="registrationNavLabel" text="%/newregistration" />
+                        <Text text="%/acknowledgement" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </HBox>
+                  <Label styleClass="templateHeading" text="%registration" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                  <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2">
+                     <children>
+                        <Button fx:id="sendNotification" graphicTextGap="10.0" mnemonicParsing="false" onAction="#sendNotification" styleClass="ackBackButton" text="%sendEmail" visible="false">
+                           <graphic>
+                              <ImageView fx:id="sendNotificationImageView" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/SendEmail.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                        <Button graphicTextGap="10.0" mnemonicParsing="false" styleClass="ackBackButton" text="%downloadPDF" visible="false" managed="false">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/SendEmail.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="print" graphicTextGap="10.0" mnemonicParsing="false" onAction="#printReceipt" styleClass="ackPageButton" text="%print">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Printer.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" top="2.0" />
+                     </padding>
+                     <GridPane.margin>
+                        <Insets right="60.0" />
+                     </GridPane.margin>
+                  </HBox>
+               </children>
+            </GridPane>
+            <GridPane GridPane.rowIndex="2">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="326.0" minWidth="0.0" percentWidth="10.0" prefWidth="89.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="832.0" minWidth="10.0" percentWidth="90.0" prefWidth="802.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" percentWidth="10.0" prefWidth="51.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane id="anchor-pane-acknowledgement" GridPane.columnIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <WebView fx:id="webView" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                     </children>
+                  </GridPane>
+               </children>
+               <GridPane.margin>
+                  <Insets top="1.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane id="ackScreen-anchor-pane" styleClass="headerFooter" GridPane.rowIndex="3">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="newRegistration" mnemonicParsing="false" onAction="#goToNewRegistration" styleClass="ackPageButton" text="%newregistration" GridPane.columnIndex="3">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/NewRegistration.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+   </children>
+</GridPane>

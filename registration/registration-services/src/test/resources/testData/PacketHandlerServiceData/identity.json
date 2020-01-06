@@ -1,0 +1,84 @@
+{
+        "fullName" : [ {
+          "language" : "ara",
+          "value" : "Ayoub Toufiq"
+        }, {
+          "language" : "fra",
+          "value" : "Ayoub Toufiq"
+        } ],
+        "dateOfBirth" : "1992/01/01",
+        "age" : 27,
+        "gender" : [ {
+          "language" : "ara",
+          "value" : "ذكر"
+        }, {
+          "language" : "fra",
+          "value" : "Mâle"
+        } ],
+        "residenceStatus" : [ {
+          "language" : "ara",
+          "value" : "الوطني"
+        }, {
+          "language" : "fra",
+          "value" : "nationale"
+        } ],
+        "addressLine1" : [ {
+          "language" : "ara",
+          "value" : "30 Rue Oum Errabia"
+        }, {
+          "language" : "fra",
+          "value" : "30 Rue Oum Errabia"
+        } ],
+        "addressLine2" : [ {
+          "language" : "ara",
+          "value" : "Errabia"
+        }, {
+          "language" : "fra",
+          "value" : "Errabia"
+        } ],
+        "addressLine3" : [ {
+          "language" : "ara",
+          "value" : ""
+        }, {
+          "language" : "fra",
+          "value" : ""
+        } ],
+        "region" : [ {
+          "language" : "ara",
+          "value" : "جهة الرباط سلا القنيطرة"
+        }, {
+          "language" : "fra",
+          "value" : "Rabat-Salé-Kénitra"
+        } ],
+        "province" : [ {
+          "language" : "ara",
+          "value" : "القنيطرة"
+        }, {
+          "language" : "fra",
+          "value" : "Kénitra"
+        } ],
+        "city" : [ {
+          "language" : "ara",
+          "value" : "القنيطرة"
+        }, {
+          "language" : "fra",
+          "value" : "Kénitra"
+        } ],
+        "postalCode" : "600111",
+        "phone" : "9965625706",
+        "email" : "ayoub.toufiq@gmail.com",
+        "localAdministrativeAuthority" : [ {
+          "language" : "ara",
+          "value" : "بن منصور"
+        }, {
+          "language" : "fra",
+          "value" : "Ben Mansour"
+        } ],
+        "parentOrGuardianBiometrics" : {
+          "format" : "cbeff",
+          "version" : 1.0,
+          "value" : "introducer_bio_CBEFF"
+        },
+        "IDSchemaVersion" : 1.0,
+        "CNIENumber" : "4545343123"
+      }

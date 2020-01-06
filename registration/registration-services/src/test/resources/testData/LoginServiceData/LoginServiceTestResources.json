@@ -1,0 +1,13 @@
+{
+	"roles": [
+		"SUPERVISOR",
+		"OFFICER",
+		"SUPERADMIN"
+	],
+	"userIds" : [
+		"mosip"
+	],
+	"regCenterIds":[
+		"20916"
+	]
+}

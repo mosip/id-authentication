@@ -1,0 +1,113 @@
+{
+  "identity" : {
+    "fullName" : [ {
+      "language" : "eng",
+      "value" : "Taleev Aalam"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة محدوة"
+    } ],
+    "dateOfBirth" : "2016/01/01",
+    "age" : 3,
+    "gender" : [ {
+      "language" : "eng",
+      "value" : "MALE"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "addressLine1" : [ {
+      "language" : "eng",
+      "value" : "Mind Tree Ltd"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "addressLine2" : [ {
+      "language" : "eng",
+      "value" : "RamanuJan It park"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "addressLine3" : [ {
+      "language" : "eng",
+      "value" : "Taramani"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "region" : [ {
+      "language" : "eng",
+      "value" : "Taramani"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "province" : [ {
+      "language" : "eng",
+      "value" : "Tamilnadu"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "city" : [ {
+      "language" : "eng",
+      "value" : "Chennai"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "postalCode" : "60011",
+    "phone" : "866769383",
+    "email" : "taleev.aalam@mindtree.com",
+    "localAdministrativeAuthority" : [ {
+      "language" : "eng",
+      "value" : "MindTree"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة"
+    } ],
+    "parentOrGuardianRIDOrUIN" : 426789089018,
+    "parentOrGuardianName" : [ {
+      "language" : "eng",
+      "value" : "Mohammad Naib"
+    }, {
+      "language" : "arb",
+      "value" : "محدوة محدوة"
+    } ],
+    "proofOfAddress" : {
+      "value" : "POA_Passport",
+      "format" : "jpg",
+      "type" : "Passport"
+    },
+    "proofOfIdentity" : {
+      "value" : "POI_Passport",
+      "format" : "jpg",
+      "type" : "Passport"
+    },
+    "proofOfRelationship" : {
+      "value" : "POR_Passport",
+      "format" : "jpg",
+      "type" : "Passport"
+    },
+    "proofOfDateOfBirth" : {
+      "value" : "POB_Passport",
+      "format" : "jpg",
+      "type" : "Passport"
+    },
+    "individualBiometrics" : {
+      "format" : "cbeff",
+      "version" : 1.0,
+      "value" : "applicant_bio_CBEFF"
+    },
+    "parentOrGuardianBiometrics" : {
+      "format" : "cbeff",
+      "version" : 1.0,
+      "value" : "introducer_bio_CBEFF"
+    },
+    "IDSchemaVersion" : 1.0,
+    "UIN" : null,
+    "CNIENumber" : 1234567890
+  }
+}

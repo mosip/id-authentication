@@ -1,0 +1,2177 @@
+#virtualKeyboard {
+	-fx-background-color: white;
+	-fx-border-width:1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+	-fx-background-radius: 6.0,5.0;
+	-fx-font-size : 15.0px;
+}
+
+#doc_label{
+	-fx-font-size:10.0px;
+}
+
+#imageParent{
+	-fx-border-width:1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+}
+
+.scanPageLabel{
+	-fx-tex-fill: #FF4081;
+	-fx-font-size: 1.2em;
+}
+
+#syncProgressBar > .bar{
+	 -fx-background-color : red;
+	 -fx-padding: 0;
+	 -fx-background-insets : 0;
+}
+
+.dividerTypeOne{
+	-fx-border-width : 0.0 0.0 1.0 0.0;
+	-fx-border-color : #C9C9C9;
+}
+
+.dividerTypeTwo{
+	-fx-border-width : 1 0 0 0;
+	-fx-border-color : #C9C9C9;
+}
+
+.parentScrollPane .scroll-bar:horizontal > .increment-button > .increment-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.parentScrollPane .scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+    -fx-background-color: white;
+    -fx-shape: "";
+}
+
+.parentScrollPane .scroll-bar:horizontal {
+		-fx-background-color : white;
+}
+
+.scroll-bar:vertical > .thumb {
+    -fx-background-color: white;
+ }
+ 
+
+.parentScrollPane .scroll-pane > .corner {
+    -fx-background-color: white;
+}
+ 
+.scroll-pane {
+    -fx-background-color: white;
+	-fx-border-width : 0.0 0.0 0.0 0.0;
+    
+}
+
+
+.scroll-bar:horizontal > .thumb {
+    -fx-background-color: white;
+ }
+ 
+
+.toolTip{
+	-fx-font: normal bold 10.0 Langdon;
+	-fx-base: #AE3522;
+	-fx-text-fill: red;
+	-fx-background-color : white;
+}
+
+#toggleLabel1{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #FF4081;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;	
+	-fx-border-color: #FF4081;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+}
+
+#toggleLabel2{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #FF4081;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #FF4081;
+	-fx-Opacity: 0.4; 
+	-fx-pref-height: 20.0px;
+	-fx-pref-width: 55.0px;
+}
+
+#thresholdBar{
+	-fx-border-color : red;
+	-fx-border-width : 0.0 1.0 0.0 0.0;
+}
+
+.progress-barGreen > .bar {
+    -fx-background-color: #45A30A;
+}
+
+.progress-barRed > .bar {
+   -fx-background-color: #FF0000;
+}
+
+.qualityLabelGrey{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #F0F0F0;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #F0F0F0;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+	-fx-text-fill: #666666;
+}
+
+.qualityLabelRed{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #FF0000;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #FF0000;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+	-fx-text-fill: #FFFFFF;
+}
+
+.qualityLabelGreen{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #45A30A;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #45A30A;
+	-fx-pref-height: 25.0px;
+	-fx-pref-width: 25.0px;
+	-fx-text-fill: #FFFFFF;
+}
+
+.labelGreen{
+	-fx-text-fill: #45A30A;
+	-fx-font-size:20.0px;
+}
+
+.labelRed{
+	-fx-text-fill: #FF0000;
+	-fx-font-size:20.0px;
+}
+
+.biometricExceptionPane{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: white;
+}
+
+#registrationPreview {
+	 -fx-background-color: #F0F0F0;
+}
+
+#ackScreen-anchor-pane {
+	-fx-background-color: white;
+}
+
+.ackTextField{
+	-fx-pref-height: 10.0px;	
+	-fx-pref-width: 315.0px;
+	-fx-border-color: black;
+	-fx-background-insets: 0.0,0.0 0.0 0.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: white;	
+}
+
+.previewButton {
+	-fx-border-color: transparent;
+    -fx-border-width: 0.0;
+    -fx-background-radius: 0.0;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: Roboto;
+}
+
+.sendNotificationPane {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+}
+
+#anchor-pane-registration{
+	-fx-background-color: white;
+}
+
+#homeReg{
+	-fx-font-size:15.0px;
+}
+
+#hbox {
+	-fx-background-color: #ffffff;
+}
+
+#header-section {
+    -fx-padding: 10.0 10.0 10.0 10.0;
+    -fx-border-width: 1.0;
+    -fx-border-color: #dee2e6 transparent transparent transparent;
+    -fx-background-color: #dee2e6;
+}
+
+.content {
+    -fx-wrap-text: true;
+    -fx-font-size: 16.0px;
+}
+
+#content-section {
+    -fx-padding: 10.0 20.0 10.0 20.0;
+    -fx-wrap-text: true;
+}
+
+#content-header {
+    -fx-font-size: 18.0px;
+    -fx-padding: 0.0 0.0 10.0 0.0;
+}
+
+#footer-section {
+    -fx-alignment: center;
+    -fx-padding: 10.0 10.0 10.0 10.0;
+    -fx-border-width: 1.0;
+    -fx-border-color: #E8E8E8 transparent transparent transparent;
+    -fx-background-color: #dee2e6;
+}
+
+#common-hbox{
+	-fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+
+#commonHeader {
+    -fx-background-color: #d9d9d9;
+}
+
+
+
+.selectedResidence{
+	-fx-background-color:#FF4081;
+	-fx-border-color:#FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-size: 12.0px;
+	-fx-border-width: 1.0px;
+	-fx-border-radius: 4.0 4.0 4.0 4.0;
+  	-fx-background-radius: 4.0 4.0 4.0 4.0;
+  	-fx-text-alignment: center;
+}
+.residence{
+	-fx-background-color:#FFFFFF;
+	-fx-border-color:#FF4081;
+	-fx-text-fill: #E43391;
+	-fx-font-size: 12.0px;
+	-fx-border-width: 1.0px;
+	-fx-border-radius: 4.0 4.0 4.0 4.0;
+  	-fx-background-radius: 4.0 4.0 4.0 4.0;
+  	-fx-text-alignment: center;
+}
+.consent{
+	-fx-background-color: #ffffff;
+	-fx-font-size: 12.0px;
+}
+#mainBox{
+	-fx-border-width: 0.0;
+	-fx-border-color: black;
+}
+
+#optionLayout{
+	-fx-background-color:#f2f2f2;
+}
+
+#registrationData{
+	-fx-wrap-text: true;         
+}
+#userClientMachineMappingEditPane {
+       -fx-background-color:#f2f2f2;
+}            
+
+/* Device Onboarding */
+.inputFields {
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+}
+
+.inputFieldNoBorder {
+  	-fx-border-width: 0.0 0.0 0.0 0.0;
+}
+
+.inputFieldBottomBorder {
+  	-fx-border-width: 0.0 0.0 1.0 0.0;
+}
+
+.webCamPane {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+}
+#approvalAccordion .title > .arrow-button .arrow{
+    -fx-translate-x: 870.0;
+}
+.titled-pane > .title 
+{
+  -fx-background-color: white;
+  -fx-border-width: 1.0 1.0 1.0 1.0;
+  -fx-border-color: #dcdcdc;
+  -fx-font-weight: bold;
+}
+.titledPaneStyle{
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.0 0.0 0.5em 0.0;
+}
+
+
+#applicantImageHBox, #exceptionImageHBox {
+	-fx-border-color: black;
+	-fx-border-width: 2.0;
+}
+/* Registration - Biometric - Iris Capture */
+
+
+.scanScrollPane {
+	-fx-background-color: white;
+	-fx-border-width:0.0 0.0 0.0 0.0;
+}
+
+.scanVBox {
+	-fx-background-color: white;
+	-fx-border-width:0.0 0.0 0.0 0.0;
+	-fx-pref-width: 100.0px;
+}
+
+.paneRoot {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+	-fx-pref-height: 359.0px;
+	-fx-pref-width: 477.0px;
+}
+
+.subPane {
+	-fx-background-color:#ffffff;
+	-fx-pref-height: 307.0px;
+	-fx-pref-width: 483.0px;
+}
+
+.imagePane {
+	-fx-background-color:#ffffff;
+	-fx-border-width: 1.0;
+	-fx-border-color: black;
+	-fx-pref-height: 238.0px;
+	-fx-pref-width: 349.0px;
+}
+
+.exit {
+	-fx-border-color: transparent;
+    -fx-padding: 4.0 0.0 4.0 0.0;
+    -fx-text-fill: black;
+}
+
+#duplicateCheckLbl{
+	-fx-text-fill: red;
+	-fx-font-size : 1.2em;
+}
+
+#bioPreviewGridId{
+	-fx-background-color: white;
+}
+
+.documentScanHeader{
+	-fx-background-color : #175768;
+}
+
+.scanPopupHeaderTitle {
+	-fx-text-fill: white;
+	-fx-font-size: 16.0px;
+	-fx-font-weight: bold;
+	-fx-font-family: System;
+}
+
+.loginBorderPaneStyle{
+	-fx-pref-height: 530.0px;
+	-fx-pref-width: 808.0px;
+}
+
+.loginLeftPaneStyle{
+	-fx-pref-height: 326.0px;
+	-fx-pref-width: 285.0px;
+}
+
+.loginCenterPaneStyle{
+	-fx-pref-height: 500.0px;
+	-fx-pref-width: 500.0px;
+}
+
+.loginAnchorPaneStyle{
+	-fx-pref-height: 172.0px;
+	-fx-pref-width: 228.0px;
+}
+
+.loginTextStyle{
+	-fx-pref-height: 39.0px;
+	-fx-pref-width: 221.0px;
+}
+
+.hyperLinkStyle{
+	-fx-text-fill: #E63A74;
+	-fx-underline: false;
+	-fx-border-color: transparent;
+	-fx-font-size : 10.0px;
+}
+
+.loginSubmitStyle{
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 81.0px;
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+    -fx-text-fill: black;
+    -fx-font-size: 10.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+.loginSubmitStyle1{
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 50.0px;
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+    -fx-text-fill: black;
+    -fx-font-size: 10.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+
+.loginSubmitStyle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.loginSubmitStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+
+.loginSubmitStyle1:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.loginSubmitStyle1:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.loginOtpValidStyle{
+	-fx-pref-height: 18.0px;
+	-fx-pref-width: 136.0px;
+}
+
+.optionsStyle{
+	-fx-pref-height: 244.0px;
+	-fx-pref-width: 944.0px;
+}
+
+.optionsButtonStyle{
+	
+}
+
+.reRegAnchorPane{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 625.0px;
+}
+
+.reRegInformToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 120.0px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;
+}
+.reRegCantInformToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 120.0px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-family: Roboto;
+}
+.reRegCantInformToggle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+.reRegCantInformToggle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+
+.operatorAuthenticationAnchorPaneStyle{
+	-fx-pref-height: 550.0px; 
+	-fx-pref-width: 850.0px;
+}
+.operatorAuthenticationAnchorPane{
+	-fx-pref-height: 600.0px; 
+	-fx-pref-width: 850.0px;
+}
+#authenticateRootSubPane, .authenticationAnchorPaneStyle{
+	-fx-pref-height: 300.0px; 
+	-fx-pref-width: 480.0px;
+}
+
+#authenticateRootPane{
+	-fx-pref-height: 54.0px; 
+	-fx-pref-width: 483.0px;
+}
+#fingerPrintScanRoot{
+	-fx-pref-height: 359.0px; 
+	-fx-pref-width: 477.0px;
+}
+.borderStyle{
+	-fx-border-color:black; 
+	-fx-border-width: 1.0; 
+	-fx-border-style: solid;
+}
+
+/*
+Working on new Css by taleev
+*/
+
+
+#loginScreen{
+	-fx-background-image : url('/images/LoginBackGround.png');
+	-fx-background-size: cover, auto;
+	-fx-background-position: left top, center;
+}
+
+#header-section{
+		-fx-background-color : rgb(11.0, 106.0, 130.0,0.3);
+		-fx-pref-height: 30.0px;
+		-fx-pref-width: 1920.0px;
+	
+}
+#footer-section{
+		-fx-background-color : rgb(0.0, 0.0, 0.0, 0.0);
+		-fx-alignment: center;
+		
+}
+
+.loginTopPaneStyle{
+	-fx-pref-height: 10.0px;
+	-fx-pref-width: 10.0px;
+}
+
+.loginAnchorPaneStyle{
+	-fx-pref-height: 250.0px;
+	-fx-pref-width: 400.0px;
+	-fx-background-color: #FFFFFF;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #808080;
+
+}
+
+.loginAnchorPaneExtendedStyle{
+	-fx-pref-height: 300.0px;
+	-fx-pref-width: 400.0px;
+	-fx-background-color: #FFFFFF;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #808080;
+
+}
+
+.loginTextStyle{
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 312.0px;
+	-fx-border-width: 0.0 0.0 2.0 0.0;
+    -fx-border-color: #FF4081;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.3) , 5.0, 0.0 , 0.0 , 1.0 );
+
+}
+
+.searchBoxTextStyle{
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 312.0px;
+	-fx-border-width: 0.0 0.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;   
+	-fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+
+.searchBoxTextStyle:focused{
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+
+.higlightedLoginLable{
+	-fx-font-size: 30.0px;
+}
+.loginSubmitStyle{
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 312.0px;
+	-fx-background-color:#FF4081
+}
+
+.loginOtpValidStyle{
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 312.0px;
+	-fx-alignment: center;
+	-fx-border-width: 2.0 2.0 2.0 2.0;
+	-fx-border-color: #FF4081
+}
+
+#RegistrationHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 39.0px;
+	-fx-pref-width: 1290.0px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+#biometricExceptionHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 39.0px;
+	-fx-pref-width: 1290.0px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+.paneAtDisplayDocument{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1100.0px;	
+}
+
+.paneAtDisplayAuthentication{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
+	
+}
+
+.biometricEceptionLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 20.0px;
+}
+
+
+.paneAtDisplayFaceCapture{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
+}
+
+.registrationFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 40.0px;	
+	-fx-pref-width: 1290.0px;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+
+.trackerHighlighter{
+	-fx-font-size : 1.2em;
+	-fx-text-fill : #E43391;	
+	-fx-font-weight : bold;
+	-fx-border-image-source: url(images/DemographicpageTracker.png);
+    -fx-border-image-insets: 10.0, 20.0;
+    -fx-border-image-width: 0.0 0.0 10.0 0.0;
+    -fx-border-image-slice: 10.0, 10.0;
+}
+
+.demoGraphicPaneContentButton{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color : #FFFFFF;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-font-size : 1.1em;
+}
+.demoGraphicPaneContentButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.demoGraphicPaneContentButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+
+.paneAtDisplayDemoGraphic{
+	-fx-background-color:#FFFFFF;
+}
+
+
+.documentContentButton{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color : #FFFFFF;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-font-size : 1.2em;
+}
+.documentContentButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.documentContentButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.documentContentButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
+.contiuneButton{
+	-fx-background-color:#FF4081;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;	
+	-fx-font-size: 1.2em;
+}
+
+.contiuneButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+
+.contiuneButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+
+.contiuneButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
+.backButton{
+	-fx-background-color:#FFFFFF;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-font-size: 1.2em;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;	
+}
+
+.backButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.backButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+
+.demoGraphicTextField{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 1.2em;
+	-fx-text-fill : #000000;
+}
+
+
+
+.demographicLangHeader{
+	-fx-font-size : 1.4em;
+	-fx-text-fill : #2F3033;
+	-fx-font-weight: bold;
+}
+
+.demographicMiscTexts{
+	-fx-text-fill: #666666;	
+	-fx-font-size: 1.3em;
+}
+
+.demoGraphicFieldLabelOnType{
+		-fx-background-color:#ffffff;
+		-fx-border-width: 0.0;
+		-fx-text-fill : #22A8C9;
+		-fx-prompt-text-fill: #000000;	
+		-fx-font-size: 1em;
+}
+
+.demoGraphicFieldLabel{
+		-fx-background-color:#ffffff;
+		-fx-border-width: 0.0;
+		-fx-text-fill : #666666;
+		-fx-font-size: 1em;
+}
+
+.demoGraphicTextFieldFocused{
+	-fx-border-color: #FF0000;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #FF0000;
+	-fx-text-fill: #FF0000;	
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextFieldFocused:focused{
+	-fx-border-color: #FF0000;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #FF0000;	
+	-fx-text-fill: #FF0000;
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextField{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 1.2em;
+	-fx-text-fill : #000000;
+}
+
+.demoGraphicTextFieldOnType{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	 	 	 	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: black;	
+	-fx-text-fill: #000000;
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextFieldOnType:focused{
+	-fx-border-color: #22A8C9;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: gray;	
+	-fx-text-fill: #000000;
+	-fx-font-size: 1.2em;
+} 
+
+.scanPage{
+	-fx-background-color : white;
+	-fx-text-fill : black;
+	-fx-font-size: 1.3em;
+	-fx-border-width : 1.0;
+	-fx-border-color : black;	
+}
+
+.demoGraphicFieldMessageLabel{
+		-fx-background-color:#ffffff;
+		-fx-text-fill : red;
+		-fx-font-size: 1em;
+}
+
+
+.demographicCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #C9C9C9;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;	
+	-fx-pref-width: 190.0px;
+}
+
+.demographicComboboxFocused{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: red;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;	
+	-fx-pref-width: 190.0px;
+}
+
+.demographicCombobox:focused {
+	-fx-background-color: #ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;
+	-fx-pref-width: 190.0px;
+}
+
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+    
+}
+
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+    
+}
+
+
+.documentCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: black;
+	-fx-font-size: 1.2em;
+}
+
+
+#docPreviewImgViewPane{
+	-fx-border-width : 1.0;
+	-fx-border-color: #C9C9C9;
+		
+}
+
+.documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+}
+
+.documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+}
+
+.documentCombobox:focused{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 1.2em;
+}
+
+.toggleButton{
+	-fx-pref-height: 15.0px;	
+	-fx-pref-width: 9.0px;
+}
+
+.paneAtDisplayFinger{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
+	
+}
+
+.fingerPrintPanes{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #F0F0F0;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+}
+
+.fingerPrintPanes:focused{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	
+}
+
+.biometricPaneSelected{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3,3,3,3;
+	
+}
+
+.fingerPrintPanesSelected{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+}
+
+.IrisPanes{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+}
+
+.IrisPanes:focused{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5.0 5.0 5.0 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	
+}
+
+.IrisPanesSelected{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+}	
+
+
+
+.bioIris{
+	-fx-border-color : #51d1ff;
+	-fx-border-width : 5.0;
+}
+
+.paneAtDisplayIris{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 600.0px;	
+	-fx-pref-width: 1000.0px;	
+}
+
+.PhotoCaptureWindow{
+	-fx-pref-height: 100.0px;	
+	-fx-pref-width: 200.0px;
+	-fx-background-color : #C9C9C9;	
+}
+
+.photoCapturePanes{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #FFFFFF;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+}
+
+.photoCapturePanes:focused{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #00A6E9;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	
+}
+
+.photoAlert{
+	-fx-text-fill : #FF4081;
+	-fx-font-size : 15.0;
+}
+
+.photoCapturePanesSelected{
+	-fx-background-color : #F0F0F0;
+	-fx-border-color : #EFEFEF;
+	-fx-border-width : 5.0;
+	-fx-padding : -2.5;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+}
+
+
+.qualityBox{
+	-fx-pref-height: 200.0px;	
+	-fx-pref-width: 250.0px;	
+}
+
+.threshHoldLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15.0px;
+}
+
+.qualityLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15.0px;
+}
+
+.attemptsLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15.0px;
+}
+
+.exceptionLabel{
+	-fx-tex-fill : #000000;
+	-fx-font-size : 15.0px;
+}
+
+.qualityBoxLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 1.5em;
+}
+
+.paneHeader{
+	-fx-text-fill: #E43391;
+	-fx-font-size : 22.0px;
+}
+
+.authenticationBiometricSubPane{
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #C9C9C9;
+	-fx-pref-height: 444.0px;	
+	-fx-pref-width: 750.0px;
+}
+
+.authenticationBiometricPane{
+	-fx-pref-height: 547.0px;	
+	-fx-pref-width: 686.0px;
+}
+
+.operatorAuthenticationStyleTextTypeOne{
+	-fx-text-fill: #666666;
+}
+.operatorAuthenticationStyleTextTypeOne:focused{
+	-fx-text-fill: #666666;
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+
+.attempts{
+	-fx-pref-height: 39.0px; 
+	-fx-pref-width: 100.0px;
+	-fx-text-fill: #000000;
+}
+
+.scanButton{
+	-fx-background-color:#FFFFFF;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-pref-height: 2.0px;	
+	-fx-pref-width: 120.0px;
+	-fx-text-fill: #FF4081;	
+}
+.scanButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.scanButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+
+.registrationHeaderBorder{
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-pref-height: 30.0px;	
+	-fx-pref-width: 940.0px;
+	
+}
+
+.documentOnlypane{
+	-fx-pref-height: 450.0px;	
+	-fx-pref-width: 900.0px;
+    -fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #C9C9C9;
+	
+}
+
+.uploadIds{
+	-fx-background-color : #F4F4F4;
+	-fx-pref-width : 1200.0px;
+	-fx-padding : 20.0 20.0 20.0 20.0;
+}
+
+#uploadPanes{
+	-fx-background-color : #FFFFFF;
+	-fx-padding : 5.0 5.0 5.0 5.0;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+#uploadPanesFirst{
+	-fx-background-color : #FFFFFF;
+	-fx-padding : 5.0 5.0 5.0 5.0;
+	-fx-border-color : #E457A0;
+	-fx-border-width : 0.0 0.0 1.0 0.0;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
+#uploadPageText{
+	-fx-text-fill: #666666;
+}
+
+.headerLabel{
+	-fx-text-fill : #666666;
+	-fx-font-size : 1.2em;
+}
+
+#reRegistrationHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-pref-height: 35.0px;
+	-fx-pref-width: 1290.0px;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );	
+}
+.table-view {
+    -fx-table-cell-border-color: #FFFFFF;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
+}
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
+	-fx-pref-height : 45.0;
+	-fx-padding: 10 0 10 0;
+	-fx-pref-width : 35.0;
+    -fx-text-fill: #000000;
+    -fx-border-width : 0.0 0.0 1.0 0.0;
+    -fx-border-color : #000000;
+}
+
+.table-row-cell:focused{
+	-fx-border-width : 0.0 0.0 1.0 0.0;
+    -fx-border-color : #FF4081;
+    -fx-pref-height : 45.0;
+	-fx-padding: 10 0 10 0;
+	-fx-pref-width : 35.0;
+}
+
+.tableId{
+		-fx-text-fill: black;
+}
+
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0.0 0.0 1.0 0.0;
+}
+
+.table-view .column-header{
+	-fx-text-fill: #666666;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0.0 0.0 1.0 0.0;
+    -fx-border-color : #E457A0;
+}
+
+.table-view .column-header .label{
+	    -fx-alignment: null;
+	    -fx-text-fill :#666666;
+	    -fx-font: 15.0px Roboto;
+}
+
+.table-view > .virtual-flow > .scroll-bar{
+	-fx-background-color : white;
+	
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #e8e8e8;
+}
+
+.uploadStatusColumn{
+		-fx-pref-width: 1000.0px;
+}
+
+.heading {
+	-fx-font-size: 26.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
+
+
+/*
+ *	rejection page 
+ */
+
+.rejectionPageHeader{
+	-fx-background-color : #FFFFFF;
+	-fx-pref-width : 400.0;
+	-fx-pref-height : 50.0px;
+}
+
+.rejectionPageHeaderLabel{
+	-fx-text-fill : #000000;
+	-fx-font-family: Roboto;
+	-fx-font-size : 15.0px;
+	-fx-pref-heigth : 100.0;
+	 -fx-pref-width : 400.0;
+	
+}
+
+.rejectionPaneContent{
+  -fx-background-color : #FFFFFF;
+  -fx-pref-heigth : 150.0;
+  -fx-pref-width : 400.0;
+  
+}
+
+.dfd{
+ -fx-background-color : red;
+}
+
+.rejectionParentPane{
+	  -fx-background-color : #FFFFFF;
+	  -fx-border-width : 1.0 1.0 1.0 1.0;
+	  -fx-border-color : black;
+	  -fx-pref-heigth : 100.0;
+	  -fx-pref-width : 400.0;	
+}
+
+#rejectionAnchorPane .comboboxStyle{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: black;
+	-fx-font-size: 14.0px;
+}
+
+
+#rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+}
+
+#rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+}
+
+.rejectCommentCloseButton{
+	-fx-background-color:white;
+}
+
+.headerFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+
+.headerTexts{
+	-fx-font-size : 1.2em;
+}
+
+.headerPageTracker{
+	-fx-border-width : 0.0 0.0 2.0 0.0;
+	-fx-border-color : #FF4081;
+}
+
+.bioTracker{
+   -fx-border-image-source: url(images/DemographicpageTracker.png);
+    -fx-border-image-insets: 10.0, 20.0;
+    -fx-border-image-width: 0.0 0.0 10.0 0.0;
+    -fx-border-image-slice: 10.0, 10.0;
+	
+}
+
+.subMainComponent{
+	-fx-background-color : #FFFFFF;
+}
+
+.homeBox{
+	-fx-padding : 0.0 0.0 10.0 0.0;
+}
+
+
+#docScanVboxHolder{
+	-fx-border-width : 0.0 1.0 0.0 0.0;
+	-fx-border-color : #C9C9C9;
+}
+
+#lowerBorder{
+	-fx-border-width : 1.0 0.0 0.0 0.0;
+	-fx-border-color : #C9C9C9;
+	
+}
+	
+/*Upload Packet page design starts*/
+.uploadCheckBox > .box{
+	-fx-background-color: #FFFFFF;
+    -fx-text-fill: -fx-text-background-color;
+    -fx-border-color: #B0B0B0;
+	-fx-border-radius: 3px;	
+	-fx-padding: 0.25px;
+}
+.uploadPacketparentPane{
+	-fx-background-color:#F4F4F4;
+}
+.homeButton{
+		-fx-background-color : #FFFFFF;
+		-fx-padding : 0.0 0.0 0.0 0.0;
+}
+.mainHeader{
+		-fx-text-fill : #FD518C;
+		-fx-font-size : 20.0px;
+}
+#uploadPacketHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+#saveToDevice, #formValidationButton,#uploadBtn{
+	-fx-background-color : #FF4081;
+}
+/*Upload Packet page design ends */
+
+/*UIN Upadte page design starts */
+#uinUpdateHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+}
+.updateUinparentPane{
+	-fx-background-color:#F4F4F4;
+}
+.uinUpdateContentPane{
+	-fx-background-color:#FFFFFF;
+}
+.uinUpdateTextFiledStyle{
+	-fx-background-color: white;
+	-fx-border-color:#FD528C;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+}
+.uinUpdateTextFiledStyle:focused{
+	-fx-background-color: white;
+	-fx-border-color:#FD528C;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+}
+.uinUpdateLabelsTypeTwo{
+	-fx-text-fill : #666666;
+	-fx-font-size : 15.0px;
+}
+.updateUinCheckBoxCommon .check-box > .box {
+    -fx-background-radius: 50.0;
+    -fx-border-radius: 50.0;
+    -fx-border-width: 1.0;
+    -fx-border-color: #FF4081;
+    -fx-padding: 1.0;
+    -fx-background-color: #FFFFFF;
+	-fx-background-insets: 0.0 0.0 0.0 0.0;
+}
+.updateUinCheckBox {
+    -fx-background-color : #FFFFFF;
+    -fx-border-width : 1.0 1.0 1.0 1.0;
+    -fx-border-color : #FD518C;
+    -fx-padding : 3.0 10.0 5.0 3.0;
+    -fx-text-fill : #FD518C;    
+}
+.updateUinCheckBoxCommon .check-box:selected > .box > .mark {
+     -fx-background-color: #FF4081;
+}
+.updateUinCheckBoxSelected{
+	-fx-background-color : #FF4081;
+    -fx-border-width : 1.0 1.0 1.0 1.0;
+    -fx-border-color : #FD528C;
+    -fx-padding : 0.0 10.0 5.0 3.0;
+	-fx-text-fill : #FFFFFF;	
+}
+.uinUpdateFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+/*UIN Update page Ends */
+
+/*Registration pending approval page design starts */
+.pendingApprovalFooter{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+.approveButton {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-family: Roboto;
+}
+.approveButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+.approveButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+.approveButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
+.rejectButton{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;		
+}
+.rejectButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.rejectButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.pendingApprovalHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
+}
+.parentPane{
+	-fx-background-color:#F4F4F4;
+}
+.imageAnchorPaneStyle{
+	-fx-background-color:#F4F4F4;
+}
+/*Registration pending approval page design ends */
+
+.authenticationStyle{
+	-fx-pref-height: 39.0px; 
+	-fx-pref-width: 269.0px;
+}
+
+.authenticationStyle:focused{
+	-fx-text-fill: #666666;
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+    
+.RegbuttonStyle {
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+    -fx-text-fill: black;
+    -fx-font-size: 10.0px;
+    -fx-pref-height:20.0px;
+    -fx-pref-width:60.0px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+.RegbuttonStyle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.RegbuttonStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+/*Authentication page design ends */
+
+/*Acknowledgement page design starts */
+.templateHeading {
+	-fx-font-size: 18.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+.ackBackButton{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+.ackBackButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.ackBackButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.ackPageButton {
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-radius: 3.0,3.0,3.0,3.0;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+.ackPageButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+
+.ackPageButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+.ackMenu{
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #E8E7E7;
+}
+/*Acknowledgement page design ends */
+
+/*Header page design starts here*/
+.headerParentBorder{
+	-fx-border-color: #F4F4F4;
+	-fx-border-width: 1.0 1.0 0.0 1.0;
+	-fx-text-fill: white;  
+	-fx-background-color:#0B6A82
+}
+.headerDetails {
+    -fx-background-color: #175768;
+}
+.registrationOfficerIdPane{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;	
+	-fx-background-color: #F57E20;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #61AB01;
+}
+.internetModePane{
+	-fx-background-radius: 21.0,21.0,21.0,21.0;
+	-fx-background-color: #1EBD22;
+	-fx-border-radius: 21.0,21.0,21.0,21.0;
+	-fx-border-color: #61AB01;
+}
+.menuBar{
+	-fx-background-color:#0B6A82
+}
+.headerDetails .label{
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;
+}
+.context-menu {
+  -fx-background-color: #FFFFFF;
+  -fx-border-color: #C9C9C9;
+  -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+  -fx-page-information-alignment: 10.0;
+}
+.menu-item .label {
+    -fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/MenuItems.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20.0px 20.0px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+}
+.separator .line { 
+	-fx-background-color: #C9C9C9;
+	-fx-border-width: 0.001px;
+}
+.menu-item:focused .label{
+	-fx-background-color: #FF4081;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+    -fx-background-image: url(images/MenuItemsFocus.png); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20.0px 20.0px;
+    -fx-text-fill: white;    
+}
+.menu-item:focused {
+     -fx-background: -fx-accent;
+     -fx-background-color: #FF4081;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 1.0em 1.0em 1.0em 1.0em;
+}
+#logout .label{
+	-fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
+    -fx-background-image: url(images/logout.png);
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-size: 20.0px 20.0px;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+#logout:focused .label{
+	-fx-text-fill: white;
+    -fx-font-size: 14.0px;
+     -fx-background-image: url(images/logoutFocus.png);
+     -fx-background-repeat: no-repeat;
+     -fx-background-position: left;
+     -fx-background-size: 20.0px 20.0px;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;    
+}
+/* Header Page design Ends Here */
+
+/* Home page design starts here */
+
+.homeContent{
+  -fx-background-image: url(images/pexels-photo.png);
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: auto;
+  -fx-border-color: #F4F4F4;
+  -fx-border-width: 0.0 1.0 1.0 1.0;
+}
+.optionHeaderStyle{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-font-weight: lighter;
+}
+.newRegBtnStyle{
+	-fx-font-size: 16.0px;
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+.uinUpdateStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+.uinUpdateStyle:hover, .uinUpdateStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.uinUpdateStyle:pressed, .uinUpdateStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.uinUpdateBtnStyle{
+	-fx-font-size: 16.0px;
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-background-color:#FFFFFF;
+	-fx-border-radius: 0.0,0.0,0.0,0.0;
+}
+.operationalPaneDetailsSync{
+	-fx-border-width: 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+	 -fx-border-radius: 4.0 4.0 0.0 0.0;
+  	 -fx-background-radius: 4.0 4.0 0.0 0.0;
+}
+.operationalPaneDetailsSync:hover, .operationalPaneDetailsSync:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsSync:pressed, .operationalPaneDetailsSync:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalTitle{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+}
+.operationalDetails{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+}
+.operationalPaneDetailsPreReg{
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+.operationalPaneDetailsPreReg:hover, .operationalPaneDetailsPreReg:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsPreReg:pressed, .operationalPaneDetailsPreReg:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetails{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+.operationalPaneDetails:hover, .operationalPaneDetails:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetails:pressed, .operationalPaneDetails:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsBioUpdate{
+	-fx-border-width: 0.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+	 -fx-border-radius: 0.0 0.0 4.0 4.0;
+  	 -fx-background-radius: 0.0 0.0 4.0 4.0;
+}
+.operationalPaneDetailsBioUpdate:hover, .operationalPaneDetailsBioUpdate:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsBioUpdate:pressed, .operationalPaneDetailsBioUpdate:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.newsUpdates{
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #C9C9C9;
+	-fx-border-radius: 4.0 4.0 4.0 4.0;
+  	-fx-background-radius: 4.0 4.0 4.0 4.0;
+}
+.newsUpdatesTitle{
+	-fx-font-size: 11.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: bold;
+}
+.newsUpdateTime{
+	-fx-font-size: 10.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+}
+.powerdBy{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+}
+.splitLineSeparator{
+	-fx-stroke: #C9C9C9;
+}
+#newsViewAll{
+	-fx-font-size: 10.0px;	
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-weight: bold;
+}
+/* Home Page Design Ends */
+
+/*User Onboard User page Design Starts here*/
+.onboardUserParentPane{
+	-fx-background-color:#F4F4F4;
+}
+.useronBoardLinkDesc{
+	-fx-font-family: Roboto;
+	-fx-font-size: 1.2em;
+	-fx-text-fill: #666666;	
+}
+.onboardUserPaneStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;	
+}
+.onboardUserPaneStyle:hover, .onboardUserPaneStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardUserPaneStyle:pressed, .onboardUserPaneStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.useronBoardLink{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
+.onboardAlertMsg{
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+	-fx-text-fill:  #45A30A;	
+	-fx-background-color:White;
+}
+/*Onoard User page Design Ends here*/
+
+/*user onboard exception design starts */
+.exceptionBackPane{
+	-fx-background-color: #F7F8F9;
+}
+.onboardImgPane{
+	-fx-background-color:#ffffff;
+}
+.onboardOperatorDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #000000;
+}
+.onboardOperatorDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #000000;
+}
+.onboardPageBioTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 16.0px;
+}
+.onboardBioDetailsHeader{
+	-fx-font-family: Roboto;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+	-fx-font-size: 14.0px;
+}
+.biometricExceptionPaneFinger{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: white;
+}
+.removeBorderStyle{
+	-fx-border-color:white; 
+}
+
+.onboardInfoDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+.onboardScanBtn{
+	-fx-background-color : #FFFFFF;
+	-fx-text-fill: #FF4081;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 12.0px;
+}
+.onboardScanBtn:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardScanBtn:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardScanBtn:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
+.userOnboardHeader{
+	-fx-background-color:#FFFFFF;
+	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
+}
+.userOnboardFooter{
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
+}
+.onboardInfoDetailsName{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #333333;
+}
+.exceptionCombobox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-text-fill: #000000;
+	-fx-border-color: #C9C9C9;
+	-fx-font-size: 12.0px;
+}
+.onboardExceptionDetails{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #666666;
+	-fx-font-weight: lighter;
+}
+
+#onboardPageTitle{
+	-fx-text-fill: #FD518C;
+	-fx-font-family: Roboto;
+	-fx-font-size: 18.0px;	
+}
+#onboardHomeLink{
+	-fx-text-fill: #C9C9C9;
+	-fx-font-family: Roboto;
+	-fx-font-weight: lighter;
+	-fx-font-size: 13.0px;	
+}
+#onboardPageDesc{
+	-fx-text-fill: #666666;
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;	
+}
+.exceptionBackPane .table-view {
+    -fx-table-cell-border-color: #FFFFFF;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
+    -fx-background-color: white;
+}
+
+.exceptionBackPane .table-view > .virtual-flow > .scroll-bar{
+	-fx-background-color : white;
+	
+}
+
+.exceptionBackPane .table-cell {
+    -fx-padding: 0.0em; 
+    -fx-background-color: #FFFFFF; 
+    -fx-text-fill: red;
+    -fx-cell-size: 1.0em;
+}
+
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-button,
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-button {
+  -fx-background-color: null;
+  -fx-background-radius: 0.0;
+  -fx-background-insets: 0.0;
+  -fx-padding: 0.0;
+}
+
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.increment-arrow,
+.exceptionBackPane .table-view *.scroll-bar:horizontal *.decrement-arrow {
+  -fx-background-color: null;
+  -fx-background-radius: 0.0;
+  -fx-background-insets: 0.0;
+  -fx-padding: 0.0;
+  -fx-shape: null;
+}
+.exceptionBackPane .column-header-background { 
+	visibility: hidden; 
+	-fx-padding: -1.0em;
+}
+
+
+.exceptionBackPane .table-row-cell {
+    -fx-background-color: white;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;	
+	-fx-padding: 0.0em;	
+    -fx-border-width : 0.0 0.0 0.0 0.0;
+    -fx-border-color : white;
+    -fx-pref-height : 20.0;
+    -fx-pref-width : 30.0;
+}
+
+.exceptionBackPane .table-row-cell:focused{
+	-fx-border-width : 0.0 0.0 0.0 0.0;
+	-fx-padding: 0.0em;	
+	-fx-pref-height : 20.0;
+    -fx-pref-width : 30.0;
+}
+
+.exceptionBackPane .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
+	-fx-text-fill: red;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width : 0.0 0.0 0.0 0.0;
+    -fx-padding: 0.0em;	
+}
+
+.exceptionBackPane .table-view > .virtual-flow > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #d1d1d1;
+}
+.fingerIrisSeparator{
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-color: #d1d1d1;
+}
+/*user onboard exception design ends */
+
+/*Tracker Style */
+.completedPage{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: lighter;
+}
+.currentPage{
+	-fx-font-family: Roboto;
+	-fx-font-size: 14.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: bold;
+}
+.pendingPage{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #000000;
+	-fx-font-weight: lighter;
+}
+.subPageCompleted{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: lighter;
+}
+.subPageUncompleted{
+	-fx-font-family: Roboto;
+	-fx-font-size: 10.0px;
+	-fx-text-fill: #000000;
+	-fx-font-weight: lighter;
+}
+.subPageCurrent{
+	-fx-font-family: Roboto;
+	-fx-font-size: 12.0px;
+	-fx-text-fill: #E43391;
+	-fx-font-weight: lighter;
+}
+/*Tracker Style ends */
+
+ 
+ .dialog-pane{
+-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1); }
+ 
+ .dialog-pane .button{
+   -fx-background-color:#FF4081;
+   -fx-text-fill:white;
+   -fx-wrap-text: true;
+   -fx-cursor:hand;
+ } 
+ .dialog-pane:header .header-panel {
+    -fx-background-color: #FFFFFF;
+    -fx-background-insets: 1;
+}
+
+.schedulerMsg{
+	-fx-font-size: 12.0px;	
+}
+.schedulerTimer{
+	-fx-text-fill:red;
+}
+.schedulerContinueBtn{
+	-fx-font-size: 14.0px;
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+	-fx-cursor:hand;
+}
+.schedulerStage{
+	-fx-border-color: #0B6A82;
+	-fx-background-color:white;
+}
+.schedulerTitle{
+	-fx-font-size: 14.0px;
+	-fx-border-width : 0.0 0.0 1.0 0.0;
+	-fx-border-color: black;
+	
+	-fx-background-color:#175768;
+}
+.schedulerTitleMsg{
+	-fx-font-size: 14.0px;
+	-fx-text-fill:White;
+	-fx-font-weight: bold;
+	}
+.authenticationErrorMsg{
+	-fx-font-size: 12.0px;
+}	
+.authenticationErrorMsgTitle{
+	-fx-font-size: 16.0px;
+	-fx-text-fill: #175768;
+}
+.authenticationPageTitle{
+	-fx-font-size: 18.0px;
+	-fx-text-fill: white;
+}
+.DocumentViewIcon{
+		-fx-background-image : url('/images/normal.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+		
+}
+.DocumentViewIcon:focused{
+	-fx-background-image : url('/images/pressed.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+	-fx-border-width:0;	
+} 
+.DocumentViewIcon:hover{
+	-fx-background-image : url('/images/hover.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+}
+
+.alertBox{
+	-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1);
+}
+.dialog-pane:header .header-panel .label{
+  -fx-text-fill:#FF4081;
+  -fx-font-size:28.0px;
+  -fx-padding:20.0 0.0 0.0 10.0
+}
+.dialog-pane > .content.label {
+   -fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+   -fx-padding:0.0 0.0 20.0 20.0
+}
+
+.alertHeader{
+	-fx-text-fill:#FF4081;
+    -fx-font-size:28.0px;
+}
+.alertContext{
+	-fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+}
+#alertImage{
+	-fx-background-size: 90.0px 90.0px;
+}

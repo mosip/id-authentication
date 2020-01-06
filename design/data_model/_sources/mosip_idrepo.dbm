@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.95"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idrepouser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_idrepo" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[ID Repo database stores all the data related to an individual for which an UIN is generated]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="idrepo" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="uin">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN: Information related to an individual (demographic, biometric, and uploaded documents) are stored. The information is stored in JSON format. A hash value of the JSON file is also maintained as a separate column as an added security to prevent data tampering.]]></comment>
+	<position x="560" y="20"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file.]]></comment>
+	</column>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Unique Identification Number : Unique identification number assigned to individual.]]></comment>
+	</column>
+	<column name="uin_hash" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Unique Identification Number Hash: Hash value of Unique identification number assigned to individual.]]></comment>
+	</column>
+	<column name="uin_data" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[UIN Data: Information of an individual stored in JSON file as per ID definition defined by the country in the system]]></comment>
+	</column>
+	<column name="uin_data_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[UIN Data Hash:  Hash value of the UIN data which is stored in uin_data field. While reading the JSON file, hash value of the file is verified with this hash value to ensure file validity.]]></comment>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="39"/>
+		<comment><![CDATA[Registration ID: Latest registration ID through which individual information got processed and registered]]></comment>
+	</column>
+	<column name="bio_ref_id">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Biometric Reference Id: Biometric reference id generated which will be used as a reference id in ABIS systems]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Status Code:  Current Status code of the UIN. Refers to master.status_list.code]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uin" type="pk-constr" table="idrepo.uin">
+		<columns names="uin_ref_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uin" type="uq-constr" table="idrepo.uin">
+		<columns names="uin" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uin_reg_id" type="uq-constr" table="idrepo.uin">
+		<columns names="reg_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uin_uin_hash" type="uq-constr" table="idrepo.uin">
+		<columns names="uin_hash" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_h">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN History : This to track changes to base table record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer base table description for details.   ]]></comment>
+	<position x="140" y="20"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file.]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Datetimestamp : This to track base table record changes whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time  till next change occurs.]]></comment>
+	</column>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Unique Identification Number : Unique identification number assigned to individual.]]></comment>
+	</column>
+	<column name="uin_hash" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Unique Identification Number Hash: Hash value of Unique identification number assigned to individual.]]></comment>
+	</column>
+	<column name="uin_data" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[UIN Data: Information of an individual stored in JSON file as per ID definition defined by the country in the system]]></comment>
+	</column>
+	<column name="uin_data_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[UIN Data Hash:  Hash value of the UIN data which is stored in uin_data field. While reading the JSON file, hash value of the file is verified with this hash value to ensure file validity.]]></comment>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="39"/>
+		<comment><![CDATA[Registration ID: Latest registration ID through which individual information got processed and registered]]></comment>
+	</column>
+	<column name="bio_ref_id">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Biometric Reference Id: Biometric reference id generated which will be used as a reference id in ABIS systems]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Status Code:  Current Status code of the UIN. Refers to master.status_list.code]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uinh" type="pk-constr" table="idrepo.uin_h">
+		<columns names="uin_ref_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uinh" type="uq-constr" table="idrepo.uin_h">
+		<columns names="uin,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_document">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Document: The documents uploaded / provided by an individual as part of registration / UIN generation process.  The documents are stored in separate storage like HDFS/CEPH store, only the reference to the document files is maintained in this table. Along with the reference, a hash value of the document file is also maintained as an added security measure to prevent data tampering.]]></comment>
+	<position x="400" y="460"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file. refers to idrepo.uin.uin_ref_id]]></comment>
+	</column>
+	<column name="doccat_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Category Code:  Category code under which document is uploaded during the registration process for ex., POA, POI, etc. Refers to master.doc_category.code]]></comment>
+	</column>
+	<column name="doctyp_code" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Document Type Code: Document type under which document is uploaded during the registration process for ex., passport, driving license, etc. Refers to master.doc_type.code.]]></comment>
+	</column>
+	<column name="doc_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document  ID: ID of the document that is stored in filesystem storage like HDFS/CEPH. If document ID Is not available then name of the file itself can be used as document ID.]]></comment>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document  Name:  Name of the document that is stored in filesystem storage like HDFS/CEPH.]]></comment>
+	</column>
+	<column name="docfmt_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Format Code: Document format code of the document that is uploaded during the registration process for ex., PDF, JPG etc. Refers to master.doc_file_format.code]]></comment>
+	</column>
+	<column name="doc_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Document  Hash:  Hash value of the document which is stored in DFS (HDFS/CEPH) storage. While reading the document, hash value of the document is verified with this hash value to ensure document validity.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uind" type="pk-constr" table="idrepo.uin_document">
+		<columns names="uin_ref_id,doccat_code" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uind" type="uq-constr" table="idrepo.uin_document">
+		<columns names="uin_ref_id,doc_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_document_h">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Document History : This to track changes to base table record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer base table description for details.   ]]></comment>
+	<position x="20" y="580"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file. refers to idrepo.uin.uin_ref_id]]></comment>
+	</column>
+	<column name="doccat_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Category Code:  Category code under which document is uploaded during the registration process for ex., POA, POI, etc. Refers to master.doc_category.code]]></comment>
+	</column>
+	<column name="doctyp_code" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Document Type Code: Document type under which document is uploaded during the registration process for ex., passport, driving license, etc. Refers to master.doc_type.code.]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Datetimestamp : This to track base table record changes whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time  till next change occurs.]]></comment>
+	</column>
+	<column name="doc_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document  ID: ID of the document that is stored in filesystem storage like HDFS/CEPH. If document ID Is not available then name of the file itself can be used as document ID.]]></comment>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document  Name:  Name of the document that is stored in filesystem storage like HDFS/CEPH.]]></comment>
+	</column>
+	<column name="docfmt_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Format Code: Document format code of the document that is uploaded during the registration process for ex., PDF, JPG etc. Refers to master.doc_file_format.code]]></comment>
+	</column>
+	<column name="doc_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Document  Hash:  Hash value of the document which is stored in DFS (HDFS/CEPH) storage. While reading the document, hash value of the document is verified with this hash value to ensure document validity.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uindh" type="pk-constr" table="idrepo.uin_document_h">
+		<columns names="uin_ref_id,doccat_code,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uindh" type="uq-constr" table="idrepo.uin_document_h">
+		<columns names="uin_ref_id,doc_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_biometric">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Biometric: This table stores biometric information of an individual. The biometric information is captured in CBEFF file format. The CBEFF file is stored in separate storage like HDFS/CEPH store, only the reference to the file is maintained in this table. Along with the reference, a hash value of the biometric file is also maintained as an added security measure to prevent data tampering. ]]></comment>
+	<position x="840" y="480"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file. refers to idrepo.uin.uin_ref_id]]></comment>
+	</column>
+	<column name="biometric_file_type" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Biometric File Type:  Type of the biometric file stored in DFS (HDFS/CEPPH). File type can be individual biometric file or parent /guardian biometric file.]]></comment>
+	</column>
+	<column name="bio_file_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Biometric File ID: ID of the biometric CBEFF file that is stored in filesystem storage like HDFS/CEPH. If File ID Is not available then name of the file itself can be used as file ID.]]></comment>
+	</column>
+	<column name="biometric_file_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Biometric File Name: Name of the biometric CBEFF file that is stored in filesystem storage like HDFS/CEPH.]]></comment>
+	</column>
+	<column name="biometric_file_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Biometric File Hash: Hash value of the Biometric CBEFF file which is stored in DFS (HDFS/CEPH) storage. While reading the file, hash value of the file is verified with this hash value to ensure file validity.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uinb" type="pk-constr" table="idrepo.uin_biometric">
+		<columns names="uin_ref_id,biometric_file_type" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uinb" type="uq-constr" table="idrepo.uin_biometric">
+		<columns names="uin_ref_id,bio_file_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_biometric_h">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Biometric History : This to track changes to base table record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer base table description for details.   ]]></comment>
+	<position x="1300" y="560"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN Reference ID: System generated id mapped to a UIN used for references in the system. UIN reference ID is also used as folder/bucket in DFS (HDFS/CEPH) to store documents and biometric CBEFF file. refers to idrepo.uin.uin_ref_id]]></comment>
+	</column>
+	<column name="biometric_file_type" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Biometric File Type:  Type of the biometric file stored in DFS (HDFS/CEPPH). File type can be individual biometric file or parent /guardian biometric file.]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Datetimestamp : This to track base table record changes whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time  till next change occurs.]]></comment>
+	</column>
+	<column name="bio_file_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Biometric File ID: ID of the biometric CBEFF file that is stored in filesystem storage like HDFS/CEPH. If File ID Is not available then name of the file itself can be used as file ID.]]></comment>
+	</column>
+	<column name="biometric_file_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Biometric File Name: Name of the biometric CBEFF file that is stored in filesystem storage like HDFS/CEPH.]]></comment>
+	</column>
+	<column name="biometric_file_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Biometric File Hash: Hash value of the Biometric CBEFF file which is stored in DFS (HDFS/CEPH) storage. While reading the file, hash value of the file is verified with this hash value to ensure file validity.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uinbh" type="pk-constr" table="idrepo.uin_biometric_h">
+		<columns names="uin_ref_id,biometric_file_type,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uinbh" type="uq-constr" table="idrepo.uin_biometric_h">
+		<columns names="uin_ref_id,bio_file_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_hash_salt" alias="uinhs">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.]]></comment>
+	<position x="1000" y="20"/>
+	<column name="id" not-null="true">
+		<type name="bigint" length="36"/>
+		<comment><![CDATA[Id: Unique id generated for the salts that is used to hash the uin field.]]></comment>
+	</column>
+	<column name="salt" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Salt: Random generated number used as salt to hash the uin field.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_uinhs" type="pk-constr" table="idrepo.uin_hash_salt">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_encrypt_salt" alias="uines">
+	<schema name="idrepo"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Encript Salt: Stores the salt used to encrypt an uin of an individual in the encryption algorithm.]]></comment>
+	<position x="1000" y="200"/>
+	<column name="id" not-null="true">
+		<type name="bigint" length="36"/>
+		<comment><![CDATA[Id: Unique id generated for the salts that is used to encrypt the uin field.]]></comment>
+	</column>
+	<column name="salt" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Salt: Random generated number used as salt to encrypt the uin field.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_uines" type="pk-constr" table="idrepo.uin_encrypt_salt">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_uind_uin" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="idrepo.uin" table="idrepo.uin_document">
+	<columns names="uin_ref_id" ref-type="src-columns"/>
+	<columns names="uin_ref_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_uinb_uin" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="idrepo.uin" table="idrepo.uin_biometric">
+	<columns names="uin_ref_id" ref-type="src-columns"/>
+	<columns names="uin_ref_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_uin_document_uin" type="relfk"
+	 custom-color="#5aa578"
+	 src-table="idrepo.uin_document"
+	 dst-table="idrepo.uin" reference-fk="fk_uind_uin"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_uin_biometric_uin" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="idrepo.uin_biometric"
+	 dst-table="idrepo.uin" reference-fk="fk_uinb_uin"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<roles names="idrepouser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="idrepo" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="idrepo" type="schema"/>
+	<roles names="idrepouser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin" type="table"/>
+	<roles names="idrepouser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_h" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_h" type="table"/>
+	<roles names="idrepouser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_document" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_document" type="table"/>
+	<roles names="idrepouser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_document_h" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_document_h" type="table"/>
+	<roles names="idrepouser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_biometric" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_biometric" type="table"/>
+	<roles names="idrepouser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_biometric_h" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="idrepo.uin_biometric_h" type="table"/>
+	<roles names="idrepouser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+</dbmodel>

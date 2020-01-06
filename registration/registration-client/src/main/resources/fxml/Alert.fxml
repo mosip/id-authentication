@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<GridPane fx:id="alertGridPane" prefWidth="500.0" styleClass="alertBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.AlertController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="95.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <HBox fx:id="alertHbox">
+         <children>
+            <VBox fx:id="imageVbox" alignment="TOP_CENTER">
+               <children>
+                  <ImageView fx:id="alertImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets left="30.0" />
+               </padding>
+            </VBox>
+            <VBox>
+               <children>
+                  <VBox>
+                     <children>
+                        <Label fx:id="header" styleClass="alertHeader" text="Label" wrapText="true">
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <VBox fx:id="contextVbox">
+                           <children>
+                              <Label fx:id="context" styleClass="alertContext" text="Label" wrapText="true">
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+         </children>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </HBox>
+      <VBox GridPane.columnIndex="1">
+         <children>
+            <Hyperlink fx:id="exit" onAction="#alertWindowExit" styleClass="exit" text="X" />
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" top="23.0" />
+   </padding>
+</GridPane>

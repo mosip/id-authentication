@@ -1,0 +1,15 @@
+{"applicantBiometricDTO":null,
+"introducerBiometricDTO":null,
+"supervisorBiometricDTO":null,
+"operatorBiometricDTO":
+{
+"fingerprintDetailsDTO":[],
+"biometricExceptionDTO":[],
+"irisDetailsDTO":[],
+"faceDetailsDTO":
+{
+"face":null,"qualityScore":0.0,"numOfRetries":0,"forceCaptured":false
+}
+}
+
+}

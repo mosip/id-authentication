@@ -1,0 +1,9 @@
+{
+		"id": "mosip.pre-registration.login.sendotp",
+		"version" : "v1",
+		"requesttime" : "2019-04-11T13:46:00.534Z",
+		"request" :
+		{
+			"userId": "rajath.kr1249@mail.com"
+		}
+}

@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,42" last-zoom="0.75"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="pmpuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="sysadmin_cp"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<tablespace name="ts_mosip_audit_data" directory="'/mnt/resource/mosip_data'">
+	<role name="postgres"/>
+</tablespace>
+
+<tablespace name="mosip_data" directory="'/var/lib/pgsql/mosip/mosip_data'">
+	<role name="sysadmin"/>
+</tablespace>
+
+<database name="mosip_pmp" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[PMP related entities and its data is stored in this database]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="pmp" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="misp" alias="misp">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[MISP: MISP, acronym for MOSIP Identity Service Provider, stores the master list of MISPs.]]></comment>
+	<position x="20" y="80"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[MISP ID: Unique ID generated / assigned for a MISP.]]></comment>
+	</column>
+	<column name="name" alias="name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name: Name of the MISP orgranization.]]></comment>
+	</column>
+	<column name="address" alias="addr">
+		<type name="character varying" length="2000"/>
+		<comment><![CDATA[Address: Address of the MISP organization.]]></comment>
+	</column>
+	<column name="contact_no" alias="cno">
+		<type name="character varying" length="16"/>
+		<comment><![CDATA[Contact Number: Contact number of the MISP organization]]></comment>
+	</column>
+	<column name="email_id" alias="emlid">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Email ID: Email ID of the MISP organization / contact person]]></comment>
+	</column>
+	<column name="user_id" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[User ID: Login ID assigned by MOSIP to MISP Admin. It is a general/common id for a MISP that is generated and assigned when the MISP is created.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="36"/>
+		<comment><![CDATA[Active Flag: Flag to mark whether the record is Active or In-active
+]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_misp" type="pk-constr" table="pmp.misp">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_misp" type="uq-constr" table="pmp.misp">
+		<columns names="name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="misp_license" alias="mlic">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[MISP License: License key issued to MISP, using which an individual's authentication request that is initiated from partners are authenticated.]]></comment>
+	<position x="20" y="500"/>
+	<column name="misp_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[MISP ID: MISP ID, refers to pmp.misp .id]]></comment>
+	</column>
+	<column name="license_key" alias="lkey" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[License Key: A system generated number assigned to MISP as License key. It will be used by MISP application to be appended to auth request which is received by partners.]]></comment>
+	</column>
+	<column name="valid_from_date" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Valid From Date: Datetime from when the license key is valid.]]></comment>
+	</column>
+	<column name="valid_to_date">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Valid To Date: Datetime when the license key will be expired.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="36"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values
+]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_mlic" type="pk-constr" table="pmp.misp_license">
+		<columns names="misp_id,license_key" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<schema name="pmp_cp" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin_cp"/>
+</schema>
+
+<table name="partner" alias="part">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Partner: Registered external partners use the authentication services provided by MOSIP. The auth services are channeled through MISPs. This table stores the master list of partners who can self register themselves and use auth services.]]></comment>
+	<position x="1140" y="80"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Partner ID : Unique ID generated / assigned for partner]]></comment>
+	</column>
+	<column name="policy_group_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Policy Group ID: Policy group to which the partner registers for to avail the auth services.]]></comment>
+	</column>
+	<column name="name" alias="name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name: Name of the Partner.]]></comment>
+	</column>
+	<column name="address" alias="addr">
+		<type name="character varying" length="2000"/>
+		<comment><![CDATA[Address: Address of the partner organization]]></comment>
+	</column>
+	<column name="contact_no" alias="cno">
+		<type name="character varying" length="16"/>
+		<comment><![CDATA[Contact Number: Contact number of the partner organization or the contact person]]></comment>
+	</column>
+	<column name="email_id" alias="emlid">
+		<type name="character varying" length="254"/>
+		<comment><![CDATA[Email ID: Email ID of the MISP organization's contact person]]></comment>
+	</column>
+	<column name="public_key" alias="pubky">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Public Key: Public key provided by the partner to MOSIP to use its auth request data.]]></comment>
+	</column>
+	<column name="user_id" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Partner Admin: When a partner registers themselves to avail auth services, a user id is created for them to login to partner management portal to perform few operational activities. Currently only one user is created per partner.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_part" type="pk-constr" table="pmp.partner">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_part" type="uq-constr" table="pmp.partner">
+		<columns names="policy_group_id,name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="auth_policy" alias="apol">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Authentication Policy: The authentication policy is defined in this table. An authentication policy can be of single or a group of authentication types supported by the auth services of MOSIP application. ]]></comment>
+	<position x="740" y="420"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: A unique identity ]]></comment>
+	</column>
+	<column name="policy_group_id">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Polocy Group ID: Id of the policy group to which this policy belongs.]]></comment>
+	</column>
+	<column name="name" alias="name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name: Name of the policy]]></comment>
+	</column>
+	<column name="descr" alias="descr" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Description: Description of the policy]]></comment>
+	</column>
+	<column name="policy_file_id" alias="polf" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Policy File ID: Policy are defined by Policy / Partner manager are stored in file system or key based storages like CEPH. The policy file details (location / id / key) is stored here.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_apol" type="pk-constr" table="pmp.auth_policy">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_apol" type="uq-constr" table="pmp.auth_policy">
+		<columns names="policy_group_id,name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="partner_policy" alias="ppol">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Partner Policy: Authentication policies assigned to a partner once the policy creation request is approved. An Policy API Key is generated and provided to the partner that will be used as part of auth requests.]]></comment>
+	<position x="1120" y="780"/>
+	<column name="policy_api_key" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Policy API Key: ]]></comment>
+	</column>
+	<column name="part_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Partner ID: Partner ID, refers to pmp.partner .id]]></comment>
+	</column>
+	<column name="policy_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Policy ID: Policy ID, refers to pmp.auth_policy .id]]></comment>
+	</column>
+	<column name="valid_from_datetime" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Valid From Datetime: Date and time from when the policy is valid.]]></comment>
+	</column>
+	<column name="valid_to_datetime">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Valid To Datetime: Date and time till when the policy is valid.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_ppol" type="pk-constr" table="pmp.partner_policy">
+		<columns names="policy_api_key" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_ppol" type="uq-constr" table="pmp.partner_policy">
+		<columns names="part_id,policy_id,valid_from_datetime" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="policy_group" alias="polg">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Policy Group: Authentication policies are categorized into different groups/domains. These policy groups are defined and maintained in this table.]]></comment>
+	<position x="560" y="100"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: A unique id generated / assigned for a policy group.]]></comment>
+	</column>
+	<column name="name" alias="name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name: Name of the policy group]]></comment>
+	</column>
+	<column name="descr" alias="descr" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Description: Description of the policy group.]]></comment>
+	</column>
+	<column name="user_id" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[User ID: Login ID assigned by MOSIP to Partner Manager. It is a general/common id for a policy group that is generated and assigned when the policy group is created.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_polg" type="pk-constr" table="pmp.policy_group">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_polg" type="uq-constr" table="pmp.policy_group">
+		<columns names="name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="partner_policy_request" alias="papr">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Partner Policy Request: Partner can self register themselves to use the auth services provided by MOSIP. The registeration requests are stored and processed through here. Once the request is approved and processed a partner is created.]]></comment>
+	<position x="1400" y="460"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Partner Policy Request ID : Unique ID generated / assigned to track the policy creation request for a partner.]]></comment>
+	</column>
+	<column name="part_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Partner ID: Partner ID, refers to pmp.partner .id]]></comment>
+	</column>
+	<column name="policy_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Policy ID: Policy ID, refers to pmp.policy .id]]></comment>
+	</column>
+	<column name="request_datetimes" alias="pubky" not-null="true">
+		<type name="timestamp" length="128"/>
+		<comment><![CDATA[Request Datetime: Date and Time when the policy creation request is received by Partner for processing]]></comment>
+	</column>
+	<column name="request_detail" not-null="true">
+		<type name="character varying" length="4000"/>
+		<comment><![CDATA[Request Detail: Details provided along with the policy creation request by a partner]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status code: Partner policy request status. Refers to master.status_master.code
+]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_papr" type="pk-constr" table="pmp.partner_policy_request">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="auth_policy_h" alias="apolh">
+	<schema name="pmp"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Authentication Policy History: This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer pmp.auth_policy table description for details.   
+]]></comment>
+	<position x="420" y="760"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: A unique identity ]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Date Timestamp : This to track master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
+	</column>
+	<column name="policy_group_id">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Polocy Group ID: Id of the policy group to which this policy belongs.]]></comment>
+	</column>
+	<column name="name" alias="name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name: Name of the policy]]></comment>
+	</column>
+	<column name="descr" alias="descr" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Description: Description of the policy]]></comment>
+	</column>
+	<column name="policy_file_id" alias="polf" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Policy File ID: Policy are defined by Policy / Partner manager are stored in file system or key based storages like CEPH. The policy file details (location / id / key) is stored here.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_apolh" type="pk-constr" table="pmp.auth_policy_h">
+		<columns names="id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_apolh" type="uq-constr" table="pmp.auth_policy_h">
+		<columns names="eff_dtimes,policy_group_id,name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_mispl_misp" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="pmp.misp" table="pmp.misp_license">
+	<columns names="misp_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_apol_polg" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="pmp.policy_group" table="pmp.auth_policy">
+	<columns names="policy_group_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_ppol_part" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="pmp.partner" table="pmp.partner_policy">
+	<columns names="part_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_ppol_apol" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="pmp.auth_policy" table="pmp.partner_policy">
+	<columns names="policy_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_papr_part" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="pmp.partner" table="pmp.partner_policy_request">
+	<columns names="part_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_apolh_polg_cp" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="pmp.policy_group" table="pmp.auth_policy_h">
+	<columns names="policy_group_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_partner_policy_partner" type="relfk"
+	 src-table="pmp.partner_policy"
+	 dst-table="pmp.partner" reference-fk="fk_ppol_part"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_misp_license_misp" type="relfk"
+	 src-table="pmp.misp_license"
+	 dst-table="pmp.misp" reference-fk="fk_mispl_misp"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_partner_policy_auth_policy" type="relfk"
+	 src-table="pmp.partner_policy"
+	 dst-table="pmp.auth_policy" reference-fk="fk_ppol_apol"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_auth_policy_policy_group" type="relfk"
+	 src-table="pmp.auth_policy"
+	 dst-table="pmp.policy_group" reference-fk="fk_apol_polg"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_partner_policy_request_partner" type="relfk"
+	 src-table="pmp.partner_policy_request"
+	 dst-table="pmp.partner" reference-fk="fk_papr_part"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_auth_policy_cp_policy_group" type="relfk"
+	 src-table="pmp.auth_policy_h"
+	 dst-table="pmp.policy_group" reference-fk="fk_apolh_polg_cp"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_pmp" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_pmp" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_pmp" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_pmp" type="database"/>
+	<roles names="pmpuser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="pmp" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="pmp" type="schema"/>
+	<roles names="pmpuser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="pmp.misp" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="pmp.misp" type="table"/>
+	<roles names="pmpuser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+</dbmodel>

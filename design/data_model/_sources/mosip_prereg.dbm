@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.65"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_prereg" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Pre-registration database to store the data that is captured as part of pre-registration process]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="prereg" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="applicant_demographic">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Applicant Demographic: Stores demographic details of an applicant. The demographic information is stored in json format.]]></comment>
+	<position x="440" y="60"/>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre Registration ID: Unique Id generated for an individual during the pre-registration process which will be referenced during registration process at a registration center.]]></comment>
+	</column>
+	<column name="demog_detail" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[Demographic Detail: Demographic details of an individual, stored in json format.]]></comment>
+	</column>
+	<column name="demog_detail_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Demographic Detail Hash: Hash value of the demographic details stored in json format in a separate column. This will be used to make sure that nobody has tampered the data.]]></comment>
+	</column>
+	<column name="encrypted_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Encrypted Data Time: Date and time when the data was encrypted. This will also be used  get the key for decrypting the data.]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the pre-registration application. The application can be in draft / pending state or submitted state]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_appuser_id" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Applciation Created User Id: User ID of the individual who is submitting the pre-registration application. It can be for self or for others like family members.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_appldem_prereg_id" type="pk-constr" table="prereg.applicant_demographic">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_demographic_consumed">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Applicant Demographic: Stores demographic details of an applicant that was comsumed.]]></comment>
+	<position x="460" y="420"/>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre Registration ID: Unique Id generated for an individual during the pre-registration process which will be referenced during registration process at a registration center.]]></comment>
+	</column>
+	<column name="demog_detail" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[Demographic Detail: Demographic details of an individual, stored in json format.]]></comment>
+	</column>
+	<column name="demog_detail_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Demographic Detail Hash: Hash value of the demographic details stored in json format in a separate column. This will be used to make sure that nobody has tampered the data.]]></comment>
+	</column>
+	<column name="encrypted_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Encrypted Data Time: Date and time when the data was encrypted. This will also be used  get the key for decrypting the data.]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the pre-registration application. The application can be in draft / pending state or submitted state]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_appuser_id" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Applciation Created User Id: User ID of the individual who is submitting the pre-registration application. It can be for self or for others like family members.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_appldemc_prereg_id" type="pk-constr" table="prereg.applicant_demographic_consumed">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applicant_document">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Applicant Document: Documents that are uploaded as part of pre-registration process is maintained here. The documents are stored in document repository  and only the hash value and its location details are stored.]]></comment>
+	<position x="940" y="80"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Id: Unique id generated for the documents being uploaded as part of pre-registration process.]]></comment>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre Registration Id: Id of the pre-registration application for which the documents are being uploaded.]]></comment>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document Name: Name of the document that is uploaded]]></comment>
+	</column>
+	<column name="doc_cat_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Category Code: Document category code under which the document is being uploaded. Refers to master.document_category.code]]></comment>
+	</column>
+	<column name="doc_typ_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Type Code: Document type code under which the document is being uploaded. Refers to master.document_type.code]]></comment>
+	</column>
+	<column name="doc_file_format" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Documenet File Format: Format in which the document is being uploaded. Refers to master.document_file_format.code]]></comment>
+	</column>
+	<column name="doc_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document Id: ID of the document being uploaded]]></comment>
+	</column>
+	<column name="doc_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Document Hash: Hash value of the document being uploaded in document store. This will be used to make sure that nobody has tampered the document stored in a separate store. ]]></comment>
+	</column>
+	<column name="encrypted_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Encrypted Data Time: Date and time when the document was encrypted before uploading it on document store. This will also be used  get the key for decrypting the data.]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the document that is being uploaded.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_appldoc_prereg_id" type="pk-constr" table="prereg.applicant_document">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_appldoc_prereg_id" table="prereg.applicant_document"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="prereg_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="doc_cat_code"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="doc_typ_code"/>
+		</idxelement>
+</index>
+
+<table name="applicant_document_consumed">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Applicant Document: Documents that are uploaded as part of pre-registration process which was consumed is maintained here. ]]></comment>
+	<position x="1420" y="120"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Id: Unique id generated for the documents being uploaded as part of pre-registration process.]]></comment>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre Registration Id: Id of the pre-registration application for which the documents are being uploaded.]]></comment>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document Name: Name of the document that is uploaded]]></comment>
+	</column>
+	<column name="doc_cat_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Category Code: Document category code under which the document is being uploaded. Refers to master.document_category.code]]></comment>
+	</column>
+	<column name="doc_typ_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Document Type Code: Document type code under which the document is being uploaded. Refers to master.document_type.code]]></comment>
+	</column>
+	<column name="doc_file_format" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Documenet File Format: Format in which the document is being uploaded. Refers to master.document_file_format.code]]></comment>
+	</column>
+	<column name="doc_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Document Id: ID of the document being uploaded]]></comment>
+	</column>
+	<column name="doc_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Document Hash: Hash value of the document being uploaded in document store. This will be used to make sure that nobody has tampered the document stored in a separate store. ]]></comment>
+	</column>
+	<column name="encrypted_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Encrypted Data Time: Date and time when the document was encrypted before uploading it on document store. This will also be used  get the key for decrypting the data.]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the document that is being uploaded.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_appldocc_prereg_id" type="pk-constr" table="prereg.applicant_document_consumed">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_appldocc_prereg_id" table="prereg.applicant_document_consumed"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="prereg_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="doc_cat_code"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="doc_typ_code"/>
+		</idxelement>
+</index>
+
+<table name="batch_job_execution">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<position x="1740" y="760"/>
+	<column name="job_execution_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="version">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="job_instance_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="create_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="start_time">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="end_time">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="status">
+		<type name="character varying" length="10"/>
+	</column>
+	<column name="exit_code">
+		<type name="character varying" length="2500"/>
+	</column>
+	<column name="exit_message">
+		<type name="character varying" length="2500"/>
+	</column>
+	<column name="last_updated">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="job_configuration_location">
+		<type name="character varying" length="2500"/>
+	</column>
+	<constraint name="batch_job_execution_pkey" type="pk-constr" table="prereg.batch_job_execution">
+		<columns names="job_execution_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="batch_job_execution_context">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<position x="2140" y="580"/>
+	<column name="job_execution_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="short_context" not-null="true">
+		<type name="character varying" length="2500"/>
+	</column>
+	<column name="serialized_context">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="batch_job_execution_context_pkey" type="pk-constr" table="prereg.batch_job_execution_context">
+		<columns names="job_execution_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="batch_job_execution_params">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<position x="1780" y="500"/>
+	<column name="job_execution_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="type_cd" not-null="true">
+		<type name="character varying" length="6"/>
+	</column>
+	<column name="key_name" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="string_val">
+		<type name="character varying" length="250"/>
+	</column>
+	<column name="date_val">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="long_val">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="double_val">
+		<type name="double precision" length="0"/>
+	</column>
+	<column name="identifying" not-null="true">
+		<type name="character" length="1"/>
+	</column>
+</table>
+
+<table name="batch_job_instance">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<position x="2160" y="740"/>
+	<column name="job_instance_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="version">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="job_name" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="job_key" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<constraint name="batch_job_instance_pkey" type="pk-constr" table="prereg.batch_job_instance">
+		<columns names="job_instance_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="job_inst_un" type="uq-constr" table="prereg.batch_job_instance">
+		<columns names="job_name,job_key" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="batch_step_execution">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<position x="1960" y="80"/>
+	<column name="step_execution_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="version" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="step_name" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="job_execution_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="start_time" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="end_time">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="status">
+		<type name="character varying" length="10"/>
+	</column>
+	<column name="commit_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="read_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="filter_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="write_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="read_skip_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="write_skip_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="process_skip_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="rollback_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="exit_code">
+		<type name="character varying" length="2500"/>
+	</column>
+	<column name="exit_message">
+		<type name="character varying" length="2500"/>
+	</column>
+	<column name="last_updated">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="batch_step_execution_pkey" type="pk-constr" table="prereg.batch_step_execution">
+		<columns names="step_execution_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="batch_step_execution_context">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<position x="2140" y="440"/>
+	<column name="step_execution_id" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="short_context" not-null="true">
+		<type name="character varying" length="2500"/>
+	</column>
+	<column name="serialized_context">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="batch_step_execution_context_pkey" type="pk-constr" table="prereg.batch_step_execution_context">
+		<columns names="step_execution_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="intf_processed_prereg_list">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Interface Processd Pre Registration List: Interface table to temporarily store the list of pre-registrations that were processed by registration processor application. The data can be removed once the data is updated in actual tables.]]></comment>
+	<position x="80" y="120"/>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-registration id: Pre registration id that was consumed by registration processor to generate UIN.]]></comment>
+	</column>
+	<column name="received_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Received Date Time: Date time when the pre-registration id was recevied by pre-registrations application for marking it as comsumed/processed]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="ipprlst_pk" type="pk-constr" table="prereg.intf_processed_prereg_list">
+		<columns names="prereg_id,received_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="pre_registration_transaction">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Pre-Registration Transaction: Stores various transactions that are processd within pre-registration module/application.]]></comment>
+	<position x="460" y="740"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Transaction id of the transactions that were recorded in pre-registration module/application]]></comment>
+	</column>
+	<column name="trn_type_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Transaction type code: Type of transaction being processed.]]></comment>
+	</column>
+	<column name="parent_prereg_trn_id">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Parent Pre-Registration Transaction Id: Parent transaction id that has triggered this transaction (if any)]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Current status of the transaction. Refers to code field of master.status_list table.]]></comment>
+	</column>
+	<column name="status_comments">
+		<type name="character varying" length="1024"/>
+		<comment><![CDATA[Status Comments: Comments provided by the actor during the transaction processing.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="preg_trn_pk" type="pk-constr" table="prereg.pre_registration_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="processed_prereg_list">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Processed Pre-Registration List: Stores the list of pre-registrations that were processed by registration processor application.]]></comment>
+	<position x="80" y="340"/>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-Registration ID: Pre-registration id that was consumed by registration processor to generate UIN]]></comment>
+	</column>
+	<column name="first_received_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[First Received Date Time: Date time when the pre-registration id was recevied first by pre-registrations application for marking it as comsumed/processed]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the pre-registration status to be updated in the actual table]]></comment>
+	</column>
+	<column name="status_comments">
+		<type name="character varying" length="1024"/>
+		<comment><![CDATA[Status Comments: Comments provided during the pre-registration status update]]></comment>
+	</column>
+	<column name="prereg_trn_id">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-Registration Transaction Id: Pre-Registration transaction id through which the status of pre-registration was set to processed / consumed.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pprlst_pk" type="pk-constr" table="prereg.processed_prereg_list">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_appointment">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration Appointment: Stores all the appointment requests booked by an individual at a registration center. ]]></comment>
+	<position x="840" y="500"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Unique id generated for the registration appointment booking.]]></comment>
+	</column>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Registration Center ID: Id of the Registration Center where the appointment is taken. Refers to master.registration_center.id]]></comment>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-Registration Id: Pre-registration id for which registration appointment is taken.]]></comment>
+	</column>
+	<column name="booking_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Booking Date Time: Date and Time when the appointment booking is done.]]></comment>
+	</column>
+	<column name="appointment_date">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Appointment Date: Date for which an individual has taken an aopointment for registration at a registration center]]></comment>
+	</column>
+	<column name="slot_from_time">
+		<type name="time" length="0"/>
+		<comment><![CDATA[Slot From Time: Start time of the appointment slot.]]></comment>
+	</column>
+	<column name="slot_to_time">
+		<type name="time" length="0"/>
+		<comment><![CDATA[Slot To Time: End time of the appointment slot.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_rappmnt_id" type="pk-constr" table="prereg.reg_appointment">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_rappmnt_id" type="uq-constr" table="prereg.reg_appointment">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_appointment_consumed">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration Appointment: Stores all the appointment requests booked by an individual at a registration center that are consumed. ]]></comment>
+	<position x="1340" y="520"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Unique id generated for the registration appointment booking.]]></comment>
+	</column>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Registration Center ID: Id of the Registration Center where the appointment is taken. Refers to master.registration_center.id]]></comment>
+	</column>
+	<column name="prereg_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Pre-Registration Id: Pre-registration id for which registration appointment is taken.]]></comment>
+	</column>
+	<column name="booking_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Booking Date Time: Date and Time when the appointment booking is done.]]></comment>
+	</column>
+	<column name="appointment_date">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Appointment Date: Date for which an individual has taken an aopointment for registration at a registration center]]></comment>
+	</column>
+	<column name="slot_from_time">
+		<type name="time" length="0"/>
+		<comment><![CDATA[Slot From Time: Start time of the appointment slot.]]></comment>
+	</column>
+	<column name="slot_to_time">
+		<type name="time" length="0"/>
+		<comment><![CDATA[Slot To Time: End time of the appointment slot.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_rappmntc_id" type="pk-constr" table="prereg.reg_appointment_consumed">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_rappmntc_id" type="uq-constr" table="prereg.reg_appointment_consumed">
+		<columns names="prereg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="reg_available_slot">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Registration Available Slots: Slots available at a registration center for an individual to book for registrating themselves to get a UIN. ]]></comment>
+	<position x="80" y="660"/>
+	<column name="regcntr_id" not-null="true">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Registration Center ID: Id of the Registration Center where the appointment can be booded for registration process. Refers to master.registration_center.id]]></comment>
+	</column>
+	<column name="availability_date" not-null="true">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Avalilability Date: Date when the registration center is available for registration process.]]></comment>
+	</column>
+	<column name="slot_from_time" not-null="true">
+		<type name="time" length="0"/>
+		<comment><![CDATA[Slot From Time: Start time of the appointment slot available for booking at a registration center.]]></comment>
+	</column>
+	<column name="slot_to_time">
+		<type name="time" length="0"/>
+		<comment><![CDATA[Slot To Time: End time of the appointment slot available for booking at a registration center.]]></comment>
+	</column>
+	<column name="available_kiosks">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Available Kiosks: Number of kiosks available for booking at a registration center.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_ravlslt_id" type="pk-constr" table="prereg.reg_available_slot">
+		<columns names="regcntr_id,availability_date,slot_from_time" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="transaction_type">
+	<schema name="prereg"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Transaction Type: Defines various transaction types that are processd within pre-registration module/application.]]></comment>
+	<position x="100" y="900"/>
+	<column name="code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Code: Code of the transaction types available in pre-registration module/application]]></comment>
+	</column>
+	<column name="descr" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Desceription: Description of the transaction types of pre-registration module/application]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="ttype_pk" type="pk-constr" table="prereg.transaction_type">
+		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="language_transliteration">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Language Transliteration: Mapping table to store mapping between the language id, (defined by the utility) to support transliteration from one language to another. ]]></comment>
+	<position x="880" y="800"/>
+	<column name="lang_from_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language From Code: Host language code from which the transliteration to be done ]]></comment>
+	</column>
+	<column name="lang_to_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language To Code: Target language code to which the transliteration to be done ]]></comment>
+	</column>
+	<column name="lang_id" not-null="true">
+		<type name="character varying" length="30"/>
+		<comment><![CDATA[Language Id: Unique language id which is used to transliterate from one language to other. This id should be part of the language ids supported by the transliterate utility.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_ltrnln" type="pk-constr" table="prereg.language_transliteration">
+		<columns names="lang_from_code,lang_to_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="batch_step_execution_seq" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+</sequence>
+
+<sequence name="batch_job_execution_seq" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+</sequence>
+
+<sequence name="batch_job_seq" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+</sequence>
+
+<table name="prid_seed">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Pre-Registration ID Seed: Stores a random number that will be used as seed in the algorithm to generate a PRID. This seed value is encrypted/hashed and used along with a counter in the algorithm to generate a unique random number. Only one seed value would be available for the generation of PRID and this will never change.]]></comment>
+	<position x="1280" y="960"/>
+	<column name="seed_no" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Seed Number: Seed number is the random number generated which will be used as seed in the algorithm to generate PRID.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record.]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_prsd" type="pk-constr" table="prereg.prid_seed">
+		<columns names="seed_no" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="prid_seq">
+	<schema name="prereg"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Pre-Registration ID Sequence: Stores sequence numbers that are used in the algorithm to generate PRID. Stores a incremental sequence number that will be used as salt in the algorithm to generate a PRID. This salt value is encrypted/hashed and used along with a seed number in the algorithm to generate a unique random number.]]></comment>
+	<position x="1280" y="820"/>
+	<column name="seq_no" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Sequence Number: Sequence number is the number generated which is used in the algorithm to generate PRID.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_prseq" type="pk-constr" table="prereg.prid_seq">
+		<columns names="seq_no" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_appldoc_appldem" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.applicant_demographic" table="prereg.applicant_document">
+	<columns names="prereg_id" ref-type="src-columns"/>
+	<columns names="prereg_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_appldocc_appldem" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.applicant_demographic_consumed" table="prereg.applicant_document_consumed">
+	<columns names="prereg_id" ref-type="src-columns"/>
+	<columns names="prereg_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="job_inst_exec_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.batch_job_instance" table="prereg.batch_job_execution">
+	<columns names="job_instance_id" ref-type="src-columns"/>
+	<columns names="job_instance_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="job_exec_ctx_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.batch_job_execution" table="prereg.batch_job_execution_context">
+	<columns names="job_execution_id" ref-type="src-columns"/>
+	<columns names="job_execution_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="job_exec_params_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.batch_job_execution" table="prereg.batch_job_execution_params">
+	<columns names="job_execution_id" ref-type="src-columns"/>
+	<columns names="job_execution_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="job_exec_step_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.batch_job_execution" table="prereg.batch_step_execution">
+	<columns names="job_execution_id" ref-type="src-columns"/>
+	<columns names="job_execution_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="step_exec_ctx_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.batch_step_execution" table="prereg.batch_step_execution_context">
+	<columns names="step_execution_id" ref-type="src-columns"/>
+	<columns names="step_execution_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="pprlst_pregtrn_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="CASCADE" del-action="SET NULL" ref-table="prereg.pre_registration_transaction" table="prereg.processed_prereg_list">
+	<columns names="prereg_trn_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_rappmnt_id" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.applicant_demographic" table="prereg.reg_appointment">
+	<columns names="prereg_id" ref-type="src-columns"/>
+	<columns names="prereg_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_rappmntc_id" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="prereg.applicant_demographic_consumed" table="prereg.reg_appointment_consumed">
+	<columns names="prereg_id" ref-type="src-columns"/>
+	<columns names="prereg_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_applicant_document_applicant_demographic" type="relfk"
+	 custom-color="#5aa578"
+	 src-table="prereg.applicant_document"
+	 dst-table="prereg.applicant_demographic" reference-fk="fk_appldoc_appldem"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_applicant_document_consumed_applicant_demographic_consumed" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="prereg.applicant_document_consumed"
+	 dst-table="prereg.applicant_demographic_consumed" reference-fk="fk_appldocc_appldem"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_batch_job_execution_batch_job_instance" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="prereg.batch_job_execution"
+	 dst-table="prereg.batch_job_instance" reference-fk="job_inst_exec_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_batch_job_execution_context_batch_job_execution" type="relfk"
+	 custom-color="#249b49"
+	 src-table="prereg.batch_job_execution_context"
+	 dst-table="prereg.batch_job_execution" reference-fk="job_exec_ctx_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_batch_job_execution_params_batch_job_execution" type="relfk"
+	 custom-color="#942665"
+	 src-table="prereg.batch_job_execution_params"
+	 dst-table="prereg.batch_job_execution" reference-fk="job_exec_params_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_batch_step_execution_batch_job_execution" type="relfk"
+	 custom-color="#abb258"
+	 src-table="prereg.batch_step_execution"
+	 dst-table="prereg.batch_job_execution" reference-fk="job_exec_step_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_batch_step_execution_context_batch_step_execution" type="relfk"
+	 custom-color="#94e1e5"
+	 src-table="prereg.batch_step_execution_context"
+	 dst-table="prereg.batch_step_execution" reference-fk="step_exec_ctx_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_processed_prereg_list_pre_registration_transaction" type="relfk"
+	 custom-color="#a239f5"
+	 src-table="prereg.processed_prereg_list"
+	 dst-table="prereg.pre_registration_transaction" reference-fk="pprlst_pregtrn_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_appointment_applicant_demographic" type="relfk"
+	 custom-color="#4e132e"
+	 src-table="prereg.reg_appointment"
+	 dst-table="prereg.applicant_demographic" reference-fk="fk_rappmnt_id"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_reg_appointment_consumed_applicant_demographic_consumed" type="relfk"
+	 custom-color="#081cb1"
+	 src-table="prereg.reg_appointment_consumed"
+	 dst-table="prereg.applicant_demographic_consumed" reference-fk="fk_rappmntc_id"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_prereg" type="database"/>
+	<roles names="prereguser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="prereg" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="prereg" type="schema"/>
+	<roles names="prereguser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_demographic" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_demographic" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_demographic_consumed" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_demographic_consumed" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_document" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_document" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_document_consumed" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.applicant_document_consumed" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_execution" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_execution" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_execution_context" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_execution_context" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_execution_params" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_execution_params" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_instance" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_job_instance" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_step_execution" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_step_execution" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_step_execution_context" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.batch_step_execution_context" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.intf_processed_prereg_list" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.intf_processed_prereg_list" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.pre_registration_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.pre_registration_transaction" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.processed_prereg_list" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.processed_prereg_list" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.reg_appointment" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.reg_appointment" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.reg_appointment_consumed" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.reg_appointment_consumed" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.reg_available_slot" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.reg_available_slot" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.transaction_type" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.transaction_type" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.language_transliteration" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.language_transliteration" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.prid_seed" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.prid_seed" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="prereg.prid_seq" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="prereg.prid_seq" type="table"/>
+	<roles names="prereguser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+</dbmodel>

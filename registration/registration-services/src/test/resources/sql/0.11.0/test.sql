@@ -1,0 +1,1 @@
+delete reg.sync_control;

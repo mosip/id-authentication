@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.mosip.kernel.idgenerator.prid.impl.PridGeneratorImpl,\
+io.mosip.kernel.idgenerator.prid.util.PridFilterUtils

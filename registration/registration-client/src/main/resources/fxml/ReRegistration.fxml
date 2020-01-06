@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="reRegistrationRootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="parentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints minHeight="10.0" percentHeight="5.5" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <GridPane GridPane.rowIndex="1">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" percentHeight="6.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane styleClass="pendingApprovalHeader">
+               <children>
+                  <HBox alignment="BASELINE_LEFT" spacing="3.0" GridPane.columnIndex="1">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromReRegistration" styleClass="homeButton" text="%home" />
+                        <Label styleClass="headerLabel" text="%/reRegistration" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" GridPane.columnIndex="2">
+                     <children>
+                        <Label styleClass="mainHeader" text="%reRegistration" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
+                     <children>
+                        <ToggleButton fx:id="notInformedBtn" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegCantInformToggle" text="%cantinformed">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/informed.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="informedStatus" />
+                           </toggleGroup>
+                        </ToggleButton>
+                     </children>
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="5">
+                     <children>
+                        <ToggleButton fx:id="informedBtn" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegInformToggle" text="%informed" toggleGroup="$informedStatus">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/cantInform.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </ToggleButton>
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="2.0" />
+                     </GridPane.margin>
+                  </HBox>
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="2.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <GridPane fx:id="reRegistrationChildPane" GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane fx:id="approveRegistrationRootSubPane" styleClass="approveRegistrationRootSubPane" GridPane.columnIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="43.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="57.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="245.0" minHeight="10.0" percentHeight="3.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="469.0" minHeight="10.0" percentHeight="97.0" prefHeight="469.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <GridPane fx:id="tableContainer" GridPane.rowIndex="1">
+                                 <children>
+                                    <TableView fx:id="table" styleClass="approvalTable" GridPane.rowIndex="1">
+                                       <columns>
+                                          <TableColumn fx:id="slno" editable="false" prefWidth="${tableContainer.width*11/100}" resizable="false" styleClass="tableId" text="%slno" />
+                                          <TableColumn fx:id="id" editable="false" prefWidth="${tableContainer.width*39/100}" resizable="false" styleClass="tableId" text="%registrationid" />
+                                          <TableColumn fx:id="date" editable="false" prefWidth="${tableContainer.width*26/100}" resizable="false" styleClass="tableId" text="%eodDate" />
+                                         <TableColumn fx:id="status" editable="false" prefWidth="${tableContainer.width*24/100}" resizable="false" styleClass="pendingApprovalStatus" text="%status" />
+                                          <TableColumn fx:id="acknowledgementFormPath" text="%registrtionid" visible="false" />
+                                       </columns>
+                                    </TableView>
+                                    <HBox prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="filterField" prefHeight="39.0" prefWidth="300.0" promptText="%searchRegistration" styleClass="searchBoxTextStyle" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" percentHeight="7.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" percentHeight="93.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </GridPane>
+                              <GridPane fx:id="imageAnchorPane" styleClass="imageAnchorPaneStyle" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <WebView fx:id="webView" prefHeight="432.0" prefWidth="370.0" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </GridPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <GridPane styleClass="pendingApprovalFooter" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="%aplicatoinactioned" GridPane.halignment="CENTER" />
+                        <Button fx:id="authenticateBtn" mnemonicParsing="false" onAction="#authenticateReregister" styleClass="approveButton" text="%authenticate" GridPane.halignment="RIGHT">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Authenticate.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </GridPane>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+      <GridPane fx:id="header">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <fx:include fx:id="headerParentBorder" prefHeight="${header.height}" prefWidth="${header.width}" source="Header.fxml" />
+         </children>
+      </GridPane>
+   </children>
+</GridPane>
