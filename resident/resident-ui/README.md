@@ -1,2 +1,0 @@
-# Resident Service UI
-

@@ -1,1 +1,0 @@
-<head></head><body><h1>Welcome to $storeName Store</h1><p>$itemList.size() $itemName on Sale!We are proud to Offer these fine $itemName at these amazing prices.this month onlyChoose from :</p> #foreach($item in $itemList) 	<p><b>$item.name for only $item.price</b></p> #end  <h4>Call  @ <b>$phoneNo</b> Today</h4>  </body>

@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl
