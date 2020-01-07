@@ -33,6 +33,7 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
+
 ADD target/authentication-otp-service-*.jar authentication-otp-service.jar
 
 EXPOSE 8092
