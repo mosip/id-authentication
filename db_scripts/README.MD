@@ -48,7 +48,7 @@
 
 * **mosip_<schema_name>_deploy.properties:** This is the properties file name and present in each database.
 
-* **mosip_all_db_deployment.sh:** This is the .sh file which is present in /home/madmin/database directory and which will be executed for all database deployment in single command execution.
+* **mosip_id-authentication_db_deployment.sh:** This is the .sh file which is present in /home/madmin/database directory and which will be executed for all database deployment in single command execution.
 
 **Note :** Not all Modules will have dml scripts. Make necessary changes in the properties file with dml variables for the modules where dml exists.
 
@@ -108,11 +108,11 @@ Once we complete with sourcing the database files, we need to follow the below D
 		
 **Step 1** -> Make prior modification to all the respective database properties files **(mosip_<schema_name>_deploy.properties)** in the respective database directories. Path of properties file and variables list remains same as explained above. Once the properties files are ready then access the directory where the deployment script is kept.
 
-**Step 2** -> Deployment on all databases, run the **"mosip_all_db_deployment.sh"** script which is avialble in the /database directory.  To access **"mosip_all_db_deployment.sh"** script, follow the below given commands:
+**Step 2** -> Deployment on all databases, run the **"mosip_id-authentication_db_deployment.sh"** script which is avialble in the /database directory.  To access **"mosip_all_db_deployment.sh"** script, follow the below given commands:
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database/ </em>
 
-<em> **Enter:-bash-4.2$** bash mosip_all_db_deployment.sh </em>
+<em> **Enter:-bash-4.2$** bash mosip_id-authentication_db_deployment.sh </em>
 
 **Step 3** -> Please observe <em> Post Deployment Validation </em>  steps below
 
