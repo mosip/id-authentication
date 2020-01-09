@@ -1,9 +1,8 @@
 package io.mosip.authentication.core.indauth.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -24,6 +23,7 @@ public class DigitalId {
 	private String subType;
 	
 	@Setter(AccessLevel.NONE)
+	@Getter(AccessLevel.NONE)
 	private String deviceProvider;
 	
 	@Setter(AccessLevel.NONE)
@@ -33,6 +33,7 @@ public class DigitalId {
 	private String dpId;
 	
 	@Setter(AccessLevel.NONE)
+	@Getter(AccessLevel.NONE)
 	private String deviceProviderId;
 	
 	private String dateTime;

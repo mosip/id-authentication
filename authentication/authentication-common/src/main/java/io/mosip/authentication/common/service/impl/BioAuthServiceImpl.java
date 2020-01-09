@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,16 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Service
 public class BioAuthServiceImpl implements BioAuthService {
 	
+	private static final String DIGITAL_ID = "digitalId/";
+
+	private static final String DEVICE_PROVIDER_ID = "deviceProviderId";
+
+	private static final String DP_ID = "dpId";
+
+	private static final String DEVICE_PROVIDER = "deviceProvider";
+
+	private static final String DP = "dp";
+
 	private static Logger logger = IdaLogger.getLogger(BioAuthServiceImpl.class);
 
 	/** Id Info helper. */
@@ -163,10 +174,15 @@ public class BioAuthServiceImpl implements BioAuthService {
 								logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 										"verifyBiometricDevice",
 										"throwing IdAuthUncheckedException - INVALID_INPUT_PARAMETER");
+								String field = StringUtils.substringAfterLast(serviceError.getMessage(), " ");
+								if (field.contentEquals(DP)) {
+									field = DEVICE_PROVIDER;
+								} else if (field.contentEquals(DP_ID)) {
+									field = DEVICE_PROVIDER_ID;
+								}
 								throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-												String.format(BIO_PATH, index, "digitalId/" + serviceError.getMessage()
-														.substring(serviceError.getMessage().lastIndexOf(' ') + 1))));
+												String.format(BIO_PATH, index, DIGITAL_ID + field)));
 							} else {
 								logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 										"verifyBiometricDevice",
