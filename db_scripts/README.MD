@@ -14,7 +14,7 @@
 
 * Database objects related to MOSIP modules are placed in "**mosip_base_directory**>>db_scripts>>mosip_<schema_name> folder on git/repository
 
-**Example:** the pre-registration module script folder is /**mosip_base_directory**>>db_scripts>>mosip_prereg where all the database scripts related to pre-registration are available.
+**Example:** the id-authentication module script folder is /**mosip_base_directory**>>db_scripts>>mosip_ida where all the database scripts related to id authentication are available.
 
 * Create a log file directory on DB deployment server before updating the properties file. Please follow the steps to create the same:
  
@@ -57,7 +57,7 @@
 Once we complete with sourcing the database files, we need to follow the below DB deployment process with the modifying the properties file according the requirement.
 
 ## Deployment can be performed in two ways based on the requirement and they are as follows:
-1) DB Deployment for all the databases
+1) DB Deployment for ID Authentication databases
 2) DB Deployment for single or selected databases
 
 ### Properties file variable details and description: Properties file has to be updated with the required details before proceeding with deployment steps for each databases.
@@ -104,11 +104,11 @@ Once we complete with sourcing the database files, we need to follow the below D
 
 **Note - Make sure, There is a single empty line at end of the .properties files content and No spaces in beggining and end of the parameter values**
 
-## DB Deployment for all the mosip databases with single click deployment:
+## DB Deployment for ID Authentication databases with single click deployment:
 		
 **Step 1** -> Make prior modification to all the respective database properties files **(mosip_<schema_name>_deploy.properties)** in the respective database directories. Path of properties file and variables list remains same as explained above. Once the properties files are ready then access the directory where the deployment script is kept.
 
-**Step 2** -> Deployment on all databases, run the **"mosip_id-authentication_db_deployment.sh"** script which is avialble in the /database directory.  To access **"mosip_all_db_deployment.sh"** script, follow the below given commands:
+**Step 2** -> Deployment on all id authentication databases, run the **"mosip_id-authentication_db_deployment.sh"** script which is avialble in the /database directory.  To access **"mosip_id-authentication_db_deployment.sh"** script, follow the below given commands:
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database/ </em>
 
