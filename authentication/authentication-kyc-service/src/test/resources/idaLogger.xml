@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mosipRollingFileAppender appenderName="consoleappender">
+	<append>true</append>
+	<fileName>logs/id-auth.log</fileName>
+	<immediateFlush>true</immediateFlush>
+	<prudent>true</prudent>
+	<fileNamePattern>logs/id-auth-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+	<maxFileSize>1mb</maxFileSize>
+	<maxHistory>3</maxHistory>
+	<totalCap>10mb</totalCap>
+</mosipRollingFileAppender>
