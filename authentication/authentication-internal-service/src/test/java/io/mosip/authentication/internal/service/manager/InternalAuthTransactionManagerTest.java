@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.manager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +79,46 @@ public class InternalAuthTransactionManagerTest {
 		Mockito.when(user.getUserId()).thenReturn("myuser");
 		
 		assertEquals("myuser",authTransactionManager.getUser());
+	}
+	
+	@Test
+	public void testGetUserWrongPrincipal() throws IdAuthenticationBusinessException, RestServiceException {
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		SecurityContextHolder.setContext(context);
+		Authentication authentication = Mockito.mock(Authentication.class);
+		Mockito.when(context.getAuthentication()).thenReturn(authentication);
+		AuthUserDetails user= Mockito.mock(AuthUserDetails.class);
+		Mockito.when(authentication.getPrincipal()).thenReturn(new Object());
+		Mockito.when(user.getUserId()).thenReturn("myuser");
+		
+		assertNull(authTransactionManager.getUser());
+	}
+	
+	@Test
+	public void testGetUserNullPrincipal() throws IdAuthenticationBusinessException, RestServiceException {
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		SecurityContextHolder.setContext(context);
+		Authentication authentication = Mockito.mock(Authentication.class);
+		Mockito.when(context.getAuthentication()).thenReturn(authentication);
+		AuthUserDetails user= Mockito.mock(AuthUserDetails.class);
+		Mockito.when(authentication.getPrincipal()).thenReturn(null);
+		Mockito.when(user.getUserId()).thenReturn("myuser");
+		
+		assertNull(authTransactionManager.getUser());
+	}
+	
+	@Test
+	public void testGetUserNullAuthentication() throws IdAuthenticationBusinessException, RestServiceException {
+		SecurityContext context = Mockito.mock(SecurityContext.class);
+		SecurityContextHolder.setContext(context);
+		Mockito.when(context.getAuthentication()).thenReturn(null);
+		
+		assertNull(authTransactionManager.getUser());
+	}
+	
+	@Test
+	public void testGetUserNullContext() throws IdAuthenticationBusinessException, RestServiceException {
+		assertNull(authTransactionManager.getUser());
 	}
 	
 	

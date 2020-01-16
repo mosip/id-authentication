@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 
@@ -76,6 +77,74 @@ public class IdAuthTransactionManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(objectNode);
 		byte[] encryptWithSalt = authTransactionManager.encryptWithSalt("Hello".getBytes(), "20190101".getBytes());
 		assertEquals("abcd", new String(encryptWithSalt));
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testEncryptWithSaltFalseHasResponse() throws IdAuthenticationBusinessException, RestServiceException {
+		ObjectNode objectNode = Mockito.mock(ObjectNode.class);
+		ObjectNode responseNode = Mockito.mock(ObjectNode.class);
+		ObjectNode dataNode = Mockito.mock(ObjectNode.class);
+		Mockito.when(objectNode.has("response")).thenReturn(false);
+		Mockito.when(objectNode.get("response")).thenReturn(responseNode);
+		Mockito.when(responseNode.has("data")).thenReturn(true);
+		Mockito.when(responseNode.get("data")).thenReturn(dataNode);
+		Mockito.when(dataNode.asText()).thenReturn("abcd");
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(objectNode);
+		authTransactionManager.encryptWithSalt("Hello".getBytes(), "20190101".getBytes());
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testEncryptWithSaltNullResponse() throws IdAuthenticationBusinessException, RestServiceException {
+		ObjectNode objectNode = Mockito.mock(ObjectNode.class);
+		ObjectNode responseNode = Mockito.mock(ObjectNode.class);
+		ObjectNode dataNode = Mockito.mock(ObjectNode.class);
+		Mockito.when(objectNode.has("response")).thenReturn(true);
+		Mockito.when(responseNode.has("data")).thenReturn(true);
+		Mockito.when(responseNode.get("data")).thenReturn(dataNode);
+		Mockito.when(dataNode.asText()).thenReturn("abcd");
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(objectNode);
+		authTransactionManager.encryptWithSalt("Hello".getBytes(), "20190101".getBytes());
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testEncryptWithSaltFalseHasData() throws IdAuthenticationBusinessException, RestServiceException {
+		ObjectNode objectNode = Mockito.mock(ObjectNode.class);
+		ObjectNode responseNode = Mockito.mock(ObjectNode.class);
+		ObjectNode dataNode = Mockito.mock(ObjectNode.class);
+		Mockito.when(objectNode.has("response")).thenReturn(true);
+		Mockito.when(objectNode.get("response")).thenReturn(responseNode);
+		Mockito.when(responseNode.has("data")).thenReturn(false);
+		Mockito.when(responseNode.get("data")).thenReturn(dataNode);
+		Mockito.when(dataNode.asText()).thenReturn("abcd");
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(objectNode);
+		authTransactionManager.encryptWithSalt("Hello".getBytes(), "20190101".getBytes());
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testEncryptWithSaltNullData() throws IdAuthenticationBusinessException, RestServiceException {
+		ObjectNode objectNode = Mockito.mock(ObjectNode.class);
+		ObjectNode responseNode = Mockito.mock(ObjectNode.class);
+		ObjectNode dataNode = Mockito.mock(ObjectNode.class);
+		Mockito.when(objectNode.has("response")).thenReturn(true);
+		Mockito.when(objectNode.get("response")).thenReturn(responseNode);
+		Mockito.when(responseNode.has("data")).thenReturn(true);
+		Mockito.when(dataNode.asText()).thenReturn("abcd");
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(objectNode);
+		authTransactionManager.encryptWithSalt("Hello".getBytes(), "20190101".getBytes());
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testEncryptWithSaltWithRestServiceException() throws IdAuthenticationBusinessException, RestServiceException {
+		ObjectNode objectNode = Mockito.mock(ObjectNode.class);
+		ObjectNode responseNode = Mockito.mock(ObjectNode.class);
+		ObjectNode dataNode = Mockito.mock(ObjectNode.class);
+		Mockito.when(objectNode.has("response")).thenReturn(true);
+		Mockito.when(objectNode.get("response")).thenReturn(responseNode);
+		Mockito.when(responseNode.has("data")).thenReturn(true);
+		Mockito.when(responseNode.get("data")).thenReturn(dataNode);
+		Mockito.when(dataNode.asText()).thenReturn("abcd");
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR));
+		authTransactionManager.encryptWithSalt("Hello".getBytes(), "20190101".getBytes());
 	}
 	
 

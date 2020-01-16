@@ -91,5 +91,100 @@ public class AuthTxnServiceImplTest {
 		valueList.add(autnTxn);
 		return valueList;
 	}
+	
+	@Test
+	public void TestfetchAuthTxnDetailsNullPageStart() throws IdAuthenticationBusinessException {
+		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
+		authtxnrequestdto.setPageStart(null);
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
+	}
+	
+	@Test
+	public void TestfetchAuthTxnDetailsNullPageFetch() throws IdAuthenticationBusinessException {
+		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
+		authtxnrequestdto.setPageFetch(null);
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
+
+	}
+	
+	@Test
+	public void TestfetchAuthTxnDetailsNullPageStartAndPageFetch() throws IdAuthenticationBusinessException {
+		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
+		authtxnrequestdto.setPageStart(null);
+		authtxnrequestdto.setPageFetch(null);
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
+
+	}
+
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestfetchAuthTxnDetailsInvalidIdType() throws IdAuthenticationBusinessException {
+		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
+		authtxnrequestdto.setIndividualIdType(IdType.USER_ID.getType());
+		authtxnrequestdto.setPageStart(null);
+		authtxnrequestdto.setPageFetch(null);
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
+
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestfetchAuthTxnDetailsInvalidPageStart() throws IdAuthenticationBusinessException {
+		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
+		authtxnrequestdto.setPageStart(-1);
+		authtxnrequestdto.setPageFetch(null);
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
+
+	}
+	
+
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestfetchAuthTxnDetailsInvalidPageFetch() throws IdAuthenticationBusinessException {
+		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
+		authtxnrequestdto.setPageFetch(-1);
+		Map<String, Object> value = new HashMap<>();
+		value.put("uin", "9172985031");
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(value);
+		List<AutnTxn> valueList = getAuthTxnList();
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
+
+	}
 }

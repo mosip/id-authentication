@@ -23,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -65,7 +66,7 @@ public class BioMatcherUtilTest {
 	}
 
 	@Test
-	public void TestmatchValue() throws IdAuthenticationBusinessException, BiometricException {
+	public void TestmatchValueFinger() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
 		Score score = new Score();
 		score.setScaleScore(90);
@@ -76,6 +77,116 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(90.0, matchValue));
+	}
+	
+	@Test
+	public void TestmatchValueIris() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Score[] scores = Stream.of(score).toArray(Score[]::new);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.IRIS.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+		assertEquals(0, Double.compare(90.0, matchValue));
+	}
+	
+	@Test
+	public void TestmatchValueFace() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Score[] scores = Stream.of(score).toArray(Score[]::new);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FACE.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+		assertEquals(0, Double.compare(90.0, matchValue));
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestmatchValueInvalidType() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Score[] scores = Stream.of(score).toArray(Score[]::new);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any())).thenReturn(scores);
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of("ABC"));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+	}
+	
+
+	@Test
+	public void TestmatchValueWithBioErrorQltyChkFailed() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any()))
+			.thenThrow(new BiometricException("KER-BIO-003","aaa"));
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FACE.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		try {
+			bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.QUALITY_CHECK_FAILED.getErrorCode(), e.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestmatchValueWithBioErrorBioMatchFailed() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any()))
+			.thenThrow(new BiometricException("KER-BIO-004","aaa"));
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FACE.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		try {
+			bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.BIO_MATCH_FAILED_TO_PERFORM.getErrorCode(), e.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestmatchValueWithBioErrorUnknown() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any()))
+			.thenThrow(new BiometricException("KER-BIO-005","aaa"));
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FACE.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		try {
+			bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO.getErrorCode(), e.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestmatchValueWithBioErrorDefault() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put(value, value);
+		Score score = new Score();
+		score.setScaleScore(90);
+		Mockito.when(bioApi.match(Mockito.any(BIR.class), Mockito.any(BIR[].class), Mockito.any()))
+			.thenThrow(new BiometricException("KER-BIO-XXX","aaa"));
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FACE.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		try {
+			bioMatcherUtil.matchValue(valueMap, valueMap, properties);
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO.getErrorCode(), e.getErrorCode());
+		}
 	}
 
 	@Test

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -68,6 +69,7 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
@@ -834,6 +836,82 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
 
+	}
+
+	@Test
+	public void TestvalidateAuthTypeStatusNotLocked() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO =  new AuthRequestDTO();
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setLocked(false);
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "validateAuthTypeStatus",authRequestDTO, status);
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestvalidateAuthTypeStatusDemoLocked() throws Throwable {
+		AuthRequestDTO authRequestDTO =  new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setDemo(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setAuthType(MatchType.Category.DEMO.getType());
+		status.setLocked(true);
+		
+		try {
+			ReflectionTestUtils.invokeMethod(authFacadeImpl, "validateAuthTypeStatus",authRequestDTO, status);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestvalidateAuthTypeStatusBioLocked() throws Throwable {
+		AuthRequestDTO authRequestDTO =  new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setBio(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setAuthType(MatchType.Category.BIO.getType());
+		status.setLocked(true);
+		
+		try {
+			ReflectionTestUtils.invokeMethod(authFacadeImpl, "validateAuthTypeStatus",authRequestDTO, status);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestvalidateAuthTypeStatusOTPLocked() throws Throwable {
+		AuthRequestDTO authRequestDTO =  new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setOtp(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setAuthType(MatchType.Category.OTP.getType());
+		status.setLocked(true);
+		
+		try {
+			ReflectionTestUtils.invokeMethod(authFacadeImpl, "validateAuthTypeStatus",authRequestDTO, status);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestvalidateAuthTypeStatusPinLocked() throws Throwable {
+		AuthRequestDTO authRequestDTO =  new AuthRequestDTO();
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setPin(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setAuthType(MatchType.Category.SPIN.getType());
+		status.setLocked(true);
+		
+		try {
+			ReflectionTestUtils.invokeMethod(authFacadeImpl, "validateAuthTypeStatus",authRequestDTO, status);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 	}
 
 	private Map<String, Object> repoDetails() {

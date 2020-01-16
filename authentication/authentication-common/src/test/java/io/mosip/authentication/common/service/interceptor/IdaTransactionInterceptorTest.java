@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
@@ -58,9 +59,19 @@ public class IdaTransactionInterceptorTest {
 	
 	@Test
 	public void testOnSave_nullEntity() throws IdAuthenticationBusinessException, RestServiceException {
-		AutnTxn entity =  new AutnTxn();;
+		AutnTxn entity =  new AutnTxn();
 		entity.setUin(null);
 		Mockito.when(idAuthTransactionManager.encryptWithSalt(Mockito.any(), Mockito.any())).thenReturn("123".getBytes());
+		idaTransactionInterceptor.onSave(entity, null, new String[] {"123"}, new String[] {"uin"}, null);
+		assertNull(entity.getUin());
+	}
+	
+	@Test(expected=IdAuthUncheckedException.class)
+	public void testOnSaveWithException() throws IdAuthenticationBusinessException, RestServiceException {
+		AutnTxn entity =  new AutnTxn();
+		String splitter = IdRepoConstants.SPLITTER;
+		entity.setUin("123" + splitter + "456" + splitter + "789");
+		Mockito.when(idAuthTransactionManager.encryptWithSalt(Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationBusinessException());
 		idaTransactionInterceptor.onSave(entity, null, new String[] {"123"}, new String[] {"uin"}, null);
 		assertNull(entity.getUin());
 	}

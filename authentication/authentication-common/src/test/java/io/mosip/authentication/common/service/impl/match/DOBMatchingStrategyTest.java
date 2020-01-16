@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class
@@ -81,7 +79,6 @@ public class DOBMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Ignore
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
@@ -99,7 +96,6 @@ public class DOBMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	 @Ignore
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
