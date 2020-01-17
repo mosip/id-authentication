@@ -1,4 +1,4 @@
-## MOSIP Database Release scripts inventory and deployment/revoke guidelines on postgresql database. 
+## MOSIP ID Authentication Database (mosip_ida) Release scripts inventory and deployment/revoke guidelines on postgresql database. 
 
 ## Prerequisities
 
@@ -12,7 +12,7 @@
 
 * Database release objects related to MOSIP modules are placed in "**mosip_base_directory**>>db_release_scripts>>mosip_<schema_name> folder on git/repository
 
-**Example:** For master module release script folder is /**mosip_base_directory**>>db_release_scripts>>mosip_master where all the database release scripts related to Master/Admin are available.
+**Example:** For ID Authentication module release script folder is /**mosip_base_directory**>>db_release_scripts>>mosip_ida where all the database release scripts related to ID Authentication are available.
 
 * Create a log file directory if it doesn't exist on DB deployment server before updating the properties file. Please follow the steps to create the same:
  
@@ -43,7 +43,7 @@
 
 * **mosip_revoke_id-authentication_db_deployment.sh:**  DB revoke deployment script for all database deployment.
 
-**Note:** SQL script files name under sql folder are appended with release version numbers( like **1.0.0**_master-scripts_release.sql), Same version number has to be passed as argument while executing release/revoke shell scripts. Ex. **$bash mosip_release_db_deployment.sh 1.0.0**
+**Note:** SQL script files name under sql folder are appended with release version numbers( like **1.0.0**_ida-scripts_release.sql), Same version number has to be passed as argument while executing release/revoke shell scripts. Ex. **$bash mosip_release_id-authentication_db_deployment.sh 1.0.0**
 
 **Note :** No need of shell script update unless it is really causing any problem or any further implementation is being introduced.
 
@@ -88,7 +88,7 @@ Once completed with sourcing the database release files, Follow the DB release d
 		
 **Step 1** -> Make modification to all the respective database properties files **(<<schema>>_release_deploy.properties)** in the respective database directories. Path of properties file and variables list explained above. Once the properties files are ready then access the directory where the deployment script is kept.
 
-**Step 2** -> DB Release deployment for all databases, run the **"mosip_release_id-authentication_db_deployment.sh"** script with release version as parameter.  To access and exeute **"mosip_release_db_deployment.sh"** script, follow the below given sample commands:
+**Step 2** -> DB Release deployment for all ID authentication databases, run the **"mosip_release_id-authentication_db_deployment.sh"** script with release version as parameter.  To access and exeute **"mosip_release_id-authentication_db_deployment.sh"** script, follow the below given sample commands:
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database_release/ </em>
 
@@ -101,7 +101,7 @@ Once completed with sourcing the database release files, Follow the DB release d
 
 ## DB deployment revoke: (Optional: Execute only if db version release deployment revoking required)
 
-**Step 1** -> DB Revoke deployment for all databases, run the **"mosip_revoke_id-authentication_db_deployment.sh"** script with release version as parameter.  To access and exeute **"mosip_revoke_db_deployment.sh "** script, follow the below given commands:
+**Step 1** -> DB Revoke deployment for all databases, run the **"mosip_revoke_id-authentication_db_deployment.sh"** script with release version as parameter.  To access and exeute **"mosip_revoke_id-authentication_db_deployment.sh "** script, follow the below given commands:
 
 <em> **Enter:-bash-4.2$** cd /home/madmin/database_release/ </em>
 
