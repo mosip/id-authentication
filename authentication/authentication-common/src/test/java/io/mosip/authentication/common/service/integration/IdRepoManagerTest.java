@@ -329,6 +329,23 @@ public class IdRepoManagerTest {
 		}
 	}
 	
+	@Test
+	public void testGetRIDFailedUnknown() throws IdAuthenticationBusinessException, RestServiceException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> responseBody = new HashMap<>();
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, responseBody.toString(), (Object) responseBody));
+		try
+		{
+			idReposerviceImpl.getRIDByUID("76746685");
+		}
+		catch(IdAuthenticationBusinessException ex) {
+			  assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
 	
 	/* this test method tests the negative scenario
 	 *   to get the regId based on USERID,Here it gets failed due to unexpected error occurs.
@@ -378,6 +395,36 @@ public class IdRepoManagerTest {
 		assertEquals("1112324546567879923", ((Map<String,Object>)uinMap.get("response")).get("UIN"));
 	}
 	
+	@Test
+	public void testGetUINByRIDWithBio() throws IdAuthenticationBusinessException, RestServiceException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Map<String, Object> response = new HashMap<>();
+		response.put("UIN", "1112324546567879923");
+		response.put(IdAuthCommonConstants.STATUS, "ACTIVATED");
+		Map<String, Map<String, Object>> finalMap = new HashMap<>();
+		finalMap.put("response", response);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
+		Map<String,Object> uinMap=idReposerviceImpl.getIdByRID("76746685REGID", true);
+		assertEquals("1112324546567879923", ((Map<String,Object>)uinMap.get("response")).get("UIN"));
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testGetUINByRIDWithDeactivatedStatus() throws IdAuthenticationBusinessException, RestServiceException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Map<String, Object> response = new HashMap<>();
+		response.put("UIN", "1112324546567879923");
+		response.put(IdAuthCommonConstants.STATUS, "DE-ACTIVATED");
+		Map<String, Map<String, Object>> finalMap = new HashMap<>();
+		finalMap.put("response", response);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
+		Map<String,Object> uinMap=idReposerviceImpl.getIdByRID("76746685REGID", true);
+		assertEquals("1112324546567879923", ((Map<String,Object>)uinMap.get("response")).get("UIN"));
+	}
+	
 	
 	/* this test method tests the negative scenario
 	 *   to get the UIN based on regId,Here it gets failed due to inValid regId doesn't exists
@@ -423,6 +470,17 @@ public class IdRepoManagerTest {
 		responseBody.put("errors", valuelist);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, responseBody.toString(), (Object) responseBody));
+		idReposerviceImpl.getIdByRID("76746685", false);
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testGetUinByRIDFailureUnknown() throws IdAuthenticationBusinessException, RestServiceException {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
+		Map<String, Object> responseBody = new HashMap<>();
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, responseBody.toString(), (Object) responseBody));
 		idReposerviceImpl.getIdByRID("76746685", false);
 	}
 	
@@ -543,7 +601,27 @@ public class IdRepoManagerTest {
 	}
 	
 	
-	
+	@Test
+	public void testIDNotAvailableForVID() throws RestServiceException, IdAuthenticationBusinessException {
+	  RestRequestDTO restReq=new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restReq);
+		Map<String, Object> responseBody = new HashMap<>();
+		List<Map<String, Object>> valuelist = new ArrayList<>();
+		Map<String, Object> errorcode = new HashMap<>();
+		errorcode.put("errorCode", "IDR-IDC-007");
+		errorcode.put("message", "VID not available in database");
+		valuelist.add(errorcode);
+		responseBody.put("errors", valuelist);
+		Mockito.when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(
+				IdAuthenticationErrorConstants.ID_NOT_AVAILABLE, responseBody.toString(), (Object) responseBody));
+		try
+		{
+		 idReposerviceImpl.getUINByVID("234433356");
+		}
+		catch(IdAuthenticationBusinessException ex) {
+			  assertEquals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(), ex.getErrorCode());
+		}
+	}
 	
 	
 	
@@ -568,6 +646,19 @@ public class IdRepoManagerTest {
 		  Mockito.when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		   idReposerviceImpl.getUINByVID("234433356");
 		}
+	
+	@Test
+	public void testUpdateVIDStatus() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restReq=new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restReq);
+		idReposerviceImpl.updateVIDstatus("234433356");
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testUpdateVIDStatusFailed() throws RestServiceException, IdAuthenticationBusinessException {
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+		idReposerviceImpl.updateVIDstatus("234433356");
+	}
 	
 
 }
