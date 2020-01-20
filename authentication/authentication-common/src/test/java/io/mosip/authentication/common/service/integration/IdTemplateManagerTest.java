@@ -221,6 +221,21 @@ public class IdTemplateManagerTest {
 		actualMap.put("templateTypeCode",OTP_SMS_TEMPLATE_TXT);
 		actualMap.put("isActive", true);
 		finalList.add(actualMap);
+		
+		actualMap = new HashMap<>();
+		actualMap.put("fileText",
+				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
+		actualMap.put("langCode","fra");
+		actualMap.put("templateTypeCode",OTP_SMS_TEMPLATE_TXT);
+		actualMap.put("isActive", true);
+		finalList.add(actualMap);
+		
+		actualMap = new HashMap<>();
+		actualMap.put("fileText",
+				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
+		actualMap.put("langCode","fra");
+		actualMap.put("templateTypeCode",OTP_SMS_TEMPLATE_TXT);
+		actualMap.put("isActive", true);
 		finalList.add(actualMap);
 		valuemap.put("templates", finalList);
 		Map<String, Map<String, List<Map<String, Object>>>> finalMap = new HashMap<>();
