@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.exception;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
+import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
@@ -221,6 +223,140 @@ public class IDAuthExceptionHandlerTest {
 			BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
 			actualResponse.setResponseTime(null);
 			assertEquals(expectedResponse, actualResponse);
+		}
+	}
+	
+	@Test
+	public void testHandleDataExceptionInternalAuthTxn() {
+		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		StringBuffer value = new StringBuffer();
+		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
+		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
+		expectedResponse.setErrors(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
+
+		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
+		errors.reject(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		try {
+			DataValidationUtil.validate(errors);
+		} catch (IDDataValidationException e) {
+			ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+					new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e), null);
+			BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
+			actualResponse.setResponseTime(null);
+			assertEquals(expectedResponse, actualResponse);
+		}
+	}
+	
+	@Test
+	public void testHandleDataExceptionInternalOtp() {
+		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		StringBuffer value = new StringBuffer();
+		value.append("http://localhost:8093/idauthentication/v1/internal/otp/");
+		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		OtpResponseDTO expectedResponse = new OtpResponseDTO();
+		expectedResponse.setErrors(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
+
+		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
+		errors.reject(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		try {
+			DataValidationUtil.validate(errors);
+		} catch (IDDataValidationException e) {
+			ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+					new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e), null);
+			OtpResponseDTO actualResponse = (OtpResponseDTO) handleExceptionInternal.getBody();
+			actualResponse.setResponseTime(null);
+			assertEquals(expectedResponse, actualResponse);
+		}
+	}
+	
+	@Test
+	public void testHandleDataExceptionInternalAuthType() {
+		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		StringBuffer value = new StringBuffer();
+		value.append("http://localhost:8093/idauthentication/v1/internal/authtypes");
+		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		AuthtypeResponseDto expectedResponse = new AuthtypeResponseDto();
+		expectedResponse.setErrors(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage())));
+
+		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
+		errors.reject(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		try {
+			DataValidationUtil.validate(errors);
+		} catch (IDDataValidationException e) {
+			ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+					new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e), null);
+			AuthtypeResponseDto actualResponse = (AuthtypeResponseDto) handleExceptionInternal.getBody();
+			actualResponse.setResponseTime(null);
+			assertEquals(expectedResponse, actualResponse);
+		}
+	}
+	
+	@Test
+	public void testHandleDataExceptionWithArgs() {
+		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		StringBuffer value = new StringBuffer();
+		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
+		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
+		expectedResponse.setErrors(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage())));
+
+		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
+		errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				new Object[] {"bioType"}, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		try {
+			DataValidationUtil.validate(errors);
+		} catch (IDDataValidationException e) {
+			ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+					new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, e), null);
+			BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
+			actualResponse.setResponseTime(null);
+			assertTrue(!actualResponse.getErrors().isEmpty());
+		}
+	}
+	
+	@Test
+	public void testHandleDataExceptionWithArgsAndActionArgs() {
+		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		StringBuffer value = new StringBuffer();
+		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
+		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		AuthResponseDTO expectedResponse = new AuthResponseDTO();
+		ResponseDTO res = new ResponseDTO();
+		res.setAuthStatus(Boolean.FALSE);
+		expectedResponse.setResponse(res);
+		expectedResponse.setErrors(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage())));
+
+		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
+		errors.reject(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+				new Object[] {"Email"}, IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage());
+		try {
+			DataValidationUtil.validate(errors);
+		} catch (IDDataValidationException e) {
+			ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
+					new IdAuthenticationAppException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, e), null);
+			BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
+			actualResponse.setResponseTime(null);
+			assertTrue(!actualResponse.getErrors().isEmpty());
 		}
 	}
 
