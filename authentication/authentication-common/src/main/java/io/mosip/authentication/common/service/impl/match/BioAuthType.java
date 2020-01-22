@@ -274,7 +274,7 @@ public enum BioAuthType implements AuthType {
 	
 	protected Map<String, Object> getMultiMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
 		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
-				.getBioMatcherUtil()::matchValue);
+				.getBioMatcherUtil()::matchMultiValue);
 	}
 	
 	protected Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, 
