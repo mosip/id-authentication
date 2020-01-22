@@ -32,8 +32,8 @@ public interface TextMatchingStrategy extends MatchingStrategy {
 			if(demoNormalizerObject instanceof  DemoNormalizer && langObject instanceof String) {
 				DemoNormalizer demoNormalizer=(DemoNormalizer)demoNormalizerObject;
 			    String langCode=(String)langObject;
-				String refInfoText = normalizeFunction.normalizeText(demoNormalizer, (String) reqInfo,langCode, props);
-				String entityInfoText = normalizeFunction.normalizeText(demoNormalizer, (String) reqInfo,langCode, props);
+				String refInfoText = normalizeFunction.normalizeText(demoNormalizer, (String) reqInfo, langCode, props);
+				String entityInfoText = normalizeFunction.normalizeText(demoNormalizer, (String) entityInfo, langCode, props);
 				return matchFunction.apply(refInfoText, entityInfoText);
 			} else {
 				return 0;
