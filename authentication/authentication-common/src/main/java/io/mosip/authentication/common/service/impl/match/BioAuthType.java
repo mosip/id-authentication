@@ -39,15 +39,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchValue;
-				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
-				valueMap.put(BioAuthType.class.getSimpleName(), this);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
-			}
-			return valueMap;
+			return getSingleMatchProperties(authRequestDTO, IdaIdMapping.FINGERPRINT, idInfoFetcher);
 		}
 
 		@Override
@@ -65,15 +57,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchValue;
-				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
-				valueMap.put(BioAuthType.class.getSimpleName(), this);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
-			}
-			return valueMap;
+			return getSingleMatchProperties(authRequestDTO, IdaIdMapping.FINGERPRINT, idInfoFetcher);
 		}
 
 		@Override
@@ -88,14 +72,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchMultiValue;
-				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
-			}
-			return valueMap;
+			return getMultiMatchProperties(authRequestDTO, IdaIdMapping.FINGERPRINT, idInfoFetcher);
 		}
 
 		@Override
@@ -117,14 +94,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchMultiValue;
-				valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
-			}
-			return valueMap;
+			return getMultiMatchProperties(authRequestDTO, IdaIdMapping.FINGERPRINT, idInfoFetcher);
 		}
 
 		@Override
@@ -144,14 +114,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchMultiValue;
-				valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
-			}
-			return valueMap;
+			return getMultiMatchProperties(authRequestDTO, IdaIdMapping.IRIS, idInfoFetcher);
 		}
 
 		@Override
@@ -172,14 +135,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchValue;
-				valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
-			}
-			return valueMap;
+			return getSingleMatchProperties(authRequestDTO, IdaIdMapping.IRIS, idInfoFetcher);
 		}
 
 		@Override
@@ -199,15 +155,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchValue;
-				valueMap.put(IdaIdMapping.FACE.getIdname(), func);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values()); 
-			}
-			return valueMap;
-
+			return getSingleMatchProperties(authRequestDTO, IdaIdMapping.FACE, idInfoFetcher);
 		}
 
 		@Override
@@ -232,14 +180,7 @@ public enum BioAuthType implements AuthType {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
-			Map<String, Object> valueMap = new HashMap<>();
-			if(isAuthTypeInfoAvailable(authRequestDTO)) {
-				TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func = idInfoFetcher
-						.getBioMatcherUtil()::matchMultiValue;
-				valueMap.put(IdaIdMapping.MULTI_MODAL_BIOMETRICS.getIdname(), func);
-				valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values()); 
-			}
-			return valueMap;
+			return getMultiMatchProperties(authRequestDTO, IdaIdMapping.MULTI_MODAL_BIOMETRICS, idInfoFetcher);
 		}
 
 		@Override
@@ -325,6 +266,29 @@ public enum BioAuthType implements AuthType {
 	}
 
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
+	
+	protected Map<String, Object> getSingleMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
+		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
+				.getBioMatcherUtil()::matchValue);
+	}
+	
+	protected Map<String, Object> getMultiMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
+		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
+				.getBioMatcherUtil()::matchValue);
+	}
+	
+	protected Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, 
+			IdaIdMapping idMapping, 
+			IdInfoFetcher idInfoFetcher,
+			TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> func) {
+		Map<String, Object> valueMap = new HashMap<>();
+		if(isAuthTypeInfoAvailable(authRequestDTO)) {
+			valueMap.put(idMapping.getIdname(), func);
+			valueMap.put(BioAuthType.class.getSimpleName(), this);
+			valueMap.put(IdMapping.class.getSimpleName(), IdaIdMapping.values());
+		}
+		return valueMap;
+	}
 
 	/**
 	 * Gets the FP values count in identity.
