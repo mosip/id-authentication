@@ -193,5 +193,31 @@ public final class IdAuthCommonConstants {
 	/** The Constant SESSION_KEY. */
 	public static final String REQUEST_SESSION_KEY = "requestSessionKey";
 
+	
+
+	/** The Constant METHOD_REQUEST_SYNC. */
+	public static final String METHOD_REQUEST_SYNC = "requestSync";
+
+	/** The Constant METHOD_HANDLE_STATUS_ERROR. */
+	public static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
+
+	/** The Constant PREFIX_RESPONSE. */
+	public static final String PREFIX_RESPONSE = "Response : ";
+
+	/** The Constant PREFIX_REQUEST. */
+	public static final String PREFIX_REQUEST = "Request : ";
+
+	/** The Constant METHOD_REQUEST_ASYNC. */
+	public static final String METHOD_REQUEST_ASYNC = "requestAsync";
+
+	/** The Constant CLASS_REST_HELPER. */
+	public static final String CLASS_REST_HELPER = "RestHelper";
+
+	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
+	public static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
+
+	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
+	public static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
+
 }
 
