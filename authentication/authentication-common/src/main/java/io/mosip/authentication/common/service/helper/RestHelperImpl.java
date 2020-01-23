@@ -1,5 +1,14 @@
 package io.mosip.authentication.common.service.helper;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_REST_HELPER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_HANDLE_STATUS_ERROR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_ASYNC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_RESPONSE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -61,30 +70,6 @@ public class RestHelperImpl implements RestHelper {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-
-	/** The Constant METHOD_REQUEST_SYNC. */
-	private static final String METHOD_REQUEST_SYNC = "requestSync";
-
-	/** The Constant METHOD_HANDLE_STATUS_ERROR. */
-	private static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
-
-	/** The Constant PREFIX_RESPONSE. */
-	private static final String PREFIX_RESPONSE = "Response : ";
-
-	/** The Constant PREFIX_REQUEST. */
-	private static final String PREFIX_REQUEST = "Request : ";
-
-	/** The Constant METHOD_REQUEST_ASYNC. */
-	private static final String METHOD_REQUEST_ASYNC = "requestAsync";
-
-	/** The Constant CLASS_REST_HELPER. */
-	private static final String CLASS_REST_HELPER = "RestHelper";
-
-	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
-	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
-
-	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
-	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
 
 	private LocalDateTime requestTime;
 

@@ -1,5 +1,14 @@
 package io.mosip.authentication.internal.service.integration;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_REST_HELPER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_HANDLE_STATUS_ERROR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_ASYNC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_RESPONSE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -48,30 +57,6 @@ public class RestHelperImpl implements RestHelper{
 	@Autowired
 	private ObjectMapper mapper;
 
-	/** The Constant METHOD_REQUEST_SYNC. */
-	private static final String METHOD_REQUEST_SYNC = "requestSync";
-
-	/** The Constant METHOD_HANDLE_STATUS_ERROR. */
-	private static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
-
-	/** The Constant PREFIX_RESPONSE. */
-	private static final String PREFIX_RESPONSE = "Response : ";
-
-	/** The Constant PREFIX_REQUEST. */
-	private static final String PREFIX_REQUEST = "Request : ";
-
-	/** The Constant METHOD_REQUEST_ASYNC. */
-	private static final String METHOD_REQUEST_ASYNC = "requestAsync";
-
-	/** The Constant CLASS_REST_HELPER. */
-	private static final String CLASS_REST_HELPER = "RestHelper";
-
-	/** The Constant THROWING_REST_SERVICE_EXCEPTION. */
-	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
-
-	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
-	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
-
 	private LocalDateTime requestTime;
 
 	/** The mosipLogger. */
@@ -79,6 +64,69 @@ public class RestHelperImpl implements RestHelper{
 	
 	@Autowired
 	private WebClient webClient;
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T requestSync(RestRequestDTO request)
+			throws RestServiceException {
+		Object response;
+		try {
+			requestTime = DateUtils.getUTCCurrentDateTime();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Request received at : " + requestTime);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
+			if (request.getTimeout() != null) {
+				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_RESPONSE + response);
+				checkErrorResponse(response, request.getResponseType());
+				return (T) response;
+			} else {
+				response = request(request).block();
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_RESPONSE + response);
+				checkErrorResponse(response, request.getResponseType());
+				return (T) response;
+			}
+		} catch (WebClientResponseException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
+							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
+			throw handleStatusError(e, request.getResponseType());
+		} catch (RuntimeException e) {
+			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
+				throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
+			} else {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
+				throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
+		} finally {
+			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Response sent at : " + responseTime);
+			long duration = Duration.between(requestTime, responseTime).toMillis();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					"Time difference between request and response in millis:" + duration
+							+ ".  Time difference between request and response in Seconds: "
+							+ ((double) duration / 1000));
+		}
+
+	}
+
+	@Override
+	public Supplier<Object> requestAsync(io.mosip.authentication.core.dto.RestRequestDTO request) {
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+		Mono<?> sendRequest = request(request);
+		sendRequest.subscribe();
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+		return sendRequest::block;
+	}
+
+
 
 	/**
 	 * Method to send/receive HTTP requests and return the response as Mono.
@@ -193,66 +241,4 @@ public class RestHelperImpl implements RestHelper{
 		}
 
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T requestSync(RestRequestDTO request)
-			throws RestServiceException {
-		Object response;
-		try {
-			requestTime = DateUtils.getUTCCurrentDateTime();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					"Request received at : " + requestTime);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
-			if (request.getTimeout() != null) {
-				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-				checkErrorResponse(response, request.getResponseType());
-				return (T) response;
-			} else {
-				response = request(request).block();
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-				checkErrorResponse(response, request.getResponseType());
-				return (T) response;
-			}
-		} catch (WebClientResponseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
-							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
-			throw handleStatusError(e, request.getResponseType());
-		} catch (RuntimeException e) {
-			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
-				throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
-			} else {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
-				throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-			}
-		} finally {
-			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					"Response sent at : " + responseTime);
-			long duration = Duration.between(requestTime, responseTime).toMillis();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					"Time difference between request and response in millis:" + duration
-							+ ".  Time difference between request and response in Seconds: "
-							+ ((double) duration / 1000));
-		}
-
-	}
-
-	@Override
-	public Supplier<Object> requestAsync(io.mosip.authentication.core.dto.RestRequestDTO request) {
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
-		Mono<?> sendRequest = request(request);
-		sendRequest.subscribe();
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
-		return sendRequest::block;
-	}
-
-
 }
