@@ -21,7 +21,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.crypto.jce.util.JWSValidation;
+import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -47,14 +47,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected PublicKey publicKey;
 	
 	@Autowired
-	private JWSValidation jwsValidation;
+	private CryptoCore cryptoCore;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		jwsValidation = context.getBean(JWSValidation.class);
+		cryptoCore = context.getBean(CryptoCore.class);
 	}
 
 	/*
@@ -113,7 +113,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	protected boolean verifySignature(String jwsSignature) {
-		return jwsValidation.verifySignature(jwsSignature);
+		return cryptoCore.verifySignature(jwsSignature);
 	}
 
 	/**

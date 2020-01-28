@@ -39,11 +39,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.crypto.jce.util.JWSValidation;
+import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, JWSValidation.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, CryptoCore.class })
 public class BaseAuthFilterTest {
 
 	private final class ServletInputStreamExtension extends ServletInputStream {
@@ -103,8 +103,8 @@ public class BaseAuthFilterTest {
 	@Mock
 	BaseAuthFilter ba = mock(BaseAuthFilter.class);
 	
-	@Autowired
-	private JWSValidation jwsValidation;
+	@Mock
+	private CryptoCore cryptoCore;
 	
 
 	@Before
@@ -112,7 +112,7 @@ public class BaseAuthFilterTest {
 		ReflectionTestUtils.setField(baseAuthFilter, "env", env);
 		ReflectionTestUtils.setField(baseAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseAuthFilter, "keyManager", keyManager);
-		ReflectionTestUtils.setField(baseAuthFilter, "jwsValidation", jwsValidation);
+		ReflectionTestUtils.setField(baseAuthFilter, "cryptoCore", cryptoCore);
 	}
 
 	@Test
@@ -136,6 +136,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getRequestURL()).thenReturn(sbf);
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
+		Mockito.when(cryptoCore.verifySignature(signature)).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 	}
 
@@ -437,6 +438,8 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getRequestURL()).thenReturn(sbf);
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
+		Mockito.when(cryptoCore.verifySignature(signature)).thenReturn(true);
+		
 		try {
 			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
