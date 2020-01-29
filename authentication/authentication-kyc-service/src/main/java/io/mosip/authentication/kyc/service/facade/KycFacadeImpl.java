@@ -28,6 +28,7 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -120,6 +121,22 @@ public class KycFacadeImpl implements KycFacade {
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId) throws IdAuthenticationBusinessException {
+		try {
+			KycAuthResponseDTO kycAuthResponseDTO = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
+					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
+					"kycAuthentication status : " + kycAuthResponseDTO.getResponse().isKycStatus());
+			return kycAuthResponseDTO;
+		} catch(IdAuthenticationBusinessException e) {
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
+					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
+					"kycAuthentication status : " + false);
+			throw e;
+		}
+	}
+
+	private KycAuthResponseDTO doProcessKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+			String partnerId) throws IdAuthenticationBusinessException, IDDataValidationException {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		Map<String, Object> idResDTO = null;
 		String resTime = null;
@@ -135,10 +152,7 @@ public class KycFacadeImpl implements KycFacade {
 			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, idvId,
-					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
-					AuditModules.EKYC_AUTH.getDesc());
-
+			
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
@@ -161,6 +175,7 @@ public class KycFacadeImpl implements KycFacade {
 			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId);
+			
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
 					.withRequestType(RequestType.KYC_AUTH_REQUEST)
 					.withStaticToken(staticTokenId)
