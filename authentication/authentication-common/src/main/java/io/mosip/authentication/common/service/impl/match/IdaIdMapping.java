@@ -78,8 +78,8 @@ public enum IdaIdMapping implements IdMapping {
 	
 	//IRIS
 	//BIO - Iris - Single
-	LEFTIRIS(concatNames(SingleAnySubtypeType.LEFT.value(), SingleType.IRIS.value()), SingleType.IRIS.value()),
-	RIGHTIRIS(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleType.IRIS.value()), SingleType.IRIS.value()),
+	LEFTIRIS(SingleAnySubtypeType.LEFT.value(), SingleType.IRIS.value()),
+	RIGHTIRIS(SingleAnySubtypeType.RIGHT.value(), SingleType.IRIS.value()),
 	//BIO - Iris - Multi or Unknown
 	UNKNOWN_IRIS(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,

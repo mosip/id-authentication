@@ -365,7 +365,7 @@ public class InternalAuthRequestValidatorTest {
 		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
 		irisData.setDigitalId(digitalId1);
 		irisData.setBioValue("iris img");
-		irisData.setBioSubType("Left Iris");
+		irisData.setBioSubType("Left");
 		irisData.setBioType("IIR");
 		irisData.setDeviceProviderID("provider001");
 		irisData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))

@@ -427,7 +427,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO1.setDigitalId(digitalId1);
 		dataDTO1.setBioValue("iris img");
-		dataDTO1.setBioSubType("Left Iris");
+		dataDTO1.setBioSubType("Left");
 		dataDTO1.setBioType("IIR");
 		dataDTO1.setDeviceProviderID("provider001");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))

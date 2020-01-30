@@ -355,7 +355,7 @@ public class IdMappingValidationTest {
 		fingerValue1.setData(dataDTO1);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
-		dataDTO.setBioSubType("Left Iris");
+		dataDTO.setBioSubType("Left");
 		dataDTO.setBioType("IIR");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
