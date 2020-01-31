@@ -203,6 +203,15 @@ public class OTPServiceImplTest {
 		serviceError.setMessage(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorMessage());
 		errors.add(serviceError);
 		response.setErrors(errors);
+		
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		.thenReturn(valueMap);
+		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+	
+
+		
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
@@ -218,6 +227,29 @@ public class OTPServiceImplTest {
 	@Test
 	public void TestOtpFloodisTrue() throws IdAuthenticationBusinessException {
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
+		
+		Map<String, Object> valueMap = new HashMap<>();
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> mailList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("abc@bc.com");
+		mailList.add(identityInfoDTO);
+		List<IdentityInfoDTO> phoneList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setValue("9876543210");
+		phoneList.add(identityInfoDTO1);
+		idInfo.put("email", mailList);
+		idInfo.put("mobile", phoneList);
+		valueMap.put("uin", "426789089018");
+		valueMap.put("phone", "426789089018");
+		valueMap.put("response", idInfo);
+		
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		.thenReturn(valueMap);
+		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+	
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
 	   try {	
 		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890");
