@@ -10,9 +10,13 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
@@ -37,6 +41,9 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	/** The id service. */
 	@Autowired
 	private IdService<AutnTxn> idService;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/** The Constant UIN_KEY. */
 	private static final String UIN_KEY = "uin";
@@ -46,6 +53,27 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	 */
 	@Override
 	public List<AuthtypeStatus> fetchAuthtypeStatus(AuthtypeRequestDto authtypeRequestDto)
+			throws IdAuthenticationBusinessException {
+		boolean status;
+		try {
+			List<AuthtypeStatus> doFetchAuthTypeStatus = doFetchAuthTypeStatus(authtypeRequestDto);
+			status = true;
+			audit(authtypeRequestDto, status);
+			return doFetchAuthTypeStatus;
+		} catch (IdAuthenticationBusinessException e) {
+			status = false;
+			audit(authtypeRequestDto, status);
+			throw e;
+		}
+	}
+	
+
+	private void audit(AuthtypeRequestDto authTypeStatusDto, boolean status) throws IDDataValidationException {
+		auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authTypeStatusDto.getIndividualId(),
+				IdType.getIDTypeOrDefault(authTypeStatusDto.getIndividualIdType()), "auth type status update status : " + status );
+	}
+
+	private List<AuthtypeStatus> doFetchAuthTypeStatus(AuthtypeRequestDto authtypeRequestDto)
 			throws IdAuthenticationBusinessException {
 		String individualId = authtypeRequestDto.getIndividualId();
 		String individualIdType = IdType.getIDTypeStrOrDefault(authtypeRequestDto.getIndividualIdType());

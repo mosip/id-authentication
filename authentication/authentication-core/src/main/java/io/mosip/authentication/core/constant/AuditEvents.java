@@ -22,12 +22,21 @@ public enum AuditEvents {
 	/** The internal otp trigger request response. */
 	INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE("IDA-005", "SYSTEM", "Internal OTP Request"),
 	
+	/** The retrieve auth type status request response. */
+	RETRIEVE_AUTH_TYPE_STATUS_REQUEST_RESPONSE("IDA-006", "SYSTEM", "Retrieve Auth Type Status Request"),
+	
+	/** The update auth type status request response. */
+	UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE("IDA-007", "SYSTEM", "Update Auth Type Status Request"),
+	
+	/** The retrieve auth transaction history request response. */
+	RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE("IDA-008", "SYSTEM", "Retrieve Auth Transaction  History Request"),
+	
 	/**  Static_Pin_Storage_Request_Response. */
-	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-006","BUSINESS", ""),//not applicable for release v1
+	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1
 	
 	
 	/** The vid generate request response. */
-	VID_GENERATE_REQUEST_RESPONSE("IDA-EVT-007","BUSINESS", "");//not applicable for release v1
+	VID_GENERATE_REQUEST_RESPONSE("IDA-EVT-OLD-007","BUSINESS", "");//not applicable for release v1
 	
 	/** The event id. */
 	private final String eventId;

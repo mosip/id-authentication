@@ -11,13 +11,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -58,6 +62,9 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	/** The uin hash salt repo. */
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/** The Constant AUTH_TXN_DETAILS. */
 	private static final String AUTH_TXN_DETAILS = "getAuthTransactionDetails";
@@ -71,6 +78,25 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	@Override
 	public List<AutnTxnDto> fetchAuthTxnDetails(AutnTxnRequestDto authtxnrequestdto)
 			throws IdAuthenticationBusinessException {
+		boolean status;
+		try {
+			List<AutnTxnDto> doFetchAuthTxnDetails = doFetchAuthTxnDetails(authtxnrequestdto);
+			status = true;
+			audit(authtxnrequestdto, status);
+			return doFetchAuthTxnDetails;
+		} catch(IdAuthenticationBusinessException e) {
+			status = false;
+			audit(authtxnrequestdto, status);
+			throw e;
+		}
+	}
+
+	private void audit(AutnTxnRequestDto authtxnrequestdto, boolean status) throws IDDataValidationException {
+		auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, authtxnrequestdto.getIndividualId(),
+				IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), "auth transaction history status : " + status );
+	}
+
+	private List<AutnTxnDto> doFetchAuthTxnDetails(AutnTxnRequestDto authtxnrequestdto) throws IdAuthenticationBusinessException {
 		List<AutnTxn> autnTxnList;
 		String individualIdType = IdType.getIDTypeStrOrDefault(authtxnrequestdto.getIndividualIdType());
 		

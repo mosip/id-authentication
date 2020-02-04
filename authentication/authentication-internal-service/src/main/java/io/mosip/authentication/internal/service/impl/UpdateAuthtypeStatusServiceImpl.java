@@ -14,10 +14,14 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
@@ -50,11 +54,34 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
 	 */
 	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(AuthTypeStatusDto authTypeStatusDto) throws IdAuthenticationBusinessException {
+		boolean status;
+		try {
+			UpdateAuthtypeStatusResponseDto doUpdateAuthTypeStatusResponse = doUpdateAuthTypeStatus(authTypeStatusDto);
+			status = true;
+			audit(authTypeStatusDto, status);
+			return doUpdateAuthTypeStatusResponse;
+		} catch (IdAuthenticationBusinessException e) {
+			status = false;
+			audit(authTypeStatusDto, status);
+			throw e;
+		}
+	}
+	
+	private void audit(AuthTypeStatusDto authTypeStatusDto, boolean status) throws IDDataValidationException {
+		auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authTypeStatusDto.getIndividualId(),
+				IdType.getIDTypeOrDefault(authTypeStatusDto.getIndividualIdType()), "auth type status update status : " + status );
+	}
+
+	private UpdateAuthtypeStatusResponseDto doUpdateAuthTypeStatus(AuthTypeStatusDto authTypeStatusDto)
+			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = idService.processIdType(IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
 				authTypeStatusDto.getIndividualId(), false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
