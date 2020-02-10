@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
@@ -53,6 +55,9 @@ public class KycAuthController {
 	/** The auth facade. */
 	@Autowired
 	private KycFacadeImpl kycFacade;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/**
 	 *
@@ -98,10 +103,16 @@ public class KycAuthController {
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			
+			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
+			
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			
+			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
+			
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		

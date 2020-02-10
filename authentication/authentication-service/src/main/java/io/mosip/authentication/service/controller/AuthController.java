@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
@@ -51,6 +53,10 @@ public class AuthController {
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
+	
+	@Autowired
+	private AuditHelper auditHelper;
+
 
 	/**
 	 *
@@ -91,16 +97,20 @@ public class AuthController {
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			
+			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
+			
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			
+			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
+			
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		} 
 		return authResponsedto;
 	}
-
-	
 
 	
 }
