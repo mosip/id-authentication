@@ -188,8 +188,19 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			String reqUrl = (request).getRequestURL().toString();
 			type = fetchInternalAuthtype(reqUrl);
 		}
-		List<AuthError> errors = null;
-		Object response;
+		List<AuthError> errors = getAuthErrors(ex);
+		if (errors != null && !errors.isEmpty()) {
+			Object response = frameErrorResponse(requestReceived, type, errors);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
+					response.toString());
+			return response;
+		}
+
+		return null;
+	}
+	
+	public static List<AuthError> getAuthErrors(Exception ex) {
+		List<AuthError> errors;
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
@@ -233,13 +244,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						.distinct().collect(Collectors.toList());
 			}
 
-			response = frameErrorResponse(requestReceived, type, errors);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
-					response.toString());
-			return response;
+		} else {
+			errors = Collections.emptyList();
 		}
-
-		return null;
+		
+		return errors;
 	}
 
 	private static String fetchInternalAuthtype(String reqURL) {

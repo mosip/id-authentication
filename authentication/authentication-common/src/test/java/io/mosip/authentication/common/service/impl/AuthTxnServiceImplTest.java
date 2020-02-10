@@ -63,8 +63,6 @@ public class AuthTxnServiceImplTest {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-			.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
@@ -105,8 +103,6 @@ public class AuthTxnServiceImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-		.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -122,8 +118,6 @@ public class AuthTxnServiceImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-			.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -140,8 +134,6 @@ public class AuthTxnServiceImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-			.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -160,8 +152,6 @@ public class AuthTxnServiceImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-			.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -178,8 +168,6 @@ public class AuthTxnServiceImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-			.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -196,8 +184,6 @@ public class AuthTxnServiceImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString()))
-			.thenReturn("40E9FE0B47CEBA29B800F1223994A848367BB26FD055D48FA7BE98C1C79DBCAC");
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);

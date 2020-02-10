@@ -132,24 +132,25 @@ public class OTPServiceImpl implements OTPService {
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, uin, individualIdType, idResDTO);
 			
 			status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
-			auditAndSaveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			auditHelper.audit(AuditModules.OTP_REQUEST, getAuditEvent(!isInternal), otpRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "otpRequest status : " + status);
 			
 			return otpResponseDTO;
 
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
-			auditAndSaveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			auditHelper.audit(AuditModules.OTP_REQUEST, getAuditEvent(!isInternal), otpRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 			throw e;
 		}
 
 
 	}
 
-	private void auditAndSaveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String uin)
+	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String uin)
 			throws IdAuthenticationBusinessException {
-		auditHelper.audit(AuditModules.OTP_REQUEST, getAuditEvent(!isInternal), otpRequestDto.getIndividualId(),
-				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "otpRequest status : " + status);
-		
 		if (uin != null) {
 			boolean staticTokenRequired = !isInternal
 					&& env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);

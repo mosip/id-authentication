@@ -793,8 +793,8 @@ public class AuthFacadeImplTest {
 
 	}
 
-	@Test
-	public void TestInvalidOTPviaAuth() throws IdAuthenticationBusinessException {
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestInvalidOTPviaAuth() throws Throwable {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualId("794138547620");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
@@ -809,13 +809,17 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
-				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+		try {
+			ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
+					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+		}  catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 
 	}
 
-	@Test
-	public void TestInvalidOTPviaAuthwithActionMessage() throws IdAuthenticationBusinessException {
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestInvalidOTPviaAuthwithActionMessage() throws Throwable {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualId("794138547620");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
@@ -833,8 +837,12 @@ public class AuthFacadeImplTest {
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
-				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+		try {
+			ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
+					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
 
 	}
 
