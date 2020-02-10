@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * This class mapped with table "autn_txn" and used by {@link AutnTxnRepository}
@@ -18,6 +19,7 @@ import lombok.Data;
  * 
  * @author Rakesh Roshan
  */
+@NoArgsConstructor
 @Data
 @Table(name = "auth_transaction", schema = "ida")
 @Entity
@@ -103,6 +105,37 @@ public class AutnTxn {
 	
 	@Column(name = "requested_entity_name")
 	private String entityName;
+	
+	/**
+	 * The constructor used in retrieval of the specific fields.
+	 * @param requestTrnId
+	 * @param requestDTtimes
+	 * @param authTypeCode
+	 * @param statusCode
+	 * @param statusComment
+	 * @param refId
+	 * @param entityName
+	 */
+	public AutnTxn(String requestTrnId, LocalDateTime requestDTtimes, String authTypeCode, String statusCode, String statusComment, String refId, String entityName) {
+		this.requestTrnId = requestTrnId;
+		this.requestDTtimes = requestDTtimes; 
+		this.authTypeCode = authTypeCode; 
+		this.statusCode = statusCode; 
+		this.statusComment = statusComment; 
+		this.refId = refId; 
+		this.entityName = entityName;
+	}
+	
+	/**
+	 * The constructor used in retrieval of the specific fields.
+	 * 
+	 * @param refId
+	 * @param uinHash
+	 */
+	public AutnTxn(String refId, String uinHash) {
+		this.refId = refId; 
+		this.uinHash = uinHash;
+	}
 	
 	
 }

@@ -9,10 +9,12 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.http.RequestWrapper;
 
@@ -52,6 +54,16 @@ public class AuditHelper {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				Map.class);
 		restHelper.requestAsync(restRequest);
+	}
+	
+	public void audit(AuditModules module, AuditEvents event, String id, IdType idType, IdAuthenticationErrorConstants errorConstant)
+			throws IDDataValidationException {
+		audit(module, event, id, idType, errorConstant.getErrorCode() + " : " + errorConstant.getErrorMessage());
+	}
+	
+	public void audit(AuditModules module, AuditEvents event, String id, IdType idType, IdAuthenticationBaseException e)
+			throws IDDataValidationException {
+		audit(module, event, id, idType, e.getErrorCode() + " : " + e.getErrorText());
 	}
 
 }

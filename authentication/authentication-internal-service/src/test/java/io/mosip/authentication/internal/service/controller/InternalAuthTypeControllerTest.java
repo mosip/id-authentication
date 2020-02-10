@@ -23,6 +23,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
@@ -67,6 +68,9 @@ public class InternalAuthTypeControllerTest {
 
 	@Mock
 	private AuthLockRepository authLockRepository;
+	
+	@Mock
+	private AuditHelper auditHelper;
 
 	@Before
 	public void before() {
@@ -75,6 +79,7 @@ public class InternalAuthTypeControllerTest {
 		ReflectionTestUtils.setField(authTypeController, "authtypeStatusService", authtypeStatusImpl);
 		ReflectionTestUtils.setField(authTypeController, "environment", environment);
 		ReflectionTestUtils.setField(authtypeStatusValidator, "env", environment);
+		ReflectionTestUtils.setField(authtypeStatusImpl, "auditHelper", auditHelper);
 	}
 
 	@Test
@@ -85,7 +90,7 @@ public class InternalAuthTypeControllerTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AuthtypeLock> valueList = getAuthtypeList();
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valueList);
+		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valueList);
 		ResponseEntity<AuthtypeResponseDto> authTypeStatus = authTypeController.getAuthTypeStatus(IdType.UIN.getType(),
 				"9172985031");
 	}
@@ -105,7 +110,7 @@ public class InternalAuthTypeControllerTest {
 				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage()));
 		List<AuthtypeLock> valueList = getAuthtypeList();
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valueList);
+		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valueList);
 		try {
 			authTypeController.getAuthTypeStatus(IdType.UIN.getType(), "9172985031");
 		} catch (IdAuthenticationAppException e) {

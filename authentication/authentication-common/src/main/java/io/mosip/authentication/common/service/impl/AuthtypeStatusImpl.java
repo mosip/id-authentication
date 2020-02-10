@@ -81,7 +81,8 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
-			authTypeLockList = authLockRepository.findByUin(uin);
+			String uinHash = idService.getUinHash(uin);
+			authTypeLockList = authLockRepository.findByUinHash(uinHash );
 		}
 		return processAuthtypeList(authTypeLockList);
 	}
@@ -95,7 +96,8 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
-			authTypeLockList = authLockRepository.findByUin(uin);
+			String uinHash = idService.getUinHash(uin);
+			authTypeLockList = authLockRepository.findByUinHash(uinHash);
 		}
 		return processAuthtypeList(authTypeLockList);
 	}

@@ -24,6 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
@@ -54,10 +55,14 @@ public class UpdateAuthtypeStatusServiceImplTest {
 
 	@Autowired
 	private Environment environment;
+	
+	@Mock
+	private AuditHelper auditHelper;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authtypeStatusServiceImpl, "environment", environment);
+		ReflectionTestUtils.setField(authtypeStatusServiceImpl, "auditHelper", auditHelper);
 	}
 
 	@Test

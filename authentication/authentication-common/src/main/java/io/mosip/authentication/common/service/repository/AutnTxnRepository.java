@@ -27,11 +27,11 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param authtypecode the authtypecode
 	 * @return the list
 	 */
-	@Query(value = "Select * from ida.auth_transaction where request_trn_id=:txnId AND auth_type_code=:authtypecode ORDER BY cr_dtimes DESC", nativeQuery = true)
+	@Query(value = "Select new AutnTxn(refId, uinHash) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
 			@Param("authtypecode") String authtypecode);
 
-	@Query(value = "Select * from ida.auth_transaction where uin_hash=:uinHash ORDER BY cr_dtimes DESC", nativeQuery = true)
+	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, entityName ) from AutnTxn where uinHash=:uinHash ORDER BY crDTimes DESC")
 	public List<AutnTxn> findByUin(@Param("uinHash") String uinHash, Pageable pagaeable);
 
 	/**
@@ -43,8 +43,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param refId               the ref id
 	 * @return the int
 	 */
-	@Query("Select count(requestDTtimes) from AutnTxn  where request_dtimes <= :otpRequestDTime and "
-			+ "request_dtimes >= :oneMinuteBeforeTime and refId=:refId")
+	@Query("Select count(1) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
+			+ "requestDTtimes >= :oneMinuteBeforeTime and refId=:refId")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
 			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("refId") String refId);
 

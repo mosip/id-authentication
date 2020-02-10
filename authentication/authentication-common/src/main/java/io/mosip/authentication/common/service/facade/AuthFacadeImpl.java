@@ -298,12 +298,15 @@ public class AuthFacadeImpl implements AuthFacade {
 						partnerId);
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
+				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + statusInfo.isStatus());
+			} catch(IdAuthenticationBusinessException e) {
+				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO.getIndividualId(), idType, e);
+				throw e;
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "Pin Authentication  status :" + isStatus);
-				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-						authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId,
 						RequestType.STATIC_PIN_AUTH, !isAuth, partnerId);
 				idAuthService.saveAutnTxn(authTxn);

@@ -6,20 +6,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -28,7 +25,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtxn.service.AuthTxnService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * The Service AuthTxnServiceImpl is used to retrive Auth transactions for a UIN/VID.
@@ -53,15 +49,6 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	/** The authtxn repo. */
 	@Autowired
 	private AutnTxnRepository authtxnRepo;
-	
-	/** The env. */
-	@Autowired
-	private Environment env;
-	
-
-	/** The uin hash salt repo. */
-	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Autowired
 	private AuditHelper auditHelper;
@@ -131,10 +118,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 			
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
 			
-			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-			Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
-			String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
-			String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes());
+			String hashedUin = idService.getUinHash(uin);
 			
 			PageRequest pageRequest = getPageRequest(pageStart, pageFetch, fetchAllRecords);
 			

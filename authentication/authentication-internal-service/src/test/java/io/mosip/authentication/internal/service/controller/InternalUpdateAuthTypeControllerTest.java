@@ -19,6 +19,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -61,12 +62,16 @@ public class InternalUpdateAuthTypeControllerTest {
 
 	@InjectMocks
 	private UpdateAuthtypeStatusServiceImpl updateAuthtypeStatusService;
+	
+	@Mock
+	private AuditHelper auditHelper;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.invokeMethod(internalUpdateAuthTypeController, "initBinder", binder);
 		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "environment", environment);
 		ReflectionTestUtils.setField(updateAuthtypeStatusService, "environment", environment);
+		ReflectionTestUtils.setField(updateAuthtypeStatusService, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "updateAuthtypeStatusService",
 				updateAuthtypeStatusService);
 	}
@@ -94,6 +99,7 @@ public class InternalUpdateAuthTypeControllerTest {
 		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN));
 		internalUpdateAuthTypeController.updateAuthtypeStatus(authTypeStatusDto, errors);
+		
 
 	}
 }

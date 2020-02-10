@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,9 +15,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
@@ -37,6 +40,15 @@ public class AuthtypeStatusImplTest {
 
 	@Mock
 	private AuthLockRepository authLockRepository;
+	
+	@Mock
+	private AuditHelper auditHelper;
+	
+	@Before
+	public void init() {
+		ReflectionTestUtils.setField(authtypeStatusImpl, "auditHelper", auditHelper);
+
+	}
 
 	@Test
 	public void TestvalidfetchAuthtypeStatus() throws IdAuthenticationBusinessException {
@@ -45,12 +57,13 @@ public class AuthtypeStatusImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
+		
 		List<AuthtypeLock> valuelist = new ArrayList<>();
 		AuthtypeLock authtypeLock = new AuthtypeLock();
 		authtypeLock.setAuthtypecode("bio-FMR");
 		authtypeLock.setStatuscode("y");
 		valuelist.add(authtypeLock);
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
 	}
 
@@ -65,7 +78,7 @@ public class AuthtypeStatusImplTest {
 		authtypeLock.setAuthtypecode("bio-FMR");
 		authtypeLock.setStatuscode("y");
 		valuelist.add(authtypeLock);
-		Mockito.when(authLockRepository.findByUin(Mockito.anyString())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("9172985031",
 				IdType.UIN.getType());
 	}
