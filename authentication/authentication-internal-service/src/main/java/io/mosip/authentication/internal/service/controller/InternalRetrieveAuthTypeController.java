@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -30,6 +33,7 @@ import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.internal.service.validator.AuthtypeStatusValidator;
@@ -59,6 +63,9 @@ public class InternalRetrieveAuthTypeController {
 
 	@Autowired
 	Environment environment;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -83,11 +90,12 @@ public class InternalRetrieveAuthTypeController {
 			@ApiResponse(code = 400, message = "No Records Found") })
 	public ResponseEntity<AuthtypeResponseDto> getAuthTypeStatus(@PathVariable("IDType") String individualIdType,
 			@PathVariable("ID") String individualId) throws IdAuthenticationAppException, IDDataValidationException {
+		AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+		AuthtypeRequestDto authtypeRequestDto = new AuthtypeRequestDto();
+		authtypeRequestDto.setIndividualId(individualId);
+		authtypeRequestDto.setIndividualIdType(individualIdType);
+		
 		try {
-			AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
-			AuthtypeRequestDto authtypeRequestDto = new AuthtypeRequestDto();
-			authtypeRequestDto.setIndividualId(individualId);
-			authtypeRequestDto.setIndividualIdType(individualIdType);
 			Errors errors = new BindException(authtypeRequestDto, "authtypeRequestDto");
 			authtypeStatusValidator.validate(authtypeRequestDto, errors);
 			DataValidationUtil.validate(errors);
@@ -96,13 +104,22 @@ public class InternalRetrieveAuthTypeController {
 			authtypestatusmap.put("authTypes", authtypeStatusList);
 			authtypeResponseDto.setResponse(authtypestatusmap);
 			authtypeResponseDto.setResponseTime(getResponseTime());
+			
+			boolean status = true;
+			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authtypeRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(authtypeRequestDto.getIndividualIdType()), "auth type status update status : " + status );
+			
 			return new ResponseEntity<>(authtypeResponseDto, HttpStatus.OK);
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TYPE_STATUS,
 					e.getErrorText());
+			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authtypeRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(authtypeRequestDto.getIndividualIdType()), e);
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authtypeRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(authtypeRequestDto.getIndividualIdType()), e);
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 

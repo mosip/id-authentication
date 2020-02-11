@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
@@ -65,26 +66,26 @@ public class InternalUpdateAuthTypeControllerTest {
 	
 	@Mock
 	private AuditHelper auditHelper;
-
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.invokeMethod(internalUpdateAuthTypeController, "initBinder", binder);
 		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "environment", environment);
+		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(updateAuthtypeStatusService, "environment", environment);
-		ReflectionTestUtils.setField(updateAuthtypeStatusService, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "updateAuthtypeStatusService",
 				updateAuthtypeStatusService);
 	}
 
 	@Test
-	public void testupdateAuthtypeStatus() throws IdAuthenticationAppException {
+	public void testupdateAuthtypeStatus() throws IdAuthenticationAppException, IDDataValidationException {
 		AuthTypeStatusDto authTypeStatusDto = new AuthTypeStatusDto();
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		internalUpdateAuthTypeController.updateAuthtypeStatus(authTypeStatusDto, errors);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testIdValidationException() throws IdAuthenticationAppException {
+	public void testIdValidationException() throws IdAuthenticationAppException, IDDataValidationException {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(false);
 		AuthTypeStatusDto authTypeStatusDto = new AuthTypeStatusDto();
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");

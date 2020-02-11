@@ -131,8 +131,25 @@ public class AuditHelper {
 		audit(module, event, id, idType, error);
 	}
 	
-	public void auditExceptionForAuthRequestedModules(AuditEvents authAuditEvent, AuthRequestDTO authRequestDTO, IdAuthenticationBaseException e) throws IDDataValidationException
-	{
+	public void auditExceptionForAuthRequestedModules(AuditEvents authAuditEvent, AuthRequestDTO authRequestDTO,
+			IdAuthenticationBaseException e) throws IDDataValidationException {
+		List<AuditModules> auditModules = getAuditModules(authRequestDTO);
+		for (AuditModules auditModule : auditModules) {
+			audit(auditModule, authAuditEvent, authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType(),
+					e);
+		}
+	}
+	
+	public void auditStatusForAuthRequestedModules(AuditEvents authAuditEvent, AuthRequestDTO authRequestDTO,
+			String status) throws IDDataValidationException {
+		List<AuditModules> auditModules = getAuditModules(authRequestDTO);
+		for (AuditModules auditModule : auditModules) {
+			audit(auditModule, authAuditEvent, authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType(),
+					status);
+		}
+	}
+
+	private List<AuditModules> getAuditModules(AuthRequestDTO authRequestDTO) {
 		List<AuditModules> auditModules = new ArrayList<>(5);
 		if (Optional.ofNullable(authRequestDTO.getRequestedAuth()).filter(AuthTypeDTO::isOtp).isPresent()) {
 			auditModules.add(AuditModules.OTP_AUTH);
@@ -166,12 +183,7 @@ public class AuditHelper {
 				}
 			}
 		}
-
-		for (AuditModules auditModule : auditModules) {
-			audit(auditModule, authAuditEvent, authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType(),
-					e);
-		}
-
+		return auditModules;
 	}
 
 }

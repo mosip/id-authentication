@@ -30,7 +30,6 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
@@ -99,9 +98,6 @@ public class OTPServiceImplTest {
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 	
-	@Mock
-	private AuditHelper auditHelper;
-
 	@Autowired
 	Environment env;
 	
@@ -132,7 +128,6 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
-		ReflectionTestUtils.setField(otpServiceImpl, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(otpServiceImpl, "partnerService", partnerService);
 
 	}

@@ -71,15 +71,15 @@ public class InternalAuthTypeControllerTest {
 	
 	@Mock
 	private AuditHelper auditHelper;
-
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.invokeMethod(authTypeController, "initBinder", binder);
 		ReflectionTestUtils.setField(authTypeController, "authtypeStatusValidator", authtypeStatusValidator);
 		ReflectionTestUtils.setField(authTypeController, "authtypeStatusService", authtypeStatusImpl);
 		ReflectionTestUtils.setField(authTypeController, "environment", environment);
+		ReflectionTestUtils.setField(authTypeController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authtypeStatusValidator, "env", environment);
-		ReflectionTestUtils.setField(authtypeStatusImpl, "auditHelper", auditHelper);
 	}
 
 	@Test

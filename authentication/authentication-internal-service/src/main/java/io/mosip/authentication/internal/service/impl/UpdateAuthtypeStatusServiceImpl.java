@@ -14,12 +14,9 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
-import io.mosip.authentication.core.constant.AuditEvents;
-import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -54,24 +51,12 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	@Autowired
 	private Environment environment;
 	
-	@Autowired
-	private AuditHelper auditHelper;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
 	 */
 	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(AuthTypeStatusDto authTypeStatusDto) throws IdAuthenticationBusinessException {
-		try {
-			UpdateAuthtypeStatusResponseDto doUpdateAuthTypeStatusResponse = doUpdateAuthTypeStatus(authTypeStatusDto);
-			boolean status = true;
-			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authTypeStatusDto.getIndividualId(),
-					IdType.getIDTypeOrDefault(authTypeStatusDto.getIndividualIdType()), "auth type status update status : " + status );
-			return doUpdateAuthTypeStatusResponse;
-		} catch (IdAuthenticationBusinessException e) {
-			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE, authTypeStatusDto.getIndividualId(),
-					IdType.getIDTypeOrDefault(authTypeStatusDto.getIndividualIdType()), e);
-			throw e;
-		}
+		return doUpdateAuthTypeStatus(authTypeStatusDto);
 	}
 	
 	private UpdateAuthtypeStatusResponseDto doUpdateAuthTypeStatus(AuthTypeStatusDto authTypeStatusDto)

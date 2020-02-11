@@ -21,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
@@ -49,13 +48,9 @@ public class AuthTxnServiceImplTest {
 	@Mock
 	private UinHashSaltRepo uinHashSaltRepo;
 	
-	@Mock
-	private AuditHelper auditHelper;
-	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authTxnServiceImpl, "authtxnRepo", authtxnRepo);
-		ReflectionTestUtils.setField(authTxnServiceImpl, "auditHelper", auditHelper);
 	}
 
 	@Test

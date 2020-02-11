@@ -86,9 +86,9 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnValidator", authTxnValidator);
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnService", authTxnService);
 		ReflectionTestUtils.setField(internalAuthTxnController, "environment", environment);
+		ReflectionTestUtils.setField(internalAuthTxnController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
 		ReflectionTestUtils.setField(authTxnService, "authtxnRepo", authtxnRepo);
-		ReflectionTestUtils.setField(authTxnService, "auditHelper", auditHelper);
 
 	}
 

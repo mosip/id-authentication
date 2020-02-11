@@ -94,16 +94,18 @@ public class AuthController {
 			}
 			DataValidationUtil.validate(errors);
 			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId);
+			// Note: Auditing of success or failure status of each authentication (but not
+			// the exception) is handled in respective authentication invocations in the facade
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+					"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
 			
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 			
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					"authenticateApplication", e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+					"authenticateApplication",  e.getErrorCode() + " : " + e.getErrorText());
 			
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 			
