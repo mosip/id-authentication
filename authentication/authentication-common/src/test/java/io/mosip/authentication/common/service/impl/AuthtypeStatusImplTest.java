@@ -46,11 +46,9 @@ public class AuthtypeStatusImplTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		
-		List<AuthtypeLock> valuelist = new ArrayList<>();
-		AuthtypeLock authtypeLock = new AuthtypeLock();
-		authtypeLock.setAuthtypecode("bio-FMR");
-		authtypeLock.setStatuscode("y");
-		valuelist.add(authtypeLock);
+		List<Object[]> valuelist = new ArrayList<>();
+		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
+		valuelist.add(authtypeLockStatus);
 		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
 	}
@@ -61,11 +59,9 @@ public class AuthtypeStatusImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		List<AuthtypeLock> valuelist = new ArrayList<>();
-		AuthtypeLock authtypeLock = new AuthtypeLock();
-		authtypeLock.setAuthtypecode("bio-FMR");
-		authtypeLock.setStatuscode("y");
-		valuelist.add(authtypeLock);
+		List<Object[]> valuelist = new ArrayList<>();
+		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
+		valuelist.add(authtypeLockStatus);
 		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("9172985031",
 				IdType.UIN.getType());

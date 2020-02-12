@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,34 +47,25 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	@Override
 	public List<AuthtypeStatus> fetchAuthtypeStatus(AuthtypeRequestDto authtypeRequestDto)
 			throws IdAuthenticationBusinessException {
-		return doFetchAuthTypeStatus(authtypeRequestDto);
-	}
-	
-	private List<AuthtypeStatus> doFetchAuthTypeStatus(AuthtypeRequestDto authtypeRequestDto)
-			throws IdAuthenticationBusinessException {
 		String individualId = authtypeRequestDto.getIndividualId();
 		String individualIdType = IdType.getIDTypeStrOrDefault(authtypeRequestDto.getIndividualIdType());
-		List<AuthtypeLock> authTypeLockList = new ArrayList<>();
-		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
-		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
-			String uin = String.valueOf(idResDTO.get(UIN_KEY));
-			String uinHash = idService.getUinHash(uin);
-			authTypeLockList = authLockRepository.findByUinHash(uinHash );
-		}
-		return processAuthtypeList(authTypeLockList);
+		return fetchAuthtypeStatus(individualId, individualIdType);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService#fetchAuthtypeStatus(java.lang.String, java.lang.String)
 	 */
 	public List<AuthtypeStatus> fetchAuthtypeStatus(String individualId, String individualIdType)
 			throws IdAuthenticationBusinessException {
-		List<AuthtypeLock> authTypeLockList = new ArrayList<>();
+		List<AuthtypeLock> authTypeLockList;
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
 			String uinHash = idService.getUinHash(uin);
-			authTypeLockList = authLockRepository.findByUinHash(uinHash);
+			List<Object[]> authTypeLockObjectsList = authLockRepository.findByUinHash(uinHash);
+			authTypeLockList = authTypeLockObjectsList.stream().map(obj -> new AuthtypeLock((String)obj[0], (String)obj[1])).collect(Collectors.toList());
+		} else {
+			authTypeLockList = Collections.emptyList();
 		}
 		return processAuthtypeList(authTypeLockList);
 	}
