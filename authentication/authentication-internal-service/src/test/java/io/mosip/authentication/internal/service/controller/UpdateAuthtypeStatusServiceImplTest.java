@@ -1,8 +1,6 @@
 package io.mosip.authentication.internal.service.controller;
 
-import java.time.Instant;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +52,7 @@ public class UpdateAuthtypeStatusServiceImplTest {
 
 	@Autowired
 	private Environment environment;
-
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authtypeStatusServiceImpl, "environment", environment);

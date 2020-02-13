@@ -6,17 +6,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -24,7 +21,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtxn.service.AuthTxnService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * The Service AuthTxnServiceImpl is used to retrive Auth transactions for a UIN/VID.
@@ -50,15 +46,6 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	@Autowired
 	private AutnTxnRepository authtxnRepo;
 	
-	/** The env. */
-	@Autowired
-	private Environment env;
-	
-
-	/** The uin hash salt repo. */
-	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
-
 	/** The Constant AUTH_TXN_DETAILS. */
 	private static final String AUTH_TXN_DETAILS = "getAuthTransactionDetails";
 
@@ -71,6 +58,10 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	@Override
 	public List<AutnTxnDto> fetchAuthTxnDetails(AutnTxnRequestDto authtxnrequestdto)
 			throws IdAuthenticationBusinessException {
+		return doFetchAuthTxnDetails(authtxnrequestdto);
+	}
+
+	private List<AutnTxnDto> doFetchAuthTxnDetails(AutnTxnRequestDto authtxnrequestdto) throws IdAuthenticationBusinessException {
 		List<AutnTxn> autnTxnList;
 		String individualIdType = IdType.getIDTypeStrOrDefault(authtxnrequestdto.getIndividualIdType());
 		
@@ -105,10 +96,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 			
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
 			
-			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-			Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
-			String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
-			String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes());
+			String hashedUin = idService.getUinHash(uin);
 			
 			PageRequest pageRequest = getPageRequest(pageStart, pageFetch, fetchAllRecords);
 			

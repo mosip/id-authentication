@@ -12,12 +12,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class AuthtypeLock - Entity class for table uin_auth_lock.
  *
  * @author Dinesh Karuppiah.T
  */
+@NoArgsConstructor
 @Data
 @Table(name = "uin_auth_lock", schema = "ida")
 @Entity
@@ -92,5 +94,18 @@ public class AuthtypeLock {
 		
 		private LocalDateTime lockrequestDTtimes;
 	}
+	
+	/**
+	 * The constructor used in retrieval of the specific fields.
+	 * 
+	 * @param authtypecode
+	 * @param statuscode
+	 */
+	public AuthtypeLock(String authtypecode,  String statuscode) {
+		this.authtypecode = authtypecode;
+		this.statuscode = statuscode;
+	}
+	
+	
 
 }

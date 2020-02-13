@@ -50,9 +50,7 @@ public class AuthTxnServiceImplTest {
 	
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authTxnServiceImpl, "env", env);
 		ReflectionTestUtils.setField(authTxnServiceImpl, "authtxnRepo", authtxnRepo);
-		ReflectionTestUtils.setField(authTxnServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
 	}
 
 	@Test

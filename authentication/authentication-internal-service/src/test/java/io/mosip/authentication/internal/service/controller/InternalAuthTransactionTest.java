@@ -24,6 +24,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
@@ -75,6 +76,9 @@ public class InternalAuthTransactionTest {
 
 	@Mock
 	private UinHashSaltRepo uinHashSaltRepo;
+	
+	@Mock
+	private AuditHelper auditHelper;
 
 	@Before
 	public void before() {
@@ -82,10 +86,9 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnValidator", authTxnValidator);
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnService", authTxnService);
 		ReflectionTestUtils.setField(internalAuthTxnController, "environment", environment);
+		ReflectionTestUtils.setField(internalAuthTxnController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
-		ReflectionTestUtils.setField(authTxnService, "env", env);
 		ReflectionTestUtils.setField(authTxnService, "authtxnRepo", authtxnRepo);
-		ReflectionTestUtils.setField(authTxnService, "uinHashSaltRepo", uinHashSaltRepo);
 
 	}
 

@@ -9,12 +9,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -22,6 +25,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -45,6 +49,16 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	/** The autntxnrepository. */
 	@Autowired
 	private AutnTxnRepository autntxnrepository;
+	
+	
+	/** The env. */
+	@Autowired
+	private Environment env;
+	
+
+	/** The uin hash salt repo. */
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -212,6 +226,14 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 						entry -> new SimpleEntry<>("documents." + INDIVIDUAL_BIOMETRICS, (String) entry.getValue()))
 				.collect(Collectors.toMap(Entry<String, String>::getKey, Entry<String, String>::getValue));
 
+	}
+	
+	public String getUinHash(String uin) {
+		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+		Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
+		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
+		String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes());
+		return hashedUin;
 	}
 
 }

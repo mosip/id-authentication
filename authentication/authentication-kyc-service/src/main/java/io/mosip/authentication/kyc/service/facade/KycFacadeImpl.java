@@ -132,19 +132,21 @@ public class KycFacadeImpl implements KycFacade {
 			
 			KycAuthResponseDTO kycAuthResponseDTO = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId, idResDTO, uin);
 			status =  kycAuthResponseDTO.getResponse().isKycStatus();
-			auditAndSaveToTxnTabl(kycAuthRequestDTO, status, partnerId, uin);
+			saveToTxnTable(kycAuthRequestDTO, status, partnerId, uin);
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
+					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
+					"kycAuthentication status : " + status);
 			return kycAuthResponseDTO;
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
-			auditAndSaveToTxnTabl(kycAuthRequestDTO, status, partnerId, uin);
+			saveToTxnTable(kycAuthRequestDTO, status, partnerId, uin);
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
+					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
 			throw e;
 		}
 	}
 
-	private void auditAndSaveToTxnTabl(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String uin) throws IdAuthenticationBusinessException {
-		auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
-				IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
-				"kycAuthentication status : " + status);
+	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String uin) throws IdAuthenticationBusinessException {
 		if(uin != null) {
 			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;

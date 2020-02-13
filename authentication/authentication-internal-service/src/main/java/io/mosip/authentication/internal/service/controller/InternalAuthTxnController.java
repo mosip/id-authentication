@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -31,6 +34,7 @@ import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtxn.service.AuthTxnService;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
@@ -57,6 +61,9 @@ public class InternalAuthTxnController {
 
 	@Autowired
 	private AuthTxnService authTxnService;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -87,13 +94,15 @@ public class InternalAuthTxnController {
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
 			throws IdAuthenticationAppException, IDDataValidationException {
+		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+		AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
+		authtxnrequestdto.setIndividualId(individualId);
+		authtxnrequestdto.setIndividualIdType(individualIdType);
+		authtxnrequestdto.setPageStart(pageStart);
+		authtxnrequestdto.setPageFetch(pageFetch);
+		
 		try {
-			AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
-			AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
-			authtxnrequestdto.setIndividualId(individualId);
-			authtxnrequestdto.setIndividualIdType(individualIdType);
-			authtxnrequestdto.setPageStart(pageStart);
-			authtxnrequestdto.setPageFetch(pageFetch);
+			
 			Errors errors = new BindException(authtxnrequestdto, "authtxnrequestdto");
 			authTxnValidator.validate(authtxnrequestdto, errors);
 			DataValidationUtil.validate(errors);
@@ -102,13 +111,23 @@ public class InternalAuthTxnController {
 			authTxnMap.put("authTransactions", authTxnList);
 			autnTxnResponseDto.setResponse(authTxnMap);
 			autnTxnResponseDto.setResponseTime(getResponseTime());
+			
+			boolean status = true;
+			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, authtxnrequestdto.getIndividualId(),
+					IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), "auth transaction history status : " + status );
 			return new ResponseEntity<>(autnTxnResponseDto, HttpStatus.OK);
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
 					e.getErrorText());
+			
+			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, authtxnrequestdto.getIndividualId(),
+					IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), e );
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+			
+			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, authtxnrequestdto.getIndividualId(),
+					IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), e );
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 

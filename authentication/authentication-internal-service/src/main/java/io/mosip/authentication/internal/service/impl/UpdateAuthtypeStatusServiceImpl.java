@@ -50,11 +50,17 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+	
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
 	 */
 	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(AuthTypeStatusDto authTypeStatusDto) throws IdAuthenticationBusinessException {
+		return doUpdateAuthTypeStatus(authTypeStatusDto);
+	}
+	
+	private UpdateAuthtypeStatusResponseDto doUpdateAuthTypeStatus(AuthTypeStatusDto authTypeStatusDto)
+			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = idService.processIdType(IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
 				authTypeStatusDto.getIndividualId(), false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {

@@ -3,13 +3,15 @@
  */
 package io.mosip.authentication.common.service.facade;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,6 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
-import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -298,12 +298,16 @@ public class AuthFacadeImpl implements AuthFacade {
 						partnerId);
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
+				
+				boolean isStatus = statusInfo != null && statusInfo.isStatus();
+				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+						authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
+				
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "Pin Authentication  status :" + isStatus);
-				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-						authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
+				
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId,
 						RequestType.STATIC_PIN_AUTH, !isAuth, partnerId);
 				idAuthService.saveAutnTxn(authTxn);
@@ -343,12 +347,13 @@ public class AuthFacadeImpl implements AuthFacade {
 				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId, isAuth);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;
-			} finally {
+				
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
-						AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
 				saveAndAuditBioAuthTxn(authRequestDTO, authRequestDTO.getIndividualId(), idType, isStatus,
 						staticTokenId, !isAuth, partnerId);
+			} finally {
+				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+						AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
 			}
 
 		}
@@ -386,12 +391,15 @@ public class AuthFacadeImpl implements AuthFacade {
 				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId);
 				authStatusList.add(demoValidationStatus);
 				statusInfo = demoValidationStatus;
-			} finally {
+				
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
-						AUTH_FACADE, "Demographic Authentication status : " + isStatus);
 				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIndividualId(),
 						idType, "authenticateApplicant status : " + isStatus);
+			} finally {
+				boolean isStatus = statusInfo != null && statusInfo.isStatus();
+
+				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+						AUTH_FACADE, "Demographic Authentication status : " + isStatus);
 
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.DEMO_AUTH, !isAuth, partnerId);
 				idAuthService.saveAutnTxn(authTxn);
@@ -429,25 +437,15 @@ public class AuthFacadeImpl implements AuthFacade {
 			try {
 				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
 				authStatusList.add(otpValidationStatus);
-			} catch (IdAuthenticationBusinessException e) {
-				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(),
-						e.getErrorText());
-				otpValidationStatus = new AuthStatusInfo();
-				otpValidationStatus.setStatus(false);
-				AuthError authError;
-				if (e.getActionMessage() != null) {
-					authError = new ActionableAuthError(e.getErrorCode(), e.getErrorText(), e.getActionMessage());
-				} else {
-					authError = new AuthError(e.getErrorCode(), e.getErrorText());
-				}
-				otpValidationStatus.setErr(Collections.singletonList(authError));
-				authStatusList.add(otpValidationStatus);
+				
+				boolean isStatus = otpValidationStatus != null && otpValidationStatus.isStatus();
+				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), authRequestDTO.getIndividualId(),
+						idType, "authenticateApplicant status : " + isStatus);
 			} finally {
 				boolean isStatus = otpValidationStatus != null && otpValidationStatus.isStatus();
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "OTP Authentication status : " + isStatus);
-				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), authRequestDTO.getIndividualId(),
-						idType, "authenticateApplicant status : " + isStatus);
+				
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.OTP_AUTH, !isAuth, partnerId);
 				idAuthService.saveAutnTxn(authTxn);
 			}
@@ -479,31 +477,39 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the is status
 	 * @param staticTokenId
 	 *            the static token id
+	 * @param exception 
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String uin, IdType idType, boolean isStatus,
 			String staticTokenId, boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
+		String status = "authenticateApplicant status : " + isStatus;
 		if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType())
 						|| (FMR_ENABLED_TEST.test(env)
 								&& bioInfo.getBioType().equals(BioAuthType.FGR_MIN.getType()))))) {
+			
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(!isInternal),
-					authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
+					authRequestDTO.getIndividualId(), idType, status);
+			
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FINGER_AUTH, isInternal, partnerId);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.IRIS_IMG.getType()))) {
+			
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(!isInternal),
-					authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
+					authRequestDTO.getIndividualId(), idType, status);
+			
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.IRIS_AUTH, isInternal, partnerId);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FACE_IMG.getType()))) {
+			
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(!isInternal),
-					authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
+					authRequestDTO.getIndividualId(), idType, status);
+			
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FACE_AUTH, isInternal, partnerId);
 			idAuthService.saveAutnTxn(authTxn);
 		}

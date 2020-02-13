@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
@@ -43,6 +47,10 @@ public class InternalOTPController {
 
 	@Autowired
 	private InternalOTPRequestValidator otpRequestValidator;
+	
+	/** The AuditHelper */
+	@Autowired
+	private AuditHelper auditHelper;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -71,13 +79,21 @@ public class InternalOTPController {
 			otpResponseDTO = otpService.generateOtp(otpRequestDto, IdAuthCommonConstants.INTERNAL);
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 					otpResponseDTO.getResponseTime());
+			
+			boolean status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
+			auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "Internal OTP Request status : " + status);
 			return otpResponseDTO;
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 					e.getErrorText());
+			auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+			auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
+					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}

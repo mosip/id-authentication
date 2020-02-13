@@ -8,30 +8,36 @@ package io.mosip.authentication.core.constant;
 public enum AuditModules {
 	
 	/** The otp auth. */
-	OTP_AUTH("IDA-OTA","Request/Response, UIN/VID to be masked", "OTP Authenticator"),
+	OTP_AUTH("IDA-OTA","OTP Authentication Request", "OTP Authenticator"),
 	
 	/** The demo auth. */
-	DEMO_AUTH("IDA-DEA", "Request/Response, UIN/VID to be masked", "Demographic Authenticator"),
+	DEMO_AUTH("IDA-DEA", "Demographic Authentication Request", "Demographic Authenticator"),
 	
 	/** The FINGERPRINT_AUTH. */
-	FINGERPRINT_AUTH("IDA-FPA", "Request/Response, UIN/VID to be masked", "Fingerprint Authenticator"),
+	FINGERPRINT_AUTH("IDA-FPA", "Fingerprint Authentication Request", "Fingerprint Authenticator"),
 	
 	/** The IRIS_AUTH. */
-	IRIS_AUTH("IDA-ISA", "Request/Response, UIN/VID to be masked", "Iris Authenticator"),
+	IRIS_AUTH("IDA-ISA", "Iris Authentication Request", "Iris Authenticator"),
 	
 	/** The FACE_AUTH. */
-	FACE_AUTH("IDA-FAA", "Request/Response, UIN/VID to be masked", "Face Authenticator"),
+	FACE_AUTH("IDA-FAA", "Face Authentication Request", "Face Authenticator"),
 	
 	/** The e KY C AUTH. */
-	EKYC_AUTH("IDA-EKA", "Request/Response, UIN/VID to be masked", "eKYC Authenticator"),
+	EKYC_AUTH("IDA-EKA", "E-KYC Authentication Request", "eKYC Authenticator"),
 	
 	/** The otp request. */
-	OTP_REQUEST("IDA-OTR","Request/Response, UIN/VID to be masked", "OTP Requestor"),
+	OTP_REQUEST("IDA-OTR","OTP Request", "OTP Requestor"),
+	
+	/** The auth type status. */
+	AUTH_TYPE_STATUS("IDA-ATS","Auth Type Status Retrieve/Update Request", "Auth Type Status"),
+	
+	/** The auth transaction history. */
+	AUTH_TRANSACTION_HISTORY("IDA-ATH","Auth Transaction History Request", "Auth Transaction History"),
 	
 	/** The pin auth. */
 	PIN_AUTH("IDA-MOD-106","Pin Authentication requested", ""), //not applicable for release v1
 	
-	/** The Static Pin Storage */
+	/**  The Static Pin Storage. */
 	STATIC_PIN_STORAGE("IDA-MOD-108","Static Pin Storage requested", ""),//not applicable for release v1
 	
 	/** The vid generation request. */
@@ -40,7 +46,7 @@ public enum AuditModules {
 	/** The module id. */
 	private final String moduleId;
 	
-	/** The Description*/
+	/**  The Description. */
 	private  String desc;
 	
 	/** The module name. */
@@ -51,8 +57,10 @@ public enum AuditModules {
 	/**
 	 *  Instantiates a new audit contants. 
 	 *  
-	 * @param moduleId
-	 * @param desc
+	 *
+	 * @param moduleId the module id
+	 * @param desc the desc
+	 * @param moduleName the module name
 	 */
 	private AuditModules(String moduleId, String desc, String moduleName) {
 		this.moduleId=moduleId;

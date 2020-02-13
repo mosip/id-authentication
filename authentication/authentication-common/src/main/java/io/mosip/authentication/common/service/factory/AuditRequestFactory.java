@@ -34,6 +34,20 @@ public class AuditRequestFactory {
     /** The env. */
     @Autowired
     private Environment env;
+    
+    /**
+     * Builds the request.
+     *
+     * @param module the module
+     * @param event the event
+     * @param id the id
+     * @param idType the id type enum
+     * @param desc the desc
+     * @return the audit request dto
+     */
+    public RequestWrapper<AuditRequestDto> buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
+    	return buildRequest(module, event, id, idType.name(), desc);
+    }
 
     /**
      * Builds the request.
@@ -41,11 +55,11 @@ public class AuditRequestFactory {
      * @param module the module
      * @param event the event
      * @param id the id
-     * @param idType the id type
+     * @param idType the id type name
      * @param desc the desc
      * @return the audit request dto
      */
-    public RequestWrapper<AuditRequestDto> buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
+    public RequestWrapper<AuditRequestDto> buildRequest(AuditModules module, AuditEvents event, String id, String idType, String desc) {
 	AuditRequestDto request = new AuditRequestDto();
 	String hostName;
 	String hostAddress;
@@ -70,7 +84,7 @@ public class AuditRequestFactory {
 	request.setApplicationName(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_NAME));
 	request.setSessionUserId("sessionUserId");
 	request.setSessionUserName("sessionUserName");
-	request.setIdType(idType.name());
+	request.setIdType(idType);
 	request.setCreatedBy(env.getProperty(IdAuthConfigKeyConstants.USER_NAME));
 	request.setModuleName(module.getModuleName());
 	request.setModuleId(module.getModuleId());

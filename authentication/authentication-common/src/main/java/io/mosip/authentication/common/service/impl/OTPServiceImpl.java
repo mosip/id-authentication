@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.OTPManager;
@@ -26,8 +25,6 @@ import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
-import io.mosip.authentication.core.constant.AuditEvents;
-import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -84,10 +81,6 @@ public class OTPServiceImpl implements OTPService {
 	@Autowired
 	private OTPManager otpManager;
 
-	/** The AuditHelper */
-	@Autowired
-	private AuditHelper auditHelper;
-
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
@@ -132,24 +125,21 @@ public class OTPServiceImpl implements OTPService {
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, uin, individualIdType, idResDTO);
 			
 			status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
-			auditAndSaveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
 			
 			return otpResponseDTO;
 
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
-			auditAndSaveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
 			throw e;
 		}
 
 
 	}
 
-	private void auditAndSaveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String uin)
+	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String uin)
 			throws IdAuthenticationBusinessException {
-		auditHelper.audit(AuditModules.OTP_REQUEST, getAuditEvent(!isInternal), otpRequestDto.getIndividualId(),
-				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "otpRequest status : " + status);
-		
 		if (uin != null) {
 			boolean staticTokenRequired = !isInternal
 					&& env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);
@@ -222,10 +212,6 @@ public class OTPServiceImpl implements OTPService {
 		return otpResponseDTO;
 	}
 	
-	private AuditEvents getAuditEvent(boolean isAuth) {
-		return isAuth ? AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE : AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE;
-	}
-
 	/**
 	 * Audit txn.
 	 *
