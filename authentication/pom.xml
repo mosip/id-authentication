@@ -6,7 +6,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.6</version>
+	<version>1.0.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -59,7 +59,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
-		<ida.version>${project.version}</ida.version>
+		<ida.version>1.0.6</ida.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -72,12 +72,12 @@
 		<powermock.version>2.0.0</powermock.version>
 
 		<!-- Kernel components -->
-		<kernel.version>${project.version}</kernel.version>
-		<kernel.core.version>${kernel.version}</kernel.core.version>
+		<kernel.version>1.0.6</kernel.version>
+		<kernel.core.version>1.0.6</kernel.core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<kernel.hibernate.version>${kernel.version}</kernel.hibernate.version>
-		<kernel.template.version>${kernel.version}</kernel.template.version>
-		<kernel.pdfgenerate.version>${kernel.version}</kernel.pdfgenerate.version>
+		<kernel.hibernate.version>1.0.6</kernel.hibernate.version>
+		<kernel.template.version>1.0.6</kernel.template.version>
+		<kernel.pdfgenerate.version>1.0.6</kernel.pdfgenerate.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
