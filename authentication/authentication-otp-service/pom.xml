@@ -7,19 +7,21 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.7-SNAPSHOT</version>
 	</parent>
+	<version>1.0.7-SNAPSHOT</version>
 	<artifactId>authentication-otp-service</artifactId>
 	<name>authentication-otp-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
+		<authentication-common.verison>1.0.7-SNAPSHOT</authentication-common.verison>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
-			<version>${ida.version}</version>
+			<version>${authentication-common.verison}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -41,7 +43,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
-			<version>${project.version}</version>
+			<version>${kernel.version}</version>
 		</dependency>
 	</dependencies>
 	

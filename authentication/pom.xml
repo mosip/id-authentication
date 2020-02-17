@@ -58,9 +58,17 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<ida.version>1.0.6</ida.version>
 
+		<!-- Kernel components -->
+		<kernel.version>1.0.6</kernel.version>
+		<kernel.core.version>${kernel.version}</kernel.core.version>
+		<kernel.hibernate.version>${kernel.version}</kernel.hibernate.version>
+		<kernel.template.version>${kernel.version}</kernel.template.version>
+		<kernel.pdfgenerate.version>${kernel.version}</kernel.pdfgenerate.version>
+		
+		<json.utility.version>20180130</json.utility.version>
+		
+		
 		<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -70,14 +78,7 @@
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
 		<powermock.version>2.0.0</powermock.version>
-
-		<!-- Kernel components -->
-		<kernel.version>1.0.6</kernel.version>
-		<kernel.core.version>1.0.6</kernel.core.version>
-		<json.utility.version>20180130</json.utility.version>
-		<kernel.hibernate.version>1.0.6</kernel.hibernate.version>
-		<kernel.template.version>1.0.6</kernel.template.version>
-		<kernel.pdfgenerate.version>1.0.6</kernel.pdfgenerate.version>
+		
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
