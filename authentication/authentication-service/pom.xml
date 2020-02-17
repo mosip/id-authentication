@@ -9,18 +9,12 @@
 		<version>1.0.7-SNAPSHOT</version>
 	</parent>
 
-	<version>1.0.7-SNAPSHOT</version>
 	<artifactId>authentication-service</artifactId>
 	<packaging>jar</packaging>
 
 	<name>authentication-service</name>
 	<description>Maven project of MOSIP ID-Authentication Service</description>
 
-	<properties>
-		<authentication-core.verison>1.0.7-SNAPSHOT</authentication-core.verison>
-		<authentication-common.verison>1.0.7-SNAPSHOT</authentication-common.verison>
-	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>

@@ -57,6 +57,10 @@
 	</modules>
 
 	<properties>
+		<ida.version>${project.version}</ida.version>
+		<authentication-core.verison>${ida.version}</authentication-core.verison>
+		<authentication-common.verison>${ida.version}</authentication-common.verison>
+		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
