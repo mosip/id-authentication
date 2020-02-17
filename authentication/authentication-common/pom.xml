@@ -9,12 +9,10 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>1.0.7-SNAPSHOT</version>
 	</parent>
-	<version>1.0.7-SNAPSHOT</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<authentication-core.verison>1.0.7-SNAPSHOT</authentication-core.verison>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>

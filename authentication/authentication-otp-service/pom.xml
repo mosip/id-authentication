@@ -9,12 +9,10 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>1.0.7-SNAPSHOT</version>
 	</parent>
-	<version>1.0.7-SNAPSHOT</version>
 	<artifactId>authentication-otp-service</artifactId>
 	<name>authentication-otp-service</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<authentication-common.verison>1.0.7-SNAPSHOT</authentication-common.verison>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
