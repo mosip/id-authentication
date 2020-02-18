@@ -19,28 +19,28 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>${authentication-core.verison}</version>
+			<version>${authentication-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-uin</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-idvalidator-uin.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idobjectvalidator</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-idobjectvalidator.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-dataaccess-hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
@@ -56,12 +56,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-pinvalidator.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.idrepository</groupId>
 			<artifactId>id-repository-core</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${id-repository-core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-vid</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-idvalidator-vid.version}</version>
 		</dependency>
 		<!-- Sprint Boot -->
 		<dependency>
@@ -86,7 +86,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
-			<version>${kernel.template.version}</version>
+			<version>${kernel-templatemanager-velocity.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
@@ -101,12 +101,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-keygenerator-bouncycastle.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-crypto-jce.version}</version>
 		</dependency>
 		<!-- Commons Lang -->
 		<dependency>

@@ -19,30 +19,30 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>${authentication-core.verison}</version>
+			<version>${authentication-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
-			<version>${authentication-common.verison}</version>
+			<version>${authentication-common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
-			<version>${kernel.version}</version>
+			<version>${kernel-pinvalidator.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-core.version}</version>
 		</dependency>
 
 		<!-- Kernel Template -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
-			<version>${kernel.template.version}</version>
+			<version>${kernel-templatemanager-velocity.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
@@ -62,33 +62,27 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel.hibernate.version}</version>
+			<version>${kernel-dataaccess-hibernate.version}</version>
 		</dependency>
 
 		<!-- Kernel Id Validator UIN -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-uin</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-idvalidator-uin.version}</version>
 		</dependency>
 
 		<!-- Kernel Id Validator VID -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-vid</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-idvalidator-vid.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-tokenid</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-vid</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-idgenerator-tokenid.version}</version>
 		</dependency>
 
 		<!-- Postgres -->
@@ -137,7 +131,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
-			<version>${kernel.version}</version>
+			<version>${kernel-cbeffutil-api.version}</version>
 		</dependency>
 
 

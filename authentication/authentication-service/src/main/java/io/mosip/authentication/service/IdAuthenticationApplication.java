@@ -40,8 +40,6 @@ import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
-import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -55,7 +53,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @SpringBootApplication(exclude = HibernateDaoConfig.class)
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class, RestHelperImpl.class,
+		CbeffImpl.class, RestHelperImpl.class,
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, IdRepoManager.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class, OTPManager.class,
