@@ -27,7 +27,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param authtypecode the authtypecode
 	 * @return the list
 	 */
-	@Query(value = "Select new AutnTxn(refId, uinHash) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
+	@Query(value = "Select new AutnTxn(uinHash, refIdType) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
 			@Param("authtypecode") String authtypecode);
 

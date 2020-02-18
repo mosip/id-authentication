@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -31,11 +28,11 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
 import lombok.NoArgsConstructor;
 
 /**
@@ -69,11 +66,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
 
+	/** The Id Info Service */
 	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
-
-	@Autowired
-	private Environment environment;
+	private IdService<AutnTxn> idService;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -185,10 +180,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnAndIdvid(String txnId, String uin, String idType) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
-		long uinModulo = Long.valueOf(uin)
-				% environment.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-		String uinSalt = uinHashSaltRepo.retrieveSaltById(uinModulo);
-		String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), uinSalt.getBytes());
+		String hashedUin = idService.getUinHash(uin);
 		Optional<AutnTxn> authTxn = autntxnrepository
 				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
 		if (!authTxn.isPresent()) {
