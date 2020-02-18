@@ -74,11 +74,11 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The otp service. */
 	@Autowired
-	private OTPAuthService otpService;
+	private OTPAuthService otpAuthService;
 
 	/** The id auth service. */
 	@Autowired
-	private IdService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idService;
 
 	/** The id auth service. */
 	@Autowired
@@ -87,10 +87,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Environment */
 	@Autowired
 	private Environment env;
-
-	/** The Id Info Service */
-	@Autowired
-	private IdService<AutnTxn> idInfoService;
 
 	/** The Demo Auth Service */
 	@Autowired
@@ -144,7 +140,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		String idvid = authRequestDTO.getIndividualId();
 		String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
-		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvid,
+		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
 				authRequestDTO.getRequestedAuth().isBio());
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
@@ -158,7 +154,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 		try {
-			idInfo = idInfoService.getIdInfo(idResDTO);
+			idInfo = idService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
@@ -310,7 +306,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId,
 						RequestType.STATIC_PIN_AUTH, !isAuth, partnerId);
-				idAuthService.saveAutnTxn(authTxn);
+				idService.saveAutnTxn(authTxn);
 			}
 
 		}
@@ -402,7 +398,7 @@ public class AuthFacadeImpl implements AuthFacade {
 						AUTH_FACADE, "Demographic Authentication status : " + isStatus);
 
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.DEMO_AUTH, !isAuth, partnerId);
-				idAuthService.saveAutnTxn(authTxn);
+				idService.saveAutnTxn(authTxn);
 
 			}
 
@@ -435,7 +431,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (authRequestDTO.getRequestedAuth().isOtp()) {
 			AuthStatusInfo otpValidationStatus = null;
 			try {
-				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
+				otpValidationStatus = otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
 				authStatusList.add(otpValidationStatus);
 				
 				boolean isStatus = otpValidationStatus != null && otpValidationStatus.isStatus();
@@ -447,7 +443,7 @@ public class AuthFacadeImpl implements AuthFacade {
 						AUTH_FACADE, "OTP Authentication status : " + isStatus);
 				
 				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.OTP_AUTH, !isAuth, partnerId);
-				idAuthService.saveAutnTxn(authTxn);
+				idService.saveAutnTxn(authTxn);
 			}
 
 		}
@@ -493,7 +489,7 @@ public class AuthFacadeImpl implements AuthFacade {
 					authRequestDTO.getIndividualId(), idType, status);
 			
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FINGER_AUTH, isInternal, partnerId);
-			idAuthService.saveAutnTxn(authTxn);
+			idService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.IRIS_IMG.getType()))) {
@@ -502,7 +498,7 @@ public class AuthFacadeImpl implements AuthFacade {
 					authRequestDTO.getIndividualId(), idType, status);
 			
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.IRIS_AUTH, isInternal, partnerId);
-			idAuthService.saveAutnTxn(authTxn);
+			idService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FACE_IMG.getType()))) {
@@ -511,7 +507,7 @@ public class AuthFacadeImpl implements AuthFacade {
 					authRequestDTO.getIndividualId(), idType, status);
 			
 			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FACE_AUTH, isInternal, partnerId);
-			idAuthService.saveAutnTxn(authTxn);
+			idService.saveAutnTxn(authTxn);
 		}
 	}
 

@@ -70,14 +70,12 @@ public class KycFacadeImpl implements KycFacade {
 
 	/** The Id Info Service */
 	@Autowired
-	private IdService<AutnTxn> idInfoService;
+	private IdService<AutnTxn> idService;
 
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
 
-	@Autowired
-	private IdService<AutnTxn> idAuthService;
 	
 	
 	@Autowired
@@ -127,7 +125,7 @@ public class KycFacadeImpl implements KycFacade {
 			String idvId = kycAuthRequestDTO.getIndividualId();
 			String idvIdtype =IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
 	
-			Map<String, Object> idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
+			Map<String, Object> idResDTO = idService.processIdType(idvIdtype, idvId, true);
 			uin = (String) idResDTO.get("uin");
 			
 			KycAuthResponseDTO kycAuthResponseDTO = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId, idResDTO, uin);
@@ -160,7 +158,7 @@ public class KycFacadeImpl implements KycFacade {
 					.withPartner(partner)
 					.withUin(uin)
 					.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
-			idAuthService.saveAutnTxn(authTxn);
+			idService.saveAutnTxn(authTxn);
 		}
 	}
 
@@ -179,7 +177,7 @@ public class KycFacadeImpl implements KycFacade {
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 			
-			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
+			Map<String, List<IdentityInfoDTO>> idInfo = idService.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
 

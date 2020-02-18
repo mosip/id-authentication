@@ -106,7 +106,7 @@ public class KycFacadeImplTest {
 	private KycService kycService;
 	
 	@Mock
-	private IdService<AutnTxn> idAuthService;
+	private IdService<AutnTxn> idService;
 
 	@Mock
 	private UinEncryptSaltRepo uinEncryptSaltRepo;
@@ -127,7 +127,7 @@ public class KycFacadeImplTest {
 	public void beforeClass() {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
-		ReflectionTestUtils.setField(kycFacade, "idAuthService", idAuthService);
+		ReflectionTestUtils.setField(kycFacade, "idService", idService);
 		ReflectionTestUtils.setField(authFacadeImpl, "uinEncryptSaltRepo", uinEncryptSaltRepo);
 		ReflectionTestUtils.setField(authFacadeImpl, "uinHashSaltRepo", uinHashSaltRepo);
 		ReflectionTestUtils.setField(authFacadeImpl, "transactionManager", idAuthTransactionManager);
@@ -136,6 +136,7 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "partnerService", partnerService);
+		ReflectionTestUtils.setField(authFacadeImpl, "idService", idService);
 		ReflectionTestUtils.setField(kycFacade, "partnerService", partnerService);
 		
 
@@ -204,7 +205,7 @@ public class KycFacadeImplTest {
 				.thenReturn(idRepo);
 		Mockito.when(idinfoservice.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
-		Mockito.when(idAuthService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
@@ -217,6 +218,7 @@ public class KycFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
+		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456", true)).thenReturn(authStatusInfo);
 		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
 		kycFacade.authenticateIndividual(authRequestDTO, true, "123456");
@@ -255,7 +257,7 @@ public class KycFacadeImplTest {
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-		Mockito.when(idAuthService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()

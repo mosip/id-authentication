@@ -42,6 +42,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.util.HMACUtils;
 import reactor.ipc.netty.http.HttpResources;
 
@@ -79,16 +80,18 @@ public class OTPAuthServiceTest {
 	
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
+	
+	@Mock
+	private IdService<AutnTxn> idService;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "uinHashSaltRepo", uinHashSaltRepo);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(otpauthserviceimpl, "idService", idService);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "environment", env);
 	}
 
 	private AuthRequestDTO otpAuthRequestDTO = new AuthRequestDTO();
@@ -112,8 +115,10 @@ public class OTPAuthServiceTest {
 		request.setOtp("123455");
 		authreqdto.setRequest(request);
 		authreqdto.setIndividualId("12345");
+		String uinHash = HMACUtils.digestAsPlainTextWithSalt("12345".getBytes(), "2344".getBytes());
+
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(null);
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
 		try {
 			otpauthserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(), "123456");
 		} catch (IdAuthenticationBusinessException ex) {
@@ -138,7 +143,8 @@ public class OTPAuthServiceTest {
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		AutnTxn authtxn = new AutnTxn();
 		authtxn.setId("test");
-		authtxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes()));
+		String uinHash = HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes());
+		authtxn.setUinHash(uinHash);
 		authtxn.setRefIdType("UIN");
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
@@ -146,7 +152,7 @@ public class OTPAuthServiceTest {
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456",
 				Collections.emptyMap(), "1234567890");
 		assertNotNull(authStatusInfo);
@@ -193,13 +199,16 @@ public class OTPAuthServiceTest {
 	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		AutnTxn autTxn = new AutnTxn();
+		String uinHash = HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes());
+
 		autTxn.setRequestTrnId("1234567890");
 		autTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes()));
 		autTxn.setRefIdType("UIN");
 		autntxnList.add(autTxn);
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
+
 		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
 	}
 
@@ -212,7 +221,9 @@ public class OTPAuthServiceTest {
 	public void Test_validTxnId() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("1234567890");
-		autntxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes()));
+		String uinHash = HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes());
+
+		autntxn.setUinHash(uinHash);
 		autntxn.setRefIdType("UIN");
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
@@ -220,7 +231,7 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
 		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
 	}
 
