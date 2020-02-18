@@ -132,9 +132,9 @@ public class AutnTxn {
 	 * @param refId
 	 * @param uinHash
 	 */
-	public AutnTxn(String refId, String uinHash) {
-		this.refId = refId; 
+	public AutnTxn(String uinHash, String refIdType) {
 		this.uinHash = uinHash;
+		this.refIdType = refIdType; 
 	}
 	
 	
