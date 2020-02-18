@@ -19,12 +19,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-bioapi-provider</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-bioapi-provider.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-logger-logback.version}</version>
 		</dependency>
 
 		<!-- Commons Codec -->
