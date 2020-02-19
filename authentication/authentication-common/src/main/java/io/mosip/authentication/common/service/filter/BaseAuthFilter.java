@@ -113,7 +113,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	protected boolean verifySignature(String jwsSignature) {
-		return cryptoCore.verifySignature(jwsSignature);
+		try {
+			return cryptoCore.verifySignature(jwsSignature);
+		} catch (Exception e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "verifySignature", BASE_AUTH_FILTER, "Invalid JWS data: " + e.getMessage());
+			return false;
+		}
 	}
 
 	/**
