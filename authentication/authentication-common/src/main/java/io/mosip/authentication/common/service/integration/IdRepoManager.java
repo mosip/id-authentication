@@ -1,4 +1,5 @@
 package io.mosip.authentication.common.service.integration;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KER_USER_ID_NOTEXIST_ERRORCODE;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,8 +54,6 @@ public class IdRepoManager {
 
 	private static final String ERRORS = "errors";
 
-	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
-	
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
 
@@ -170,22 +169,9 @@ public class IdRepoManager {
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
-			Optional<Object> responseBody = e.getResponseBody();
-			if (responseBody.isPresent()) {
-				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
-				if (idrepoMap.containsKey(ERRORS)) {
-					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
-					if (!idRepoerrorList.isEmpty()
-							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
-									&& USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
-					}
-					else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
-								e);
-					}
-				}
+			if(KER_USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase(e.getErrorCode())) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+	                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
 			}
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}

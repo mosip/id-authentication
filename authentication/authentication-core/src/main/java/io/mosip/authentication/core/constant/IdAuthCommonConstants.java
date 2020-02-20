@@ -65,9 +65,9 @@ public final class IdAuthCommonConstants {
 	/** The Constant KER_DECRYPTION_FAILURE. */
 	public static final String KER_DECRYPTION_FAILURE = "KER-FSE-003";
 
-	public static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
+	public static final String KER_USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-401";
 
-	public static final String USER_ID_NOTEXIST_ERRORMSG = "User Detail doesn't exist";
+	public static final String KER_USER_ID_NOTEXIST_ERRORMSG = "User not found";
 
 	public static final String DATA = "data";
 

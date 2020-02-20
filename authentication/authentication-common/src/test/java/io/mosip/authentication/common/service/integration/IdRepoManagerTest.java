@@ -312,14 +312,8 @@ public class IdRepoManagerTest {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Map<String, Object> responseBody = new HashMap<>();
-		List<Map<String, Object>> valuelist = new ArrayList<>();
-		Map<String, Object> errorcode = new HashMap<>();
-		errorcode.put("errorCode", "KER-ATH-003");
-		valuelist.add(errorcode);
-		responseBody.put("errors", valuelist);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, responseBody.toString(), (Object) responseBody));
+				IdAuthCommonConstants.KER_USER_ID_NOTEXIST_ERRORCODE, IdAuthCommonConstants.KER_USER_ID_NOTEXIST_ERRORMSG, new Exception()));
 		try
 		{
 			idReposerviceImpl.getRIDByUID("76746685");

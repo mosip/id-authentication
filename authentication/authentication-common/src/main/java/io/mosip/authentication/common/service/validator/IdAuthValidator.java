@@ -102,7 +102,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param idFieldName the id field name
 	 */
 	public void validateIdvId(String id, String idType, Errors errors, String idFieldName) {
-		if (StringUtils.isEmpty(id)) {
+		if (id == null || StringUtils.isEmpty(id.trim())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
