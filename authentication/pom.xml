@@ -121,6 +121,9 @@
 
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
+		
+		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+		<maven.war.plugin.version>3.1.0</maven.war.plugin.version> 
 	</properties>
 
 	<dependencies>
@@ -265,6 +268,40 @@
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>${maven.sonar.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Project-Name>${project.name}</Project-Name>
+							<Project-Version>${project.version}</Project-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven.war.plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Project-Name>${project.name}</Project-Name>
+							<Project-Version>${project.version}</Project-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
