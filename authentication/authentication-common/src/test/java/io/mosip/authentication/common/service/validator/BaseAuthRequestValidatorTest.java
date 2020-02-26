@@ -44,7 +44,6 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -242,97 +241,6 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 
 	}
-	
-	/**
-	 * Test validate bio details if bio info is not null but bio info is empty has
-	 * error.
-	 */
-	@Test
-	public void testValidateBioDetail_ForFMR_Enabled_NoError() {
-
-		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
-		
-		Environment env = Mockito.mock(Environment.class);
-		ReflectionTestUtils.setField(AuthRequestValidator, "env", env);
-		Mockito.when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false)).thenReturn(true);
-
-		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
-		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOFinger = new DataDTO();
-		dataDTOFinger.setDeviceCode("1");
-		dataDTOFinger.setDeviceServiceVersion("1");
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("1");
-		digitalId.setMake("1");
-		digitalId.setModel("1");
-		digitalId.setType("1");
-		digitalId.setDeviceProvider("1");
-		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
-		dataDTOFinger.setDigitalId(digitalId);
-		dataDTOFinger.setBioValue("finger");
-		dataDTOFinger.setBioSubType("Left Thumb");
-		dataDTOFinger.setBioType(BioAuthType.FGR_MIN.getType());
-		dataDTOFinger.setDeviceProviderID("provider001");
-		fingerValue.setData(dataDTOFinger);
-		bioInfoList.add(fingerValue);
-		RequestDTO dto = new RequestDTO();
-		dto.setBiometrics(bioInfoList);
-		authRequestDTO.setRequest(dto);
-		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("bio-FMR");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
-				allowedAuthtype);
-		assertTrue(!error.hasErrors());
-
-	}
-	
-	@Test
-	public void testValidateBioDetail_ForFMR_NotEnabled_NoError() {
-
-		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
-		
-		Environment env = Mockito.mock(Environment.class);
-		ReflectionTestUtils.setField(AuthRequestValidator, "env", env);
-		Mockito.when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false))
-		.thenReturn(false);
-
-		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
-		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
-		DataDTO dataDTOFinger = new DataDTO();
-		dataDTOFinger.setDeviceCode("1");
-		dataDTOFinger.setDeviceServiceVersion("1");
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("1");
-		digitalId.setMake("1");
-		digitalId.setModel("1");
-		digitalId.setType("1");
-		digitalId.setDeviceProvider("1");
-		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
-		dataDTOFinger.setDigitalId(digitalId);
-		dataDTOFinger.setBioValue("finger");
-		dataDTOFinger.setBioSubType("Left Thumb");
-		dataDTOFinger.setBioType(BioAuthType.FGR_MIN.getType());
-		dataDTOFinger.setDeviceProviderID("provider001");
-		fingerValue.setData(dataDTOFinger);
-		bioInfoList.add(fingerValue);
-		RequestDTO dto = new RequestDTO();
-		dto.setBiometrics(bioInfoList);
-		authRequestDTO.setRequest(dto);
-		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("bio-FMR");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
-				allowedAuthtype);
-		assertTrue(!error.hasErrors());
-
-	}
 
 	/**
 	 * Test validate bio details if bio info is not null but bio info is empty.
@@ -400,6 +308,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -422,6 +331,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId1.setMake("1");
 		digitalId1.setModel("1");
 		digitalId1.setType("1");
+		digitalId1.setSubType("1");
 		digitalId1.setDeviceProvider("1");
 		digitalId1.setDeviceProviderId("1");
 		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -444,6 +354,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId2.setMake("1");
 		digitalId2.setModel("1");
 		digitalId2.setType("1");
+		digitalId2.setSubType("1");
 		digitalId2.setDeviceProvider("1");
 		digitalId2.setDeviceProviderId("1");
 		digitalId2.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2292,22 +2203,6 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
-	
-	@Test
-	public void TestInvalidPinExceptionForOTP() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setOtp(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		RequestDTO request = new RequestDTO();
-		request.setOtp("123456");
-		authRequestDTO.setRequest(request);
-		Mockito.when(pinValidator.validatePin(Mockito.anyString()))
-				.thenThrow(new InvalidPinException(IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode(),
-						IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode()));
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
-				error);
-	}
 
 	@Test
 	public void testValidateDeviceDetailsMissingDeviceCode() {
@@ -2470,6 +2365,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2496,6 +2392,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2522,6 +2419,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime("");
@@ -2547,6 +2445,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime("1");
