@@ -400,6 +400,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -422,6 +423,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId1.setMake("1");
 		digitalId1.setModel("1");
 		digitalId1.setType("1");
+		digitalId1.setSubType("1");
 		digitalId1.setDeviceProvider("1");
 		digitalId1.setDeviceProviderId("1");
 		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -444,6 +446,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId2.setMake("1");
 		digitalId2.setModel("1");
 		digitalId2.setType("1");
+		digitalId2.setSubType("1");
 		digitalId2.setDeviceProvider("1");
 		digitalId2.setDeviceProviderId("1");
 		digitalId2.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2319,6 +2322,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2470,6 +2474,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2496,6 +2501,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
@@ -2522,6 +2528,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime("");
@@ -2547,6 +2554,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setMake("1");
 		digitalId.setModel("1");
 		digitalId.setType("1");
+		digitalId.setSubType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
 		digitalId.setDateTime("1");
