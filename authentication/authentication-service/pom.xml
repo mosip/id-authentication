@@ -8,6 +8,7 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>1.0.7-SNAPSHOT</version>
 	</parent>
+	<version>1.0.7-SNAPSHOT</version>
 
 	<artifactId>authentication-service</artifactId>
 	<packaging>jar</packaging>
