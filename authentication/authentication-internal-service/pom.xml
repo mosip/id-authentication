@@ -7,9 +7,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.7-SNAPSHOT</version>
+		<version>1.0.6</version>
 	</parent>
-	<version>1.0.7-SNAPSHOT</version>
+	<version>1.0.7</version>
 	<artifactId>authentication-internal-service</artifactId>
 	<name>authentication-internal-service</name>
 	<url>http://maven.apache.org</url>
