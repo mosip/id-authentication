@@ -35,7 +35,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, RestRequestFactory.class,
-		ObjectMapper.class, RestRequestFactory.class, RestHelperImpl.class })
+		ObjectMapper.class, RestRequestFactory.class })
 public class IdAuthTransactionManagerTest {
 	
 	@InjectMocks
