@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,40 +11,40 @@
 	<name>id-authentication</name>
 	<description>Parent project of MOSIP ID Authentication</description>
 	<url>https://github.com/mosip/id-authentication</url>
-	
+
 	<licenses>
-          <license>
-                <name>MPL 2.0</name>
-                <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
-          </license>
-        </licenses>
-	
+		<license>
+			<name>MPL 2.0</name>
+			<url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+		</license>
+	</licenses>
+
 	<scm>
-                <connection>scm:git:git://github.com/mosip/id-authentication.git</connection>
-                <developerConnection>scm:git:ssh://github.com:mosip/id-authentication.git</developerConnection>
-                <url>https://github.com/mosip/id-authentication</url>
-                <tag>HEAD</tag>
-        </scm>
-	
+		<connection>scm:git:git://github.com/mosip/id-authentication.git</connection>
+		<developerConnection>scm:git:ssh://github.com:mosip/id-authentication.git</developerConnection>
+		<url>https://github.com/mosip/id-authentication</url>
+		<tag>HEAD</tag>
+	</scm>
+
 	<developers>
-                <developer>
-                  <name>Mosip</name>
-                  <email>mosip.emailnotifier@gmail.com</email>
-                  <organization>io.mosip</organization>
-                  <organizationUrl>https://github.com/mosip/id-authentication</organizationUrl>
-                </developer>
-        </developers>
-	
+		<developer>
+			<name>Mosip</name>
+			<email>mosip.emailnotifier@gmail.com</email>
+			<organization>io.mosip</organization>
+			<organizationUrl>https://github.com/mosip/id-authentication</organizationUrl>
+		</developer>
+	</developers>
+
 	<distributionManagement>
-                <snapshotRepository>
-                        <id>ossrh</id>
-                        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                        <id>ossrh</id>
-                        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-        </distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<modules>
 		<module>authentication-common</module>
@@ -58,9 +57,9 @@
 
 	<properties>
 		<authentication.parent.version>${project.version}</authentication.parent.version>
-		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
-		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
-		
+		<authentication-core.version>1.0.7</authentication-core.version>
+		<authentication-common.version>1.0.8-SNAPSHOT</authentication-common.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
@@ -81,12 +80,13 @@
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-auth-adapter.version>${kernel.parent.version}</kernel-auth-adapter.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
-		
+		<kernel-auth-adapter.version>1.0.8-SNAPSHOT</kernel-auth-adapter.version>
+
 		<id-repository-core.version>1.0.7</id-repository-core.version>
-		
+
 		<json.utility.version>20180130</json.utility.version>
-		
-		
+
+
 		<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -96,7 +96,7 @@
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
 		<powermock.version>2.0.0</powermock.version>
-		
+
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
@@ -121,9 +121,9 @@
 
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
-		
+
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
-		<maven.war.plugin.version>3.1.0</maven.war.plugin.version> 
+		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -179,63 +179,27 @@
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
-<!--			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<executions>
-					<execution>
-					 	<id>attach-javadocs</id>
-					  	<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-                         		<additionalJOption>-Xdoclint:none</additionalJOption>
-                	  	</configuration>
-                	</plugin>
--->	
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
+				<version>2.9.1</version> <executions> <execution> <id>attach-javadocs</id> 
+				<goals> <goal>jar</goal> </goals> </execution> </executions> <configuration> 
+				<additionalJOption>-Xdoclint:none</additionalJOption> </configuration> </plugin> -->
 			<plugin>
-				  <groupId>org.sonatype.plugins</groupId>
-				  <artifactId>nexus-staging-maven-plugin</artifactId>
-				  <version>1.6.7</version>
-				  <extensions>true</extensions>
-				  <configuration>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				  </configuration>
+				</configuration>
 			</plugin>
-<!--		 	<plugin>
-				  <groupId>org.apache.maven.plugins</groupId>
-				  <artifactId>maven-source-plugin</artifactId>
-				  <version>2.2.1</version>
-				  <executions>
-					<execution>
-						<id>attach-sources</id>
-					  	<goals>
-							<goal>jar-no-fork</goal>
-					  	</goals>
-					</execution>
-				  </executions>
-			</plugin>
-		
-	                <plugin>
-				  <groupId>org.apache.maven.plugins</groupId>
-				  <artifactId>maven-gpg-plugin</artifactId>
-				  <version>1.5</version>
-				  <executions>
-					<execution>
-						  <id>sign-artifacts</id>
-						  <phase>verify</phase>
-						  <goals>
-							<goal>sign</goal>
-						  </goals>
-					</execution>
-				  </executions>
-        		</plugin>
--->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
+				<version>2.2.1</version> <executions> <execution> <id>attach-sources</id> 
+				<goals> <goal>jar-no-fork</goal> </goals> </execution> </executions> </plugin> 
+				<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
+				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
+				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
