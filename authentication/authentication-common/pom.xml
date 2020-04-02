@@ -9,7 +9,7 @@
 		<artifactId>authentication-parent</artifactId>
 		<version>1.0.6</version>
 	</parent>
-	<version>1.0.7</version>
+	<version>1.0.8-SNAPSHOT</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<url>http://maven.apache.org</url>
@@ -163,5 +163,18 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel-auth-adapter.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>
+						spring-boot-starter-security
+					</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 </project>

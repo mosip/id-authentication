@@ -39,7 +39,7 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, RestRequestFactory.class,
-		ObjectMapper.class, RestRequestFactory.class, RestHelperImpl.class })
+		ObjectMapper.class, RestRequestFactory.class })
 public class InternalAuthTransactionManagerTest {
 	
 	@InjectMocks

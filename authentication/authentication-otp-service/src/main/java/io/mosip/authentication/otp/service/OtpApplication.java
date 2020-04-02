@@ -38,6 +38,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthTransact
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.kernel.auth.adapter.util.TokenHandlerUtil;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -64,7 +65,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,IdObjectPatternValidator.class,
 		BioMatcherUtil.class, BioApiImpl.class,DemoNormalizerImpl.class,OTPServiceImpl.class,OTPRequestValidator.class,IdaTransactionInterceptor.class,
 		IdAuthTransactionManager.class,AuthtypeStatusImpl.class, CryptoCore.class,
-		PartnerServiceImpl.class })
+		PartnerServiceImpl.class,TokenHandlerUtil.class })
 @ComponentScan({ "io.mosip.authentication.otp.service.*" })
 public class OtpApplication {
 
