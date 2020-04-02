@@ -21,7 +21,6 @@ import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 public class InternalAuthSecurityManagerTest {
 
 	InternalAuthSecurityManager authSecurityManager = new InternalAuthSecurityManager();
-
 	@Test
 	public void testGetUser() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
