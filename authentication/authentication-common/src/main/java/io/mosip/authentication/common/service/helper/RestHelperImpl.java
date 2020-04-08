@@ -323,7 +323,7 @@ public class RestHelperImpl implements RestHelper {
 			if (e.getStatusCode().is4xxClientError()) {
 				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1
 						&& TokenHandlerUtil.isValidBearerToken(getAuthToken(),
-								env.getProperty("auth-token-generator.rest.issuerUrl"),
+								env.getProperty("mosip.keycloak.issuerUrl"),
 								env.getProperty("auth-token-generator.rest.clientId"))) {
 					retry++;
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "METHOD_HANDLE_STATUS_ERROR",
