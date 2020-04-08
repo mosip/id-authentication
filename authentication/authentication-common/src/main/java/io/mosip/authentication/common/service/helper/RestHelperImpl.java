@@ -43,13 +43,13 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.auth.adapter.util.TokenHandlerUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.core.util.TokenHandlerUtil;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -85,9 +85,6 @@ public class RestHelperImpl implements RestHelper {
 	@Autowired
 	private Environment env;
 	
-	@Autowired
-	private TokenHandlerUtil tokenHandler;
-
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *
@@ -325,7 +322,7 @@ public class RestHelperImpl implements RestHelper {
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
 				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1
-						&& tokenHandler.isValidBearerToken(getAuthToken(),
+						&& TokenHandlerUtil.isValidBearerToken(getAuthToken(),
 								env.getProperty("auth-token-generator.rest.issuerUrl"),
 								env.getProperty("auth-token-generator.rest.clientId"))) {
 					retry++;

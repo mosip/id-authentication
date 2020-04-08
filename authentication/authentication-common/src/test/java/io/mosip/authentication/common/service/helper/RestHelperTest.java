@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -68,7 +67,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.kernel.auth.adapter.util.TokenHandlerUtil;
+import io.mosip.kernel.core.util.TokenHandlerUtil;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;
@@ -85,7 +84,7 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@PrepareForTest({ WebClient.class, SslContextBuilder.class, Mock.class })
+@PrepareForTest({ WebClient.class, SslContextBuilder.class, Mock.class, TokenHandlerUtil.class })
 public class RestHelperTest {
 
 	/** The rest helper. */
@@ -120,6 +119,7 @@ public class RestHelperTest {
 	 *
 	 * @throws SSLException the SSL exception
 	 */
+	@SuppressWarnings("static-access")
 	@Before
 	public void before() throws SSLException {
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
@@ -127,15 +127,16 @@ public class RestHelperTest {
 		ReflectionTestUtils.setField(restHelper, "env", environment);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 		ReflectionTestUtils.setField(restHelper, "authToken", "1324");
-		TokenHandlerUtil tokenHandler = Mockito.mock(TokenHandlerUtil.class);
-		ReflectionTestUtils.setField(restHelper, "tokenHandler", tokenHandler);
 		PowerMockito.mockStatic(SslContextBuilder.class);
 		SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
 		PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
 		PowerMockito.when(sslContextBuilder.trustManager(Mockito.any(TrustManagerFactory.class)))
 				.thenReturn(sslContextBuilder);
 		PowerMockito.when(sslContextBuilder.build()).thenReturn(Mockito.mock(SslContext.class));
-		when(tokenHandler.isValidBearerToken(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		PowerMockito.mockStatic(TokenHandlerUtil.class);
+		TokenHandlerUtil tokenHandler = PowerMockito.mock(TokenHandlerUtil.class);
+		PowerMockito.when(tokenHandler.isValidBearerToken(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
 	}
 
 

@@ -78,7 +78,6 @@
 		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>${kernel.parent.version}</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
-		<kernel-auth-adapter.version>${kernel.parent.version}</kernel-auth-adapter.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>1.0.8-SNAPSHOT</kernel-auth-adapter.version>
 
