@@ -37,7 +37,6 @@ import io.mosip.authentication.common.service.interceptor.IdaTransactionIntercep
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
-import io.mosip.kernel.auth.adapter.util.TokenHandlerUtil;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
