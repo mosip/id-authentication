@@ -92,9 +92,13 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String MOSIP_IDA_AUTH_CLIENTID="mosip.ida.auth.clientId";
 	public static final String FINGERPRINT_PROVIDER = "ida.fingerprint.provider";
+	public static final String FINGERPRINT_PROVIDER_ARGS = "ida.fingerprint.provider.args";
 	public static final String FACE_PROVIDER = "ida.face.provider";
+	public static final String FACE_PROVIDER_ARGS = "ida.face.provider.args";
 	public static final String IRIS_PROVIDER = "ida.iris.provider";
+	public static final String IRIS_PROVIDER_ARGS = "ida.iris.provider.args";
 	public static final String COMPOSITE_BIO_PROVIDER = "ida.composite.biometric.provider";
+	public static final String COMPOSITE_BIO_PROVIDER_ARGS = "ida.composite.biometric.provider.args";
 	public static final String OTP_INTERNAL_ID_SUFFIX = "otp.internal";
 	public static final String ID_TYPE_ALIAS = "mosip.%s.alias";
 	public static final String IDA_AAD_LASTBYTES_NUM = "ida.aad.lastbytes.num";

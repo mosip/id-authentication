@@ -57,7 +57,7 @@
 
 	<properties>
 		<authentication.parent.version>${project.version}</authentication.parent.version>
-		<authentication-core.version>1.0.7</authentication-core.version>
+		<authentication-core.version>1.0.8-SNAPSHOT</authentication-core.version>
 		<authentication-common.version>1.0.8-SNAPSHOT</authentication-common.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
