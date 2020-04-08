@@ -100,8 +100,8 @@ public class RestHelperImpl implements RestHelper {
 			requestTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					PREFIX_REQUEST + request);
+//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+//					PREFIX_REQUEST + request);
 			if (retry <= 1) {
 				if (request.getTimeout() != null) {
 					response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout()))
@@ -111,8 +111,8 @@ public class RestHelperImpl implements RestHelper {
 				}
 			}
 			checkErrorResponse(response, request.getResponseType());
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					PREFIX_RESPONSE + response);
+//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+//					PREFIX_RESPONSE + response);
 			return (T) response;
 
 		} catch (WebClientResponseException e) {
@@ -159,8 +159,8 @@ public class RestHelperImpl implements RestHelper {
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-					PREFIX_REQUEST + request);
+//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+//					PREFIX_REQUEST + request);
 			Mono<?> sendRequest = request(request, getSslContext());
 			sendRequest.subscribe();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
