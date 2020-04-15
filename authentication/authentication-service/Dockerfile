@@ -53,8 +53,8 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     rm -rf glowroot.zip ; \
     
     sed -i 's/<service_name>/authentication-service/g' glowroot/glowroot.properties ; \
-    java -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path=commons-codec-1.9.jar kernel-cbeffutil-api-0.12.18.jar kernel-core-0.12.18.jar t5-finger-iris-mosip-auth-v1.2.jar ABISTech5FaceSDKAdapter_v1.5.jar tech5-sdk-docker-v1.0.jar -jar authentication-service.jar ; \
+    java -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path=commons-codec-1.9.jar,kernel-cbeffutil-api-0.12.18.jar,kernel-core-0.12.18.jar,t5-finger-iris-mosip-auth-v1.2.jar,ABISTech5FaceSDKAdapter_v1.5.jar,tech5-sdk-docker-v1.0.jar -jar authentication-service.jar ; \
     else \
-    java -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path=commons-codec-1.9.jar kernel-cbeffutil-api-0.12.18.jar kernel-core-0.12.18.jar t5-finger-iris-mosip-auth-v1.2.jar ABISTech5FaceSDKAdapter_v1.5.jar tech5-sdk-docker-v1.0.jar -jar authentication-service.jar ; \
+    java -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path=commons-codec-1.9.jar,kernel-cbeffutil-api-0.12.18.jar,kernel-core-0.12.18.jar,t5-finger-iris-mosip-auth-v1.2.jar,ABISTech5FaceSDKAdapter_v1.5.jar,tech5-sdk-docker-v1.0.jar -jar authentication-service.jar ; \
     fi
 #CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "authentication-service.jar"]
