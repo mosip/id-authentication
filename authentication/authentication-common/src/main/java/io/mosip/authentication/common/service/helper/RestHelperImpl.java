@@ -33,7 +33,6 @@ import org.springframework.web.reactive.function.client.WebClient.RequestBodySpe
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.util.UriBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,7 +48,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.core.util.TokenHandlerUtil;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -84,7 +82,7 @@ public class RestHelperImpl implements RestHelper {
 
 	@Autowired
 	private Environment env;
-	
+
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *
@@ -100,8 +98,8 @@ public class RestHelperImpl implements RestHelper {
 			requestTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
-//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-//					PREFIX_REQUEST + request);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					PREFIX_REQUEST + request);
 			if (retry <= 1) {
 				if (request.getTimeout() != null) {
 					response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout()))
@@ -111,8 +109,8 @@ public class RestHelperImpl implements RestHelper {
 				}
 			}
 			checkErrorResponse(response, request.getResponseType());
-//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-//					PREFIX_RESPONSE + response);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					PREFIX_RESPONSE + response);
 			return (T) response;
 
 		} catch (WebClientResponseException e) {
@@ -159,8 +157,8 @@ public class RestHelperImpl implements RestHelper {
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
-//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-//					PREFIX_REQUEST + request);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+					PREFIX_REQUEST + request);
 			Mono<?> sendRequest = request(request, getSslContext());
 			sendRequest.subscribe();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
@@ -220,7 +218,7 @@ public class RestHelperImpl implements RestHelper {
 		} else if (request.getParams() == null && request.getPathVariables() != null) {
 			uri = method.uri(builder -> builder.build(request.getPathVariables()));
 		} else {
-			uri = method.uri(UriBuilder::build);
+			uri = method.uri(builder -> builder.build());
 		}
 
 		uri.cookie("Authorization", getAuthToken());
@@ -273,6 +271,27 @@ public class RestHelperImpl implements RestHelper {
 		}
 	}
 
+	private boolean checkAuthTokenExpired() {
+		ClientResponse response = WebClient.create(env.getProperty("auth-token-validator.rest.uri")).post()
+				.cookie("Authorization", getAuthToken()).exchange().block();
+		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
+		String responseStr = responseBody.toString();
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
+				responseStr);
+		List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseStr);
+		if (Objects.nonNull(errorList) && !errorList.isEmpty()
+				&& errorList.get(0).getErrorCode().contentEquals(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
+			authToken = null;
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
+					"Auth token expired. setting authToken as null to regenerate.");
+			return true;
+		} else {
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
+					"Auth token is valid.");
+			return false;
+		}
+	}
+
 	/**
 	 * Check error response.
 	 *
@@ -321,10 +340,7 @@ public class RestHelperImpl implements RestHelper {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
-				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1
-						&& TokenHandlerUtil.isValidBearerToken(getAuthToken(),
-								env.getProperty("mosip.keycloak.issuerUrl"),
-								env.getProperty("auth-token-generator.rest.clientId"))) {
+				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1 && checkAuthTokenExpired()) {
 					retry++;
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "METHOD_HANDLE_STATUS_ERROR",
 							"token expired" + " - retry++");
@@ -346,5 +362,6 @@ public class RestHelperImpl implements RestHelper {
 		} catch (IOException ex) {
 			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
+
 	}
 }
