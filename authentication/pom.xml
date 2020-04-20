@@ -217,7 +217,7 @@
 				  <configuration>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				  </configuration>
 			</plugin>
 		 	<plugin>
@@ -245,6 +245,12 @@
 						  <goals>
 							<goal>sign</goal>
 						  </goals>
+						  <configuration>
+                					<gpgArguments>
+                    						<arg>--pinentry-mode</arg>
+                    						<arg>loopback</arg>
+                					</gpgArguments>
+            					  </configuration>
 					</execution>
 				  </executions>
         		</plugin>
