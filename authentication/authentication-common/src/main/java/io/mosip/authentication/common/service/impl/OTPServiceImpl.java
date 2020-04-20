@@ -24,7 +24,7 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -92,7 +92,7 @@ public class OTPServiceImpl implements OTPService {
 	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Autowired
-	private IdAuthTransactionManager transactionManager;
+	private IdAuthSecurityManager securityManager;
 	
 	@Autowired
 	private PartnerService partnerService;
@@ -233,7 +233,7 @@ public class OTPServiceImpl implements OTPService {
 				.withUin(uin)
 				.withPartner(partner)
 				.withInternal(isInternal)
-				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
+				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,securityManager);
 		idAuthService.saveAutnTxn(authTxn);
 	}
 

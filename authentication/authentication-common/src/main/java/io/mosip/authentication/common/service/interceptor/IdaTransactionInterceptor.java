@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -33,11 +33,11 @@ public class IdaTransactionInterceptor extends EmptyInterceptor {
 	private static final long serialVersionUID = -6676971191224044259L;
 
 	/** The mosip logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthTransactionManager.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(IdaTransactionInterceptor.class);
 	
 	/** The id auth transaction manager. */
 	@Autowired
-	private transient IdAuthTransactionManager idAuthTransactionManager;
+	private transient IdAuthSecurityManager idAuthSecurityManager;
 	
 	/* (non-Javadoc)
 	 * @see org.hibernate.EmptyInterceptor#onSave(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
@@ -49,10 +49,10 @@ public class IdaTransactionInterceptor extends EmptyInterceptor {
 				AutnTxn authTxn = (AutnTxn) entity;
 				if (authTxn.getUin() != null) {
 					List<String> uinList = Arrays.asList(authTxn.getUin().split(IdRepoConstants.SPLITTER));
-					byte[] encryptedUinByteWithSalt = idAuthTransactionManager
-							.encryptWithSalt(uinList.get(1).getBytes(), CryptoUtil.decodeBase64(uinList.get(2)));
+					String encryptedUinDataWithSalt = CryptoUtil
+							.encodeBase64(idAuthSecurityManager.encrypt(uinList.get(1), null, null, uinList.get(2)));
 					String encryptedUinWithSalt = uinList.get(0) + IdAuthCommonConstants.UIN_MODULO_SPLITTER
-							+ new String(encryptedUinByteWithSalt);
+							+ encryptedUinDataWithSalt;
 					authTxn.setUin(encryptedUinWithSalt);
 					List<String> propertyNamesList = Arrays.asList(propertyNames);
 					int indexOfData = propertyNamesList.indexOf("uin");
@@ -62,7 +62,7 @@ public class IdaTransactionInterceptor extends EmptyInterceptor {
 			}
 
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(idAuthTransactionManager.getUser(), "IdaTransactionInterceptor", "onSave",
+			mosipLogger.error(idAuthSecurityManager.getUser(), "IdaTransactionInterceptor", "onSave",
 					"\n" + e.getMessage());
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_ENCRYPTION.getErrorMessage(), e);

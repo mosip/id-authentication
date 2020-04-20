@@ -40,7 +40,7 @@ import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRespon
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -108,7 +108,7 @@ public class OTPServiceImplTest {
 	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Mock
-	private IdAuthTransactionManager idAuthTransactionManager;
+	private IdAuthSecurityManager idAuthSecurityManager;
 	
 	@Autowired
 	PartnerService partnerService;
@@ -118,7 +118,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "uinEncryptSaltRepo", uinEncryptSaltRepo);
 		ReflectionTestUtils.setField(otpServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
-		ReflectionTestUtils.setField(otpServiceImpl, "transactionManager", idAuthTransactionManager);
+		ReflectionTestUtils.setField(otpServiceImpl, "securityManager", idAuthSecurityManager);
 		ReflectionTestUtils.setField(otpServiceImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoFetcher", idInfoFetcherImpl);
@@ -146,7 +146,7 @@ public class OTPServiceImplTest {
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
 		ResponseWrapper<Map> response = new ResponseWrapper<>();
@@ -203,7 +203,7 @@ public class OTPServiceImplTest {
 		.thenReturn(valueMap);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 	
 
 		
@@ -243,7 +243,7 @@ public class OTPServiceImplTest {
 		.thenReturn(valueMap);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 	
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
 	   try {	
@@ -282,7 +282,7 @@ public class OTPServiceImplTest {
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
 		ResponseWrapper<Map> response = new ResponseWrapper<>();

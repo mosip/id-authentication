@@ -33,9 +33,9 @@ public enum RestServicesConstants {
 	
 	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
 	
-	ENCRYPTION_SERVICE("encrypt-service"),
-
-	DECRYPTION_SERVICE("decrypt-service"),
+//	ENCRYPTION_SERVICE("encrypt-service"),
+//
+//	DECRYPTION_SERVICE("decrypt-service"),
 	
 	TITLE_SERVICE("id-masterdata-title-service"),
 	
@@ -51,7 +51,7 @@ public enum RestServicesConstants {
 	
 	TOKEN_ID_GENERATOR("token-id-generator"),
 	
-	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service"),
+//	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service"),
 	
 	DEVICE_VERIFICATION_SERVICE("device-verification-service");
 

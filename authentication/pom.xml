@@ -76,10 +76,10 @@
 		<kernel-crypto-jce.version>${kernel.parent.version}</kernel-crypto-jce.version>
 		<kernel-bioapi-provider.version>1.0.7</kernel-bioapi-provider.version>
 		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>${kernel.parent.version}</kernel-dataaccess-hibernate.version>
+		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.0.8-SNAPSHOT</kernel-auth-adapter.version>
+		<kernel-auth-adapter.version>1.0.8</kernel-auth-adapter.version>
 
 		<id-repository-core.version>1.0.7</id-repository-core.version>
 
