@@ -3,7 +3,7 @@ name: Release maven packages and docker upon a release
 
 on:
   release: 
-    types: [published,edited]
+    types: [published]
   
 jobs:
   build:
