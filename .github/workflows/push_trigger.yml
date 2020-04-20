@@ -49,6 +49,8 @@ jobs:
       run: |
         cd authentication
         mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml
+      env:
+        GPG_TTY: $(tty)
     - name: Ready the springboot artifacts
       run: find -name '*.jar' -executable -type f  -exec zip release.zip {} +
 
