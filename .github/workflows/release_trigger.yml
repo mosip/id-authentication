@@ -24,6 +24,9 @@ jobs:
         # Strip git ref prefix from version
         echo "::set-env name=BRANCH_NAME::$(echo ${{ github.ref }} | sed -e 's,.*/\(.*\),\1,')"
         echo ${{ env.BRANCH_NAME }}
+        echo "::set-env name=GPG_TTY::$(tty)"
+        echo ${{ env.GPG_TTY }}
+        sudo apt-get --yes install gnupg2
         gpg2 --import ./.github/keys/mosipgpgkey_pub.gpg 
         gpg2 --quiet --batch --passphrase=${{secrets.gpg_secret}}  --allow-secret-key-import --import ./.github/keys/mosipgpgkey_sec.gpg 
      
@@ -46,6 +49,8 @@ jobs:
       run: |
         cd authentication
         mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml
+      env:
+        GPG_TTY: $(tty)  
     - name: Ready the springboot artifacts
       run: find -name '*.jar' -executable -type f  -exec zip release.zip {} +
 
