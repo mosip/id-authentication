@@ -21,40 +21,60 @@ import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 
 /**
  * The Class IdAuthSecurityManager.
- */
-/**
- * @author Arun Bose
  *
+ * @author Manoj SP
  */
 @Component
 public class IdAuthSecurityManager {
 
+	/** The Constant ENCRYPT_DECRYPT_DATA. */
 	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
 
+	/** The Constant ID_AUTH_TRANSACTION_MANAGER. */
 	private static final String ID_AUTH_TRANSACTION_MANAGER = "IdAuthSecurityManager";
 
+	/** The mosip logger. */
 	private Logger mosipLogger = IdaLogger.getLogger(IdAuthSecurityManager.class);
 
 	/** The mapper. */
 	@Autowired
 	private Environment env;
 
+	/** The cryptomanager service. */
 	@Autowired
 	private CryptomanagerService cryptomanagerService;
 	
+	/** The key manager. */
 	@Autowired
 	private KeymanagerService keyManager;
 	
+	/** The sign applicationid. */
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
 	
+	/** The sign refid. */
 	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
 
+	/**
+	 * Gets the user.
+	 *
+	 * @return the user
+	 */
 	public String getUser() {
 		return env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_CLIENTID);
 	}
 
+	/**
+	 * Encrypt.
+	 *
+	 * @param dataToEncrypt the data to encrypt
+	 * @param refId the ref id
+	 * @param aad the aad
+	 * @param saltToEncrypt the salt to encrypt
+	 * @return the byte[]
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public byte[] encrypt(String dataToEncrypt, String refId, String aad, String saltToEncrypt)
 			throws IdAuthenticationBusinessException {
 		try {
@@ -78,6 +98,16 @@ public class IdAuthSecurityManager {
 		}
 	}
 
+	/**
+	 * Decrypt.
+	 *
+	 * @param dataToDecrypt the data to decrypt
+	 * @param refId the ref id
+	 * @param aad the aad
+	 * @param saltToDecrypt the salt to decrypt
+	 * @return the byte[]
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt)
 			throws IdAuthenticationBusinessException {
 		try {
@@ -101,6 +131,12 @@ public class IdAuthSecurityManager {
 		}
 	}
 	
+	/**
+	 * Sign.
+	 *
+	 * @param data the data
+	 * @return the string
+	 */
 	public String sign(String data) {
 		//TODO: check whether any exception will be thrown
 		SignatureRequestDto request = new SignatureRequestDto(signApplicationid, signRefid,

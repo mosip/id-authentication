@@ -114,11 +114,6 @@
 			<artifactId>kernel-cbeffutil-api</artifactId>
 			<version>${kernel-cbeffutil-api.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.demo</groupId>
-			<artifactId>T5-client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

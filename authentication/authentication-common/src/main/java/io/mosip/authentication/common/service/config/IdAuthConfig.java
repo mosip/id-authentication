@@ -91,12 +91,22 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		return jpaProperties;
 	}
 	
+	/**
+	 * Datamapper.
+	 *
+	 * @return the data mapper
+	 */
 	@Bean
 	public DataMapper<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> datamapper() {
 		return new DataMapperBuilderImpl<>(CryptomanagerRequestDto.class, KeymanagerSymmetricKeyRequestDto.class)
 				.build();
 	}
 	
+	/**
+	 * Rest template.
+	 *
+	 * @return the rest template
+	 */
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();

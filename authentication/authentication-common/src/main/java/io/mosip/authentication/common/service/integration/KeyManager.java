@@ -29,6 +29,8 @@ import io.mosip.kernel.core.util.CryptoUtil;
  * decipher request to the filter to do further authentication.
  * 
  * @author Sanjay Murali
+ * @author Manoj SP
+ * 
  */
 @Component
 public class KeyManager {
@@ -48,6 +50,7 @@ public class KeyManager {
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
 	
+	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
@@ -85,19 +88,15 @@ public class KeyManager {
 	}
 
 	/**
-	 * decipherData method used to derypt data if session key is present
+	 * decipherData method used to derypt data if session key is present.
 	 *
-	 * @param mapper
-	 *            the mapper
-	 * @param encryptedRequest
-	 *            the encrypted request
-	 * @param encryptedSessionKey
-	 *            the encrypted session key
+	 * @param mapper            the mapper
+	 * @param encryptedRequest            the encrypted request
+	 * @param encryptedSessionKey            the encrypted session key
+	 * @param refId the ref id
 	 * @return the map
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IdAuthenticationAppException             the id authentication app exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey,
@@ -109,17 +108,46 @@ public class KeyManager {
 						refId), Map.class);
 	}
 	
+	/**
+	 * Kernel decrypt and decode.
+	 *
+	 * @param data the data
+	 * @param refId the ref id
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public String kernelDecryptAndDecode(String data, String refId)
 			throws IdAuthenticationAppException {
 		return internalKernelDecryptAndDecode(data, refId, null, null, true);
 	}
 	
+	/**
+	 * Kernel decrypt.
+	 *
+	 * @param data the data
+	 * @param refId the ref id
+	 * @param aad the aad
+	 * @param salt the salt
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public String kernelDecrypt(String data, String refId, String aad, String salt)
 			throws IdAuthenticationAppException {
 		return internalKernelDecryptAndDecode(data, refId, aad, salt, false);
 	}
 
 
+	/**
+	 * Internal kernel decrypt and decode.
+	 *
+	 * @param data the data
+	 * @param refId the ref id
+	 * @param aad the aad
+	 * @param salt the salt
+	 * @param decode the decode
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private String internalKernelDecryptAndDecode(String data, String refId, String aad, String salt, boolean decode)
 			throws IdAuthenticationAppException {
 		String decryptedRequest = null;
@@ -142,6 +170,14 @@ public class KeyManager {
 		return decryptedRequest;
 	}
 
+	/**
+	 * Encrypt data.
+	 *
+	 * @param responseBody the response body
+	 * @param mapper the mapper
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
 	public String encryptData(Map<String, Object> responseBody, ObjectMapper mapper)
 			throws IdAuthenticationAppException {
@@ -166,15 +202,12 @@ public class KeyManager {
 	}
 
 	/**
-	 * This method is used to convert the map to JSON format
+	 * This method is used to convert the map to JSON format.
 	 *
-	 * @param map
-	 *            the map
-	 * @param mapper
-	 *            the mapper
+	 * @param map            the map
+	 * @param mapper            the mapper
 	 * @return the string
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException             the id authentication app exception
 	 */
 	private String toJsonString(Object map, ObjectMapper mapper) throws IdAuthenticationAppException {
 		try {
@@ -185,13 +218,11 @@ public class KeyManager {
 	}
 
 	/**
-	 * This method is used to digitally sign the response
+	 * This method is used to digitally sign the response.
 	 *
-	 * @param data
-	 *            the response got after authentication which to be signed
+	 * @param data            the response got after authentication which to be signed
 	 * @return the signed response string
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException             the id authentication app exception
 	 */
 	public String signResponse(String data) throws IdAuthenticationAppException {
 		return securityManager.sign(data);
