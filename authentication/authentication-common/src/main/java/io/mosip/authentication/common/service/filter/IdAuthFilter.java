@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.filter;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ACTIVE_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
@@ -25,7 +24,9 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
+
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -63,14 +64,12 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.KYCAttributes;
-import io.mosip.authentication.core.partner.dto.License;
-import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
@@ -263,17 +262,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> requestBody) throws IdAuthenticationAppException {
+			Map<String, Object> requestBody) throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
 		String partnerId = partnerLkMap.get(PARTNER_ID);
 		String licenseKey = partnerLkMap.get(MISPLICENSE_KEY);
+		String partnerApiKey = partnerLkMap.get(API_KEY);
 
 		if (partnerId != null && licenseKey != null) {
-			String mispId = licenseKeyMISPMapping(licenseKey);
-			PartnerDTO partner = checkValidPartnerId(partnerId);
-			String policyId = validMISPPartnerMapping(partner, mispId);
-			checkAllowedAuthTypeBasedOnPolicy(policyId, requestBody);
+			PartnerPolicyResponseDTO partnerServiceResponse =  getPartnerPolicyInfo(partnerId,partnerApiKey,licenseKey);
+			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse.getPolicy(), requestBody);
 		}
+	}
+
+	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey) throws IdAuthenticationBusinessException {
+		return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey);		
 	}
 
 	/**
@@ -431,109 +433,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected boolean validateRequestSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
-
-	/**
-	 * License key MISP mapping is associated with this method.It checks for the
-	 * license key expiry and staus.
-	 *
-	 * @param licenseKey
-	 *            the license key
-	 * @return the string
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 */
-	private String licenseKeyMISPMapping(String licenseKey) throws IdAuthenticationAppException {
-		try {
-			String mispId;
-			Optional<License> licenseOptional = getLicense(licenseKey);
-			if (licenseOptional.isPresent()) {
-				License license = licenseOptional.get();
-				mispId = license.getMispId();
-				String lkExpiryDt = license.getExpiryDt();
-				if (DateUtils.convertUTCToLocalDateTime(lkExpiryDt).isBefore(DateUtils.getUTCCurrentDateTime())) {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED);
-				}
-				String lkStatus = license.getStatus();
-				if (!lkStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED);
-				}
-			} else {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY);
-			}
-			return mispId;
-		} catch (IdAuthenticationBusinessException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY, e);
-		}
-	}
-
-	private Optional<License> getLicense(String licenseKey) throws IdAuthenticationBusinessException {
-		return partnerService.getLicense(licenseKey);
-	}
-
-	/**
-	 * this method checks whether partner id is valid.
-	 *
-	 * @param partnerId
-	 *            the partner id
-	 * @return 
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 */
-	private PartnerDTO checkValidPartnerId(String partnerId) throws IdAuthenticationAppException {
-		try {
-			Optional<PartnerDTO> partnerOptional = getPartnerInfo(partnerId);
-			if (!partnerOptional.isPresent()) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED);
-			} else {
-				PartnerDTO partner = partnerOptional.get();
-				String policyId = partner.getPolicyId();
-				if (null == policyId || policyId.equalsIgnoreCase("")) {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED);
-				}
-				String partnerStatus = partner.getStatus();
-				if (partnerStatus != null && !partnerStatus.equalsIgnoreCase(ACTIVE_STATUS)) {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED);
-				}
-				
-				return partner;
-			}
-		} catch (IdAuthenticationBusinessException e) {
-			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-		}
-	}
-
-	private Optional<PartnerDTO> getPartnerInfo(String partnerId) throws IdAuthenticationBusinessException {
-		return partnerService.getPartner(partnerId);
-	}
-
-	/**
-	 * Validates MISP partner mapping,if its valid it returns the policyId.
-	 *
-	 * @param partnerId
-	 *            the partner id
-	 * @param mispId
-	 *            the misp id
-	 * @return the string
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 */
-	private String validMISPPartnerMapping(PartnerDTO partner, String mispId) throws IdAuthenticationAppException {
-		try {
-			boolean mispPartnerMappingJson = hasMispPartnerMapping(partner.getPartnerId(), mispId);
-			if (!mispPartnerMappingJson) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED);
-			}
-			
-			return partner.getPolicyId();
-		} catch (IdAuthenticationBusinessException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED, e);
-		}
-	}
-
-	private boolean hasMispPartnerMapping(String partnerId, String mispId) throws IdAuthenticationBusinessException {
-		return partnerService.getMispPartnerMapping(partnerId, mispId);
-	}
-
+	
 	/**
 	 * Check allowed auth type based on policy.
 	 *
@@ -544,12 +444,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	protected void checkAllowedAuthTypeBasedOnPolicy(String policyId, Map<String, Object> requestBody)
-			throws IdAuthenticationAppException {
-		try {
-			Optional<PolicyDTO> policyOptional = getPolicy(policyId);
-			if(policyOptional.isPresent()) {
-				PolicyDTO policies = policyOptional.get();
+	protected void checkAllowedAuthTypeBasedOnPolicy(PolicyDTO policies, Map<String, Object> requestBody)
+			throws IdAuthenticationAppException {			
+			if(policies != null) {		
 				List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 				List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 				List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired)
@@ -564,10 +461,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				checkMandatoryAuthTypeBasedOnPolicy(requestBody, mandatoryAuthPolicies);
 			} else {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_POLICY_ID);
-			}
-		} catch (IdAuthenticationBusinessException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_POLICY_ID, e);
-		}
+			}	
 	}
 
 	/**
@@ -812,19 +706,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			return policies.stream().anyMatch(authPolicy -> authPolicy.getAuthType().equalsIgnoreCase(authType)
 					&& authPolicy.getAuthSubType().equalsIgnoreCase(subAuthType));
 		}
-	}
-
-	/**
-	 * Gets the policy.
-	 *
-	 * @param policyId
-	 *            the policy id
-	 * @return the policy
-	 * @throws IdAuthenticationAppException 
-	 */
-	private Optional<PolicyDTO> getPolicy(String policyId) throws IdAuthenticationBusinessException {
-		return partnerService.getPolicy(policyId);
-	}
+	}	
 
 	/**
 	 * Gets the auth part.
@@ -844,8 +726,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 						.toArray(size -> new String[size]);
 
 				if (paramsArray.length >= 2) {
-					params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
-					params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 1]);
+					params.put(PARTNER_ID, paramsArray[paramsArray.length - 3]);
+					params.put(API_KEY, paramsArray[paramsArray.length - 2]);
+					params.put(MISPLICENSE_KEY,paramsArray[paramsArray.length - 1]);
 				}
 			}
 		}

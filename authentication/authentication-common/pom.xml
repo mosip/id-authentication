@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.8-SNAPSHOT</version>
+		<version>1.0.6</version>
 	</parent>
-	<version>1.0.8-SNAPSHOT</version>
+	<version>1.0.6</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<url>http://maven.apache.org</url>
@@ -72,6 +72,12 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel-idvalidator-vid.version}</version>
+		</dependency>
+			<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-tokenidgenerator-service</artifactId>
+			<version>1.0.6</version>
+			<classifier>lib</classifier>
 		</dependency>
 		<!-- Sprint Boot -->
 		<dependency>

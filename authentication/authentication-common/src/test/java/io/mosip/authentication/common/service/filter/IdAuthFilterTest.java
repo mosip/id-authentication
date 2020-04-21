@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.filter;
 
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -45,23 +46,31 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 /**
  * The Class IdAuthFilterTest.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class, PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
 @WebMvcTest
 @AutoConfigureMockMvc
 public class IdAuthFilterTest {
@@ -186,59 +195,7 @@ public class IdAuthFilterTest {
 	public void testSign() throws IdAuthenticationAppException {
 		assertEquals(true, filter.validateRequestSignature("something", "something".getBytes()));
 	}
-
-	/**
-	 * Test valid misp license key.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void testValidMispLicenseKey() throws IdAuthenticationAppException {
-		String mispId = ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "735899345");
-		assertEquals("5479834598", mispId);
-	}
-
-	/**
-	 * Test expired license key.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void testExpiredLicenseKey() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-008 --> License key of MISP has expired";
-		try {
-			ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "135898653");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
 	
-	@Test
-	public void testInvalidLicenseKey() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-007 --> License key does not belong to a registered MISP";
-		try {
-			ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "1358986532332");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
-	
-
-	/**
-	 * Test inactive license key.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void testInactiveLicenseKey() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-017 --> License key of MISP is blocked";
-		try {
-			ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "635899234");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
-
 	/**
 	 * Valid partner id test.
 	 *
@@ -248,82 +205,7 @@ public class IdAuthFilterTest {
 		ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "1873299273");
 	}
 
-	/**
-	 * In valid partner id test.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void inValidPartnerIdTest() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-009 --> Partner is not registered";
-		try {
-			ReflectionTestUtils.invokeMethod(filter, "checkValidPartnerId", "18732937232");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
-
-	/**
-	 * Inactive partner id test.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void inactivePartnerIdTest() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-012 --> Partner is deactivated";
-		try {
-			ReflectionTestUtils.invokeMethod(filter, "checkValidPartnerId", "1873293764");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
-
-	/**
-	 * Policies unmapped partner id test.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void policyUnmappedPartnerIdTest() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-014 --> Partner is not assigned with any policy";
-		try {
-			ReflectionTestUtils.invokeMethod(filter, "checkValidPartnerId", "18248239994");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
-
-	/**
-	 * Valid MISP partner id test.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void validMISPPartnerIdTest() throws IdAuthenticationAppException {
-		PartnerDTO partner = new PartnerDTO();
-		partner.setPartnerId("1873299273");
-		partner.setPolicyId("92834787293");
-		String policyId = ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", partner,
-				"5479834598");
-		assertEquals("92834787293", policyId);
-	}
-
-	/**
-	 * In valid MISP partner id test.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void inValidMISPPartnerIdTest() throws IdAuthenticationAppException {
-		String errorMessage="IDA-MPA-010 --> MISP and Partner not mapped";
-		try {
-			PartnerDTO partner = new PartnerDTO();
-			partner.setPartnerId("1873299300");
-			ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", partner, "9870862555");
-		} catch (UndeclaredThrowableException ex) {
-			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-		}
-	}
+		
 
 	/**
 	 * Mandatory auth policy test OTP check.
@@ -333,7 +215,8 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void mandatoryAuthPolicyTestOTPcheck() throws IdAuthenticationAppException {
-		String policyId = "92834787293";
+		PolicyDTO policy = new PolicyDTO();
+		policy.setPolicyId("92834787293");
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": false,\r\n" + "                             \"pin\": false\r\n"
@@ -341,7 +224,7 @@ public class IdAuthFilterTest {
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor92834787293(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -358,7 +241,6 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void mandatoryAuthPolicyTestbiocheck() throws IdAuthenticationAppException {
-		String policyId = "92834787293";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": true,\r\n" + "                             \"pin\": false\r\n"
@@ -366,7 +248,7 @@ public class IdAuthFilterTest {
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor92834787293(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -383,7 +265,6 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void mandatoryAuthPolicyTestpincheck() throws IdAuthenticationAppException {
-		String policyId = "0983222";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": true,\r\n" + "                             \"pin\": false\r\n"
@@ -391,7 +272,7 @@ public class IdAuthFilterTest {
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -408,14 +289,13 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void mandatoryAuthPolicyTestdemocheck() throws IdAuthenticationAppException {
-		String policyId = "0983252";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": false,\r\n" + "                             \"pin\": true\r\n"
 				+ "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -432,14 +312,13 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void allowedAuthPolicyTestOTPCheck() throws IdAuthenticationAppException {
-		String policyId = "0983252";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": true,\r\n" + "                             \"pin\": false\r\n"
 				+ "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983252(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -455,7 +334,6 @@ public class IdAuthFilterTest {
 	 */
 	@Test
 	public void allowedAuthPolicyTestDemoCheck() throws IdAuthenticationAppException {
-		String policyId = "0983222";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": true,\r\n"
 				+ "                             \"otp\": false,\r\n" + "                             \"pin\": false\r\n"
@@ -463,7 +341,7 @@ public class IdAuthFilterTest {
 		try {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -479,15 +357,14 @@ public class IdAuthFilterTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void allowedAuthPolicyTestPinCheck() throws IdAuthenticationAppException {
-		String policyId = "0983754";
+	public void allowedAuthPolicyTestPinCheck() throws IdAuthenticationAppException {		
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": false,\r\n" + "                             \"pin\": true\r\n"
 				+ "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983754(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -505,13 +382,12 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void allowedAuthPolicyTestBioCheck() throws IdAuthenticationAppException {
-		String policyId = "0123456";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
 				+ "                             \"demo\": true,\r\n" + "                             \"otp\": true,\r\n"
 				+ "                             \"pin\": true\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
-			filter.checkAllowedAuthTypeBasedOnPolicy(policyId, requestBodyMap);
+			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0123456(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
@@ -524,10 +400,11 @@ public class IdAuthFilterTest {
 	 * Validate deciphered request test.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
-	public void validateDecipheredRequestTest() throws IdAuthenticationAppException {
+	@Test(expected = IDDataValidationException.class)
+	public void validateDecipheredRequestTest() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				new HttpServletRequest() {
 
@@ -957,4 +834,137 @@ public class IdAuthFilterTest {
 
 	}
 
+	private PolicyDTO getPolicyFor92834787293() {
+		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"otp-request\", \"mandatory\": false }, { \"authType\": \"otp\", \"mandatory\": false }, { \"authType\": \"demo\", \"mandatory\": false }, { \"authType\": \"kyc\", \"mandatory\": false }, { \"authType\": \"pin\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
+		String policyId = "92834787293";
+		PolicyDTO polictDto = null;
+		try {
+			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
+			polictDto.setPolicyId(policyId);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return polictDto;
+		
+	}
+	
+	
+	private PolicyDTO getPolicyFor0983222() {
+		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"otp\", \"mandatory\": true }, { \"authType\": \"pin\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
+		String policyId = "92834787293";
+		PolicyDTO polictDto = null;
+		try {
+			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
+			polictDto.setPolicyId(policyId);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return polictDto;		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private PolicyDTO getPolicyFor0983252() {
+		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"demo\", \"mandatory\": true }, { \"authType\": \"pin\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
+		String policyId = "92834787293";
+		PolicyDTO polictDto = null;
+		try {
+			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
+			polictDto.setPolicyId(policyId);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return polictDto;		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private PolicyDTO getPolicyFor0983754() {
+		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"demo\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
+		String policyId = "92834787293";
+		PolicyDTO polictDto = null;
+		try {
+			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
+			polictDto.setPolicyId(policyId);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return polictDto;		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private PolicyDTO getPolicyFor0123456() {
+		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"demo\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
+		String policyId = "92834787293";
+		PolicyDTO polictDto = null;
+		try {
+			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
+			polictDto.setPolicyId(policyId);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return polictDto;		
+	}
 }

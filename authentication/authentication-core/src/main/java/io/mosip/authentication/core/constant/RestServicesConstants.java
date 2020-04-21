@@ -33,6 +33,10 @@ public enum RestServicesConstants {
 	
 	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
 	
+	ENCRYPTION_SERVICE("encrypt-service"),
+
+	DECRYPTION_SERVICE("decrypt-service"),
+	
 	TITLE_SERVICE("id-masterdata-title-service"),
 	
 	USERID_RID("userid-rid"),
@@ -47,7 +51,11 @@ public enum RestServicesConstants {
 	
 	TOKEN_ID_GENERATOR("token-id-generator"),
 	
-	DEVICE_VERIFICATION_SERVICE("device-verification-service");
+	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service"),
+	
+	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
+	
+	ID_PMP_SERVICE("id-pmp-service");
 
 	/** The service name. */
 	private final String serviceName;
