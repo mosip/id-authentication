@@ -725,10 +725,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 				String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
 						.toArray(size -> new String[size]);
 
-				if (paramsArray.length >= 2) {
-					params.put(PARTNER_ID, paramsArray[paramsArray.length - 3]);
-					params.put(API_KEY, paramsArray[paramsArray.length - 2]);
-					params.put(MISPLICENSE_KEY,paramsArray[paramsArray.length - 1]);
+				if (paramsArray.length >= 3) {
+					params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
+					params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
+					params.put(API_KEY,paramsArray[paramsArray.length - 1]);
 				}
 			}
 		}
