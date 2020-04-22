@@ -39,9 +39,13 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
+import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.kernel.datamapper.orika.builder.DataMapperBuilderImpl;
 
 /**
  * Class for defining configurations for the service.
