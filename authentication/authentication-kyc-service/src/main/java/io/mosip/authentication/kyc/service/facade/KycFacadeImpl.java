@@ -23,7 +23,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -76,8 +76,6 @@ public class KycFacadeImpl implements KycFacade {
 	@Autowired
 	private AuditHelper auditHelper;
 
-	
-	
 	@Autowired
 	private UinEncryptSaltRepo uinEncryptSaltRepo;
 
@@ -87,10 +85,10 @@ public class KycFacadeImpl implements KycFacade {
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
-	
+
 	@Autowired
-	private IdAuthTransactionManager transactionManager;
-	
+	private IdAuthSecurityManager securityManager;
+
 	@Autowired
 	private PartnerService partnerService;
 
@@ -123,52 +121,53 @@ public class KycFacadeImpl implements KycFacade {
 		String uin = null;
 		try {
 			String idvId = kycAuthRequestDTO.getIndividualId();
-			String idvIdtype =IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
-	
+			String idvIdtype = IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
+
 			Map<String, Object> idResDTO = idService.processIdType(idvIdtype, idvId, true);
 			uin = (String) idResDTO.get("uin");
-			
-			KycAuthResponseDTO kycAuthResponseDTO = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId, idResDTO, uin);
-			status =  kycAuthResponseDTO.getResponse().isKycStatus();
+
+			KycAuthResponseDTO kycAuthResponseDTO = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
+					idResDTO, uin);
+			status = kycAuthResponseDTO.getResponse().isKycStatus();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, uin);
-			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
+					kycAuthRequestDTO.getIndividualId(),
 					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
 					"kycAuthentication status : " + status);
 			return kycAuthResponseDTO;
-		} catch(IdAuthenticationBusinessException e) {
+		} catch (IdAuthenticationBusinessException e) {
 			status = false;
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, uin);
-			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO.getIndividualId(),
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
+					kycAuthRequestDTO.getIndividualId(),
 					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
 			throw e;
 		}
 	}
 
-	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String uin) throws IdAuthenticationBusinessException {
-		if(uin != null) {
+	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String uin)
+			throws IdAuthenticationBusinessException {
+		if (uin != null) {
 			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId);
-			
+
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
-					.withRequestType(RequestType.KYC_AUTH_REQUEST)
-					.withStaticToken(staticTokenId)
-					.withStatus(status)
-					.withInternal(false)
-					.withPartner(partner)
-					.withUin(uin)
-					.build(env,uinEncryptSaltRepo,uinHashSaltRepo,transactionManager);
+					.withRequestType(RequestType.KYC_AUTH_REQUEST).withStaticToken(staticTokenId).withStatus(status)
+					.withInternal(false).withPartner(partner).withUin(uin)
+					.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 			idService.saveAutnTxn(authTxn);
 		}
 	}
 
 	private KycAuthResponseDTO doProcessKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
-			String partnerId, Map<String, Object> idResDTO, String uin) throws IdAuthenticationBusinessException, IDDataValidationException {
+			String partnerId, Map<String, Object> idResDTO, String uin)
+			throws IdAuthenticationBusinessException, IDDataValidationException {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		
+
 		String resTime = null;
 		if (kycAuthRequestDTO != null) {
-				
+
 			String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
 
 			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
@@ -176,7 +175,7 @@ public class KycFacadeImpl implements KycFacade {
 			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-			
+
 			Map<String, List<IdentityInfoDTO>> idInfo = idService.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();

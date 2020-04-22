@@ -10,7 +10,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -176,7 +176,7 @@ public class AuthTransactionBuilder {
 	 *             the id authentication business exception
 	 */
 	public AutnTxn build(Environment env, UinEncryptSaltRepo uinEncryptSaltRepo, UinHashSaltRepo uinHashSaltRepo,
-			IdAuthTransactionManager transactionManager) throws IdAuthenticationBusinessException {
+			IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
 		try {
 			String idvId;
 			String reqTime;
@@ -231,7 +231,7 @@ public class AuthTransactionBuilder {
 				
 				if(isInternal) {
 					autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
-					Optional<String> clientId = Optional.ofNullable(transactionManager.getUser());
+					Optional<String> clientId = Optional.ofNullable(securityManager.getUser());
 					if (clientId.isPresent()) {
 						String user = clientId.get();
 						// Added workaround to trim the user id coming out authentication to avoid
