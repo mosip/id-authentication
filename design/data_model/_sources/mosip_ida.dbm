@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,69" last-zoom="0.55"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -256,7 +256,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Encript Salt: Stores the salt used to encrypt an uin of an individual in the encryption algorithm.]]></comment>
-	<position x="420" y="520"/>
+	<position x="300" y="400"/>
 	<column name="id" not-null="true">
 		<type name="bigint" length="0"/>
 		<comment><![CDATA[Id: Unique id generated for the salts that is used to encrypt the uin field.]]></comment>
@@ -352,6 +352,214 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 	<constraint name="uk_uinal" type="uq-constr" table="ida.uin_auth_lock">
 		<columns names="uin_hash,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_alias" alias="uinal">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Alias: To maintain a system generated key as alias for the encryption key that will be stored in key-store devices like HSM.]]></comment>
+	<position x="600" y="360"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
+	</column>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Application ID: Application id for which the encryption key is generated]]></comment>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Reference ID: Reference ID is a reference inforamtion received from key requester which can be machine id, TSP id, etc.]]></comment>
+	</column>
+	<column name="key_gen_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Key Generated Date Time: Date and time when the key was generated.]]></comment>
+	</column>
+	<column name="key_expire_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Key Expiry Date Time: Date and time when the key will be expired. This will be derived based on the configuration / policy defined in Key policy definition.]]></comment>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the key, whether it is active or expired.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keymals_id" type="pk-constr" table="ida.key_alias">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_store" alias="uinal">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Store: In MOSIP, data related to an individual in stored in encrypted form. This table is to manage all the keys(private and public keys) used. ]]></comment>
+	<position x="420" y="580"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: ID is a unique identifier (UUID) used for managing encryption keys]]></comment>
+	</column>
+	<column name="master_key" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Master Key: Master key is used to encrypt the other keys (Public / Private)]]></comment>
+	</column>
+	<column name="private_key" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[Private Key: Private key]]></comment>
+	</column>
+	<column name="public_key" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[Public Key: Public key]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keystr_id" type="pk-constr" table="ida.key_store">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_policy_def" alias="uinal">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Policy Defination: Policy related to encryption key management is defined here. For eg. Expiry duration of a key generated.]]></comment>
+	<position x="680" y="580"/>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
+	</column>
+	<column name="key_validity_duration">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Key Validity Duration: Duration for which key is valid]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keypdef_id" type="pk-constr" table="ida.key_policy_def">
+		<columns names="app_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_policy_def_h" alias="uinal">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.]]></comment>
+	<position x="980" y="580"/>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Date Timestamp : This to track master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
+	</column>
+	<column name="key_validity_duration">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Key Validity Duration: Duration for which key is valid]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keypdefh_id" type="pk-constr" table="ida.key_policy_def_h">
+		<columns names="app_id,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 </table>
 
