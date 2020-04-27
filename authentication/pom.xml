@@ -59,12 +59,12 @@
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>1.0.8-SNAPSHOT</authentication-core.version>
 		<authentication-common.version>1.0.8-SNAPSHOT</authentication-common.version>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
 		<kernel.parent.version>1.0.6</kernel.parent.version>
-		<kernel-core.version>1.0.8-SNAPSHOT</kernel-core.version>
+		<kernel-core.version>1.0.8</kernel-core.version>
+		<kernel-tokenidgenerator-service.version>1.0.6</kernel-tokenidgenerator-service.version>
 		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
 		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
@@ -80,13 +80,9 @@
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>1.0.8</kernel-auth-adapter.version>
-
 		<id-repository-core.version>1.0.7</id-repository-core.version>
-
 		<json.utility.version>20180130</json.utility.version>
-
-
-		<!-- Maven Plugins -->
+				<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>

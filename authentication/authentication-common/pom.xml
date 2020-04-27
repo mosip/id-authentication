@@ -105,6 +105,18 @@
 			<artifactId>kernel-crypto-jce</artifactId>
 			<version>${kernel-crypto-jce.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-tokenidgenerator-service</artifactId>
+			<version>${kernel-tokenidgenerator-service.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+			</exclusions>
+			<classifier>lib</classifier>
+		</dependency>
 		<!-- Commons Lang -->
 		<dependency>
 			<groupId>commons-lang</groupId>
