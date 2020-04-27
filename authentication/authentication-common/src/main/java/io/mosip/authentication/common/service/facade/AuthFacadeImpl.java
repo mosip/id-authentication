@@ -25,7 +25,7 @@ import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -122,7 +122,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private AuthtypeStatusService authTypeStatusService;
 
 	@Autowired
-	private IdAuthTransactionManager transactionManager;
+	private IdAuthSecurityManager securityManager;
 	
 	@Autowired
 	private PartnerService partnerService;
@@ -540,7 +540,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				.withInternal(isInternal)
 				.withPartner(partner)
 				.withStatus(isStatus)
-				.build(env, uinEncryptSaltRepo, uinHashSaltRepo, transactionManager);
+				.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 	}
 
 }

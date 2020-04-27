@@ -186,8 +186,6 @@ public class InternalOTPRequestValidatorTest {
 	/**
 	 * Test timeout.
 	 */
-	@SuppressWarnings("deprecation")
-
 	@Test
 	public void testTimeout() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();

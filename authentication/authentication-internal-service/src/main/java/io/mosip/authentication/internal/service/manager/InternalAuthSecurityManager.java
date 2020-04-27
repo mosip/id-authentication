@@ -5,17 +5,17 @@ import java.util.Objects;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 
 /**
  * 
  * @author Arun Bose
  * 
- * The Class IdAuthTransactionManager.
+ * The Class IdAuthSecurityManager.
  */
 @Component
-public class InternalAuthTransactionManager extends IdAuthTransactionManager {
+public class InternalAuthSecurityManager extends IdAuthSecurityManager {
 
 	/**
 	 * provides the user id.
