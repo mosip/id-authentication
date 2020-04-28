@@ -17,6 +17,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -81,6 +82,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @param requestWrapper the request wrapper
 	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
@@ -129,6 +131,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @param decipherRequest the request got after decode and decipher the input stream
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	protected abstract void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> decipherRequest) throws IdAuthenticationAppException;

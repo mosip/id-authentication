@@ -72,6 +72,8 @@ public class MasterDataManagerTest {
 	public void before() {
 		ReflectionTestUtils.setField(masterDataManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(masterDataManager, "restFactory", restFactory);
+		ReflectionTestUtils.setField(masterDataManager, "mapper", mapper);
+		ReflectionTestUtils.setField(masterDataManager, "environment", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 	}
@@ -85,27 +87,43 @@ public class MasterDataManagerTest {
 		assertNotNull(fetchGenderType);
 	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
-	public void testGenderTypeInValid() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+	@Test
+	public void testTemplateForTypeCode() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
 		RestRequestDTO buildRequest  = new RestRequestDTO();
-		RestServiceException restServiceException = new RestServiceException();
-		restServiceException.addInfo("12213", "restServiceException");
 		Mockito.when(restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class)).thenReturn(buildRequest);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenThrow(restServiceException);
-		masterDataManager.fetchGenderType();
+		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getGender());
+
+		Map<String, String> params = new HashMap<>();
+		params.put("templateTypeCode", "auth-sms");
+		params.put("langCode", "fra");
+		Map<String, Map<String, String>> masterData = masterDataManager.fetchMasterData(
+				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, "templates", "templateTypeCode",
+				"fileText");
+		
+		assertNotNull(masterData);
 	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
-	public void testGenderTypeInValid2() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
-		RestRequestDTO buildRequest  = new RestRequestDTO();
-		RestServiceException restServiceException = new RestServiceException();
-		restServiceException.addInfo("12213", "restServiceException");
-		IDDataValidationException idDataValidationException = new IDDataValidationException();
-		idDataValidationException.addInfo("12213", "idDataValidationException");
-		Mockito.when(restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class)).thenThrow(idDataValidationException);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenThrow(restServiceException);
-		masterDataManager.fetchGenderType();
-	}
+//	@Test(expected=IdAuthenticationBusinessException.class)
+//	public void testGenderTypeInValid() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+//		RestRequestDTO buildRequest  = new RestRequestDTO();
+//		RestServiceException restServiceException = new RestServiceException();
+//		restServiceException.addInfo("12213", "restServiceException");
+//		Mockito.when(restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class)).thenReturn(buildRequest);
+//		Mockito.when(restHelper.requestSync(buildRequest)).thenThrow(restServiceException);
+//		masterDataManager.fetchGenderType();
+//	}
+	
+//	@Test(expected=IdAuthenticationBusinessException.class)
+//	public void testGenderTypeInValid2() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+//		RestRequestDTO buildRequest  = new RestRequestDTO();
+//		RestServiceException restServiceException = new RestServiceException();
+//		restServiceException.addInfo("12213", "restServiceException");
+//		IDDataValidationException idDataValidationException = new IDDataValidationException();
+//		idDataValidationException.addInfo("12213", "idDataValidationException");
+//		Mockito.when(restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class)).thenThrow(idDataValidationException);
+//		Mockito.when(restHelper.requestSync(buildRequest)).thenThrow(restServiceException);
+//		masterDataManager.fetchGenderType();
+//	}
 	
 	
 	@Test
@@ -117,27 +135,27 @@ public class MasterDataManagerTest {
 		assertNotNull(fetchTitles);
 	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
-	public void testTitleInValid() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
-		RestRequestDTO buildRequest  = new RestRequestDTO();
-		RestServiceException restServiceException = new RestServiceException();
-		restServiceException.addInfo("12213", "restServiceException");
-		Mockito.when(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class)).thenReturn(buildRequest);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenThrow(restServiceException);
-		masterDataManager.fetchTitles();
-	}
+//	@Test(expected=IdAuthenticationBusinessException.class)
+//	public void testTitleInValid() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+//		RestRequestDTO buildRequest  = new RestRequestDTO();
+//		RestServiceException restServiceException = new RestServiceException();
+//		restServiceException.addInfo("12213", "restServiceException");
+//		Mockito.when(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class)).thenReturn(buildRequest);
+//		Mockito.when(restHelper.requestSync(buildRequest)).thenThrow(restServiceException);
+//		masterDataManager.fetchTitles();
+//	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
-	public void testTitleValid2() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
-		RestRequestDTO buildRequest  = new RestRequestDTO();
-		RestServiceException restServiceException = new RestServiceException();
-		restServiceException.addInfo("12213", "restServiceException");
-		IDDataValidationException idDataValidationException = new IDDataValidationException();
-		idDataValidationException.addInfo("12213", "idDataValidationException");
-		Mockito.when(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class)).thenThrow(idDataValidationException);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getTitles());
-		masterDataManager.fetchTitles();
-	}
+//	@Test(expected=IdAuthenticationBusinessException.class)
+//	public void testTitleValid2() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
+//		RestRequestDTO buildRequest  = new RestRequestDTO();
+//		RestServiceException restServiceException = new RestServiceException();
+//		restServiceException.addInfo("12213", "restServiceException");
+//		IDDataValidationException idDataValidationException = new IDDataValidationException();
+//		idDataValidationException.addInfo("12213", "idDataValidationException");
+//		Mockito.when(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class)).thenThrow(idDataValidationException);
+//		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getTitles());
+//		masterDataManager.fetchTitles();
+//	}
 	
 	private Map<String, Map<String, List<Map<String, Object>>>> getGender() throws JsonParseException, JsonMappingException, IOException{
 		Map<String, Map<String, List<Map<String, Object>>>> resultMap = new HashMap<>();

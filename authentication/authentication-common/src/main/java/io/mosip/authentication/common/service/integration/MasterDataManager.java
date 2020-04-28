@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.integration;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,9 +11,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
@@ -26,6 +34,7 @@ import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /*
  * MasterDataManager
@@ -82,6 +91,12 @@ public class MasterDataManager {
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
+	@Autowired
+	private Environment environment;
 
 	/**
 	 * IdTemplate Manager Logger
@@ -99,16 +114,11 @@ public class MasterDataManager {
 	 * @return the map
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@SuppressWarnings("unchecked")
-	private Map<String, Map<String, String>> fetchMasterData(RestServicesConstants type, Map<String, String> params,
+	@SuppressWarnings("unchecked") Map<String, Map<String, String>> fetchMasterData(RestServicesConstants type, Map<String, String> params,
 			String masterDataListName, String keyAttribute, String valueAttribute)
 			throws IdAuthenticationBusinessException {
 		try {
-			RestRequestDTO buildRequest = restFactory.buildRequest(type, null, Map.class);
-			if (params != null && !params.isEmpty()) {
-				buildRequest.setPathVariables(params);
-			}
-			Map<String, Object> response = restHelper.requestSync(buildRequest);
+			Map<String, Object> response = getMasterDataInternal(type, params);
 
 			Map<String, List<Map<String, Object>>> fetchResponse;
 			if (response.get("response") instanceof Map) {
@@ -135,7 +145,70 @@ public class MasterDataManager {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+		} catch (IOException e) {
+			// logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
+					e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
+	}
+
+	private Map<String, Object> getMasterDataInternal(RestServicesConstants type, Map<String, String> params)
+			throws IDDataValidationException, RestServiceException, IOException {
+		try {
+			switch (type) {
+				case GENDER_TYPE_SERVICE:
+					return getMasterDataFromConfig("master.data.genders");
+				case TITLE_SERVICE:
+					return getMasterDataFromConfig("maste.data.titles");
+				case ID_MASTERDATA_TEMPLATE_SERVICE:
+					return getTemplates(params);
+				case ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG:
+					return getTemplates(params);
+				default: {
+					RestRequestDTO buildRequest = restFactory.buildRequest(type, null, Map.class);
+					if (params != null && !params.isEmpty()) {
+						buildRequest.setPathVariables(params);
+					}
+					Map<String, Object> response = restHelper.requestSync(buildRequest);
+					return response;
+				}
+			}
+		} catch (IOException e) {
+			throw e;
+		}
+	}
+
+	private Map<String, Object> getTemplates(Map<String, String> filterParams) throws IOException, JsonParseException, JsonMappingException {
+		Map<String, Object> templateData = getMasterDataFromConfig("master.data.ida-templates");
+		if(filterParams != null && !filterParams.isEmpty()) {
+		//((List<Map<String, Object>>)((Map<String, Object>)templateData.get("response")).get("templates")).get(0)
+			List<Map<String, Object>> filteredTempates = Optional.ofNullable(templateData.get("response"))
+					.filter(res -> res instanceof Map)
+					.map(res -> ((Map<String, Object>)res).get("templates"))
+					.filter(obj -> obj instanceof List)
+					.map(obj -> ((List<Map<String, Object>>) obj).stream())
+					.orElse(Stream.empty())
+					.filter(templateMap -> 
+								filterParams.keySet()
+											.stream()
+											.filter(templateMap::containsKey)
+											.allMatch(key -> templateMap.get(key).equals(filterParams.get(key))))
+					.collect(Collectors.toCollection(() -> new ArrayList<>()));
+			
+			if(!filteredTempates.isEmpty()) {
+				((Map<String, Object>)templateData.get("response")).put("templates", filteredTempates);
+			}
+		}
+		
+		return templateData;
+	}
+
+	private Map<String, Object> getMasterDataFromConfig(String masterDataProperty)
+			throws IOException, JsonParseException, JsonMappingException {
+		String encodedMasterData = environment.getProperty(masterDataProperty);
+		Map<String, Object> templateData = mapper.readValue(CryptoUtil.decodeBase64(encodedMasterData), Map.class);
+		return templateData;
 	}
 
 	/**
@@ -148,8 +221,10 @@ public class MasterDataManager {
 	 */
 	public String fetchTemplate(String langCode, String templateName) throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
-		params.put("langcode", langCode);
-		params.put("templatetypecode", templateName);
+//		params.put("langcode", langCode);
+//		params.put("templatetypecode", templateName);
+		params.put("langCode", langCode);
+		params.put("templateTypeCode", templateName);
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, params, TEMPLATES, TEMPLATE_TYPE_CODE, FILE_TEXT);
 		return Optional.ofNullable(masterData.get(langCode)).map(map -> map.get(templateName)).orElse("");
@@ -166,7 +241,7 @@ public class MasterDataManager {
 		Map<String, String> params = new HashMap<>();
 		String finalTemplate = "";
 		StringBuilder template = new StringBuilder();
-		params.put(CODE, templateName);
+		params.put("templateTypeCode", templateName);
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, TEMPLATES, TEMPLATE_TYPE_CODE,
 				FILE_TEXT);
