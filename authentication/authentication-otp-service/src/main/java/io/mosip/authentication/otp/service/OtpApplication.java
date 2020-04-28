@@ -74,7 +74,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		OTPServiceImpl.class, OTPRequestValidator.class, IdaTransactionInterceptor.class, IdAuthSecurityManager.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
-	    TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
+	  TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
 @ComponentScan({ "io.mosip.authentication.otp.service.*" })
 public class OtpApplication {
 
