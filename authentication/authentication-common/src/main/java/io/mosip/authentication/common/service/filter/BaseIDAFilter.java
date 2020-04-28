@@ -160,7 +160,7 @@ public abstract class BaseIDAFilter implements Filter {
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
 			response.getWriter().write(responseAsString);
-		} catch (IdAuthenticationAppException | IdAuthenticationBusinessException e) {
+		} catch (IdAuthenticationAppException  e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
@@ -340,7 +340,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationBusinessException 
 	 */
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
-			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+			throws IdAuthenticationAppException {
 		try {
 			byte[] requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
 			logDataSize(new String(requestAsByte), IdAuthCommonConstants.REQUEST);

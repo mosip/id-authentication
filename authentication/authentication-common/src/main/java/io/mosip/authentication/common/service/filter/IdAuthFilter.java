@@ -262,7 +262,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> requestBody) throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+			Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
 		String partnerId = partnerLkMap.get(PARTNER_ID);
 		String licenseKey = partnerLkMap.get(MISPLICENSE_KEY);
@@ -274,8 +274,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey) throws IdAuthenticationBusinessException {
-		return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey);		
+	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey) throws IdAuthenticationAppException {
+		try {
+			return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey);
+		} catch (IdAuthenticationBusinessException e) {
+			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);		
+		}		
 	}
 
 	/**

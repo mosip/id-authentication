@@ -57,7 +57,6 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
@@ -395,11 +394,10 @@ public class IdAuthFilterTest {
 	 * Validate deciphered request test.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IdAuthenticationBusinessException 
 	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IDDataValidationException.class)
-	public void validateDecipheredRequestTest() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+	@Test(expected = IdAuthenticationAppException.class)
+	public void validateDecipheredRequestTest() throws IdAuthenticationAppException{
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				new HttpServletRequest() {
 

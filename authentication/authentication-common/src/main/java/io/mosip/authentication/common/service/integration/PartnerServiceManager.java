@@ -44,9 +44,6 @@ public class PartnerServiceManager {
 	private static final String ERRORS = "errors";
 	
 	private static final String ERRORCODE = "errorCode";
-	
-	private static final String ERRORMESSAGE = "message";
-	
 
 	@SuppressWarnings("unchecked")
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException {
@@ -73,10 +70,32 @@ public class PartnerServiceManager {
 				if (partnerService.containsKey(ERRORS)) {
 					List<Map<String, Object>> partnerServiceErrorList = (List<Map<String, Object>>) partnerService.get(ERRORS);
 					if(!partnerServiceErrorList.isEmpty()) {
-						throw new IdAuthenticationBusinessException(partnerServiceErrorList.get(0).get(ERRORCODE).toString(),
-								partnerServiceErrorList.get(0).get(ERRORMESSAGE).toString(),e);
+						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_ACTIVE.getErrorCode())) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+								IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage(),e);
+						}						
+						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED_TO_POLICY.getErrorCode())) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorCode(),
+									IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorMessage(),e);
+							}
+						
+						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_NOT_EXISTS.getErrorCode())) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+									IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage(),e);
+							}
+						
+						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_EXPIRED.getErrorCode())) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
+									IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage(),e);
+							}
+						
+						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTRED.getErrorCode())) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+									IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
+							}
 					}else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 					}
 				}
 			}			

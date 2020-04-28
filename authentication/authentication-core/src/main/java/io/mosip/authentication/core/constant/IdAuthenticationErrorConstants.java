@@ -125,7 +125,12 @@ public enum IdAuthenticationErrorConstants {
 	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
 	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
 
-	;
+	//Partner and Misp validations
+	PARTNER_NOT_ACTIVE("PMS_PMP_016","Partner is not active."),
+	PARTNER_NOT_MAPPED_TO_POLICY("PMS_PMP_017","Partner is not mapped to any policy."),
+	MISP_LICENSE_KEY_NOT_EXISTS("PMS_PMP_020","MISP license key not exists."),
+	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
+	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered.");
 
 	private final String errorCode;
 	private final String errorMessage;

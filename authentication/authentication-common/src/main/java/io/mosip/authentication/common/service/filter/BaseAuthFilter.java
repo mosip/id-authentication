@@ -67,7 +67,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 */
 	@Override
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
-			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+			throws IdAuthenticationAppException {
 		super.consumeRequest(requestWrapper, requestBody);
 		authenticateRequest(requestWrapper);
 
@@ -85,7 +85,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationBusinessException 
 	 */
 	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
-			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+			throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
@@ -134,7 +134,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationBusinessException 
 	 */
 	protected abstract void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> decipherRequest) throws IdAuthenticationAppException, IdAuthenticationBusinessException;
+			Map<String, Object> decipherRequest) throws IdAuthenticationAppException;
 
 	/*
 	 * (non-Javadoc)

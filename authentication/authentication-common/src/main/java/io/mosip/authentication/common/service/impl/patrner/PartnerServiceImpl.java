@@ -72,7 +72,7 @@ public class PartnerServiceImpl implements PartnerService {
 	public Optional<PartnerDTO> getPartner(String partnerId) throws IdAuthenticationBusinessException {
 		
 		if(partnerServiceResponseMap.containsKey(partnerId)) {
-			PartnerPolicyResponseDTO partnerPolicyDTO = new PartnerPolicyResponseDTO();//partnerServiceResponseMap.get(partnerId);
+			PartnerPolicyResponseDTO partnerPolicyDTO = partnerServiceResponseMap.get(partnerId);
 			PartnerDTO partnerDTO = new PartnerDTO();
 			partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
 			partnerDTO.setPartnerName(partnerPolicyDTO.getPartnerName());
