@@ -49,9 +49,8 @@ public enum RestServicesConstants {
 	TOKEN_ID_GENERATOR("token-id-generator"),
 	
 	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
-
-	ID_PMP_SERVICE("id-pmp-service");
 	
+	ID_PMP_SERVICE("id-pmp-service");
 
 	/** The service name. */
 	private final String serviceName;
