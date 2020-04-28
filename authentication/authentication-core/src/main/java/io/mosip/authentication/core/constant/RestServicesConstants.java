@@ -5,6 +5,7 @@ package io.mosip.authentication.core.constant;
  * will build rest requests from properties.
  *
  * @author Manoj SP
+ * @author Nagarjuna K
  */
 public enum RestServicesConstants {
 
@@ -47,7 +48,9 @@ public enum RestServicesConstants {
 	
 	TOKEN_ID_GENERATOR("token-id-generator"),
 	
-	DEVICE_VERIFICATION_SERVICE("device-verification-service");
+	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
+	
+	ID_PMP_SERVICE("id-pmp-service");
 
 	/** The service name. */
 	private final String serviceName;

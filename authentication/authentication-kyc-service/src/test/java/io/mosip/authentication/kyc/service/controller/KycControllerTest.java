@@ -122,7 +122,7 @@ public class KycControllerTest {
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
 		kycFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789");
-		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456", "123456");
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456", "123456","12345");
 	}
 
 	@Test
@@ -196,7 +196,7 @@ public class KycControllerTest {
 				.thenReturn(kycAuthResponseDTO);
 //		Mockito.when(kycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
 //				.thenReturn(kycAuthResponseDTO);
-		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689","12345");
 		assertFalse(error.hasErrors());
 	}
 
@@ -269,7 +269,7 @@ public class KycControllerTest {
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 //		Mockito.when(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 //				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		kycAuthController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");
+		kycAuthController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567","123456");
 	}
 
 }

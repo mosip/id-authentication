@@ -30,6 +30,7 @@ import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.interceptor.IdaTransactionInterceptor;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -68,8 +69,8 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,
 		IdObjectPatternValidator.class, BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class,
 		IdaTransactionInterceptor.class, IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
-		PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
-		KeymanagerServiceImpl.class, KeymanagerUtil.class,TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class })
+		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
+		KeymanagerServiceImpl.class, KeymanagerUtil.class,PartnerServiceImpl.class,TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
 public class KycAuthenticationApplication {
 
 	/**

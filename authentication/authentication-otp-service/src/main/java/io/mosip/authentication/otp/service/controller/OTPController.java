@@ -34,6 +34,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * The {@code OTPAuthController} use to send request to generate otp.
  * 
  * @author Rakesh Roshan
+ * @author Nagarjuna K
  */
 @RestController
 public class OTPController {
@@ -69,9 +70,9 @@ public class OTPController {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@PostMapping(path = "/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/{MISP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,
-			@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("MISP-LK") String mispLK)
+			@PathVariable("MISP-LK") String mispLK,@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("API-Key") String apiKey )
 			throws IdAuthenticationAppException, IDDataValidationException {
 		OtpResponseDTO otpResponseDTO = null;
 		try {

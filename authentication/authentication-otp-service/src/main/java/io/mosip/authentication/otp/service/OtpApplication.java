@@ -32,6 +32,7 @@ import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.interceptor.IdaTransactionInterceptor;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -72,7 +73,8 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		IdObjectPatternValidator.class, BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class,
 		OTPServiceImpl.class, OTPRequestValidator.class, IdaTransactionInterceptor.class, IdAuthSecurityManager.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
-		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class})
+		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
+	  TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
 @ComponentScan({ "io.mosip.authentication.otp.service.*" })
 public class OtpApplication {
 

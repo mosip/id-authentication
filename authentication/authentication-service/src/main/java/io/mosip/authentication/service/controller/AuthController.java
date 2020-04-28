@@ -39,6 +39,7 @@ import springfox.documentation.annotations.ApiIgnore;
  *
  * @author Arun Bose
  * @author Prem Kumar
+ * @author Nagarjuna K
  */
 @RestController
 public class AuthController {
@@ -77,12 +78,12 @@ public class AuthController {
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@PostMapping(path = "/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/{MISP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
-			@ApiIgnore Errors errors, @PathVariable("Auth-Partner-ID") String partnerId,
-			@PathVariable("MISP-LK") String mispLK)
+			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
+			@PathVariable("API-Key") String apiKey)
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		AuthResponseDTO authResponsedto = null;
 		try {
