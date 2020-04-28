@@ -79,12 +79,12 @@ public class KycAuthController {
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/{eKYC-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/{MISP-LK}/{eKYC-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
-			@ApiIgnore Errors errors, @PathVariable("eKYC-Partner-ID") String partnerId,
-			@PathVariable("MISP-LK") String mispLK)
+			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK,@PathVariable("eKYC-Partner-ID") String partnerId,
+			@PathVariable("API-Key") String apiKey)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();

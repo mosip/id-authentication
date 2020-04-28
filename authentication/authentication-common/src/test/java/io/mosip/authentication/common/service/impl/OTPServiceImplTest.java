@@ -32,9 +32,11 @@ import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
@@ -61,7 +63,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
-		IDAMappingFactory.class, PartnerServiceImpl.class })
+		IDAMappingFactory.class, PartnerServiceImpl.class,PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
 @WebMvcTest
 public class OTPServiceImplTest {
 

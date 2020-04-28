@@ -38,7 +38,7 @@ public class PartnerServiceImplTest {
 		partnerService.getPolicy(policyId);
 	}
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void testGetPartner() throws Exception {
 		String partnerId = "";
 

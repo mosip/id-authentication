@@ -172,6 +172,9 @@ public final class IdAuthCommonConstants {
 	/** The Constant MISPLICENSE_KEY. */
 	public static final String MISPLICENSE_KEY = "misplicenseKey";
 
+	/** The constant api_key */
+	public static final String API_KEY="apiKey";
+
 	/** The Constant PARTNER_ID. */
 	public static final String PARTNER_ID = "partnerId";
 
