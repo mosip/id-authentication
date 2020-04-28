@@ -41,6 +41,7 @@ import springfox.documentation.annotations.ApiIgnore;
  *
  * @author Arun Bose
  * @author Prem Kumar
+ * @author Nagarjuna K
  */
 @RestController
 public class KycAuthController {

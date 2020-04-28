@@ -26,6 +26,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 
+/**
+ * Test class for PartnerServiceManager
+ * @author Nagarjuna
+ *
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

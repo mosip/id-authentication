@@ -26,6 +26,13 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * This class Partner Service Manager connects to partner service to validate and 
+ * get the policy file for a given partnerID, partner api key and misp license key.
+ * 
+ * @author Nagarjuna
+ *
+ */
 @Component
 public class PartnerServiceManager {
 		

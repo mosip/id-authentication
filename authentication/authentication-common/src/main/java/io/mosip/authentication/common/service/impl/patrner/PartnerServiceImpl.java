@@ -27,6 +27,7 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
  * License information. Any caching of these data to be handled here.
  * 
  * @author Loganathan Sekar
+ * @author Nagarjuna K
  *
  */
 @Service

@@ -34,6 +34,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * The {@code OTPAuthController} use to send request to generate otp.
  * 
  * @author Rakesh Roshan
+ * @author Nagarjuna K
  */
 @RestController
 public class OTPController {

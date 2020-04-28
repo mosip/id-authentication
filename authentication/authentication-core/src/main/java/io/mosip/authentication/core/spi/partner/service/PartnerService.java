@@ -13,7 +13,7 @@ import io.mosip.authentication.core.partner.dto.PolicyDTO;
  * Any caching of these data to be handled here.
  * 
  * @author Loganathan Sekar
- *
+ * @author Nagarjuna K
  */
 public interface PartnerService {
 	

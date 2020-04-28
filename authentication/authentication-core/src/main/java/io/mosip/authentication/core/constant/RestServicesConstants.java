@@ -5,6 +5,7 @@ package io.mosip.authentication.core.constant;
  * will build rest requests from properties.
  *
  * @author Manoj SP
+ * @author Nagarjuna K
  */
 public enum RestServicesConstants {
 

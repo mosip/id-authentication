@@ -4,6 +4,7 @@ package io.mosip.authentication.core.constant;
  * The Class IdAuthCommonConstants has contants used throughout the modules
  *
  * @author Arun Bose S
+ * @author Nagarjuna K
  */
 public final class IdAuthCommonConstants {
 

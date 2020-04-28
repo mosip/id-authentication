@@ -13,6 +13,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
  * List of all IDA error codes and its respective error messages.
  * 
  * @author Manoj SP
+ * @author Nagarjuna K
  *
  */
 public enum IdAuthenticationErrorConstants {
