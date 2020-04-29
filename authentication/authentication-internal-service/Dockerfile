@@ -33,7 +33,7 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
-ADD configure_start.sh configure_start.sh
+ADD configure_start.sh /app/configure_start.sh
 
 RUN chmod +x configure_start.sh
 
