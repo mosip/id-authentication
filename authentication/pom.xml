@@ -63,7 +63,7 @@
 
 		<!-- Kernel components -->
 		<kernel.parent.version>1.0.6</kernel.parent.version>
-		<kernel-core.version>1.0.8</kernel-core.version>
+		<kernel-core.version>1.0.9-SNAPSHOT</kernel-core.version>
 		<kernel-tokenidgenerator-service.version>1.0.7</kernel-tokenidgenerator-service.version>
 		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
