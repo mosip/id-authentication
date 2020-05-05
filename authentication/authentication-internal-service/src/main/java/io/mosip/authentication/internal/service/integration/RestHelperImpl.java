@@ -75,17 +75,16 @@ public class RestHelperImpl implements RestHelper{
 			requestTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				if(response.toString().contains(ERRORS)) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
+				}
 				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			} else {
 				response = request(request).block();
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
 				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			}
@@ -119,7 +118,6 @@ public class RestHelperImpl implements RestHelper{
 
 	@Override
 	public Supplier<Object> requestAsync(io.mosip.authentication.core.dto.RestRequestDTO request) {
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
