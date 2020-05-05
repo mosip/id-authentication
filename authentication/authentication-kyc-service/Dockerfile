@@ -33,19 +33,19 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
-ADD configure_start.sh /app/configure_start.sh
+ADD configure_start.sh configure_start.sh
 
 RUN chmod +x configure_start.sh
 
 ADD target/authentication-kyc-service-*.jar authentication-kyc-service.jar
 
-VOLUME /softhsm
+#VOLUME /softhsm
 
 EXPOSE 8091
 
 EXPOSE 9010
 
-ENTRYPOINT [ "/app/configure_start.sh" ]
+ENTRYPOINT [ "/configure_start.sh" ]
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
