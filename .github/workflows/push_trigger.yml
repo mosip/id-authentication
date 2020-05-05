@@ -66,14 +66,14 @@ jobs:
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v1
-        with:
-          name: release
-          path: ./
+
+    - uses: actions/download-artifact@v1
+      with:
+        name: release
+        path: ./
 
     - name: Unzip and extract the authentication-otp-service
-        run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
+      run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
       
 
     - name: Setup branch and GPG public key 
