@@ -70,9 +70,9 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     rm -rf glowroot.zip ; \
     
     sed -i 's/<service_name>/authentication-service/g' glowroot/glowroot.properties ; \
-    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
+    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" /authentication-service.jar ; \
     else \
-    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" /authentication-service.jar ; \
     fi
-#CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "authentication-service.jar"]
+#CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "/authentication-service.jar"]
 
