@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,69" last-zoom="0.55"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,99" last-zoom="0.55"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -384,7 +384,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Status Code: Status of the key, whether it is active or expired.]]></comment>
 	</column>
-	<column name="lang_code" not-null="true">
+	<column name="lang_code">
 		<type name="character varying" length="3"/>
 		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
 	</column>
