@@ -22,7 +22,7 @@ import io.mosip.kernel.tokenidgenerator.service.TokenIDGeneratorService;
 @Component
 public class TokenIdManager {
 
-	@Autowired
+	@Autowired(required = false)
 	TokenIDGeneratorService tokenIDGeneratorService;
 	/**
 	 * Token ID Manager Logger

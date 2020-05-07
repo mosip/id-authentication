@@ -41,7 +41,7 @@ public class PartnerServiceImpl implements PartnerService {
 	@Autowired
 	protected ObjectMapper mapper;
 	
-	@Autowired
+	@Autowired(required = false)
 	private PartnerServiceManager partnerServiceManager;
 	
 	ConcurrentHashMap<String,PartnerPolicyResponseDTO> partnerServiceResponseMap = new ConcurrentHashMap<String, PartnerPolicyResponseDTO>();	
