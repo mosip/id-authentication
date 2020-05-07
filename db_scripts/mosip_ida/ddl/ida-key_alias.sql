@@ -20,7 +20,7 @@ CREATE TABLE ida.key_alias(
 	key_gen_dtimes timestamp,
 	key_expire_dtimes timestamp,
 	status_code character varying(36),
-	lang_code character varying(3) NOT NULL,
+	lang_code character varying(3),
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
