@@ -31,6 +31,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -92,9 +93,25 @@ public class IdAuthFilter extends BaseAuthFilter {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		partnerService = context.getBean(PartnerService.class);
+		if(checkBeanExists(context, PartnerService.class.getName())) {
+			partnerService = context.getBean(PartnerService.class);
+		}
 	}
 
+	/**
+	 * This method is used to check weather bean is loaded or not.
+	 * @param context
+	 * @param beanName
+	 * @return
+	 */
+	public boolean checkBeanExists(WebApplicationContext context, String beanName) {
+		String[] availableBeans =  context.getBeanDefinitionNames();
+		   if(Arrays.stream(availableBeans).anyMatch(beanName ::contains)){
+			   return true;
+		   }
+		return false;	
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
