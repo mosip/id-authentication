@@ -35,7 +35,7 @@ public class TokenIdManager {
 			TokenIDResponseDto response = tokenIDGeneratorService.generateTokenID(uin, partnerId);
 			return response.getTokenID();
 		} catch (Exception e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),e.getStackTrace().toString(),e.getMessage());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),e.getLocalizedMessage(),e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 	}
