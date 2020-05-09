@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.8-SNAPSHOT</version>
+	<version>1.0.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -36,16 +36,16 @@
 	</developers>
 
 	<distributionManagement>
-                <snapshotRepository>
-                        <id>ossrh</id>
-                        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                        <id>ossrh</id>
-                        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-		</distributionManagement>
-		
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 		  <id>ossrh</id>
@@ -57,7 +57,6 @@
 		  </snapshots>
 		</repository>
 	</repositories> 
-
 	<modules>
 		<module>authentication-common</module>
 		<module>authentication-core</module>
@@ -69,8 +68,8 @@
 
 	<properties>
 		<authentication.parent.version>${project.version}</authentication.parent.version>
-		<authentication-core.version>1.0.8-SNAPSHOT</authentication-core.version>
-		<authentication-common.version>1.0.8-SNAPSHOT</authentication-common.version>
+		<authentication-core.version>1.0.9-SNAPSHOT</authentication-core.version>
+		<authentication-common.version>1.0.9-SNAPSHOT</authentication-common.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
@@ -92,7 +91,7 @@
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>1.0.8</kernel-auth-adapter.version>
-		<id-repository-core.version>1.0.7</id-repository-core.version>
+		<id-repository-core.version>1.0.9-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -206,7 +205,6 @@
                          		<additionalJOption>-Xdoclint:none</additionalJOption>
                 	  	</configuration>
                 	</plugin>
-	
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -216,7 +214,7 @@
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>false</autoReleaseAfterClose>
-				  </configuration>
+				</configuration>
 			</plugin>
 		 	<plugin>
 				  <groupId>org.apache.maven.plugins</groupId>
@@ -252,7 +250,6 @@
 					</execution>
 				  </executions>
         		</plugin>
-
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
