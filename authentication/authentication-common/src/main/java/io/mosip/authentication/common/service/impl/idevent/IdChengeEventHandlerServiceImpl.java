@@ -189,16 +189,17 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			Function<EventDTO, String> idFun) {
 		return events.stream().filter(event -> {
 				String id = idFun.apply(event);
-				return entities.stream().anyMatch(entity -> entity.getId().equals(id));
+				return entities.stream().anyMatch(entity -> entity.getId().equals(idService.getUinHash(id)));
 			}).collect(Collectors.toList());
 	}
 
-	private List<IdentityEntity> findExistingEntitiesForEventsById(List<EventDTO> uinEvents, Function<EventDTO, String> vidFun) {
-		List<String> vids = uinEvents.stream()
-									.map(vidFun)
+	private List<IdentityEntity> findExistingEntitiesForEventsById(List<EventDTO> uinEvents, Function<EventDTO, String> idFun) {
+		List<String> ids = uinEvents.stream()
+									.map(idFun)
 									.filter(Objects::nonNull)
+									.map(idService::getUinHash)
 									.collect(Collectors.toList());
-		List<IdentityEntity> vidEntities = findEntitys(vids);
+		List<IdentityEntity> vidEntities = findEntitys(ids);
 		return vidEntities;
 	}
 	
@@ -219,7 +220,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		String id = idFunction.apply(event);
 		if (id != null) {
 			IdentityEntity identityEntity = new IdentityEntity();
-			identityEntity.setId(id);
+			identityEntity.setId(idService.getUinHash(id));
 			identityEntity.setExpiryTimestamp(event.getExpiryTimestamp());
 			identityEntity.setTransactionLimit(event.getTransactionLimit());
 			return Optional.of(identityEntity);
