@@ -225,50 +225,50 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			boolean updateExistingVidAttributes) {
 		List<IdentityEntity> entities = new ArrayList<>();
 		if(prepareUinEntities) {
-			entities.addAll(prepareEntitiesByIdType(EventDTO::getUin, events, findExistingUinEntities, updateExistingUinAttributes));
+			entities.addAll(prepareEntitiesById(EventDTO::getUin, events, findExistingUinEntities, updateExistingUinAttributes));
 		}
 		if(prepareVidEntities) {
-			entities.addAll(prepareEntitiesByIdType(EventDTO::getVid, events, findExistingVidEntities, updateExistingVidAttributes));
+			entities.addAll(prepareEntitiesById(EventDTO::getVid, events, findExistingVidEntities, updateExistingVidAttributes));
 		}
 		return entities;
 	}
 
-	private List<IdentityEntity> prepareEntitiesByIdType(
-			Function<EventDTO, String> idTypeFun,
+	private List<IdentityEntity> prepareEntitiesById(
+			Function<EventDTO, String> idFunction,
 			List<EventDTO> events, 
 			boolean findExistingIdEntities,
 			boolean updateExistingIdAttributes) {
 		List<IdentityEntity> idEntities = new ArrayList<>();
-		List<EventDTO> idEvents = getEventsByIdTypeNonNull(idTypeFun, events);
+		List<EventDTO> idEvents = getEventsByIdNonNull(idFunction, events);
 		List<EventDTO> nonExistingIdEvents;
 		if(findExistingIdEntities) {
-			idEntities.addAll(prepareExistingEntitiesForEventsById(idEvents, idTypeFun, updateExistingIdAttributes));
-			nonExistingIdEvents = findRemainingEventsExcludingEntities(idEvents, idEntities, idTypeFun);
+			idEntities.addAll(prepareExistingEntitiesForEventsById(idEvents, idFunction, updateExistingIdAttributes));
+			nonExistingIdEvents = findRemainingEventsExcludingEntities(idEvents, idEntities, idFunction);
 		} else {
 			nonExistingIdEvents = idEvents;
 		}
-		idEntities.addAll(createDistictEntitiesForEventsById(idTypeFun, nonExistingIdEvents));
+		idEntities.addAll(createDistictEntitiesForEventsById(idFunction, nonExistingIdEvents));
 		return idEntities;
 	}
 
-	private List<EventDTO> getEventsByIdTypeNonNull(Function<EventDTO, String> idTypeFun, List<EventDTO> events) {
-		return events.stream().filter(event -> idTypeFun.apply(event) != null).collect(Collectors.toList());
+	private List<EventDTO> getEventsByIdNonNull(Function<EventDTO, String> idFunction, List<EventDTO> events) {
+		return events.stream().filter(event -> idFunction.apply(event) != null).collect(Collectors.toList());
 	}
 
 	private List<EventDTO> findRemainingEventsExcludingEntities(List<EventDTO> events, List<IdentityEntity> entities,
-			Function<EventDTO, String> idFun) {
+			Function<EventDTO, String> idFunction) {
 		return events.stream().filter(event -> {
-				String id = idFun.apply(event);
+				String id = idFunction.apply(event);
 				String uinHash = idService.getUinHash(id);
 				return entities.stream().noneMatch(entity -> entity.getId().equals(uinHash));
 			}).collect(Collectors.toList());
 	}
 
 	private List<IdentityEntity> prepareExistingEntitiesForEventsById(List<EventDTO> idEvents, 
-			Function<EventDTO, String> idFun, 
+			Function<EventDTO, String> idFunction, 
 			boolean updateIdAttributes) {
 		Map<String, EventDTO> eventById = idEvents.stream()
-									.collect(Collectors.toMap(event -> idFun.apply(event), Function.identity()));
+									.collect(Collectors.toMap(idFunction::apply, Function.identity()));
 		Map<String, String> idsByIdHash = eventById.keySet()
 								.stream()
 								.filter(Objects::nonNull)
@@ -291,9 +291,9 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return identityCacheRepo.findAllById(ids);
 	}
 
-	private List<IdentityEntity> createDistictEntitiesForEventsById(Function<EventDTO, String> idFun, List<EventDTO> uinEvents) {
+	private List<IdentityEntity> createDistictEntitiesForEventsById(Function<EventDTO, String> idFunction, List<EventDTO> uinEvents) {
 		return uinEvents.stream()
-						.map(event -> mapEventToNewEntity(event, idFun))
+						.map(event -> mapEventToNewEntity(event, idFunction))
 						.filter(Optional::isPresent)
 						.map(Optional::get)
 						.distinct()
