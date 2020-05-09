@@ -112,7 +112,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE:  dev_namespace_docker_hub
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-otp-service
       SERVICE_LOCATION: authentication/authentication-otp-service
 
@@ -163,7 +163,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE:  dev_namespace_docker_hub
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-internal-service
       SERVICE_LOCATION: authentication/authentication-internal-service
 
@@ -214,7 +214,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE:  dev_namespace_docker_hub
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-kyc-service
       SERVICE_LOCATION: authentication/authentication-kyc-service
 
@@ -265,7 +265,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE:  dev_namespace_docker_hub
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-service
       SERVICE_LOCATION: authentication/authentication-service
 
