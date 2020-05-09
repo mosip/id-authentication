@@ -93,8 +93,18 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		boolean prepareVidEntities = false;
 		boolean findExistingUinEntities = false;
 		boolean findExistingVidEntities = false;
+		boolean updateExistingUinAttributes = false;
+		boolean updateExistingVidAttributes = false;
 		String logMethodName = "handleCreateUinEvents";
-		return updateEntitiesForEvents(logMethodName, events, updateIdData, prepareUinEntities, prepareVidEntities, findExistingUinEntities, findExistingVidEntities);
+		return updateEntitiesForEvents(logMethodName, 
+				events, 
+				updateIdData, 
+				prepareUinEntities, 
+				prepareVidEntities, 
+				findExistingUinEntities, 
+				findExistingVidEntities,
+				updateExistingUinAttributes,
+				updateExistingVidAttributes);
 	}
 	
 	private boolean handleUpdateUinEvents(List<EventDTO> events) {
@@ -103,8 +113,18 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		boolean prepareVidEntities = true;
 		boolean findExistingUinEntities = true;
 		boolean findExistingVidEntities = true;
+		boolean updateExistingUinAttributes = true;
+		boolean updateExistingVidAttributes = false;
 		String logMethodName = "handleUpdateUinEvents";
-		return updateEntitiesForEvents(logMethodName, events, updateIdData, prepareUinEntities, prepareVidEntities, findExistingUinEntities, findExistingVidEntities);
+		return updateEntitiesForEvents(logMethodName, 
+				events, 
+				updateIdData, 
+				prepareUinEntities, 
+				prepareVidEntities, 
+				findExistingUinEntities, 
+				findExistingVidEntities,
+				updateExistingUinAttributes,
+				updateExistingVidAttributes);
 	}
 
 	private boolean handleCreateVidEvents(List<EventDTO> events) {
@@ -113,8 +133,18 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		boolean prepareVidEntities = true;
 		boolean findExistingUinEntities = false;
 		boolean findExistingVidEntities = false;
+		boolean updateExistingUinAttributes = false;
+		boolean updateExistingVidAttributes = false;
 		String logMethodName = "handleCreateVidEvents";
-		return updateEntitiesForEvents(logMethodName, events, updateIdData, prepareUinEntities, prepareVidEntities, findExistingUinEntities, findExistingVidEntities);
+		return updateEntitiesForEvents(logMethodName, 
+				events, 
+				updateIdData, 
+				prepareUinEntities, 
+				prepareVidEntities, 
+				findExistingUinEntities, 
+				findExistingVidEntities,
+				updateExistingUinAttributes,
+				updateExistingVidAttributes);
 	}
 
 	private boolean handleUpdateVidEvents(List<EventDTO> events) {
@@ -123,15 +153,38 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		boolean prepareVidEntities = true;
 		boolean findExistingUinEntities = false;
 		boolean findExistingVidEntities = true;
+		boolean updateExistingUinAttributes = false;
+		boolean updateExistingVidAttributes = true;
 		String logMethodName = "handleUpdateVidEvents";
-		return updateEntitiesForEvents(logMethodName, events, updateIdData, prepareUinEntities, prepareVidEntities, findExistingUinEntities, findExistingVidEntities);
+		return updateEntitiesForEvents(logMethodName, 
+				events, 
+				updateIdData, 
+				prepareUinEntities, 
+				prepareVidEntities, 
+				findExistingUinEntities, 
+				findExistingVidEntities,
+				updateExistingUinAttributes,
+				updateExistingVidAttributes);
 	}
 
-	private boolean updateEntitiesForEvents(String logMethodName, List<EventDTO> events, boolean updateIdData, boolean prepareUinEntities, boolean prepareVidEntities,
-			boolean findExistingUinEntities, boolean findExistingVidEntities) {
+	private boolean updateEntitiesForEvents(String logMethodName, 
+			List<EventDTO> events, 
+			boolean updateIdData, 
+			boolean prepareUinEntities, 
+			boolean prepareVidEntities,
+			boolean findExistingUinEntities, 
+			boolean findExistingVidEntities, 
+			boolean updateExistingUinAttributes,
+			boolean updateExistingVidAttributes) {
 		try {
-			return updateEntitiesForEvents(events,updateIdData,  prepareUinEntities, prepareVidEntities, findExistingUinEntities,
-					findExistingVidEntities);
+			return updateEntitiesForEvents(events,
+					updateIdData,  
+					prepareUinEntities, 
+					prepareVidEntities, 
+					findExistingUinEntities,
+					findExistingVidEntities, 
+					updateExistingUinAttributes,
+					updateExistingVidAttributes);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					logMethodName, e.getMessage());
@@ -139,13 +192,25 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return false;
 	}
 
-	private boolean updateEntitiesForEvents(List<EventDTO> events, boolean updateIdData, boolean prepareUinEntities, boolean prepareVidEntities,
-			boolean findExistingUinEntities, boolean findExistingVidEntities) throws IdAuthenticationBusinessException {
+	private boolean updateEntitiesForEvents(List<EventDTO> events, 
+			boolean updateIdData, 
+			boolean prepareUinEntities, 
+			boolean prepareVidEntities,
+			boolean findExistingUinEntities, 
+			boolean findExistingVidEntities,
+			boolean updateExistingUinAttributes,
+			boolean updateExistingVidAttributes) throws IdAuthenticationBusinessException {
 		Map<String, List<EventDTO>> eventsByUin = events.stream().collect(Collectors.groupingBy(EventDTO::getUin));
 		for(Entry<String, List<EventDTO>> entry : eventsByUin.entrySet()) {
 			String uin = entry.getKey(); //UIN may be null
 			List<EventDTO> uinEvents = entry.getValue();
-			List<IdentityEntity> entities = prepareEntities(uinEvents, prepareUinEntities, prepareVidEntities, findExistingUinEntities, findExistingVidEntities);
+			List<IdentityEntity> entities = prepareEntities(uinEvents, 
+					prepareUinEntities, 
+					prepareVidEntities,
+					findExistingUinEntities, 
+					findExistingVidEntities, 
+					updateExistingUinAttributes,
+					updateExistingVidAttributes);
 			saveIdEntityByUinData(updateIdData, Optional.ofNullable(uin), entities);
 		}
 		return true;
@@ -155,24 +220,29 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			boolean prepareUinEntities, 
 			boolean prepareVidEntities,
 			boolean findExistingUinEntities, 
-			boolean findExistingVidEntities) {
+			boolean findExistingVidEntities,
+			boolean updateExistingUinAttributes,
+			boolean updateExistingVidAttributes) {
 		List<IdentityEntity> entities = new ArrayList<>();
 		if(prepareUinEntities) {
-			entities.addAll(prepareEntitiesByIdType(events, findExistingUinEntities, EventDTO::getUin));
+			entities.addAll(prepareEntitiesByIdType(EventDTO::getUin, events, findExistingUinEntities, updateExistingUinAttributes));
 		}
 		if(prepareVidEntities) {
-			entities.addAll(prepareEntitiesByIdType(events, findExistingVidEntities, EventDTO::getVid));
+			entities.addAll(prepareEntitiesByIdType(EventDTO::getVid, events, findExistingVidEntities, updateExistingVidAttributes));
 		}
 		return entities;
 	}
 
-	private List<IdentityEntity> prepareEntitiesByIdType(List<EventDTO> events, boolean findExistingIdEntities,
-			Function<EventDTO, String> idTypeFun) {
+	private List<IdentityEntity> prepareEntitiesByIdType(
+			Function<EventDTO, String> idTypeFun,
+			List<EventDTO> events, 
+			boolean findExistingIdEntities,
+			boolean updateExistingIdAttributes) {
 		List<IdentityEntity> idEntities = new ArrayList<>();
 		List<EventDTO> idEvents = getEventsByIdTypeNonNull(idTypeFun, events);
 		List<EventDTO> nonExistingIdEvents;
 		if(findExistingIdEntities) {
-			idEntities.addAll(findExistingEntitiesForEventsById(idEvents, idTypeFun));
+			idEntities.addAll(prepareExistingEntitiesForEventsById(idEvents, idTypeFun, updateExistingIdAttributes));
 			nonExistingIdEvents = findRemainingEventsExcludingEntities(idEvents, idEntities, idTypeFun);
 		} else {
 			nonExistingIdEvents = idEvents;
@@ -189,33 +259,48 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			Function<EventDTO, String> idFun) {
 		return events.stream().filter(event -> {
 				String id = idFun.apply(event);
-				return entities.stream().anyMatch(entity -> entity.getId().equals(idService.getUinHash(id)));
+				String uinHash = idService.getUinHash(id);
+				return entities.stream().noneMatch(entity -> entity.getId().equals(uinHash));
 			}).collect(Collectors.toList());
 	}
 
-	private List<IdentityEntity> findExistingEntitiesForEventsById(List<EventDTO> uinEvents, Function<EventDTO, String> idFun) {
-		List<String> ids = uinEvents.stream()
-									.map(idFun)
-									.filter(Objects::nonNull)
-									.map(idService::getUinHash)
-									.collect(Collectors.toList());
-		return findEntitys(ids);
+	private List<IdentityEntity> prepareExistingEntitiesForEventsById(List<EventDTO> idEvents, 
+			Function<EventDTO, String> idFun, 
+			boolean updateIdAttributes) {
+		Map<String, EventDTO> eventById = idEvents.stream()
+									.collect(Collectors.toMap(event -> idFun.apply(event), Function.identity()));
+		Map<String, String> idsByIdHash = eventById.keySet()
+								.stream()
+								.filter(Objects::nonNull)
+								.collect(Collectors.toMap(idService::getUinHash, Function.identity()));
+		
+		List<IdentityEntity> existingEntities = findEntitiesByIds(idsByIdHash.keySet().stream().collect(Collectors.toList()));
+		if(updateIdAttributes) {
+			existingEntities.forEach(entity -> {
+				String idHash = entity.getId();
+				String id = idsByIdHash.get(idHash);
+				EventDTO eventDTO = eventById.get(id);
+				entity.setExpiryTimestamp(eventDTO.getExpiryTimestamp());
+				entity.setTransactionLimit(eventDTO.getTransactionLimit());
+			});
+		}
+		return existingEntities;
 	}
 	
-	private List<IdentityEntity> findEntitys(List<String> ids) {
+	private List<IdentityEntity> findEntitiesByIds(List<String> ids) {
 		return identityCacheRepo.findAllById(ids);
 	}
 
 	private List<IdentityEntity> createDistictEntitiesForEventsById(Function<EventDTO, String> idFun, List<EventDTO> uinEvents) {
 		return uinEvents.stream()
-						.map(event -> mapEventToEntity(event, idFun))
+						.map(event -> mapEventToNewEntity(event, idFun))
 						.filter(Optional::isPresent)
 						.map(Optional::get)
 						.distinct()
 						.collect(Collectors.toList());
 	}
 	
-	private Optional<IdentityEntity> mapEventToEntity(EventDTO event, Function<EventDTO, String> idFunction) {
+	private Optional<IdentityEntity> mapEventToNewEntity(EventDTO event, Function<EventDTO, String> idFunction) {
 		String id = idFunction.apply(event);
 		if (id != null) {
 			IdentityEntity identityEntity = new IdentityEntity();
@@ -252,6 +337,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		identityCacheRepo.save(entity);
 	}
 
+	@SuppressWarnings("unchecked")
 	private byte[] getDemoData(Map<String, Object> identity) {
 		return Optional.ofNullable(identity.get("response"))
 								.filter(obj -> obj instanceof Map)
@@ -269,6 +355,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 								.orElse(new byte[0]);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private byte[] getBioData(Map<String, Object> identity) {
 		return Optional.ofNullable(identity.get("response"))
 								.filter(obj -> obj instanceof Map)
