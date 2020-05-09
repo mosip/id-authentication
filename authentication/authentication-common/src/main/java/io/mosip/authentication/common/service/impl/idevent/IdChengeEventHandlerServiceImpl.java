@@ -199,8 +199,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 									.filter(Objects::nonNull)
 									.map(idService::getUinHash)
 									.collect(Collectors.toList());
-		List<IdentityEntity> vidEntities = findEntitys(ids);
-		return vidEntities;
+		return findEntitys(ids);
 	}
 	
 	private List<IdentityEntity> findEntitys(List<String> ids) {
