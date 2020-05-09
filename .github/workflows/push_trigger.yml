@@ -38,10 +38,15 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-${{ env.BRANCH_NAME }}
+    
+    - name: Setup the settings file for ossrh server
+      run: echo "<settings> <servers>  <server>  <id>ossrh</id>    <username>${{secrets.ossrh_user}}</username> <password>${{secrets.ossrh_secret}}</password> </server> </servers> <profiles> <profile>     <id>ossrh</id> <activation> <activeByDefault>true</activeByDefault> </activation>  <properties> <gpg.executable>gpg2</gpg.executable> <gpg.passphrase>${{secrets.gpg_secret}}</gpg.passphrase> </properties> </profile> <profile> <id>allow-snapshots</id>       <activation><activeByDefault>true</activeByDefault></activation> <repositories> <repository>        <id>snapshots-repo</id> <url>https://oss.sonatype.org/content/repositories/snapshots</url> <releases><enabled>false</enabled></releases> <snapshots><enabled>true</enabled></snapshots> </repository>  <repository>         <id>releases-repo</id>  <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>         <releases><enabled>true</enabled></releases>         <snapshots><enabled>false</enabled></snapshots> </repository> </repositories>  </profile> </profiles> </settings>" > $GITHUB_WORKSPACE/settings.xml
+
+
     - name: Build with Maven
       run: |
         cd authentication
-        mvn -B package --file pom.xml
+        mvn -B package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
     
     - name: Ready the springboot artifacts
       run: find -name '*.jar' -executable -type f  -exec zip release.zip {} +
@@ -52,9 +57,7 @@ jobs:
         name: release
         path: ./release.zip
 
-  publish:
-    needs: build
-
+  publish_to_nexus:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -84,13 +87,23 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-${{ env.BRANCH_NAME }}
 
+    - name: Install xmllint
+      run: |
+        sudo apt-get update
+        sudo apt-get install libxml2-utils
+
     - name: Setup the settings file for ossrh server
       run: echo "<settings> <servers>  <server>  <id>ossrh</id>    <username>${{secrets.ossrh_user}}</username> <password>${{secrets.ossrh_secret}}</password> </server> </servers> <profiles> <profile>     <id>ossrh</id> <activation> <activeByDefault>true</activeByDefault> </activation>  <properties> <gpg.executable>gpg2</gpg.executable> <gpg.passphrase>${{secrets.gpg_secret}}</gpg.passphrase> </properties> </profile> <profile> <id>allow-snapshots</id>       <activation><activeByDefault>true</activeByDefault></activation> <repositories> <repository>        <id>snapshots-repo</id> <url>https://oss.sonatype.org/content/repositories/snapshots</url> <releases><enabled>false</enabled></releases> <snapshots><enabled>true</enabled></snapshots> </repository>  <repository>         <id>releases-repo</id>  <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>         <releases><enabled>true</enabled></releases>         <snapshots><enabled>false</enabled></snapshots> </repository> </repositories>  </profile> </profiles> </settings>" > $GITHUB_WORKSPACE/settings.xml
     
-    - name: Publish the maven package
+    - name: Build with Maven
       run: |
         cd authentication
-        mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml
+        mvn -B package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+        
+    - name: Publish the maven package
+      run: |
+        chmod +x ./deploy.sh
+        ./deploy.sh authentication $GITHUB_WORKSPACE/settings.xml SNAPSHOT
       env:
         GPG_TTY: $(tty)
   
@@ -99,7 +112,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE:  dev_namespace_docker_hub
       SERVICE_NAME: authentication-otp-service
       SERVICE_LOCATION: authentication/authentication-otp-service
 
@@ -150,7 +163,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE:  dev_namespace_docker_hub
       SERVICE_NAME: authentication-internal-service
       SERVICE_LOCATION: authentication/authentication-internal-service
 
@@ -201,7 +214,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE:  dev_namespace_docker_hub
       SERVICE_NAME: authentication-kyc-service
       SERVICE_LOCATION: authentication/authentication-kyc-service
 
@@ -252,7 +265,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE:  dev_namespace_docker_hub
       SERVICE_NAME: authentication-service
       SERVICE_LOCATION: authentication/authentication-service
 
