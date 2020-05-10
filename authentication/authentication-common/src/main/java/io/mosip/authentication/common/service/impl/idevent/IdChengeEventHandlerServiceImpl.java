@@ -31,6 +31,7 @@ import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerServ
 import io.mosip.idrepository.core.constant.EventType;
 import io.mosip.idrepository.core.dto.EventDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * ID Change Event Handler service implementation class
@@ -369,15 +370,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 															&& map.containsKey("value"))
 											.map(map -> (String)map.get("value"))
 											.findAny())
-								.map(str -> {
-									try {
-										return str.getBytes("utf-8");
-									} catch (UnsupportedEncodingException e) {
-										mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-												"handleCreateUinEvent", e.getMessage());
-									}
-									return new byte[0];
-								})
+								.map(CryptoUtil::decodeBase64)
 								.orElse(new byte[0]);
 	}
 
