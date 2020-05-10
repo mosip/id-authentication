@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,10 +33,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
- * ID Change Event Handler service implementation class
- * 
- * @author Loganathan Sekar
+ * ID Change Event Handler service implementation class.
  *
+ * @author Loganathan Sekar
  */
 @Service
 @Transactional
@@ -46,21 +44,29 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdChengeEventHandlerServiceImpl.class);
 	
+	/** The id repo manager. */
 	@Autowired
 	private IdRepoManager idRepoManager;
 	
+	/** The id service. */
 	@Autowired
 	private IdService<?> idService;
 	
+	/** The identity cache repo. */
 	@Autowired
 	private IdentityCacheRepository identityCacheRepo;
 	
+	/** The key manager. */
 	@Autowired
 	private KeyManager keyManager;
 	
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
+	 */
 	@Override
 	public boolean handleIdEvent(List<EventDTO> events) {
 		Map<EventType, List<EventDTO>> eventsByType = events.stream()
@@ -73,6 +79,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 
 	}
 
+	/**
+	 * Gets the function for event type.
+	 *
+	 * @param eventType the event type
+	 * @return the function for event type
+	 */
 	private Function<List<EventDTO>, Boolean> getFunctionForEventType(EventType eventType) {
 		switch (eventType) {
 		case CREATE_UIN:
@@ -88,6 +100,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
+	/**
+	 * Handle create uin events.
+	 *
+	 * @param events the events
+	 * @return true, if successful
+	 */
 	private boolean handleCreateUinEvents(List<EventDTO> events) {
 		boolean updateIdData = true;
 		boolean prepareUinEntities = true;
@@ -108,6 +126,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				updateExistingVidAttributes);
 	}
 	
+	/**
+	 * Handle update uin events.
+	 *
+	 * @param events the events
+	 * @return true, if successful
+	 */
 	private boolean handleUpdateUinEvents(List<EventDTO> events) {
 		boolean updateIdData = true;
 		boolean prepareUinEntities = true;
@@ -128,6 +152,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				updateExistingVidAttributes);
 	}
 
+	/**
+	 * Handle create vid events.
+	 *
+	 * @param events the events
+	 * @return true, if successful
+	 */
 	private boolean handleCreateVidEvents(List<EventDTO> events) {
 		boolean updateIdData = true;
 		boolean prepareUinEntities = false;
@@ -148,6 +178,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				updateExistingVidAttributes);
 	}
 
+	/**
+	 * Handle update vid events.
+	 *
+	 * @param events the events
+	 * @return true, if successful
+	 */
 	private boolean handleUpdateVidEvents(List<EventDTO> events) {
 		boolean updateIdData = false;
 		boolean prepareUinEntities = false;
@@ -168,6 +204,20 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				updateExistingVidAttributes);
 	}
 
+	/**
+	 * Update entities for events.
+	 *
+	 * @param logMethodName the log method name
+	 * @param events the events
+	 * @param updateIdData the update id data
+	 * @param prepareUinEntities the prepare uin entities
+	 * @param prepareVidEntities the prepare vid entities
+	 * @param findExistingUinEntities the find existing uin entities
+	 * @param findExistingVidEntities the find existing vid entities
+	 * @param updateExistingUinAttributes the update existing uin attributes
+	 * @param updateExistingVidAttributes the update existing vid attributes
+	 * @return true, if successful
+	 */
 	private boolean updateEntitiesForEvents(String logMethodName, 
 			List<EventDTO> events, 
 			boolean updateIdData, 
@@ -193,6 +243,20 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return false;
 	}
 
+	/**
+	 * Update entities for events.
+	 *
+	 * @param events the events
+	 * @param updateIdData the update id data
+	 * @param prepareUinEntities the prepare uin entities
+	 * @param prepareVidEntities the prepare vid entities
+	 * @param findExistingUinEntities the find existing uin entities
+	 * @param findExistingVidEntities the find existing vid entities
+	 * @param updateExistingUinAttributes the update existing uin attributes
+	 * @param updateExistingVidAttributes the update existing vid attributes
+	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private boolean updateEntitiesForEvents(List<EventDTO> events, 
 			boolean updateIdData, 
 			boolean prepareUinEntities, 
@@ -217,6 +281,18 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return true;
 	}
 
+	/**
+	 * Prepare entities.
+	 *
+	 * @param events the events
+	 * @param prepareUinEntities the prepare uin entities
+	 * @param prepareVidEntities the prepare vid entities
+	 * @param findExistingUinEntities the find existing uin entities
+	 * @param findExistingVidEntities the find existing vid entities
+	 * @param updateExistingUinAttributes the update existing uin attributes
+	 * @param updateExistingVidAttributes the update existing vid attributes
+	 * @return the list
+	 */
 	private List<IdentityEntity> prepareEntities(List<EventDTO> events, 
 			boolean prepareUinEntities, 
 			boolean prepareVidEntities,
@@ -234,6 +310,15 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return entities;
 	}
 
+	/**
+	 * Prepare entities by id.
+	 *
+	 * @param idFunction the id function
+	 * @param events the events
+	 * @param findExistingIdEntities the find existing id entities
+	 * @param updateExistingIdAttributes the update existing id attributes
+	 * @return the list
+	 */
 	private List<IdentityEntity> prepareEntitiesById(
 			Function<EventDTO, String> idFunction,
 			List<EventDTO> events, 
@@ -252,10 +337,25 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return idEntities;
 	}
 
+	/**
+	 * Gets the events by id non null.
+	 *
+	 * @param idFunction the id function
+	 * @param events the events
+	 * @return the events by id non null
+	 */
 	private List<EventDTO> getEventsByIdNonNull(Function<EventDTO, String> idFunction, List<EventDTO> events) {
 		return events.stream().filter(event -> idFunction.apply(event) != null).collect(Collectors.toList());
 	}
 
+	/**
+	 * Find remaining events excluding entities.
+	 *
+	 * @param events the events
+	 * @param entities the entities
+	 * @param idFunction the id function
+	 * @return the list
+	 */
 	private List<EventDTO> findRemainingEventsExcludingEntities(List<EventDTO> events, List<IdentityEntity> entities,
 			Function<EventDTO, String> idFunction) {
 		return events.stream().filter(event -> {
@@ -265,6 +365,14 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			}).collect(Collectors.toList());
 	}
 
+	/**
+	 * Prepare existing entities for events by id.
+	 *
+	 * @param idEvents the id events
+	 * @param idFunction the id function
+	 * @param updateIdAttributes the update id attributes
+	 * @return the list
+	 */
 	private List<IdentityEntity> prepareExistingEntitiesForEventsById(List<EventDTO> idEvents, 
 			Function<EventDTO, String> idFunction, 
 			boolean updateIdAttributes) {
@@ -288,10 +396,23 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return existingEntities;
 	}
 	
+	/**
+	 * Find entities by ids.
+	 *
+	 * @param ids the ids
+	 * @return the list
+	 */
 	private List<IdentityEntity> findEntitiesByIds(List<String> ids) {
 		return identityCacheRepo.findAllById(ids);
 	}
 
+	/**
+	 * Creates the distict entities for events by id.
+	 *
+	 * @param idFunction the id function
+	 * @param uinEvents the uin events
+	 * @return the list
+	 */
 	private List<IdentityEntity> createDistictEntitiesForEventsById(Function<EventDTO, String> idFunction, List<EventDTO> uinEvents) {
 		return uinEvents.stream()
 						.map(event -> mapEventToNewEntity(event, idFunction))
@@ -301,6 +422,13 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 						.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Map event to new entity.
+	 *
+	 * @param event the event
+	 * @param idFunction the id function
+	 * @return the optional
+	 */
 	private Optional<IdentityEntity> mapEventToNewEntity(EventDTO event, Function<EventDTO, String> idFunction) {
 		String id = idFunction.apply(event);
 		if (id != null) {
@@ -313,6 +441,14 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		return Optional.empty();
 	}
 
+	/**
+	 * Save id entity by uin data.
+	 *
+	 * @param updateIdData the update id data
+	 * @param uinOpt the uin opt
+	 * @param entities the entities
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void saveIdEntityByUinData(boolean updateIdData, Optional<String> uinOpt, List<IdentityEntity> entities) throws IdAuthenticationBusinessException {
 		Optional<byte[]> demoData;
 		Optional<byte[]> bioData;
@@ -327,6 +463,13 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		entities.forEach(entity -> saveIdEntity(entity, demoData, bioData));
 	}
 
+	/**
+	 * Save id entity.
+	 *
+	 * @param entity the entity
+	 * @param demoData the demo data
+	 * @param bioData the bio data
+	 */
 	private void saveIdEntity(IdentityEntity entity,Optional<byte[]> demoData, Optional<byte[]> bioData) {
 		String id = entity.getId();
 		if(demoData.isPresent()) {
@@ -338,6 +481,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		identityCacheRepo.save(entity);
 	}
 
+	/**
+	 * Gets the demo data.
+	 *
+	 * @param identity the identity
+	 * @return the demo data
+	 */
 	@SuppressWarnings("unchecked")
 	private byte[] getDemoData(Map<String, Object> identity) {
 		return Optional.ofNullable(identity.get("response"))
@@ -356,6 +505,12 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 								.orElse(new byte[0]);
 	}
 	
+	/**
+	 * Gets the bio data.
+	 *
+	 * @param identity the identity
+	 * @return the bio data
+	 */
 	@SuppressWarnings("unchecked")
 	private byte[] getBioData(Map<String, Object> identity) {
 		return Optional.ofNullable(identity.get("response"))

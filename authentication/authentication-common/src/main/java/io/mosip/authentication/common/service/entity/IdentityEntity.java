@@ -12,11 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 /**
- * The entity for the Identity records stored in identity_cache table in IDA DB
- * 
- * @author Loganathan Sekar
+ * The entity for the Identity records stored in identity_cache table in IDA DB.
  *
+ * @author Loganathan Sekar
  */
 @Getter 
 @Setter 
@@ -26,25 +26,33 @@ import lombok.ToString;
 @Table(schema = "ida", name = "identity_cache")
 public class IdentityEntity {
 
+	/** The id. */
 	@Id
 	@NotNull
 	@Column(name = "id")
 	private String id;
 	
+	/** The demographic data. */
 	@NotNull
 	@Column(name = "demographic_data")
 	private byte[] demographicData;
 	
+	/** The biometric data. */
 	@NotNull
 	@Column(name = "biometric_data")
 	private byte[] biometricData;
 	
+	/** The expiry timestamp. */
 	@Column(name = "expiry_timestamp")
 	private LocalDateTime expiryTimestamp;
 	
+	/** The transaction limit. */
 	@Column(name = "transaction_limit")
 	private Integer transactionLimit;
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -53,6 +61,9 @@ public class IdentityEntity {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

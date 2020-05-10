@@ -34,19 +34,27 @@ public class IdRepoNotificationHandlerController {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(IdRepoNotificationHandlerController.class);
 	
+	/** The id change event handler service. */
 	@Autowired
 	private IdChangeEventHandlerService idChangeEventHandlerService;
 
+	/**
+	 * Handle events end point.
+	 *
+	 * @param notificationEventsDto the notification events dto
+	 * @param e the e
+	 * @return the response entity
+	 */
 	//@PreAuthorize("hasAnyRole('ID_REPOSITORY')")
 	@PostMapping(path = "/notify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	public ResponseEntity<?> authenticate(@RequestBody RequestWrapper<EventsDTO> notificationEventsDto, @ApiIgnore Errors e) {
+	public ResponseEntity<?> handleEvents(@RequestBody RequestWrapper<EventsDTO> notificationEventsDto, @ApiIgnore Errors e) {
 		EventsDTO request = notificationEventsDto.getRequest();
 		if(request != null) {
 			List<EventDTO> events = request.getEvents();
 			if(events != null) {
-				if(handleEvent(events)) {
+				if(handleEvents(events)) {
 					ResponseEntity.ok().build();
 				}
 			}
@@ -54,7 +62,13 @@ public class IdRepoNotificationHandlerController {
 		return ResponseEntity.unprocessableEntity().build();
 	}
 
-	private boolean handleEvent(List<EventDTO> events) {
+	/**
+	 * Handle events.
+	 *
+	 * @param events the events
+	 * @return true, if successful
+	 */
+	private boolean handleEvents(List<EventDTO> events) {
 		return idChangeEventHandlerService.handleIdEvent(events);
 	}
 	
