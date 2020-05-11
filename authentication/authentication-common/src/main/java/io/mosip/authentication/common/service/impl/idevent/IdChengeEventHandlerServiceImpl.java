@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.impl.idevent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,6 +41,17 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Service
 @Transactional
 public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerService {
+
+	private static enum IdChangeProperties {
+		UPDATE_ID_DATA, 
+		UPDATE_WITH_LOCAL_ID_DATA, 
+		PREPARE_UIN_ENTITIES, 
+		PREPARE_VID_ENTITIES,
+		FIND_EXISTING_UIN_ENTITIES, 
+		FIND_EXISTING_VID_ENTITIES, 
+		UPDATE_EXISTING_UIN_ATTRIBUTES,
+		UPDATE_EXISTING_VID_ATTRIBUTES
+	}
 	
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdChengeEventHandlerServiceImpl.class);
@@ -107,23 +119,15 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 */
 	private boolean handleCreateUinEvents(List<EventDTO> events) {
-		boolean updateIdData = true;
-		boolean prepareUinEntities = true;
-		boolean prepareVidEntities = false;
-		boolean findExistingUinEntities = false;
-		boolean findExistingVidEntities = false;
-		boolean updateExistingUinAttributes = false;
-		boolean updateExistingVidAttributes = false;
+		EnumSet<IdChangeProperties> properties = EnumSet.of(
+				IdChangeProperties.UPDATE_ID_DATA, 
+				IdChangeProperties.PREPARE_UIN_ENTITIES 
+				);
+		
 		String logMethodName = "handleCreateUinEvents";
 		return updateEntitiesForEvents(logMethodName, 
 				events, 
-				updateIdData, 
-				prepareUinEntities, 
-				prepareVidEntities, 
-				findExistingUinEntities, 
-				findExistingVidEntities,
-				updateExistingUinAttributes,
-				updateExistingVidAttributes);
+				properties);
 	}
 	
 	/**
@@ -133,23 +137,17 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 */
 	private boolean handleUpdateUinEvents(List<EventDTO> events) {
-		boolean updateIdData = true;
-		boolean prepareUinEntities = true;
-		boolean prepareVidEntities = true;
-		boolean findExistingUinEntities = true;
-		boolean findExistingVidEntities = true;
-		boolean updateExistingUinAttributes = true;
-		boolean updateExistingVidAttributes = false;
+		EnumSet<IdChangeProperties> properties = EnumSet.of(
+				IdChangeProperties.UPDATE_ID_DATA, 
+				IdChangeProperties.PREPARE_UIN_ENTITIES, 
+				IdChangeProperties.FIND_EXISTING_UIN_ENTITIES, 
+				IdChangeProperties.UPDATE_EXISTING_UIN_ATTRIBUTES
+				);
+		
 		String logMethodName = "handleUpdateUinEvents";
 		return updateEntitiesForEvents(logMethodName, 
 				events, 
-				updateIdData, 
-				prepareUinEntities, 
-				prepareVidEntities, 
-				findExistingUinEntities, 
-				findExistingVidEntities,
-				updateExistingUinAttributes,
-				updateExistingVidAttributes);
+				properties);
 	}
 
 	/**
@@ -159,23 +157,16 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 */
 	private boolean handleCreateVidEvents(List<EventDTO> events) {
-		boolean updateIdData = true;
-		boolean prepareUinEntities = false;
-		boolean prepareVidEntities = true;
-		boolean findExistingUinEntities = false;
-		boolean findExistingVidEntities = false;
-		boolean updateExistingUinAttributes = false;
-		boolean updateExistingVidAttributes = false;
+		EnumSet<IdChangeProperties> properties = EnumSet.of(
+				IdChangeProperties.UPDATE_ID_DATA, 
+				IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA, 
+				IdChangeProperties.PREPARE_VID_ENTITIES
+				);
+		
 		String logMethodName = "handleCreateVidEvents";
 		return updateEntitiesForEvents(logMethodName, 
 				events, 
-				updateIdData, 
-				prepareUinEntities, 
-				prepareVidEntities, 
-				findExistingUinEntities, 
-				findExistingVidEntities,
-				updateExistingUinAttributes,
-				updateExistingVidAttributes);
+				properties);
 	}
 
 	/**
@@ -185,23 +176,16 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 */
 	private boolean handleUpdateVidEvents(List<EventDTO> events) {
-		boolean updateIdData = false;
-		boolean prepareUinEntities = false;
-		boolean prepareVidEntities = true;
-		boolean findExistingUinEntities = false;
-		boolean findExistingVidEntities = true;
-		boolean updateExistingUinAttributes = false;
-		boolean updateExistingVidAttributes = true;
+		EnumSet<IdChangeProperties> properties = EnumSet.of(
+				IdChangeProperties.PREPARE_VID_ENTITIES,
+				IdChangeProperties.FIND_EXISTING_VID_ENTITIES,
+				IdChangeProperties.UPDATE_EXISTING_VID_ATTRIBUTES
+				);
+		
 		String logMethodName = "handleUpdateVidEvents";
 		return updateEntitiesForEvents(logMethodName, 
 				events, 
-				updateIdData, 
-				prepareUinEntities, 
-				prepareVidEntities, 
-				findExistingUinEntities, 
-				findExistingVidEntities,
-				updateExistingUinAttributes,
-				updateExistingVidAttributes);
+				properties);
 	}
 
 	/**
@@ -220,22 +204,9 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 */
 	private boolean updateEntitiesForEvents(String logMethodName, 
 			List<EventDTO> events, 
-			boolean updateIdData, 
-			boolean prepareUinEntities, 
-			boolean prepareVidEntities,
-			boolean findExistingUinEntities, 
-			boolean findExistingVidEntities, 
-			boolean updateExistingUinAttributes,
-			boolean updateExistingVidAttributes) {
+			EnumSet<IdChangeProperties> properties) {
 		try {
-			return updateEntitiesForEvents(events,
-					updateIdData,  
-					prepareUinEntities, 
-					prepareVidEntities, 
-					findExistingUinEntities,
-					findExistingVidEntities, 
-					updateExistingUinAttributes,
-					updateExistingVidAttributes);
+			return updateEntitiesForEvents(events, properties);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					logMethodName, e.getMessage());
@@ -258,25 +229,22 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private boolean updateEntitiesForEvents(List<EventDTO> events, 
-			boolean updateIdData, 
-			boolean prepareUinEntities, 
-			boolean prepareVidEntities,
-			boolean findExistingUinEntities, 
-			boolean findExistingVidEntities,
-			boolean updateExistingUinAttributes,
-			boolean updateExistingVidAttributes) throws IdAuthenticationBusinessException {
+			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		Map<String, List<EventDTO>> eventsByUin = events.stream().collect(Collectors.groupingBy(EventDTO::getUin));
 		for(Entry<String, List<EventDTO>> entry : eventsByUin.entrySet()) {
-			String uin = entry.getKey(); //UIN may be null
+			Optional<String> uinOpt = Optional.ofNullable(entry.getKey()); //UIN may be null
 			List<EventDTO> uinEvents = entry.getValue();
-			List<IdentityEntity> entities = prepareEntities(uinEvents, 
-					prepareUinEntities, 
-					prepareVidEntities,
-					findExistingUinEntities, 
-					findExistingVidEntities, 
-					updateExistingUinAttributes,
-					updateExistingVidAttributes);
-			saveIdEntityByUinData(updateIdData, Optional.ofNullable(uin), entities);
+			List<IdentityEntity> entities = prepareEntities(uinEvents, properties);
+			
+			//For VID update, if UIN is associated with the event, update VID entries with local UIN data
+			if(properties.contains(IdChangeProperties.UPDATE_EXISTING_VID_ATTRIBUTES)) {
+				if(uinOpt.isPresent()) {
+					properties.add(IdChangeProperties.UPDATE_ID_DATA);
+					properties.add(IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA);
+				}
+			}
+			
+			saveIdEntityByUinData(uinOpt, entities, properties);
 		}
 		return true;
 	}
@@ -294,18 +262,23 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return the list
 	 */
 	private List<IdentityEntity> prepareEntities(List<EventDTO> events, 
-			boolean prepareUinEntities, 
-			boolean prepareVidEntities,
-			boolean findExistingUinEntities, 
-			boolean findExistingVidEntities,
-			boolean updateExistingUinAttributes,
-			boolean updateExistingVidAttributes) {
+			EnumSet<IdChangeProperties> properties) {
 		List<IdentityEntity> entities = new ArrayList<>();
-		if(prepareUinEntities) {
-			entities.addAll(prepareEntitiesById(EventDTO::getUin, events, findExistingUinEntities, updateExistingUinAttributes));
+		if(properties.contains(IdChangeProperties.PREPARE_UIN_ENTITIES)) {
+			entities.addAll(
+					prepareEntitiesById(
+							EventDTO::getUin, 
+							events, 
+							properties.contains(IdChangeProperties.FIND_EXISTING_UIN_ENTITIES), 
+							properties.contains(IdChangeProperties.UPDATE_EXISTING_UIN_ATTRIBUTES)));
 		}
-		if(prepareVidEntities) {
-			entities.addAll(prepareEntitiesById(EventDTO::getVid, events, findExistingVidEntities, updateExistingVidAttributes));
+		if(properties.contains(IdChangeProperties.PREPARE_VID_ENTITIES)) {
+			entities.addAll(
+					prepareEntitiesById(
+							EventDTO::getVid, 
+							events, 
+							properties.contains(IdChangeProperties.FIND_EXISTING_VID_ENTITIES), 
+							properties.contains(IdChangeProperties.UPDATE_EXISTING_VID_ATTRIBUTES)));
 		}
 		return entities;
 	}
@@ -449,13 +422,28 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param entities the entities
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	private void saveIdEntityByUinData(boolean updateIdData, Optional<String> uinOpt, List<IdentityEntity> entities) throws IdAuthenticationBusinessException {
+	private void saveIdEntityByUinData(Optional<String> uinOpt, 
+			List<IdentityEntity> entities,
+			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		Optional<byte[]> demoData;
 		Optional<byte[]> bioData;
-		if(updateIdData && uinOpt.isPresent()) {
-			Map<String, Object> identity = idRepoManager.getIdenity(uinOpt.get(), true);
-			demoData = Optional.of(getDemoData(identity));
-			bioData = Optional.of(getBioData(identity));
+		if(properties.contains(IdChangeProperties.UPDATE_ID_DATA) && uinOpt.isPresent()) {
+			String uin = uinOpt.get();
+			if(properties.contains(IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA)) {
+				Optional<IdentityEntity> entityOpt = identityCacheRepo.findById(idService.getUinHash(uin));
+				if(entityOpt.isPresent()) {
+					IdentityEntity entity = entityOpt.get();
+					demoData = Optional.of(entity.getDemographicData());
+					bioData = Optional.of(entity.getBiometricData());
+				} else {
+					demoData = Optional.empty();
+					bioData = Optional.empty();
+				}
+			} else {
+				Map<String, Object> identity = idRepoManager.getIdenity(uin, true);
+				demoData = Optional.of(getDemoData(identity));
+				bioData = Optional.of(getBioData(identity));
+			}
 		} else {
 			demoData = Optional.empty();
 			bioData = Optional.empty();
