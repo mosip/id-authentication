@@ -42,14 +42,33 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Transactional
 public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerService {
 
-	private static enum IdChangeProperties {
+	/**
+	 * The Enum IdChangeProperties.
+	 */
+	private enum IdChangeProperties {
+		
+		/** The update id data. */
 		UPDATE_ID_DATA, 
+		
+		/** The update with local id data. */
 		UPDATE_WITH_LOCAL_ID_DATA, 
+		
+		/** The prepare uin entities. */
 		PREPARE_UIN_ENTITIES, 
+		
+		/** The prepare vid entities. */
 		PREPARE_VID_ENTITIES,
+		
+		/** The find existing uin entities. */
 		FIND_EXISTING_UIN_ENTITIES, 
+		
+		/** The find existing vid entities. */
 		FIND_EXISTING_VID_ENTITIES, 
+		
+		/** The update existing uin attributes. */
 		UPDATE_EXISTING_UIN_ATTRIBUTES,
+		
+		/** The update existing vid attributes. */
 		UPDATE_EXISTING_VID_ATTRIBUTES
 	}
 	
@@ -193,13 +212,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param logMethodName the log method name
 	 * @param events the events
-	 * @param updateIdData the update id data
-	 * @param prepareUinEntities the prepare uin entities
-	 * @param prepareVidEntities the prepare vid entities
-	 * @param findExistingUinEntities the find existing uin entities
-	 * @param findExistingVidEntities the find existing vid entities
-	 * @param updateExistingUinAttributes the update existing uin attributes
-	 * @param updateExistingVidAttributes the update existing vid attributes
+	 * @param properties the properties
 	 * @return true, if successful
 	 */
 	private boolean updateEntitiesForEvents(String logMethodName, 
@@ -218,13 +231,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * Update entities for events.
 	 *
 	 * @param events the events
-	 * @param updateIdData the update id data
-	 * @param prepareUinEntities the prepare uin entities
-	 * @param prepareVidEntities the prepare vid entities
-	 * @param findExistingUinEntities the find existing uin entities
-	 * @param findExistingVidEntities the find existing vid entities
-	 * @param updateExistingUinAttributes the update existing uin attributes
-	 * @param updateExistingVidAttributes the update existing vid attributes
+	 * @param properties the properties
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
@@ -253,12 +260,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * Prepare entities.
 	 *
 	 * @param events the events
-	 * @param prepareUinEntities the prepare uin entities
-	 * @param prepareVidEntities the prepare vid entities
-	 * @param findExistingUinEntities the find existing uin entities
-	 * @param findExistingVidEntities the find existing vid entities
-	 * @param updateExistingUinAttributes the update existing uin attributes
-	 * @param updateExistingVidAttributes the update existing vid attributes
+	 * @param properties the properties
 	 * @return the list
 	 */
 	private List<IdentityEntity> prepareEntities(List<EventDTO> events, 
@@ -417,9 +419,9 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	/**
 	 * Save id entity by uin data.
 	 *
-	 * @param updateIdData the update id data
 	 * @param uinOpt the uin opt
 	 * @param entities the entities
+	 * @param properties the properties
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void saveIdEntityByUinData(Optional<String> uinOpt, 
