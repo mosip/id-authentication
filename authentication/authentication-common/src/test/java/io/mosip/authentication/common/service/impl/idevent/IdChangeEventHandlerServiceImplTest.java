@@ -222,6 +222,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		existingVidEntity.setId(vid);
 		existingVidEntity.setDemographicData(getDemoData(idData));
 		existingVidEntity.setBiometricData(getBioData(idData));
+		existingVidEntity.setExpiryTimestamp(LocalDateTime.now());
 
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(vid);
@@ -238,6 +239,77 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+	
+	@Test
+	public void TestMultipleUpdateVidEventNullUin() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		
+		EventDTO event1 = new EventDTO();
+		event1.setEventType(EventType.UPDATE_VID);
+		String vid1 = "112233445566778899";
+		event1.setVid(vid1);
+		LocalDateTime expiryTimestamp1 = LocalDateTime.of(9999, 1, 1, 0, 0);
+		event1.setExpiryTimestamp(expiryTimestamp1);
+		event1.setTransactionLimit(1);
+		events.add(event1);
+		
+		EventDTO event2 = new EventDTO();
+		event2.setEventType(EventType.UPDATE_VID);
+		String vid2 = "223344556677889911";
+		event2.setVid(vid2);
+		LocalDateTime expiryTimestamp2 = LocalDateTime.of(8888, 1, 1, 0, 0);
+		event2.setExpiryTimestamp(expiryTimestamp2);
+		event2.setTransactionLimit(1);
+		events.add(event2);
+		
+		Map<String, Object> idData = createIdData();
+		
+		IdentityEntity existingVidEntity1 = new IdentityEntity();
+		existingVidEntity1.setId(vid1);
+		existingVidEntity1.setDemographicData(getDemoData(idData));
+		existingVidEntity1.setBiometricData(getBioData(idData));
+		existingVidEntity1.setExpiryTimestamp(LocalDateTime.now());
+		existingVidEntity1.setTransactionLimit(1);
+
+		
+		IdentityEntity existingVidEntity2 = new IdentityEntity();
+		existingVidEntity2.setId(vid2);
+		existingVidEntity2.setDemographicData(getDemoData(idData));
+		existingVidEntity2.setBiometricData(getBioData(idData));
+		existingVidEntity2.setExpiryTimestamp(LocalDateTime.now());
+
+
+		IdentityEntity expectedEntity1 = new IdentityEntity();
+		expectedEntity1.setId(vid1);
+		expectedEntity1.setDemographicData(getDemoData(idData));
+		expectedEntity1.setBiometricData(getBioData(idData));
+		expectedEntity1.setExpiryTimestamp(expiryTimestamp1);
+		expectedEntity1.setTransactionLimit(1);
+		
+		IdentityEntity expectedEntity2 = new IdentityEntity();
+		expectedEntity2.setId(vid2);
+		expectedEntity2.setDemographicData(getDemoData(idData));
+		expectedEntity2.setBiometricData(getBioData(idData));
+		expectedEntity2.setExpiryTimestamp(expiryTimestamp2);
+		expectedEntity2.setTransactionLimit(1);
+		
+		List<IdentityEntity> expectedEntities = new ArrayList<>();
+		expectedEntities.add(expectedEntity1);
+		expectedEntities.add(expectedEntity2);
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		List<IdentityEntity> entities = new ArrayList<>();
+		entities.add(existingVidEntity1);
+		entities.add(existingVidEntity2);
+		
+		Mockito.when(identityCacheRepo.findAllById(Mockito.any())).thenReturn(entities);		
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntities));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -269,6 +341,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		existingVidEntity.setId(vid);
 		existingVidEntity.setDemographicData("{}".getBytes());
 		existingVidEntity.setBiometricData("<test/>".getBytes());
+		existingVidEntity.setExpiryTimestamp(LocalDateTime.now());
 
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(vid);
@@ -291,6 +364,86 @@ public class IdChangeEventHandlerServiceImplTest {
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
 	}
+	
+	@Test
+	public void TestMultipleUpdateVidEventWithUin() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		String uin = "1122334455";
+
+		EventDTO event1 = new EventDTO();
+		event1.setEventType(EventType.UPDATE_VID);
+		String vid1 = "112233445566778899";
+		event1.setVid(vid1);
+		event1.setUin(uin);
+		LocalDateTime expiryTimestamp1 = LocalDateTime.of(9999, 1, 1, 0, 0);
+		event1.setExpiryTimestamp(expiryTimestamp1);
+		event1.setTransactionLimit(1);
+		events.add(event1);
+		
+		EventDTO event2 = new EventDTO();
+		event2.setEventType(EventType.UPDATE_VID);
+		String vid2 = "223344556677889911";
+		event2.setVid(vid2);
+		event2.setUin(uin);
+		LocalDateTime expiryTimestamp2 = LocalDateTime.of(8888, 1, 1, 0, 0);
+		event2.setExpiryTimestamp(expiryTimestamp2);
+		event2.setTransactionLimit(1);
+		events.add(event2);
+		
+		Map<String, Object> idData = createIdData();
+		
+		IdentityEntity existingUinEntity = new IdentityEntity();
+		existingUinEntity.setId(uin);
+		existingUinEntity.setDemographicData(getDemoData(idData));
+		existingUinEntity.setBiometricData(getBioData(idData));
+		
+		IdentityEntity existingVidEntity1 = new IdentityEntity();
+		existingVidEntity1.setId(vid1);
+		existingVidEntity1.setDemographicData("{}".getBytes());
+		existingVidEntity1.setBiometricData("<test/>".getBytes());
+		existingVidEntity1.setExpiryTimestamp(LocalDateTime.now());
+		existingVidEntity1.setTransactionLimit(1);
+
+		
+		IdentityEntity existingVidEntity2 = new IdentityEntity();
+		existingVidEntity2.setId(vid2);
+		existingVidEntity2.setDemographicData("{}".getBytes());
+		existingVidEntity2.setBiometricData("<test/>".getBytes());
+		existingVidEntity2.setExpiryTimestamp(LocalDateTime.now());
+
+
+		IdentityEntity expectedEntity1 = new IdentityEntity();
+		expectedEntity1.setId(vid1);
+		expectedEntity1.setDemographicData(getDemoData(idData));
+		expectedEntity1.setBiometricData(getBioData(idData));
+		expectedEntity1.setExpiryTimestamp(expiryTimestamp1);
+		expectedEntity1.setTransactionLimit(1);
+		
+		IdentityEntity expectedEntity2 = new IdentityEntity();
+		expectedEntity2.setId(vid2);
+		expectedEntity2.setDemographicData(getDemoData(idData));
+		expectedEntity2.setBiometricData(getBioData(idData));
+		expectedEntity2.setExpiryTimestamp(expiryTimestamp2);
+		expectedEntity2.setTransactionLimit(1);
+		
+		List<IdentityEntity> expectedEntities = new ArrayList<>();
+		expectedEntities.add(expectedEntity1);
+		expectedEntities.add(expectedEntity2);
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		List<IdentityEntity> entities = new ArrayList<>();
+		entities.add(existingVidEntity1);
+		entities.add(existingVidEntity2);
+		
+		Mockito.when(identityCacheRepo.findAllById(Mockito.any())).thenReturn(entities);		
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
+
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntities));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
 
 	private Answer<?> createEntityVerifyingAnswer(IdentityEntity expectedEntity) {
 		return new Answer() {
@@ -298,15 +451,38 @@ public class IdChangeEventHandlerServiceImplTest {
 				     Object[] args = invocation.getArguments();
 				     //Object mock = invocation.getMock();
 				     IdentityEntity actualEntity = (IdentityEntity)args[0];
-				     assertEquals(expectedEntity.getId(), actualEntity.getId());
-				     assertEquals(expectedEntity.getExpiryTimestamp(), actualEntity.getExpiryTimestamp());
-				     assertEquals(expectedEntity.getTransactionLimit(), actualEntity.getTransactionLimit());
-				     assertEquals(new String(expectedEntity.getDemographicData(), "utf-8"), 
-				    		 new String(actualEntity.getDemographicData(), "utf-8"));
-				     assertEquals(new String(expectedEntity.getBiometricData(), "utf-8"), 
-				    		 new String(actualEntity.getBiometricData(), "utf-8"));
+				     assertEntityEquals(expectedEntity, actualEntity);
 				     return null;
 				   }
+
+				};
+	}
+	
+	private void assertEntityEquals(IdentityEntity expectedEntity, IdentityEntity actualEntity)
+			throws UnsupportedEncodingException {
+		 assertEquals(expectedEntity.getId(), actualEntity.getId());
+		 assertEquals(expectedEntity.getExpiryTimestamp(), actualEntity.getExpiryTimestamp());
+		 assertEquals(expectedEntity.getTransactionLimit(), actualEntity.getTransactionLimit());
+		 assertEquals(new String(expectedEntity.getDemographicData(), "utf-8"), 
+				 new String(actualEntity.getDemographicData(), "utf-8"));
+		 assertEquals(new String(expectedEntity.getBiometricData(), "utf-8"), 
+				 new String(actualEntity.getBiometricData(), "utf-8"));
+	}
+	
+	private Answer<?> createEntityVerifyingAnswer(List<IdentityEntity> expectedEntities) {
+		return new Answer() {
+			   public Object answer(InvocationOnMock invocation) throws UnsupportedEncodingException {
+				     Object[] args = invocation.getArguments();
+				     //Object mock = invocation.getMock();
+				     IdentityEntity actualEntity = (IdentityEntity)args[0];
+				     IdentityEntity expectedEntity = expectedEntities.stream()
+				    		 										.filter(entity -> entity.getId().equals(actualEntity.getId()))
+				    		 										.findFirst()
+				    		 										.get();
+					assertEntityEquals(expectedEntity, actualEntity);
+				     return null;
+				   }
+
 				};
 	}
 
