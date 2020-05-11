@@ -40,7 +40,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
  */
 @Service
 @Transactional
-public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerService {
+public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
 
 	/**
 	 * The Enum IdChangeProperties.
@@ -73,7 +73,7 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	}
 	
 	/** The mosipLogger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(IdChengeEventHandlerServiceImpl.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(IdChangeEventHandlerServiceImpl.class);
 	
 	/** The id repo manager. */
 	@Autowired
@@ -237,7 +237,11 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 */
 	private boolean updateEntitiesForEvents(List<EventDTO> events, 
 			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
-		Map<String, List<EventDTO>> eventsByUin = events.stream().collect(Collectors.groupingBy(EventDTO::getUin));
+		Map<String, List<EventDTO>> eventsByUin = 
+				events.stream()
+					  .collect(
+							Collectors.groupingBy(event ->
+										Optional.ofNullable(event.getUin()).orElse("")));
 		for(Entry<String, List<EventDTO>> entry : eventsByUin.entrySet()) {
 			Optional<String> uinOpt = Optional.ofNullable(entry.getKey()); //UIN may be null
 			List<EventDTO> uinEvents = entry.getValue();
@@ -429,7 +433,8 @@ public class IdChengeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		Optional<byte[]> demoData;
 		Optional<byte[]> bioData;
-		if(properties.contains(IdChangeProperties.UPDATE_ID_DATA) && uinOpt.isPresent()) {
+		if(properties.contains(IdChangeProperties.UPDATE_ID_DATA) && 
+				uinOpt.filter(str -> !str.isEmpty()).isPresent()) {
 			String uin = uinOpt.get();
 			if(properties.contains(IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA)) {
 				Optional<IdentityEntity> entityOpt = identityCacheRepo.findById(idService.getUinHash(uin));

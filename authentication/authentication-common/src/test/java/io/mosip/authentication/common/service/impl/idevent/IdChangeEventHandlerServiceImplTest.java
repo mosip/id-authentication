@@ -1,0 +1,381 @@
+package io.mosip.authentication.common.service.impl.idevent;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.integration.IdRepoManager;
+import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.idrepository.core.constant.EventType;
+import io.mosip.idrepository.core.dto.EventDTO;
+import io.mosip.kernel.core.util.CryptoUtil;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+public class IdChangeEventHandlerServiceImplTest {
+	
+	@Autowired
+	private Environment env;
+	
+	@Mock
+	private IdRepoManager idRepoManager;
+	
+	@Mock
+	private IdService<?> idService;
+	
+	@Mock
+	private IdentityCacheRepository identityCacheRepo;
+	
+	@Mock
+	private KeyManager keyManager;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
+	@InjectMocks
+	IdChangeEventHandlerServiceImpl idChengeEventHandlerServiceImpl;
+	
+	@Before
+	public void before() throws IDDataValidationException, RestServiceException {
+		ReflectionTestUtils.setField(idChengeEventHandlerServiceImpl, "mapper", mapper);
+	}
+	
+	@Test
+	public void TestCreateUinEvent() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		EventDTO event = new EventDTO();
+		event.setEventType(EventType.CREATE_UIN);
+		String uin = "1122334455";
+		event.setUin(uin);
+		events.add(event);
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Map<String, Object> idData = createIdData();
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		IdentityEntity entity = new IdentityEntity();
+		entity.setId(uin);
+		entity.setDemographicData(getDemoData(idData));
+		entity.setBiometricData(getBioData(idData));
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(entity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+	
+	@Test
+	public void TestCreateVidEvent() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		EventDTO event = new EventDTO();
+		event.setEventType(EventType.CREATE_VID);
+		String uin = "1122334455";
+		String vid = "112233445566778899";
+		event.setVid(vid);
+		event.setUin(uin);
+		events.add(event);
+		
+		Map<String, Object> idData = createIdData();
+		
+		IdentityEntity existingUinEntity = new IdentityEntity();
+		existingUinEntity.setId(uin);
+		existingUinEntity.setDemographicData(getDemoData(idData));
+		existingUinEntity.setBiometricData(getBioData(idData));
+
+		IdentityEntity expectedEntity = new IdentityEntity();
+		expectedEntity.setId(vid);
+		expectedEntity.setDemographicData(getDemoData(idData));
+		expectedEntity.setBiometricData(getBioData(idData));
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+	
+	@Test
+	public void TestUpdateUinEvent_UpdateIdDataOnly() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		EventDTO event = new EventDTO();
+		event.setEventType(EventType.UPDATE_UIN);
+		String uin = "1122334455";
+		event.setUin(uin);
+		events.add(event);
+		
+		IdentityEntity existingUinEntity = new IdentityEntity();
+		existingUinEntity.setId(uin);
+		existingUinEntity.setDemographicData("{}".getBytes());
+		existingUinEntity.setBiometricData("<test/>".getBytes());
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Map<String, Object> idData = createIdData();
+		List<IdentityEntity> entities = new ArrayList<>();
+		entities.add(existingUinEntity);
+		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(uin))).thenReturn(entities);
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		IdentityEntity expectedEntity = new IdentityEntity();
+		expectedEntity.setId(uin);
+		expectedEntity.setDemographicData(getDemoData(idData));
+		expectedEntity.setBiometricData(getBioData(idData));
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+	
+	@Test
+	public void TestUpdateUinEvent_UpdateIdDataAndAttribute() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		EventDTO event = new EventDTO();
+		event.setEventType(EventType.UPDATE_UIN);
+		String uin = "1122334455";
+		event.setUin(uin);
+		LocalDateTime expiryTimestamp = LocalDateTime.of(9999, 1, 1, 0, 0);
+		event.setExpiryTimestamp(expiryTimestamp);
+		events.add(event);
+		
+		IdentityEntity existingUinEntity = new IdentityEntity();
+		existingUinEntity.setId(uin);
+		existingUinEntity.setDemographicData("{}".getBytes());
+		existingUinEntity.setBiometricData("<test/>".getBytes());
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Map<String, Object> idData = createIdData();
+		List<IdentityEntity> entities = new ArrayList<>();
+		entities.add(existingUinEntity);
+		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(uin))).thenReturn(entities );
+		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		IdentityEntity expectedEntity = new IdentityEntity();
+		expectedEntity.setId(uin);
+		expectedEntity.setDemographicData(getDemoData(idData));
+		expectedEntity.setBiometricData(getBioData(idData));
+		expectedEntity.setExpiryTimestamp(expiryTimestamp);
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+	
+	@Test
+	public void TestUpdateVidEventNullUin() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		EventDTO event = new EventDTO();
+		event.setEventType(EventType.UPDATE_VID);
+		String vid = "112233445566778899";
+		event.setVid(vid);
+		LocalDateTime expiryTimestamp = LocalDateTime.of(9999, 1, 1, 0, 0);
+		event.setExpiryTimestamp(expiryTimestamp);
+		event.setTransactionLimit(1);
+		events.add(event);
+		
+		Map<String, Object> idData = createIdData();
+		
+		IdentityEntity existingVidEntity = new IdentityEntity();
+		existingVidEntity.setId(vid);
+		existingVidEntity.setDemographicData(getDemoData(idData));
+		existingVidEntity.setBiometricData(getBioData(idData));
+
+		IdentityEntity expectedEntity = new IdentityEntity();
+		expectedEntity.setId(vid);
+		expectedEntity.setDemographicData(getDemoData(idData));
+		expectedEntity.setBiometricData(getBioData(idData));
+		expectedEntity.setExpiryTimestamp(expiryTimestamp);
+		expectedEntity.setTransactionLimit(1);
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		List<IdentityEntity> entities = new ArrayList<>();
+		entities.add(existingVidEntity);
+		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities );		
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+	
+	@Test
+	public void TestUpdateVidEventWithUin() throws IdAuthenticationBusinessException {
+		List<EventDTO> events = new ArrayList<>();
+		EventDTO event = new EventDTO();
+		event.setEventType(EventType.UPDATE_VID);
+		String vid = "112233445566778899";
+		String uin = "1122334455";
+		event.setUin(uin);
+		event.setVid(vid);
+		LocalDateTime expiryTimestamp = LocalDateTime.of(9999, 1, 1, 0, 0);
+		event.setExpiryTimestamp(expiryTimestamp);
+		event.setTransactionLimit(1);
+		events.add(event);
+		
+		Map<String, Object> idData = createIdData();
+		
+		IdentityEntity existingUinEntity = new IdentityEntity();
+		existingUinEntity.setId(uin);
+		existingUinEntity.setDemographicData(getDemoData(idData));
+		existingUinEntity.setBiometricData(getBioData(idData));
+		
+				
+		IdentityEntity existingVidEntity = new IdentityEntity();
+		existingVidEntity.setId(vid);
+		existingVidEntity.setDemographicData("{}".getBytes());
+		existingVidEntity.setBiometricData("<test/>".getBytes());
+
+		IdentityEntity expectedEntity = new IdentityEntity();
+		expectedEntity.setId(vid);
+		expectedEntity.setDemographicData(getDemoData(idData));
+		expectedEntity.setBiometricData(getBioData(idData));
+		expectedEntity.setExpiryTimestamp(expiryTimestamp);
+		expectedEntity.setTransactionLimit(1);
+		
+		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		List<IdentityEntity> entities = new ArrayList<>();
+		entities.add(existingVidEntity);
+		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities);
+		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
+		
+		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		
+		
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		
+		idChengeEventHandlerServiceImpl.handleIdEvent(events);
+		
+	}
+
+	private Answer<?> createEntityVerifyingAnswer(IdentityEntity expectedEntity) {
+		return new Answer() {
+			   public Object answer(InvocationOnMock invocation) throws UnsupportedEncodingException {
+				     Object[] args = invocation.getArguments();
+				     //Object mock = invocation.getMock();
+				     IdentityEntity actualEntity = (IdentityEntity)args[0];
+				     assertEquals(expectedEntity.getId(), actualEntity.getId());
+				     assertEquals(expectedEntity.getExpiryTimestamp(), actualEntity.getExpiryTimestamp());
+				     assertEquals(expectedEntity.getTransactionLimit(), actualEntity.getTransactionLimit());
+				     assertEquals(new String(expectedEntity.getDemographicData(), "utf-8"), 
+				    		 new String(actualEntity.getDemographicData(), "utf-8"));
+				     assertEquals(new String(expectedEntity.getBiometricData(), "utf-8"), 
+				    		 new String(actualEntity.getBiometricData(), "utf-8"));
+				     return null;
+				   }
+				};
+	}
+
+	private static Answer answerToReturnArg(int argIndex) {
+		return new Answer() {
+			   public Object answer(InvocationOnMock invocation) {
+				     Object[] args = invocation.getArguments();
+				     //Object mock = invocation.getMock();
+				     return args[argIndex];
+				   }
+				};
+	}
+	
+	private Map<String, Object> createIdData() {
+		try {
+			return mapper.readValue(CryptoUtil.decodeBase64(env.getProperty("mocked.idrepo-data")), Map.class);
+		} catch (IOException e) {
+			return new HashMap<>();
+		}
+	}
+
+	
+	
+	
+	/**
+	 * Gets the demo data.
+	 *
+	 * @param identity the identity
+	 * @return the demo data
+	 */
+	@SuppressWarnings("unchecked")
+	private byte[] getDemoData(Map<String, Object> identity) {
+		return Optional.ofNullable(identity.get("response"))
+								.filter(obj -> obj instanceof Map)
+								.map(obj -> ((Map<String, Object>)obj).get("identity"))
+								.filter(obj -> obj instanceof Map)
+								.map(obj -> {
+									try {
+										return mapper.writeValueAsBytes(obj);
+									} catch (JsonProcessingException e) {
+										e.printStackTrace();
+									}
+									return new byte[0];
+								})
+								.orElse(new byte[0]);
+	}
+	
+	/**
+	 * Gets the bio data.
+	 *
+	 * @param identity the identity
+	 * @return the bio data
+	 */
+	@SuppressWarnings("unchecked")
+	private byte[] getBioData(Map<String, Object> identity) {
+		return Optional.ofNullable(identity.get("response"))
+								.filter(obj -> obj instanceof Map)
+								.map(obj -> ((Map<String, Object>)obj).get("documents"))
+								.filter(obj -> obj instanceof List)
+								.flatMap(obj -> 
+										((List<Map<String, Object>>)obj)
+											.stream()
+											.filter(map -> map.containsKey("category") 
+															&& map.get("category").toString().equalsIgnoreCase("individualBiometrics")
+															&& map.containsKey("value"))
+											.map(map -> (String)map.get("value"))
+											.findAny())
+								.map(CryptoUtil::decodeBase64)
+								.orElse(new byte[0]);
+	}
+
+}
