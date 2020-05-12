@@ -371,6 +371,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				EventDTO eventDTO = eventById.get(id);
 				entity.setExpiryTimestamp(eventDTO.getExpiryTimestamp());
 				entity.setTransactionLimit(eventDTO.getTransactionLimit());
+				
+				entity.setUpdBy("ida");
+				entity.setUpdDTimes(LocalDateTime.now());
 			});
 		}
 		return existingEntities;
@@ -416,6 +419,8 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			identityEntity.setId(idService.getUinHash(id));
 			identityEntity.setExpiryTimestamp(event.getExpiryTimestamp());
 			identityEntity.setTransactionLimit(event.getTransactionLimit());
+			identityEntity.setCrBy("ida");
+			identityEntity.setCrDTimes(LocalDateTime.now());
 			return Optional.of(identityEntity);
 		}
 		return Optional.empty();
@@ -475,9 +480,6 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			if(bioData.isPresent()) {
 				entity.setBiometricData(keyManager.encrypt(id, bioData.get()));
 			}
-			
-			entity.setCrBy("ida");
-			entity.setCrDTimes(LocalDateTime.now());
 		});
 		identityCacheRepo.saveAll(entities);
 	}
