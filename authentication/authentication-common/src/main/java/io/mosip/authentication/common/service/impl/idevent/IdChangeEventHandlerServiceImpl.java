@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -39,7 +40,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
  * @author Loganathan Sekar
  */
 @Service
-@Transactional
 public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
 
 	/**
@@ -235,6 +235,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
+	@Transactional
 	private boolean updateEntitiesForEvents(List<EventDTO> events, 
 			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		Map<String, List<EventDTO>> eventsByUin = 
@@ -455,7 +456,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			demoData = Optional.empty();
 			bioData = Optional.empty();
 		}
-		entities.forEach(entity -> saveIdEntity(entity, demoData, bioData));
+		saveIdEntity(entities, demoData, bioData);
 	}
 
 	/**
@@ -465,15 +466,20 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param demoData the demo data
 	 * @param bioData the bio data
 	 */
-	private void saveIdEntity(IdentityEntity entity,Optional<byte[]> demoData, Optional<byte[]> bioData) {
-		String id = entity.getId();
-		if(demoData.isPresent()) {
-			entity.setDemographicData(keyManager.encrypt(id, demoData.get()));
-		}
-		if(bioData.isPresent()) {
-			entity.setBiometricData(keyManager.encrypt(id, bioData.get()));
-		}
-		identityCacheRepo.save(entity);
+	private void saveIdEntity(List<IdentityEntity> entities,Optional<byte[]> demoData, Optional<byte[]> bioData) {
+		entities.forEach(entity ->{
+			String id = entity.getId();
+			if(demoData.isPresent()) {
+				entity.setDemographicData(keyManager.encrypt(id, demoData.get()));
+			}
+			if(bioData.isPresent()) {
+				entity.setBiometricData(keyManager.encrypt(id, bioData.get()));
+			}
+			
+			entity.setCrBy("ida");
+			entity.setCrDTimes(LocalDateTime.now());
+		});
+		identityCacheRepo.saveAll(entities);
 	}
 
 	/**

@@ -34,12 +34,12 @@ public class IdentityEntity {
 	
 	/** The demographic data. */
 	@NotNull
-	@Column(name = "demographic_data")
+	@Column(name = "demo_data")
 	private byte[] demographicData;
 	
 	/** The biometric data. */
 	@NotNull
-	@Column(name = "biometric_data")
+	@Column(name = "bio_data")
 	private byte[] biometricData;
 	
 	/** The expiry timestamp. */
@@ -49,6 +49,26 @@ public class IdentityEntity {
 	/** The transaction limit. */
 	@Column(name = "transaction_limit")
 	private Integer transactionLimit;
+	
+	@NotNull
+	@Column(name = "cr_by")
+	private String crBy;
+
+	@NotNull
+	@Column(name = "cr_dtimes")
+	private LocalDateTime crDTimes;
+
+	@Column(name = "upd_by")
+	private String updBy;
+
+	@Column(name = "upd_dtimes")
+	private LocalDateTime updDTimes;
+
+	@Column(name = "is_deleted")
+	private boolean isDeleted;
+	
+	@Column(name = "del_dtimes")
+	private LocalDateTime delDTimes;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

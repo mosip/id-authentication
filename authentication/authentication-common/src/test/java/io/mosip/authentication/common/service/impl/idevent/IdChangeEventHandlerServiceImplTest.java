@@ -89,12 +89,12 @@ public class IdChangeEventHandlerServiceImplTest {
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
-		IdentityEntity entity = new IdentityEntity();
-		entity.setId(uin);
-		entity.setDemographicData(getDemoData(idData));
-		entity.setBiometricData(getBioData(idData));
+		IdentityEntity expectedEntity = new IdentityEntity();
+		expectedEntity.setId(uin);
+		expectedEntity.setDemographicData(getDemoData(idData));
+		expectedEntity.setBiometricData(getBioData(idData));
 		
-		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(entity));
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -129,7 +129,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		
 		
-		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -162,7 +162,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntity.setDemographicData(getDemoData(idData));
 		expectedEntity.setBiometricData(getBioData(idData));
 		
-		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -198,7 +198,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntity.setBiometricData(getBioData(idData));
 		expectedEntity.setExpiryTimestamp(expiryTimestamp);
 		
-		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -238,7 +238,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
-		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -359,7 +359,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
-		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntity));
+		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
 		idChengeEventHandlerServiceImpl.handleIdEvent(events);
 		
@@ -445,19 +445,6 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 	}
 
-	private Answer<?> createEntityVerifyingAnswer(IdentityEntity expectedEntity) {
-		return new Answer() {
-			   public Object answer(InvocationOnMock invocation) throws UnsupportedEncodingException {
-				     Object[] args = invocation.getArguments();
-				     //Object mock = invocation.getMock();
-				     IdentityEntity actualEntity = (IdentityEntity)args[0];
-				     assertEntityEquals(expectedEntity, actualEntity);
-				     return null;
-				   }
-
-				};
-	}
-	
 	private void assertEntityEquals(IdentityEntity expectedEntity, IdentityEntity actualEntity)
 			throws UnsupportedEncodingException {
 		 assertEquals(expectedEntity.getId(), actualEntity.getId());
@@ -474,12 +461,18 @@ public class IdChangeEventHandlerServiceImplTest {
 			   public Object answer(InvocationOnMock invocation) throws UnsupportedEncodingException {
 				     Object[] args = invocation.getArguments();
 				     //Object mock = invocation.getMock();
-				     IdentityEntity actualEntity = (IdentityEntity)args[0];
-				     IdentityEntity expectedEntity = expectedEntities.stream()
-				    		 										.filter(entity -> entity.getId().equals(actualEntity.getId()))
-				    		 										.findFirst()
-				    		 										.get();
-					assertEntityEquals(expectedEntity, actualEntity);
+				     List<IdentityEntity> actualEntities = (List<IdentityEntity>)args[0];
+				     actualEntities.forEach(actualEntity -> {
+				    	 IdentityEntity expectedEntity = expectedEntities.stream()
+									.filter(entity -> entity.getId().equals(actualEntity.getId()))
+									.findFirst()
+									.get();
+				    	 try {
+							assertEntityEquals(expectedEntity, actualEntity);
+						} catch (UnsupportedEncodingException e) {
+							throw new RuntimeException(e);
+						}
+				     });
 				     return null;
 				   }
 
