@@ -56,7 +56,7 @@ public class IdRepoNotificationHandlerController {
 			List<EventDTO> events = request.getEvents();
 			if(events != null) {
 				if(handleEvents(events)) {
-					ResponseEntity.ok().build();
+					return ResponseEntity.ok().build();
 				}
 			}
 		}
