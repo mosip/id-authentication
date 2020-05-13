@@ -465,7 +465,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 					bioData = Optional.empty();
 				}
 			} else {
-				Map<String, Object> identity = idRepoManager.getIdenity(uin, true);
+				Map<String, Object> identity = idRepoManager.getIdentity(uin, true);
 				demoData = Optional.of(getDemoData(identity));
 				bioData = Optional.of(getBioData(identity));
 			}

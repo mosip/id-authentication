@@ -69,7 +69,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@Override
 	public Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException {
-		return idRepoManager.getIdenity(uin, isBio);
+		return idRepoManager.getIdentity(uin, isBio);
 	}
 
 	/*
@@ -81,31 +81,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@Override
 	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdRepoByVidAsRequest(vid, isBio);
-	}
-
-	/**
-	 * Do validate VID entity and checks for the expiry date.
-	 *
-	 * @param vid the vid
-	 * @param isBio the is bio
-	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		Map<String, Object> idRepo = null;
-		long  uin = idRepoManager.getUINByVID(vid);
-				try {
-					idRepo = idRepoManager.getIdenity(String.valueOf(uin), isBio);
-				} catch (IdAuthenticationBusinessException e) {
-					if (e.getErrorCode().equals(IdAuthenticationErrorConstants.UIN_DEACTIVATED.getErrorCode())) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
-					} else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
-					}
-				}
-			
-		return idRepo;
+		return idRepoManager.getIdentity(vid, isBio);
 	}
 
 	/**

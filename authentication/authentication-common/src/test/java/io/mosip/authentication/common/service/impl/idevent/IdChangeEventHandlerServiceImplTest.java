@@ -86,7 +86,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Map<String, Object> idData = createIdData();
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
+		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
@@ -154,7 +154,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingUinEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(uin))).thenReturn(entities);
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
+		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
@@ -189,7 +189,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingUinEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(uin))).thenReturn(entities );
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
+		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		IdentityEntity expectedEntity = new IdentityEntity();

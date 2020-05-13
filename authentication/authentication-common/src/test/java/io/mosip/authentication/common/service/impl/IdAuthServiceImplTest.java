@@ -76,7 +76,7 @@ public class IdAuthServiceImplTest {
 
 	@Autowired
 	Environment env;
-	
+
 	@Mock
 	UinHashSaltRepo uinHashSaltRepo;
 
@@ -85,7 +85,7 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idServiceImpl, "idRepoManager", idRepoManager);
 		ReflectionTestUtils.setField(idServiceImpl, "env", env);
 		ReflectionTestUtils.setField(idServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
-		
+
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class IdAuthServiceImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
 		idRepo.put("vid", "476567");
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString(), false);
 		assertNotNull(invokeMethod);
@@ -115,12 +115,12 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		Mockito.when(idRepoManager.getIdenity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdentity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idServiceImpl,
 				"processIdType", idvIdType, idvId, false);
 		assertEquals("476567", idResponseMap.get("uin"));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testProcessIdType_IdTypeIsUserId() throws IdAuthenticationBusinessException {
@@ -134,7 +134,7 @@ public class IdAuthServiceImplTest {
 				"processIdType", idvIdType, idvId, false);
 		assertEquals("476567", idResponseMap.get("uin"));
 	}
-	
+
 	@Test
 	public void testGetUinHash() throws IdAuthenticationBusinessException {
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2121213212143");
@@ -147,8 +147,8 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-		Mockito.when(idRepoManager.getUINByVID(idvId))
-		.thenThrow(idBusinessException);;
+		Mockito.when(idRepoManager.getIdentity(idvId, false)).thenThrow(idBusinessException);
+		;
 		idServiceImpl.processIdType(idvIdType, idvId, false);
 
 	}
@@ -161,7 +161,7 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
 
 		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
@@ -188,7 +188,7 @@ public class IdAuthServiceImplTest {
 		otpRequestDto.setId("id");
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("2345678901234");
-//		otpRequestDto.get("2345678901234");
+		// otpRequestDto.get("2345678901234");
 
 		return otpRequestDto;
 	}
@@ -200,41 +200,41 @@ public class IdAuthServiceImplTest {
 				+ "  \"timestamp\": \"2019-01-18T05:13:22.710Z\",\r\n" + "  \"status\": \"ACTIVATED\",\r\n"
 				+ "  \"response\": {\r\n" + "    \"identity\": {\r\n" + "      \"IDSchemaVersion\": 1,\r\n"
 				+ "      \"UIN\": 201786049258,\r\n" + "      \"fullName\": [\r\n" + "        {\r\n"
-				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"ابراهيم بن علي\"\r\n"
+				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø§Ø¨Ø±Ø§Ù‡ÙŠÙ… Ø¨Ù† Ø¹Ù„ÙŠ\"\r\n"
 				+ "        },\r\n" + "        {\r\n" + "          \"language\": \"fre\",\r\n"
 				+ "          \"value\": \"Ibrahim Ibn Ali\"\r\n" + "        }\r\n" + "      ],\r\n"
 				+ "      \"dateOfBirth\": \"1955/04/15\",\r\n" + "      \"age\": 45,\r\n" + "      \"gender\": [\r\n"
-				+ "        {\r\n" + "          \"language\": \"ara\",\r\n" + "          \"value\": \"الذكر\"\r\n"
+				+ "        {\r\n" + "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø§Ù„Ø°ÙƒØ±\"\r\n"
 				+ "        },\r\n" + "        {\r\n" + "          \"language\": \"fre\",\r\n"
-				+ "          \"value\": \"mâle\"\r\n" + "        }\r\n" + "      ],\r\n"
+				+ "          \"value\": \"mÃ¢le\"\r\n" + "        }\r\n" + "      ],\r\n"
 				+ "      \"addressLine1\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
-				+ "          \"value\": \"عنوان العينة سطر 1\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 1\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"exemple d'adresse ligne 1\"\r\n"
 				+ "        }\r\n" + "      ],\r\n" + "      \"addressLine2\": [\r\n" + "        {\r\n"
-				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"عنوان العينة سطر 2\"\r\n"
+				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 2\"\r\n"
 				+ "        },\r\n" + "        {\r\n" + "          \"language\": \"fre\",\r\n"
 				+ "          \"value\": \"exemple d'adresse ligne 2\"\r\n" + "        }\r\n" + "      ],\r\n"
 				+ "      \"addressLine3\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
-				+ "          \"value\": \"عنوان العينة سطر 2\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 2\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"exemple d'adresse ligne 2\"\r\n"
 				+ "        }\r\n" + "      ],\r\n" + "      \"region\": [\r\n" + "        {\r\n"
-				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"طنجة - تطوان - الحسيمة\"\r\n"
+				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø·Ù†Ø¬Ø© - ØªØ·ÙˆØ§Ù† - Ø§Ù„Ø­Ø³ÙŠÙ…Ø©\"\r\n"
 				+ "        },\r\n" + "        {\r\n" + "          \"language\": \"fre\",\r\n"
-				+ "          \"value\": \"Tanger-Tétouan-Al Hoceima\"\r\n" + "        }\r\n" + "      ],\r\n"
+				+ "          \"value\": \"Tanger-TÃ©touan-Al Hoceima\"\r\n" + "        }\r\n" + "      ],\r\n"
 				+ "      \"province\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
-				+ "          \"value\": \"فاس-مكناس\"\r\n" + "        },\r\n" + "        {\r\n"
-				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"Fès-Meknès\"\r\n" + "        }\r\n"
+				+ "          \"value\": \"Ù�Ø§Ø³-Ù…ÙƒÙ†Ø§Ø³\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"FÃ¨s-MeknÃ¨s\"\r\n" + "        }\r\n"
 				+ "      ],\r\n" + "      \"city\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
-				+ "          \"value\": \"الدار البيضاء\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "          \"value\": \"Ø§Ù„Ø¯Ø§Ø± Ø§Ù„Ø¨ÙŠØ¶Ø§Ø¡\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"Casablanca\"\r\n" + "        }\r\n"
 				+ "      ],\r\n" + "      \"postalCode\": \"570004\",\r\n" + "      \"phone\": \"9876543210\",\r\n"
 				+ "      \"email\": \"abc@xyz.com\",\r\n" + "      \"CNIENumber\": 6789545678909,\r\n"
 				+ "      \"localAdministrativeAuthority\": [\r\n" + "        {\r\n"
-				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"سلمى\"\r\n" + "        },\r\n"
+				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø³Ù„Ù…Ù‰\"\r\n" + "        },\r\n"
 				+ "        {\r\n" + "          \"language\": \"fre\",\r\n" + "          \"value\": \"salma\"\r\n"
 				+ "        }\r\n" + "      ],\r\n" + "      \"parentOrGuardianRIDOrUIN\": 212124324784912,\r\n"
 				+ "      \"parentOrGuardianName\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
-				+ "          \"value\": \"سلمى\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "          \"value\": \"Ø³Ù„Ù…Ù‰\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"salma\"\r\n" + "        }\r\n"
 				+ "      ],\r\n" + "      \"proofOfAddress\": {\r\n" + "        \"format\": \"pdf\",\r\n"
 				+ "        \"type\": \"drivingLicense\",\r\n" + "        \"value\": \"fileReferenceID\"\r\n"
@@ -286,13 +286,9 @@ public class IdAuthServiceImplTest {
 			idRepo.put("uin", vid);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn(12345l);
-			Mockito.when(idRepoManager.getIdenity("12345", false))
-			.thenThrow(idBusinessException);
-			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest",
-					vid, false);
+			Mockito.when(idRepoManager.getIdentity("12345", false)).thenThrow(idBusinessException);
+			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
 
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
@@ -308,20 +304,15 @@ public class IdAuthServiceImplTest {
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.INVALID_UIN);
 
-			
-			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn(12345l);
-			Mockito.when(idRepoManager.getIdenity("12345", false))
-			.thenThrow(idBusinessException);
-			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest",
-					vid, false);
+			Mockito.when(idRepoManager.getIdentity("12345", false)).thenThrow(idBusinessException);
+			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
 
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
 	}
-	
+
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testIdRepoServiceException_UINDeactivated() throws Throwable {
 		try {
@@ -331,19 +322,13 @@ public class IdAuthServiceImplTest {
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
 
-			
-			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn(12345l);
-			Mockito.when(idRepoManager.getIdenity("12345", false))
-			.thenThrow(idBusinessException);
-			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
-			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest",
-					vid, false);
+			Mockito.when(idRepoManager.getIdentity("12345", false)).thenThrow(idBusinessException);
+			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
 
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
 	}
-	
-	
+
 }
