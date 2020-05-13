@@ -33,6 +33,7 @@ import io.mosip.idrepository.core.constant.EventType;
 import io.mosip.idrepository.core.dto.EventDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * ID Change Event Handler service implementation class.
@@ -156,12 +157,19 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 */
 	private boolean handleUpdateUinEvents(List<EventDTO> events) {
+
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
-				IdChangeProperties.UPDATE_ID_DATA, 
 				IdChangeProperties.PREPARE_UIN_ENTITIES, 
 				IdChangeProperties.FIND_EXISTING_UIN_ENTITIES, 
 				IdChangeProperties.UPDATE_EXISTING_UIN_ATTRIBUTES
 				);
+		
+		boolean deactivated = events.stream().anyMatch(event -> event.getExpiryTimestamp() != null
+				&& event.getExpiryTimestamp().isBefore(getCurrentUTCLocalTime()));
+		
+		if(!deactivated) {
+			properties.add(IdChangeProperties.UPDATE_ID_DATA);
+		}
 		
 		String logMethodName = "handleUpdateUinEvents";
 		return updateEntitiesForEvents(logMethodName, 
@@ -373,10 +381,14 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				entity.setTransactionLimit(eventDTO.getTransactionLimit());
 				
 				entity.setUpdBy("ida");
-				entity.setUpdDTimes(LocalDateTime.now());
+				entity.setUpdDTimes(getCurrentUTCLocalTime());
 			});
 		}
 		return existingEntities;
+	}
+
+	private LocalDateTime getCurrentUTCLocalTime() {
+		return DateUtils.getUTCCurrentDateTime();
 	}
 	
 	/**
@@ -420,7 +432,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			identityEntity.setExpiryTimestamp(event.getExpiryTimestamp());
 			identityEntity.setTransactionLimit(event.getTransactionLimit());
 			identityEntity.setCrBy("ida");
-			identityEntity.setCrDTimes(LocalDateTime.now());
+			identityEntity.setCrDTimes(getCurrentUTCLocalTime());
 			return Optional.of(identityEntity);
 		}
 		return Optional.empty();
