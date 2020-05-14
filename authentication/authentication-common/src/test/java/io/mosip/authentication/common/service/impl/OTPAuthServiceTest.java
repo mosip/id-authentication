@@ -34,6 +34,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -83,6 +84,9 @@ public class OTPAuthServiceTest {
 	
 	@Mock
 	private IdService<AutnTxn> idService;
+	
+	@Mock
+	private IdAuthSecurityManager securityManager;
 
 	@Before
 	public void before() {
@@ -118,7 +122,7 @@ public class OTPAuthServiceTest {
 		String uinHash = HMACUtils.digestAsPlainTextWithSalt("12345".getBytes(), "2344".getBytes());
 
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(null);
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
 		try {
 			otpauthserviceimpl.authenticate(authreqdto, "1234567890", Collections.emptyMap(), "123456");
 		} catch (IdAuthenticationBusinessException ex) {
@@ -152,7 +156,7 @@ public class OTPAuthServiceTest {
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456",
 				Collections.emptyMap(), "1234567890");
 		assertNotNull(authStatusInfo);
@@ -207,7 +211,7 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autTxn);
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
 
 		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
 	}
@@ -231,7 +235,7 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn(uinHash);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
 		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
 	}
 

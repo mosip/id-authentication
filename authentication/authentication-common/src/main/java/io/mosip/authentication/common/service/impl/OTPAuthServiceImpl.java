@@ -17,6 +17,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -50,6 +51,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The autntxnrepository. */
 	@Autowired
 	private AutnTxnRepository autntxnrepository;
+	
+	@Autowired
+	private IdAuthSecurityManager securityManager;
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
@@ -65,10 +69,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The IdaMappingconfig. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
-
-	/** The Id Info Service */
-	@Autowired
-	private IdService<AutnTxn> idService;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -180,7 +180,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnAndIdvid(String txnId, String uin, String idType) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
-		String hashedUin = idService.getUinHash(uin);
+		String hashedUin = securityManager.hash(uin);
 		Optional<AutnTxn> authTxn = autntxnrepository
 				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
 		if (!authTxn.isPresent()) {

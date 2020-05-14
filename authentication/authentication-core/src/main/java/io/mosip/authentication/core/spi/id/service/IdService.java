@@ -72,11 +72,4 @@ public interface IdService<T> {
 	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException;
 	
-	/**
-	 * Gets the uin hash for the UIN.
-	 *
-	 * @param uin the uin
-	 * @return the uin hash
-	 */
-	public String getUinHash(String uin);
 }

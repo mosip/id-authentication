@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -13,6 +14,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
@@ -55,6 +57,10 @@ public class IdAuthSecurityManager {
 	/** The sign refid. */
 	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
+
+	/** The uin hash salt repo. */
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
 
 	/**
 	 * Gets the user.
@@ -142,5 +148,13 @@ public class IdAuthSecurityManager {
 		SignatureRequestDto request = new SignatureRequestDto(signApplicationid, signRefid,
 				DateUtils.getUTCCurrentDateTimeString(), data);
 		return keyManager.sign(request).getData();
+	}
+	
+	public String hash(String id) {
+		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+		Long idModulo = (Long.parseLong(id) % saltModuloConstant);
+		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
+		String hashedUin = HMACUtils.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+		return hashedUin;
 	}
 }

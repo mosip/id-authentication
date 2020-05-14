@@ -24,10 +24,10 @@ import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.idrepository.core.constant.EventType;
 import io.mosip.idrepository.core.dto.EventDTO;
@@ -80,9 +80,8 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	@Autowired
 	private IdRepoManager idRepoManager;
 	
-	/** The id service. */
 	@Autowired
-	private IdService<?> idService;
+	private IdAuthSecurityManager securityManager;
 	
 	/** The identity cache repo. */
 	@Autowired
@@ -348,7 +347,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			Function<EventDTO, String> idFunction) {
 		return events.stream().filter(event -> {
 				String id = idFunction.apply(event);
-				String uinHash = idService.getUinHash(id);
+				String uinHash = securityManager.hash(id);
 				return entities.stream().noneMatch(entity -> entity.getId().equals(uinHash));
 			}).collect(Collectors.toList());
 	}
@@ -369,7 +368,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		Map<String, String> idsByIdHash = eventById.keySet()
 								.stream()
 								.filter(Objects::nonNull)
-								.collect(Collectors.toMap(idService::getUinHash, Function.identity()));
+								.collect(Collectors.toMap(securityManager::hash, Function.identity()));
 		
 		List<IdentityEntity> existingEntities = findEntitiesByIds(idsByIdHash.keySet().stream().collect(Collectors.toList()));
 		if(updateIdAttributes) {
@@ -428,7 +427,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		String id = idFunction.apply(event);
 		if (id != null) {
 			IdentityEntity identityEntity = new IdentityEntity();
-			identityEntity.setId(idService.getUinHash(id));
+			identityEntity.setId(securityManager.hash(id));
 			identityEntity.setExpiryTimestamp(event.getExpiryTimestamp());
 			identityEntity.setTransactionLimit(event.getTransactionLimit());
 			identityEntity.setCrBy("ida");
@@ -455,7 +454,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				uinOpt.filter(str -> !str.isEmpty()).isPresent()) {
 			String uin = uinOpt.get();
 			if(properties.contains(IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA)) {
-				Optional<IdentityEntity> entityOpt = identityCacheRepo.findById(idService.getUinHash(uin));
+				Optional<IdentityEntity> entityOpt = identityCacheRepo.findById(securityManager.hash(uin));
 				if(entityOpt.isPresent()) {
 					IdentityEntity entity = entityOpt.get();
 					demoData = Optional.of(entity.getDemographicData());

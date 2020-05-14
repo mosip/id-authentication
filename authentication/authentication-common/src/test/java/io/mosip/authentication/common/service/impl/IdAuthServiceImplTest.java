@@ -37,6 +37,7 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -60,6 +61,9 @@ public class IdAuthServiceImplTest {
 	private RestRequestFactory restFactory;
 	@Mock
 	private RestHelper restHelper;
+
+	@Mock
+	private IdAuthSecurityManager securityManager;
 
 	@InjectMocks
 	IdServiceImpl idServiceImpl;
@@ -85,7 +89,7 @@ public class IdAuthServiceImplTest {
 	public void before() {
 		ReflectionTestUtils.setField(idServiceImpl, "idRepoManager", idRepoManager);
 		ReflectionTestUtils.setField(idServiceImpl, "env", env);
-		ReflectionTestUtils.setField(idServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
+		ReflectionTestUtils.setField(idRepoManager, "uinHashSaltRepo", uinHashSaltRepo);
 
 	}
 
@@ -140,7 +144,7 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testGetUinHash() throws IdAuthenticationBusinessException {
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2121213212143");
-		idServiceImpl.getUinHash("476567");
+		securityManager.hash("476567");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -213,15 +217,17 @@ public class IdAuthServiceImplTest {
 				+ "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 1\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"exemple d'adresse ligne 1\"\r\n"
 				+ "        }\r\n" + "      ],\r\n" + "      \"addressLine2\": [\r\n" + "        {\r\n"
-				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 2\"\r\n"
-				+ "        },\r\n" + "        {\r\n" + "          \"language\": \"fre\",\r\n"
-				+ "          \"value\": \"exemple d'adresse ligne 2\"\r\n" + "        }\r\n" + "      ],\r\n"
-				+ "      \"addressLine3\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
+				+ "          \"language\": \"ara\",\r\n"
+				+ "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 2\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"exemple d'adresse ligne 2\"\r\n"
+				+ "        }\r\n" + "      ],\r\n" + "      \"addressLine3\": [\r\n" + "        {\r\n"
+				+ "          \"language\": \"ara\",\r\n"
 				+ "          \"value\": \"Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹ÙŠÙ†Ø© Ø³Ø·Ø± 2\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "          \"language\": \"fre\",\r\n" + "          \"value\": \"exemple d'adresse ligne 2\"\r\n"
 				+ "        }\r\n" + "      ],\r\n" + "      \"region\": [\r\n" + "        {\r\n"
-				+ "          \"language\": \"ara\",\r\n" + "          \"value\": \"Ø·Ù†Ø¬Ø© - ØªØ·ÙˆØ§Ù† - Ø§Ù„Ø­Ø³ÙŠÙ…Ø©\"\r\n"
-				+ "        },\r\n" + "        {\r\n" + "          \"language\": \"fre\",\r\n"
+				+ "          \"language\": \"ara\",\r\n"
+				+ "          \"value\": \"Ø·Ù†Ø¬Ø© - ØªØ·ÙˆØ§Ù† - Ø§Ù„Ø­Ø³ÙŠÙ…Ø©\"\r\n" + "        },\r\n"
+				+ "        {\r\n" + "          \"language\": \"fre\",\r\n"
 				+ "          \"value\": \"Tanger-TÃ©touan-Al Hoceima\"\r\n" + "        }\r\n" + "      ],\r\n"
 				+ "      \"province\": [\r\n" + "        {\r\n" + "          \"language\": \"ara\",\r\n"
 				+ "          \"value\": \"Ù�Ø§Ø³-Ù…ÙƒÙ†Ø§Ø³\"\r\n" + "        },\r\n" + "        {\r\n"

@@ -36,6 +36,7 @@ import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -51,6 +52,9 @@ public class IdChangeEventHandlerServiceImplTest {
 	
 	@Autowired
 	private Environment env;
+	
+	@Mock
+	private IdAuthSecurityManager securityManager;
 	
 	@Mock
 	private IdRepoManager idRepoManager;
@@ -84,7 +88,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		event.setUin(uin);
 		events.add(event);
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Map<String, Object> idData = createIdData();
 		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
@@ -123,7 +127,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntity.setDemographicData(getDemoData(idData));
 		expectedEntity.setBiometricData(getBioData(idData));
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
 		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
@@ -149,7 +153,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		existingUinEntity.setDemographicData("{}".getBytes());
 		existingUinEntity.setBiometricData("<test/>".getBytes());
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Map<String, Object> idData = createIdData();
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingUinEntity);
@@ -184,7 +188,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		existingUinEntity.setDemographicData("{}".getBytes());
 		existingUinEntity.setBiometricData("<test/>".getBytes());
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Map<String, Object> idData = createIdData();
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingUinEntity);
@@ -231,7 +235,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntity.setExpiryTimestamp(expiryTimestamp);
 		expectedEntity.setTransactionLimit(1);
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingVidEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities );		
@@ -301,7 +305,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntities.add(expectedEntity1);
 		expectedEntities.add(expectedEntity2);
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingVidEntity1);
 		entities.add(existingVidEntity2);
@@ -350,7 +354,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntity.setExpiryTimestamp(expiryTimestamp);
 		expectedEntity.setTransactionLimit(1);
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingVidEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities);
@@ -430,7 +434,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		expectedEntities.add(expectedEntity1);
 		expectedEntities.add(expectedEntity2);
 		
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingVidEntity1);
 		entities.add(existingVidEntity2);
