@@ -100,6 +100,17 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 */
 	@Override
 	public boolean handleIdEvent(List<EventDTO> events) {
+		try {
+			return doHandleEvents(events);
+		} catch (Exception e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"handleIdEvent", e.getMessage());
+			return false;
+		}
+	}
+
+	@Transactional
+	private boolean doHandleEvents(List<EventDTO> events) {
 		Map<EventType, List<EventDTO>> eventsByType = events.stream()
 				.collect(Collectors.groupingBy(EventDTO::getEventType));
 		return Arrays.stream(EventType.values())
@@ -107,7 +118,6 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				.allMatch(eventType -> 
 						getFunctionForEventType(eventType)
 							.apply(eventsByType.get(eventType)));
-
 	}
 
 	/**
@@ -242,7 +252,6 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Transactional
 	private boolean updateEntitiesForEvents(List<EventDTO> events, 
 			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		Map<String, List<EventDTO>> eventsByUin = 
