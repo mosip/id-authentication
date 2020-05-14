@@ -31,7 +31,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +46,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -93,23 +93,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		if(checkBeanExists(context, PartnerService.class.getName())) {
+		
+		// Internal auth is not depending on partner service
+		try {
 			partnerService = context.getBean(PartnerService.class);
-		}
-	}
-
-	/**
-	 * This method is used to check weather bean is loaded or not.
-	 * @param context
-	 * @param beanName
-	 * @return
-	 */
-	public boolean checkBeanExists(WebApplicationContext context, String beanName) {
-		String[] availableBeans =  context.getBeanDefinitionNames();
-		   if(Arrays.stream(availableBeans).anyMatch(beanName ::contains)){
-			   return true;
-		   }
-		return false;	
+		 }catch(NoSuchBeanDefinitionException ex) {
+		  //
+		 }
 	}
 	
 	/*
