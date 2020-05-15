@@ -227,15 +227,5 @@ public class KeyManager {
 	public String signResponse(String data) throws IdAuthenticationAppException {
 		return securityManager.sign(data);
 	}
-	
-	public byte[] encrypt(String id, byte[] data) {
-		//TODO
-		return data;
-	}
-	
-	public byte[] decrypt(String id, byte[] data) {
-		//TODO
-		return data;
-	}
 
 }

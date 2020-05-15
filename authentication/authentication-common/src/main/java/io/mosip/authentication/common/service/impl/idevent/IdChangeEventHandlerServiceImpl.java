@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
-import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -83,10 +82,6 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	/** The identity cache repo. */
 	@Autowired
 	private IdentityCacheRepository identityCacheRepo;
-	
-	/** The key manager. */
-	@Autowired
-	private KeyManager keyManager;
 	
 	/** The mapper. */
 	@Autowired
@@ -492,10 +487,10 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		entities.forEach(entity ->{
 			String id = entity.getId();
 			if(demoData.isPresent()) {
-				entity.setDemographicData(keyManager.encrypt(id, demoData.get()));
+				entity.setDemographicData(securityManager.encryptWithAES(id, demoData.get()));
 			}
 			if(bioData.isPresent()) {
-				entity.setBiometricData(keyManager.encrypt(id, bioData.get()));
+				entity.setBiometricData(securityManager.encryptWithAES(id, bioData.get()));
 			}
 		});
 		identityCacheRepo.saveAll(entities);

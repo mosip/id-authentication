@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
-import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -65,9 +64,6 @@ public class IdChangeEventHandlerServiceImplTest {
 	@Mock
 	private IdentityCacheRepository identityCacheRepo;
 	
-	@Mock
-	private KeyManager keyManager;
-	
 	@Autowired
 	private ObjectMapper mapper;
 	
@@ -76,6 +72,7 @@ public class IdChangeEventHandlerServiceImplTest {
 	
 	@Before
 	public void before() throws IDDataValidationException, RestServiceException {
+		ReflectionTestUtils.setField(idChengeEventHandlerServiceImpl, "mapper", mapper);
 	}
 	
 	@Test
@@ -90,7 +87,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Map<String, Object> idData = createIdData();
 		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(uin);
@@ -128,7 +125,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
 		
@@ -158,7 +155,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		entities.add(existingUinEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(uin))).thenReturn(entities);
 		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(uin);
@@ -193,7 +190,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		entities.add(existingUinEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(uin))).thenReturn(entities );
 		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idData);
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(uin);
@@ -238,7 +235,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingVidEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities );		
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
@@ -310,7 +307,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		entities.add(existingVidEntity2);
 		
 		Mockito.when(identityCacheRepo.findAllById(Mockito.any())).thenReturn(entities);		
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntities));
 		
@@ -359,7 +356,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities);
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
 		
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
@@ -439,7 +436,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		entities.add(existingVidEntity2);
 		
 		Mockito.when(identityCacheRepo.findAllById(Mockito.any())).thenReturn(entities);		
-		Mockito.when(keyManager.encrypt(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
 
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntities));
