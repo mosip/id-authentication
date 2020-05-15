@@ -278,11 +278,11 @@ public class AuthFacadeImplTest {
 		String uin = "274390482564";
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		HashMap<Object, Object> request = new HashMap<>();
-		idRepo.put("response", request);
+		HashMap<Object, Object> response = new HashMap<>();
+		idRepo.put("response", response);
 		HashMap<Object, Object> identity = new HashMap<>();
 		identity.put("UIN", Long.valueOf(uin));
-		request.put("identity", identity );
+		response.put("identity", identity );
 		AuthStatusInfo authStatusInfo = new AuthStatusInfo();
 		authStatusInfo.setStatus(true);
 		authStatusInfo.setErr(Collections.emptyList());
