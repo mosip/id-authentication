@@ -117,7 +117,7 @@ public class OTPManager {
 		String message = null;
 		boolean isOtpGenerated = false;
 		try {
-			String appId = environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID);
+			String appId = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_APPID);
 			String context = environment.getProperty(IdAuthConfigKeyConstants.OTP_CONTEXT);
 			otpGeneratorRequestDto.setAppId(appId);
 			otpGeneratorRequestDto.setContext(context);
