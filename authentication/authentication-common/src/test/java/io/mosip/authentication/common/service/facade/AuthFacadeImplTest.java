@@ -31,6 +31,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -179,6 +181,9 @@ public class AuthFacadeImplTest {
 	
 	@Autowired
 	PartnerService partnerService;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	/**
 	 * Before.
@@ -194,6 +199,7 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
+		ReflectionTestUtils.setField(authFacadeImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
 		ReflectionTestUtils.setField(notificationService, "env", env);
@@ -272,6 +278,11 @@ public class AuthFacadeImplTest {
 		String uin = "274390482564";
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
+		HashMap<Object, Object> request = new HashMap<>();
+		idRepo.put("response", request);
+		HashMap<Object, Object> identity = new HashMap<>();
+		identity.put("UIN", Long.valueOf(uin));
+		request.put("identity", identity );
 		AuthStatusInfo authStatusInfo = new AuthStatusInfo();
 		authStatusInfo.setStatus(true);
 		authStatusInfo.setErr(Collections.emptyList());
@@ -288,6 +299,7 @@ public class AuthFacadeImplTest {
 				.thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idService.getDemoData(idRepo)).thenReturn(mapper.writeValueAsBytes(identity));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
