@@ -222,6 +222,7 @@ public class KycFacadeImplTest {
 		Mockito.when(idinfoservice.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idService.getUin(idRepo)).thenReturn(uin);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");

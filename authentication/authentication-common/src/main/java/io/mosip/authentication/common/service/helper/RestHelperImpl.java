@@ -109,7 +109,7 @@ public class RestHelperImpl implements RestHelper {
 				}
 			}
 			checkErrorResponse(response, request.getResponseType());
-			if(response.toString().contains(ERRORS)) {
+			if(response != null && response.toString().contains(ERRORS)) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 			}

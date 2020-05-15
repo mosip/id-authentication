@@ -300,6 +300,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idService.getDemoData(idRepo)).thenReturn(mapper.writeValueAsBytes(identity));
+		Mockito.when(idService.getUin(idRepo)).thenReturn(uin);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);

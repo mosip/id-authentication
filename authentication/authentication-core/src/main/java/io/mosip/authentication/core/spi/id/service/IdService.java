@@ -87,5 +87,13 @@ public interface IdService<T> {
 	 * @return the bio data
 	 */
 	byte[] getBioData(Map<String, Object> identity);
+
+	/**
+	 * Gets the uin.
+	 *
+	 * @param idResDTO the id res DTO
+	 * @return the uin
+	 */
+	String getUin(Map<String, Object> idResDTO);
 	
 }

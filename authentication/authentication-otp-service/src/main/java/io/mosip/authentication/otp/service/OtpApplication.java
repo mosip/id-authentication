@@ -3,6 +3,7 @@ package io.mosip.authentication.otp.service;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
@@ -39,6 +40,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.kernel.auth.adapter.config.SecurityConfig;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -75,7 +77,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 	  TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
-@ComponentScan({ "io.mosip.authentication.otp.service.*" })
+@ComponentScan(basePackages={ "io.mosip.authentication.otp.service.*" })
 public class OtpApplication {
 
 	/**

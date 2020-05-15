@@ -151,7 +151,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
 			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
-		String uin = getUin(idResDTO);
+		String uin = idService.getUin(idResDTO);
 		validateAuthTypeStatus(authRequestDTO, uin);
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
@@ -183,21 +183,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
-	}
-
-	private String getUin(Map<String, Object> idResDTO) {
-		return Optional.of(idService.getDemoData(idResDTO))
-				.map(bytes -> {
-					try {
-						return (Map<String, Object>)mapper.readValue(bytes, Map.class);
-					} catch (IOException e) {
-						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-								"getUin", e.getMessage());
-						return null;
-					}
-				})
-				.map(map -> String.valueOf(map.get("UIN")))
-				.orElse("");
 	}
 
 	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, String uin) throws IdAuthenticationBusinessException {

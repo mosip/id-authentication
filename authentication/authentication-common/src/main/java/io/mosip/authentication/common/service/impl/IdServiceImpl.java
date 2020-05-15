@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -244,6 +245,22 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 											.findAny())
 								.map(CryptoUtil::decodeBase64)
 								.orElse(new byte[0]);
+	}
+
+	@Override
+	public String getUin(Map<String, Object> idResDTO) {
+		return Optional.of(getDemoData(idResDTO))
+				.map(bytes -> {
+					try {
+						return (Map<String, Object>)mapper.readValue(bytes, Map.class);
+					} catch (IOException e) {
+						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+								"getUin", e.getMessage());
+						return null;
+					}
+				})
+				.map(map -> String.valueOf(map.get("UIN")))
+				.orElse("");
 	}
 
 }

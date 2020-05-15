@@ -145,6 +145,8 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getUin(Mockito.any())).thenReturn("426789089018");
+
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
@@ -169,7 +171,8 @@ public class OTPServiceImplTest {
 		otpRequestDto.setTransactionID("1234567890");
 		ArrayList<String> channelList = new ArrayList<String>();
 		otpRequestDto.setOtpChannel(channelList);
-		otpRequestDto.setIndividualId("2345678901234");
+		String individualId = "2345678901234";
+		otpRequestDto.setIndividualId(individualId);
 		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
 		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		Map<String, Object> valueMap = new HashMap<>();
@@ -190,6 +193,8 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getUin(Mockito.any())).thenReturn(individualId);
+
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
@@ -276,11 +281,12 @@ public class OTPServiceImplTest {
 		identityInfoDTO.setValue("abc@test.com");
 		mailList.add(identityInfoDTO);
 		idInfo.put("email", mailList);
-		valueMap.put("uin", "426789089018");
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getUin(Mockito.any())).thenReturn("2345678901234");
+
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
