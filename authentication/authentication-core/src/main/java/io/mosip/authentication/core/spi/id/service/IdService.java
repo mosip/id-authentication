@@ -72,4 +72,20 @@ public interface IdService<T> {
 	Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException;
 	
+	/**
+	 * Gets the demo data.
+	 *
+	 * @param identity the identity
+	 * @return the demo data
+	 */
+	byte[] getDemoData(Map<String, Object> identity);
+	
+	/**
+	 * Gets the bio data.
+	 *
+	 * @param identity the identity
+	 * @return the bio data
+	 */
+	byte[] getBioData(Map<String, Object> identity);
+	
 }

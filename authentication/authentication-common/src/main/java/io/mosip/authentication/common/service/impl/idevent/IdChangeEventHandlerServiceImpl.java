@@ -17,9 +17,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
@@ -28,11 +25,11 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.idrepository.core.constant.EventType;
 import io.mosip.idrepository.core.dto.EventDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -93,7 +90,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	
 	/** The mapper. */
 	@Autowired
-	private ObjectMapper mapper;
+	private IdService<?> idService;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
@@ -474,8 +471,8 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				}
 			} else {
 				Map<String, Object> identity = idRepoManager.getIdentity(uin, true);
-				demoData = Optional.of(getDemoData(identity));
-				bioData = Optional.of(getBioData(identity));
+				demoData = Optional.of(idService.getDemoData(identity));
+				bioData = Optional.of(idService.getBioData(identity));
 			}
 		} else {
 			demoData = Optional.empty();
@@ -502,54 +499,6 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			}
 		});
 		identityCacheRepo.saveAll(entities);
-	}
-
-	/**
-	 * Gets the demo data.
-	 *
-	 * @param identity the identity
-	 * @return the demo data
-	 */
-	@SuppressWarnings("unchecked")
-	private byte[] getDemoData(Map<String, Object> identity) {
-		return Optional.ofNullable(identity.get("response"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> ((Map<String, Object>)obj).get("identity"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> {
-									try {
-										return mapper.writeValueAsBytes(obj);
-									} catch (JsonProcessingException e) {
-										mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-												"handleCreateUinEvent", e.getMessage());
-									}
-									return new byte[0];
-								})
-								.orElse(new byte[0]);
-	}
-	
-	/**
-	 * Gets the bio data.
-	 *
-	 * @param identity the identity
-	 * @return the bio data
-	 */
-	@SuppressWarnings("unchecked")
-	private byte[] getBioData(Map<String, Object> identity) {
-		return Optional.ofNullable(identity.get("response"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> ((Map<String, Object>)obj).get("documents"))
-								.filter(obj -> obj instanceof List)
-								.flatMap(obj -> 
-										((List<Map<String, Object>>)obj)
-											.stream()
-											.filter(map -> map.containsKey("category") 
-															&& map.get("category").toString().equalsIgnoreCase("individualBiometrics")
-															&& map.containsKey("value"))
-											.map(map -> (String)map.get("value"))
-											.findAny())
-								.map(CryptoUtil::decodeBase64)
-								.orElse(new byte[0]);
 	}
 
 }

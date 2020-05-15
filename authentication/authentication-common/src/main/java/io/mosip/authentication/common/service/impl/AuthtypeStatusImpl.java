@@ -65,13 +65,26 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 			String uin = String.valueOf(idResDTO.get(UIN_KEY));
-			String uinHash = securityManager.hash(uin);
-			List<Object[]> authTypeLockObjectsList = authLockRepository.findByUinHash(uinHash);
-			authTypeLockList = authTypeLockObjectsList.stream().map(obj -> new AuthtypeLock((String)obj[0], (String)obj[1])).collect(Collectors.toList());
+			authTypeLockList =  getAuthTypeList(uin);
 		} else {
 			authTypeLockList = Collections.emptyList();
 		}
 		return processAuthtypeList(authTypeLockList);
+	}
+	
+	public List<AuthtypeStatus> fetchAuthtypeStatus(String uin) throws IdAuthenticationBusinessException {
+		List<AuthtypeLock> authTypeLockList =  getAuthTypeList(uin);
+		return processAuthtypeList(authTypeLockList);
+	}
+	
+	public List<AuthtypeLock> getAuthTypeList(String uin)
+			throws IdAuthenticationBusinessException {
+		List<AuthtypeLock> authTypeLockList;
+		String uinHash = securityManager.hash(uin);
+		List<Object[]> authTypeLockObjectsList = authLockRepository.findByUinHash(uinHash);
+		authTypeLockList = authTypeLockObjectsList.stream()
+				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1])).collect(Collectors.toList());
+		return authTypeLockList;
 	}
 
 	/**
