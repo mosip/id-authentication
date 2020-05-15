@@ -36,10 +36,10 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 
@@ -82,14 +82,9 @@ public class IdAuthServiceImplTest {
 	@Autowired
 	Environment env;
 
-	@Mock
-	UinHashSaltRepo uinHashSaltRepo;
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idServiceImpl, "idRepoManager", idRepoManager);
-		ReflectionTestUtils.setField(idServiceImpl, "env", env);
-		ReflectionTestUtils.setField(idRepoManager, "uinHashSaltRepo", uinHashSaltRepo);
 
 	}
 
@@ -121,7 +116,7 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		Mockito.when(idRepoManager.getIdentity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idRepoManager.getIdentity(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(idRepo);
 		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idServiceImpl,
 				"processIdType", idvIdType, idvId, false);
 		assertEquals("476567", idResponseMap.get("uin"));
@@ -141,19 +136,13 @@ public class IdAuthServiceImplTest {
 		assertEquals("476567", idResponseMap.get("uin"));
 	}
 
-	@Test
-	public void testGetUinHash() throws IdAuthenticationBusinessException {
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2121213212143");
-		securityManager.hash("476567");
-	}
-
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
 		String idvIdType = "VID";
 		String idvId = "875948796";
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-		Mockito.when(idRepoManager.getIdentity(idvId, false)).thenThrow(idBusinessException);
+		Mockito.when(idRepoManager.getIdentity(idvId, false, IdType.VID)).thenThrow(idBusinessException);
 		;
 		idServiceImpl.processIdType(idvIdType, idvId, false);
 

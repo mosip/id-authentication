@@ -33,7 +33,6 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -43,7 +42,6 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.util.HMACUtils;
 import reactor.ipc.netty.http.HttpResources;
 
@@ -74,16 +72,8 @@ public class OTPAuthServiceTest {
 	@Mock
 	OTPManager otpmanager;
 	
-
-	
-	@Mock
-	private UinHashSaltRepo uinHashSaltRepo;
-	
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
-	
-	@Mock
-	private IdService<AutnTxn> idService;
 	
 	@Mock
 	private IdAuthSecurityManager securityManager;
@@ -94,7 +84,6 @@ public class OTPAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "idService", idService);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 	}
 

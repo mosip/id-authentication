@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -69,6 +71,7 @@ public class IdRepoManagerTest {
 
 	@InjectMocks
 	private IdRepoManager idRepomanager;
+	
 	@Mock
 	private IdRepoManager idReposerviceImplMock;
 
@@ -81,12 +84,16 @@ public class IdRepoManagerTest {
 	@Autowired
 	private ObjectMapper mapper;
 	
+	@Mock
+	private IdAuthSecurityManager securityManager;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idRepomanager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(idRepomanager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(idRepomanager, "environment", environment);
 		ReflectionTestUtils.setField(idRepomanager, "mapper", mapper);
+		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 	}
 
 	@Test
@@ -133,9 +140,10 @@ public class IdRepoManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
 		Mockito.when(idRepo.existsById(Mockito.any())).thenReturn(true);
 		IdentityEntity value = new IdentityEntity();
-		value.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime().minusHours(1L));
+		value.setExpiryTimestamp(DateUtils.getUTCCurrentDateTime().minusDays(1));
 		value.setDemographicData("{}".getBytes());
-		Mockito.when(idRepo.findDemoDataById(Mockito.any())).thenReturn(value);
+		Object[] data = new Object[] {"", "".getBytes(), DateUtils.getUTCCurrentDateTime().minusDays(1).toString(), 1};
+		Mockito.when(idRepo.findDemoDataById(Mockito.any())).thenReturn(Collections.singletonList(data));
 		try
 		{
 			idRepomanager.getIdentity("76746685", false);
@@ -690,3 +698,4 @@ public class IdRepoManagerTest {
 	
 
 }
+	

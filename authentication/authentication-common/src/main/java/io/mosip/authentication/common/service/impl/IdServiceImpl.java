@@ -67,7 +67,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@Override
 	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		return idRepoManager.getIdentity(vid, isBio);
+		return idRepoManager.getIdentity(vid, isBio, IdType.VID);
 	}
 
 	/**
