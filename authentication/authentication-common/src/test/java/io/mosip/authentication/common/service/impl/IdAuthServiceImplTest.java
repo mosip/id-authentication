@@ -116,7 +116,7 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		Mockito.when(idRepoManager.getIdentity(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(idRepo);
+		//Mockito.when(idRepoManager.getIdentity(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(idRepo);
 		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idServiceImpl,
 				"processIdType", idvIdType, idvId, false);
 		assertEquals("476567", idResponseMap.get("uin"));
@@ -142,8 +142,8 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-		Mockito.when(idRepoManager.getIdentity(idvId, false, IdType.VID)).thenThrow(idBusinessException);
-		;
+		//Mockito.when(idRepoManager.getIdentity(idvId, false, IdType.VID)).thenThrow(idBusinessException);
+		
 		idServiceImpl.processIdType(idvIdType, idvId, false);
 
 	}

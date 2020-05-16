@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import lombok.Data;
  */
 @Entity
 @Data
+@Table(schema = "ida", name = "data_encrypt_keystore")
 public class DataEncryptKeystore {
 
 	@Id

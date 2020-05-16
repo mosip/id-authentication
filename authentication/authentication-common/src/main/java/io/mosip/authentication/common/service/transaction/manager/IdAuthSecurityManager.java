@@ -192,11 +192,11 @@ public class IdAuthSecurityManager {
 	public byte[] encryptWithAES(String id, byte[] dataToEncrypt) {
 		try {
 			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-			int randomKeyIndex = (Integer.parseInt(id) % saltModuloConstant);
-			String encryptedKeyData = repo.findKeyById(Integer.parseInt(id));
+			int randomKeyIndex = (int)(Long.parseLong(id) % saltModuloConstant);
+			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
 			Key secretKey = getDecryptedKey(encryptedKeyData);
 
-			Key derivedKey = getDerivedKey(Integer.parseInt(id), secretKey);
+			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
 
 			SecureRandom sRandom = new SecureRandom();
 			byte[] nonce = new byte[GCM_NONCE_LENGTH];
@@ -271,11 +271,14 @@ public class IdAuthSecurityManager {
 					GCM_AAD_LENGTH + GCM_NONCE_LENGTH + INT_BYTES_LEN);
 			byte[] encryptedData = Arrays.copyOfRange(decodedData, INT_BYTES_LEN + GCM_NONCE_LENGTH + GCM_AAD_LENGTH,
 					decodedData.length);
+			
+			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+			int randomKeyIndex = (int)(Long.parseLong(id) % saltModuloConstant);
 
-			String encryptedKeyData = repo.findKeyById(Integer.parseInt(id));
+			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
 			Key secretKey = getDecryptedKey(encryptedKeyData);
 
-			Key derivedKey = getDerivedKey(Integer.parseInt(id), secretKey);
+			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
 
 			return doCipherOps(derivedKey, encryptedData, Cipher.DECRYPT_MODE, nonce, aad);
 		} catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
