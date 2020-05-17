@@ -6,8 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -20,6 +22,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,17 +34,20 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * IdAuthServiceImplTest test class.
@@ -81,10 +87,17 @@ public class IdAuthServiceImplTest {
 
 	@Autowired
 	Environment env;
-
+	
+	@Mock
+	private IdentityCacheRepository identityRepo;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idServiceImpl, "idRepoManager", idRepoManager);
+		ReflectionTestUtils.setField(idServiceImpl, "mapper", mapper);
 
 	}
 
@@ -101,25 +114,58 @@ public class IdAuthServiceImplTest {
 	}
 
 	@Test
-	public void testProcessIdType_IdTypeIsD() throws IdAuthenticationBusinessException {
+	public void testProcessIdType_IdTypeIsD() throws Throwable {
 		String idvIdType = "UIN";
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		ReflectionTestUtils.invokeMethod(idServiceImpl, "processIdType", idvIdType, idvId, false);
+		try {
+			Mockito.when(securityManager.hash(idvId)).thenReturn(idvId);
+			Mockito.when(identityRepo.existsById(idvId)).thenReturn(true);
+			IdentityEntity entity = new IdentityEntity();
+			byte[] demoData = ("{\"UIN\":" + idvId + "}").getBytes();
+			byte[] bioData = CryptoUtil.encodeBase64("fingreprintdata".getBytes()).getBytes();
+			entity.setDemographicData(demoData);
+			Mockito.when(identityRepo.getOne(idvId)).thenReturn(entity);
+			List<Object[]> data = new ArrayList<>();
+			Object[] iddata = new Object[] {idvId, demoData, null, null};
+			data.add(iddata);
+			Mockito.when(identityRepo.findDemoDataById(idvId)).thenReturn(data);
+			Mockito.when(securityManager.decryptWithAES(idvId, demoData)).thenReturn(demoData);
+			Mockito.when(securityManager.decryptWithAES(idvId, bioData)).thenReturn(bioData);
+			ReflectionTestUtils.invokeMethod(idServiceImpl, "processIdType", idvIdType, idvId, false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e.getCause();
+		} 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessIdType_IdTypeIsV() throws IdAuthenticationBusinessException {
+	public void testProcessIdType_IdTypeIsV() throws Throwable {
 		String idvIdType = "VID";
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		//Mockito.when(idRepoManager.getIdentity(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(idRepo);
-		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idServiceImpl,
-				"processIdType", idvIdType, idvId, false);
-		assertEquals("476567", idResponseMap.get("uin"));
+		try {
+			Mockito.when(securityManager.hash(idvId)).thenReturn(idvId);
+			Mockito.when(identityRepo.existsById(idvId)).thenReturn(true);
+			IdentityEntity entity = new IdentityEntity();
+			byte[] demoData = ("{\"UIN\":" + idvId + "}").getBytes();
+			byte[] bioData = CryptoUtil.encodeBase64("fingreprintdata".getBytes()).getBytes();
+			entity.setDemographicData(demoData);
+			Mockito.when(identityRepo.getOne(idvId)).thenReturn(entity);
+			List<Object[]> data = new ArrayList<>();
+			Object[] iddata = new Object[] {idvId, demoData, null, null};
+			data.add(iddata);
+			Mockito.when(identityRepo.findDemoDataById(idvId)).thenReturn(data);
+			Mockito.when(securityManager.decryptWithAES(idvId, demoData)).thenReturn(demoData);
+			Mockito.when(securityManager.decryptWithAES(idvId, bioData)).thenReturn(bioData);
+			ReflectionTestUtils.invokeMethod(idServiceImpl, "processIdType", idvIdType, idvId, false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e.getCause();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -142,7 +188,7 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-		//Mockito.when(idRepoManager.getIdentity(idvId, false, IdType.VID)).thenThrow(idBusinessException);
+		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 		
 		idServiceImpl.processIdType(idvIdType, idvId, false);
 
@@ -156,8 +202,7 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoManager.getIdentity(Mockito.anyString(), Mockito.anyBoolean()))
-				.thenThrow(idBusinessException);
+		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 
 		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
@@ -329,6 +374,21 @@ public class IdAuthServiceImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+	}
+	
+	@Test
+	public void testUpdateVIDStatus() throws RestServiceException, IdAuthenticationBusinessException {
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("234433356");
+		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(false);
+		idServiceImpl.updateVIDstatus("234433356");
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testUpdateVIDStatusFailed() throws RestServiceException, IdAuthenticationBusinessException {
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("234433356");
+		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
+		Mockito.when(identityRepo.getOne(Mockito.anyString())).thenThrow(new DataAccessException("error") {});
+		idServiceImpl.updateVIDstatus("234433356");
 	}
 
 }

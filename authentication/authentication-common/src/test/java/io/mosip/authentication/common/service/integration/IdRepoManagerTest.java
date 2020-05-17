@@ -93,7 +93,7 @@ public class IdRepoManagerTest {
 		ReflectionTestUtils.setField(idRepomanager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(idRepomanager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(idRepomanager, "environment", environment);
-		ReflectionTestUtils.setField(idRepomanager, "mapper", mapper);
+		//ReflectionTestUtils.setField(idRepomanager, "mapper", mapper);
 		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 	}
 
@@ -110,9 +110,10 @@ public class IdRepoManagerTest {
 		response.put("status", "activated");
 		Map<String, Map<String, Object>> finalMap = new HashMap<>();
 		finalMap.put("response", response);
-		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE_WITHOUT_TYPE, null, Map.class))
-				.thenReturn(restRequestDTO);
+//		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE_WITHOUT_TYPE, null, Map.class))
+//				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class)).thenReturn(restRequestDTO);
 		idRepomanager.getIdentity("76746685", true);
 		assertNotNull(response);
 	}
@@ -683,22 +684,7 @@ public class IdRepoManagerTest {
 		 Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restReq);
 		  Mockito.when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 //		   idReposerviceImpl.getUINByVID("234433356");
-		}
-	
-	@Test
-	public void testUpdateVIDStatus() throws RestServiceException, IdAuthenticationBusinessException {
-		//idRepomanager.updateVIDstatus("234433356");
-		//TODO Fix this test case
-		assertTrue(false);
-	}
-	
-	@Test(expected=IdAuthenticationBusinessException.class)
-	public void testUpdateVIDStatusFailed() throws RestServiceException, IdAuthenticationBusinessException {
-		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		when(idRepo.existsById(Mockito.any())).thenThrow(new DataAccessResourceFailureException(null));
-		//idRepomanager.updateVIDstatus("234433356");
-	}
-	
+		}	
 
 }
 	
