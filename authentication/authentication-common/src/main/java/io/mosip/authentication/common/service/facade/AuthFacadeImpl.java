@@ -149,7 +149,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
 				authRequestDTO.getRequestedAuth().isBio());
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
-			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
+			idService.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
 		String uin = idService.getUin(idResDTO);
 		validateAuthTypeStatus(authRequestDTO, uin);

@@ -95,5 +95,12 @@ public interface IdService<T> {
 	 * @return the uin
 	 */
 	String getUin(Map<String, Object> idResDTO);
+
+	/**
+	 * Update VID status.
+	 *
+	 * @param individualId the individual id
+	 */
+	void updateVIDstatus(String individualId) throws IdAuthenticationBusinessException;
 	
 }

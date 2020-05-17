@@ -461,8 +461,8 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				Optional<IdentityEntity> entityOpt = identityCacheRepo.findById(getHash(uin));
 				if(entityOpt.isPresent()) {
 					IdentityEntity entity = entityOpt.get();
-					demoData = Optional.of(entity.getDemographicData());
-					bioData = Optional.of(entity.getBiometricData());
+					demoData = Optional.of(securityManager.decryptWithAES(uin, entity.getDemographicData()));
+					bioData = Optional.of(securityManager.decryptWithAES(uin, entity.getBiometricData()));
 				} else {
 					demoData = Optional.empty();
 					bioData = Optional.empty();

@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -686,14 +687,16 @@ public class IdRepoManagerTest {
 	
 	@Test
 	public void testUpdateVIDStatus() throws RestServiceException, IdAuthenticationBusinessException {
-		idRepomanager.updateVIDstatus("234433356");
+		//idRepomanager.updateVIDstatus("234433356");
+		//TODO Fix this test case
+		assertTrue(false);
 	}
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void testUpdateVIDStatusFailed() throws RestServiceException, IdAuthenticationBusinessException {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		when(idRepo.existsById(Mockito.any())).thenThrow(new DataAccessResourceFailureException(null));
-		idRepomanager.updateVIDstatus("234433356");
+		//idRepomanager.updateVIDstatus("234433356");
 	}
 	
 

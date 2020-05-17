@@ -323,33 +323,4 @@ public class IdRepoManager {
 		return uin;
 	}
 
-	/**
-	 * Update VI dstatus.
-	 *
-	 * @param vid the vid
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
-		RestRequestDTO restRequest;
-		RequestWrapper<VidRequestDTO> request = new RequestWrapper<>();
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		vidRequest.setVidStatus(VID_USED);
-		request.setId(MOSIP_VID_UPDATE);
-		request.setRequest(vidRequest);
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
-		request.setVersion(VERSION);
-		try {
-			restRequest = restRequestFactory.buildRequest(RestServicesConstants.VID_UPDATE_STATUS_SERVICE, request,
-					ResponseWrapper.class);
-			Map<String, String> pathVariables = new HashMap<>();
-			pathVariables.put("vid", vid);
-			restRequest.setPathVariables(pathVariables);
-			restHelper.requestAsync(restRequest);
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-		}
-
-	}
 }
