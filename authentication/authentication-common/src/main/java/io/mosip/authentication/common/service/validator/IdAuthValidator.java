@@ -133,6 +133,10 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
+	
+	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
+		validateReqTime(reqTime, errors, paramName, REQ_TIME);
+	}
 
 	/**
 	 * Validate req time.
@@ -141,16 +145,16 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors  the errors
 	 * @param paramName the param name
 	 */
-	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
+	protected void validateReqTime(String reqTime, Errors errors, String paramName, String fieldName) {
 
 		if (StringUtils.isEmpty(reqTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					MISSING_INPUT_PARAMETER + paramName);
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(fieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
-			checkFutureReqTime(reqTime, errors, paramName);
+			checkFutureReqTime(reqTime, errors, paramName, fieldName);
 		}
 	}
 
@@ -159,8 +163,9 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @param reqTime the req time
 	 * @param errors  the errors
+	 * @param fieldName 
 	 */
-	private void checkFutureReqTime(String reqTime, Errors errors, String paramName) {
+	private void checkFutureReqTime(String reqTime, Errors errors, String paramName, String fieldName) {
 		Date reqDateAndTime = null;
 		try {
 			reqDateAndTime = DateUtils.parseToDate(reqTime,
@@ -168,7 +173,7 @@ public abstract class IdAuthValidator implements Validator {
 		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(fieldName, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
@@ -177,7 +182,7 @@ public abstract class IdAuthValidator implements Validator {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			Long reqDateMaxTimeLong = env
 					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
-			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+			errors.rejectValue(fieldName,
 					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 					new Object[] { reqDateMaxTimeLong },
 					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
