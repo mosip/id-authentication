@@ -36,15 +36,27 @@
 	</developers>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
+                <snapshotRepository>
+                        <id>ossrh</id>
+                        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                        <id>ossrh</id>
+                        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+		</distributionManagement>
+		
+	<repositories>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		  <id>ossrh</id>
+		  <name>Central Repository</name>
+		  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		  <layout>default</layout>
+		  <snapshots>
+			<enabled>true</enabled>
+		  </snapshots>
 		</repository>
-	</distributionManagement>
+	</repositories> 
 
 	<modules>
 		<module>authentication-common</module>
@@ -169,7 +181,7 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven.javadoc.version}</version>
@@ -177,10 +189,24 @@
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
-				<version>2.9.1</version> <executions> <execution> <id>attach-javadocs</id> 
-				<goals> <goal>jar</goal> </goals> </execution> </executions> <configuration> 
-				<additionalJOption>-Xdoclint:none</additionalJOption> </configuration> </plugin> -->
+-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+					 	<id>attach-javadocs</id>
+					  	<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+                         		<additionalJOption>-Xdoclint:none</additionalJOption>
+                	  	</configuration>
+                	</plugin>
+	
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -189,15 +215,44 @@
 				<configuration>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+				  </configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
-				<version>2.2.1</version> <executions> <execution> <id>attach-sources</id> 
-				<goals> <goal>jar-no-fork</goal> </goals> </execution> </executions> </plugin> 
-				<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
-				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
-				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
+		 	<plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-source-plugin</artifactId>
+				  <version>2.2.1</version>
+				  <executions>
+					<execution>
+						<id>attach-sources</id>
+					  	<goals>
+							<goal>jar-no-fork</goal>
+					  	</goals>
+					</execution>
+				  </executions>
+			</plugin>
+		
+	                <plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-gpg-plugin</artifactId>
+				  <version>1.5</version>
+				  <executions>
+					<execution>
+						  <id>sign-artifacts</id>
+						  <phase>verify</phase>
+						  <goals>
+							<goal>sign</goal>
+						  </goals>
+						  <configuration>
+                					<gpgArguments>
+                    						<arg>--pinentry-mode</arg>
+                    						<arg>loopback</arg>
+                					</gpgArguments>
+            					  </configuration>
+					</execution>
+				  </executions>
+        		</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
