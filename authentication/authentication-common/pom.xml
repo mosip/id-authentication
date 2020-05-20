@@ -14,8 +14,7 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<kernel-cryptomanager-service.version>1.0.9-SNAPSHOT</kernel-cryptomanager-service.version>
-		<kernel-keymanager-softhsm.version>1.0.7</kernel-keymanager-softhsm.version>
+		<kernel-keymanager-service.version>1.0.9-SNAPSHOT</kernel-keymanager-service.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -169,24 +168,15 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-cryptomanager-service</artifactId>
-			<version>${kernel-cryptomanager-service.version}</version>
+			<artifactId>kernel-keymanager-service</artifactId>
+			<version>${kernel-keymanager-service.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-config</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-keymanager-softhsm</artifactId>
-				</exclusion>
 			</exclusions>
 			<classifier>lib</classifier>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-keymanager-softhsm</artifactId>
-			<version>${kernel-keymanager-softhsm.version}</version>
 		</dependency>
 	</dependencies>
 </project>
