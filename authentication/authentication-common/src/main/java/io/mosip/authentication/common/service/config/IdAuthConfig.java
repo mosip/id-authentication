@@ -39,13 +39,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.datamapper.orika.builder.DataMapperBuilderImpl;
 
 /**
  * Class for defining configurations for the service.
@@ -89,17 +85,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		Map<String, Object> jpaProperties = super.jpaProperties();
 		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
 		return jpaProperties;
-	}
-	
-	/**
-	 * Datamapper.
-	 *
-	 * @return the data mapper
-	 */
-	@Bean
-	public DataMapper<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> datamapper() {
-		return new DataMapperBuilderImpl<>(CryptomanagerRequestDto.class, KeymanagerSymmetricKeyRequestDto.class)
-				.build();
 	}
 	
 	/**
