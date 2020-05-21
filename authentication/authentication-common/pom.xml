@@ -170,17 +170,8 @@
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-config</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-keymanager-softhsm</artifactId>
-				</exclusion>
 			</exclusions>
 			<classifier>lib</classifier>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-keymanager-softhsm</artifactId>
-			<version>${kernel-keymanager-softhsm.version}</version>
 		</dependency>
 	</dependencies>
 </project>
