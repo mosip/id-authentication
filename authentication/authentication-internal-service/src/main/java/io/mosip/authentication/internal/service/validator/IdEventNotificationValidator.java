@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
@@ -17,6 +18,7 @@ import io.mosip.idrepository.core.dto.EventsDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.StringUtils;
 
+@Component
 public class IdEventNotificationValidator extends IdAuthValidator {
 
 	@Override

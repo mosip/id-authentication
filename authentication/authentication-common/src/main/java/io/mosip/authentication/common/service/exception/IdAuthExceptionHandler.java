@@ -16,12 +16,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
@@ -129,7 +132,28 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.OK).toString() + "\n"
 						+ ExceptionUtils.getStackTrace(ex));
 
-		if (ex instanceof ServletException || ex instanceof BeansException
+		if (servletRequest.getRequestURL().toString().endsWith("notify")
+				&& ex instanceof HttpMessageNotReadableException
+				&& ex.getCause().getClass().isAssignableFrom(InvalidFormatException.class)
+				&& Objects.nonNull(((InvalidFormatException) ex.getCause()).getPath())
+				&& Objects.nonNull(((InvalidFormatException) ex.getCause()).getPath().get(2))) {
+			int index = ((InvalidFormatException) ex.getCause()).getPath().get(2).getIndex();
+			if (ex.getCause().getMessage().contains("eventType") && Objects.nonNull(index)) {
+				ex = new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/events/" + index + "/eventType"));
+			} else if (ex.getCause().getMessage().contains("expiryTimestamp") && Objects.nonNull(index)) {
+				ex = new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/events/" + index + "/expiryTimestamp"));
+			} else {
+				ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+			}
+			return new ResponseEntity<>(buildExceptionResponse(ex, servletRequest), HttpStatus.OK);
+		} else if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException || ex instanceof AsyncRequestTimeoutException) {
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
@@ -146,7 +170,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param request Web request
 	 * @return ResponseEntity containing error response object and http status.
 	 */
-	@ExceptionHandler(IdAuthenticationAppException.class)
+	@ExceptionHandler(IdAuthenticationBaseException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdAuthenticationBaseException ex, WebRequest request) {
 
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION,
