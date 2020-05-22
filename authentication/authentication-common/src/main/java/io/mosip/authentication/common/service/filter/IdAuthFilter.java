@@ -202,8 +202,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 			
 			Object bioValue = data.get(BIO_VALUE);
-			DigitalId digitalId = Objects.nonNull(data.get(DIGITAL_ID)) ? mapper.readValue(CryptoUtil.decodeBase64((String) data.get(DIGITAL_ID)), DigitalId.class) : null;
-			data.replace(DIGITAL_ID, digitalId);
+			verifyDigitalIdSignature(data);
+			data.replace(DIGITAL_ID, decipherDigitalId(data));
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
 			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
@@ -224,6 +224,32 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_BIO_REFERENCE_ID);
 	}
 
+	/**
+	 * This method validates the digitalID signature.
+	 * @param data
+	 * @return
+	 * @throws IdAuthenticationAppException
+	 */
+	protected void verifyDigitalIdSignature(Map<String, Object> data) throws IdAuthenticationAppException{
+		if(!super.verifySignature((String)data.get(DIGITAL_ID))){
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		};
+	}
+	
+	/**
+	 * This method deciphers the digitalId from jws.
+	 * @param data
+	 * @return
+	 * @throws IdAuthenticationAppException
+	 */
+	protected DigitalId decipherDigitalId(Map<String, Object> data) throws IdAuthenticationAppException {		
+		try {
+			return mapper.readValue(CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String)data.get(DIGITAL_ID))),DigitalId.class);
+		}catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+	
 	/**
 	 * Combine data for decryption.
 	 *
