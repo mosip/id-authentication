@@ -108,8 +108,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-tokenidgenerator-service</artifactId>
-			<version>${kernel-tokenidgenerator-service.version}</version>
+			<artifactId>kernel-idgenerator-tokenid</artifactId>
+			<version>${kernel-idgenerator-tokenid.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
