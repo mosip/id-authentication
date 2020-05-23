@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -58,6 +60,9 @@ public class InternalAuthTransactionTest {
 
 	@Autowired
 	private Environment environment;
+	
+	@Mock
+	private IdAuthSecurityManager securityManager;
 
 	@Mock
 	WebDataBinder binder;
@@ -89,6 +94,7 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
 		ReflectionTestUtils.setField(authTxnService, "authtxnRepo", authtxnRepo);
+		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 
 	}
 

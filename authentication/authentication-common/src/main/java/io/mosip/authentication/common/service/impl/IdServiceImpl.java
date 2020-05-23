@@ -1,31 +1,47 @@
 package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.idrepository.core.dto.BaseRequestResponseDTO;
+import io.mosip.idrepository.core.dto.DocumentsDTO;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -50,15 +66,14 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	@Autowired
 	private AutnTxnRepository autntxnrepository;
 	
-	
-	/** The env. */
 	@Autowired
-	private Environment env;
+	private ObjectMapper mapper;
 	
-
-	/** The uin hash salt repo. */
 	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdentityCacheRepository identityRepo;
+	
+	@Autowired
+	private IdAuthSecurityManager securityManager;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -69,7 +84,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@Override
 	public Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException {
-		return idRepoManager.getIdenity(uin, isBio);
+		return getIdentity(uin, isBio);
 	}
 
 	/*
@@ -81,31 +96,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@Override
 	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdRepoByVidAsRequest(vid, isBio);
-	}
-
-	/**
-	 * Do validate VID entity and checks for the expiry date.
-	 *
-	 * @param vid the vid
-	 * @param isBio the is bio
-	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		Map<String, Object> idRepo = null;
-		long  uin = idRepoManager.getUINByVID(vid);
-				try {
-					idRepo = idRepoManager.getIdenity(String.valueOf(uin), isBio);
-				} catch (IdAuthenticationBusinessException e) {
-					if (e.getErrorCode().equals(IdAuthenticationErrorConstants.UIN_DEACTIVATED.getErrorCode())) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
-					} else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
-					}
-				}
-			
-		return idRepo;
+		return getIdentity(vid, isBio, IdType.VID);
 	}
 
 	/**
@@ -228,12 +219,159 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
 	}
 	
-	public String getUinHash(String uin) {
-		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-		Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
-		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
-		String hashedUin = HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes());
-		return hashedUin;
+	/**
+	 * Gets the demo data.
+	 *
+	 * @param identity the identity
+	 * @return the demo data
+	 */
+	@SuppressWarnings("unchecked")
+	public byte[] getDemoData(Map<String, Object> identity) {
+		return Optional.ofNullable(identity.get("response"))
+								.filter(obj -> obj instanceof Map)
+								.map(obj -> ((Map<String, Object>)obj).get("identity"))
+								.filter(obj -> obj instanceof Map)
+								.map(obj -> {
+									try {
+										return mapper.writeValueAsBytes(obj);
+									} catch (JsonProcessingException e) {
+										logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+												"handleCreateUinEvent", e.getMessage());
+									}
+									return new byte[0];
+								})
+								.orElse(new byte[0]);
+	}
+	
+	/**
+	 * Gets the bio data.
+	 *
+	 * @param identity the identity
+	 * @return the bio data
+	 */
+	@SuppressWarnings("unchecked")
+	public byte[] getBioData(Map<String, Object> identity) {
+		return Optional.ofNullable(identity.get("response"))
+								.filter(obj -> obj instanceof Map)
+								.map(obj -> ((Map<String, Object>)obj).get("documents"))
+								.filter(obj -> obj instanceof List)
+								.flatMap(obj -> 
+										((List<Map<String, Object>>)obj)
+											.stream()
+											.filter(map -> map.containsKey("category") 
+															&& map.get("category").toString().equalsIgnoreCase("individualBiometrics")
+															&& map.containsKey("value"))
+											.map(map -> (String)map.get("value"))
+											.findAny())
+								.map(CryptoUtil::decodeBase64)
+								.orElse(new byte[0]);
+	}
+
+	@Override
+	public String getUin(Map<String, Object> idResDTO) {
+		return Optional.of(getDemoData(idResDTO))
+				.map(bytes -> {
+					try {
+						return (Map<String, Object>)mapper.readValue(bytes, Map.class);
+					} catch (IOException e) {
+						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+								"getUin", e.getMessage());
+						return null;
+					}
+				})
+				.map(map -> String.valueOf(map.get("UIN")))
+				.orElse("");
+	}
+	
+	public Map<String, Object> getIdentity(String id, boolean isBio) throws IdAuthenticationBusinessException {
+		return getIdentity(id, isBio, IdType.UIN);
+	}
+
+	/**
+	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN.
+	 *
+	 * @param id
+	 *            the uin
+	 * @param isBio
+	 *            the is bio
+	 * @return the idenity
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
+	 */
+	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType) throws IdAuthenticationBusinessException {
+		
+		String hashedId = securityManager.hash(id);
+		
+		try {
+			IdentityEntity entity = null;
+			if (!identityRepo.existsById(hashedId)) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+						"Id not found in DB");
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
+								idType.getType()));
+			}
+
+			if (isBio) {
+				entity = identityRepo.getOne(hashedId);
+			} else {
+				Object[] data = identityRepo.findDemoDataById(hashedId).get(0);
+				entity = new IdentityEntity();
+				entity.setId(String.valueOf(data[0]));
+				entity.setDemographicData((byte[]) data[1]);
+				entity.setExpiryTimestamp(Objects.nonNull(data[2]) ? LocalDateTime.parse(String.valueOf(data[2])) : null);
+				entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
+			}
+			
+			if (Objects.nonNull(entity.getExpiryTimestamp())
+					&& DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+						"Id expired");
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+			}
+
+			ResponseWrapper<BaseRequestResponseDTO> responseWrapper = new ResponseWrapper<>();
+			BaseRequestResponseDTO response = new BaseRequestResponseDTO();
+			response.setIdentity(mapper.readValue(securityManager.decryptWithAES(id, entity.getDemographicData()), Object.class));
+			if (entity.getBiometricData() != null) {
+				DocumentsDTO document = new DocumentsDTO("individualBiometrics",
+						CryptoUtil.encodeBase64(securityManager.decryptWithAES(id, entity.getBiometricData())));
+				response.setDocuments(Collections.singletonList(document));
+			}
+			responseWrapper.setResponse(response);
+			return mapper.convertValue(responseWrapper, new TypeReference<Map<String, Object>>() {
+			});
+		} catch (IOException | DataAccessException | TransactionException | JDBCConnectionException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+					ExceptionUtils.getStackTrace(e));e.printStackTrace();
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+	
+	/**
+	 * Update VID dstatus.
+	 *
+	 * @param vid
+	 *            the vid
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
+	 */
+	public void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
+		try {
+			vid = securityManager.hash(vid);
+			// Assumption : If transactionLimit is null, id is considered as Perpetual VID
+			// If transactionLimit is nonNull, id is considered as Temporary VID
+			if (identityRepo.existsById(vid)
+					&& Objects.nonNull(identityRepo.getOne(vid).getTransactionLimit())) {
+				identityRepo.deleteById(vid);
+			}
+
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 
 }

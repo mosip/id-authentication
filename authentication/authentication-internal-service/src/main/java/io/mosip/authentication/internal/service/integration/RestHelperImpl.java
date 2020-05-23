@@ -4,7 +4,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_HANDLE_STATUS_ERROR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_ASYNC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_RESPONSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
@@ -77,7 +76,7 @@ public class RestHelperImpl implements RestHelper{
 					"Request received at : " + requestTime);
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				if(response.toString().contains(ERRORS)) {
+				if(response != null && response.toString().contains(ERRORS)) {
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				}

@@ -120,7 +120,7 @@ public class OTPServiceImpl implements OTPService {
 			String individualId = otpRequestDto.getIndividualId();
 
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
-			uin = String.valueOf(idResDTO.get("uin"));
+			uin = idAuthService.getUin(idResDTO);
 
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, uin, individualIdType, idResDTO);
 			

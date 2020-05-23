@@ -1,37 +1,104 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.repository.DataEncryptKeystoreRepository;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
 import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
+import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
+import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import sun.security.pkcs11.SunPKCS11;
 
 /**
  * The Class IdAuthSecurityManager.
  *
  * @author Manoj SP
  */
+@SuppressWarnings("restriction")
 @Component
 public class IdAuthSecurityManager {
+
+	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
+	private String configPath;
+
+	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
+	private String aesGCMTransformation;
+
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-type:PKCS11}")
+	private String keyStoreType;
+
+	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}")
+	private String keyStorePass;
+
+	@Value("${application.id}")
+	private String applicationId;
+
+	@Value("${identity-cache.reference.id}")
+	private String referenceId;
 
 	/** The Constant ENCRYPT_DECRYPT_DATA. */
 	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
 
 	/** The Constant ID_AUTH_TRANSACTION_MANAGER. */
 	private static final String ID_AUTH_TRANSACTION_MANAGER = "IdAuthSecurityManager";
+
+	private static final String HASH_ALGO = "SHA-256";
+
+	private static final int GCM_NONCE_LENGTH = 12;
+
+	private static final int GCM_AAD_LENGTH = 32;
+
+	private static final String WRAPPING_TRANSFORMATION = "AES/ECB/NoPadding";
+
+	private static final int GCM_TAG_LENGTH = 16;
+
+	private static final int INT_BYTES_LEN = 4;
 
 	/** The mosip logger. */
 	private Logger mosipLogger = IdaLogger.getLogger(IdAuthSecurityManager.class);
@@ -43,18 +110,37 @@ public class IdAuthSecurityManager {
 	/** The cryptomanager service. */
 	@Autowired
 	private CryptomanagerService cryptomanagerService;
-	
+
 	/** The key manager. */
 	@Autowired
 	private KeymanagerService keyManager;
-	
+
 	/** The sign applicationid. */
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
-	
+
 	/** The sign refid. */
 	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
+
+	/** The uin hash salt repo. */
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
+
+	@Autowired
+	private DataEncryptKeystoreRepository repo;
+
+	@Autowired
+	private KeyAliasRepository keyAliasRepository;
+
+	private Provider provider;
+
+	@PostConstruct
+	public void getProvider() {
+		Provider provider = new SunPKCS11(configPath);
+		Security.addProvider(provider);
+		this.provider = provider;
+	}
 
 	/**
 	 * Gets the user.
@@ -68,12 +154,17 @@ public class IdAuthSecurityManager {
 	/**
 	 * Encrypt.
 	 *
-	 * @param dataToEncrypt the data to encrypt
-	 * @param refId the ref id
-	 * @param aad the aad
-	 * @param saltToEncrypt the salt to encrypt
+	 * @param dataToEncrypt
+	 *            the data to encrypt
+	 * @param refId
+	 *            the ref id
+	 * @param aad
+	 *            the aad
+	 * @param saltToEncrypt
+	 *            the salt to encrypt
 	 * @return the byte[]
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	public byte[] encrypt(String dataToEncrypt, String refId, String aad, String saltToEncrypt)
 			throws IdAuthenticationBusinessException {
@@ -87,7 +178,7 @@ public class IdAuthSecurityManager {
 			request.setSalt(saltToEncrypt);
 			return CryptoUtil.decodeBase64(cryptomanagerService.encrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
-			//TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
+			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
 					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
@@ -98,15 +189,55 @@ public class IdAuthSecurityManager {
 		}
 	}
 
+	public byte[] encryptWithAES(String id, byte[] dataToEncrypt) {
+		try {
+			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+			int randomKeyIndex = (int)(Long.parseLong(id) % saltModuloConstant);
+			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
+			Key secretKey = getDecryptedKey(encryptedKeyData);
+
+			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
+
+			SecureRandom sRandom = new SecureRandom();
+			byte[] nonce = new byte[GCM_NONCE_LENGTH];
+			byte[] aad = new byte[GCM_AAD_LENGTH];
+
+			sRandom.nextBytes(nonce);
+			sRandom.nextBytes(aad);
+
+			byte[] encryptedData = doCipherOps(derivedKey, dataToEncrypt, Cipher.ENCRYPT_MODE, nonce, aad);
+			byte[] dbIndexBytes = getIndexBytes(randomKeyIndex);
+
+			byte[] finalEncData = new byte[encryptedData.length + dbIndexBytes.length + GCM_AAD_LENGTH
+					+ GCM_NONCE_LENGTH];
+			System.arraycopy(dbIndexBytes, 0, finalEncData, 0, dbIndexBytes.length);
+			System.arraycopy(nonce, 0, finalEncData, dbIndexBytes.length, nonce.length);
+			System.arraycopy(aad, 0, finalEncData, dbIndexBytes.length + nonce.length, aad.length);
+			System.arraycopy(encryptedData, 0, finalEncData, dbIndexBytes.length + nonce.length + aad.length,
+					encryptedData.length);
+			return Base64.getEncoder().encode(finalEncData);
+		} catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
+				| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
+		}
+	}
+
 	/**
 	 * Decrypt.
 	 *
-	 * @param dataToDecrypt the data to decrypt
-	 * @param refId the ref id
-	 * @param aad the aad
-	 * @param saltToDecrypt the salt to decrypt
+	 * @param dataToDecrypt
+	 *            the data to decrypt
+	 * @param refId
+	 *            the ref id
+	 * @param aad
+	 *            the aad
+	 * @param saltToDecrypt
+	 *            the salt to decrypt
 	 * @return the byte[]
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt)
 			throws IdAuthenticationBusinessException {
@@ -120,27 +251,149 @@ public class IdAuthSecurityManager {
 			request.setSalt(saltToDecrypt);
 			return CryptoUtil.decodeBase64(cryptomanagerService.decrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
-			//TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
+			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
 					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
 		} catch (Exception e) {
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
 					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+		}
+	}
+
+	public byte[] decryptWithAES(String id, byte[] dataToDecrypt) throws IdAuthenticationBusinessException {
+		try {
+			byte[] decodedData = Base64.getDecoder().decode(dataToDecrypt);
+
+			byte[] nonce = Arrays.copyOfRange(decodedData, INT_BYTES_LEN, GCM_NONCE_LENGTH + INT_BYTES_LEN);
+			byte[] aad = Arrays.copyOfRange(decodedData, INT_BYTES_LEN + GCM_NONCE_LENGTH,
+					GCM_AAD_LENGTH + GCM_NONCE_LENGTH + INT_BYTES_LEN);
+			byte[] encryptedData = Arrays.copyOfRange(decodedData, INT_BYTES_LEN + GCM_NONCE_LENGTH + GCM_AAD_LENGTH,
+					decodedData.length);
+			
+			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+			int randomKeyIndex = (int)(Long.parseLong(id) % saltModuloConstant);
+
+			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
+			Key secretKey = getDecryptedKey(encryptedKeyData);
+
+			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
+
+			return doCipherOps(derivedKey, encryptedData, Cipher.DECRYPT_MODE, nonce, aad);
+		} catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
+				| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
 		}
 	}
-	
+
 	/**
 	 * Sign.
 	 *
-	 * @param data the data
+	 * @param data
+	 *            the data
 	 * @return the string
 	 */
 	public String sign(String data) {
-		//TODO: check whether any exception will be thrown
+		// TODO: check whether any exception will be thrown
 		SignatureRequestDto request = new SignatureRequestDto(signApplicationid, signRefid,
 				DateUtils.getUTCCurrentDateTimeString(), data);
 		return keyManager.sign(request).getData();
+	}
+
+	public String hash(String id) {
+		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
+		Long idModulo = (Long.parseLong(id) % saltModuloConstant);
+		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
+		return HMACUtils.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+	}
+
+	private Key getDecryptedKey(String encryptedKey) throws NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		Cipher cipher = Cipher.getInstance(WRAPPING_TRANSFORMATION, provider);
+
+		byte[] encryptedKeyData = Base64.getDecoder().decode(encryptedKey);
+		cipher.init(Cipher.DECRYPT_MODE, getMasterKeyFromHSM());
+		byte[] unwrappedKey = cipher.doFinal(encryptedKeyData, 0, encryptedKeyData.length);
+		return new SecretKeySpec(unwrappedKey, 0, unwrappedKey.length, "AES");
+	}
+
+	private Key getDerivedKey(Integer id, Key key) throws NoSuchAlgorithmException {
+		byte[] idBytes = String.valueOf(id).getBytes();
+		byte[] keyBytes = key.getEncoded();
+
+		MessageDigest mDigest = MessageDigest.getInstance(HASH_ALGO);
+		mDigest.update(idBytes, 0, idBytes.length);
+		mDigest.update(keyBytes, 0, keyBytes.length);
+		byte[] hashBytes = mDigest.digest();
+
+		return new SecretKeySpec(hashBytes, 0, hashBytes.length, "AES");
+	}
+
+	private Key getMasterKeyFromHSM() {
+		try {
+			KeyStore hsmStore = KeyStore.getInstance(keyStoreType, provider);
+			hsmStore.load(null, keyStorePass.toCharArray());
+			String keyAlias = getKeyAlias();
+			if (hsmStore.isKeyEntry(keyAlias)) {
+				KeyStore.SecretKeyEntry secretEntry = (KeyStore.SecretKeyEntry) hsmStore.getEntry(keyAlias,
+						new KeyStore.PasswordProtection(keyStorePass.toCharArray()));
+				return secretEntry.getSecretKey();
+			}
+			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, "getMasterKeyFromHSM",
+					"HSM - Key Not found for the alias in HSM.");
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_FETCH_KEY);
+		} catch (CertificateException | NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException
+				| IOException e) {
+			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, "getMasterKeyFromHSM",
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_FETCH_KEY, e);
+
+		}
+	}
+
+	private String getKeyAlias() {
+		List<KeyAlias> keyAliases = keyAliasRepository.findByApplicationIdAndReferenceId(applicationId, referenceId)
+				.stream().sorted((alias1, alias2) -> {
+					return alias1.getKeyGenerationTime().compareTo(alias2.getKeyGenerationTime());
+				}).collect(Collectors.toList());
+		List<KeyAlias> currentKeyAliases = keyAliases.stream().filter((keyAlias) -> {
+			return isValidTimestamp(DateUtils.getUTCCurrentDateTime(), keyAlias);
+		}).collect(Collectors.toList());
+
+		if (!currentKeyAliases.isEmpty() && currentKeyAliases.size() == 1) {
+			mosipLogger.info(getUser(), ID_AUTH_TRANSACTION_MANAGER, "getKeyAlias",
+					"CurrentKeyAlias size is one. Will decrypt symmetric key for this alias");
+			return currentKeyAliases.get(0).getAlias();
+		}
+
+		mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+				"CurrentKeyAlias is not unique. KeyAlias count: " + currentKeyAliases.size());
+		throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+				KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+	}
+
+	private boolean isValidTimestamp(LocalDateTime timeStamp, KeyAlias keyAlias) {
+		return timeStamp.isEqual(keyAlias.getKeyGenerationTime()) || timeStamp.isEqual(keyAlias.getKeyExpiryTime())
+				|| timeStamp.isAfter(keyAlias.getKeyGenerationTime())
+						&& timeStamp.isBefore(keyAlias.getKeyExpiryTime());
+	}
+
+	private byte[] doCipherOps(Key key, byte[] data, int mode, byte[] nonce, byte[] aad)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+		Cipher cipher = Cipher.getInstance(aesGCMTransformation);
+		GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
+		cipher.init(mode, key, gcmSpec);
+		cipher.updateAAD(aad);
+		return cipher.doFinal(data, 0, data.length);
+	}
+
+	private byte[] getIndexBytes(int randomIndex) {
+		ByteBuffer byteBuff = ByteBuffer.allocate(INT_BYTES_LEN);
+		byteBuff.putInt(randomIndex);
+		return byteBuff.array();
 	}
 }

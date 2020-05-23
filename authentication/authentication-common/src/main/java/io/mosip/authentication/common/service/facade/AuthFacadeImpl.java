@@ -5,6 +5,7 @@ package io.mosip.authentication.common.service.facade;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
@@ -126,6 +129,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	
 	@Autowired
 	private PartnerService partnerService;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/*
 	 * (non-Javadoc)
@@ -143,14 +149,14 @@ public class AuthFacadeImpl implements AuthFacade {
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
 				authRequestDTO.getRequestedAuth().isBio());
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
-			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
+			idService.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
-		validateAuthTypeStatus(authRequestDTO);
+		String uin = idService.getUin(idResDTO);
+		validateAuthTypeStatus(authRequestDTO, uin);
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String uin = idResDTO.get("uin") == null ? null : String.valueOf(idResDTO.get("uin"));
 		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 		try {
@@ -179,9 +185,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
-	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, String uin) throws IdAuthenticationBusinessException {
 		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
-				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
+				.fetchAuthtypeStatus(uin);
 		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
 			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
 				validateAuthTypeStatus(authRequestDTO, authTypeStatus);

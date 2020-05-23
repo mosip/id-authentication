@@ -124,7 +124,7 @@ public class KycFacadeImpl implements KycFacade {
 			String idvIdtype = IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
 
 			Map<String, Object> idResDTO = idService.processIdType(idvIdtype, idvId, true);
-			uin = (String) idResDTO.get("uin");
+			uin = idService.getUin(idResDTO);
 
 			KycAuthResponseDTO kycAuthResponseDTO = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
 					idResDTO, uin);
