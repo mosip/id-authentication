@@ -87,6 +87,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUTH_TRANSACTION = "auth.transactions";
 	public static final String AUTH_TYPE_READ = "authtype.status.read";
 	public static final String AUTH_TYPE_UPDATE = "authtype.status.update";
+	public static final String EVENT_NOTIFY = "event.notify";
 	public static final String UIN_SALT_MODULO = "ida.uin.salt.modulo";
 	public static final String MOSIP_UTC_TIME= "mosip.utc-datetime-pattern";
 	

@@ -1,13 +1,16 @@
 package io.mosip.authentication.internal.service.config;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUTH_TRANSACTIONS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.NOTIFY;
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.common.service.filter.DefaultAuthTypeFilter;
 import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
+import io.mosip.authentication.common.service.filter.InternalEventNotificationFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.internal.service.filter.InternalAuthFilter;
 
 /**
@@ -44,7 +47,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<DefaultInternalFilter> getDefaultInternalFilter() {
 		FilterRegistrationBean<DefaultInternalFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new DefaultInternalFilter());
-		registrationBean.addUrlPatterns("/" + IdAuthCommonConstants.AUTH_TRANSACTIONS + "/*");
+		registrationBean.addUrlPatterns("/" + AUTH_TRANSACTIONS + "/*");
 		registrationBean.addInitParameter("IDType", "IDType");
 		registrationBean.addInitParameter("ID", "ID");
 		registrationBean.addInitParameter("pageStart", "pageStart");
@@ -68,5 +71,13 @@ public class InternalAuthFilterConfig {
 		authTypeStatusBean.setFilter(new DefaultAuthTypeFilter());
 		authTypeStatusBean.addUrlPatterns("/authtypes/status");
 		return authTypeStatusBean;
+	}
+	
+	@Bean
+	public FilterRegistrationBean<InternalEventNotificationFilter> getDefaultEventNotificationHandlerFilter() {
+		FilterRegistrationBean<InternalEventNotificationFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new InternalEventNotificationFilter());
+		registrationBean.addUrlPatterns("/" + NOTIFY);
+		return registrationBean;
 	}
 }

@@ -222,6 +222,9 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	public static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
+	
+	public static final String NOTIFY = "notify";
+
 
 }
 
