@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.idevent.service;
 
 import java.util.List;
 
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.dto.EventDTO;
 
 /**
@@ -17,6 +18,6 @@ public interface IdChangeEventHandlerService {
 	 * @param events the events
 	 * @return true, if successful
 	 */
-	boolean handleIdEvent(List<EventDTO> events);
+	void handleIdEvent(List<EventDTO> events) throws IdAuthenticationBusinessException;
 	
 }

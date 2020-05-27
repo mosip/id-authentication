@@ -26,20 +26,19 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.idrepository.core.constant.EventType;
 import io.mosip.idrepository.core.dto.EventDTO;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -59,7 +58,7 @@ public class IdChangeEventHandlerServiceImplTest {
 	private IdRepoManager idRepoManager;
 	
 	@Mock
-	private IdService<?> idService;
+	private IdServiceImpl idService;
 	
 	@Mock
 	private IdentityCacheRepository identityCacheRepo;
@@ -91,8 +90,13 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(uin);
-		expectedEntity.setDemographicData(getDemoData(idData));
-		expectedEntity.setBiometricData(getBioData(idData));
+		byte[] demoData = getDemoData(idData);
+		expectedEntity.setDemographicData(demoData);
+		byte[] bioData = getBioData(idData);
+		expectedEntity.setBiometricData(bioData);
+		
+		Mockito.when(idService.getDemoData(Mockito.any())).thenReturn(demoData);
+		Mockito.when(idService.getBioData(Mockito.any())).thenReturn(bioData);
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
@@ -120,13 +124,18 @@ public class IdChangeEventHandlerServiceImplTest {
 
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(vid);
-		expectedEntity.setDemographicData(getDemoData(idData));
-		expectedEntity.setBiometricData(getBioData(idData));
+		byte[] demoData = getDemoData(idData);
+		expectedEntity.setDemographicData(demoData);
+		byte[] bioData = getBioData(idData);
+		expectedEntity.setBiometricData(bioData);
+		
+		Mockito.when(idService.getDemoData(Mockito.any())).thenReturn(demoData);
+		Mockito.when(idService.getBioData(Mockito.any())).thenReturn(bioData);
 		
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
 		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
-		
+		Mockito.when(securityManager.decryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
@@ -159,8 +168,13 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(uin);
-		expectedEntity.setDemographicData(getDemoData(idData));
-		expectedEntity.setBiometricData(getBioData(idData));
+		byte[] demoData = getDemoData(idData);
+		expectedEntity.setDemographicData(demoData);
+		byte[] bioData = getBioData(idData);
+		expectedEntity.setBiometricData(bioData);
+		
+		Mockito.when(idService.getDemoData(Mockito.any())).thenReturn(demoData);
+		Mockito.when(idService.getBioData(Mockito.any())).thenReturn(bioData);
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
@@ -194,9 +208,14 @@ public class IdChangeEventHandlerServiceImplTest {
 		
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(uin);
-		expectedEntity.setDemographicData(getDemoData(idData));
-		expectedEntity.setBiometricData(getBioData(idData));
+		byte[] demoData = getDemoData(idData);
+		expectedEntity.setDemographicData(demoData);
+		byte[] bioData = getBioData(idData);
+		expectedEntity.setBiometricData(bioData);
 		expectedEntity.setExpiryTimestamp(expiryTimestamp);
+		
+		Mockito.when(idService.getDemoData(Mockito.any())).thenReturn(demoData);
+		Mockito.when(idService.getBioData(Mockito.any())).thenReturn(bioData);
 		
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(Arrays.asList(expectedEntity)));
 		
@@ -345,17 +364,23 @@ public class IdChangeEventHandlerServiceImplTest {
 
 		IdentityEntity expectedEntity = new IdentityEntity();
 		expectedEntity.setId(vid);
-		expectedEntity.setDemographicData(getDemoData(idData));
-		expectedEntity.setBiometricData(getBioData(idData));
+		byte[] demoData = getDemoData(idData);
+		expectedEntity.setDemographicData(demoData);
+		byte[] bioData = getBioData(idData);
+		expectedEntity.setBiometricData(bioData);
 		expectedEntity.setExpiryTimestamp(expiryTimestamp);
 		expectedEntity.setTransactionLimit(1);
+		
+		Mockito.when(idService.getDemoData(Mockito.any())).thenReturn(demoData);
+		Mockito.when(idService.getBioData(Mockito.any())).thenReturn(bioData);
 		
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenAnswer(answerToReturnArg(0));
 		List<IdentityEntity> entities = new ArrayList<>();
 		entities.add(existingVidEntity);
 		Mockito.when(identityCacheRepo.findAllById(Arrays.asList(vid))).thenReturn(entities);
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
-		
+		Mockito.when(securityManager.decryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
+
 		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		
 		
@@ -410,21 +435,26 @@ public class IdChangeEventHandlerServiceImplTest {
 		existingVidEntity2.setDemographicData("{}".getBytes());
 		existingVidEntity2.setBiometricData("<test/>".getBytes());
 		existingVidEntity2.setExpiryTimestamp(LocalDateTime.now());
-
+		
+		byte[] demoData = getDemoData(idData);
+		byte[] bioData = getBioData(idData);
 
 		IdentityEntity expectedEntity1 = new IdentityEntity();
 		expectedEntity1.setId(vid1);
-		expectedEntity1.setDemographicData(getDemoData(idData));
-		expectedEntity1.setBiometricData(getBioData(idData));
+		expectedEntity1.setDemographicData(demoData);
+		expectedEntity1.setBiometricData(bioData);
 		expectedEntity1.setExpiryTimestamp(expiryTimestamp1);
 		expectedEntity1.setTransactionLimit(1);
 		
 		IdentityEntity expectedEntity2 = new IdentityEntity();
 		expectedEntity2.setId(vid2);
-		expectedEntity2.setDemographicData(getDemoData(idData));
-		expectedEntity2.setBiometricData(getBioData(idData));
+		expectedEntity2.setDemographicData(demoData);
+		expectedEntity2.setBiometricData(bioData);
 		expectedEntity2.setExpiryTimestamp(expiryTimestamp2);
 		expectedEntity2.setTransactionLimit(1);
+		
+		Mockito.when(idService.getDemoData(Mockito.any())).thenReturn(demoData);
+		Mockito.when(idService.getBioData(Mockito.any())).thenReturn(bioData);
 		
 		List<IdentityEntity> expectedEntities = new ArrayList<>();
 		expectedEntities.add(expectedEntity1);
@@ -438,6 +468,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		Mockito.when(identityCacheRepo.findAllById(Mockito.any())).thenReturn(entities);		
 		Mockito.when(securityManager.encryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 		Mockito.when(identityCacheRepo.findById(uin)).thenReturn(Optional.of(existingUinEntity));
+		Mockito.when(securityManager.decryptWithAES(Mockito.anyString(), Mockito.any())).thenAnswer(answerToReturnArg(1));
 
 		Mockito.when(identityCacheRepo.save(Mockito.any())).then(createEntityVerifyingAnswer(expectedEntities));
 		

@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -23,6 +22,7 @@ import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
@@ -39,6 +39,11 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
+	
+	@FunctionalInterface
+	static interface ConsumerWithBusinessException<T,R> {
+		void apply(T t) throws IdAuthenticationBusinessException;
+	}
 
 	/**
 	 * The Enum IdChangeProperties.
@@ -92,25 +97,28 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
 	 */
 	@Override
-	public boolean handleIdEvent(List<EventDTO> events) {
+	public void handleIdEvent(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		try {
-			return doHandleEvents(events);
+			doHandleEvents(events);
+		} catch (IdAuthenticationBusinessException e) {
+			throw e;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"handleIdEvent", e.getMessage());
-			return false;
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
 	@Transactional
-	private boolean doHandleEvents(List<EventDTO> events) {
+	private void doHandleEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		Map<EventType, List<EventDTO>> eventsByType = events.stream()
 				.collect(Collectors.groupingBy(EventDTO::getEventType));
-		return Arrays.stream(EventType.values())
-				.filter(eventsByType::containsKey)
-				.allMatch(eventType -> 
-						getFunctionForEventType(eventType)
-							.apply(eventsByType.get(eventType)));
+		for (EventType eventType : EventType.values()) {
+			if(eventsByType.containsKey(eventType)) {
+				getFunctionForEventType(eventType)
+					.apply(eventsByType.get(eventType));
+			}
+		}
 	}
 
 	/**
@@ -119,7 +127,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param eventType the event type
 	 * @return the function for event type
 	 */
-	private Function<List<EventDTO>, Boolean> getFunctionForEventType(EventType eventType) {
+	private ConsumerWithBusinessException<List<EventDTO>, Boolean> getFunctionForEventType(EventType eventType) {
 		switch (eventType) {
 		case CREATE_UIN:
 			return this::handleCreateUinEvents;
@@ -130,7 +138,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		case UPDATE_VID:
 			return this::handleUpdateVidEvents;
 		default:
-			return list -> false;
+			return list -> {return;};
 		}
 	}
 
@@ -139,15 +147,16 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private boolean handleCreateUinEvents(List<EventDTO> events) {
+	private void handleCreateUinEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
 				IdChangeProperties.UPDATE_ID_DATA, 
 				IdChangeProperties.PREPARE_UIN_ENTITIES 
 				);
 		
 		String logMethodName = "handleCreateUinEvents";
-		return updateEntitiesForEvents(logMethodName, 
+		updateEntitiesForEvents(logMethodName, 
 				events, 
 				properties);
 	}
@@ -157,8 +166,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private boolean handleUpdateUinEvents(List<EventDTO> events) {
+	private void handleUpdateUinEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
 				IdChangeProperties.PREPARE_UIN_ENTITIES, 
@@ -174,7 +184,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 		
 		String logMethodName = "handleUpdateUinEvents";
-		return updateEntitiesForEvents(logMethodName, 
+		updateEntitiesForEvents(logMethodName, 
 				events, 
 				properties);
 	}
@@ -184,8 +194,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private boolean handleCreateVidEvents(List<EventDTO> events) {
+	private void handleCreateVidEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
 				IdChangeProperties.UPDATE_ID_DATA, 
 				IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA, 
@@ -193,7 +204,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				);
 		
 		String logMethodName = "handleCreateVidEvents";
-		return updateEntitiesForEvents(logMethodName, 
+		updateEntitiesForEvents(logMethodName, 
 				events, 
 				properties);
 	}
@@ -203,8 +214,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private boolean handleUpdateVidEvents(List<EventDTO> events) {
+	private void handleUpdateVidEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
 				IdChangeProperties.PREPARE_VID_ENTITIES,
 				IdChangeProperties.FIND_EXISTING_VID_ENTITIES,
@@ -212,7 +224,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				);
 		
 		String logMethodName = "handleUpdateVidEvents";
-		return updateEntitiesForEvents(logMethodName, 
+		updateEntitiesForEvents(logMethodName, 
 				events, 
 				properties);
 	}
@@ -224,17 +236,18 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param events the events
 	 * @param properties the properties
 	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private boolean updateEntitiesForEvents(String logMethodName, 
+	private void updateEntitiesForEvents(String logMethodName, 
 			List<EventDTO> events, 
-			EnumSet<IdChangeProperties> properties) {
+			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		try {
-			return updateEntitiesForEvents(events, properties);
+			updateEntitiesForEvents(events, properties);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					logMethodName, e.getMessage());
+			throw e;
 		}
-		return false;
 	}
 
 	/**
@@ -245,7 +258,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	private boolean updateEntitiesForEvents(List<EventDTO> events, 
+	private void updateEntitiesForEvents(List<EventDTO> events, 
 			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
 		Map<String, List<EventDTO>> eventsByUin = 
 				events.stream()
@@ -267,7 +280,6 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			
 			saveIdEntityByUinData(uinOpt, entities, properties);
 		}
-		return true;
 	}
 
 	/**

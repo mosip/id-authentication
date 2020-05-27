@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -19,10 +20,14 @@ public class DataEncryptKeystore {
 
 	@Id
 	private Integer id;
+	@Column(name = "key")
 	private String key;
+	@Column(name = "key_status")
 	private String keyStatus;
-	private String crBy;
-	private LocalDateTime crDtimes;
+	@Column(name = "cr_dtimes")
+	private LocalDateTime crDTimes;
+	@Column(name = "upd_by")
 	private String updBy;
-	private LocalDateTime updDtimes;
+	@Column(name = "upd_dtimes")
+	private LocalDateTime updDTimes;
 }
