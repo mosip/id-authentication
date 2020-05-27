@@ -67,6 +67,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.kernel.core.util.TokenHandlerUtil;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;
@@ -83,7 +84,7 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@PrepareForTest({ WebClient.class, SslContextBuilder.class, Mock.class })
+@PrepareForTest({ WebClient.class, SslContextBuilder.class, Mock.class,TokenHandlerUtil.class })
 public class RestHelperTest {
 
 	/** The rest helper. */
@@ -112,6 +113,8 @@ public class RestHelperTest {
 
 	/** The server. */
 	static BlockingNettyContext server;
+	
+	String authToken= "1234"; //"eyJhbGciOiJSUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJRakpYVzgtemMwR1RWRkQ0RnZiWkdTblZLSlhDMWRXVnBPVUxMLWVZT0JNIn0.eyJqdGkiOiI0NWQ4NGE0ZS1mMTI1LTRjNDYtYjY4MC01YTViNmU3NzgyMjkiLCJleHAiOjE1OTA1NDgxODcsIm5iZiI6MCwiaWF0IjoxNTkwNTQ1NDg3LCJpc3MiOiJodHRwczovL21vc2lwa2V5Y2xvYWsuc291dGhpbmRpYS5jbG91ZGFwcC5henVyZS5jb20vYXV0aC9yZWFsbXMvbW9zaXAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiN2NkZGM5NGUtNzMxNi00NWM3LWE2Y2EtMTZlYmEyYTc0OWIwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaWRhIiwiYXV0aF90aW1lIjowLCJzZXNzaW9uX3N0YXRlIjoiYjUwOTBlM2MtOTY4NC00N2QyLWJlNDEtM2M5ZWY1ZDA4MDU0IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJJRF9BVVRIRU5USUNBVElPTiIsIlRFU1QiLCJNSVNQIiwiSU5ESVZJRFVBTCJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImlkYSI6eyJyb2xlcyI6WyJ1bWFfcHJvdGVjdGlvbiJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiY2xpZW50SG9zdCI6IjEzLjcxLjcxLjQ2IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRJZCI6ImlkYSIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1pZGEiLCJjbGllbnRBZGRyZXNzIjoiMTMuNzEuNzEuNDYiLCJlbWFpbCI6InNlcnZpY2UtYWNjb3VudC1pZGFAcGxhY2Vob2xkZXIub3JnIn0.b8c_opq422DeecvcROuojwewF9xPSM1PHWUMFKs8p_mqrvq2i5s_NK7cqcpzH4wMPwumHZb_cFT2UJipGC7uimsQPIoQ2KsRN56HnLmsDfCY_CUaNVLdnjiKZW-2CrBkU85ZKgcPXuvL67nM5ut0aaB37nzZvI6g60aC3zfwvy3hT7ZPtkEs24tmWooUgspWn_0hHJk9ZVI7IrqZmHGUOYh9nxp5RPf9Pfs-vu1YlPdrSL4ZsULAf-Cwalmnx4zoPGCqxlOZCCAh1YJSGx6k6gsJqE-i1hxuhg85FyyTHC3T301La2wpmjTJp2M6-k6Pq7ARGaVkX3d9aX-PM7tdSQ";
 
 	/**
 	 * Before.
@@ -124,7 +127,7 @@ public class RestHelperTest {
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(restHelper, "env", environment);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
-		ReflectionTestUtils.setField(restHelper, "authToken", "1324");
+		ReflectionTestUtils.setField(restHelper, "authToken", authToken);
 		PowerMockito.mockStatic(SslContextBuilder.class);
 		SslContextBuilder sslContextBuilder = PowerMockito.mock(SslContextBuilder.class);
 		PowerMockito.when(SslContextBuilder.forClient()).thenReturn(sslContextBuilder);
@@ -816,6 +819,8 @@ public class RestHelperTest {
 			ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
 			PowerMockito.when(requestBodyUriSpec.exchange()).thenReturn(Mono.just(clientResponse));
 			String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
+			PowerMockito.mockStatic(TokenHandlerUtil.class);
+			PowerMockito.when(TokenHandlerUtil.isValidBearerToken(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 			PowerMockito.when(clientResponse.bodyToMono(Mockito.any(Class.class)))
 					.thenReturn(Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class)));
 			assertTrue(ReflectionTestUtils
