@@ -24,6 +24,14 @@ import io.netty.handler.codec.http.HttpMethod;
  */
 @Component
 public class DefaultInternalFilter extends IdAuthFilter {
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.common.service.filter.BaseAuthFilter#decipherAndValidateRequest(io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest, java.util.Map)
+	 */
+	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
+			throws IdAuthenticationAppException {
+		//Nothing to do
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -92,6 +100,9 @@ public class DefaultInternalFilter extends IdAuthFilter {
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)
 							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
 						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE_UPDATE;
+					}  else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.NOTIFY)
+							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
+						id = attribute + IdAuthConfigKeyConstants.EVENT_NOTIFY;
 					}
 				}
 			}

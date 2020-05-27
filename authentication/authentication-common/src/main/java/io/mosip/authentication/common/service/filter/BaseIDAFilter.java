@@ -11,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -321,11 +322,15 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getResponseBody(String responseBody) throws IdAuthenticationAppException {
-		try {
-			return mapper.readValue(responseBody, Map.class);
-		} catch (IOException | ClassCastException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		if (responseBody != null && !responseBody.isEmpty()) {
+			try {
+				return mapper.readValue(responseBody, Map.class);
+			} catch (IOException | ClassCastException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
+		} else {
+			return new HashMap<>();
 		}
 	}
 
@@ -473,7 +478,7 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
 			requestWrapper.resetInputStream();
-			responseMap.replace(VERSION,
+			responseMap.put(VERSION,
 					env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
 			requestWrapper.resetInputStream();
 			responseMap.put(IdAuthCommonConstants.ID,
