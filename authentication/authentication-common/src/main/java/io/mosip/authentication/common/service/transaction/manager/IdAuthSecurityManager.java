@@ -197,7 +197,7 @@ public class IdAuthSecurityManager {
 			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
 			Key secretKey = getDecryptedKey(encryptedKeyData);
 
-			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
+			Key derivedKey = getDerivedKey(id, secretKey);
 
 			SecureRandom sRandom = new SecureRandom();
 			byte[] nonce = new byte[GCM_NONCE_LENGTH];
@@ -284,7 +284,7 @@ public class IdAuthSecurityManager {
 			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
 			Key secretKey = getDecryptedKey(encryptedKeyData);
 
-			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
+			Key derivedKey = getDerivedKey(id, secretKey);
 
 			return doCipherOps(derivedKey, encryptedData, Cipher.DECRYPT_MODE, nonce, aad);
 		} catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
@@ -331,8 +331,8 @@ public class IdAuthSecurityManager {
 		return new SecretKeySpec(unwrappedKey, 0, unwrappedKey.length, "AES");
 	}
 
-	private Key getDerivedKey(Integer id, Key key) throws NoSuchAlgorithmException {
-		byte[] idBytes = String.valueOf(id).getBytes();
+	private Key getDerivedKey(String id, Key key) throws NoSuchAlgorithmException {
+		byte[] idBytes = id.getBytes();
 		byte[] keyBytes = key.getEncoded();
 
 		MessageDigest mDigest = MessageDigest.getInstance(HASH_ALGO);
