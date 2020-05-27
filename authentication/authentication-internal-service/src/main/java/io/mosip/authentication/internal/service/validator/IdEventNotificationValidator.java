@@ -29,7 +29,7 @@ public class IdEventNotificationValidator extends IdAuthValidator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		if(target instanceof RequestWrapper) {
-			RequestWrapper requestWrapper = (RequestWrapper) target;
+			RequestWrapper<?> requestWrapper = (RequestWrapper<?>) target;
 			validateRequestWrapper(requestWrapper, errors);
 			
 			if(!errors.hasErrors()) {
@@ -51,9 +51,16 @@ public class IdEventNotificationValidator extends IdAuthValidator {
 
 	private void validateEvents(EventsDTO eventsDTO, Errors errors) {
 		List<EventDTO> events = eventsDTO.getEvents();
-		for (int i = 0; i < events.size(); i++) {
-			EventDTO event = events.get(i);
-			validateEvent(event, i, errors);
+		if(events == null || events.isEmpty()) {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] {"request/events" },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else {
+			for (int i = 0; i < events.size(); i++) {
+				EventDTO event = events.get(i);
+				validateEvent(event, i, errors);
+			}
 		}
 		
 	}

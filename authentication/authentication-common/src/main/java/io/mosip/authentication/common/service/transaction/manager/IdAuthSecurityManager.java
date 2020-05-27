@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.repository.DataEncryptKeystoreRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -191,12 +193,11 @@ public class IdAuthSecurityManager {
 
 	public byte[] encryptWithAES(String id, byte[] dataToEncrypt) {
 		try {
-			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-			int randomKeyIndex = (int)(Long.parseLong(id) % saltModuloConstant);
+			int randomKeyIndex = getRandomKeyIndex();
 			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
 			Key secretKey = getDecryptedKey(encryptedKeyData);
 
-			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
+			Key derivedKey = getDerivedKey(id, secretKey);
 
 			SecureRandom sRandom = new SecureRandom();
 			byte[] nonce = new byte[GCM_NONCE_LENGTH];
@@ -222,6 +223,12 @@ public class IdAuthSecurityManager {
 					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
 		}
+	}
+	
+	private int getRandomKeyIndex() {
+		List<Integer> indexes = repo.getIdsByKeyStatus(IdAuthCommonConstants.ACTIVE_STATUS);
+		int randomNum = ThreadLocalRandom.current().nextInt(0, indexes.size() + 1);
+		return indexes.get(randomNum);
 	}
 
 	/**
@@ -266,19 +273,18 @@ public class IdAuthSecurityManager {
 		try {
 			byte[] decodedData = Base64.getDecoder().decode(dataToDecrypt);
 
+	        byte[] dbIndexBytes = Arrays.copyOfRange(decodedData, 0, INT_BYTES_LEN);
 			byte[] nonce = Arrays.copyOfRange(decodedData, INT_BYTES_LEN, GCM_NONCE_LENGTH + INT_BYTES_LEN);
 			byte[] aad = Arrays.copyOfRange(decodedData, INT_BYTES_LEN + GCM_NONCE_LENGTH,
 					GCM_AAD_LENGTH + GCM_NONCE_LENGTH + INT_BYTES_LEN);
 			byte[] encryptedData = Arrays.copyOfRange(decodedData, INT_BYTES_LEN + GCM_NONCE_LENGTH + GCM_AAD_LENGTH,
 					decodedData.length);
 			
-			int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-			int randomKeyIndex = (int)(Long.parseLong(id) % saltModuloConstant);
-
+			int randomKeyIndex = getIndexInt(dbIndexBytes);
 			String encryptedKeyData = repo.findKeyById(randomKeyIndex);
 			Key secretKey = getDecryptedKey(encryptedKeyData);
 
-			Key derivedKey = getDerivedKey((int)Long.parseLong(id), secretKey);
+			Key derivedKey = getDerivedKey(id, secretKey);
 
 			return doCipherOps(derivedKey, encryptedData, Cipher.DECRYPT_MODE, nonce, aad);
 		} catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
@@ -288,6 +294,11 @@ public class IdAuthSecurityManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
 		}
 	}
+	
+	 private int getIndexInt(byte[] indexBytes) {
+	        ByteBuffer bBuff = ByteBuffer.wrap(indexBytes);
+	        return bBuff.getInt();
+	    }
 
 	/**
 	 * Sign.
@@ -320,8 +331,8 @@ public class IdAuthSecurityManager {
 		return new SecretKeySpec(unwrappedKey, 0, unwrappedKey.length, "AES");
 	}
 
-	private Key getDerivedKey(Integer id, Key key) throws NoSuchAlgorithmException {
-		byte[] idBytes = String.valueOf(id).getBytes();
+	private Key getDerivedKey(String id, Key key) throws NoSuchAlgorithmException {
+		byte[] idBytes = id.getBytes();
 		byte[] keyBytes = key.getEncoded();
 
 		MessageDigest mDigest = MessageDigest.getInstance(HASH_ALGO);

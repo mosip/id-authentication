@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service.validator;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -78,6 +77,44 @@ public class IdEventNotificationValidatorTest {
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())));
 
 	}
+	
+	@Test
+	public void testValidateNullEventsList() throws Exception {
+		IdEventNotificationValidator testSubject;
+		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
+		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		EventsDTO eventsDto = new EventsDTO();
+		requestWrapper.setRequest(eventsDto);
+
+		Errors errors =  new BeanPropertyBindingResult(requestWrapper, "RequestWrapper");
+
+		// default test
+		testSubject = createTestSubject();
+		testSubject.validate(requestWrapper, errors);
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())));
+
+	}
+	
+	@Test
+	public void testValidateEmptyEventsList() throws Exception {
+		IdEventNotificationValidator testSubject;
+		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
+		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+		EventsDTO eventsDto = new EventsDTO();
+		List<EventDTO> events = new ArrayList<>();
+		
+		eventsDto.setEvents(events);
+		requestWrapper.setRequest(eventsDto);
+
+		Errors errors =  new BeanPropertyBindingResult(requestWrapper, "RequestWrapper");
+
+		// default test
+		testSubject = createTestSubject();
+		testSubject.validate(requestWrapper, errors);
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())));
+
+	}
+	
 	
 	
 	@Test
