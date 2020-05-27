@@ -18,12 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
@@ -92,6 +97,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	/** The mapper. */
 	@Autowired
 	private IdService<?> idService;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
@@ -115,9 +123,72 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				.collect(Collectors.groupingBy(EventDTO::getEventType));
 		for (EventType eventType : EventType.values()) {
 			if(eventsByType.containsKey(eventType)) {
-				getFunctionForEventType(eventType)
-					.apply(eventsByType.get(eventType));
+				List<EventDTO> eventsList = eventsByType.get(eventType);
+				try {
+					getFunctionForEventType(eventType)
+						.apply(eventsList);
+					auditEvents(events, null);
+				} catch (IdAuthenticationBusinessException e) {
+					auditEvents(events, e);
+					throw e;
+				}
 			}
+		}
+	}
+
+	private void auditEvents(List<EventDTO> events, IdAuthenticationBusinessException e) throws IDDataValidationException {
+		for (EventDTO eventDTO : events) {
+			auditEvent(eventDTO, e);
+		}
+	}
+
+	private void auditEvent(EventDTO event, IdAuthenticationBusinessException e) throws IDDataValidationException {
+		if(e == null) {
+			String message = event.getEventType() + " : Success";
+			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(event.getEventType()), getIdFunctionForEventType(event.getEventType()).apply(event), getIdTypeForEventType(event.getEventType()), message);
+		} else {
+			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(event.getEventType()), getIdFunctionForEventType(event.getEventType()).apply(event), getIdTypeForEventType(event.getEventType()), e);
+		}
+	}
+
+	private IdType getIdTypeForEventType(EventType eventType) {
+		switch (eventType) {
+		case CREATE_UIN:
+		case UPDATE_UIN:
+			return IdType.UIN;
+		case CREATE_VID:
+		case UPDATE_VID:
+			return  IdType.VID;
+		default:
+			return IdType.DEFAULT_ID_TYPE;
+		}
+	}
+
+	private Function<EventDTO, String> getIdFunctionForEventType(EventType eventType) {
+		switch (eventType) {
+		case CREATE_UIN:
+		case UPDATE_UIN:
+			return EventDTO::getUin;
+		case CREATE_VID:
+		case UPDATE_VID:
+			return EventDTO::getVid;
+		default:
+			return EventDTO::getUin;
+		}
+	}
+
+	private AuditEvents getAuditEvent(EventType eventType) {
+		switch (eventType) {
+		case CREATE_UIN:
+			return AuditEvents.CREATE_UIN_EVENT;
+		case UPDATE_UIN:
+			return AuditEvents.UPDATE_UIN_EVENT;
+		case CREATE_VID:
+			return AuditEvents.CREATE_VID_EVENT;
+		case UPDATE_VID:
+			return AuditEvents.UPDATE_VID_EVENT;
+		default:
+			return AuditEvents.UPDATE_UIN_EVENT;
 		}
 	}
 

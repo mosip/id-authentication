@@ -31,6 +31,11 @@ public enum AuditEvents {
 	/** The retrieve auth transaction history request response. */
 	RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE("IDA-008", "SYSTEM", "Retrieve Auth Transaction  History Request"),
 	
+	CREATE_UIN_EVENT("IDA-009", "SYSTEM", "Create UIN"),
+	CREATE_VID_EVENT("IDA-010", "SYSTEM", "Create VID"),
+	UPDATE_UIN_EVENT("IDA-011", "SYSTEM", "Update UIN"),
+	UPDATE_VID_EVENT("IDA-012", "SYSTEM", "Update VID"),
+	
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1
 	

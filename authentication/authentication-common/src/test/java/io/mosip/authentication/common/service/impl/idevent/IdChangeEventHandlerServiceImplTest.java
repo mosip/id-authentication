@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
@@ -62,6 +63,9 @@ public class IdChangeEventHandlerServiceImplTest {
 	
 	@Mock
 	private IdentityCacheRepository identityCacheRepo;
+	
+	@Mock
+	private AuditHelper auditHelper;
 	
 	@Autowired
 	private ObjectMapper mapper;

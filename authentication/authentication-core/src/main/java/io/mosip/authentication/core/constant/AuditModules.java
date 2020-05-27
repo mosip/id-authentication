@@ -34,6 +34,8 @@ public enum AuditModules {
 	/** The auth transaction history. */
 	AUTH_TRANSACTION_HISTORY("IDA-ATH","Auth Transaction History Request", "Auth Transaction History"),
 	
+	IDENTITY_CACHE("IDA-IDC","IDentity Cache Request", "IDentity Cache"),
+	
 	/** The pin auth. */
 	PIN_AUTH("IDA-MOD-106","Pin Authentication requested", ""), //not applicable for release v1
 	
