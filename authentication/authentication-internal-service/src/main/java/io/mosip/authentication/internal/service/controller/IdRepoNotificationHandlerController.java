@@ -40,9 +40,15 @@ public class IdRepoNotificationHandlerController {
 	@Autowired
 	private IdChangeEventHandlerService idChangeEventHandlerService;
 
+	/** The validator. */
 	@Autowired
 	private IdEventNotificationValidator validator;
 
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
@@ -54,7 +60,7 @@ public class IdRepoNotificationHandlerController {
 	 * @param notificationEventsDto the notification events dto
 	 * @param e the e
 	 * @return the response entity
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'RESIDENT', 'ID_AUTHENTICATION')")
 	@PostMapping(path = "/notify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,7 +77,7 @@ public class IdRepoNotificationHandlerController {
 	 *
 	 * @param events the events
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void handleEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		idChangeEventHandlerService.handleIdEvent(events);

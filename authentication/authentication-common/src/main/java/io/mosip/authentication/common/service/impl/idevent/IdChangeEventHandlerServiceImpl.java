@@ -45,8 +45,21 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
 	
+	/**
+	 * The Interface ConsumerWithBusinessException.
+	 *
+	 * @param <T> the generic type
+	 * @param <R> the generic type
+	 */
 	@FunctionalInterface
 	static interface ConsumerWithBusinessException<T,R> {
+		
+		/**
+		 * Apply.
+		 *
+		 * @param t the t
+		 * @throws IdAuthenticationBusinessException the id authentication business exception
+		 */
 		void apply(T t) throws IdAuthenticationBusinessException;
 	}
 
@@ -87,6 +100,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	@Autowired
 	private IdRepoManager idRepoManager;
 	
+	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
@@ -98,6 +112,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	@Autowired
 	private IdService<?> idService;
 	
+	/** The audit helper. */
 	@Autowired
 	private AuditHelper auditHelper;
 
@@ -117,6 +132,12 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
+	/**
+	 * Do handle events.
+	 *
+	 * @param events the events
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@Transactional
 	private void doHandleEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		Map<EventType, List<EventDTO>> eventsByType = events.stream()
@@ -136,12 +157,26 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
+	/**
+	 * Audit events.
+	 *
+	 * @param events the events
+	 * @param e the e
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	private void auditEvents(List<EventDTO> events, IdAuthenticationBusinessException e) throws IDDataValidationException {
 		for (EventDTO eventDTO : events) {
 			auditEvent(eventDTO, e);
 		}
 	}
 
+	/**
+	 * Audit event.
+	 *
+	 * @param event the event
+	 * @param e the e
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	private void auditEvent(EventDTO event, IdAuthenticationBusinessException e) throws IDDataValidationException {
 		if(e == null) {
 			String message = event.getEventType() + " : Success";
@@ -151,6 +186,12 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
+	/**
+	 * Gets the id type for event type.
+	 *
+	 * @param eventType the event type
+	 * @return the id type for event type
+	 */
 	private IdType getIdTypeForEventType(EventType eventType) {
 		switch (eventType) {
 		case CREATE_UIN:
@@ -164,6 +205,12 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
+	/**
+	 * Gets the id function for event type.
+	 *
+	 * @param eventType the event type
+	 * @return the id function for event type
+	 */
 	private Function<EventDTO, String> getIdFunctionForEventType(EventType eventType) {
 		switch (eventType) {
 		case CREATE_UIN:
@@ -177,6 +224,12 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
+	/**
+	 * Gets the audit event.
+	 *
+	 * @param eventType the event type
+	 * @return the audit event
+	 */
 	private AuditEvents getAuditEvent(EventType eventType) {
 		switch (eventType) {
 		case CREATE_UIN:
@@ -218,7 +271,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void handleCreateUinEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
@@ -237,7 +290,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void handleUpdateUinEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 
@@ -265,7 +318,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void handleCreateVidEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
@@ -285,7 +338,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 *
 	 * @param events the events
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void handleUpdateVidEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
 		EnumSet<IdChangeProperties> properties = EnumSet.of(
@@ -307,7 +360,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param events the events
 	 * @param properties the properties
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void updateEntitiesForEvents(String logMethodName, 
 			List<EventDTO> events, 
@@ -437,6 +490,12 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 			}).collect(Collectors.toList());
 	}
 
+	/**
+	 * Gets the hash.
+	 *
+	 * @param id the id
+	 * @return the hash
+	 */
 	private String getHash(String id) {
 		return securityManager.hash(id);
 	}
@@ -476,6 +535,11 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				.collect(Collectors.toMap(entity -> idsByIdHash.get(entity.getId()), Function.identity()));
 	}
 
+	/**
+	 * Gets the current UTC local time.
+	 *
+	 * @return the current UTC local time
+	 */
 	private LocalDateTime getCurrentUTCLocalTime() {
 		return DateUtils.getUTCCurrentDateTime();
 	}
@@ -565,10 +629,10 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	/**
 	 * Save id entity.
 	 *
-	 * @param entity the entity
+	 * @param entities the entities
 	 * @param demoData the demo data
 	 * @param bioData the bio data
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void saveIdEntity(Map<String, IdentityEntity> entities,Optional<byte[]> demoData, Optional<byte[]> bioData) throws IdAuthenticationBusinessException {
 		for(Entry<String, IdentityEntity> entry: entities.entrySet()){
