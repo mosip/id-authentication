@@ -4,7 +4,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_HANDLE_STATUS_ERROR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_ASYNC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_RESPONSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
@@ -67,8 +66,6 @@ public class RestHelperImpl implements RestHelper {
 
 	private static final String GENERATE_AUTH_TOKEN = "generateAuthToken";
 	
-	private static final String ERRORS = "errors";
-
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -109,7 +106,7 @@ public class RestHelperImpl implements RestHelper {
 				}
 			}
 			checkErrorResponse(response, request.getResponseType());
-			if(response != null && response.toString().contains(ERRORS)) {
+			if(response != null && containsError(response.toString())) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 			}
@@ -149,6 +146,10 @@ public class RestHelperImpl implements RestHelper {
 							+ ".  Time difference between request and response in Seconds: "
 							+ ((double) duration / 1000));
 		}
+	}
+	
+	private boolean containsError(String response) {
+		return RestHelper.super.containsError(response, mapper);
 	}
 
 	/**

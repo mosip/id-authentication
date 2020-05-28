@@ -76,7 +76,7 @@ public class RestHelperImpl implements RestHelper{
 					"Request received at : " + requestTime);
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				if(response != null && response.toString().contains(ERRORS)) {
+				if(response != null && containsError(response.toString())) {
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				}
@@ -113,6 +113,10 @@ public class RestHelperImpl implements RestHelper{
 							+ ((double) duration / 1000));
 		}
 
+	}
+	
+	private boolean containsError(String response) {
+		return RestHelper.super.containsError(response, mapper);
 	}
 
 	@Override
