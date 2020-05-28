@@ -51,6 +51,8 @@ public class PartnerServiceManager {
 	private static final String ERRORS = "errors";
 
 	private static final String ERRORCODE = "errorCode";
+	
+	private static final String ERRORMESSAGE = "message";
 
 	@SuppressWarnings("unchecked")
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException {
@@ -99,6 +101,9 @@ public class PartnerServiceManager {
 						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTRED.getErrorCode())) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 									IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
+						}else {
+							throw new IdAuthenticationBusinessException(partnerServiceErrorList.get(0).get(ERRORCODE).toString(),
+									partnerServiceErrorList.get(0).get(ERRORMESSAGE).toString(), e);
 						}
 					}else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
