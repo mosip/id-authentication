@@ -10,5 +10,4 @@ unzip client.zip
 echo "Attempting to install"
 cd ./client && ./install.sh 
 echo "Installation complete"
-
 exec "$@"
