@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
+import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 
 /**

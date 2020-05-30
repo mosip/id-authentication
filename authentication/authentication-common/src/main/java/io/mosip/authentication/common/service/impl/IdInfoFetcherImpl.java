@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,8 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
-import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
+import io.mosip.authentication.core.spi.bioauth.IBioMatcherIntegrator;
+import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
@@ -76,7 +77,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	
 	
 	@Autowired
-	private BioMatcherUtil bioMatcherUtil;
+	@Qualifier("bioMatcherIntegrator")
+	private IBioMatcherIntegrator bioMatcherUtil;
 	
 	@Autowired
 	private DemoNormalizer demoNormalizer;
@@ -87,7 +89,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	}
 
 	@Override
-	public BioMatcherUtil getBioMatcherUtil() {
+	public IBioMatcherIntegrator getBioMatcherUtil() {
 		return bioMatcherUtil;
 	}
 	

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -46,7 +45,6 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.core.util.StringUtils;
@@ -96,11 +94,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The master Data Manager. */
 	@Autowired
 	private MasterDataManager masterDataManager;
-
-	/** The id object validator. */
-	@Autowired
-	@Qualifier("pattern")
-	private IdObjectValidator idObjectValidator1;
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
