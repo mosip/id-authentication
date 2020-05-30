@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.bioauth.util;
+package io.mosip.authentication.common.service.impl.bioauth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -39,10 +39,10 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,  })
-public class BioMatcherUtilTest {
+public class BioMatcherIntegratorV1Test {
 
 	@InjectMocks
-	private BioMatcherUtil bioMatcherUtil;
+	private BioMatcherIntegratorV1 bioMatcherUtil;
 
 	@InjectMocks
 	private BioApiImpl bioApiImpl;

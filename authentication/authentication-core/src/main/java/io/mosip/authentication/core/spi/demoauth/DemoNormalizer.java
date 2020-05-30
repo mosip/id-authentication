@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.bioauth.util;
+package io.mosip.authentication.core.spi.demoauth;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;

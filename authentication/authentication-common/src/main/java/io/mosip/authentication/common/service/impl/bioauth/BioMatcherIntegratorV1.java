@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.bioauth.util;
+package io.mosip.authentication.common.service.impl.bioauth;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,12 +12,12 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.bioauth.IBioMatcherIntegrator;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
@@ -37,14 +37,14 @@ import lombok.Data;
 
 /**
  * 
- * Util class to calculate Composite and Individual's Match score based on
+ * The BioMatcher Integrator that integrates with v1 version of BioSDK.
+ * This class to calculate Composite and Individual's Match score based on
  * Request and Entity info's
  * 
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
  */
-@Component
-public class BioMatcherUtil {
+public class BioMatcherIntegratorV1 implements IBioMatcherIntegrator {
 
 	private static final String KER_BIO_QUALITY_CHK_FAILED = "KER-BIO-003";
 
@@ -75,20 +75,12 @@ public class BioMatcherUtil {
 	Environment environment;
 
 	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(BioMatcherUtil.class);
+	private static Logger logger = IdaLogger.getLogger(BioMatcherIntegratorV1.class);
 
-	/**
-	 * Match the request and entity values and return calculated score.
-	 *
-	 * @param reqInfo
-	 *            the req info
-	 * @param entityInfo
-	 *            the entity info
-	 * @param properties 
-	 * @return the double
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.bioauth.util.IBioMatcherIntegrator#matchValue(java.util.Map, java.util.Map, java.util.Map)
 	 */
+	@Override
 	public double matchValue(Map<String, String> reqInfo, Map<String, String> entityInfo, Map<String, Object> properties)
 			throws IdAuthenticationBusinessException {
 		IdMapping[] idMappings = (IdMapping[]) properties.get(IdMapping.class.getSimpleName()); 
@@ -203,18 +195,10 @@ public class BioMatcherUtil {
 		return compositeScore.getScaledScore();
 	}
 
-	/**
-	 * Match Multiple values and return calculated score.
-	 *
-	 * @param reqInfo
-	 *            the req info
-	 * @param entityInfo
-	 *            the entity info
-	 * @param properties 
-	 * @return the double
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.bioauth.util.IBioMatcherIntegrator#matchMultiValue(java.util.Map, java.util.Map, java.util.Map)
 	 */
+	@Override
 	public double matchMultiValue(Map<String, String> reqInfo, Map<String, String> entityInfo, Map<String, Object> properties)
 			throws IdAuthenticationBusinessException {
 		return matchMultiValues(reqInfo, entityInfo, properties);

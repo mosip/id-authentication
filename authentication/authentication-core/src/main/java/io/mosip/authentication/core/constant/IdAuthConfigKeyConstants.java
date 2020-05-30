@@ -99,6 +99,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String FACE_PROVIDER_ARGS = "ida.face.provider.args";
 	public static final String IRIS_PROVIDER = "ida.iris.provider";
 	public static final String IRIS_PROVIDER_ARGS = "ida.iris.provider.args";
+	public static final String BIO_SDK_INTEGRATOR = "ida.bio.sdk.integrator";
+	public static final String BIO_SDK_INTEGRATOR_ARGS = "ida.bio.sdk.integrator.args";
 	public static final String COMPOSITE_BIO_PROVIDER = "ida.composite.biometric.provider";
 	public static final String COMPOSITE_BIO_PROVIDER_ARGS = "ida.composite.biometric.provider.args";
 	public static final String OTP_INTERNAL_ID_SUFFIX = "otp.internal";
