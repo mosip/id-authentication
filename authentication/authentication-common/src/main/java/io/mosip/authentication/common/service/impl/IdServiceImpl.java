@@ -194,7 +194,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								}).collect(Collectors.toList());
 
 					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
-							|| val instanceof Integer || val instanceof Double) {
+							|| val instanceof Integer || val instanceof Double || val instanceof Float) {
 						IdentityInfoDTO idInfo = new IdentityInfoDTO();
 						idInfo.setValue(String.valueOf(val));
 						return Stream.of(idInfo).collect(Collectors.toList());

@@ -36,7 +36,6 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -52,9 +51,6 @@ public class InternalAuthUpdateValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
-
-	@Mock
-	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Autowired
 	private Environment environment;
