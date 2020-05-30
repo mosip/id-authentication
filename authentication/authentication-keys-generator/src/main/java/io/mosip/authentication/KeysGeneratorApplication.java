@@ -192,7 +192,10 @@ public class KeysGeneratorApplication implements CommandLineRunner {
 		
 		System.out.println("NoOfKeysToGenerate:" + noOfKeysToGenerate);
 		
-		for (int i = 0; i < noOfKeysToGenerate; i++) {
+		Long maxid = keysRepo.findMaxId();
+		int startIndex = maxid == null ? 0 : maxid.intValue() + 1;
+		
+		for (int i = startIndex; i < noOfKeysToGenerate; i++) {
 			keyGenerator.init(256, rand);
 			SecretKey sKey = keyGenerator.generateKey();
 			cipher.init(Cipher.ENCRYPT_MODE, masterKey);
@@ -205,8 +208,7 @@ public class KeysGeneratorApplication implements CommandLineRunner {
 
 	private void insertKeyIntoTable(int id, String secretData, String status,DataEncryptKeystoreRepository keysRepo) throws Exception {
 		DataEncryptKeystore data = new DataEncryptKeystore();
-		int maxid = (int)keysRepo.findMaxId();
-		data.setId(maxid + 1);
+		data.setId(id);
 		data.setKey(secretData);
 		data.setKeyStatus(status);
 		data.setCrBy(CREATED_BY);
