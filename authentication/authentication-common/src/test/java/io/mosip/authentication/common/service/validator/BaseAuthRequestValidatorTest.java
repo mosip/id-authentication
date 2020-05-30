@@ -38,8 +38,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -57,7 +55,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -71,8 +68,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @WebMvcTest
 @Import(IDAMappingConfig.class)
 @ConfigurationProperties("mosip.id")
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class,
-		IdObjectPatternValidator.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {
 
 	/** The validator. */
@@ -88,9 +84,6 @@ public class BaseAuthRequestValidatorTest {
 	/** The auth request DTO. */
 	@Mock
 	AuthRequestDTO authRequestDTO;
-
-	@InjectMocks
-	private IdObjectPatternValidator idObjectValidator;
 
 	/** The environment. */
 	@Autowired
@@ -110,9 +103,6 @@ public class BaseAuthRequestValidatorTest {
 	/** The error. */
 	Errors error;
 
-	@Autowired
-	private ObjectMapper mapper;
-
 	@Mock
 	private MasterDataManager masterDataManager;
 
@@ -131,9 +121,6 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(AuthRequestValidator, "masterDataManager", masterDataManager);
-		ReflectionTestUtils.setField(AuthRequestValidator, "idObjectValidator", idObjectValidator);
-		ReflectionTestUtils.setField(idObjectValidator, "mapper", mapper);
-		ReflectionTestUtils.setField(idObjectValidator, "validation", validation);
 
 	}
 
@@ -2217,22 +2204,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenThrow(new IdAuthenticationBusinessException());
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	@Test
-	public void TestIdObjectvalidator() {
-		AuthRequestDTO demoauthrequest = new AuthRequestDTO();
-		demoauthrequest.setConsentObtained(true);
-		RequestDTO request = new RequestDTO();
-		IdentityDTO demographics = new IdentityDTO();
-		demographics.setPhoneNumber("phonenumber");
-		demographics.setEmailId("emailid");
-		demographics.setPostalCode("pincode");
-		demographics.setDob("dob");
-		request.setDemographics(demographics);
-		demoauthrequest.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePattern", demoauthrequest, error);
 		assertTrue(error.hasErrors());
 	}
 

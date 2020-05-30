@@ -194,7 +194,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								}).collect(Collectors.toList());
 
 					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
-							|| val instanceof Integer || val instanceof Double) {
+							|| val instanceof Integer || val instanceof Double || val instanceof Float) {
 						IdentityInfoDTO idInfo = new IdentityInfoDTO();
 						idInfo.setValue(String.valueOf(val));
 						return Stream.of(idInfo).collect(Collectors.toList());
@@ -267,6 +267,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								.orElse(new byte[0]);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getUin(Map<String, Object> idResDTO) {
 		return Optional.of(getDemoData(idResDTO))
@@ -279,7 +280,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 						return null;
 					}
 				})
-				.map(map -> String.valueOf(map.get("UIN")))
+				.map(map -> map.get(IdAuthCommonConstants.UIN_CAPS))
+				.filter(Objects::nonNull)
+				.map(String::valueOf)
 				.orElse("");
 	}
 	

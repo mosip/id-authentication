@@ -43,7 +43,6 @@ import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -67,7 +66,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		MasterDataManager.class, IdInfoHelper.class, OTPAuthServiceImpl.class, AuditHelper.class,
 		PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class,
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class,
-		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, IdObjectPatternValidator.class,
+		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class,
 		BioMatcherUtil.class, BioApiImpl.class, DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
 		IdAuthSecurityManager.class, RestRequestFactory.class, RestHelperImpl.class, AuthtypeStatusImpl.class,
 		CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class,

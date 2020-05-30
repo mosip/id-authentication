@@ -51,7 +51,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 @RunWith(SpringRunner.class)
@@ -67,9 +66,6 @@ public class IdMappingValidationTest {
 
 	@Autowired
 	Environment environment;
-
-	@Mock
-	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Mock
 	private IdInfoHelper idinfoHelper;
