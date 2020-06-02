@@ -25,6 +25,7 @@ import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -41,9 +42,6 @@ import io.mosip.authentication.internal.service.impl.UpdateAuthtypeStatusService
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class UpdateAuthtypeStatusServiceImplTest {
 
-	@InjectMocks
-	private UpdateAuthtypeStatusServiceImpl authtypeStatusServiceImpl;
-
 	@Mock
 	private IdServiceImpl idService;
 
@@ -53,6 +51,12 @@ public class UpdateAuthtypeStatusServiceImplTest {
 	@Autowired
 	private Environment environment;
 	
+	@Mock
+	private IdAuthSecurityManager securityManager;
+	
+	@InjectMocks
+	private UpdateAuthtypeStatusServiceImpl authtypeStatusServiceImpl;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authtypeStatusServiceImpl, "environment", environment);
@@ -61,10 +65,12 @@ public class UpdateAuthtypeStatusServiceImplTest {
 	@Test
 	public void TestupdateAuthtypeStatus() throws IdAuthenticationBusinessException {
 		AuthTypeStatusDto authTypeStatusDto = getAuthtypestatusdto();
-		Map<String, Object> valueMap = new HashMap();
-		valueMap.put("uin", "274390482564");
+		Map<String, Object> valueMap = new HashMap<>();
+		String uin = "274390482564";
+		valueMap.put("uin", uin);
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
+		Mockito.when(securityManager.hash(uin)).thenReturn(uin);
 		List<AuthtypeLock> value = new ArrayList<>();
 		Mockito.when(authLockRepository.saveAll(Mockito.any())).thenReturn(value);
 		authtypeStatusServiceImpl.updateAuthtypeStatus(authTypeStatusDto);
@@ -75,7 +81,7 @@ public class UpdateAuthtypeStatusServiceImplTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		List<AuthtypeStatus> request = new ArrayList();
+		List<AuthtypeStatus> request = new ArrayList<>();
 		AuthtypeStatus authtypeStatus = new AuthtypeStatus();
 		authtypeStatus.setAuthType(Category.DEMO.getType());
 		authtypeStatus.setLocked(true);
@@ -86,7 +92,6 @@ public class UpdateAuthtypeStatusServiceImplTest {
 		request.add(authtypeStatus);
 		request.add(authtypeStatus1);
 		authTypeStatusDto.setRequest(request);
-		ZoneOffset offset = ZoneOffset.MAX;
 		authTypeStatusDto.setRequestTime("2019-08-06T07:26:59.481Z");
 		return authTypeStatusDto;
 	}
