@@ -1,6 +1,8 @@
 package io.mosip.authentication.common.service.config;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.*;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.BIO_SDK_INTEGRATOR;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.BIO_SDK_INTEGRATOR_ARGS;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.COMPOSITE_BIO_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.COMPOSITE_BIO_PROVIDER_ARGS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FACE_PROVIDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FACE_PROVIDER_ARGS;
@@ -103,20 +105,26 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		List<String> args = Optional.ofNullable(environment.getProperty(BIO_SDK_INTEGRATOR_ARGS))
 				.map(arg -> Arrays.asList(arg.split(","))).orElse(Collections.emptyList());
 		String classProperty = BIO_SDK_INTEGRATOR;
-		try {
-			Optional<Constructor<?>> constructor = getConstructor(classProperty, args);
-			if (constructor.isPresent()) {
-				return (IBioMatcherIntegrator) constructor.get().newInstance(args.toArray());
-			} else {
+		if(classProperty != null) {
+			try {
+				Optional<Constructor<?>> constructor = getConstructor(classProperty, args);
+				if (constructor.isPresent()) {
+					return (IBioMatcherIntegrator) constructor.get().newInstance(args.toArray());
+				} else {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", "BioMatcherIntegrator",
+							"Constructor not found for IBioMatcherIntegrator");
+					throw new IdAuthenticationAppException("", "Unable to load BioMatcherIntegrator for the configuration: " + classProperty);
+				}
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", "BioMatcherIntegrator",
-						"Constructor not found for BioApi");
+						"Constructor not found for IBioMatcherIntegrator");
 				throw new IdAuthenticationAppException("", "Unable to load BioMatcherIntegrator for the configuration: " + classProperty);
 			}
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "IdAuthConfig", "BioMatcherIntegrator",
-					"Constructor not found for BioApi");
-			throw new IdAuthenticationAppException("", "Unable to load BioMatcherIntegrator for the configuration: " + classProperty);
+					"Unable to find configuration: " + classProperty);
+			throw new IdAuthenticationAppException("", "Unable to find configuration: " + classProperty);
 		}
 	}
 

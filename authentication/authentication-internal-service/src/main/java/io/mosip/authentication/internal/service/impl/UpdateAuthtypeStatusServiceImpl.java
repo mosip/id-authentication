@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -36,9 +37,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 @Transactional
 public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusService {
 
-	/** The Constant UIN_KEY. */
-	private static final Object UIN_KEY = "uin";
-
 	/** The id service. */
 	@Autowired
 	private IdService<AutnTxn> idService;
@@ -50,6 +48,9 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+	
+	@Autowired
+	private IdAuthSecurityManager securityManager;
 	
 
 	/* (non-Javadoc)
@@ -63,8 +64,8 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = idService.processIdType(IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
 				authTypeStatusDto.getIndividualId(), false);
-		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
-			String uin = String.valueOf(idResDTO.get(UIN_KEY));
+		if (idResDTO != null && !idResDTO.isEmpty()) {
+			String uin = idService.getUin(idResDTO);
 			List<AuthtypeLock> entities = authTypeStatusDto.getRequest().stream().map(
 					authtypeStatus -> this.putAuthTypeStatus(authtypeStatus, uin, authTypeStatusDto.getRequestTime()))
 					.collect(Collectors.toList());
@@ -85,7 +86,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	private AuthtypeLock putAuthTypeStatus(AuthtypeStatus authtypeStatus, String uin, String reqTime) {
 		AuthtypeLock authtypeLock = new AuthtypeLock();
 		authtypeLock.setUin(uin);
-		authtypeLock.setHashedUin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(uin.getBytes())));
+		authtypeLock.setHashedUin(securityManager.hash(uin));
 		String authType = authtypeStatus.getAuthType();
 		if (authType.equalsIgnoreCase(Category.BIO.getType())) {
 			authType = authType + "-" + authtypeStatus.getAuthSubType();

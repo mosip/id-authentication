@@ -42,9 +42,6 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	@Autowired
 	private IdService<AutnTxn> idService;
 	
-	/** The Constant UIN_KEY. */
-	private static final String UIN_KEY = "uin";
-
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService#fetchAuthtypeStatus(io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto)
 	 */
@@ -63,8 +60,8 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 			throws IdAuthenticationBusinessException {
 		List<AuthtypeLock> authTypeLockList;
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
-		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
-			String uin = String.valueOf(idResDTO.get(UIN_KEY));
+		if (idResDTO != null && !idResDTO.isEmpty()) {
+			String uin = idService.getUin(idResDTO);
 			authTypeLockList =  getAuthTypeList(uin);
 		} else {
 			authTypeLockList = Collections.emptyList();
