@@ -9,14 +9,11 @@ ID-Authentication services' dependencies are mentioned below.  For all Kernel se
   * kernel-config-server 
   * id-repository-identity-service
   * id-repository-vid-service
-  * kernel-cryptomanager-service
-  * kernel-signature-service
   
 * authentication-service
   * kernel-otpmanager-service - For OTP validation
   * kernel-smsnotification-service
   * kernel-emailnotification-service
-  * kernel-tokenidgenerator-service
   * kernel-masterdata-service
   
 * authentication-internal-service
@@ -28,21 +25,19 @@ ID-Authentication services' dependencies are mentioned below.  For all Kernel se
   
 * authentication-kyc-service
   * kernel-otpmanager-service - For OTP validation
-  * kernel-tokenidgenerator-service
   * kernel-masterdata-service
 
 * Other Dependencies:
   * Bio-SDK used by IDA for Biometric Authentication
-  
+  * Soft HSM
+
 * Transient Dependencies
-  * kernel-keymanager-service - Transient Dependency invoked by kernel-cryptomanager-service and kernel-signature-service
   * kernel-otpmanager-service - Transient Dependency invoked by kernel-authmanager-service's sendOTP service
   * kernel-smsnotification - Transient Dependency invoked by kernel-otpmanager-service
   * kernel-emailnotification-service - Transient Dependency invoked by kernel-otpmanager-service
   
 * Other Transient Dependencies
   * HDFS - used by ID-Repository
-  * Soft HSM - Used by kernel-keymanager-service
   * Keycloak/LDAP - Used by kernel-authmanager-service
   * SMTP/SMSE - for email/sms notification by kernel-emailnitification-service and kernel-smsnotification-service
 
