@@ -132,7 +132,11 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_NOT_MAPPED_TO_POLICY("PMS_PMP_017","Partner is not mapped to any policy."),
 	MISP_LICENSE_KEY_NOT_EXISTS("PMS_PMP_020","MISP license key not exists."),
 	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
-	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered.");
+	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
+	
+	//KeyManager
+	NO_UNIQUE_ALIAS("KER-KMS-003", "No unique alias is found"),	
+	CRYPTO_EXCEPTION("KER-KMS-007", "Exception occured in cypto library: ");
 
 	private final String errorCode;
 	private final String errorMessage;

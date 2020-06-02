@@ -162,7 +162,75 @@ public final class IdAuthCommonConstants {
 	
 	public static final String BIO_SUB_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_SUB_TYPE;
 
+	/**
+	 * The constant sessionID
+	 */
+	public static final String SESSIONID = "sessionId";
 
+	/**
+	 * The constant applicationId
+	 */
+	public static final String APPLICATIONID = "applicationId";
+
+	/**
+	 * The constant referenceId
+	 */
+	public static final String REFERENCEID = "referenceId";
+
+	/**
+	 * The constant Request received to getPublicKey
+	 */
+	public static final String GETPUBLICKEY = "Request received to getPublicKey";
+	
+	/**
+	 * The constant Getting public key from SoftHSM
+	 */
+	public static final String GETPUBLICKEYHSM = "Getting public key from SoftHSM";
+	
+	/**
+	 * The constant currentkeyalias
+	 */
+	public static final String CURRENTKEYALIAS = "currentKeyAlias";
+	
+	/**
+	 * The constant keyalias
+	 */
+	public static final String KEYALIAS = "keyAlias";
+	
+	/**
+	 * The constant EMPTY
+	 */
+	public static final String EMPTY = "";
+	
+	/**
+	 * The constant Getting key alias
+	 */
+	public static final String GETALIAS = "Getting key alias";
+	
+	/**
+	 * The constant Getting expiry policy
+	 */
+	public static final String GETEXPIRYPOLICY = "Getting expiry policy";
+	
+	/**
+	 * The constant Storing key in KeyAlias
+	 */
+	public static final String STOREKEYALIAS = "Storing key in KeyAlias";
+	
+	/**
+	 * The constant Getting public key from DB Store
+	 */
+	public static final String GETPUBLICKEYDB = "Getting public key from DB Store";
+	
+	/**
+	 * The constant Storing key in dbKeyStore
+	 */
+	public static final String STOREDBKEY = "Storing key in dbKeyStore";
+	
+	/**
+	 * The constant keyFromDBStore
+	 */
+	public static final String KEYFROMDB = "keyFromDBStore";
 
 	/** The Constant EKYC. */
 	public static final String EKYC = "ekyc";

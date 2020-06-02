@@ -31,6 +31,8 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.repository.KeyAliasRepository;
+import io.mosip.authentication.common.service.repository.KeyStoreRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -46,6 +48,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.spi.keymanager.service.KeymanagerService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 
 @RunWith(SpringRunner.class)
@@ -76,9 +79,18 @@ public class InternalAuthControllerTest {
 
 	@Mock
 	private RestHelper restHelper;
+	
+	@Mock
+	private KeymanagerService keymanagerService;
 
 	@Autowired
 	Environment env;
+	
+	@InjectMocks
+	KeyAliasRepository keyAliasRepository;
+	
+	@InjectMocks	
+	KeyStoreRepository keyStoreRepository;
 
 	@InjectMocks
 	private RestRequestFactory restFactory;
@@ -97,6 +109,7 @@ public class InternalAuthControllerTest {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
+		ReflectionTestUtils.setField(authController, "keymanagerService", keymanagerService);
 		ReflectionTestUtils.setField(authfacade, "env", env);
 	}
 
@@ -289,6 +302,11 @@ public class InternalAuthControllerTest {
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
 		authController.authenticate(authRequestDTO, error);
+	}
+	
+	@Test
+	public void TestPublickKey() {
+		
 	}
 
 	private AuthRequestDTO getRequestDto() {
