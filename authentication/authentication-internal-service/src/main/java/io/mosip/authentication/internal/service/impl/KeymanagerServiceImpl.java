@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.SignatureCertificate;
 import io.mosip.authentication.core.exception.CryptoException;
@@ -41,7 +42,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
-@Service
+@Component
 @Transactional("keymanagerTransactionManager")
 public class KeymanagerServiceImpl implements KeymanagerService {
 	
@@ -53,11 +54,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private static final String NOT_A_VALID_REFERENCE_ID_GETTING_KEY_ALIAS_WITHOUT_REFERENCE_ID = "Not a valid reference Id. Getting key alias without referenceId";
 	
-	/**
-	 * KeySplitter for splitting key and data
-	 */
-	@Value("${mosip.kernel.data-key-splitter}")
-	private String keySplitter;
+	/** The environment. */
+	@Autowired
+	private Environment env;
 	
 	/**
 	 * {@link KeyAliasRepository} instance
@@ -391,7 +390,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	private LocalDateTime getExpiryPolicy(String applicationId, LocalDateTime timeStamp, List<KeyAlias> keyAlias) {
 		LOGGER.info(IdAuthCommonConstants.SESSIONID, IdAuthCommonConstants.APPLICATIONID, applicationId,
 				IdAuthCommonConstants.GETEXPIRYPOLICY);		
-		long validityInDays = Long.parseLong("365");
+		long validityInDays = Long.parseLong(env.getProperty(IdAuthConfigKeyConstants.IDA_KEY_VALIDITY_IN_DAYS));
 		LocalDateTime policyExpiryTime = timeStamp.plusDays(validityInDays);
 		if (!keyAlias.isEmpty()) {
 			LOGGER.info(IdAuthCommonConstants.SESSIONID, IdAuthCommonConstants.KEYALIAS, String.valueOf(keyAlias.size()),
@@ -409,6 +408,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		return policyExpiryTime;
 	}
 
+	
 	
 	/**
 	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
@@ -459,7 +459,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
 		byte[] encryptedPrivateKey = cryptoCore.symmetricEncrypt(symmetricKey, privateKey.getEncoded(), null);
 		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(masterKey, symmetricKey.getEncoded());
-		return CryptoUtil.combineByteArray(encryptedPrivateKey, encryptedSymmetricKey, "#");
+		return CryptoUtil.combineByteArray(encryptedPrivateKey, encryptedSymmetricKey, env.getProperty(IdAuthConfigKeyConstants.IDA_DATA_KEY_SPLITTER));
 	}
 
 }

@@ -86,10 +86,10 @@ public class InternalAuthControllerTest {
 	@Autowired
 	Environment env;
 	
-	@InjectMocks
+	@Mock
 	KeyAliasRepository keyAliasRepository;
 	
-	@InjectMocks	
+	@Mock	
 	KeyStoreRepository keyStoreRepository;
 
 	@InjectMocks
@@ -111,6 +111,7 @@ public class InternalAuthControllerTest {
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
 		ReflectionTestUtils.setField(authController, "keymanagerService", keymanagerService);
 		ReflectionTestUtils.setField(authfacade, "env", env);
+		ReflectionTestUtils.setField(authController, "env", env);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -306,7 +307,26 @@ public class InternalAuthControllerTest {
 	
 	@Test
 	public void TestPublickKey() {
-		
+		java.util.Optional<String> refId = java.util.Optional.of("refId");		
+		authController.getPublicKey("appId", "2001-05-01T10:00:00.000Z",refId);
+	}
+	
+	@Test
+	public void TestPublickKey_S001() {
+		java.util.Optional<String> refId = java.util.Optional.of("ida");		
+		authController.getPublicKey("ida", "2001-05-01T10:00:00.000Z",refId);
+	}
+	
+	@Test
+	public void TestPublickKey_S002() {
+		java.util.Optional<String> refId = java.util.Optional.of("ida");		
+		authController.getPublicKey("appId", "2001-05-01T10:00:00.000Z",refId);
+	}
+	
+	@Test
+	public void TestPublickKey_S003() {
+		java.util.Optional<String> refId = java.util.Optional.of("refId");		
+		authController.getPublicKey("appId", "2001-05-01T10:00:00.000Z",refId);
 	}
 
 	private AuthRequestDTO getRequestDto() {

@@ -110,6 +110,11 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";
 	
+	public static final String IDA_KEY_VALIDITY_IN_DAYS ="ida.key.validityInDays";
+	public static final String IDA_DATA_KEY_SPLITTER="ida.data-key-splitter";
+	public static final String IDA_SIGN_REFID="ida.sign.refid";
+	public static final String IDA_SIGN_APPID="ida.sign.applicationid";
+	
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
 

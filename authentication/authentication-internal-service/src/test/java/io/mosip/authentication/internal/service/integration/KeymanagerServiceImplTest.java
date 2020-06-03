@@ -5,9 +5,7 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.Provider;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
@@ -32,13 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -52,12 +48,10 @@ import io.mosip.authentication.common.service.repository.KeyAliasRepository;
 import io.mosip.authentication.common.service.repository.KeyStoreRepository;
 import io.mosip.authentication.core.exception.CryptoException;
 import io.mosip.authentication.core.exception.NoUniqueAliasException;
-import io.mosip.authentication.core.spi.keymanager.service.KeymanagerService;
 import io.mosip.authentication.internal.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.core.crypto.spi.CryptoCoreSpec;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.keygenerator.bouncycastle.constant.KeyGeneratorExceptionConstant;
 import io.mosip.kernel.keymanager.softhsm.util.CertificateUtility;
 import io.netty.handler.ssl.SslContextBuilder;
 
@@ -79,11 +73,8 @@ public class KeymanagerServiceImplTest {
 	KeymanagerServiceImpl keymanagerService;
 	
 	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
+	private Environment env;
+	
 	@MockBean
 	private KeyStore keyStore;
 
@@ -128,6 +119,7 @@ public class KeymanagerServiceImplTest {
 		ReflectionTestUtils.setField(keymanagerService, "keyStore", keyStore);
 		ReflectionTestUtils.setField(keymanagerService, "cryptoCore", cryptoCore);
 		ReflectionTestUtils.setField(keymanagerService, "keyStoreRepository", keyStoreRepository);
+		ReflectionTestUtils.setField(keymanagerService, "env", env);
 		mapper = new ObjectMapper();
 		keyalias = new ArrayList<>();
 		dbKeyStore = Optional.empty();

@@ -3,7 +3,7 @@ package io.mosip.authentication.internal.service.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -48,12 +49,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class InternalAuthController {
 
-	@Value("${mosip.sign.refid:SIGN}")
-	private String certificateSignRefID;
-
-	/** The sign applicationid. */
-	@Value("${mosip.sign.applicationid:ida}")
-	private String signApplicationid;
+	@Autowired
+	private Environment env;
 	
 	/**
 	 * Instance for KeymanagerService
@@ -144,8 +141,8 @@ public class InternalAuthController {
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
 			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timestamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
-		if (applicationId.equalsIgnoreCase(signApplicationid) && referenceId.isPresent()
-				&& referenceId.get().equals(certificateSignRefID)) {
+		if (applicationId.equalsIgnoreCase(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_APPID)) && referenceId.isPresent()
+				&& referenceId.get().equals(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_REFID))) {
 			return keymanagerService.getSignPublicKey(applicationId, timestamp, referenceId);
 		} else {
 			return keymanagerService.getPublicKey(applicationId, timestamp, referenceId);
