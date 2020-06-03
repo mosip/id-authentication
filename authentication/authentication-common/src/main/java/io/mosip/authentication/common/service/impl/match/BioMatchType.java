@@ -67,30 +67,30 @@ public enum BioMatchType implements MatchType {
 			setOf(MultiFingerprintMatchingStrategy.PARTIAL)),
 
 	// Left Finger Image FGRIMG
-	FGRIMG_LEFT_THUMB(IdaIdMapping.LEFTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_LEFT_THUMB(IdaIdMapping.LEFTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.THUMB),
-	FGRIMG_LEFT_INDEX(IdaIdMapping.LEFTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_LEFT_INDEX(IdaIdMapping.LEFTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.INDEX_FINGER),
-	FGRIMG_LEFT_MIDDLE(IdaIdMapping.LEFTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_LEFT_MIDDLE(IdaIdMapping.LEFTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.MIDDLE_FINGER),
-	FGRIMG_LEFT_RING(IdaIdMapping.LEFTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_LEFT_RING(IdaIdMapping.LEFTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.RING_FINGER),
-	FGRIMG_LEFT_LITTLE(IdaIdMapping.LEFTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_LEFT_LITTLE(IdaIdMapping.LEFTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.LITTLE_FINGER),
 
 	// Right Finger Image
-	FGRIMG_RIGHT_THUMB(IdaIdMapping.RIGHTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_RIGHT_THUMB(IdaIdMapping.RIGHTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.THUMB),
-	FGRIMG_RIGHT_INDEX(IdaIdMapping.RIGHTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_RIGHT_INDEX(IdaIdMapping.RIGHTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.INDEX_FINGER),
-	FGRIMG_RIGHT_MIDDLE(IdaIdMapping.RIGHTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_RIGHT_MIDDLE(IdaIdMapping.RIGHTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.MIDDLE_FINGER),
-	FGRIMG_RIGHT_RING(IdaIdMapping.RIGHTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_RIGHT_RING(IdaIdMapping.RIGHTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.RING_FINGER),
-	FGRIMG_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FIR,
+	FGRIMG_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.LITTLE_FINGER),
 	
-	FGRIMG_UNKNOWN(IdaIdMapping.UNKNOWN_FINGER, CbeffDocType.FIR, null, null,
+	FGRIMG_UNKNOWN(IdaIdMapping.UNKNOWN_FINGER, CbeffDocType.FINGER, null, null,
 			setOf(MultiFingerprintMatchingStrategy.PARTIAL)),
 
 	// Multi-fingerPrint
@@ -101,10 +101,10 @@ public enum BioMatchType implements MatchType {
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FMR, null,
 			null),
 
-	FGRIMG_COMPOSITE(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FIR, null,
+	FGRIMG_COMPOSITE(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FINGER, null,
 			null),
 	
-	FGRIMG_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FIR, null,
+	FGRIMG_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FINGER, null,
 			null),
 
 	RIGHT_IRIS(IdaIdMapping.RIGHTIRIS, setOf(IrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS,

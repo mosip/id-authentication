@@ -218,7 +218,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Finger,bio-Iris,bio-Face");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -244,7 +244,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,,bio-Face,bio-Finger,bio-Iris");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -271,7 +271,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Finger,bio-Iris");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -325,14 +325,14 @@ public class InternalAuthUpdateValidatorTest {
 		List<AuthtypeStatus> request = new ArrayList<>();
 		AuthtypeStatus authtypeStatus = new AuthtypeStatus();
 		authtypeStatus.setAuthType(Category.BIO.getType());
-		authtypeStatus.setAuthSubType("FIR");
+		authtypeStatus.setAuthSubType("Finger");
 		request.add(authtypeStatus);
 		authTypeStatusDto.setRequest(request);
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Finger,bio-Iris,bio-Face");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -352,7 +352,7 @@ public class InternalAuthUpdateValidatorTest {
 		List<AuthtypeStatus> request = new ArrayList<>();
 		AuthtypeStatus authtypeStatus = new AuthtypeStatus();
 		authtypeStatus.setAuthType(Category.BIO.getType());
-		authtypeStatus.setAuthSubType("FIR");
+		authtypeStatus.setAuthSubType("Finger");
 		authtypeStatus.setLocked(true);
 		request.add(authtypeStatus);
 		authTypeStatusDto.setRequest(request);
@@ -360,7 +360,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Face,bio-Finger,bio-Iris,bio-Face");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);

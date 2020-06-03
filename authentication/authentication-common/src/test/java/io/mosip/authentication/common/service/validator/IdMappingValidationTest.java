@@ -202,8 +202,8 @@ public class IdMappingValidationTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Set<String> allowedAuthtype = new HashSet<>();
 		allowedAuthtype.add("bio-FACE");
-		allowedAuthtype.add("bio-FIR");
-		allowedAuthtype.add("bio-IIR");
+		allowedAuthtype.add("bio-Finger");
+		allowedAuthtype.add("bio-Iris");
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors,
 				allowedAuthtype);
 		assertFalse(errors.hasErrors());
@@ -293,7 +293,7 @@ public class IdMappingValidationTest {
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
 		dataDTO.setBioSubType("left");
-		dataDTO.setBioType("IIR");
+		dataDTO.setBioType("Iris");
 		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
 
@@ -344,7 +344,7 @@ public class IdMappingValidationTest {
 		dataDTO1.setDigitalId(digitalId1);
 		dataDTO1.setBioValue("finger");
 		dataDTO1.setBioSubType("Left Thumb");
-		dataDTO1.setBioType("FIR");
+		dataDTO1.setBioType("Finger");
 		dataDTO1.setDeviceProviderID("test01");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -352,7 +352,7 @@ public class IdMappingValidationTest {
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
 		dataDTO.setBioSubType("Left");
-		dataDTO.setBioType("IIR");
+		dataDTO.setBioType("Iris");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());

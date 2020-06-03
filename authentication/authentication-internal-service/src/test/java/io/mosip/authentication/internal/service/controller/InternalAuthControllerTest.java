@@ -262,7 +262,7 @@ public class InternalAuthControllerTest {
 
 		BioIdentityInfoDTO IrisDto = new BioIdentityInfoDTO();
 		DataDTO irisdata = new DataDTO();
-		irisdata.setBioType("IIR");
+		irisdata.setBioType("Iris");
 		irisdata.setBioSubType("LEFT");
 		irisdata.setDeviceProviderID("provider001");
 		irisdata.setBioValue(value);

@@ -47,12 +47,12 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRMIN_COMPOSITE);
 		}
 	},
-	FGR_IMG("FIR",
+	FGR_IMG("Finger",
 			AuthType.setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX,
 					BioMatchType.FGRIMG_LEFT_MIDDLE, BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE,
 					BioMatchType.FGRIMG_RIGHT_THUMB, BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE,
 					BioMatchType.FGRIMG_RIGHT_RING, BioMatchType.FGRIMG_RIGHT_LITTLE, BioMatchType.FGRIMG_UNKNOWN),
-			getFingerprintName(), value -> value == 1, "bio-FIR", "fir") {
+			getFingerprintName(), value -> value == 1, "bio-Finger", "Finger") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -67,7 +67,7 @@ public enum BioAuthType implements AuthType {
 	},
 	//TODO to be removed
 	FGR_MIN_COMPOSITE("FMR", AuthType.setOf(BioMatchType.FGRMIN_COMPOSITE), getFingerprintName(), value -> value == 2,
-			"bio-FIR", "bio") {
+			"bio-Finger", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -87,9 +87,9 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 
-	FGR_IMG_COMPOSITE("FIR", AuthType.setOf(BioMatchType.FGRIMG_COMPOSITE), getFingerprintName(), 
+	FGR_IMG_COMPOSITE("Finger", AuthType.setOf(BioMatchType.FGRIMG_COMPOSITE), getFingerprintName(), 
 			value -> value >= 2 && value <= 10,
-			"bio-FIR", "bio") {
+			"bio-Finger", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -109,7 +109,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 
-	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), getIrisName(), value -> value == 2, "bio-IIR", "bio") {
+	IRIS_COMP_IMG("Iris", AuthType.setOf(BioMatchType.IRIS_COMP), getIrisName(), value -> value == 2, "bio-Iris", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -129,8 +129,8 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), getIrisName(),
-			value -> value == 1, "bio-IIR", "iir") {
+	IRIS_IMG("Iris", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), getIrisName(),
+			value -> value == 1, "bio-Iris", "Iris") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,

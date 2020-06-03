@@ -68,13 +68,13 @@ public class BioAuthTypeTest {
 	
 	@Test
 	public void testGetMatchPropertiesFgrImgSingle() throws Exception {
-		testSingleBioAuthType(BioAuthType.FGR_IMG, "FIR", true);
+		testSingleBioAuthType(BioAuthType.FGR_IMG, "Finger", true);
 	}
 	
 	
 	@Test
 	public void testGetMatchPropertiesIIRSingle() throws Exception {
-		testSingleBioAuthType(BioAuthType.IRIS_IMG, "IIR", true);
+		testSingleBioAuthType(BioAuthType.IRIS_IMG, "Iris", true);
 	}
 	
 	@Test
@@ -89,13 +89,13 @@ public class BioAuthTypeTest {
 	
 	@Test
 	public void testGetMatchPropertiesFgrImgMulti() throws Exception {
-		testSingleBioAuthType(BioAuthType.FGR_IMG_COMPOSITE, "FIR", false);
+		testSingleBioAuthType(BioAuthType.FGR_IMG_COMPOSITE, "Finger", false);
 	}
 	
 	
 	@Test
 	public void testGetMatchPropertiesIIRMulti() throws Exception {
-		testSingleBioAuthType(BioAuthType.IRIS_COMP_IMG, "IIR", false);
+		testSingleBioAuthType(BioAuthType.IRIS_COMP_IMG, "Iris", false);
 	}
 	
 	@Test
@@ -116,12 +116,12 @@ public class BioAuthTypeTest {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		
 		DataDTO data = new DataDTO();
-		data.setBioType("FIR");
+		data.setBioType("Finger");
 		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "");
 		biometrics.add(bioIdentity);
 		
 		data = new DataDTO();
-		data.setBioType("IIR");
+		data.setBioType("Iris");
 		bioIdentity = new BioIdentityInfoDTO(data, "", "", "");
 			biometrics.add(bioIdentity);
 		

@@ -207,7 +207,7 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		dataDTO.setBioType("IIR");
+		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Left");
 		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
@@ -263,7 +263,7 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		dataDTO.setBioType("IIR");
+		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Left");
 		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
@@ -290,7 +290,7 @@ public class BioAuthServiceTest {
 		digitalId2.setDeviceProviderId("");
 		digitalId2.setDateTime("");
 		dataDTO.setDigitalId(digitalId2);
-		dataDTO.setBioType("IIR");
+		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Right");
 		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
@@ -780,7 +780,7 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		dataDTO.setBioType("FIR");
+		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("LEFT_INDEX");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
@@ -837,7 +837,7 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		dataDTO.setBioType("IIR");
+		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
