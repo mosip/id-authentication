@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDTO;
+import io.mosip.authentication.common.service.integration.dto.TimestampRequestDTO;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.SignatureStatusDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -22,6 +23,7 @@ import io.mosip.authentication.internal.service.manager.KeyServiceManager;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
+import io.mosip.kernel.signature.dto.ValidatorResponseDto;
 import io.swagger.annotations.ApiParam;
 
 /**
@@ -105,6 +107,19 @@ public class KeymanagerController {
 	public SignatureStatusDto verify(
 			@ApiParam("data to verify") @RequestBody @Valid String jwsSignature) throws IdAuthenticationBusinessException {
 		return keymanagerService.verifySignature(jwsSignature);
+	}
+	
+	/**
+	 * Controller for validating the signature
+	 * @param timestampRequestDto
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
+	@PostMapping(value = "/validate")
+	public ValidatorResponseDto validate(
+			@RequestBody @Valid TimestampRequestDTO timestampRequestDto) throws IdAuthenticationBusinessException {
+		return keymanagerService.validateSinature(timestampRequestDto.getRequest());
 	}
 
 }

@@ -22,6 +22,9 @@ import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.signature.dto.TimestampRequestDto;
+import io.mosip.kernel.signature.dto.ValidatorResponseDto;
+import io.mosip.kernel.signature.service.SignatureService;
 
 /**
  * 
@@ -48,6 +51,9 @@ public class KeyServiceManager {
 	/** The keymanager service. */
 	@Autowired
 	private KeymanagerService keymanagerService;
+	
+	@Autowired
+	private SignatureService signatureService;
 	
 	/** The mapper. */
 	@Autowired
@@ -145,12 +151,27 @@ public class KeyServiceManager {
 	}
 	
 	/**
+	 * This method validates the signature
+	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 */
+	public ValidatorResponseDto validateSinature(TimestampRequestDto timestampRequestDto) throws IdAuthenticationBusinessException {
+		try {
+			return signatureService.validate(timestampRequestDto);
+		}catch(Exception e) {
+			mosipLogger.error(getUser(), ID_KEY_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);			
+		}
+	}
+	/**
 	 * Verifies the jwsSignature 
 	 * @param jwsSignature
 	 * @return
 	 */
 	public SignatureStatusDto verifySignature(String jwsSignature) {
 		SignatureStatusDto status = new SignatureStatusDto();
+		
 		if(cryptoCore.verifySignature(jwsSignature)) {
 			status.setStatus("VALID");
 			status.setPayload(new String(CryptoUtil.decodeBase64(getPayloadFromJwsSingature(jwsSignature))));

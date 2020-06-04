@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +18,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDTO;
+import io.mosip.authentication.common.service.integration.dto.TimestampRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.internal.service.manager.KeyServiceManager;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
+import io.mosip.kernel.signature.dto.TimestampRequestDto;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -96,6 +99,16 @@ public class KeymanagerControllerTest {
 	@Test
 	public void Testverify() throws IdAuthenticationBusinessException {		
 		keymanagerController.verify("wertyuiolkjbvfgvfghjoihgfdrthvcxdfg");
+	}
+	
+	@Test
+	public void TestValidate() throws IdAuthenticationBusinessException {
+		TimestampRequestDTO request = new TimestampRequestDTO();
+		String data="test";
+		String signedData="rhjhgfghuhgvfgh";
+		TimestampRequestDto dto= new TimestampRequestDto(signedData,data,LocalDateTime.now(ZoneId.of("UTC")));
+		request.setRequest(dto);
+		keymanagerController.validate(request);
 	}
 	
 }

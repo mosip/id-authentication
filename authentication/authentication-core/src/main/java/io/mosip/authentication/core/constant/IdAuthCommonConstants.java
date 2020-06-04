@@ -231,7 +231,7 @@ public final class IdAuthCommonConstants {
 	public static final String DECRYPT = "decrypt";
 	
 	public static final String VERIFY = "verify";
-
-
+	
+	public static final String VALIDATESIGN = "validate";
 }
 

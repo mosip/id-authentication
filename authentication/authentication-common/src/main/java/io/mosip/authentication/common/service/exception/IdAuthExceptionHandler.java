@@ -297,6 +297,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						type = IdAuthCommonConstants.DECRYPT;
 					}else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.VERIFY)) {
 						type = IdAuthCommonConstants.VERIFY;
+					}else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.VALIDATESIGN)) {
+						type = IdAuthCommonConstants.VALIDATESIGN;
 					}					
 				}
 			}
@@ -358,6 +360,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				authtypeResponseDto.setResponseTime(responseTime);
 				return authtypeResponseDto;
 			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.VERIFY)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
+			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.VALIDATESIGN)) {
 				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
 				authtypeResponseDto.setErrors(errors);
 				authtypeResponseDto.setResponseTime(responseTime);
