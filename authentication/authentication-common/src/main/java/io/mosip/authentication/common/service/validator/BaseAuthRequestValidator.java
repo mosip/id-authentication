@@ -315,7 +315,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { String.format(IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM, i) },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else if (!allowedAvailableAuthTypes.contains(bioType)) {
+			} else if (allowedAvailableAuthTypes.stream().noneMatch(authType -> authType.equalsIgnoreCase(bioType))) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 						new Object[] { MatchType.Category.BIO.getType() + "-" + bioType },
@@ -340,7 +340,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateBioType(Errors errors, Set<String> availableAuthTypeInfos, DataDTO bioInfo, int bioIndex) {
 		String bioType = bioInfo.getBioType();
-		if (!availableAuthTypeInfos.contains(bioType)) {
+		if (availableAuthTypeInfos.stream().noneMatch(authType -> authType.equalsIgnoreCase(bioType))) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
 					new Object[] { String.format(IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM, bioIndex) + " - " + bioType },
