@@ -46,7 +46,6 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
-import io.mosip.authentication.core.spi.keymanager.service.KeymanagerService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 
 @RunWith(SpringRunner.class)
@@ -78,9 +77,6 @@ public class InternalAuthControllerTest {
 	@Mock
 	private RestHelper restHelper;
 	
-	@Mock
-	private KeymanagerService keymanagerService;
-
 	@Autowired
 	Environment env;	
 	
@@ -101,9 +97,7 @@ public class InternalAuthControllerTest {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
-		ReflectionTestUtils.setField(authController, "keymanagerService", keymanagerService);
 		ReflectionTestUtils.setField(authfacade, "env", env);
-		ReflectionTestUtils.setField(authController, "env", env);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
