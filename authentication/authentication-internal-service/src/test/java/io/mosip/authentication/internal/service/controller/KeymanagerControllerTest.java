@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.internal.service.manager.KeyServiceManager;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
@@ -66,6 +67,7 @@ public class KeymanagerControllerTest {
 	
 	@Test
 	public void TestEncrypt() throws IdAuthenticationBusinessException {
+		CryptomanagerRequestDTO requestDto = new CryptomanagerRequestDTO();
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setAad("VGhpcyBpcyBzYW1wbGUgYWFk");
 		request.setApplicationId("IDA");
@@ -73,19 +75,22 @@ public class KeymanagerControllerTest {
 		request.setReferenceId("REFID");
 		request.setSalt("LA7YcvP9DdLIVI5CwFt1SQ");
 		request.setTimeStamp(LocalDateTime.now());
-		keymanagerController.encrypt(request);
+		requestDto.setRequest(request);
+		keymanagerController.encrypt(requestDto);
 	}
 
 	@Test
 	public void TestDecrypt() throws IdAuthenticationBusinessException {
+		CryptomanagerRequestDTO requestDto = new CryptomanagerRequestDTO();
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setAad("VGhpcyBpcyBzYW1wbGUgYWFk");
 		request.setApplicationId("IDA");
-		request.setData("Tewertylknbvghjstdfghjkjhbvghbvgbbv");
+		request.setData("Test");
 		request.setReferenceId("REFID");
 		request.setSalt("LA7YcvP9DdLIVI5CwFt1SQ");
 		request.setTimeStamp(LocalDateTime.now());
-		keymanagerController.decrypt(request);
+		requestDto.setRequest(request);
+		keymanagerController.decrypt(requestDto);
 	}
 	
 	@Test

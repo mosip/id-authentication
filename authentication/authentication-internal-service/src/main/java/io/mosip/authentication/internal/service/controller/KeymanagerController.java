@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDTO;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.SignatureStatusDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -74,8 +75,8 @@ public class KeymanagerController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
 	@PostMapping(value = "/encrypt", produces = "application/json")
 	public CryptomanagerResponseDto encrypt(
-			@ApiParam("Salt and Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDto request) throws IdAuthenticationBusinessException {
-		return keymanagerService.encrypt(request.getData(),request.getReferenceId(),request.getAad(),request.getSalt());
+			@ApiParam("Salt and Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDTO requestDto) throws IdAuthenticationBusinessException {
+		return keymanagerService.encrypt(requestDto.getRequest().getData(),requestDto.getRequest().getReferenceId(),requestDto.getRequest().getAad(),requestDto.getRequest().getSalt());
 	}
 	
 	/**
@@ -88,8 +89,8 @@ public class KeymanagerController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")		
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public CryptomanagerResponseDto decrypt(
-			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDto cryptomanagerRequestDto) throws IdAuthenticationBusinessException {
-		return keymanagerService.decrypt(cryptomanagerRequestDto);
+			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDTO cryptomanagerRequestDto) throws IdAuthenticationBusinessException {
+		return keymanagerService.decrypt(cryptomanagerRequestDto.getRequest());
 	}
 	
 	/**
