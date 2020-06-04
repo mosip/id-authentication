@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDTO;
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDTO;
+import io.mosip.authentication.common.service.integration.dto.PublicKeyResponseDto;
 import io.mosip.authentication.common.service.integration.dto.TimestampRequestDTO;
 import io.mosip.authentication.common.service.integration.dto.ValidatorResponseDTO;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -56,16 +57,20 @@ public class KeymanagerController {
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
 	@GetMapping(value = "/publickey/{applicationId}")
-	public PublicKeyResponse<String> getPublicKey(
+	public PublicKeyResponseDto getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
 			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timestamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) throws IdAuthenticationBusinessException {
+		PublicKeyResponseDto responseDto = new PublicKeyResponseDto();
+		PublicKeyResponse<String> response = null;
 		if (applicationId.equalsIgnoreCase(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_APPID)) && referenceId.isPresent()
 				&& referenceId.get().equals(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_REFID))) {
-			return keymanagerService.getSignPublicKey(applicationId, timestamp, referenceId);
+			response = keymanagerService.getSignPublicKey(applicationId, timestamp, referenceId);
 		} else {
-			return keymanagerService.getPublicKey(applicationId, timestamp, referenceId);
+			response = keymanagerService.getPublicKey(applicationId, timestamp, referenceId);
 		}
+		responseDto.setResponse(response);
+		return responseDto;
 	}
 	
 	/**
