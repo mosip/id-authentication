@@ -440,7 +440,6 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO2.setDigitalId(digitalId2);
 		dataDTO2.setBioValue("face img");
 		dataDTO2.setBioType("FACE");
-		dataDTO2.setBioSubType("Face");
 		dataDTO2.setDeviceProviderID("provider001");
 		dataDTO2.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -682,8 +681,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId1);
 		faceData.setBioValue("face img");
-		faceData.setBioSubType("face");
-		faceData.setBioType("FID");
+		faceData.setBioType("Face");
 		faceData.setDeviceProviderID("provider001");
 		faceValue.setData(faceData);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -728,7 +726,6 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		faceData.setDigitalId(digitalId);
 		faceData.setBioValue("face img");
-		faceData.setBioSubType("face");
 		faceData.setBioType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceValue.setData(faceData);
@@ -736,7 +733,6 @@ public class BaseAuthRequestValidatorTest {
 		BioIdentityInfoDTO faceValue1 = new BioIdentityInfoDTO();
 
 		faceData.setBioValue("face img");
-		faceData.setBioSubType("face");
 		faceData.setBioType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceValue1.setData(faceData);

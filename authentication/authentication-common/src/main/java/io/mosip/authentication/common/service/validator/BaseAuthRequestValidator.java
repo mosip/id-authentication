@@ -347,31 +347,32 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			String bioSubType = bioInfo.getBioSubType();
-			if (bioSubType != null && !bioSubType.isEmpty()) {
-				// Valid bio type
-				Optional<BioAuthType> bioAuthTypeOpt = BioAuthType.getSingleBioAuthTypeForType(bioType);
-				if (bioAuthTypeOpt.isPresent()) {
-					BioAuthType bioAuthType = bioAuthTypeOpt.get();
-					Set<MatchType> associatedMatchTypes = bioAuthType.getAssociatedMatchTypes();
-					boolean invalidBioType = associatedMatchTypes.stream()
-							.filter(matchType -> matchType instanceof BioMatchType)
-							.map(matchType -> (BioMatchType) matchType).map(BioMatchType::getIdMapping)
-							.map(IdMapping::getSubType).distinct()
-							.noneMatch(idName -> idName.equalsIgnoreCase(bioSubType));
-					if (invalidBioType) {
-						errors.rejectValue(IdAuthCommonConstants.REQUEST,
-								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) + " - " + bioSubType },
-								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			if(!BioAuthType.FACE_IMG.getType().equalsIgnoreCase(bioType)) {
+				if (bioSubType != null && !bioSubType.isEmpty()) {
+					// Valid bio type
+					Optional<BioAuthType> bioAuthTypeOpt = BioAuthType.getSingleBioAuthTypeForType(bioType);
+					if (bioAuthTypeOpt.isPresent()) {
+						BioAuthType bioAuthType = bioAuthTypeOpt.get();
+						Set<MatchType> associatedMatchTypes = bioAuthType.getAssociatedMatchTypes();
+						boolean invalidBioType = associatedMatchTypes.stream()
+								.filter(matchType -> matchType instanceof BioMatchType)
+								.map(matchType -> (BioMatchType) matchType).map(BioMatchType::getIdMapping)
+								.map(IdMapping::getSubType).distinct()
+								.noneMatch(idName -> idName.equalsIgnoreCase(bioSubType));
+						if (invalidBioType) {
+							errors.rejectValue(IdAuthCommonConstants.REQUEST,
+									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+									new Object[] { String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) + " - " + bioSubType },
+									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+						}
+	
 					}
-
+				} else {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] {  String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
-
-			} else {
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] {  String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
 	}

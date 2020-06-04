@@ -372,7 +372,6 @@ public class IdMappingValidationTest {
 		dataDTOFace.setDigitalId(digitalId2);
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioType("FACE");
-		dataDTOFace.setBioSubType("FACE");
 		dataDTOFace.setDeviceProviderID("provider001");
 		dataDTOFace.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());

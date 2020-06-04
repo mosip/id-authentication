@@ -120,7 +120,6 @@ public enum BioMatchType implements MatchType {
 			setOf(CompositeIrisMatchingStrategy.PARTIAL)),
 
 	FACE(IdaIdMapping.FACE, setOf(FaceMatchingStrategy.PARTIAL), CbeffDocType.FACE, null, null),
-	FACE_UNKNOWN(IdaIdMapping.UNKNOWN_FACE, CbeffDocType.FACE, null, null, setOf(FaceMatchingStrategy.PARTIAL)),
 	
 	MULTI_MODAL(IdaIdMapping.MULTI_MODAL_BIOMETRICS, CbeffDocType.values(), null, null, setOf(MultiModalBiometricsMatchingStrategy.PARTIAL));
 
@@ -221,7 +220,9 @@ public enum BioMatchType implements MatchType {
 		return biometrics.stream().filter(bioId -> {
 			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
 			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
-				return bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getSubType());
+				return authType.get() == BioAuthType.FACE_IMG || 
+						(bioId.getData().getBioSubType() != null && 
+						bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getSubType()));
 			}
 			return false;
 		}).map(BioIdentityInfoDTO::getData).map(DataDTO::getBioValue)

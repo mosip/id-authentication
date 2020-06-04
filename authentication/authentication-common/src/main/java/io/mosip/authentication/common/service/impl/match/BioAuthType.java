@@ -149,8 +149,8 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FACE", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), getFaceName(), value -> value == 1,
-			"bio-FACE", "fid") {
+	FACE_IMG("FACE", AuthType.setOf(BioMatchType.FACE), getFaceName(), value -> value == 1,
+			"bio-FACE", "Face") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -315,12 +315,7 @@ public enum BioAuthType implements AuthType {
 	}
 	
 	private static Long getFaceValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		long entries = 0;
-		for (MatchType matchType : AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN)) {
-			entries += (long) helper.getIdentityRequestInfo(matchType, reqDTO.getRequest(), null).size();
-		}
-		return entries;
-
+		return (long) helper.getIdentityRequestInfo(BioMatchType.FACE, reqDTO.getRequest(), null).size();
 	}
 
 	/*

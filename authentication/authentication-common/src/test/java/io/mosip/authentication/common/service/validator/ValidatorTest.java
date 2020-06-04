@@ -33,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
@@ -479,6 +480,7 @@ public class ValidatorTest {
 	public void validateBioMetadataDetails_validateBioSubType_Null() { // TODO check error code
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
+		requestDto.getBiometrics().get(0).getData().setBioType(BioAuthType.FGR_IMG.getType());
 		requestDto.getBiometrics().get(0).getData().setBioSubType(null);
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -492,6 +494,7 @@ public class ValidatorTest {
 	public void validateBioMetadataDetails_validateBioSubType_Empty() { // TODO check error code
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
+		requestDto.getBiometrics().get(0).getData().setBioType(BioAuthType.FGR_IMG.getType());
 		requestDto.getBiometrics().get(0).getData().setBioSubType("");
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -500,11 +503,55 @@ public class ValidatorTest {
 		errors.getAllErrors().stream().forEach(
 				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
 	}
+	
+	
+	@Test
+	public void validateBioMetadataDetails_Face_validateBioSubType_Invalid_Ignored() {
+		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
+		RequestDTO requestDto = authRequestDTO.getRequest();
+		requestDto.getBiometrics().get(0).getData().setBioType(BioAuthType.FACE_IMG.getType());
+		requestDto.getBiometrics().get(0).getData().setBioSubType("XYZ");
+		authRequestDTO.setRequest(requestDto);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().stream().noneMatch(err -> err.getCode().equals("IDA-MLC-011")));
+		errors.getAllErrors().stream()
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).noneMatch(error -> error.equals("bio-XYZ"))));
+	}
+
+	@Test
+	public void validateBioMetadataDetails_Face_validateBioSubType_Null() { // TODO check error code
+		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
+		RequestDTO requestDto = authRequestDTO.getRequest();
+		requestDto.getBiometrics().get(0).getData().setBioType(BioAuthType.FACE_IMG.getType());
+		requestDto.getBiometrics().get(0).getData().setBioSubType(null);
+		authRequestDTO.setRequest(requestDto);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().stream().noneMatch(err -> err.getCode().equals("IDA-MLC-006")));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).noneMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
+	}
+
+	@Test
+	public void validateBioMetadataDetails_Face_validateBioSubType_Empty() { // TODO check error code
+		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
+		RequestDTO requestDto = authRequestDTO.getRequest();
+		requestDto.getBiometrics().get(0).getData().setBioType(BioAuthType.FACE_IMG.getType());
+		requestDto.getBiometrics().get(0).getData().setBioSubType("");
+		authRequestDTO.setRequest(requestDto);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().stream().noneMatch(err -> err.getCode().equals("IDA-MLC-006")));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).noneMatch(error -> error.equals("request/biometrics/0/data/bioSubType"))));
+	}
 
 	@Test
 	public void validateBioMetadataDetails_validateBioSubType_Invalid() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
+		requestDto.getBiometrics().get(0).getData().setBioType(BioAuthType.FGR_IMG.getType());
 		requestDto.getBiometrics().get(0).getData().setBioSubType("XYZ");
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -533,7 +580,6 @@ public class ValidatorTest {
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FACE");
-		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
@@ -838,7 +884,6 @@ public class ValidatorTest {
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FACE");
-		dataDTO.setBioSubType("UNKNOWN");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");

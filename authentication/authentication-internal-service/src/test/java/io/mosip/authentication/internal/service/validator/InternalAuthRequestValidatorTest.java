@@ -382,7 +382,6 @@ public class InternalAuthRequestValidatorTest {
 		faceData.setDigitalId(digitalId2);
 		faceData.setBioValue("face img");
 		faceData.setBioType("FACE");
-		faceData.setBioSubType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
