@@ -43,6 +43,7 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
@@ -891,7 +892,12 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.BIO.getType());
+		status.setAuthSubType(BioAuthType.FACE_IMG.getType());
 		status.setLocked(true);
+		
+		Map<String, String> value = new HashMap<>();
+		value.put("Face", "--face-image--");
+		Mockito.when(idInfoFetcher.getIdentityRequestInfo(BioMatchType.FACE, authRequestDTO.getRequest(), null)).thenReturn(value);
 		
 		try {
 			ReflectionTestUtils.invokeMethod(authFacadeImpl, "validateAuthTypeStatus",authRequestDTO, status);

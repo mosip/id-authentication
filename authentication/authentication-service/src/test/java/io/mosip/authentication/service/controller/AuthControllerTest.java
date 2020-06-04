@@ -203,7 +203,7 @@ public class AuthControllerTest {
 
 		BioIdentityInfoDTO IrisDto = new BioIdentityInfoDTO();
 		DataDTO irisdata = new DataDTO();
-		irisdata.setBioType("IIR");
+		irisdata.setBioType("Iris");
 		irisdata.setBioSubType("LEFT");
 		irisdata.setDeviceProviderID("provider001");
 		irisdata.setBioValue(value);
@@ -212,8 +212,7 @@ public class AuthControllerTest {
 
 		BioIdentityInfoDTO faceDto = new BioIdentityInfoDTO();
 		DataDTO facedata = new DataDTO();
-		facedata.setBioType("FID");
-		facedata.setBioSubType("FACE");
+		facedata.setBioType("Face");
 		facedata.setDeviceProviderID("provider001");
 		facedata.setBioValue(value);
 		faceDto.setData(facedata);

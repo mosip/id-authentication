@@ -10,8 +10,8 @@ public class CbeffDoctypeTest {
 
 	@Test
 	public void TestFIRType() {
-		assertEquals(CbeffDocType.FIR.getName(), SingleType.FINGER.name());
-		assertEquals(CbeffDocType.FIR.getValue(), CbeffConstant.FORMAT_TYPE_FINGER);
+		assertEquals(CbeffDocType.FINGER.getName(), SingleType.FINGER.name());
+		assertEquals(CbeffDocType.FINGER.getValue(), CbeffConstant.FORMAT_TYPE_FINGER);
 	}
 
 	@Test

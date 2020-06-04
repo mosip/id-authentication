@@ -656,7 +656,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 					});
 			List<String> bioTypeList = listBioInfo.stream().map(s -> s.getData().getBioType())
 					.collect(Collectors.toList());
-			if (bioTypeList.contains("FMR") || bioTypeList.contains("FIR")) {
+			if (bioTypeList.contains("Finger")) {
 				bioTypeList.add("FINGER");
 			}
 			for (AuthPolicy mandatoryAuthPolicy : mandatoryAuthPolicies) {

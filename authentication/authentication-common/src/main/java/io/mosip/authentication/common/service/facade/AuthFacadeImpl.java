@@ -5,7 +5,6 @@ package io.mosip.authentication.common.service.facade;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +47,8 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
@@ -133,6 +134,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private ObjectMapper mapper;
 
+	@Autowired
+	private IdInfoFetcher idInfoFetcher;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -208,10 +212,18 @@ public class AuthFacadeImpl implements AuthFacade {
 
 			else if (authRequestDTO.getRequestedAuth().isBio()
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								MatchType.Category.BIO.getType()));
+				for (AuthType authType : AuthType.setOf(BioAuthType.FGR_IMG, BioAuthType.IRIS_IMG, BioAuthType.FACE_IMG)) {
+					if(authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
+						if(authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
+							throw new IdAuthenticationBusinessException(
+									IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+									String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+											MatchType.Category.BIO.getType() + "-" + authType.getType()));
+						} else {
+							break;
+						}
+					}
+				}
 			}
 
 			else if (authRequestDTO.getRequestedAuth().isOtp()
