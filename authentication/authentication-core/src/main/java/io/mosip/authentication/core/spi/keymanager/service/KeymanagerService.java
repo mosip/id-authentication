@@ -18,7 +18,5 @@ public interface KeymanagerService {
 	
 
 	public PublicKeyResponseDto<String> getSignPublicKey(String applicationId, String timeStamp,
-			Optional<String> referenceId);
-
-	
+			Optional<String> referenceId);	
 }

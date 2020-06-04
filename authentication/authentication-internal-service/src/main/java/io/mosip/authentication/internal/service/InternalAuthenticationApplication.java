@@ -48,6 +48,8 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
+import io.mosip.kernel.keymanagerservice.repository.KeyStoreRepository;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;

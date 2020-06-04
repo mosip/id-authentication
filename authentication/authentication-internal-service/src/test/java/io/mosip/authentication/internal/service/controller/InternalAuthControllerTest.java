@@ -31,8 +31,6 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
-import io.mosip.authentication.common.service.repository.KeyAliasRepository;
-import io.mosip.authentication.common.service.repository.KeyStoreRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -84,14 +82,8 @@ public class InternalAuthControllerTest {
 	private KeymanagerService keymanagerService;
 
 	@Autowired
-	Environment env;
+	Environment env;	
 	
-	@Mock
-	KeyAliasRepository keyAliasRepository;
-	
-	@Mock	
-	KeyStoreRepository keyStoreRepository;
-
 	@InjectMocks
 	private RestRequestFactory restFactory;
 
@@ -303,31 +295,7 @@ public class InternalAuthControllerTest {
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
 		authController.authenticate(authRequestDTO, error);
-	}
-	
-	@Test
-	public void TestPublickKey() {
-		java.util.Optional<String> refId = java.util.Optional.of("refId");		
-		authController.getPublicKey("appId", "2001-05-01T10:00:00.000Z",refId);
-	}
-	
-	@Test
-	public void TestPublickKey_S001() {
-		java.util.Optional<String> refId = java.util.Optional.of("ida");		
-		authController.getPublicKey("ida", "2001-05-01T10:00:00.000Z",refId);
-	}
-	
-	@Test
-	public void TestPublickKey_S002() {
-		java.util.Optional<String> refId = java.util.Optional.of("ida");		
-		authController.getPublicKey("appId", "2001-05-01T10:00:00.000Z",refId);
-	}
-	
-	@Test
-	public void TestPublickKey_S003() {
-		java.util.Optional<String> refId = java.util.Optional.of("refId");		
-		authController.getPublicKey("appId", "2001-05-01T10:00:00.000Z",refId);
-	}
+	}	
 
 	private AuthRequestDTO getRequestDto() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();

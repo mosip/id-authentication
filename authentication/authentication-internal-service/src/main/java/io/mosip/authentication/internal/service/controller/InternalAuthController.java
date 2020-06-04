@@ -1,25 +1,18 @@
 package io.mosip.authentication.internal.service.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -28,14 +21,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.PublicKeyResponseDto;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
-import io.mosip.authentication.core.spi.keymanager.service.KeymanagerService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
@@ -48,15 +38,6 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class InternalAuthController {
-
-	@Autowired
-	private Environment env;
-	
-	/**
-	 * Instance for KeymanagerService
-	 */
-	@Autowired
-	KeymanagerService keymanagerService;
 	
 	/** The auth facade. */
 	@Autowired
@@ -126,27 +107,4 @@ public class InternalAuthController {
 
 		return authResponseDTO;
 	}
-	
-	/**
-	 * Request mapping to get Public Key
-	 * 
-	 * @param applicationId Application id of the application requesting publicKey
-	 * @param timeStamp     Timestamp of the request
-	 * @param referenceId   Reference id of the application requesting publicKey
-	 * @return {@link PublicKeyResponse} instance
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
-	@GetMapping(value = "/publickey/{applicationId}")
-	public PublicKeyResponseDto<String> getPublicKey(
-			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timestamp,
-			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
-		if (applicationId.equalsIgnoreCase(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_APPID)) && referenceId.isPresent()
-				&& referenceId.get().equals(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_REFID))) {
-			return keymanagerService.getSignPublicKey(applicationId, timestamp, referenceId);
-		} else {
-			return keymanagerService.getPublicKey(applicationId, timestamp, referenceId);
-		}
-	}
-
 }

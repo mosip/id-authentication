@@ -289,7 +289,15 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						type = IdAuthCommonConstants.AUTH_TRANSACTIONS;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
 						type = IdAuthCommonConstants.AUTH_TYPE;
-					}
+					}else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.PUBLICKEY)) {
+						type = IdAuthCommonConstants.PUBLICKEY;
+					}else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.ENCRYPT)) {
+						type = IdAuthCommonConstants.ENCRYPT;
+					}else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.DECRYPT)) {
+						type = IdAuthCommonConstants.DECRYPT;
+					}else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.VERIFY)) {
+						type = IdAuthCommonConstants.VERIFY;
+					}					
 				}
 			}
 		}
@@ -334,7 +342,30 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				authtypeResponseDto.setErrors(errors);
 				authtypeResponseDto.setResponseTime(responseTime);
 				return authtypeResponseDto;
+			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.DECRYPT)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
+			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.ENCRYPT)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
+			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.PUBLICKEY)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
+			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.VERIFY)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
 			}
+
+
+
 
 		default:
 			AuthResponseDTO authResp = new AuthResponseDTO();
