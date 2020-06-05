@@ -133,7 +133,7 @@ public enum IdAuthenticationErrorConstants {
 	MISP_LICENSE_KEY_NOT_EXISTS("PMS_PMP_020","MISP license key not exists."),
 	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
 	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered.");
-
+	
 	private final String errorCode;
 	private final String errorMessage;
 	private String actionMessage;

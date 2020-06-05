@@ -65,12 +65,6 @@ public class IdAuthSecurityManager {
 	@Value("${identity-cache.reference.id}")
 	private String referenceId;
 
-	/** The Constant ENCRYPT_DECRYPT_DATA. */
-	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
-
-	/** The Constant ID_AUTH_TRANSACTION_MANAGER. */
-	private static final String ID_AUTH_TRANSACTION_MANAGER = "IdAuthSecurityManager";
-
 	private static final String HASH_ALGO = "SHA-256";
 
 	private static final int GCM_NONCE_LENGTH = 12;
@@ -105,7 +99,7 @@ public class IdAuthSecurityManager {
 	public byte[] encryptWithAES(String id, byte[] dataToEncrypt) throws InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException,
 			KeyStoreException, CertificateException, UnrecoverableEntryException, IOException {
-		int saltModuloConstant = env.getProperty("ida.uin.salt.modulo", Integer.class);
+		int saltModuloConstant = env.getProperty("ida.keygenerator.uin.salt.modulo", Integer.class);
 		int randomKeyIndex = (Integer.parseInt(id) % saltModuloConstant);
 		String encryptedKeyData = repo.findKeyById(Integer.parseInt(id));
 		Key secretKey = getDecryptedKey(encryptedKeyData);

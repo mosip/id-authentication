@@ -76,10 +76,10 @@ public class InternalAuthControllerTest {
 
 	@Mock
 	private RestHelper restHelper;
-
+	
 	@Autowired
-	Environment env;
-
+	Environment env;	
+	
 	@InjectMocks
 	private RestRequestFactory restFactory;
 
@@ -288,7 +288,7 @@ public class InternalAuthControllerTest {
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
 		authController.authenticate(authRequestDTO, error);
-	}
+	}	
 
 	private AuthRequestDTO getRequestDto() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();

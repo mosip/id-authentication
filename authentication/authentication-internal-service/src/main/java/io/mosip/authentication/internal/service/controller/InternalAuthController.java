@@ -38,7 +38,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class InternalAuthController {
-
+	
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
@@ -107,5 +107,4 @@ public class InternalAuthController {
 
 		return authResponseDTO;
 	}
-
 }

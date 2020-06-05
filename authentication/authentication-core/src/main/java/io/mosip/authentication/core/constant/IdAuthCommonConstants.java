@@ -161,9 +161,8 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_TYPE;
 	
 	public static final String BIO_SUB_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_SUB_TYPE;
-
-
-
+	
+	
 	/** The Constant EKYC. */
 	public static final String EKYC = "ekyc";
 
@@ -224,7 +223,15 @@ public final class IdAuthCommonConstants {
 	public static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
 	
 	public static final String NOTIFY = "notify";
-
-
+	
+	public static final String PUBLICKEY = "publickey";
+	
+	public static final String ENCRYPT = "encrypt";
+	
+	public static final String DECRYPT = "decrypt";
+	
+	public static final String VERIFY = "verify";
+	
+	public static final String VALIDATESIGN = "validate";
 }
 

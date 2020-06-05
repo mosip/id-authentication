@@ -108,7 +108,10 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_AAD_LASTBYTES_NUM = "ida.aad.lastbytes.num";
 	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
 	
-	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";
+	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";	
+
+	public static final String IDA_SIGN_REFID="ida.sign.refid";
+	public static final String IDA_SIGN_APPID="ida.sign.applicationid";
 	
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 

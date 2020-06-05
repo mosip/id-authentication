@@ -84,6 +84,9 @@ public class KeysGeneratorApplication implements CommandLineRunner {
 		
 		LOGGER.info("Keys generation stated......" );
 		Key masterKey = getMasterKeyFromHSM(KEY_PROTECT, provider,keysRepo,keyAliasRepository);
+		if(masterKey == null) {
+			return;
+		}
 		generate10KKeysAndStoreInDB(masterKey, provider,keysRepo);
 		LOGGER.info("Keys generated." );
 		
@@ -127,7 +130,8 @@ public class KeysGeneratorApplication implements CommandLineRunner {
 		}
 		
 		LOGGER.info("SoftHSM - Key Not found for the alias in HSM.");
-		throw new IllegalStateException("Key Not found for the alias in HSM");
+		System.err.println("Key Not found for the alias in HSM. keyAlias : " + keyAlias + "Please check HSM keys.");
+		return null;
 	}
 
 	private Key generateAndStore(String keyAlias, KeyStore keyStore, char[] storePin,KeyAliasRepository keyAliasRepository) throws Exception {
