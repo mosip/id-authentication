@@ -106,7 +106,7 @@ public class IdEventNotificationValidator extends IdAuthValidator {
 			} else {
 				dateStr = null;
 			}
-			validateReqTime(dateStr, errors, "requesttime", "requesttime");
+			//validateReqTime(dateStr, errors, "requesttime", "requesttime");
 		}
 	}
 	
