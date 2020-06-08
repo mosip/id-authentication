@@ -132,7 +132,8 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_NOT_MAPPED_TO_POLICY("PMS_PMP_017","Partner is not mapped to any policy."),
 	MISP_LICENSE_KEY_NOT_EXISTS("PMS_PMP_020","MISP license key not exists."),
 	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
-	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered.");
+	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
+	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked");
 	
 	private final String errorCode;
 	private final String errorMessage;

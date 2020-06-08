@@ -100,6 +100,13 @@ public class PartnerServiceManager {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 									IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
 						}
+						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorCode())) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorCode(),
+									IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorMessage(),e);
+						}else {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+									IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),e);
+						}
 					}else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
