@@ -112,7 +112,7 @@ public class KeymanagerController {
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")		
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
 	@PostMapping(value = "/verify", produces = "application/json")
 	public SignatureStatusDto verify(
 			@ApiParam("data to verify") @RequestBody @Valid String jwsSignature) throws IdAuthenticationBusinessException {
