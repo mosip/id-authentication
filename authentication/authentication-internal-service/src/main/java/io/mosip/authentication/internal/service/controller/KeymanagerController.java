@@ -55,7 +55,7 @@ public class KeymanagerController {
 	 * @return {@link PublicKeyResponse} instance
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
 	@GetMapping(value = "/publickey/{applicationId}")
 	public PublicKeyResponseDto getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
@@ -80,7 +80,7 @@ public class KeymanagerController {
 	 * @return {@link CryptomanagerResponseDto} encrypted Data
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
 	@PostMapping(value = "/encrypt", produces = "application/json")
 	public CryptomanagerResponseDTO encrypt(
 			@ApiParam("Salt and Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDTO requestDto) throws IdAuthenticationBusinessException {
@@ -96,7 +96,7 @@ public class KeymanagerController {
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")		
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")		
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public CryptomanagerResponseDTO decrypt(
 			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDTO cryptomanagerRequestDto) throws IdAuthenticationBusinessException {
@@ -112,7 +112,7 @@ public class KeymanagerController {
 	 * @return {@link CryptomanagerResponseDto} decrypted Data
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")		
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
 	@PostMapping(value = "/verify", produces = "application/json")
 	public SignatureStatusDto verify(
 			@ApiParam("data to verify") @RequestBody @Valid String jwsSignature) throws IdAuthenticationBusinessException {
@@ -125,7 +125,7 @@ public class KeymanagerController {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")	
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
 	@PostMapping(value = "/validate")
 	public ValidatorResponseDTO validate(
 			@RequestBody @Valid TimestampRequestDTO timestampRequestDto) throws IdAuthenticationBusinessException {
