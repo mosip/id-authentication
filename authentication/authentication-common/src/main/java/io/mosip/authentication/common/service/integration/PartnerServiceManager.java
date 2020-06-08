@@ -101,8 +101,8 @@ public class PartnerServiceManager {
 									IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
 						}
 						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorCode(),
-									IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorMessage(),e);
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
+									IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage(),e);
 						}else {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 									IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),e);
