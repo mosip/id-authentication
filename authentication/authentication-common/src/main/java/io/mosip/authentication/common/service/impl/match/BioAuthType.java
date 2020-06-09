@@ -269,12 +269,12 @@ public enum BioAuthType implements AuthType {
 	
 	protected Map<String, Object> getSingleMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
 		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
-				.getBioMatcherUtil()::matchValue);
+				.getMatchFunction(this));
 	}
 	
 	protected Map<String, Object> getMultiMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
 		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
-				.getBioMatcherUtil()::matchMultiValue);
+				.getMatchFunction(this));
 	}
 	
 	protected Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, 

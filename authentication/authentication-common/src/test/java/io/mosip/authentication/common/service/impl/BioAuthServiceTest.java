@@ -38,8 +38,8 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.bioauth.BioMatcherIntegratorV1;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -72,7 +72,7 @@ public class BioAuthServiceTest {
 	private BioAuthServiceImpl bioAuthServiceImpl;
 
 	@Mock
-	private BioMatcherIntegratorV1 bioMatcherUtil;
+	private BioMatcherUtil bioMatcherUtil;
 
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
@@ -108,13 +108,12 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
-		ReflectionTestUtils.setField(bioMatcherUtil, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "bioMatcherUtil", bioMatcherUtil);
-		ReflectionTestUtils.setField(bioMatcherUtil, "fingerApi", fingerApi);
+		ReflectionTestUtils.setField(bioMatcherUtil, "idInfoFetcher", idInfoFetcherImpl);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any())).thenReturn(null);
 	}
@@ -180,7 +179,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -237,7 +236,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Left_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -313,7 +312,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Right_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
 				.thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -752,7 +751,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", value1);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo authenticate = bioAuthServiceImpl.authenticate(authRequestDTO, individualId, bioIdentity,
 				"1234567890");
 		assertTrue(authenticate.isStatus());
@@ -867,7 +866,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("IRIS_Left_9", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -926,7 +925,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -982,7 +981,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -1092,7 +1091,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
@@ -1166,7 +1165,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
 				.thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -1263,7 +1262,7 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		Mockito.when(bioMatcherUtil.matchMultiValue(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
+		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
 				.thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());

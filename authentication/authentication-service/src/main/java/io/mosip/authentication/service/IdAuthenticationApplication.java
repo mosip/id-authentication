@@ -22,7 +22,6 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.bioauth.BioMatcherIntegratorV1;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
@@ -38,6 +37,7 @@ import io.mosip.authentication.common.service.interceptor.IdaTransactionIntercep
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
@@ -67,7 +67,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class,
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class,
-		BioMatcherIntegratorV1.class, BioApiImpl.class, DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
+		BioAPIFactory.class, BioApiImpl.class, DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
 		IdAuthSecurityManager.class, RestRequestFactory.class, RestHelperImpl.class, AuthtypeStatusImpl.class,
 		CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class,
 		CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class,

@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.impl.bioauth.BioMatcherIntegratorV1;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -19,6 +18,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 
 public class BioAuthTypeTest {
 	
@@ -32,10 +32,11 @@ public class BioAuthTypeTest {
 		String language = "";
 		Map<String, Object> result;
 
+		@SuppressWarnings("unchecked")
+		TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> matchFunction = Mockito.mock(TriFunctionWithBusinessException.class);
 		// default test
-		BioMatcherIntegratorV1 bioMatcherUtil = Mockito.mock(BioMatcherIntegratorV1.class);
-		Mockito.when(idInfoFetcher.getBioMatcherUtil()).thenReturn(bioMatcherUtil);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
+		Mockito.when(idInfoFetcher.getMatchFunction(Mockito.any())).thenReturn(matchFunction);
+		Mockito.when(matchFunction.apply(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
 		result = testSubject.getMatchProperties(authRequestDTO, idInfoFetcher, language);
 		
 		assertTrue(result.isEmpty());
@@ -108,10 +109,11 @@ public class BioAuthTypeTest {
 		Map<String, Object> result;
 
 		// default test
-		BioMatcherIntegratorV1 bioMatcherUtil = Mockito.mock(BioMatcherIntegratorV1.class);
-		Mockito.when(idInfoFetcher.getBioMatcherUtil()).thenReturn(bioMatcherUtil);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
-		
+		@SuppressWarnings("unchecked")
+		TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> matchFunction = Mockito.mock(TriFunctionWithBusinessException.class);
+		// default test
+		Mockito.when(idInfoFetcher.getMatchFunction(Mockito.any())).thenReturn(matchFunction);
+		Mockito.when(matchFunction.apply(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
 		
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		
