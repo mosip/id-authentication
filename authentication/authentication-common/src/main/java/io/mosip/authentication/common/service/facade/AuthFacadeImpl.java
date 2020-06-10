@@ -159,7 +159,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
-			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
+			authStatusList.stream()
+						.filter(Objects::nonNull)
+						.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			// Set static token
 			if (staticTokenRequired) {
@@ -280,7 +282,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	}
 
 	private boolean isMatchFailed(List<AuthStatusInfo> authStatusList) {
-		return authStatusList.stream().anyMatch(st -> !st.isStatus());
+		return authStatusList.stream().anyMatch(st -> st != null && !st.isStatus());
 	}
 
 	/**

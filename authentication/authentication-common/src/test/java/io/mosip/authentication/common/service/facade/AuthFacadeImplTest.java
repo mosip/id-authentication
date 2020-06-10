@@ -200,7 +200,6 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "pinAuthService", pinAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
-		ReflectionTestUtils.setField(authFacadeImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
 		ReflectionTestUtils.setField(notificationService, "env", env);
