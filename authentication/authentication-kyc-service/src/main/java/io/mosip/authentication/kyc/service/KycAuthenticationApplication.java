@@ -21,7 +21,6 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.bioauth.BioMatcherIntegratorV1;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
@@ -35,8 +34,10 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.interceptor.IdaTransactionInterceptor;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
+import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
@@ -65,8 +66,8 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class,
 		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
-		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,
-		BioMatcherIntegratorV1.class, BioApiImpl.class, DemoNormalizerImpl.class,
+		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class, 
+		BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class, DemoNormalizerImpl.class,
 		IdaTransactionInterceptor.class, IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class,PartnerServiceImpl.class,TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })

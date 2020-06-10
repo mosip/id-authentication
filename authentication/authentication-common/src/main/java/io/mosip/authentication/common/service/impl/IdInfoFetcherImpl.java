@@ -14,15 +14,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -30,12 +31,13 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.bioauth.IBioMatcherIntegrator;
 import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -47,7 +49,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-
+	
 	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
@@ -60,6 +62,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Autowired
 	private CbeffUtil cbeffUtil;
+	
+	@Autowired(required=false)
+	private BioMatcherUtil bioMatcherUtil;
 
 	/**
 	 * The Master Data Manager
@@ -75,11 +80,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 	
-	
-	@Autowired
-	@Qualifier("bioMatcherIntegrator")
-	private IBioMatcherIntegrator bioMatcherUtil;
-	
 	@Autowired
 	private DemoNormalizer demoNormalizer;
 	
@@ -88,11 +88,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return demoNormalizer;
 	}
 
-	@Override
-	public IBioMatcherIntegrator getBioMatcherUtil() {
-		return bioMatcherUtil;
-	}
-	
 	/**
 	 * Fetch language code from properties
 	 *
@@ -317,5 +312,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			.findFirst();
 	}
 
-
+	@Override
+	public TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> getMatchFunction(
+			AuthType authType) {
+		final TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> defaultFunc = (arg1, arg2, arg3) -> (double)0;
+		if(authType instanceof BioAuthType) {
+			 return bioMatcherUtil::match;
+		} else {
+			return defaultFunc;
+		}
+	}
+	
 }

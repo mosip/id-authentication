@@ -147,7 +147,6 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "partnerService", partnerService);
 		ReflectionTestUtils.setField(authFacadeImpl, "idService", idService);
-		ReflectionTestUtils.setField(authFacadeImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(kycFacade, "partnerService", partnerService);
 		
 

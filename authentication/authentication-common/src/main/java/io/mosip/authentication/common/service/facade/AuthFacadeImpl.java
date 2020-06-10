@@ -16,14 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
@@ -112,10 +109,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private TokenIdManager tokenIdManager;
 
-	/** The id repo manager. */
-	@Autowired
-	private IdRepoManager idRepoManager;
-
 	@Autowired
 	private UinEncryptSaltRepo uinEncryptSaltRepo;
 
@@ -131,9 +124,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private PartnerService partnerService;
 	
-	@Autowired
-	private ObjectMapper mapper;
-
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
@@ -169,7 +159,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
-			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
+			authStatusList.stream()
+						.filter(Objects::nonNull)
+						.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			// Set static token
 			if (staticTokenRequired) {
@@ -274,13 +266,23 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
-
-		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
-
-		processPinAuth(authRequestDTO, uin, authStatusList, idType, staticTokenId, isAuth, partnerId);
-
+		if(!isMatchFailed(authStatusList)) {
+			processPinAuth(authRequestDTO, uin, authStatusList, idType, staticTokenId, isAuth, partnerId);
+		}
+		
+		if(!isMatchFailed(authStatusList)) {
+			processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
+		}
+		
+		if(!isMatchFailed(authStatusList)) {
+			processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
+		}
+		
 		return authStatusList;
+	}
+
+	private boolean isMatchFailed(List<AuthStatusInfo> authStatusList) {
+		return authStatusList.stream().anyMatch(st -> st != null && !st.isStatus());
 	}
 
 	/**

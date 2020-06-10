@@ -39,7 +39,6 @@ import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.bioauth.BioMatcherIntegratorV1;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
@@ -86,9 +85,6 @@ public class DemoAuthServiceTest {
 
 	@Mock
 	private IdService<?> idInfoService;
-
-	@Mock
-	private BioMatcherIntegratorV1 bioMatcherUtil;
 
 	@Mock
 	private DemoNormalizer demoNormalizer;

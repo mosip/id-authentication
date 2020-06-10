@@ -172,5 +172,15 @@
 			</exclusions>
 			<classifier>lib</classifier>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-biosdk-provider</artifactId>
+			<version>${kernel-biosdk-provider.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-biometrics-api</artifactId>
+			<version>${kernel-biometrics-api.version}</version>
+		</dependency>
 	</dependencies>
 </project>
