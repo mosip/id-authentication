@@ -37,7 +37,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * The Class BioMatcherUtil is the utility class to match biometrics, that used the Bio SDK provider.
+ * The Class BioMatcherUtil is the utility class to match biometrics, that uses the Bio SDK provider.
  * 
  * @author Loganathan Sekar
  */
