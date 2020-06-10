@@ -63,7 +63,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Autowired
 	private CbeffUtil cbeffUtil;
 	
-	@Autowired
+	@Autowired(required=false)
 	private BioMatcherUtil bioMatcherUtil;
 
 	/**
