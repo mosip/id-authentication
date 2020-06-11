@@ -315,87 +315,8 @@ public class PartnerServiceManagerTest {
 				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
 	}
 
-	private Map<String, Object> getResponse1() {
-		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
-		Object obj = "{\r\n" + "        \"policyId\": \"21\",\r\n" + "        \"policyName\": null,\r\n"
-				+ "        \"policyDescription\": \"Desc about policy\",\r\n" + "        \"policyStatus\": true,\r\n"
-				+ "        \"policy\": {\r\n" + "            \"policyId\": \"21\",\r\n"
-				+ "            \"policies\": {\r\n" + "                \"authPolicies\": [\r\n"
-				+ "                    {\r\n" + "                        \"authType\": \"otp\",\r\n"
-				+ "                        \"authSubType\": null,\r\n"
-				+ "                        \"mandatory\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"authType\": \"demo\",\r\n"
-				+ "                        \"authSubType\": null,\r\n"
-				+ "                        \"mandatory\": false\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"authType\": \"bio\",\r\n"
-				+ "                        \"authSubType\": \"FINGER\",\r\n"
-				+ "                        \"mandatory\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"authType\": \"bio\",\r\n"
-				+ "                        \"authSubType\": \"IRIS\",\r\n"
-				+ "                        \"mandatory\": false\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"authType\": \"bio\",\r\n"
-				+ "                        \"authSubType\": \"FACE\",\r\n"
-				+ "                        \"mandatory\": false\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"authType\": \"kyc\",\r\n"
-				+ "                        \"authSubType\": null,\r\n"
-				+ "                        \"mandatory\": false\r\n" + "                    }\r\n"
-				+ "                ],\r\n" + "                \"allowedKycAttributes\": [\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"fullName\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"dateOfBirth\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"gender\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"phone\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"email\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"addressLine1\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"addressLine2\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"addressLine3\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"location1\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"location2\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"location3\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"postalCode\",\r\n"
-				+ "                        \"required\": false\r\n" + "                    },\r\n"
-				+ "                    {\r\n" + "                        \"attributeName\": \"photo\",\r\n"
-				+ "                        \"required\": true\r\n" + "                    }\r\n"
-				+ "                ]\r\n" + "            }\r\n" + "        },\r\n"
-				+ "        \"partnerId\": \"320216\",\r\n" + "        \"partnerName\": \"Vodafone\"\r\n" + "    }";
-		response.put("response", obj);
-		response.entrySet();
-		return response;
-	}
-
 	private Map<String, Object> getResponse() {
 		Map<String, Object> response = new HashMap<>();
-		// String obj="{policyId=21, policyName=test, policyDescription=Desc about
-		// policy, policyStatus=true, policy={policyId=21,
-		// policies={authPolicies=[{authType=otp, authSubType=null, mandatory=true}],
-		// allowedKycAttributes=[{attributeName=fullName, required=true}]}},
-		// partnerId=10302, partnerName=Idea}";
-		// Object obj = "{policyId=21, policyName=null, policyDescription=Desc about
-		// policy, policyStatus=true, policy={policyId=21,
-		// policies={authPolicies=[{authType=otp, authSubType=null, mandatory=true},
-		// {authType=demo, authSubType=null, mandatory=false}, {authType=bio,
-		// authSubType=FINGER, mandatory=true}, {authType=bio, authSubType=IRIS,
-		// mandatory=false}, {authType=bio, authSubType=FACE, mandatory=false},
-		// {authType=kyc, authSubType=null, mandatory=false}],
-		// allowedKycAttributes=[{attributeName=fullName, required=true},
-		// {attributeName=dateOfBirth, required=true}, {attributeName=gender,
-		// required=true}, {attributeName=phone, required=true}, {attributeName=email,
-		// required=true}, {attributeName=addressLine1, required=true},
-		// {attributeName=addressLine2, required=true}, {attributeName=addressLine3,
-		// required=true}, {attributeName=location1, required=true},
-		// {attributeName=location2, required=true}, {attributeName=location3,
-		// required=true}, {attributeName=postalCode, required=false},
-		// {attributeName=photo, required=true}]}}, partnerId=10302, partnerName=Idea}";
 		String obj = "{\"policyId\":\"21\",\"policyName\":null,\"policyDescription\":\"Desc about policy\",\"policyStatus\":true,\"policy\":{\"policyId\":\"21\",\"policies\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":null,\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":null,\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":null,\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"partnerId\":\"10302\",\"partnerName\":\"Idea\"}";
 		response.put("response", obj.toString());
 		return response;
