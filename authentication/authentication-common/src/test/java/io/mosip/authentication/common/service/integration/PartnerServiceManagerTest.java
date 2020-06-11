@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Before;
