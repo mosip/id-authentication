@@ -76,40 +76,8 @@ public class PartnerServiceManager {
 				Map<String, Object> partnerService = (Map<String, Object>) responseBody.get();
 				if (partnerService.containsKey(ERRORS)) {
 					List<Map<String, Object>> partnerServiceErrorList = (List<Map<String, Object>>) partnerService.get(ERRORS);
-					if(!partnerServiceErrorList.isEmpty()) {
-						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_ACTIVE.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
-									IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage(),e);
-						}						
-						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_MAPPED_TO_POLICY.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorCode(),
-									IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorMessage(),e);
-						}
-
-						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_NOT_EXISTS.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
-									IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage(),e);
-						}
-
-						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_EXPIRED.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
-									IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage(),e);
-						}
-
-						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTRED.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-									IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
-						}
-						if(partnerServiceErrorList.get(0).get(ERRORCODE).toString().equalsIgnoreCase(IdAuthenticationErrorConstants.MISP_IS_BLOCKED.getErrorCode())) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
-									IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage(),e);
-						}else {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-									IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),e);
-						}
-					}else {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+					if(!partnerServiceErrorList.isEmpty()) {						
+						throw getMatchingErrorCodes(partnerServiceErrorList.get(0).get(ERRORCODE).toString(), e);
 					}
 				}else {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
@@ -129,5 +97,50 @@ public class PartnerServiceManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		return response;
+	}
+	
+	/**
+	 * This method will throw ida exceptions corresponding to pmp
+	 * @param erroCode
+	 * @param e
+	 * @return
+	 */
+	private IdAuthenticationBusinessException getMatchingErrorCodes(String erroCode,RestServiceException e) {
+		switch(erroCode) {
+		case "PMS_PMP_020":
+			 return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage(),e);
+		case "PMS_PMP_021":
+			 return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
+						IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage(),e);
+		case "PMS_PMP_025":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
+					IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage(),e);
+		case "PMS_PMP_016":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage(),e);
+		case "PMS_PMP_013":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
+		case "PMS_PMP_017":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorMessage(),e);
+		case "PMS_PMP_023":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(),e);
+		case "PMS_PMP_019":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage(),e);
+		case "PMS_PMP_018":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(),e);
+		case "PMS_PMP_024":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
+			
+		default:
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+		}
 	}
 }
