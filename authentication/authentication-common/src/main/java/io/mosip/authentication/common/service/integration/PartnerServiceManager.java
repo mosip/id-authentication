@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -67,7 +66,6 @@ public class PartnerServiceManager {
 			params.put("misp_license_key", misp_license_key);
 
 			buildRequest.setPathVariables(params);
-			mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
 			Map<String, Object> partnerServiceResponse = restHelper.requestSync(buildRequest);
 			response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),PartnerPolicyResponseDTO.class);			
 		}catch (RestServiceException e) {			
