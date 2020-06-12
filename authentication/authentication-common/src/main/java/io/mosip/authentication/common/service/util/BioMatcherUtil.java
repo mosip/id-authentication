@@ -29,6 +29,7 @@ import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -233,7 +234,8 @@ public class BioMatcherUtil {
 			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder()
 					.withType(Collections.singletonList(type.getSingleType()))
 					.withSubtype(Arrays.asList(type.getSubTypes()))
-					.withFormat(format).build();
+					.withFormat(format)
+					.withPurpose(PurposeType.VERIFY).build();
 			String reqInfoStr = (String) info;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
 			birBuilder.withBdb(decodedrefInfo);
