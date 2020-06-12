@@ -204,7 +204,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 			else if (authRequestDTO.getRequestedAuth().isBio()
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-				for (AuthType authType : AuthType.setOf(BioAuthType.FGR_IMG, BioAuthType.IRIS_IMG, BioAuthType.FACE_IMG)) {
+				for (AuthType authType : BioAuthType.getSingleBioAuthTypes().toArray(s -> new AuthType[s])) {
 					if(authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
 						if(authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
 							throw new IdAuthenticationBusinessException(

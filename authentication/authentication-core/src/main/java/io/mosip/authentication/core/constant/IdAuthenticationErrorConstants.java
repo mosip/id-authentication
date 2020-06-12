@@ -64,7 +64,7 @@ public enum IdAuthenticationErrorConstants {
     DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
 	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
 
-	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
+	BIO_MISMATCH("IDA-BIA-001", "Biometric data%s did not match", "Please give your biometrics again"),
 	DUPLICATE_FINGER("IDA-BIA-002", "Duplicate fingers in request", "Please try again with distinct fingers"),
 	FINGER_EXCEEDING("IDA-BIA-003", "Number of Fingers should not exceed %s"),
 	INVALID_DEVICEID("IDA-BIA-004", "Device not registered with MOSIP"),
