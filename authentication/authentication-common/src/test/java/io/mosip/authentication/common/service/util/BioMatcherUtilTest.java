@@ -164,15 +164,26 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
-		try {
-			bioMatcherUtil.match(valueMap, valueMap, properties);
-		} catch (IdAuthenticationBusinessException e) {
-			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO.getErrorCode(), e.getErrorCode());
-		}
+		bioMatcherUtil.match(valueMap, valueMap, properties);
 	}
 
 	@Test
 	public void TestInvalidMatchValue() throws IdAuthenticationBusinessException, BiometricException {
+		valueMap.put("Finger", value);
+		Map<String, String> invalidMap = new HashMap<>();
+		invalidMap.put("Finger", "invalid");
+		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(SingleType.FINGER.value()));
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
+		
+		mockBioProvider();
+		
+		double matchValue = bioMatcherUtil.match(valueMap, invalidMap, properties);
+		assertNotEquals("90.0", matchValue);
+	}
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestMissingEntityValue() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
 		Map<String, String> invalidMap = new HashMap<>();
 		invalidMap.put("invalid", "invalid");

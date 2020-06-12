@@ -75,21 +75,32 @@ public class BioMatcherUtil {
 		Map<BiometricType, List<BIR>> reqBirByType =  getBirByType(reqInfoObj);
 		Map<BiometricType, List<BIR>> entityBirByType = getBirByType(entityBIR);
 		
-		boolean res = Stream.of(BiometricType.FINGER, BiometricType.IRIS, BiometricType.FACE)
-				.filter(reqBirByType::containsKey)
-				.allMatch(modality -> {
-					try {
-						iBioProviderApi bioProvider = bioApiFactory.getBioProvider(modality,
-								BiometricFunction.MATCH);
-						return bioProvider.verify(reqBirByType.get(modality), entityBirByType.get(modality), modality, null);
-					} catch (BiometricException e) {
-						logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction",
-								e.getClass().getSimpleName() + ": " + e.getMessage());
+		boolean res = !reqBirByType.isEmpty();
+		for (BiometricType modality : Arrays.asList(BiometricType.FINGER, BiometricType.IRIS, BiometricType.FACE)) {
+			if(reqBirByType.containsKey(modality)) {
+				try {
+					iBioProviderApi bioProvider = bioApiFactory.getBioProvider(modality,
+							BiometricFunction.MATCH);
+					List<BIR> sample = reqBirByType.get(modality);
+					List<BIR> record = entityBirByType.get(modality);
+					if(sample != null) {
+						if(record != null) {
+							res =  bioProvider.verify(sample, record, modality, null);
+							if(!res) {
+								break;
+							}
+						} else {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), 
+									String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), modality));
+						}
 					}
-					return false;
-				});
+				} catch (BiometricException e) {
+					logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction",
+							e.getClass().getSimpleName() + ": " + e.getMessage());
+				}
+			}
+		}
 	
-		
 		return res ? (double)  100 : (double) 0;
 	}
 

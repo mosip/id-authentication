@@ -85,6 +85,7 @@
 		<kernel-keygenerator-bouncycastle.version>${kernel.parent.version}</kernel-keygenerator-bouncycastle.version>
 		<kernel-crypto-jce.version>${kernel.parent.version}</kernel-crypto-jce.version>
 		<kernel-bioapi-provider.version>1.0.9-SNAPSHOT</kernel-bioapi-provider.version>
+		<mock-sdk-version>0.9-SNAPSHOT</mock-sdk-version>
 		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7-SNAPSHOT</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>

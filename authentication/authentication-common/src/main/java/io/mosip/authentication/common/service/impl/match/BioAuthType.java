@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_MIDDLE, BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE,
 					BioMatchType.FGRMIN_RIGHT_THUMB, BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE,
 					BioMatchType.FGRMIN_RIGHT_RING, BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
-			getFingerprintName(), count -> count == 1, "bio-FMR", "fmr") {
+			getFingerprintName(), count -> count == 0 /** Note: count is set to zero to disable this **/, "bio-FMR", "fmr") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
@@ -174,7 +175,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public String[] getTypes() {
-			return new String[] {FGR_IMG.getType(), IRIS_IMG.getType(), FACE_IMG.getType()};
+			return getSingleBioAuthTypes().map(BioAuthType::getType).toArray(s -> new String[s]);
 		}
 		
 		@Override
@@ -395,6 +396,15 @@ public enum BioAuthType implements AuthType {
 			int singleBioCount = 1;
 			return authType.getType().equalsIgnoreCase(type) && authType.getCountPredicate().test(singleBioCount);
 		}).findAny();
+	}
+
+	public static Stream<BioAuthType> getSingleBioAuthTypes() {
+		BioAuthType[] values = BioAuthType.values();
+		return Stream.of(values).filter(authType -> {
+			int singleBioCount = 1;
+			IntPredicate predicate = authType.getCountPredicate();
+			return predicate != null && predicate.test(singleBioCount);
+		});
 	}
 
 	public static Optional<String> getTypeForConfigNameValue(String configNameValue) {

@@ -197,8 +197,16 @@ public class AuthStatusInfoBuilder {
 		authTypes = BioAuthType.values();
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 		if (authTypeForMatchType.isPresent()) {
+			AuthType authType = authTypeForMatchType.get();
+			String type;
+			if(!authType.equals(BioAuthType.MULTI_MODAL)){
+				type = " - " + authType.getType();
+			} else {
+				type = "";
+			}
+			
 			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.BIO_MISMATCH,
-					authTypeForMatchType.get().getType());
+					type);
 			statusInfoBuilder.addErrors(errors);
 		}
 	}

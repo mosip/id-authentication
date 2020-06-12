@@ -38,6 +38,7 @@ import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
+import io.mosip.kernel.biosdk.provider.impl.SampleBioProviderAPIImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
@@ -67,7 +68,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class, 
-		BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class, DemoNormalizerImpl.class,
+		BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class, SampleBioProviderAPIImpl.class, DemoNormalizerImpl.class,
 		IdaTransactionInterceptor.class, IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class,PartnerServiceImpl.class,TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
