@@ -330,8 +330,14 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			if (Objects.nonNull(entity.getExpiryTimestamp())
 					&& DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
-						"Id expired");
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+						idType.getType() + " expired/deactivated/revoked/blocked");
+				IdAuthenticationErrorConstants errorConstant;
+				if (idType == IdType.UIN) {
+					errorConstant = IdAuthenticationErrorConstants.UIN_DEACTIVATED_BLOCKED;
+				} else {
+					errorConstant = IdAuthenticationErrorConstants.VID_EXPIRED_DEACTIVATED_REVOKED;
+				}
+				throw new IdAuthenticationBusinessException(errorConstant);
 			}
 
 			ResponseWrapper<BaseRequestResponseDTO> responseWrapper = new ResponseWrapper<>();
@@ -347,7 +353,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			});
 		} catch (IOException | DataAccessException | TransactionException | JDBCConnectionException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
-					ExceptionUtils.getStackTrace(e));e.printStackTrace();
+					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
