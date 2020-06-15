@@ -55,6 +55,8 @@ public enum IdAuthenticationErrorConstants {
 	AUTH_TYPE_LOCKED("IDA-MLC-019", "%s Auth Type is Locked for the UIN"),
 	FAILED_TO_ENCRYPT("IDA-MLC-020", "Unable to encrypt data"),
 	FAILED_TO_FETCH_KEY("IDA-MLC-021", "Failed to fetch key from HSM"),
+	UIN_DEACTIVATED_BLOCKED("IDA-MLC-022", "UIN is deactivated/blocked"),
+	VID_EXPIRED_DEACTIVATED_REVOKED("IDA-MLC-023", "VID is expired/deactivated"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
