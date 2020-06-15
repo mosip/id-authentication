@@ -1,27 +1,20 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
 import java.security.SecureRandom;
-import java.security.Security;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -43,6 +36,7 @@ import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -55,14 +49,12 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
-import sun.security.pkcs11.SunPKCS11;
 
 /**
  * The Class IdAuthSecurityManager.
  *
  * @author Manoj SP
  */
-@SuppressWarnings("restriction")
 @Component
 public class IdAuthSecurityManager {
 
@@ -71,12 +63,6 @@ public class IdAuthSecurityManager {
 
 	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
 	private String aesGCMTransformation;
-
-	@Value("${mosip.kernel.keymanager.softhsm.keystore-type:PKCS11}")
-	private String keyStoreType;
-
-	@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}")
-	private String keyStorePass;
 
 	@Value("${application.id}")
 	private String applicationId;
@@ -134,15 +120,9 @@ public class IdAuthSecurityManager {
 
 	@Autowired
 	private KeyAliasRepository keyAliasRepository;
-
-	private Provider provider;
-
-	@PostConstruct
-	public void getProvider() {
-		Provider provider = new SunPKCS11(configPath);
-		Security.addProvider(provider);
-		this.provider = provider;
-	}
+	
+	@Autowired
+	private KeyStore keystore;
 
 	/**
 	 * Gets the user.
@@ -323,7 +303,7 @@ public class IdAuthSecurityManager {
 
 	private Key getDecryptedKey(String encryptedKey) throws NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		Cipher cipher = Cipher.getInstance(WRAPPING_TRANSFORMATION, provider);
+		Cipher cipher = Cipher.getInstance(WRAPPING_TRANSFORMATION);
 
 		byte[] encryptedKeyData = Base64.getDecoder().decode(encryptedKey);
 		cipher.init(Cipher.DECRYPT_MODE, getMasterKeyFromHSM());
@@ -344,25 +324,14 @@ public class IdAuthSecurityManager {
 	}
 
 	private Key getMasterKeyFromHSM() {
-		try {
-			KeyStore hsmStore = KeyStore.getInstance(keyStoreType, provider);
-			hsmStore.load(null, keyStorePass.toCharArray());
-			String keyAlias = getKeyAlias();
-			if (hsmStore.isKeyEntry(keyAlias)) {
-				KeyStore.SecretKeyEntry secretEntry = (KeyStore.SecretKeyEntry) hsmStore.getEntry(keyAlias,
-						new KeyStore.PasswordProtection(keyStorePass.toCharArray()));
-				return secretEntry.getSecretKey();
-			}
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, "getMasterKeyFromHSM",
-					"HSM - Key Not found for the alias in HSM.");
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_FETCH_KEY);
-		} catch (CertificateException | NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException
-				| IOException e) {
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, "getMasterKeyFromHSM",
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_FETCH_KEY, e);
-
+		String keyAlias = getKeyAlias();
+		if (Objects.nonNull(keyAlias)) {
+			return keystore.getSymmetricKey(keyAlias);
 		}
+		
+		mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, "getMasterKeyFromHSM",
+				"No Key Alias found.");
+		throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.FAILED_TO_FETCH_KEY);
 	}
 
 	private String getKeyAlias() {
