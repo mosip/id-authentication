@@ -186,8 +186,10 @@ public class KeyManager {
 				: null;
 		if (Objects.nonNull(identity)) {
 			try {
+				String encodedData = CryptoUtil
+						.encodeBase64(toJsonString(identity, mapper).getBytes());
 				return CryptoUtil
-						.encodeBase64(securityManager.encrypt(toJsonString(identity, mapper), partnerId, null, null));
+						.encodeBase64(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 						e.getErrorText());
