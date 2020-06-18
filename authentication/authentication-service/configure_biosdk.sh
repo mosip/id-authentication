@@ -27,7 +27,7 @@ cat x* > ./biosdk-tech5.zip
 echo "Downloaded $artifactory_url_env"
 unzip biosdk-tech5.zip
 echo "Attempting to install softhsm client"
-cd ./biosdk-tech5 && /bin/bash ./install_biosdk.sh 
+/bin/bash ./install_biosdk.sh 
 echo "Installation of softhsm client complete"
 
 cd /
