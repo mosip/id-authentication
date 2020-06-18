@@ -7,20 +7,20 @@ mkdir -p /biosdk
 cd /biosdk
 
 echo "Download the softhsm client from $artifactory_url_env"
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xaa
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xab
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xac
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xad
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xae
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xaf
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xag
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xah
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xai
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xaj
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xak
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xal
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xam
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/xan
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xaa
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xab
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xac
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xad
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xae
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xaf
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xag
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xah
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xai
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xaj
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xak
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xal
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xam
+wget $artifactory_url_env/artifactory/libs-release-local/biosdk/tech5/xan
 
 cat x* > ./biosdk-tech5.zip
 
