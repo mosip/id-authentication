@@ -36,7 +36,6 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -52,9 +51,6 @@ public class InternalAuthUpdateValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
-
-	@Mock
-	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Autowired
 	private Environment environment;
@@ -222,7 +218,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Finger,bio-Iris,bio-Face");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -248,7 +244,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,,bio-Face,bio-Finger,bio-Iris");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -275,7 +271,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Finger,bio-Iris");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -329,14 +325,14 @@ public class InternalAuthUpdateValidatorTest {
 		List<AuthtypeStatus> request = new ArrayList<>();
 		AuthtypeStatus authtypeStatus = new AuthtypeStatus();
 		authtypeStatus.setAuthType(Category.BIO.getType());
-		authtypeStatus.setAuthSubType("FIR");
+		authtypeStatus.setAuthSubType("Finger");
 		request.add(authtypeStatus);
 		authTypeStatusDto.setRequest(request);
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Finger,bio-Iris,bio-Face");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);
@@ -356,7 +352,7 @@ public class InternalAuthUpdateValidatorTest {
 		List<AuthtypeStatus> request = new ArrayList<>();
 		AuthtypeStatus authtypeStatus = new AuthtypeStatus();
 		authtypeStatus.setAuthType(Category.BIO.getType());
-		authtypeStatus.setAuthSubType("FIR");
+		authtypeStatus.setAuthSubType("Finger");
 		authtypeStatus.setLocked(true);
 		request.add(authtypeStatus);
 		authTypeStatusDto.setRequest(request);
@@ -364,7 +360,7 @@ public class InternalAuthUpdateValidatorTest {
 		mockenv.setProperty("request.idtypes.allowed", "VID,UIN");
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("authrequest.received-time-allowed.minutes", "30");
-		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-FID,bio-FIR,bio-IIR,bio-FM");
+		mockenv.setProperty("auth.types.allowed", "demo,otp,bio-Face,bio-Finger,bio-Iris,bio-Face");
 		ReflectionTestUtils.setField(updateAuthtypeStatusValidator, "env", mockenv);
 		Errors errors = new BeanPropertyBindingResult(authTypeStatusDto, "authTypeStatusDto");
 		updateAuthtypeStatusValidator.validate(authTypeStatusDto, errors);

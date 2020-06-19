@@ -4,7 +4,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -27,7 +25,6 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -48,9 +45,6 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.core.util.StringUtils;
@@ -66,9 +60,6 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  */
 @Component
 public abstract class BaseAuthRequestValidator extends IdAuthValidator {
-
-	/** The Constant IDENTITY. */
-	private static final String IDENTITY = "identity";
 
 	/** The Constant OTP2. */
 	private static final String OTP2 = "OTP";
@@ -103,11 +94,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The master Data Manager. */
 	@Autowired
 	private MasterDataManager masterDataManager;
-
-	/** The id object validator. */
-	@Autowired
-	@Qualifier("pattern")
-	private IdObjectValidator idObjectValidator;
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -329,7 +315,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { String.format(IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM, i) },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else if (!allowedAvailableAuthTypes.contains(bioType)) {
+			} else if (allowedAvailableAuthTypes.stream().noneMatch(authType -> authType.equalsIgnoreCase(bioType))) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 						new Object[] { MatchType.Category.BIO.getType() + "-" + bioType },
@@ -354,38 +340,39 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateBioType(Errors errors, Set<String> availableAuthTypeInfos, DataDTO bioInfo, int bioIndex) {
 		String bioType = bioInfo.getBioType();
-		if (!availableAuthTypeInfos.contains(bioType)) {
+		if (availableAuthTypeInfos.stream().noneMatch(authType -> authType.equalsIgnoreCase(bioType))) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
 					new Object[] { String.format(IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM, bioIndex) + " - " + bioType },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			String bioSubType = bioInfo.getBioSubType();
-			if (bioSubType != null && !bioSubType.isEmpty()) {
-				// Valid bio type
-				Optional<BioAuthType> bioAuthTypeOpt = BioAuthType.getSingleBioAuthTypeForType(bioType);
-				if (bioAuthTypeOpt.isPresent()) {
-					BioAuthType bioAuthType = bioAuthTypeOpt.get();
-					Set<MatchType> associatedMatchTypes = bioAuthType.getAssociatedMatchTypes();
-					boolean invalidBioType = associatedMatchTypes.stream()
-							.filter(matchType -> matchType instanceof BioMatchType)
-							.map(matchType -> (BioMatchType) matchType).map(BioMatchType::getIdMapping)
-							.map(IdMapping::getSubType).distinct()
-							.noneMatch(idName -> idName.equalsIgnoreCase(bioSubType));
-					if (invalidBioType) {
-						errors.rejectValue(IdAuthCommonConstants.REQUEST,
-								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) + " - " + bioSubType },
-								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			if(!BioAuthType.FACE_IMG.getType().equalsIgnoreCase(bioType)) {
+				if (bioSubType != null && !bioSubType.isEmpty()) {
+					// Valid bio type
+					Optional<BioAuthType> bioAuthTypeOpt = BioAuthType.getSingleBioAuthTypeForType(bioType);
+					if (bioAuthTypeOpt.isPresent()) {
+						BioAuthType bioAuthType = bioAuthTypeOpt.get();
+						Set<MatchType> associatedMatchTypes = bioAuthType.getAssociatedMatchTypes();
+						boolean invalidBioType = associatedMatchTypes.stream()
+								.filter(matchType -> matchType instanceof BioMatchType)
+								.map(matchType -> (BioMatchType) matchType).map(BioMatchType::getIdMapping)
+								.map(IdMapping::getSubType).distinct()
+								.noneMatch(idName -> idName.equalsIgnoreCase(bioSubType));
+						if (invalidBioType) {
+							errors.rejectValue(IdAuthCommonConstants.REQUEST,
+									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+									new Object[] { String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) + " - " + bioSubType },
+									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+						}
+	
 					}
-
+				} else {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] {  String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
-
-			} else {
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] {  String.format(IdAuthCommonConstants.BIO_SUB_TYPE_INPUT_PARAM, bioIndex) },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
 	}
@@ -787,92 +774,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			validateAdAndFullAd(availableAuthTypeInfos, errors);
 		}
 
-		validatePattern(authRequest, errors);
-
-	}
-
-	/**
-	 * Validate pattern.
-	 *
-	 * @param authRequest
-	 *            the auth request
-	 * @param errors
-	 *            the errors
-	 */
-	private void validatePattern(AuthRequestDTO authRequest, Errors errors) {
-
-		try {
-			Map<String, Map<String, String>> identityMap = getOtherValues(authRequest);
-			idObjectValidator.validateIdObject(identityMap, null);
-		} catch (IdObjectValidationFailedException | IdObjectIOException | IdAuthenticationBusinessException e) {
-			if (e instanceof IdObjectValidationFailedException) {
-				for (String error : e.getErrorTexts()) {
-					String[] split = error.split("identity/");
-					errors.rejectValue(IdAuthCommonConstants.REQUEST,
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { split[1] },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Gets the other values.
-	 *
-	 * @param authRequest
-	 *            the auth request
-	 * @return the other values
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-	private Map<String, Map<String, String>> getOtherValues(AuthRequestDTO authRequest)
-			throws IdAuthenticationBusinessException {
-		Map<String, Map<String, String>> identityMap = new HashMap<>();
-		Map<String, String> valueMap = new HashMap<>();
-		IdentityDTO demographics = authRequest.getRequest().getDemographics();
-		String dob = demographics.getDob();
-		String phoneNumber = demographics.getPhoneNumber();
-		String emailId = demographics.getEmailId();
-		String pinCode = demographics.getPostalCode();
-		if (dob != null && !dob.isEmpty()) {
-			List<String> dobkey = getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB);
-			valueMap.put(dobkey.get(0), dob);
-		}
-
-		if (phoneNumber != null && !phoneNumber.isEmpty()) {
-			List<String> phonekey = getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE);
-			valueMap.put(phonekey.get(0), phoneNumber);
-		}
-
-		if (emailId != null && !emailId.isEmpty()) {
-			List<String> emailkey = getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL);
-			valueMap.put(emailkey.get(0), emailId);
-		}
-
-		if (pinCode != null && !pinCode.isEmpty()) {
-			List<String> pincodekey = getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE);
-			valueMap.put(pincodekey.get(0), pinCode);
-		}
-		identityMap.put(IDENTITY, valueMap);
-		return identityMap;
-	}
-
-	/**
-	 * Gets the id mapping value.
-	 *
-	 * @param idMapping
-	 *            the id mapping
-	 * @param matchType
-	 *            the match type
-	 * @return the id mapping value
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-	private List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
-			throws IdAuthenticationBusinessException {
-		return idInfoHelper.getIdMappingValue(idMapping, matchType);
 	}
 
 	/**

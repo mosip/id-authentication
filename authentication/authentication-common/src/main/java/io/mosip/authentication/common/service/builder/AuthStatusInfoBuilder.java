@@ -67,17 +67,17 @@ public class AuthStatusInfoBuilder {
 	/**
 	 * Builds the status info.
 	 *
-	 * @param demoMatched      the demo matched
+	 * @param matched      the demo matched
 	 * @param listMatchInputs  the list match inputs
 	 * @param listMatchOutputs the list match outputs
 	 * @param authTypes        the auth types
 	 * @param idMappingConfig the id mapping config
 	 * @return the auth status info
 	 */
-	public static AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,
+	public static AuthStatusInfo buildStatusInfo(boolean matched, List<MatchInput> listMatchInputs,
 			List<MatchOutput> listMatchOutputs, AuthType[] authTypes, IDAMappingConfig idMappingConfig) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		statusInfoBuilder.setStatus(demoMatched);
+		statusInfoBuilder.setStatus(matched);
 		prepareErrorList(listMatchOutputs, statusInfoBuilder, idMappingConfig);
 		return statusInfoBuilder.build();
 	}
@@ -197,8 +197,16 @@ public class AuthStatusInfoBuilder {
 		authTypes = BioAuthType.values();
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 		if (authTypeForMatchType.isPresent()) {
+			AuthType authType = authTypeForMatchType.get();
+			String type;
+			if(!authType.equals(BioAuthType.MULTI_MODAL)){
+				type = " - " + authType.getType();
+			} else {
+				type = "";
+			}
+			
 			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.BIO_MISMATCH,
-					authTypeForMatchType.get().getType());
+					type);
 			statusInfoBuilder.addErrors(errors);
 		}
 	}

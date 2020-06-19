@@ -25,11 +25,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
-import io.mosip.idrepository.core.dto.VidRequestDTO;
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /*
  * Fetch data's and manages entity info's from ID Repository
@@ -39,14 +35,6 @@ import io.mosip.kernel.core.util.DateUtils;
 
 @Component
 public class IdRepoManager {
-
-
-
-	private static final String VERSION = "v1";
-
-	private static final String MOSIP_VID_UPDATE = "mosip.vid.update";
-
-	private static final String VID_USED = "USED";
 
 	private static final String ERRORMESSAGE = "message";
 
@@ -89,7 +77,7 @@ public class IdRepoManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdentity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest;
 		Map<String, Object> response = null;
@@ -159,7 +147,7 @@ public class IdRepoManager {
 		String rid = null;
 		try {
 			Map<String, String> params = new HashMap<>();
-			params.put("appId", environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+			params.put("appId", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_APPID));
 			params.put("uid", idvId);
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.USERID_RID, null, Map.class);
 
@@ -208,10 +196,8 @@ public class IdRepoManager {
 			}
 			buildRequest.setPathVariables(params);
 			idRepoResponse = restHelper.requestSync(buildRequest);
-			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS).equalsIgnoreCase(
+			if (!environment.getProperty(IdRepoConstants.ACTIVE_STATUS).equalsIgnoreCase(
 					(String) ((Map<String, Object>) idRepoResponse.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
-				idRepoResponse.put(IdAuthCommonConstants.UIN, getUINfromIDentityResponse(idRepoResponse));
-			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			}
 		} catch (RestServiceException e) {
@@ -243,18 +229,6 @@ public class IdRepoManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return idRepoResponse;
-	}
-
-	@SuppressWarnings("unchecked")
-	private String getUINfromIDentityResponse(Map<String, Object> idRepoResponse) {
-		return Optional.ofNullable(idRepoResponse.get(IdAuthCommonConstants.RESPONSE))
-				.filter(obj -> obj instanceof Map)
-				.map(obj -> ((Map<String, Object>)obj).get(IdAuthCommonConstants.IDENTITY))
-				.filter(obj -> obj instanceof Map)
-				.map(obj -> ((Map<String, Object>)obj).get(IdAuthCommonConstants.UIN_CAPS))
-				.filter(obj -> obj instanceof Number)
-				.map(obj -> String.valueOf(obj))
-				.orElse(null);
 	}
 
 	/**
@@ -323,33 +297,4 @@ public class IdRepoManager {
 		return uin;
 	}
 
-	/**
-	 * Update VI dstatus.
-	 *
-	 * @param vid the vid
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
-		RestRequestDTO restRequest;
-		RequestWrapper<VidRequestDTO> request = new RequestWrapper<>();
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		vidRequest.setVidStatus(VID_USED);
-		request.setId(MOSIP_VID_UPDATE);
-		request.setRequest(vidRequest);
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
-		request.setVersion(VERSION);
-		try {
-			restRequest = restRequestFactory.buildRequest(RestServicesConstants.VID_UPDATE_STATUS_SERVICE, request,
-					ResponseWrapper.class);
-			Map<String, String> pathVariables = new HashMap<>();
-			pathVariables.put("vid", vid);
-			restRequest.setPathVariables(pathVariables);
-			restHelper.requestAsync(restRequest);
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-		}
-
-	}
 }

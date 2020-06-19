@@ -76,10 +76,10 @@ public class InternalAuthControllerTest {
 
 	@Mock
 	private RestHelper restHelper;
-
+	
 	@Autowired
-	Environment env;
-
+	Environment env;	
+	
 	@InjectMocks
 	private RestRequestFactory restFactory;
 
@@ -262,7 +262,7 @@ public class InternalAuthControllerTest {
 
 		BioIdentityInfoDTO IrisDto = new BioIdentityInfoDTO();
 		DataDTO irisdata = new DataDTO();
-		irisdata.setBioType("IIR");
+		irisdata.setBioType("Iris");
 		irisdata.setBioSubType("LEFT");
 		irisdata.setDeviceProviderID("provider001");
 		irisdata.setBioValue(value);
@@ -271,8 +271,7 @@ public class InternalAuthControllerTest {
 
 		BioIdentityInfoDTO faceDto = new BioIdentityInfoDTO();
 		DataDTO facedata = new DataDTO();
-		facedata.setBioType("FID");
-		facedata.setBioSubType("FACE");
+		facedata.setBioType("Face");
 		facedata.setDeviceProviderID("provider001");
 		facedata.setBioValue(value);
 		faceDto.setData(facedata);
@@ -289,7 +288,7 @@ public class InternalAuthControllerTest {
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
 		authController.authenticate(authRequestDTO, error);
-	}
+	}	
 
 	private AuthRequestDTO getRequestDto() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();

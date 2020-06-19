@@ -10,15 +10,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -31,6 +32,9 @@ public class AuthtypeStatusImplTest {
 
 	@InjectMocks
 	private AuthtypeStatusImpl authtypeStatusImpl;
+	
+	@Mock
+	private IdAuthSecurityManager securityManager;
 
 	@Mock
 	private IdServiceImpl idService;
@@ -45,7 +49,7 @@ public class AuthtypeStatusImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn("213213214325254326643");
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("213213214325254326643");
 		
 		List<Object[]> valuelist = new ArrayList<>();
 		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
@@ -60,7 +64,7 @@ public class AuthtypeStatusImplTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		Mockito.when(idService.getUinHash(Mockito.anyString())).thenReturn("213213214325254326643");
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("213213214325254326643");
 
 		List<Object[]> valuelist = new ArrayList<>();
 		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};

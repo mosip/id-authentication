@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -72,7 +73,6 @@ import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.tcp.BlockingNettyContext;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RestUtilTest.
  *
@@ -967,5 +967,33 @@ public class RestHelperTest {
 		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-401\"}]}";
 		ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse",
 				mapper.readValue(response.getBytes(), Object.class), ObjectNode.class);
+	}
+	
+	@Test
+	public void testContainsError_NoErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testContainsError_NullErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\": null}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testContainsError_EmptyErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\": []}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testContainsError_hasErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\": [{\"errorCode\":\"111\",\"errorMessage\":\"abc\"}]}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertTrue(result);
 	}
 }

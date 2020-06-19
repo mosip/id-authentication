@@ -4,7 +4,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_HANDLE_STATUS_ERROR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_ASYNC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_RESPONSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
@@ -75,17 +74,16 @@ public class RestHelperImpl implements RestHelper{
 			requestTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				if(response != null && containsError(response.toString())) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
+				}
 				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			} else {
 				response = request(request).block();
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
 				checkErrorResponse(response, request.getResponseType());
 				return (T) response;
 			}
@@ -116,10 +114,13 @@ public class RestHelperImpl implements RestHelper{
 		}
 
 	}
+	
+	private boolean containsError(String response) {
+		return RestHelper.super.containsError(response, mapper);
+	}
 
 	@Override
 	public Supplier<Object> requestAsync(io.mosip.authentication.core.dto.RestRequestDTO request) {
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");

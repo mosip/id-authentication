@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.9-SNAPSHOT</version>
 	</parent>
-	<version>1.0.7</version>
+	<version>1.0.9-SNAPSHOT</version>
 
 	<artifactId>authentication-service</artifactId>
 	<packaging>jar</packaging>
@@ -38,8 +38,6 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${kernel-core.version}</version>
 		</dependency>
-
-		<!-- Kernel Template -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
@@ -55,45 +53,41 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
-
-
-		<!-- Kernel Hibernate Impl -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel-dataaccess-hibernate.version}</version>
 		</dependency>
-
-		<!-- Kernel Id Validator UIN -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-uin</artifactId>
 			<version>${kernel-idvalidator-uin.version}</version>
 		</dependency>
-
-		<!-- Kernel Id Validator VID -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel-idvalidator-vid.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-tokenid</artifactId>
 			<version>${kernel-idgenerator-tokenid.version}</version>
 		</dependency>
-
-		<!-- Postgres -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-bioapi-provider</artifactId>
+			<version>${kernel-bioapi-provider.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>mock-sdk</artifactId>
+			<groupId>io.mosip.mock.sdk</groupId>
+			<version>${mock-sdk-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 		</dependency>
-
-		<!-- Sprint Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -120,25 +114,27 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
-
-		<!-- Commons Lang -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${commons.lang.version}</version>
 		</dependency>
-
-		<!-- Commons Lang -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
 			<version>${kernel-cbeffutil-api.version}</version>
 		</dependency>
-
-
-
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>${io.micrometer.prometheus.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<version>${io.micrometer.prometheus.version}</version>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

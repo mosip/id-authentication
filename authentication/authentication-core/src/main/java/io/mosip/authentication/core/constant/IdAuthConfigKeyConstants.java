@@ -87,20 +87,31 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUTH_TRANSACTION = "auth.transactions";
 	public static final String AUTH_TYPE_READ = "authtype.status.read";
 	public static final String AUTH_TYPE_UPDATE = "authtype.status.update";
+	public static final String EVENT_NOTIFY = "event.notify";
 	public static final String UIN_SALT_MODULO = "ida.uin.salt.modulo";
 	public static final String MOSIP_UTC_TIME= "mosip.utc-datetime-pattern";
 	
 	public static final String MOSIP_IDA_AUTH_CLIENTID="mosip.ida.auth.clientId";
+	public static final String MOSIP_IDA_AUTH_APPID="mosip.ida.auth.appId";
 	public static final String FINGERPRINT_PROVIDER = "ida.fingerprint.provider";
+	public static final String FINGERPRINT_PROVIDER_ARGS = "ida.fingerprint.provider.args";
 	public static final String FACE_PROVIDER = "ida.face.provider";
+	public static final String FACE_PROVIDER_ARGS = "ida.face.provider.args";
 	public static final String IRIS_PROVIDER = "ida.iris.provider";
+	public static final String IRIS_PROVIDER_ARGS = "ida.iris.provider.args";
+	public static final String BIO_SDK_INTEGRATOR = "ida.bio.sdk.integrator";
+	public static final String BIO_SDK_INTEGRATOR_ARGS = "ida.bio.sdk.integrator.args";
 	public static final String COMPOSITE_BIO_PROVIDER = "ida.composite.biometric.provider";
+	public static final String COMPOSITE_BIO_PROVIDER_ARGS = "ida.composite.biometric.provider.args";
 	public static final String OTP_INTERNAL_ID_SUFFIX = "otp.internal";
 	public static final String ID_TYPE_ALIAS = "mosip.%s.alias";
 	public static final String IDA_AAD_LASTBYTES_NUM = "ida.aad.lastbytes.num";
 	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
 	
-	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";
+	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";	
+
+	public static final String IDA_SIGN_REFID="ida.sign.refid";
+	public static final String IDA_SIGN_APPID="ida.sign.applicationid";
 	
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 

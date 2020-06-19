@@ -21,11 +21,10 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -45,6 +44,8 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
@@ -108,10 +109,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private TokenIdManager tokenIdManager;
 
-	/** The id repo manager. */
-	@Autowired
-	private IdRepoManager idRepoManager;
-
 	@Autowired
 	private UinEncryptSaltRepo uinEncryptSaltRepo;
 
@@ -122,10 +119,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	private AuthtypeStatusService authTypeStatusService;
 
 	@Autowired
-	private IdAuthTransactionManager transactionManager;
+	private IdAuthSecurityManager securityManager;
 	
 	@Autowired
 	private PartnerService partnerService;
+	
+	@Autowired
+	private IdInfoFetcher idInfoFetcher;
 
 	/*
 	 * (non-Javadoc)
@@ -143,14 +143,14 @@ public class AuthFacadeImpl implements AuthFacade {
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
 				authRequestDTO.getRequestedAuth().isBio());
 		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
-			idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
+			idService.updateVIDstatus(authRequestDTO.getIndividualId());
 		}
-		validateAuthTypeStatus(authRequestDTO);
+		String uin = idService.getUin(idResDTO);
+		validateAuthTypeStatus(authRequestDTO, uin);
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String uin = idResDTO.get("uin") == null ? null : String.valueOf(idResDTO.get("uin"));
 		String staticTokenId = null;
 		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 		try {
@@ -159,7 +159,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
-			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
+			authStatusList.stream()
+						.filter(Objects::nonNull)
+						.forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			// Set static token
 			if (staticTokenRequired) {
@@ -179,9 +181,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
-	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, String uin) throws IdAuthenticationBusinessException {
 		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
-				.fetchAuthtypeStatus(authRequestDTO.getIndividualId(), IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
+				.fetchAuthtypeStatus(uin);
 		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
 			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
 				validateAuthTypeStatus(authRequestDTO, authTypeStatus);
@@ -202,10 +204,18 @@ public class AuthFacadeImpl implements AuthFacade {
 
 			else if (authRequestDTO.getRequestedAuth().isBio()
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								MatchType.Category.BIO.getType()));
+				for (AuthType authType : BioAuthType.getSingleBioAuthTypes().toArray(s -> new AuthType[s])) {
+					if(authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
+						if(authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
+							throw new IdAuthenticationBusinessException(
+									IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+									String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+											MatchType.Category.BIO.getType() + "-" + authType.getType()));
+						} else {
+							break;
+						}
+					}
+				}
 			}
 
 			else if (authRequestDTO.getRequestedAuth().isOtp()
@@ -256,13 +266,23 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
 
-		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
-
-		processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
-
-		processPinAuth(authRequestDTO, uin, authStatusList, idType, staticTokenId, isAuth, partnerId);
-
+		if(!isMatchFailed(authStatusList)) {
+			processPinAuth(authRequestDTO, uin, authStatusList, idType, staticTokenId, isAuth, partnerId);
+		}
+		
+		if(!isMatchFailed(authStatusList)) {
+			processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
+		}
+		
+		if(!isMatchFailed(authStatusList)) {
+			processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, staticTokenId, partnerId);
+		}
+		
 		return authStatusList;
+	}
+
+	private boolean isMatchFailed(List<AuthStatusInfo> authStatusList) {
+		return authStatusList.stream().anyMatch(st -> st != null && !st.isStatus());
 	}
 
 	/**
@@ -540,7 +560,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				.withInternal(isInternal)
 				.withPartner(partner)
 				.withStatus(isStatus)
-				.build(env, uinEncryptSaltRepo, uinHashSaltRepo, transactionManager);
+				.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 	}
 
 }

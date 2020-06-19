@@ -16,9 +16,9 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 
 public class BioAuthTypeTest {
 	
@@ -32,10 +32,11 @@ public class BioAuthTypeTest {
 		String language = "";
 		Map<String, Object> result;
 
+		@SuppressWarnings("unchecked")
+		TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> matchFunction = Mockito.mock(TriFunctionWithBusinessException.class);
 		// default test
-		BioMatcherUtil bioMatcherUtil = Mockito.mock(BioMatcherUtil.class);
-		Mockito.when(idInfoFetcher.getBioMatcherUtil()).thenReturn(bioMatcherUtil);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
+		Mockito.when(idInfoFetcher.getMatchFunction(Mockito.any())).thenReturn(matchFunction);
+		Mockito.when(matchFunction.apply(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
 		result = testSubject.getMatchProperties(authRequestDTO, idInfoFetcher, language);
 		
 		assertTrue(result.isEmpty());
@@ -68,13 +69,13 @@ public class BioAuthTypeTest {
 	
 	@Test
 	public void testGetMatchPropertiesFgrImgSingle() throws Exception {
-		testSingleBioAuthType(BioAuthType.FGR_IMG, "FIR", true);
+		testSingleBioAuthType(BioAuthType.FGR_IMG, "Finger", true);
 	}
 	
 	
 	@Test
 	public void testGetMatchPropertiesIIRSingle() throws Exception {
-		testSingleBioAuthType(BioAuthType.IRIS_IMG, "IIR", true);
+		testSingleBioAuthType(BioAuthType.IRIS_IMG, "Iris", true);
 	}
 	
 	@Test
@@ -89,13 +90,13 @@ public class BioAuthTypeTest {
 	
 	@Test
 	public void testGetMatchPropertiesFgrImgMulti() throws Exception {
-		testSingleBioAuthType(BioAuthType.FGR_IMG_COMPOSITE, "FIR", false);
+		testSingleBioAuthType(BioAuthType.FGR_IMG_COMPOSITE, "Finger", false);
 	}
 	
 	
 	@Test
 	public void testGetMatchPropertiesIIRMulti() throws Exception {
-		testSingleBioAuthType(BioAuthType.IRIS_COMP_IMG, "IIR", false);
+		testSingleBioAuthType(BioAuthType.IRIS_COMP_IMG, "Iris", false);
 	}
 	
 	@Test
@@ -108,20 +109,21 @@ public class BioAuthTypeTest {
 		Map<String, Object> result;
 
 		// default test
-		BioMatcherUtil bioMatcherUtil = Mockito.mock(BioMatcherUtil.class);
-		Mockito.when(idInfoFetcher.getBioMatcherUtil()).thenReturn(bioMatcherUtil);
-		Mockito.when(bioMatcherUtil.matchValue(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
-		
+		@SuppressWarnings("unchecked")
+		TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> matchFunction = Mockito.mock(TriFunctionWithBusinessException.class);
+		// default test
+		Mockito.when(idInfoFetcher.getMatchFunction(Mockito.any())).thenReturn(matchFunction);
+		Mockito.when(matchFunction.apply(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(60.0);
 		
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		
 		DataDTO data = new DataDTO();
-		data.setBioType("FIR");
+		data.setBioType("Finger");
 		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "");
 		biometrics.add(bioIdentity);
 		
 		data = new DataDTO();
-		data.setBioType("IIR");
+		data.setBioType("Iris");
 		bioIdentity = new BioIdentityInfoDTO(data, "", "", "");
 			biometrics.add(bioIdentity);
 		

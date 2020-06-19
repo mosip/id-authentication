@@ -13,6 +13,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
  * List of all IDA error codes and its respective error messages.
  * 
  * @author Manoj SP
+ * @author Nagarjuna K
  *
  */
 public enum IdAuthenticationErrorConstants {
@@ -53,6 +54,9 @@ public enum IdAuthenticationErrorConstants {
 	ID_NOT_AVAILABLE("IDA-MLC-018", "%s not available in database"),
 	AUTH_TYPE_LOCKED("IDA-MLC-019", "%s Auth Type is Locked for the UIN"),
 	FAILED_TO_ENCRYPT("IDA-MLC-020", "Unable to encrypt data"),
+	FAILED_TO_FETCH_KEY("IDA-MLC-021", "Failed to fetch key from HSM"),
+	UIN_DEACTIVATED_BLOCKED("IDA-MLC-022", "UIN is deactivated/blocked"),
+	VID_EXPIRED_DEACTIVATED_REVOKED("IDA-MLC-023", "VID is expired/deactivated"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
@@ -62,7 +66,7 @@ public enum IdAuthenticationErrorConstants {
     DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
 	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
 
-	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
+	BIO_MISMATCH("IDA-BIA-001", "Biometric data%s did not match", "Please give your biometrics again"),
 	DUPLICATE_FINGER("IDA-BIA-002", "Duplicate fingers in request", "Please try again with distinct fingers"),
 	FINGER_EXCEEDING("IDA-BIA-003", "Number of Fingers should not exceed %s"),
 	INVALID_DEVICEID("IDA-BIA-004", "Device not registered with MOSIP"),
@@ -70,9 +74,9 @@ public enum IdAuthenticationErrorConstants {
 	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
 			"Your Biometric data is not available in MOSIP"),
 	DUPLICATE_IRIS("IDA-BIA-007", "Duplicate Irises in request", "Please try again with distinct Irises"),
-	IRIS_EXCEEDING("IDA-BIA-008", "Number of IIR should not exceed 2"),
+	IRIS_EXCEEDING("IDA-BIA-008", "Number of Iris should not exceed 2"),
 	FACE_EXCEEDING("IDA-BIA-009", "Number of FACE records should not exceed 1"),
-	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
+	FINGER_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
 	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
 	INVALID_MDS("IDA-BIA-012", "MDS verification failed"),
 	INVALID_HASH("IDA-BIA-014", "Hash Validation Failed"),
@@ -107,6 +111,7 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_POLICY_NOTMAPPED("IDA-MPA-014", "Partner is not assigned with any policy"),
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
 	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
+	PARTNER_POLICY_NOT_ACTIVE("IDA-MPA-019", "Partner policy is not active"),
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 
@@ -125,8 +130,14 @@ public enum IdAuthenticationErrorConstants {
 	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
 	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
 
-	;
-
+	//Partner and Misp validations
+	PARTNER_NOT_ACTIVE("PMS_PMP_016","Partner is not active."),
+	PARTNER_NOT_MAPPED_TO_POLICY("PMS_PMP_017","Partner is not mapped to any policy."),
+	MISP_LICENSE_KEY_NOT_EXISTS("PMS_PMP_020","MISP license key not exists."),
+	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
+	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
+	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked");
+	
 	private final String errorCode;
 	private final String errorMessage;
 	private String actionMessage;

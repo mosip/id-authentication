@@ -4,7 +4,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_HANDLE_STATUS_ERROR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_ASYNC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PREFIX_RESPONSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
@@ -66,7 +65,7 @@ public class RestHelperImpl implements RestHelper {
 	private static final String KER_ATH_TOKEN_EXPIRY_ERROR_CODE = "KER-ATH-401";
 
 	private static final String GENERATE_AUTH_TOKEN = "generateAuthToken";
-
+	
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -98,8 +97,6 @@ public class RestHelperImpl implements RestHelper {
 			requestTime = DateUtils.getUTCCurrentDateTime();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					PREFIX_REQUEST + request);
 			if (retry <= 1) {
 				if (request.getTimeout() != null) {
 					response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout()))
@@ -109,8 +106,10 @@ public class RestHelperImpl implements RestHelper {
 				}
 			}
 			checkErrorResponse(response, request.getResponseType());
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					PREFIX_RESPONSE + response);
+			if(response != null && containsError(response.toString())) {
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_RESPONSE + response);
+			}
 			return (T) response;
 
 		} catch (WebClientResponseException e) {
@@ -148,6 +147,10 @@ public class RestHelperImpl implements RestHelper {
 							+ ((double) duration / 1000));
 		}
 	}
+	
+	private boolean containsError(String response) {
+		return RestHelper.super.containsError(response, mapper);
+	}
 
 	/**
 	 * Request to send/receive HTTP requests and return the response asynchronously.
@@ -157,8 +160,6 @@ public class RestHelperImpl implements RestHelper {
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-					PREFIX_REQUEST + request);
 			Mono<?> sendRequest = request(request, getSslContext());
 			sendRequest.subscribe();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,

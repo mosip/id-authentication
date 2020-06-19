@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -71,6 +74,9 @@ public class InternalAuthTypeControllerTest {
 	@Mock
 	private AuditHelper auditHelper;
 	
+	@Mock
+	private IdAuthSecurityManager securityManager;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.invokeMethod(authTypeController, "initBinder", binder);
@@ -79,6 +85,7 @@ public class InternalAuthTypeControllerTest {
 		ReflectionTestUtils.setField(authTypeController, "environment", environment);
 		ReflectionTestUtils.setField(authTypeController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authtypeStatusValidator, "env", environment);
+		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 	}
 
 	@Test

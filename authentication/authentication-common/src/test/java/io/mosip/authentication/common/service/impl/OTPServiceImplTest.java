@@ -32,15 +32,17 @@ import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -61,7 +63,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
-		IDAMappingFactory.class, PartnerServiceImpl.class })
+		IDAMappingFactory.class, PartnerServiceImpl.class,PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
 @WebMvcTest
 public class OTPServiceImplTest {
 
@@ -108,7 +110,7 @@ public class OTPServiceImplTest {
 	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Mock
-	private IdAuthTransactionManager idAuthTransactionManager;
+	private IdAuthSecurityManager idAuthSecurityManager;
 	
 	@Autowired
 	PartnerService partnerService;
@@ -118,7 +120,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(otpServiceImpl, "env", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "uinEncryptSaltRepo", uinEncryptSaltRepo);
 		ReflectionTestUtils.setField(otpServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
-		ReflectionTestUtils.setField(otpServiceImpl, "transactionManager", idAuthTransactionManager);
+		ReflectionTestUtils.setField(otpServiceImpl, "securityManager", idAuthSecurityManager);
 		ReflectionTestUtils.setField(otpServiceImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(otpServiceImpl, "idInfoFetcher", idInfoFetcherImpl);
@@ -143,10 +145,12 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getUin(Mockito.any())).thenReturn("426789089018");
+
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
 		ResponseWrapper<Map> response = new ResponseWrapper<>();
@@ -167,7 +171,8 @@ public class OTPServiceImplTest {
 		otpRequestDto.setTransactionID("1234567890");
 		ArrayList<String> channelList = new ArrayList<String>();
 		otpRequestDto.setOtpChannel(channelList);
-		otpRequestDto.setIndividualId("2345678901234");
+		String individualId = "2345678901234";
+		otpRequestDto.setIndividualId(individualId);
 		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
 		otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		Map<String, Object> valueMap = new HashMap<>();
@@ -188,6 +193,8 @@ public class OTPServiceImplTest {
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getUin(Mockito.any())).thenReturn(individualId);
+
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
@@ -203,7 +210,7 @@ public class OTPServiceImplTest {
 		.thenReturn(valueMap);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 	
 
 		
@@ -243,7 +250,7 @@ public class OTPServiceImplTest {
 		.thenReturn(valueMap);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 	
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
 	   try {	
@@ -274,15 +281,16 @@ public class OTPServiceImplTest {
 		identityInfoDTO.setValue("abc@test.com");
 		mailList.add(identityInfoDTO);
 		idInfo.put("email", mailList);
-		valueMap.put("uin", "426789089018");
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getUin(Mockito.any())).thenReturn("2345678901234");
+
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		RestRequestDTO value = getRestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(value);
 		ResponseWrapper<Map> response = new ResponseWrapper<>();

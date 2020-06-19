@@ -36,21 +36,32 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
+ADD configure_start.sh configure_start.sh
+
+RUN chmod +x configure_start.sh
+
 ADD target/authentication-service-*.jar authentication-service.jar
 
-#Downloading external dependencies 
-ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/ABISTech5FaceSDKAdapter_v2.jar ABISTech5FaceSDKAdapter_v2.jar
-ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/t5-finger-iris-mosip-auth-v1.2.jar t5-finger-iris-mosip-auth-v1.2.jar 
-ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/tech5-sdk-v1.5.1.jar tech5-sdk-v1.5.1.jar 
-ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/so-files.zip so-files.zip
+#VOLUME /softhsm
 
-RUN apt-get update && apt-get install -y unzip
-RUN unzip so-files.zip
-RUN rm -rf so-files.zip
+#Downloading external dependencies 
+#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/ABISTech5FaceSDKAdapter_v2.jar ABISTech5FaceSDKAdapter_v2.jar
+#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/t5-finger-iris-mosip-auth-v1.2.jar t5-finger-iris-mosip-auth-v1.2.jar 
+#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/tech5-sdk-v1.5.1.jar tech5-sdk-v1.5.1.jar 
+#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/so-files.zip so-files.zip
+
+#RUN apt-get update && apt-get install -y unzip
+#RUN unzip so-files.zip
+#RUN rm -rf so-files.zip
 
 EXPOSE 8090
-RUN ls -la
-RUN ls -la so-files/
+
+EXPOSE 9010
+
+#RUN ls -la
+#RUN ls -la so-files/
+
+ENTRYPOINT [ "/configure_start.sh" ]
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
@@ -59,9 +70,9 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     rm -rf glowroot.zip ; \
     
     sed -i 's/<service_name>/authentication-service/g' glowroot/glowroot.properties ; \
-    java -Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
+    cd /; java -jar -Djava.security.debug=sunpkcs11 -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
     else \
-    java -Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
+    cd /; java -jar -Djava.security.debug=sunpkcs11 -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" authentication-service.jar ; \
     fi
-#CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "authentication-service.jar"]
+#CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "/authentication-service.jar"]
 

@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -176,13 +175,13 @@ public class AuditHelperTest {
 		
 		bioId1 = new BioIdentityInfoDTO();
 		data1 = new DataDTO();
-		data1.setBioType("FIR");
+		data1.setBioType("Finger");
 		bioId1.setData(data1 );
 		biometrics.add(bioId1);
 		
 		bioId1 = new BioIdentityInfoDTO();
 		data1 = new DataDTO();
-		data1.setBioType("IIR");
+		data1.setBioType("Iris");
 		bioId1.setData(data1 );
 		biometrics.add(bioId1);
 		

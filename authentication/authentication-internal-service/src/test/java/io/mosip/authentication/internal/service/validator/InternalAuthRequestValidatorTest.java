@@ -46,7 +46,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -62,9 +61,6 @@ public class InternalAuthRequestValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
-
-	@Mock
-	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Autowired
 	private Environment environment;
@@ -345,7 +341,7 @@ public class InternalAuthRequestValidatorTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("Left Thumb");
-		dataDTO.setBioType("FIR");
+		dataDTO.setBioType("Finger");
 		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -366,7 +362,7 @@ public class InternalAuthRequestValidatorTest {
 		irisData.setDigitalId(digitalId1);
 		irisData.setBioValue("iris img");
 		irisData.setBioSubType("Left");
-		irisData.setBioType("IIR");
+		irisData.setBioType("Iris");
 		irisData.setDeviceProviderID("provider001");
 		irisData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -386,7 +382,6 @@ public class InternalAuthRequestValidatorTest {
 		faceData.setDigitalId(digitalId2);
 		faceData.setBioValue("face img");
 		faceData.setBioType("FACE");
-		faceData.setBioSubType("FACE");
 		faceData.setDeviceProviderID("provider001");
 		faceData.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());

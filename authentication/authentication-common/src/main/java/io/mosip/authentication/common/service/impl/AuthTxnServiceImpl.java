@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -35,12 +36,12 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	/** The Constant DEFAULT_PAGE_START. */
 	private static final int DEFAULT_PAGE_START = 1;
 
-	/** The Constant UIN_KEY. */
-	private static final String UIN_KEY = "uin";
-
 	/** The id service. */
 	@Autowired
 	private IdService<AutnTxn> idService;
+	
+	@Autowired
+	private IdAuthSecurityManager securityManager;
 
 	/** The authtxn repo. */
 	@Autowired
@@ -75,7 +76,9 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		
 		String individualId = authtxnrequestdto.getIndividualId();
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
-		if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
+		if (idResDTO != null && !idResDTO.isEmpty()) {
+			String uin = idService.getUin(idResDTO);
+
 			Integer pageStart = authtxnrequestdto.getPageStart();
 			Integer pageFetch = authtxnrequestdto.getPageFetch();
 			
@@ -94,9 +97,8 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 				}
 			}
 			
-			String uin = String.valueOf(idResDTO.get(UIN_KEY));
 			
-			String hashedUin = idService.getUinHash(uin);
+			String hashedUin = securityManager.hash(uin);
 			
 			PageRequest pageRequest = getPageRequest(pageStart, pageFetch, fetchAllRecords);
 			

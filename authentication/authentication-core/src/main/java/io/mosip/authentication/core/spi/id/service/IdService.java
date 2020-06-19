@@ -73,10 +73,34 @@ public interface IdService<T> {
 			throws IdAuthenticationBusinessException;
 	
 	/**
-	 * Gets the uin hash for the UIN.
+	 * Gets the demo data.
 	 *
-	 * @param uin the uin
-	 * @return the uin hash
+	 * @param identity the identity
+	 * @return the demo data
 	 */
-	public String getUinHash(String uin);
+	byte[] getDemoData(Map<String, Object> identity);
+	
+	/**
+	 * Gets the bio data.
+	 *
+	 * @param identity the identity
+	 * @return the bio data
+	 */
+	byte[] getBioData(Map<String, Object> identity);
+
+	/**
+	 * Gets the uin.
+	 *
+	 * @param idResDTO the id res DTO
+	 * @return the uin
+	 */
+	String getUin(Map<String, Object> idResDTO);
+
+	/**
+	 * Update VID status.
+	 *
+	 * @param individualId the individual id
+	 */
+	void updateVIDstatus(String individualId) throws IdAuthenticationBusinessException;
+	
 }

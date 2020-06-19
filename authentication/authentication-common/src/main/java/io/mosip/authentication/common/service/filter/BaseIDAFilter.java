@@ -11,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -158,7 +161,7 @@ public abstract class BaseIDAFilter implements Filter {
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
 			response.getWriter().write(responseAsString);
-		} catch (IdAuthenticationAppException e) {
+		} catch (IdAuthenticationAppException  e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			requestWrapper.resetInputStream();
@@ -184,7 +187,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	@SuppressWarnings("unchecked")
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
-			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationAppException ex)
+			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationBaseException ex)
 			throws IOException {
 		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper);
 		Map<String, Object> responseMap = mapper.convertValue(responseObj, new TypeReference<Map<String, Object>>() {
@@ -319,11 +322,15 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getResponseBody(String responseBody) throws IdAuthenticationAppException {
-		try {
-			return mapper.readValue(responseBody, Map.class);
-		} catch (IOException | ClassCastException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		if (responseBody != null && !responseBody.isEmpty()) {
+			try {
+				return mapper.readValue(responseBody, Map.class);
+			} catch (IOException | ClassCastException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
+		} else {
+			return new HashMap<>();
 		}
 	}
 
@@ -335,6 +342,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
 	 * @param requestBody    the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
@@ -470,7 +478,7 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
 			requestWrapper.resetInputStream();
-			responseMap.replace(VERSION,
+			responseMap.put(VERSION,
 					env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
 			requestWrapper.resetInputStream();
 			responseMap.put(IdAuthCommonConstants.ID,

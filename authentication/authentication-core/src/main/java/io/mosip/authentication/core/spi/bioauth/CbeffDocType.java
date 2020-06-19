@@ -11,9 +11,10 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 public enum CbeffDocType {
 
 	/**
-	 * Enum for FIR
+	 * Enum for Finger
 	 */
-	FIR(SingleType.FINGER.name(), SingleType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER),
+	FINGER(SingleType.FINGER.name(), SingleType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER),
+	//To be removed
 	/**
 	 * Enum for FMR
 	 */

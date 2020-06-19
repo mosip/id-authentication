@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_MIDDLE, BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE,
 					BioMatchType.FGRMIN_RIGHT_THUMB, BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE,
 					BioMatchType.FGRMIN_RIGHT_RING, BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
-			getFingerprintName(), count -> count == 1, "bio-FMR", "fmr") {
+			getFingerprintName(), count -> count == 0 /** Note: count is set to zero to disable this **/, "bio-FMR", "fmr") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				String language) {
@@ -47,12 +48,12 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRMIN_COMPOSITE);
 		}
 	},
-	FGR_IMG("FIR",
+	FGR_IMG("Finger",
 			AuthType.setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX,
 					BioMatchType.FGRIMG_LEFT_MIDDLE, BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE,
 					BioMatchType.FGRIMG_RIGHT_THUMB, BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE,
 					BioMatchType.FGRIMG_RIGHT_RING, BioMatchType.FGRIMG_RIGHT_LITTLE, BioMatchType.FGRIMG_UNKNOWN),
-			getFingerprintName(), value -> value == 1, "bio-FIR", "fir") {
+			getFingerprintName(), value -> value == 1, "bio-Finger", "Finger") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -67,7 +68,7 @@ public enum BioAuthType implements AuthType {
 	},
 	//TODO to be removed
 	FGR_MIN_COMPOSITE("FMR", AuthType.setOf(BioMatchType.FGRMIN_COMPOSITE), getFingerprintName(), value -> value == 2,
-			"bio-FIR", "bio") {
+			"bio-Finger", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -87,9 +88,9 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 
-	FGR_IMG_COMPOSITE("FIR", AuthType.setOf(BioMatchType.FGRIMG_COMPOSITE), getFingerprintName(), 
+	FGR_IMG_COMPOSITE("Finger", AuthType.setOf(BioMatchType.FGRIMG_COMPOSITE), getFingerprintName(), 
 			value -> value >= 2 && value <= 10,
-			"bio-FIR", "bio") {
+			"bio-Finger", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -109,7 +110,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 
-	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), getIrisName(), value -> value == 2, "bio-IIR", "bio") {
+	IRIS_COMP_IMG("Iris", AuthType.setOf(BioMatchType.IRIS_COMP), getIrisName(), value -> value == 2, "bio-Iris", "bio") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -129,8 +130,8 @@ public enum BioAuthType implements AuthType {
 		}
 
 	},
-	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), getIrisName(),
-			value -> value == 1, "bio-IIR", "iir") {
+	IRIS_IMG("Iris", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), getIrisName(),
+			value -> value == 1, "bio-Iris", "Iris") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -149,8 +150,8 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FACE", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), getFaceName(), value -> value == 1,
-			"bio-FACE", "fid") {
+	FACE_IMG("FACE", AuthType.setOf(BioMatchType.FACE), getFaceName(), value -> value == 1,
+			"bio-FACE", "Face") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -174,7 +175,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public String[] getTypes() {
-			return new String[] {FGR_IMG.getType(), IRIS_IMG.getType(), FACE_IMG.getType()};
+			return getSingleBioAuthTypes().map(BioAuthType::getType).toArray(s -> new String[s]);
 		}
 		
 		@Override
@@ -269,12 +270,12 @@ public enum BioAuthType implements AuthType {
 	
 	protected Map<String, Object> getSingleMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
 		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
-				.getBioMatcherUtil()::matchValue);
+				.getMatchFunction(this));
 	}
 	
 	protected Map<String, Object> getMultiMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
 		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
-				.getBioMatcherUtil()::matchMultiValue);
+				.getMatchFunction(this));
 	}
 	
 	protected Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, 
@@ -315,12 +316,7 @@ public enum BioAuthType implements AuthType {
 	}
 	
 	private static Long getFaceValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		long entries = 0;
-		for (MatchType matchType : AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN)) {
-			entries += (long) helper.getIdentityRequestInfo(matchType, reqDTO.getRequest(), null).size();
-		}
-		return entries;
-
+		return (long) helper.getIdentityRequestInfo(BioMatchType.FACE, reqDTO.getRequest(), null).size();
 	}
 
 	/*
@@ -400,6 +396,15 @@ public enum BioAuthType implements AuthType {
 			int singleBioCount = 1;
 			return authType.getType().equalsIgnoreCase(type) && authType.getCountPredicate().test(singleBioCount);
 		}).findAny();
+	}
+
+	public static Stream<BioAuthType> getSingleBioAuthTypes() {
+		BioAuthType[] values = BioAuthType.values();
+		return Stream.of(values).filter(authType -> {
+			int singleBioCount = 1;
+			IntPredicate predicate = authType.getCountPredicate();
+			return predicate != null && predicate.test(singleBioCount);
+		});
 	}
 
 	public static Optional<String> getTypeForConfigNameValue(String configNameValue) {

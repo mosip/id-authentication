@@ -12,8 +12,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
-import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;;
+import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;;
 
 /**
  * The IdInfoFetcher interface that provides the helper methods invoked by the
@@ -69,7 +68,7 @@ public interface IdInfoFetcher {
 	 * To fetch cbeff values.
 	 *
 	 * @param idEntity the id entity
-	 * @param cbeffDocType the cbeff doc type
+	 * @param cbeffDocTypes the cbeff doc types
 	 * @param matchType the match type
 	 * @return the cbeff values
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
@@ -111,14 +110,21 @@ public interface IdInfoFetcher {
 	
 	
 	/**
-	 * Gets the bio matcher util object which holds the logic 
-	 * for matching biometric values.
+	 * Gets the match function.
 	 *
-	 * @return the bio matcher util
+	 * @param authType the auth type
+	 * @return the match function
 	 */
-	public BioMatcherUtil getBioMatcherUtil() ;
+	public TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> getMatchFunction(AuthType authType);
 	
 	
+	/**
+	 * Gets the type for id name.
+	 *
+	 * @param idName the id name
+	 * @param idMappings the id mappings
+	 * @return the type for id name
+	 */
 	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings);
 	
 

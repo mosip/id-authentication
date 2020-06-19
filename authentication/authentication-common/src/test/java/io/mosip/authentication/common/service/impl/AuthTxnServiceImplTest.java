@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -32,25 +35,28 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthTxnServiceImplTest {
 
+	@Mock
+	private IdAuthSecurityManager securityManager;
 
 	@Mock
 	private IdServiceImpl idService;
-	
+
 	@Autowired
 	Environment env;
 
 	@Mock
 	private AutnTxnRepository authtxnRepo;
-	
+
 	@InjectMocks
 	private AuthTxnServiceImpl authTxnServiceImpl;
-	
+
 	@Mock
 	private UinHashSaltRepo uinHashSaltRepo;
-	
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authTxnServiceImpl, "authtxnRepo", authtxnRepo);
+		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 	}
 
 	@Test
@@ -89,7 +95,7 @@ public class AuthTxnServiceImplTest {
 		valueList.add(autnTxn);
 		return valueList;
 	}
-	
+
 	@Test
 	public void TestfetchAuthTxnDetailsNullPageStart() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
@@ -104,7 +110,7 @@ public class AuthTxnServiceImplTest {
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
-	
+
 	@Test
 	public void TestfetchAuthTxnDetailsNullPageFetch() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
@@ -119,7 +125,7 @@ public class AuthTxnServiceImplTest {
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
-	
+
 	@Test
 	public void TestfetchAuthTxnDetailsNullPageStartAndPageFetch() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
@@ -136,8 +142,7 @@ public class AuthTxnServiceImplTest {
 
 	}
 
-	
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestfetchAuthTxnDetailsInvalidIdType() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		authtxnrequestdto.setIndividualIdType(IdType.USER_ID.getType());
@@ -153,8 +158,8 @@ public class AuthTxnServiceImplTest {
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
-	
-	@Test(expected=IdAuthenticationBusinessException.class)
+
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestfetchAuthTxnDetailsInvalidPageStart() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		authtxnrequestdto.setPageStart(-1);
@@ -169,9 +174,8 @@ public class AuthTxnServiceImplTest {
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
-	
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestfetchAuthTxnDetailsInvalidPageFetch() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		authtxnrequestdto.setPageFetch(-1);

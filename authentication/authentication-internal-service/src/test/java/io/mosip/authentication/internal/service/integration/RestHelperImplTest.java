@@ -1,5 +1,6 @@
 package io.mosip.authentication.internal.service.integration;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -737,5 +738,33 @@ public class RestHelperImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+	}
+	
+	@Test
+	public void testContainsError_NoErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testContainsError_NullErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\": null}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testContainsError_EmptyErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\": []}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testContainsError_hasErrors() throws JsonParseException, JsonMappingException, IOException {
+		String response = "{\"errors\": [{\"errorCode\":\"111\",\"errorMessage\":\"abc\"}]}";
+		Boolean result = (Boolean)ReflectionTestUtils.invokeMethod(restHelper, "containsError", response);
+		assertTrue(result);
 	}
 }

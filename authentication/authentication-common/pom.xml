@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.9-SNAPSHOT</version>
 	</parent>
-	<version>1.0.7</version>
+	<version>1.0.9-SNAPSHOT</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<kernel-keymanager-service.version>1.0.9-SNAPSHOT</kernel-keymanager-service.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -31,12 +31,6 @@
 			<artifactId>kernel-idvalidator-uin</artifactId>
 			<version>${kernel-idvalidator-uin.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idobjectvalidator</artifactId>
-			<version>${kernel-idobjectvalidator.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
@@ -52,7 +46,6 @@
 			<artifactId>json</artifactId>
 			<version>${json.utility.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
@@ -69,7 +62,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<!-- Kernel Id Validator VID -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -107,6 +99,18 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
 			<version>${kernel-crypto-jce.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-tokenid</artifactId>
+			<version>${kernel-idgenerator-tokenid.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+			</exclusions>
+			<classifier>lib</classifier>
 		</dependency>
 		<!-- Commons Lang -->
 		<dependency>
@@ -150,13 +154,33 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-keymanager-service</artifactId>
+			<version>${kernel-keymanager-service.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+			</exclusions>
+			<classifier>lib</classifier>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-biosdk-provider</artifactId>
+			<version>${kernel-biosdk-provider.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-biometrics-api</artifactId>
+			<version>${kernel-biometrics-api.version}</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -93,7 +93,7 @@ public interface AuthType {
 	 * @param supportedMatchTypes the supported match types
 	 * @return the sets the
 	 */
-	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
+	public static <T> Set<T> setOf(T... supportedMatchTypes) {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 

@@ -5,9 +5,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.9-SNAPSHOT</version>
 	</parent>
-	<version>1.0.7</version>
+	<version>1.0.9-SNAPSHOT</version>
 
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
@@ -21,11 +21,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
 			<version>${kernel-core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-bioapi-provider</artifactId>
-			<version>${kernel-bioapi-provider.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -61,7 +56,21 @@
 			<version>${sourceafis.version}</version>
 		</dependency>
 
-		<!-- Biometric identy SDK -->
-
+		<dependency>
+			<groupId>io.mosip.idrepository</groupId>
+			<artifactId>id-repository-core</artifactId>
+			<version>${id-repository-core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-biosdk-provider</artifactId>
+			<version>${kernel-biosdk-provider.version}</version>
+		</dependency>
 	</dependencies>
 </project>

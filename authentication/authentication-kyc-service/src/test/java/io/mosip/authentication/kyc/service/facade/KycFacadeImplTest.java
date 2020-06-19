@@ -28,17 +28,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthTransactionManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -69,7 +76,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class, PartnerServiceImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class, PartnerServiceImpl.class,PartnerServiceImpl.class, PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
 public class KycFacadeImplTest {
 
 	@InjectMocks
@@ -115,13 +122,16 @@ public class KycFacadeImplTest {
 	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Mock
-	private IdAuthTransactionManager idAuthTransactionManager;
+	private IdAuthSecurityManager idAuthSecurityManager;
 	
 	@Mock
 	private AuthtypeStatusImpl authTypeStatus;
 	
 	@Autowired
 	PartnerService partnerService;
+	
+	@Autowired
+	ObjectMapper mapper;
 	
 	@Before
 	public void beforeClass() {
@@ -130,7 +140,7 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(kycFacade, "idService", idService);
 		ReflectionTestUtils.setField(authFacadeImpl, "uinEncryptSaltRepo", uinEncryptSaltRepo);
 		ReflectionTestUtils.setField(authFacadeImpl, "uinHashSaltRepo", uinHashSaltRepo);
-		ReflectionTestUtils.setField(authFacadeImpl, "transactionManager", idAuthTransactionManager);
+		ReflectionTestUtils.setField(authFacadeImpl, "securityManager", idAuthSecurityManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "authTypeStatusService", authTypeStatus);
 		ReflectionTestUtils.setField(kycFacade, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
@@ -143,7 +153,7 @@ public class KycFacadeImplTest {
 	}
 
 	@Test
-	public void TestKycFacade() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+	public void TestKycFacade() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, JsonProcessingException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualId("274390482564");
@@ -191,6 +201,11 @@ public class KycFacadeImplTest {
 		String uin = "274390482564";
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
+		HashMap<Object, Object> response = new HashMap<>();
+		idRepo.put("response", response);
+		HashMap<Object, Object> identity = new HashMap<>();
+		identity.put("UIN", Long.valueOf(uin));
+		response.put("identity", identity );
 		AuthStatusInfo authStatusInfo = new AuthStatusInfo();
 		authStatusInfo.setStatus(true);
 		authStatusInfo.setErr(Collections.emptyList());
@@ -203,12 +218,14 @@ public class KycFacadeImplTest {
 //		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idinfoservice.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
 				.thenReturn(idRepo);
-		Mockito.when(idinfoservice.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idinfoservice.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idService.getUin(idRepo)).thenReturn(uin);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idService.getDemoData(idRepo)).thenReturn(mapper.writeValueAsBytes(identity));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
@@ -219,9 +236,10 @@ public class KycFacadeImplTest {
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
-		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456", true)).thenReturn(authStatusInfo);
-		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
-		kycFacade.authenticateIndividual(authRequestDTO, true, "123456");
+		String partnerId = "123456";
+		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId, true)).thenReturn(authStatusInfo);
+		authFacadeImpl.authenticateIndividual(authRequestDTO, true, partnerId);
+		kycFacade.authenticateIndividual(authRequestDTO, true, partnerId);
 	}
 	
 	
@@ -291,7 +309,7 @@ public class KycFacadeImplTest {
 				.thenReturn(kycResponseDTO);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
-		Mockito.when(idAuthTransactionManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString(), Mockito.anyString())).thenReturn(new ArrayList<AuthtypeStatus>());
 		assertNotNull(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456"));
 

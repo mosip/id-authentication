@@ -115,7 +115,7 @@ public class AuthControllerTest {
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
 
 	}
 
@@ -132,7 +132,7 @@ public class AuthControllerTest {
 		authReqDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
-		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
 
 	}
 
@@ -148,7 +148,7 @@ public class AuthControllerTest {
 		authReqDTO.setRequestedAuth(requestedAuth);
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456")).thenReturn(new AuthResponseDTO());
-		authController.authenticateIndividual(authReqDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
 
 	}
 
@@ -159,7 +159,7 @@ public class AuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class AuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setDemo(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
 	@Test
@@ -179,7 +179,7 @@ public class AuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setPin(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
 	@Test
@@ -203,7 +203,7 @@ public class AuthControllerTest {
 
 		BioIdentityInfoDTO IrisDto = new BioIdentityInfoDTO();
 		DataDTO irisdata = new DataDTO();
-		irisdata.setBioType("IIR");
+		irisdata.setBioType("Iris");
 		irisdata.setBioSubType("LEFT");
 		irisdata.setDeviceProviderID("provider001");
 		irisdata.setBioValue(value);
@@ -212,8 +212,7 @@ public class AuthControllerTest {
 
 		BioIdentityInfoDTO faceDto = new BioIdentityInfoDTO();
 		DataDTO facedata = new DataDTO();
-		facedata.setBioType("FID");
-		facedata.setBioSubType("FACE");
+		facedata.setBioType("Face");
 		facedata.setDeviceProviderID("provider001");
 		facedata.setBioValue(value);
 		faceDto.setData(facedata);
@@ -221,7 +220,7 @@ public class AuthControllerTest {
 
 		request.setBiometrics(bioIdentityList);
 		authRequestDTO.setRequest(request);
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456");
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
 	private AuthRequestDTO getRequestDto() {
