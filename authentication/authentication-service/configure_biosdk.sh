@@ -32,5 +32,3 @@ echo "Installation of softhsm client complete"
 
 cd /
 rm -rf /biosdk
-
-exec "$@"

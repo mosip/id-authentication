@@ -24,5 +24,3 @@ fi
 echo "Changing directory to ${work_dir_env}"
 cd "${work_dir_env}"
 
-exec "$@"
-
