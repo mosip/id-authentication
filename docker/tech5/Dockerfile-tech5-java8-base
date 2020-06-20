@@ -1,0 +1,39 @@
+# tech5-java8-base:1.0
+FROM centos:7
+
+#Installing java
+RUN yum -y update && yum install -y java-1.8.0-openjdk-devel
+
+#step 1 yum commands
+#RUN yum -y install epel-release
+RUN yum install -y opencv openblas-serial lapack libgomp boost-system boost-filesystem boost-program-options
+RUN yum install -y libtiff libwebp jasper-libs  ilmbase   OpenEXR-libs
+RUN yum install -y libpng12
+
+
+#Adding directory to specified path
+ADD AuthSDK-Docker_27thFeb2020.tar ./opt/Tech5
+ADD commons-codec-1.9.jar ./opt/Tech5
+ADD kernel-cbeffutil-api-0.12.18.jar ./opt/Tech5
+ADD kernel-core-0.12.18.jar ./opt/Tech5
+ADD t5-finger-iris-mosip-auth-v1.2.jar ./opt/Tech5
+ADD ABISTech5FaceSDKAdapter_v1.5.jar ./opt/Tech5
+ADD face_sdk_1_5_mosip.tar ./faceSdk
+ADD face_sdk.lic ./usr/share/face_sdk/
+
+
+
+#running local yum on rpm : try code
+RUN cd /faceSdk
+RUN cd /faceSdk && yum -y localinstall tech5-face_sdk-cpu-1.5-0.x86_64.rpm
+RUN cd /faceSdk && yum -y localinstall tech5-face_sdk-cpu-devel-1.5-0.x86_64.rpm
+RUN cd /faceSdk && yum -y localinstall tech5-face_sdk-face_detector_100-1.5-0.noarch.rpm
+RUN cd /faceSdk && yum -y localinstall tech5-face_sdk-alignment_102-1.5-0.noarch.rpm
+RUN cd /faceSdk && yum -y localinstall tech5-face_sdk-builder_104-1.5-0.noarch.rpm
+
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+ENV PATH=${JAVA_HOME}/bin:${PATH}
+ENV LD_LIBRARY_PATH=$PATH:/opt/Tech5/nativeDocker
+
+RUN yum install -y wget unzip
+

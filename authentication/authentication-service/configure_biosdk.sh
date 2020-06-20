@@ -12,7 +12,7 @@ echo "Downloaded $artifactory_url_env"
 
 unzip biosdk.zip
 echo "Attempting to install biosdk"
-/bin/bash ./install_biosdk.sh 
+/bin/bash ./install.sh 
 echo "Installation of biosdk complete"
 
 cd /
