@@ -6,7 +6,7 @@ RUN yum -y update \
     && yum -y install gcc make automake libtool autoconf pkg-config libssl-dev git-core openssl-devel gcc-c++\
     && git clone https://github.com/opendnssec/SoftHSMv2 \
     && cd SoftHSMv2/ && sh autogen.sh && ./configure && make && make install
-RUN yum -y install opensc \
-    && pkcs11-tool --module /usr/local/lib/softhsm/libsofthsm2.so --init-token --label "SoftHSM" --slot 0 --so-pin 1234 \
-    && pkcs11-tool --module /usr/local/lib/softhsm/libsofthsm2.so --init-pin --label "SoftHSM" --login --so-pin 1234 --pin 1234
+#RUN yum -y install opensc \
+#    && pkcs11-tool --module /usr/local/lib/softhsm/libsofthsm2.so --init-token --label "SoftHSM" --slot 0 --so-pin 1234 \
+#    && pkcs11-tool --module /usr/local/lib/softhsm/libsofthsm2.so --init-pin --label "SoftHSM" --login --so-pin 1234 --pin 1234
 	
