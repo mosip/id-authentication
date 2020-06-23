@@ -41,4 +41,6 @@ export LD_LIBRARY_PATH=$PATH:/opt/Tech5/nativeDocker
 
 export loader_path_env=commons-codec-1.9.jar,t5-finger-iris-mosip-auth-v1.2.jar,ABISTech5FaceSDKAdapter_v1.5.jar,tech5-sdk-docker-v1.0.jar
 
+export work_dir_env=/opt/Tech5/
+
 echo "Installating Bio-SDK completed."

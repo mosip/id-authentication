@@ -13,9 +13,13 @@ cd /
 cd /
 /bin/bash configure_softhsm.sh
 
-cd /
-
 echo "Installating pre-requisites completed."
+
+echo "Copying ${current_module_env}.jar to ${work_dir_env}"
+cp /${current_module_env}.jar "${work_dir_env}/"
+
+echo "Changing directory to ${work_dir_env}"
+cd "${work_dir_env}/"
 
 
 exec "$@"
