@@ -5,7 +5,7 @@ repo=docker-registry.mosip.io:5000
 artifactory_url=http://13.71.87.138:8040/artifactory/list/libs-snapshot-local
 conf_file_name=softhsm-application.conf
 release_zip_file=release.zip
-access_token=84ff96b47cad72df674836c2f1d54ceea65776da
+access_token=<access token>
 release_artifact_id=8683290
 image_suffix=-softhsm
 dockerfile_suffix=-softhsm
@@ -15,7 +15,7 @@ echo $1
 echo $2
 
 if [ ! -z "$1" ]; then
-    modules=( $1 $2 $3 $4)
+    modules=( $1)
 else 
 	modules=('authentication-service' 'authentication-internal-service' 'authentication-kyc-service' 'authentication-otp-service')
 fi
