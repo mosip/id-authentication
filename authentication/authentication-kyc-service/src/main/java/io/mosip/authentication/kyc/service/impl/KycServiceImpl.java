@@ -63,7 +63,7 @@ public class KycServiceImpl implements KycService {
 			Map<String, String> idEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 					null);
 			List<IdentityInfoDTO> bioValue = null;
-			String face = Objects.nonNull(idEntityInfoMap) ? idEntityInfoMap.get(CbeffDocType.FACE.getName()) : null;
+			String face = Objects.nonNull(idEntityInfoMap) ? idEntityInfoMap.get(CbeffDocType.FACE.getType().value()) : null;
 			if (Objects.nonNull(idEntityInfoMap)) {
 				bioValue = new ArrayList<>();
 				IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -105,7 +105,7 @@ public class KycServiceImpl implements KycService {
 			}
 		}
 		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.containsKey("photo")) {
-			idMappingIdentityInfo.put(CbeffDocType.FACE.getName(), Objects.nonNull(bioValue) ? face : null);
+			idMappingIdentityInfo.put(CbeffDocType.FACE.getType().value(), Objects.nonNull(bioValue) ? face : null);
 		}
 		kycResponseDTO.setIdentity(idMappingIdentityInfo);
 	}
