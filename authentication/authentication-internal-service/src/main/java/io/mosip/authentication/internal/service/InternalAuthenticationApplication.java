@@ -41,7 +41,7 @@ import io.mosip.authentication.internal.service.integration.RestHelperImpl;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
-import io.mosip.kernel.biosdk.provider.impl.SampleBioProviderAPIImpl;
+import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
@@ -70,7 +70,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class, 
-		BioProviderImpl_V_0_8.class, SampleBioProviderAPIImpl.class,
+		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class,
 		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class,
 		IdaTransactionInterceptor.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
