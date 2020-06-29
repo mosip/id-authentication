@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.9-SNAPSHOT</version>
+	<version>1.0.9-rc1</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -69,14 +69,14 @@
 
 	<properties>
 		<authentication.parent.version>${project.version}</authentication.parent.version>
-		<authentication-core.version>1.0.9-SNAPSHOT</authentication-core.version>
-		<authentication-common.version>1.0.9-SNAPSHOT</authentication-common.version>
+		<authentication-core.version>1.0.9-rc1</authentication-core.version>
+		<authentication-common.version>1.0.9-rc1</authentication-common.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
 		<kernel.parent.version>1.0.6</kernel.parent.version>
-		<kernel-core.version>1.0.9-SNAPSHOT</kernel-core.version>
-		<kernel-idgenerator-tokenid.version>1.0.7-SNAPSHOT</kernel-idgenerator-tokenid.version>
+		<kernel-core.version>1.0.9-rc1</kernel-core.version>
+		<kernel-idgenerator-tokenid.version>1.0.7-rc1</kernel-idgenerator-tokenid.version>
 		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
 		<kernel-idobjectvalidator.version>1.0.7</kernel-idobjectvalidator.version>
@@ -84,16 +84,16 @@
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-keygenerator-bouncycastle.version>${kernel.parent.version}</kernel-keygenerator-bouncycastle.version>
 		<kernel-crypto-jce.version>${kernel.parent.version}</kernel-crypto-jce.version>
-		<kernel-bioapi-provider.version>1.0.9-SNAPSHOT</kernel-bioapi-provider.version>
-		<mock-sdk-version>0.9-SNAPSHOT</mock-sdk-version>
+		<kernel-bioapi-provider.version>1.0.9-rc1</kernel-bioapi-provider.version>
+		<mock-sdk-version>0.9-rc1</mock-sdk-version>
 		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.0.7-SNAPSHOT</kernel-dataaccess-hibernate.version>
+		<kernel-dataaccess-hibernate.version>1.0.7-rc1</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.0.9-SNAPSHOT</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>0.9-SNAPSHOT</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>0.9-SNAPSHOT</kernel-biosdk-provider.version>
-		<id-repository-core.version>1.0.9-SNAPSHOT</id-repository-core.version>
+		<kernel-auth-adapter.version>1.0.9-rc1</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>0.9-rc1</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>0.9-rc1</kernel-biosdk-provider.version>
+		<id-repository-core.version>1.0.9-rc1</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -357,11 +357,11 @@
 
 	<!--<profiles> <profile> <id>DEV</id> <properties> <sonar.host.url> http://13.76.43.109:9000 
 		</sonar.host.url> <sonar.login> d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624 
-		</sonar.login> <sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion> 
+		</sonar.login> <sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0-rc1</sonar.projectVersion> 
 		<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
 		</properties> </profile> <profile> <id>LOCAL</id> <properties> <sonar.host.url> 
 		http://104.215.158.154:9000 </sonar.host.url> <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login> 
-		<sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion> 
+		<sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0-rc1</sonar.projectVersion> 
 		<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
 		</properties> </profile> </profiles> -->
 
