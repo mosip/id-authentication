@@ -103,7 +103,7 @@ jobs:
     - name: Publish the maven package
       run: |
         chmod +x ./deploy.sh
-        ./deploy.sh authentication $GITHUB_WORKSPACE/settings.xml SNAPSHOT
+        ./deploy.sh authentication $GITHUB_WORKSPACE/settings.xml rc1
       env:
         GPG_TTY: $(tty)
     - name: Analyze with SonarCloud
