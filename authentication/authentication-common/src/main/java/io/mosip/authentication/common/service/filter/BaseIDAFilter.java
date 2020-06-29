@@ -129,7 +129,9 @@ public abstract class BaseIDAFilter implements Filter {
 			chain.doFilter(request, response);
 			return;
 		}
-
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+				"Request URL: " + reqUrl);
+		
 		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				IdAuthCommonConstants.REQUEST + " at : " + requestTime);

@@ -82,7 +82,7 @@ public class KeyManagerTest {
 	public void requestDataTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
-		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper, "PARTNER");
+		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 		assertTrue(decryptedReqMap.containsKey("transactionID"));
 	}
 
@@ -102,7 +102,7 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn("-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj".getBytes());
-		keyManager.requestData(reqMap, mapper, "PARTNER");
+		keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
-		keyManager.requestData(reqMap, mapper, "PARTNER");
+		keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
-		keyManager.requestData(reqMap, mapper, "PARTNER");
+		keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class KeyManagerTest {
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
 		try {
-			keyManager.requestData(reqMap, mapper, "PARTNER");
+			keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 		}
 
 		catch (IdAuthenticationAppException ex) {
@@ -163,7 +163,7 @@ public class KeyManagerTest {
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION));
 		try {
-			keyManager.requestData(reqMap, mapper, "PARTNER");
+			keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 		}
 
 		catch (IdAuthenticationAppException ex) {
@@ -178,7 +178,7 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION));
-		keyManager.requestData(reqMap, mapper, "PARTNER");
+		keyManager.requestData(reqMap, mapper, "PARTNER", a->{});
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -186,7 +186,7 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
-		Mockito.when(keyManager.requestData(reqMap, mapper, "PARTNER")).thenThrow(IOException.class);
+		Mockito.when(keyManager.requestData(reqMap, mapper, "PARTNER", a->{})).thenThrow(IOException.class);
 	}
 
 	/*
