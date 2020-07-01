@@ -179,7 +179,7 @@ copy_release_jar() {
     pwd
 		unzip -o $working_dir/$release_zip_file -d ./
     unzip -o release.zip
-		mv authentication/$current_module/target/$current_module-$version.jar ./
+		mv authentication/$current_module/target/$current_module-*.jar ./
 		rm authentication/* -rf
 		rmdir authentication/
 		#rm -f release.zip
