@@ -35,21 +35,30 @@ ID-Repository module can use Identity Event Notification Handler REST Service to
 **2. Solution**   
 Identity Event Notification Handler REST Service addresses the above requirements as explained below.
 
-1.	ID-Repository to construct a **POST** request with below details and send to Request URL `/idauthentication/v1/internal/notify` - [Sample Request Body](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#authentication-service-internal)
+1.	ID-Repository to construct a **POST** request with below details and send to Request URL `/idauthentication/v1/internal/notify` - [Sample Request Body](https://github.com/mosip/documentation/blob/master/docs/ID-Authentication-APIs.md#request-body-5) upon UIN/VID create/update events such as UIN create, UIN update/activate/deactivate/block , VID create, VID update/revoke/re-generate events.
 2.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. 
 3.	Once the above validations are successful, the notification event will be processed as below: 
 - Create UIN -  The UIN record will be fetched from ID Repo for the UIN and it will be encrypted and inserted in IDA DB against the UIN.
-- Update UIN -  The UIN record will be fetched from ID Repo for the UIN and it will be encrypted and updated in IDA DB along with any expiry time provided in the event details.
+- Update UIN -  The UIN record will be fetched from ID Repo for the UIN and it will be encrypted and updated in IDA DB along with any expiry time provided in the event details. 
 - Create VID - This Event details should contain UIN value also, and that UIN record will be fetched from ID Repo for the UIN and it will be encrypted and stored against the VID and also the expiry time and transaction limit value of the VID will be stored.
 - Update VID - If UIN is provided with the event details, that UIN will be used to fetch record from ID Repo and it will be encrypted and updated against the VID. Also the expiry time and transaction limit value of the VID will be updated against the VID.
-6.	Retrieve Identity details of the Individual based on UIN from ID Repository
-7.	Respond with below success Auth response - [Sample Response](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#success-response-3)
+7.	Respond with 200 response, for failure status inculde the error code and  error message. - [Sample Response](https://github.com/mosip/documentation/blob/master/docs/ID-Authentication-APIs.md#responses-7)
+
+**2.1 Database Table:**
+Schema: ida
+Name: identity_cache
+*Columns:*
+* id  - Hashed Value of UIN or VID - Primary Key
+* demographic_data - As in ID Repo UIN table
+* biographic_data - Blob
+* expiry_timestamp - datetimestamp- Nullable
+* transaction_limit- number - Nullable
 
 **2.1. Class Diagram:**   
-The below class diagram shows relationship between all the classes which are required for Bio authentication service.
+The below class diagram shows relationship between all the classes which are required for the service.
 
-![Internal Auth Class Diagram](_images/Internal_Auth_Class_Diagram.PNG)
+![Id Event Notification Handler Class Diagram](_images/Id_Event_Notify_Class_Diagram.PNG)
 
 **2.2. Sequence Diagram:**   
-![Internal Auth Sequence Diagram](_images/Internal_Auth_Sequence_Diagram.PNG)
+![Id Event Notification Handler Sequence Diagram](_images/Id_Event_Notify_Sequence_Diagram.PNG)
 
