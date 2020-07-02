@@ -64,7 +64,6 @@
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
-		<module>authentication-keys-generator</module>
 	</modules>
 
 	<properties>
