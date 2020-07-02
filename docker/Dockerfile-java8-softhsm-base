@@ -1,5 +1,5 @@
 # java8-softhsm-base:1.0
-FROM centos7-java8:1.0
+FROM docker-registry.mosip.io:5000/centos7-java8:1.0
 
 RUN yum -y update \
     && yum -y upgrade \
