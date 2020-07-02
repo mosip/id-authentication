@@ -1,71 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.2.RELEASE</version>
+    <groupId>io.mosip.authentication</groupId>
+	<artifactId>authentication-parent</artifactId>
+	<version>1.0.9-rc1</version>
   </parent>
-  <groupId>io.mosip.authentication.tool</groupId>
   <artifactId>authentication-keys-generator</artifactId>
   <version>1.0.9-rc1</version>
-	
-       <licenses>
-		<license>
-			<name>MPL 2.0</name>
-			<url>https://www.mozilla.org/en-US/MPL/2.0/</url>
-		</license>
-	</licenses>
 
-	<scm>
-		<connection>scm:git:git://github.com/mosip/id-authentication.git</connection>
-		<developerConnection>scm:git:ssh://github.com:mosip/id-authentication.git</developerConnection>
-		<url>https://github.com/mosip/id-authentication</url>
-		<tag>HEAD</tag>
-	</scm>
-	
-       <developers>
-		<developer>
-			<name>Mosip</name>
-			<email>mosip.emailnotifier@gmail.com</email>
-			<organization>io.mosip</organization>
-			<organizationUrl>https://github.com/mosip/id-authentication</organizationUrl>
-		</developer>
-	</developers>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
-
-	<repositories>
-		<repository>
-		  <id>ossrh</id>
-		  <name>Central Repository</name>
-		  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		  <layout>default</layout>
-		  <snapshots>
-			<enabled>true</enabled>
-		  </snapshots>
-		</repository>
-	</repositories>
   <dependencies>
   	<dependency>
   		<groupId>org.projectlombok</groupId>
   		<artifactId>lombok</artifactId>
+  		<version>${lombok.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework.boot</groupId>
   		<artifactId>spring-boot-starter-web</artifactId>
+  		<version>${spring.boot.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework.boot</groupId>
   		<artifactId>spring-boot-starter-data-jpa</artifactId>
+  		<version>${spring.boot.version}</version>
   	</dependency>
   			<dependency>
 			<groupId>org.springframework.cloud</groupId>
