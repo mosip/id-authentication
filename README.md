@@ -54,7 +54,7 @@ Following two pre-requisites things needs to be run only once when setting up an
 
 1. ID-Authentication Keys Generator:
 
-This is used to generate the encryption/decrption keys used in ID-Authentication services and populate them to the tables in ID-Authentication database. Below is the command to run the ID-Authentication Keys Generator
+This is used to generate the encryption/decrption keys used in ID-Authentication services and populate them to the tables in ID-Authentication database. Below is the command to run the ID-Authentication Keys Generator 
 ```
 docker run -it -e artifactory_url_env=<artifactory-url> -e PKCS11_PROXY_SOCKET=<softhsm-url> -e spring_config_label_env=<config-label> -e active_profile_env=<profile> -e spring_config_url_env=<config-url> <docker-registry-IP:docker-registry-port>/authentication-keys-generator:<image_tag>
 ```
