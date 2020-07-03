@@ -24,9 +24,6 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
-# environment variable for external jar dependencies
-#ENV LD_LIBRARY_PATH=/so-files
-
 # environment variable to pass glowroot, at docker runtime
 ENV is_glowroot_env=${is_glowroot}
 
@@ -43,25 +40,9 @@ COPY softhsm-application.conf /config
 
 ADD target/${current_module_env}-*.jar ${current_module_env}.jar
 
-#VOLUME /softhsm
-
-#Downloading external dependencies 
-#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/ABISTech5FaceSDKAdapter_v2.jar ABISTech5FaceSDKAdapter_v2.jar
-#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/t5-finger-iris-mosip-auth-v1.2.jar t5-finger-iris-mosip-auth-v1.2.jar 
-#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/tech5-sdk-v1.5.1.jar tech5-sdk-v1.5.1.jar 
-#ADD http://13.71.87.138:8040/artifactory/libs-release-local/io/mosip/identy-BioSDK/so-files.zip so-files.zip
-
-#RUN apt-get update && apt-get install -y unzip
-#RUN unzip so-files.zip
-#RUN rm -rf so-files.zip
-
 EXPOSE 8093
 
 EXPOSE 9010
-
-#RUN ls -la
-#RUN ls -la so-files/
-
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
@@ -73,7 +54,7 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     else \
     cd /; java -jar -Djava.security.debug=sunpkcs11 -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dfile.encoding="UTF-8" /${current_module_env}.jar ; \
     fi
-#CMD ["java", "-Dloader.path=/tech5-sdk-v1.5.1.jar,/ABISTech5FaceSDKAdapter_v2.jar,/t5-finger-iris-mosip-auth-v1.2.jar", "-jar","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}", "/${current_module_env}.jar"]
+
 
 # Example Docker run command:
 # sudo docker run --rm -d -e artifactory_url_env="http://artifactory" -e spring_config_label_env="1.0.9" -e active_profile_env="dev" -e spring_config_url_env="http://config-server/config -p 8093:8093 -v /softhsm:/softhsm/var/lib/softhsm/ authentication-internal-service-softhsm:1.0.9
