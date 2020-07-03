@@ -1,32 +1,31 @@
 #!/bin/bash
-version=1.0.9-SNAPSHOT
+version=1.0.9
 label=1.0.9
 repo=docker-registry.mosip.io:5000
-artifactory_url=http://13.71.87.138:8040/artifactory/list/libs-snapshot-local
+#artifactory_url=http://13.71.87.138:8040/artifactory/list/libs-snapshot-local
+artifactory_url=https://oss.sonatype.org/service/local/repositories/releases/content
 conf_file_name=softhsm-application.conf
 release_zip_file=release.zip
-access_token=<access token>
-release_artifact_id=8683290
-image_suffix=-softhsm
-dockerfile_suffix=-softhsm
+#access_token=<access token>
+#release_artifact_id=<release-artifact-id-in-github-action>
+git_repo_name=id-authentication
+git_repo_user=mosip
+git_branch=$label
 
 
-echo $1
-echo $2
+image_suffix=( )
+dockerfile_suffix=( -centos7_based -centos7_based -centos7_based -softhsm_based )
 
-if [ ! -z "$1" ]; then
-    modules=( $1)
-else 
-	modules=('authentication-service' 'authentication-internal-service' 'authentication-kyc-service' 'authentication-otp-service')
+modules=('authentication-service' 'authentication-internal-service' 'authentication-kyc-service' 'authentication-otp-service')
+
+modules_to_build=($1 $2 $3 $4)
+
+if [ "${#modules_to_build[@]}" == 0 ]; then
+	echo "No modules specified.. building all"
+	modules_to_build=${modules[@]}
 fi
 
-if [ ! -z "$2" ]; then
-    ports=( $2 )
-else
-	ports=( 8090 8093 8091 8092 )
-fi
-
-
+ports=( 8090 8093 8091 8092 )
 
 current_module=
 current_port=
@@ -36,24 +35,44 @@ runall () {
 	echo_configs
 
 	clean_target
-	download_release_jar
+	#download_release_jar
 	
 	for i in "${!modules[@]}"; do 
 		# To print index, ith 
 		# element 
 		current_module=${modules[$i]}
-		current_port=${ports[$i]}
 		
-		current_docker_file=Dockerfile-${current_module}${dockerfile_suffix}
-		current_docker_image=${current_module}${image_suffix}:$version
-
+		if `contains "$modules_to_build" "$current_module"` ; then
 		
-		echo "Current Module - $current_module "
+			echo "Current Module - $current_module "
 		
-		run_for_current_module
+			current_port=${ports[$i]}
+			current_image_suffix=${image_suffix[$i]}
+			current_dockerfile_suffix=${dockerfile_suffix[$i]}
+			
+			current_docker_file=Dockerfile${current_dockerfile_suffix}
+			current_docker_name=${current_module}${current_image_suffix}
+			current_docker_tag=${version}
+			current_docker_image=${current_docker_name}:${current_docker_tag}
+			
+			run_for_current_module
+		fi
+		
 	done
 	
 	echo "Finished."
+}
+
+contains() {
+  local list="$1"
+  local item="$2"
+  if [[ $list =~ (^|[[:space:]])"$item"($|[[:space:]]) ]] ; then
+    # yes, list include item
+    result=0
+  else
+    result=1
+  fi
+  return $result
 }
 
 run_for_current_module() {
@@ -75,8 +94,8 @@ echo_configs() {
 	echo "Artifactory: $artifactory_url"
 	echo "Config File Name: $conf_file_name"
 	echo "Modules: "
-	for i in "${!modules[@]}"; do 
-		echo ${modules[$i]} 
+	for i in "${!modules_to_build[@]}"; do 
+		echo ${modules_to_build[$i]} 
 	done
 
 }
@@ -109,14 +128,14 @@ cleanup() {
 
 stop_and_remove_existing_container() {
 	echo "Stop and Remove Existing containers:"
-	existing_container_ids=$(docker ps | grep $current_module | awk '{ print $1 }')
+	existing_container_ids=$(docker ps | grep ${current_docker_name} | grep ${current_docker_tag} | awk '{ print $1 }')
 	for i in $existing_container_ids
 	do
 	   echo "stopping container $i"
 	   docker stop $i
 	done
 	
-	existing_container_ids=$(docker ps | grep $current_module | awk '{ print $1 }')
+	existing_container_ids=$(docker ps | grep ${current_docker_name} | grep ${current_docker_tag} | awk '{ print $1 }')
 	for i in $existing_container_ids
 	do
 	   echo "removing container $i"
@@ -126,7 +145,7 @@ stop_and_remove_existing_container() {
 
 remove_existing_image() {
 	echo "Remove Existing Images:"
-	existing_image_ids=$(docker images | grep $current_module | awk '{ print $3 }')
+	existing_image_ids=$(docker images | grep ${current_docker_name} | grep ${current_docker_tag} | awk '{ print $3 }')
 	for i in $existing_image_ids
 	do
 	   echo "removing image $i"
@@ -146,11 +165,11 @@ build() {
 setup_build() {
 	echo "Set up..."
 	mkdir -p target
-	#download_jar
+	download_jar
 	#download_release_jar
-	copy_release_jar
+	#copy_release_jar
 	#create_conf_file
-	#download_dockerfile
+	download_dockerfile
 }
 
 clean_docker_file() {
@@ -207,26 +226,26 @@ EOF
 
 download_dockerfile() {
 	echo Downloading Dockerfile for $current_module
-	wget https://raw.githubusercontent.com/mosip/id-authentication/$label/authentication/$current_module/Dockerfile_DO_NOT_BUILD -O $current_docker_file
+		wget https://raw.githubusercontent.com/$git_repo_user/$git_repo_name/$git_branch/authentication/$current_module/$current_docker_file -O $current_docker_file
 
 }
 
 
 build_image() {
-	echo "Building image ${current_module}${image_suffix}"
+	echo "Building image ${current_docker_image}"
 	docker build -t ${current_docker_image} -f $current_docker_file .
 
 }
 
 
 tag_image() {
-	echo "Tagging image $repo/${current_module}${image_suffix}"
+	echo "Tagging image $repo/${current_docker_image}"
 
 	docker tag ${current_docker_image} $repo/${current_docker_image}
 }
 
 push_image() {
-	echo "Pushing image $repo/${current_module}${image_suffix}"
+	echo "Pushing image $repo/${current_docker_image}"
 
 	docker push $repo/${current_docker_image}
 
