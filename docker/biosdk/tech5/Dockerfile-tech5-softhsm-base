@@ -1,5 +1,5 @@
 # tech5-softhsm-base:1.0
-FROM tech5-java8-base:1.0
+FROM docker-registry.mosip.io:5000/tech5-java8-base:1.0
 
 RUN yum -y update \
     && yum -y upgrade \

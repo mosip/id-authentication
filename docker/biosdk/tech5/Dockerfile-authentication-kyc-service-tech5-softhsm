@@ -1,4 +1,4 @@
-FROM tech5-softhsm-base:1.0
+FROM docker-registry.mosip.io:5000/tech5-softhsm-base:1.0
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
