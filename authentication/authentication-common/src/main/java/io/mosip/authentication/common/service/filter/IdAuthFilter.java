@@ -25,6 +25,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSIO
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 
@@ -579,10 +580,22 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (noBioTypeIndex.isPresent()) {
 			throwMissingInputParameter(String.format(BIO_TYPE_INPUT_PARAM, noBioTypeIndex.getAsInt()));
 		}
+		
+		OptionalInt nodeviceTypeIndex = IntStream.range(0, listBioInfo.size())
+										.filter(i -> {
+											BioIdentityInfoDTO bioIdInfoDto = listBioInfo.get(i);
+											return Objects.nonNull(bioIdInfoDto.getData())
+													&& StringUtils.isEmpty(bioIdInfoDto.getData().getDigitalId().getType());
+										}).findFirst();
+			
+		if (nodeviceTypeIndex.isPresent()) {
+					throwMissingInputParameter(String.format(BIO_DIGITALID_INPUT_PARAM_TYPE, nodeviceTypeIndex.getAsInt()));
+		}
 
 		List<String> bioTypeList = listBioInfo.stream()
 									.map(s -> s.getData().getBioType())
 									.collect(Collectors.toList());
+		
 		
 		List<String> deviceTypeList = listBioInfo.stream()
 				.map(s -> s.getData().getDigitalId().getType())
@@ -650,7 +663,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param subTypeList
 	 * @return
 	 */
-	private boolean isDeviceTypeBioTypeSame(String bioType, List<String> deviceTypeList) {
+	private boolean isDeviceTypeBioTypeSame(String bioType, List<String> deviceTypeList) {		
 		return deviceTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
 	}
 	
