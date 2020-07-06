@@ -25,6 +25,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import java.io.IOException;
@@ -579,10 +580,27 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (noBioTypeIndex.isPresent()) {
 			throwMissingInputParameter(String.format(BIO_TYPE_INPUT_PARAM, noBioTypeIndex.getAsInt()));
 		}
+		
+		OptionalInt nodeviceTypeIndex = IntStream.range(0, listBioInfo.size())
+										.filter(i -> {
+											BioIdentityInfoDTO bioIdInfoDto = listBioInfo.get(i);
+											return Objects.nonNull(bioIdInfoDto.getData())
+													&& StringUtils.isEmpty(bioIdInfoDto.getData().getDigitalId().getType());
+										}).findFirst();
+			
+		if (nodeviceTypeIndex.isPresent()) {
+					throwMissingInputParameter(String.format(BIO_DIGITALID_INPUT_PARAM_TYPE, nodeviceTypeIndex.getAsInt()));
+		}
 
 		List<String> bioTypeList = listBioInfo.stream()
 									.map(s -> s.getData().getBioType())
 									.collect(Collectors.toList());
+		
+		
+		List<String> deviceTypeList = listBioInfo.stream()
+				.map(s -> s.getData().getDigitalId().getType())
+				.collect(Collectors.toList());
+		
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
@@ -590,7 +608,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "bio"));
 			}
 		} else {
-			checkAllowedAuthTypeForBio(authPolicies, bioTypeList);
+			checkAllowedAuthTypeForBio(authPolicies, bioTypeList, deviceTypeList);
 		}
 	}
 
@@ -604,7 +622,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList)
+	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList, List<String> deviceTypeList)
 			throws IdAuthenticationAppException {
 		String bioAuthType;
 		for (String bioType : bioTypeList) {
@@ -617,6 +635,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 			} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
 				bioType = SingleType.IRIS.value();
 			}
+
+			if(!isDeviceTypeBioTypeSame(bioType,deviceTypeList)) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorMessage());
+			}
+			
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
 				if (!BioAuthType.getSingleBioAuthTypeForType(bioAuthType).isPresent()) {
 					throw new IdAuthenticationAppException(
@@ -632,6 +657,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param bioType
+	 * @param subTypeList
+	 * @return
+	 */
+	private boolean isDeviceTypeBioTypeSame(String bioType, List<String> deviceTypeList) {		
+		return deviceTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
+	}
+	
 	/**
 	 * Check mandatory auth type based on policy.
 	 *

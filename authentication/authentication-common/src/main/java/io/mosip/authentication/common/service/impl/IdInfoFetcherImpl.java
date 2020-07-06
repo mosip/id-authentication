@@ -26,6 +26,7 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
@@ -49,7 +50,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-	
+
 	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
@@ -62,8 +63,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Autowired
 	private CbeffUtil cbeffUtil;
-	
-	@Autowired(required=false)
+
+	@Autowired(required = false)
 	private BioMatcherUtil bioMatcherUtil;
 
 	/**
@@ -79,10 +80,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
-	
+
 	@Autowired
 	private DemoNormalizer demoNormalizer;
-	
+
 	@Override
 	public DemoNormalizer getDemoNormalizer() {
 		return demoNormalizer;
@@ -91,7 +92,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/**
 	 * Fetch language code from properties
 	 *
-	 * @param langType - the language code
+	 * @param langType
+	 *            - the language code
 	 * @return the language code
 	 */
 	@Override
@@ -135,8 +137,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/**
 	 * Fetch the Identity info based on Identity Info map and Language.
 	 *
-	 * @param idInfosMap           the id infos map
-	 * @param languageForMatchType the language for match type
+	 * @param idInfosMap
+	 *            the id infos map
+	 * @param languageForMatchType
+	 *            the language for match type
 	 * @return the info
 	 */
 	private Map<String, String> getInfo(Map<String, List<IdentityInfoDTO>> idInfosMap, String languageForMatchType) {
@@ -156,8 +160,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/**
 	 * Check language type.
 	 *
-	 * @param languageFromInput  the language for match type
-	 * @param languageFromEntity the language from req
+	 * @param languageFromInput
+	 *            the language for match type
+	 * @param languageFromEntity
+	 *            the language from req
 	 * @return true, if successful
 	 */
 	public boolean checkLanguageType(String languageFromInput, String languageFromEntity) {
@@ -195,26 +201,26 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		Optional<String> identityValue = getIdentityValue("documents." + INDIVIDUAL_BIOMETRICS, null, idEntity)
 				.findAny();
 		if (identityValue.isPresent()) {
-			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>(); 
+			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
 			for (CbeffDocType type : types) {
 				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 			}
 			return cbeffValuesForTypes;
-			
+
 		} else {
 			return Collections.emptyMap();
 		}
 	}
 
-	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type, MatchType matchType,
-			Optional<String> identityValue) throws IdAuthenticationBusinessException {
+	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type,
+			MatchType matchType, Optional<String> identityValue) throws IdAuthenticationBusinessException {
 		Map<String, String> bdbBasedOnType;
 		try {
-			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()),
-					type.getName(), null);
+			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()), type.getName(),
+					null);
 		} catch (Exception e) {
-			// TODO Add corresponding error code and message
-			throw new IdAuthenticationBusinessException("Inside getCbeffValues", "", e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
 		}
 		return bdbBasedOnType.entrySet().stream()
 				.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
@@ -229,9 +235,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/**
 	 * Fetch the identity value.
 	 *
-	 * @param name                 the name
-	 * @param languageForMatchType the language for match type
-	 * @param demoInfo             the demo info
+	 * @param name
+	 *            the name
+	 * @param languageForMatchType
+	 *            the language for match type
+	 * @param demoInfo
+	 *            the demo info
 	 * @return the identity value
 	 */
 	private Stream<String> getIdentityValue(String name, String languageForMatchType,
@@ -302,25 +311,23 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	}
 
 	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
-		return Stream.of(idMappings)
-			.filter(idmap -> {
-				String thisId = idName.replaceAll("\\d", "");
-				String thatId = idmap.getIdname().replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, "");
-				return thisId.equalsIgnoreCase(thatId);
-			})
-			.map(IdMapping::getType)
-			.findFirst();
+		return Stream.of(idMappings).filter(idmap -> {
+			String thisId = idName.replaceAll("\\d", "");
+			String thatId = idmap.getIdname().replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, "");
+			return thisId.equalsIgnoreCase(thatId);
+		}).map(IdMapping::getType).findFirst();
 	}
 
 	@Override
 	public TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> getMatchFunction(
 			AuthType authType) {
-		final TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> defaultFunc = (arg1, arg2, arg3) -> (double)0;
-		if(authType instanceof BioAuthType) {
-			 return bioMatcherUtil::match;
+		final TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> defaultFunc = (
+				arg1, arg2, arg3) -> (double) 0;
+		if (authType instanceof BioAuthType) {
+			return bioMatcherUtil::match;
 		} else {
 			return defaultFunc;
 		}
 	}
-	
+
 }
