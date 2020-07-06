@@ -6,23 +6,22 @@ repo=docker-registry.mosip.io:5000
 artifactory_url=https://oss.sonatype.org/service/local/repositories/releases/content
 conf_file_name=softhsm-application.conf
 release_zip_file=release.zip
-#access_token=<access token>
-#release_artifact_id=<release-artifact-id-in-github-action>
-git_repo_name=id-authentication
-git_repo_user=mosip
-git_branch=$label
+#access_token=#<access token>
+#release_artifact_id=#<release-artifact-id-in-github-action>
+git_repo_name=id-authentication-1
+git_repo_user=LoganathanSekar7627
+git_branch=1.0.9_sdk_deployment
 
-
-image_suffix=( )
-dockerfile_suffix=( -centos7_based -centos7_based -centos7_based -softhsm_based )
+image_suffix=( -tech5-softhsmclient -tech5-softhsmclient -tech5-softhsmclient -softhsmclient )
+dockerfile_suffix=( -tech5-softhsmclient -tech5-softhsmclient -tech5-softhsmclient -softhsmclient )
 
 modules=('authentication-service' 'authentication-internal-service' 'authentication-kyc-service' 'authentication-otp-service')
 
 modules_to_build=($1 $2 $3 $4)
 
 if [ "${#modules_to_build[@]}" == 0 ]; then
-	echo "No modules specified.. building all"
-	modules_to_build=${modules[@]}
+  echo "No modules specified.. building all"
+  modules_to_build=${modules[@]}
 fi
 
 ports=( 8090 8093 8091 8092 )
@@ -50,7 +49,7 @@ runall () {
 			current_image_suffix=${image_suffix[$i]}
 			current_dockerfile_suffix=${dockerfile_suffix[$i]}
 			
-			current_docker_file=Dockerfile${current_dockerfile_suffix}
+			current_docker_file=Dockerfile-${current_module}${current_dockerfile_suffix}
 			current_docker_name=${current_module}${current_image_suffix}
 			current_docker_tag=${version}
 			current_docker_image=${current_docker_name}:${current_docker_tag}
@@ -77,7 +76,7 @@ contains() {
 
 run_for_current_module() {
 	echo Buidling $current_module
-	#cleanup
+	cleanup
 	build
 	tag_image
 	push_image
@@ -169,7 +168,7 @@ setup_build() {
 	#download_release_jar
 	#copy_release_jar
 	#create_conf_file
-	download_dockerfile
+	#download_dockerfile
 }
 
 clean_docker_file() {
@@ -208,7 +207,7 @@ copy_release_jar() {
 
 download_jar() {
 	echo "Downloading Jar... $current_module"
-	wget -q $artifactory_url/io/mosip/authentication/$current_module/$version/authentication-service-$version.jar -O target/$current_module-$version.jar
+	wget -q $artifactory_url/io/mosip/authentication/$current_module/$version/$current_module-$version.jar -O target/$current_module-$version.jar
 }
 
 create_conf_file() {
@@ -226,7 +225,7 @@ EOF
 
 download_dockerfile() {
 	echo Downloading Dockerfile for $current_module
-		wget https://raw.githubusercontent.com/$git_repo_user/$git_repo_name/$git_branch/authentication/$current_module/$current_docker_file -O $current_docker_file
+	wget https://raw.githubusercontent.com/$git_repo_user/$git_repo_name/$git_branch/authentication/$current_module/$current_docker_file -O $current_docker_file
 
 }
 

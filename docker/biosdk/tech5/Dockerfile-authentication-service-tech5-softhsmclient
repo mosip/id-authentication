@@ -18,6 +18,8 @@ ARG is_glowroot
 # can be passed during Docker build as build time environment for artifactory URL
 ARG artifactory_url
 
+ARG softhsm_client_zip=client-centos.zip
+
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
 
@@ -38,6 +40,10 @@ ENV is_glowroot_env=${is_glowroot}
 
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
+
+ENV softhsm_client_zip_env=${softhsm_client_zip}
+
+ENV work_dir_env=/opt/Tech5
 
 ENV current_module_env=authentication-service
 
