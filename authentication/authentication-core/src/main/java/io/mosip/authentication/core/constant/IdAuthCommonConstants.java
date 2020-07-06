@@ -121,6 +121,8 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_PATH = "request/biometrics/%s/%s";
 	
 	public static final String DIGITAL_ID = "digitalId";
+	
+	public static final String DIGITAL_ID_TYPE = "digitalId/type";
 
 	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
 	public static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
@@ -161,6 +163,8 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_TYPE;
 	
 	public static final String BIO_SUB_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_SUB_TYPE;
+	
+	public static final String BIO_DIGITALID_INPUT_PARAM_TYPE = BIO_DATA_INPUT_PARAM + "/" + DIGITAL_ID_TYPE;
 	
 	
 	/** The Constant EKYC. */
@@ -234,4 +238,3 @@ public final class IdAuthCommonConstants {
 	
 	public static final String VALIDATESIGN = "validate";
 }
-
