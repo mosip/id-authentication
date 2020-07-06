@@ -196,7 +196,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							new Object[] { String.format(BIO_PATH, index, "digitalId/type") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
-				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getSubType())) {
+				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDeviceSubType())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { String.format(BIO_PATH, index, "digitalId/subType") },

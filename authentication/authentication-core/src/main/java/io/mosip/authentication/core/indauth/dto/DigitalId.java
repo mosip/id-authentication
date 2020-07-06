@@ -20,7 +20,7 @@ public class DigitalId {
 	
 	private String type;
 	
-	private String subType;
+	private String deviceSubType;
 	
 	@Setter(AccessLevel.NONE)
 	@Getter(AccessLevel.NONE)
