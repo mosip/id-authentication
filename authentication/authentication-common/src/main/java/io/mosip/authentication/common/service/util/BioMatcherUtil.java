@@ -3,10 +3,12 @@ package io.mosip.authentication.common.service.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +36,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -67,6 +70,7 @@ public class BioMatcherUtil {
 	 */
 	public double match(Map<String, String> probe, Map<String, String> gallery,
 			Map<String, Object> properties) throws IdAuthenticationBusinessException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Inside match method");
 		
 		IdMapping[] idMappings = (IdMapping[]) properties.get(IdMapping.class.getSimpleName()); 
 		BIR[][] objArrays = getBirValues(probe, gallery, idMappings);
@@ -74,26 +78,43 @@ public class BioMatcherUtil {
 		BIR[] entityBIR = objArrays[1];
 		
 		Map<BiometricType, List<BIR>> reqBirByType =  getBirByType(reqInfoObj);
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Sample BIR Type count: " + reqBirByType.size());
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Sample BIR Types: " + reqBirByType.keySet().stream().map(BiometricType::name).collect(Collectors.joining(",")));
+		
 		Map<BiometricType, List<BIR>> entityBirByType = getBirByType(entityBIR);
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Gallery BIR Type count: " + entityBirByType.size());
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Gallery BIR Types: " + entityBirByType.keySet().stream().map(BiometricType::name).collect(Collectors.joining(",")));
+
 		
 		boolean res = !reqBirByType.isEmpty();
 		for (BiometricType modality : Arrays.asList(BiometricType.FINGER, BiometricType.IRIS, BiometricType.FACE)) {
 			if(reqBirByType.containsKey(modality)) {
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Matching for " + modality.name());
 				try {
 					iBioProviderApi bioProvider = bioApiFactory.getBioProvider(modality,
 							BiometricFunction.MATCH);
+					logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "bioProvider - " + bioProvider.getClass().getCanonicalName());
 					List<BIR> sample = reqBirByType.get(modality);
 					List<BIR> record = entityBirByType.get(modality);
 					if(sample != null) {
+						logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "sample birs list is not null");
 						if(record != null) {
-							res =  bioProvider.verify(sample, record, modality, null);
+							logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "record birs list is not null");
+							Map<String, String> flags = new HashMap<>();
+							flags.put("uniqueRefID", UUID.randomUUID().toString());
+							flags.put("timestamp", DateUtils.getUTCCurrentDateTimeString());
+							res =  bioProvider.verify(sample, record, modality, flags);
+							logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "match response : " + res + " for " + modality);
 							if(!res) {
 								break;
 							}
 						} else {
+							logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "record birs list is null");
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), 
 									String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), modality));
 						}
+					} else {
+						logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "sample birs list is null");
 					}
 				} catch (BiometricException e) {
 					logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction",
@@ -102,6 +123,8 @@ public class BioMatcherUtil {
 				}
 			}
 		}
+		
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "Match Result: " + res);
 	
 		return res ? (double)  100 : (double) 0;
 	}

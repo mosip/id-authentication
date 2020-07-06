@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
@@ -24,10 +25,8 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -52,7 +51,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -116,7 +114,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (null != requestBody.get(REQUEST)) {
 				requestBody.replace(REQUEST,
 						decode((String) requestBody.get(REQUEST)));
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
 				if (null == requestBody.get(REQUEST_HMAC)) {
 					throwMissingInputParameter(REQUEST_HMAC);
 				} else {
@@ -128,21 +125,24 @@ public class IdAuthFilter extends BaseAuthFilter {
 											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
 											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
 									fetchReferenceId());
-					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
+					Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId(), 
+							requestData -> validateRequestHMAC(reqHMAC, requestData));
 
-				}
-				//If biometrics is present validate and decipher it.
-				if(request.get(BIOMETRICS) != null) {
-					validateBioDataInRequest(request);
-					decipherBioData(request);
+					//If biometrics is present validate and decipher it.
+					if(request.get(BIOMETRICS) != null) {
+						validateBioDataInRequest(request);
+						decipherBioData(request);
+					}
+					
+					
+					requestBody.replace(REQUEST, request);
+					
 				}
 				
-				
-				requestBody.replace(REQUEST, request);
 			}
 			
 			return requestBody;
-		} catch (ClassCastException | JsonProcessingException e) {
+		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
