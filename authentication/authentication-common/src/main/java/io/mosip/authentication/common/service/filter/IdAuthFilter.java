@@ -584,8 +584,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 									.map(s -> s.getData().getBioType())
 									.collect(Collectors.toList());
 		
-		List<String> subTypeList = listBioInfo.stream()
-				.map(s -> s.getData().getDigitalId().getDeviceSubType())
+		List<String> deviceTypeList = listBioInfo.stream()
+				.map(s -> s.getData().getDigitalId().getType())
 				.collect(Collectors.toList());
 		
 		if (bioTypeList.isEmpty()) {
@@ -595,7 +595,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "bio"));
 			}
 		} else {
-			checkAllowedAuthTypeForBio(authPolicies, bioTypeList, subTypeList);
+			checkAllowedAuthTypeForBio(authPolicies, bioTypeList, deviceTypeList);
 		}
 	}
 
@@ -609,7 +609,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList, List<String> subTypeList)
+	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList, List<String> deviceTypeList)
 			throws IdAuthenticationAppException {
 		String bioAuthType;
 		for (String bioType : bioTypeList) {
@@ -623,7 +623,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				bioType = SingleType.IRIS.value();
 			}
 
-			if(!isSubTypeBioTypeSame(bioType,subTypeList)) {
+			if(!isDeviceTypeBioTypeSame(bioType,deviceTypeList)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorCode(),
 						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorMessage());
@@ -650,8 +650,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param subTypeList
 	 * @return
 	 */
-	private boolean isSubTypeBioTypeSame(String bioType, List<String> subTypeList) {
-		return subTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
+	private boolean isDeviceTypeBioTypeSame(String bioType, List<String> deviceTypeList) {
+		return deviceTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
 	}
 	
 	/**
