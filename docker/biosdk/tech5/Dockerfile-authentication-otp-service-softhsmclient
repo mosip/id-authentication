@@ -42,7 +42,7 @@ ENV softhsm_client_zip_env=${softhsm_client_zip}
 
 ENV work_dir_env=/
 
-ENV current_module_env=authentication-service
+ENV current_module_env=authentication-otp-service
 
 ADD configure_start.sh configure_start.sh
 
