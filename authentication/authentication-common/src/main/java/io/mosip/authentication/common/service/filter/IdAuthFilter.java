@@ -583,6 +583,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 		List<String> bioTypeList = listBioInfo.stream()
 									.map(s -> s.getData().getBioType())
 									.collect(Collectors.toList());
+		
+		List<String> subTypeList = listBioInfo.stream()
+				.map(s -> s.getData().getDigitalId().getDeviceSubType())
+				.collect(Collectors.toList());
+		
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
@@ -590,7 +595,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "bio"));
 			}
 		} else {
-			checkAllowedAuthTypeForBio(authPolicies, bioTypeList);
+			checkAllowedAuthTypeForBio(authPolicies, bioTypeList, subTypeList);
 		}
 	}
 
@@ -604,7 +609,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList)
+	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList, List<String> subTypeList)
 			throws IdAuthenticationAppException {
 		String bioAuthType;
 		for (String bioType : bioTypeList) {
@@ -617,6 +622,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 			} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
 				bioType = SingleType.IRIS.value();
 			}
+
+			if(!isSubTypeBioTypeSame(bioType,subTypeList)) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorMessage());
+			}
+			
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
 				if (!BioAuthType.getSingleBioAuthTypeForType(bioAuthType).isPresent()) {
 					throw new IdAuthenticationAppException(
@@ -632,6 +644,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param bioType
+	 * @param subTypeList
+	 * @return
+	 */
+	private boolean isSubTypeBioTypeSame(String bioType, List<String> subTypeList) {
+		return subTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
+	}
+	
 	/**
 	 * Check mandatory auth type based on policy.
 	 *

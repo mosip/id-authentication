@@ -129,6 +129,7 @@ public enum IdAuthenticationErrorConstants {
 	// Device verification validation
 	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
 	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
+	DEVICE_TYPE_BIO_TYPE_NOT_MATCH("IDA-DPM-004","Device Type and Biometric Type do not match"),
 
 	//Partner and Misp validations
 	PARTNER_NOT_ACTIVE("PMS_PMP_016","Partner is not active."),
