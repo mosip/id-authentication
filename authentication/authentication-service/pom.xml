@@ -74,16 +74,6 @@
 			<version>${kernel-idgenerator-tokenid.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-bioapi-provider</artifactId>
-			<version>${kernel-bioapi-provider.version}</version>
-		</dependency>
-		<dependency>
-			<artifactId>mock-sdk</artifactId>
-			<groupId>io.mosip.mock.sdk</groupId>
-			<version>${mock-sdk-version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
