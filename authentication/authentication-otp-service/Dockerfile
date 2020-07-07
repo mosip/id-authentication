@@ -38,7 +38,7 @@ ENV softhsm_client_zip_env=${softhsm_client_zip}
 
 ENV work_dir_env=/
 
-ENV current_module_env=authentication-service
+ENV current_module_env=authentication-otp-service
 
 ADD configure_start.sh configure_start.sh
 
@@ -64,4 +64,4 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     fi
 
 #Sample docker run command:
-# sudo docker run --rm -it -e artifactory_url_env="http://artifactory" -e spring_config_label_env="1.0.9" -e active_profile_env="dev" -e spring_config_url_env="http://config-server/config" -e PKCS11_PROXY_SOCKET=tcp://softhsm-ida:5666 -p 8090:8090 authentication-otp-service:1.0.9
+# sudo docker run --rm -it -e artifactory_url_env="http://artifactory" -e spring_config_label_env="1.0.9" -e active_profile_env="dev" -e spring_config_url_env="http://config-server/config" -e PKCS11_PROXY_SOCKET=tcp://softhsm-ida:5666 -p 8092:8092 authentication-otp-service:1.0.9
