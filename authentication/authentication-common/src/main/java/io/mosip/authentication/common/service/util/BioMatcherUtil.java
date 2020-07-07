@@ -98,6 +98,7 @@ public class BioMatcherUtil {
 				} catch (BiometricException e) {
 					logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction",
 							e.getClass().getSimpleName() + ": " + e.getMessage());
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO);
 				}
 			}
 		}
