@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.9</version>
+	<version>1.0.10-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -72,8 +72,8 @@
 		<sonar.skip>true</sonar.skip>
 		
 		<authentication.parent.version>${project.version}</authentication.parent.version>
-		<authentication-core.version>1.0.9</authentication-core.version>
-		<authentication-common.version>1.0.9</authentication-common.version>
+		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
+		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
