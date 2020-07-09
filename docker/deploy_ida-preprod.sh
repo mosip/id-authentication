@@ -12,8 +12,8 @@ git_repo_name=id-authentication
 git_repo_user=mosip
 git_branch=1.0.10
 
-image_suffix=( -tech5-softhsmclient -tech5-softhsmclient -tech5-softhsmclient -softhsmclient )
-dockerfile_suffix=( -tech5-softhsmclient -tech5-softhsmclient -tech5-softhsmclient -softhsmclient )
+image_suffix=( -softhsm -softhsm -softhsm -softhsm )
+dockerfile_suffix=( -softhsm_based -softhsm_based -softhsm_based -softhsm_based )
 
 modules=('authentication-service' 'authentication-internal-service' 'authentication-kyc-service' 'authentication-otp-service')
 
@@ -49,7 +49,7 @@ runall () {
 			current_image_suffix=${image_suffix[$i]}
 			current_dockerfile_suffix=${dockerfile_suffix[$i]}
 			
-			current_docker_file=Dockerfile-${current_module}${current_dockerfile_suffix}
+			current_docker_file=Dockerfile${current_dockerfile_suffix}
 			current_docker_name=${current_module}${current_image_suffix}
 			current_docker_tag=${version}
 			current_docker_image=${current_docker_name}:${current_docker_tag}
@@ -167,8 +167,8 @@ setup_build() {
 	download_jar
 	#download_release_jar
 	#copy_release_jar
-	#create_conf_file
-	#download_dockerfile
+	create_conf_file
+	download_dockerfile
 }
 
 clean_docker_file() {

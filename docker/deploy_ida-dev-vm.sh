@@ -1,19 +1,20 @@
 #!/bin/bash
-version=1.0.9
-label=1.0.9
+version=1.0.10-SNAPSHOT
+label=1.0.10
 repo=docker-registry.mosip.io:5000
 #artifactory_url=http://13.71.87.138:8040/artifactory/list/libs-snapshot-local
-artifactory_url=https://oss.sonatype.org/service/local/repositories/releases/content
+#artifactory_url=https://oss.sonatype.org/service/local/repositories/releases/content
+artifactory_url=https://oss.sonatype.org/service/local/repositories/snapshots/content
 conf_file_name=softhsm-application.conf
 release_zip_file=release.zip
-#access_token=#<access token>
-#release_artifact_id=#<release-artifact-id-in-github-action>
+access_token=<git-access-tocken>
+release_artifact_id=10582245
 git_repo_name=id-authentication
 git_repo_user=mosip
 git_branch=1.0.10
 
-image_suffix=( -tech5-softhsmclient -tech5-softhsmclient -tech5-softhsmclient -softhsmclient )
-dockerfile_suffix=( -tech5-softhsmclient -tech5-softhsmclient -tech5-softhsmclient -softhsmclient )
+image_suffix=( -softhsm -softhsm -softhsm -softhsm )
+dockerfile_suffix=( -softhsm_based -softhsm_based -softhsm_based -softhsm_based )
 
 modules=('authentication-service' 'authentication-internal-service' 'authentication-kyc-service' 'authentication-otp-service')
 
@@ -34,7 +35,7 @@ runall () {
 	echo_configs
 
 	clean_target
-	#download_release_jar
+	download_release_jar
 	
 	for i in "${!modules[@]}"; do 
 		# To print index, ith 
@@ -81,7 +82,7 @@ run_for_current_module() {
 	tag_image
 	push_image
 	#run_image_from_local
-	#run_image_from_repo
+	run_image_from_repo
 	echo $current_module built
 
 }
@@ -156,7 +157,7 @@ build() {
 	#clean_jar
 	setup_build
 	build_image
-	#clean_docker_file
+	clean_docker_file
 	#clean_jar
 	#clean_target
 }
@@ -164,11 +165,11 @@ build() {
 setup_build() {
 	echo "Set up..."
 	mkdir -p target
-	download_jar
-	#download_release_jar
-	#copy_release_jar
-	#create_conf_file
-	#download_dockerfile
+	#download_jar
+	##download_release_jar
+	copy_release_jar
+	create_conf_file
+	download_dockerfile
 }
 
 clean_docker_file() {
