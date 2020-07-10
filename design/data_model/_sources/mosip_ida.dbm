@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,128" last-zoom="0.55"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,167" last-zoom="0.55"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -355,7 +355,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="key_alias" alias="keyals">
+<table name="key_alias" alias="uinal">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Alias: To maintain a system generated key as alias for the encryption key that will be stored in key-store devices like HSM.]]></comment>
@@ -412,11 +412,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
-	<constraint name="pk_keyals_id" type="pk-constr" table="ida.key_alias">
+	<constraint name="pk_keymals_id" type="pk-constr" table="ida.key_alias">
 		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-	<constraint name="uk_keyals_appref" type="uq-constr" table="ida.key_alias">
-		<columns names="app_id,ref_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
