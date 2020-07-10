@@ -8,7 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 10-Jul-2020          Sadanandegowda       Added unique constraints for app_id and ref_id
+-- 
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_alias | type: TABLE --
@@ -27,8 +27,7 @@ CREATE TABLE ida.key_alias(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT pk_keyals_id PRIMARY KEY (id),
-	CONSTRAINT uk_keyals_appref UNIQUE (app_id,ref_id)
+	CONSTRAINT pk_keymals_id PRIMARY KEY (id)
 
 );
 -- ddl-end --
