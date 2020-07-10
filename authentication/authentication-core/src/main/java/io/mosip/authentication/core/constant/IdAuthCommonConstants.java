@@ -8,6 +8,18 @@ package io.mosip.authentication.core.constant;
  */
 public final class IdAuthCommonConstants {
 
+	public static final String DEVICE_PURPOSE_AUTH = "AUTH";
+
+	public static final String DIGITAL_ID_PREFIX = "digitalId/";
+
+	public static final String DEVICE_PROVIDER_ID = "deviceProviderId";
+
+	public static final String DP_ID = "dpId";
+
+	public static final String DEVICE_PROVIDER = "deviceProvider";
+
+	public static final String DP = "dp";
+
 	private IdAuthCommonConstants() {
 
 	}
