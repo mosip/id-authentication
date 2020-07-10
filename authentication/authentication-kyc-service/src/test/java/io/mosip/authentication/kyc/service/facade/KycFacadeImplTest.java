@@ -171,7 +171,6 @@ public class KycFacadeImplTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOIris = new DataDTO();

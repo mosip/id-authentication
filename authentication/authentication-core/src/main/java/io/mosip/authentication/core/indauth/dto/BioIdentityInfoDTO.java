@@ -24,5 +24,5 @@ public class BioIdentityInfoDTO {
 	private String sessionKey;
 	
 	/** The Value for signature */
-	private String signature;
+	private String thumbprint;
 }

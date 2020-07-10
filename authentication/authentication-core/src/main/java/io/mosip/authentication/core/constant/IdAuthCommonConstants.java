@@ -20,6 +20,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String DP = "dp";
 
+	public static final String PURPOSE = "purpose";
+
 	private IdAuthCommonConstants() {
 
 	}

@@ -14,11 +14,13 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DP_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.FIELD_VALIDATION_FAILED;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MDS_DOES_NOT_EXIST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MDS_INACTIVE_STATE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PURPOSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SW_ID_VERIFICATION_FAILED;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED;
+import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.SERVER_ERROR;
 import static io.mosip.authentication.core.constant.IdAuthenticationErrorConstants.UNABLE_TO_PROCESS;
 
@@ -139,6 +141,16 @@ public class BioAuthServiceImpl implements BioAuthService {
 				try {
 					BioIdentityInfoDTO bioIdentityInfoDTO = bioRequest.get(index);
 					DataDTO data = bioIdentityInfoDTO.getData();
+					if(data.getPurpose() == null || data.getPurpose().isEmpty()) {
+						throw new IdAuthUncheckedException(MISSING_INPUT_PARAMETER.getErrorCode(),
+								String.format(MISSING_INPUT_PARAMETER.getErrorMessage(),
+										String.format(BIO_PATH, index, DIGITAL_ID_PREFIX + PURPOSE))); 
+					} else if(!data.getPurpose().equalsIgnoreCase(DEVICE_PURPOSE_AUTH)) {
+						throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
+										String.format(BIO_PATH, index, DIGITAL_ID_PREFIX + PURPOSE)));
+					}
+					
 					ValidateDeviceDTO request = new ValidateDeviceDTO();
 					request.setDeviceCode(data.getDeviceCode());
 					request.setDigitalId(data.getDigitalId());

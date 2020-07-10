@@ -148,7 +148,6 @@ public class BioAuthServiceTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("Left IndexFinger");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -159,6 +158,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -207,7 +207,6 @@ public class BioAuthServiceTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Left");
-		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -218,6 +217,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -263,7 +263,6 @@ public class BioAuthServiceTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Left");
-		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -274,6 +273,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
 
@@ -290,8 +290,8 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId2);
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Right");
-		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
 
@@ -339,7 +339,6 @@ public class BioAuthServiceTest {
 				"Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT");
 		dataDTOFinger.setBioSubType("LEFT_INDEX");
 		dataDTOFinger.setBioType("FMR");
-		dataDTOFinger.setDeviceProviderID("provider001");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
@@ -357,7 +356,7 @@ public class BioAuthServiceTest {
 		dataDTOFinger2.setBioValue(value);
 		dataDTOFinger2.setBioSubType("LEFT_INDEX");
 		dataDTOFinger2.setBioType("FMR");
-		dataDTOFinger2.setDeviceProviderID("provider001");
+		dataDTOFinger2.setPurpose("AUTH");
 		DigitalId digitalId2 = new DigitalId();
 		digitalId2.setSerialNo("");
 		digitalId2.setMake("");
@@ -418,11 +417,11 @@ public class BioAuthServiceTest {
 		digitalId.setDateTime("");
 		bioInfo.setDigitalId(digitalId);
 		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("provider001");
 		// bioInfo.setDeviceInfo(deviceInfo);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
+		bioInfo.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(bioInfo);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -475,7 +474,7 @@ public class BioAuthServiceTest {
 		digitalId.setDateTime("");
 		bioInfo.setDigitalId(digitalId);
 		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("provider001");
+		bioInfo.setPurpose("AUTH");
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
@@ -519,8 +518,8 @@ public class BioAuthServiceTest {
 		List<BioIdentityInfoDTO> bioIdentityInfoDTOList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO bioInfo = new DataDTO();
+		bioInfo.setPurpose("AUTH");
 		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("provider001");
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
@@ -576,7 +575,6 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("provider001");
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		bioInfo.setBioSubType("LEFT_INDEX");
 		bioInfo.setBioValue(value);
@@ -587,7 +585,6 @@ public class BioAuthServiceTest {
 		dataDTO = new DataDTO();
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_THUMB");
-		dataDTO.setDeviceProviderID("mantra");
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
@@ -637,7 +634,6 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO bioInfo = new DataDTO();
 		bioInfo.setBioType("FMR");
-		bioInfo.setDeviceProviderID("provider001");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
@@ -673,6 +669,7 @@ public class BioAuthServiceTest {
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_THUMB");
 		dataDTO.setBioValue(value1);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		bioIdentityInfoDTOList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -711,8 +708,6 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO datadto = new DataDTO();
 		datadto.setBioType("Finger");
-		datadto.setDeviceServiceID("1234");
-		datadto.setDeviceProviderID("mantra");
 		datadto.setBioValue(value);
 		datadto.setBioSubType("Left IndexFinger");
 		DigitalId digitalId = new DigitalId();
@@ -724,6 +719,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		datadto.setDigitalId(digitalId);
+		datadto.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(datadto);
 		biometricsList.add(bioIdentityInfoDTO);
 		request.setBiometrics(biometricsList);
@@ -780,7 +776,6 @@ public class BioAuthServiceTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("LEFT_INDEX");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -791,6 +786,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -837,8 +833,8 @@ public class BioAuthServiceTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("UNKNOWN");
-		dataDTO.setDeviceProviderID("morpho");
 		dataDTO.setBioValue(value);
+		dataDTO.setPurpose("AUTH");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
@@ -894,7 +890,6 @@ public class BioAuthServiceTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("UNKNOWN");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -905,6 +900,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		leftIndexList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -950,7 +946,6 @@ public class BioAuthServiceTest {
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FACE");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -961,6 +956,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		faceList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -1006,8 +1002,8 @@ public class BioAuthServiceTest {
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("Face");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
+		dataDTO.setPurpose("AUTH");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
@@ -1061,7 +1057,6 @@ public class BioAuthServiceTest {
 		DataDTO dataDTO = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FACE");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
@@ -1072,6 +1067,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		faceList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -1127,9 +1123,11 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		leftIndexdatadto.setDigitalId(digitalId);
+		leftIndexdatadto.setPurpose("AUTH");
 		leftIndexdto.setData(leftIndexdatadto);
 		String rightValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
 		DataDTO rightIndexdto = new DataDTO();
+		rightIndexdto.setPurpose("AUTH");
 		rightIndexdto.setBioType(BioAuthType.FGR_MIN.getType());
 		rightIndexdto.setBioSubType("Right IndexFinger");
 		rightIndexdto.setBioValue(rightValue);
@@ -1142,6 +1140,9 @@ public class BioAuthServiceTest {
 		digitalId2.setDeviceProviderId("");
 		digitalId2.setDateTime("");
 		rightIndexdto.setDigitalId(digitalId2);
+		rightIndexdto.setPurpose("AUTH");
+		
+		
 		BioIdentityInfoDTO rightIndexdtovalue = new BioIdentityInfoDTO();
 		rightIndexdtovalue.setData(rightIndexdto);
 		fingerList.add(leftIndexdto);
@@ -1204,6 +1205,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		leftIndexdatadto.setDigitalId(digitalId);
+		leftIndexdatadto.setPurpose("AUTH");
 
 		DataDTO rightIndexdto = new DataDTO();
 		String rightValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
@@ -1219,6 +1221,7 @@ public class BioAuthServiceTest {
 		digitalId2.setDeviceProviderId("");
 		digitalId2.setDateTime("");
 		rightIndexdto.setDigitalId(digitalId2);
+		rightIndexdto.setPurpose("AUTH");
 		BioIdentityInfoDTO rightIndexdtovalue = new BioIdentityInfoDTO();
 		rightIndexdtovalue.setData(rightIndexdto);
 
@@ -1238,6 +1241,7 @@ public class BioAuthServiceTest {
 		leftmiddledto.setDigitalId(digitalId3);
 		BioIdentityInfoDTO leftMiddledtovalue = new BioIdentityInfoDTO();
 		leftMiddledtovalue.setData(leftmiddledto);
+		leftmiddledto.setPurpose("AUTH");
 
 		fingerList.add(leftMiddledtovalue);
 		fingerList.add(leftIndexdto);
@@ -1299,6 +1303,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		bioIdentityInfoDTO.setData(dataDTO);
 		faceList.add(bioIdentityInfoDTO);
 		request.setDemographics(identity);
@@ -1339,6 +1344,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1367,6 +1373,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1395,6 +1402,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1423,6 +1431,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1451,6 +1460,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1477,6 +1487,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1503,6 +1514,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1531,6 +1543,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1558,6 +1571,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
@@ -1585,6 +1599,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		when(restHelper.requestSync(Mockito.any()))
@@ -1609,6 +1624,7 @@ public class BioAuthServiceTest {
 		digitalId.setDeviceProviderId("");
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
+		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
 				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null));
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))

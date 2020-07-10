@@ -248,7 +248,6 @@ public class AuthFacadeImplTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOIris = new DataDTO();
@@ -412,14 +411,12 @@ public class AuthFacadeImplTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO fingerValue2 = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger2 = new DataDTO();
 		dataDTOFinger2.setBioValue("");
 		dataDTOFinger2.setBioSubType("Thumb");
 		dataDTOFinger2.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger2.setDeviceProviderID("1234567890");
 		fingerValue2.setData(dataDTOFinger2);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
@@ -509,7 +506,6 @@ public class AuthFacadeImplTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOIris = new DataDTO();
@@ -595,7 +591,6 @@ public class AuthFacadeImplTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOIris = new DataDTO();
