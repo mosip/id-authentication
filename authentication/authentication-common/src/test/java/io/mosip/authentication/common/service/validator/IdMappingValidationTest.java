@@ -263,7 +263,6 @@ public class IdMappingValidationTest {
 		dataDTO.setBioValue("face img");
 		dataDTO.setBioSubType("Thumb");
 		dataDTO.setBioType("FID");
-		dataDTO.setDeviceProviderID("provider001");
 		faceValue.setData(dataDTO);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -294,7 +293,6 @@ public class IdMappingValidationTest {
 		dataDTO.setBioValue("iris img");
 		dataDTO.setBioSubType("left");
 		dataDTO.setBioType("Iris");
-		dataDTO.setDeviceProviderID("provider001");
 		irisValue.setData(dataDTO);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -325,7 +323,6 @@ public class IdMappingValidationTest {
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("Thumb");
 		dataDTO.setBioType("test");
-		dataDTO.setDeviceProviderID("test01");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		fingerValue.setData(dataDTO);
@@ -345,7 +342,6 @@ public class IdMappingValidationTest {
 		dataDTO1.setBioValue("finger");
 		dataDTO1.setBioSubType("Left Thumb");
 		dataDTO1.setBioType("Finger");
-		dataDTO1.setDeviceProviderID("test01");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		fingerValue1.setData(dataDTO1);
@@ -353,7 +349,6 @@ public class IdMappingValidationTest {
 		dataDTO.setBioValue("iris img");
 		dataDTO.setBioSubType("Left");
 		dataDTO.setBioType("Iris");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		irisValue.setData(dataDTO);
@@ -372,7 +367,6 @@ public class IdMappingValidationTest {
 		dataDTOFace.setDigitalId(digitalId2);
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioType("FACE");
-		dataDTOFace.setDeviceProviderID("provider001");
 		dataDTOFace.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		faceValue.setData(dataDTOFace);

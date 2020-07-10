@@ -255,7 +255,6 @@ public class InternalAuthControllerTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_INDEX");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
 		bioIdentityList.add(bioIdentityInfoDTO);
@@ -264,7 +263,6 @@ public class InternalAuthControllerTest {
 		DataDTO irisdata = new DataDTO();
 		irisdata.setBioType("Iris");
 		irisdata.setBioSubType("LEFT");
-		irisdata.setDeviceProviderID("provider001");
 		irisdata.setBioValue(value);
 		IrisDto.setData(irisdata);
 		bioIdentityList.add(IrisDto);
@@ -272,7 +270,6 @@ public class InternalAuthControllerTest {
 		BioIdentityInfoDTO faceDto = new BioIdentityInfoDTO();
 		DataDTO facedata = new DataDTO();
 		facedata.setBioType("Face");
-		facedata.setDeviceProviderID("provider001");
 		facedata.setBioValue(value);
 		faceDto.setData(facedata);
 		bioIdentityList.add(faceDto);

@@ -25,28 +25,28 @@ public class DataDTO {
 	/** The Value for deviceCode */
 	private String deviceCode;
 
-	/** The Value for deviceProviderID */
-	private String deviceProviderID;
-
-	/** The Value for deviceServiceID */
-	private String deviceServiceID;
-
 	/** The Value for deviceServiceVersion */
 	private String deviceServiceVersion;
 
 	/** The Value for transactionID */
-	private String transactionID;
+	private String transactionId;
 
 	/** The Value for time stamp */
 	private String timestamp;
 
 	/** The Value for mosipProcess */
-	private String mosipProcess;
+	private String purpose;
 
 	/** The Value for environment */
-	private String environment;
+	private String env;
 
 	/** The Value for version */
 	private String version;
+	
+	private String domainUri;
+	
+	private Float requestedScore;
+	
+	private Float qualityScore;
 
 }
