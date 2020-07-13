@@ -43,7 +43,7 @@ public class ValidateDeviceDTO {
 	private String deviceServiceVersion;
 	
 	/** The timestamp. */
-	private String timestamp;
+	private String timeStamp;
 	
 	/** The purpose. */
 	private String purpose;
