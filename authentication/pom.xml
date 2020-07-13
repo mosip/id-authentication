@@ -68,9 +68,6 @@
 	</modules>
 
 	<properties>
-		<!--FIXME Temporarily disabling to avoid build error-->
-		<sonar.skip>true</sonar.skip>
-		
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
