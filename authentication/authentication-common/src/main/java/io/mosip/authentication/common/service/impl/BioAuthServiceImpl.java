@@ -144,11 +144,11 @@ public class BioAuthServiceImpl implements BioAuthService {
 					if(data.getPurpose() == null || data.getPurpose().isEmpty()) {
 						throw new IdAuthUncheckedException(MISSING_INPUT_PARAMETER.getErrorCode(),
 								String.format(MISSING_INPUT_PARAMETER.getErrorMessage(),
-										String.format(BIO_PATH, index, DIGITAL_ID_PREFIX + PURPOSE))); 
+										String.format(BIO_PATH, index, PURPOSE))); 
 					} else if(!data.getPurpose().equalsIgnoreCase(DEVICE_PURPOSE_AUTH)) {
 						throw new IdAuthUncheckedException(INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(INVALID_INPUT_PARAMETER.getErrorMessage(),
-										String.format(BIO_PATH, index, DIGITAL_ID_PREFIX + PURPOSE)));
+										String.format(BIO_PATH, index, PURPOSE)));
 					}
 					
 					ValidateDeviceDTO request = new ValidateDeviceDTO();
