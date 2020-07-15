@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:11
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
