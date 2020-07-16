@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import sun.security.pkcs11.SunPKCS11;
-
 @Configuration
 public class IDAConfig {
 
@@ -45,8 +43,9 @@ public class IDAConfig {
 	
 
 	@Bean
-    public Provider getProvider(){
-        Provider provider = new SunPKCS11(configPath);
+    public Provider getProvider(){		
+		Provider provider = Security.getProvider("SunPKCS11");
+		provider.configure(configPath);		
         Security.addProvider(provider);
         return provider;
     }
