@@ -91,7 +91,7 @@ public class IdAuthSecurityManager {
 	@PostConstruct
 	public void getProvider() {
 		Provider provider = Security.getProvider("SunPKCS11");
-		provider.configure(configPath);		
+		provider = provider.configure(configPath);		
         Security.addProvider(provider);        
 		this.provider = provider;
 	}

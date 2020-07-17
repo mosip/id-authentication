@@ -45,7 +45,7 @@ public class IDAConfig {
 	@Bean
     public Provider getProvider(){		
 		Provider provider = Security.getProvider("SunPKCS11");
-		provider.configure(configPath);		
+		provider = provider.configure(configPath);		
         Security.addProvider(provider);
         return provider;
     }
