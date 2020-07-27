@@ -30,19 +30,29 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
+ARG bio_sdk_folder=mock/0.9
+
+ENV bio_sdk_folder_env=${bio_sdk_folder}
+
+ADD configure_start-biosdk_only.sh configure_start.sh
+
+RUN chmod +x configure_start.sh
+
 ENV current_module_env=authentication-internal-service
 
 WORKDIR /
 
 RUN mkdir /config
 
-COPY softhsm-application.conf /config
+COPY ../softhsm-application.conf /config
 
 ADD target/${current_module_env}-*.jar ${current_module_env}.jar
 
 EXPOSE 8093
 
 EXPOSE 9010
+
+ENTRYPOINT [ "/configure_start.sh" ]
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
