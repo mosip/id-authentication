@@ -368,58 +368,10 @@ jobs:
           echo VERSION=$VERSION
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-  docker-centos7-java8-centos:
+  docker-java8-softhsm-base:
     needs: build
 
-    runs-on: centos:7.8.2003
-    env:
-      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
-      SERVICE_NAME: centos7-java8
-      SERVICE_LOCATION: authentication
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v1
-        with:
-          name: release
-          path: ./
-
-      - name: Setup branch name
-        run: |
-          # Strip git ref prefix from version
-          echo "::set-env name=BRANCH_NAME::$(echo ${{ github.ref }} | sed -e 's,.*/\(.*\),\1,')"
-          echo ${{ env.BRANCH_NAME }}
-
-      - name: Get version info from pom
-        id: getPomVersion
-        uses: mavrosxristoforos/get-xml-info@1.0
-        with:
-          xml-file: ./${{ env.SERVICE_LOCATION }}/pom.xml 
-          xpath: /*[local-name()="project"]/*[local-name()="version"] 
-      
-      - name: Build image
-        run: |
-          cd "./${{env.SERVICE_LOCATION}}"
-          docker build . --file Dockerfile-centos7-java8 --tag ${{ env.SERVICE_NAME }}
-      - name: Log into registry
-        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
-        
-      - name: Push image
-        run: |
-          IMAGE_ID=$NAMESPACE/$SERVICE_NAME
-          
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          echo "push version ${{steps.getPomVersion.outputs.info}}"
-          VERSION=1.0
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
-  docker-java8-softhsm-base:
-    needs: docker-centos7-java8-centos
-
-    runs-on: mosipdev/centos7-java8:1.0
+    runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: java8-softhsm-base
@@ -467,7 +419,7 @@ jobs:
   docker-authentication-otp-service-softhsm:
     needs: docker-java8-softhsm-base
 
-    runs-on: mosipdev/java8-softhsm-base
+    runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-otp-service-softhsm
@@ -518,7 +470,7 @@ jobs:
   docker-authentication-internal-service-softhsm:
     needs: docker-java8-softhsm-base
 
-    runs-on: mosipdev/java8-softhsm-base
+    runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-internal-service-softhsm
@@ -569,7 +521,7 @@ jobs:
   docker-authentication-kyc-service-softhsm:
     needs: docker-java8-softhsm-base
 
-    runs-on: mosipdev/java8-softhsm-base
+    runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: authentication-kyc-service-softhsm
