@@ -44,7 +44,7 @@ WORKDIR /
 
 RUN mkdir /config
 
-COPY ../softhsm-application.conf /config
+COPY softhsm-application.conf /config
 
 ADD target/${current_module_env}-*.jar ${current_module_env}.jar
 
