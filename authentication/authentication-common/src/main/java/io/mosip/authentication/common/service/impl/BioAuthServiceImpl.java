@@ -155,7 +155,6 @@ public class BioAuthServiceImpl implements BioAuthService {
 					request.setDeviceCode(data.getDeviceCode());
 					request.setDigitalId(data.getDigitalId());
 					request.setDeviceServiceVersion(data.getDeviceServiceVersion());
-					request.setTimeStamp(bioIdentityInfoDTO.getData().getTimestamp());
 					request.setPurpose(DEVICE_PURPOSE_AUTH);
 					RequestWrapper<ValidateDeviceDTO> requestWrapper = new RequestWrapper<>();
 					requestWrapper.setRequest(request);
