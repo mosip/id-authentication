@@ -369,7 +369,7 @@ jobs:
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
   docker-authentication-otp-service-softhsm:
-    needs: docker-java8-softhsm-base
+    needs: build
 
     runs-on: ubuntu-latest
     env:
@@ -420,7 +420,7 @@ jobs:
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
   docker-authentication-internal-service-softhsm:
-    needs: docker-java8-softhsm-base
+    needs: build
 
     runs-on: ubuntu-latest
     env:
@@ -471,7 +471,7 @@ jobs:
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
   docker-authentication-kyc-service-softhsm:
-    needs: docker-java8-softhsm-base
+    needs: build
 
     runs-on: ubuntu-latest
     env:
@@ -522,7 +522,7 @@ jobs:
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
   docker-authentication-service-softhsm:
-    needs: docker-java8-softhsm-base
+    needs: build
 
     runs-on: ubuntu-latest
     env:
