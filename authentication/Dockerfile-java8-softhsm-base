@@ -1,0 +1,13 @@
+# java8-softhsm-base:1.0
+FROM openjdk:8
+
+RUN apt-get -y update \
+    && apt-get -y upgrade \
+    && apt-get -y install gcc make automake libtool autoconf pkg-config libssl-dev git-core g++\
+    && git clone https://github.com/opendnssec/SoftHSMv2 \
+    && cd SoftHSMv2/ && sh autogen.sh && ./configure && make && make install
+#RUN apt-get -y install opensc \
+#    && pkcs11-tool --module /usr/local/lib/softhsm/libsofthsm2.so --init-token --label "SoftHSM" --slot 0 --so-pin 1234 \
+#    && pkcs11-tool --module /usr/local/lib/softhsm/libsofthsm2.so --init-pin --label "SoftHSM" --login --so-pin 1234 --pin 1234
+	
+
