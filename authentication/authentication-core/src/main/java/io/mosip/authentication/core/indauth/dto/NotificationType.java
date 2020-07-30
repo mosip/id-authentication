@@ -19,7 +19,7 @@ public enum NotificationType {
 	/**
 	 * Enum for SMS
 	 */
-	SMS("sms", "PHONE", "MOBILE"),
+	SMS("sms", "PHONE", "PHONE"),
 
 	/**
 	 * Enum for None
