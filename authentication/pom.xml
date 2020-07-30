@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.10-SNAPSHOT</version>
+	<version>1.0.11-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -93,7 +93,7 @@
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>1.0.9</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>0.9</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>0.9</kernel-biosdk-provider.version>
+		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
 		<id-repository-core.version>1.0.9</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
