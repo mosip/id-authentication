@@ -148,5 +148,5 @@ This project is licensed under the terms of [Mozilla Public License 2.0](https:/
 Join the [developer mailing list](https://groups.io/g/mosip-dev)
 
 
-You may also be interested in joining our community room on Gitter via [![Gitter](https://badges.gitter.im/mosip-community/community.svg)](https://gitter.im/mosip-community/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)  where you could get some great community support
+You may also be interested in joining our community room on Gitter via [![Gitter](https://badges.gitter.im/mosip-community/community.svg)](https://gitter.im/mosip-community/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Join the chat at https://gitter.im/mosip-community/ID-Authentication](https://badges.gitter.im/mosip-community/ID-Authentication.svg)](https://gitter.im/mosip-community/ID-Authentication?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  where you could get some great community support
 
