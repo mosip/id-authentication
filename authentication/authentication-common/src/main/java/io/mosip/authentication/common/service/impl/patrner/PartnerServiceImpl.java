@@ -10,6 +10,7 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 /**
@@ -52,6 +53,12 @@ public class PartnerServiceImpl implements PartnerService {
 			response = partnerServiceManager.validateAndGetPolicy(partnerId, partner_api_key, misp_license_key);			
 		partnerServiceResponseMap.putIfAbsent(response.getPartnerId(), response);		
 		return response;
+	}
+
+	@Override
+	public PolicyDTO getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

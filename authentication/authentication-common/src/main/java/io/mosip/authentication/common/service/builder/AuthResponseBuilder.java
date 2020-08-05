@@ -96,7 +96,7 @@ public class AuthResponseBuilder {
 	 */
 	public AuthResponseBuilder setStaticTokenId(String staticTokenId) {
 		ResponseDTO res = new ResponseDTO();
-		res.setStaticToken(staticTokenId);
+		res.setResponseToken(staticTokenId);
 		responseDTO.setResponse(res);
 		return this;
 	}
@@ -115,15 +115,15 @@ public class AuthResponseBuilder {
 	/**
 	 * Builds the.
 	 *
-	 * @param staticTokenID the static token ID
+	 * @param tokenID the static token ID
 	 * @return the auth response DTO
 	 */
-	public AuthResponseDTO build(String staticTokenID) {
+	public AuthResponseDTO build(String tokenID) {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(status);
-		res.setStaticToken(staticTokenID);
+		res.setResponseToken(tokenID);
 		responseDTO.setResponse(res);
 
 		responseDTO.setResponseTime(dateFormat.format(new Date()));

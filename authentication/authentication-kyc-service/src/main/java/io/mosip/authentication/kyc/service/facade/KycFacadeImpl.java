@@ -148,12 +148,12 @@ public class KycFacadeImpl implements KycFacade {
 	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String uin)
 			throws IdAuthenticationBusinessException {
 		if (uin != null) {
-			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
+			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId);
 
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
-					.withRequestType(RequestType.KYC_AUTH_REQUEST).withStaticToken(staticTokenId).withStatus(status)
+					.withRequestType(RequestType.KYC_AUTH_REQUEST).withResponseToken(staticTokenId).withStatus(status)
 					.withInternal(false).withPartner(partner).withUin(uin)
 					.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 			idService.saveAutnTxn(authTxn);
@@ -186,7 +186,7 @@ public class KycFacadeImpl implements KycFacade {
 			}
 			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 				response.setKycStatus(authResponse.isAuthStatus());
-				response.setStaticToken(authResponse.getStaticToken());
+				response.setResponseToken(authResponse.getResponseToken());
 				kycAuthResponseDTO.setResponse(response);
 				kycAuthResponseDTO.setId(authResponseDTO.getId());
 				kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());

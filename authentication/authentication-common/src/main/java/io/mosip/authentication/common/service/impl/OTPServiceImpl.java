@@ -142,7 +142,7 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		if (uin != null) {
 			boolean staticTokenRequired = !isInternal
-					&& env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);
+					&& env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, boolean.class, false);
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			saveTxn(otpRequestDto, uin, staticTokenId, status, partnerId, isInternal);
 		}
@@ -217,18 +217,18 @@ public class OTPServiceImpl implements OTPService {
 	 *
 	 * @param otpRequestDto the otp request dto
 	 * @param uin           the uin
-	 * @param staticTokenId the static token id
+	 * @param responseTokenId the static token id
 	 * @param status        the status
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void saveTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status, String partnerId, boolean isInternal)
+	private void saveTxn(OtpRequestDTO otpRequestDto, String uin, String responseTokenId, boolean status, String partnerId, boolean isInternal)
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
 				.withOtpRequest(otpRequestDto)
 				.withRequestType(RequestType.OTP_REQUEST)
-				.withStaticToken(staticTokenId)
+				.withResponseToken(responseTokenId)
 				.withStatus(status)
 				.withUin(uin)
 				.withPartner(partner)

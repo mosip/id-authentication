@@ -79,7 +79,6 @@
 		<!-- Kernel components -->
 		<kernel.parent.version>1.0.6</kernel.parent.version>
 		<kernel-core.version>1.0.9</kernel-core.version>
-		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
 		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
 		<kernel-idobjectvalidator.version>1.0.7</kernel-idobjectvalidator.version>
@@ -96,6 +95,7 @@
 		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
 		<id-repository-core.version>1.0.9</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
+		<idgenerator-tokenid.version>1.0.8-SNAPSHOT</idgenerator-tokenid.version>
 				<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>

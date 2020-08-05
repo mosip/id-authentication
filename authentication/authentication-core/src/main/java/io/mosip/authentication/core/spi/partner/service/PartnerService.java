@@ -5,6 +5,7 @@ import java.util.Optional;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
 
 /**
  * The service to fetch the Partner, Policy, MISP and License information. 
@@ -19,4 +20,6 @@ public interface PartnerService {
 	
 	
 	PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException;
+	
+	PolicyDTO getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException;
 }

@@ -19,7 +19,7 @@ public class KycResponseDTO {
 	private boolean kycStatus;
 
 	/** The Variable to hold value of static Token */
-	private String staticToken;
+	private String responseToken;
 
 	/** The Variable to hold value of identity */
 	private Map<String, ? extends Object> identity;

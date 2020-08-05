@@ -101,16 +101,15 @@
 			<version>${kernel-crypto-jce.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-tokenid</artifactId>
-			<version>${kernel-idgenerator-tokenid.version}</version>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>idgenerator-tokenid</artifactId>
+			<version>${idgenerator-tokenid.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-config</artifactId>
 				</exclusion>
 			</exclusions>
-			<classifier>lib</classifier>
 		</dependency>
 		<!-- Commons Lang -->
 		<dependency>
