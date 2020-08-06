@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.10-rc1</version>
+		<version>1.0.10</version>
 	</parent>
-	<version>1.0.10-rc1</version>
+	<version>1.0.10</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<properties>
