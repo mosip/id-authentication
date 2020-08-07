@@ -97,21 +97,22 @@
 		<id-repository-core.version>1.0.9</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.version>3.7.0</maven.compiler.version>
-		<maven.javadoc.version>3.0.1</maven.javadoc.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven.swagger.version>2.9.2</maven.swagger.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.7.0.1746</maven.sonar.version>
 		<powermock.version>2.0.0</powermock.version>
-
+		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+		
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
-		<mockito.version>1.10.19</mockito.version>
+		<mockito.version>2.23.4</mockito.version>
 
 		<!-- Lombok -->
-		<lombok.version>1.16.18</lombok.version>
+		<lombok.version>1.18.8</lombok.version>
 
 		<!-- Spring Boot -->
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
@@ -170,6 +171,17 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		    <artifactId>jaxb-api</artifactId>
+		    <version>2.3.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.javassist</groupId>
+		    <artifactId>javassist</artifactId>
+		    <version>3.27.0-GA</version>
+		</dependency> 
+		
 	</dependencies>
 
 	<build>
@@ -183,19 +195,10 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-<!--			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven.javadoc.version}</version>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
--->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 					 	<id>attach-javadocs</id>
@@ -205,9 +208,9 @@
 					</execution>
 				</executions>
 				<configuration>
-                         		<additionalJOption>-Xdoclint:none</additionalJOption>
-                	  	</configuration>
-                	</plugin>
+                         <doclint>none</doclint>
+                 </configuration>
+             </plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -353,6 +356,18 @@
 				<!-- <format>json</format> -->
 			</configuration>
 			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven.surefire.plugin.version}</version>
+					<configuration>
+						<skipTests>${skipTests}</skipTests>
+						<skip>false</skip>
+						<argLine>
+							--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+						</argLine>
+					</configuration>
+				</plugin>
 		</plugins>
 	</build>
 
