@@ -3,7 +3,7 @@ package io.mosip.authentication.core.indauth.dto;
 import lombok.Data;
 
 /**
- * This class provides the details of Status and responseToken Details.
+ * This class provides the details of Status and authToken Details.
  * 
  * @author Prem Kumar
  *
@@ -14,6 +14,6 @@ public class ResponseDTO {
 	/** The boolean value for status */
 	private boolean authStatus;
 	
-	/** Static token. */
-	private String responseToken;
+	/** auth token. */
+	private String authToken;
 }

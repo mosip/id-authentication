@@ -18,8 +18,8 @@ public class KycResponseDTO {
 	/** The Variable to hold value of kyc Status */
 	private boolean kycStatus;
 
-	/** The Variable to hold value of static Token */
-	private String responseToken;
+	/** The Variable to hold value of auth Token */
+	private String authToken;
 
 	/** The Variable to hold value of identity */
 	private Map<String, ? extends Object> identity;

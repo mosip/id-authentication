@@ -303,7 +303,7 @@ public class AuthFacadeImplTest {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setResponseToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -554,7 +554,7 @@ public class AuthFacadeImplTest {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setResponseToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -639,7 +639,7 @@ public class AuthFacadeImplTest {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setResponseToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(ZonedDateTime.now()

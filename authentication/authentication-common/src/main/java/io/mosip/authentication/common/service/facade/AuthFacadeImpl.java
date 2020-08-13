@@ -4,7 +4,7 @@
 package io.mosip.authentication.common.service.facade;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-
+import static io.mosip.authentication.core.constant.AuthTokenType.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -154,20 +154,19 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String responseTokenId = null;
-		Boolean responseTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
+		String authTokenId = null;
+		Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
 		try {
 			idInfo = idService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			responseTokenId = responseTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, idvid, uin)
-					: null;
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, responseTokenId,
+			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, idvid, uin) : null;
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, authTokenId,
 					partnerId);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
 			// Set response token
-			if (responseTokenRequired) {
-				authResponseDTO = authResponseBuilder.build(responseTokenId);
+			if (authTokenRequired) {
+				authResponseDTO = authResponseBuilder.build(authTokenId);
 			} else {
 				authResponseDTO = authResponseBuilder.build(null);
 			}
@@ -185,12 +184,17 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String idvid, String uin)
 			throws IdAuthenticationBusinessException {
-		return Objects
-				.nonNull(partnerService.getPolicyForPartner(partnerId).getPolicies().getResponseTokenType())
-				&& partnerService.getPolicyForPartner(partnerId).getPolicies().getResponseTokenType()
-						.contentEquals("static") ? tokenIdManager.generateTokenId(uin, partnerId)
-								: new String(securityManager.encryptWithAES(idvid,
-										authRequestDTO.getTransactionID().getBytes()));
+		String authTokenType = partnerService.getPolicyForPartner(partnerId).getPolicies().getAuthTokenType();
+		if (Objects.isNull(authTokenType) || authTokenType.contentEquals(RANDOM.getType())) {
+			return new String(securityManager.encryptWithAES(idvid, authRequestDTO.getTransactionID().getBytes()));
+		} else if (authTokenType.contentEquals(PARTNER.getType())) {
+			return tokenIdManager.generateTokenId(uin, partnerId);
+		} else if (authTokenType.contentEquals(POLICY.getType())) {
+			return tokenIdManager.generateTokenId(uin, partnerService.getPolicyForPartner(partnerId).getPolicyId());
+		} else if (authTokenType.contentEquals(POLICY_GROUP.getType())) {
+			// TODO: update with Policy Group
+		}
+		return null;
 	}
 
 	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, String uin)
@@ -261,8 +265,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the uin
 	 * @param isAuth
 	 *            the is auth
-	 * @param responseTokenId
-	 *            the response token id
+	 * @param authTokenId
+	 *            the auth token id
 	 * @param partnerId
 	 *            the partner id
 	 * @return the list
@@ -270,24 +274,24 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *             the id authentication business exception
 	 */
 	private List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String responseTokenId,
-			String partnerId) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth, String authTokenId, String partnerId)
+			throws IdAuthenticationBusinessException {
 
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		IdType idType = IdType.getIDTypeOrDefault(authRequestDTO.getIndividualIdType());
 
-		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, responseTokenId, partnerId);
+		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType, authTokenId, partnerId);
 
 		if (!isMatchFailed(authStatusList)) {
-			processPinAuth(authRequestDTO, uin, authStatusList, idType, responseTokenId, isAuth, partnerId);
+			processPinAuth(authRequestDTO, uin, authStatusList, idType, authTokenId, isAuth, partnerId);
 		}
 
 		if (!isMatchFailed(authStatusList)) {
-			processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, responseTokenId, partnerId);
+			processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, authTokenId, partnerId);
 		}
 
 		if (!isMatchFailed(authStatusList)) {
-			processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, responseTokenId, partnerId);
+			processBioAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType, authTokenId, partnerId);
 		}
 
 		return authStatusList;
@@ -309,7 +313,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the auth status list
 	 * @param idType
 	 *            the id type
-	 * @param responseTokenId
+	 * @param authTokenId
 	 *            the response token id
 	 * @param partnerId
 	 *            the partner id
@@ -317,7 +321,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *             the id authentication business exception
 	 */
 	private void processPinAuth(AuthRequestDTO authRequestDTO, String uin, List<AuthStatusInfo> authStatusList,
-			IdType idType, String responseTokenId, boolean isAuth, String partnerId)
+			IdType idType, String authTokenId, boolean isAuth, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isPin()) {
@@ -337,8 +341,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "Pin Authentication  status :" + isStatus);
 
-				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, responseTokenId,
-						RequestType.STATIC_PIN_AUTH, !isAuth, partnerId);
+				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, authTokenId, RequestType.STATIC_PIN_AUTH,
+						!isAuth, partnerId);
 				idService.saveAutnTxn(authTxn);
 			}
 
@@ -359,7 +363,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the auth status list
 	 * @param idType
 	 *            the id type
-	 * @param responseTokenId
+	 * @param authTokenId
 	 *            the response token id
 	 * @param partnerId
 	 *            the partner id
@@ -367,7 +371,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *             the id authentication business exception
 	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String responseTokenId, String partnerId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isBio()) {
@@ -378,8 +382,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = bioValidationStatus;
 
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				saveAndAuditBioAuthTxn(authRequestDTO, authRequestDTO.getIndividualId(), idType, isStatus,
-						responseTokenId, !isAuth, partnerId);
+				saveAndAuditBioAuthTxn(authRequestDTO, authRequestDTO.getIndividualId(), idType, isStatus, authTokenId,
+						!isAuth, partnerId);
 			} finally {
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
@@ -403,7 +407,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the auth status list
 	 * @param idType
 	 *            the id type
-	 * @param responseTokenId
+	 * @param authTokenId
 	 *            the response token id
 	 * @param partnerId
 	 *            the partner id
@@ -411,7 +415,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *             the id authentication business exception
 	 */
 	private void processDemoAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
-			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String responseTokenId, String partnerId)
+			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getRequestedAuth().isDemo()) {
@@ -430,7 +434,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "Demographic Authentication status : " + isStatus);
 
-				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, responseTokenId, RequestType.DEMO_AUTH,
+				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, authTokenId, RequestType.DEMO_AUTH,
 						!isAuth, partnerId);
 				idService.saveAutnTxn(authTxn);
 
@@ -452,15 +456,15 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the auth status list
 	 * @param idType
 	 *            the id type
-	 * @param responseTokenId
-	 *            the response token id
+	 * @param authTokenId
+	 *            the auth token id
 	 * @param partnerId
 	 *            the partner id
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
-			List<AuthStatusInfo> authStatusList, IdType idType, String responseTokenId, String partnerId)
+			List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		if (authRequestDTO.getRequestedAuth().isOtp()) {
 			AuthStatusInfo otpValidationStatus = null;
@@ -477,7 +481,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "OTP Authentication status : " + isStatus);
 
-				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, responseTokenId, RequestType.OTP_AUTH,
+				AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, authTokenId, RequestType.OTP_AUTH,
 						!isAuth, partnerId);
 				idService.saveAutnTxn(authTxn);
 			}
@@ -507,14 +511,14 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            idtype
 	 * @param isStatus
 	 *            the is status
-	 * @param responseTokenId
-	 *            the response token id
+	 * @param authTokenId
+	 *            the auth token id
 	 * @param exception
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String uin, IdType idType, boolean isStatus,
-			String responseTokenId, boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
+			String authTokenId, boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
 		String status = "authenticateApplicant status : " + isStatus;
 		if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData).anyMatch(
 				bioInfo -> bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType()) || (FMR_ENABLED_TEST.test(env)
@@ -523,7 +527,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, status);
 
-			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, responseTokenId, RequestType.FINGER_AUTH,
+			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, authTokenId, RequestType.FINGER_AUTH,
 					isInternal, partnerId);
 			idService.saveAutnTxn(authTxn);
 		}
@@ -533,7 +537,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 
-			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, responseTokenId, RequestType.IRIS_AUTH,
+			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, authTokenId, RequestType.IRIS_AUTH,
 					isInternal, partnerId);
 			idService.saveAutnTxn(authTxn);
 		}
@@ -543,7 +547,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 
-			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, responseTokenId, RequestType.FACE_AUTH,
+			AutnTxn authTxn = createAuthTxn(authRequestDTO, uin, isStatus, authTokenId, RequestType.FACE_AUTH,
 					isInternal, partnerId);
 			idService.saveAutnTxn(authTxn);
 		}
@@ -558,7 +562,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *            the uin
 	 * @param isStatus
 	 *            the is status
-	 * @param responseTokenId
+	 * @param authTokenId
 	 *            the response token id
 	 * @param requestType
 	 *            the request type
@@ -566,14 +570,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	private AutnTxn createAuthTxn(AuthRequestDTO authRequestDTO, String uin, boolean isStatus, String responseTokenId,
+	private AutnTxn createAuthTxn(AuthRequestDTO authRequestDTO, String uin, boolean isStatus, String authTokenId,
 			RequestType requestType, boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
 
 		return AuthTransactionBuilder.newInstance().withUin(uin).withAuthRequest(authRequestDTO)
-				.withRequestType(requestType).withResponseToken(responseTokenId).withInternal(isInternal)
-				.withPartner(partner).withStatus(isStatus)
-				.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
+				.withRequestType(requestType).withAuthToken(authTokenId).withInternal(isInternal).withPartner(partner)
+				.withStatus(isStatus).build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 	}
 
 }

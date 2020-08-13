@@ -123,7 +123,7 @@ public class NotificationServiceImplTest {
 		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setResponseToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
@@ -175,7 +175,7 @@ public class NotificationServiceImplTest {
 		authRequestDTO.setRequestedAuth(authType);
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setResponseToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
