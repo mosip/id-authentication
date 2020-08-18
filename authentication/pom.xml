@@ -77,20 +77,21 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.0.6</kernel.parent.version>
-		<kernel-core.version>1.0.9</kernel-core.version>
+		<kernel.parent.version>1.2.0-SNAPSHOT</kernel.parent.version>
+		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
+		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
-		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
-		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
-		<kernel-idobjectvalidator.version>1.0.7</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>${kernel.parent.version}</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
-		<kernel-keygenerator-bouncycastle.version>${kernel.parent.version}</kernel-keygenerator-bouncycastle.version>
-		<kernel-crypto-jce.version>${kernel.parent.version}</kernel-crypto-jce.version>
-		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
+		<kernel-idvalidator-uin.version>1.0.6</kernel-idvalidator-uin.version>
+		<kernel-idvalidator-vid.version>1.0.6</kernel-idvalidator-vid.version>
+		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
+		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
+		<kernel-keygenerator-bouncycastle.version>1.0.6</kernel-keygenerator-bouncycastle.version>
+		<kernel-crypto-jce.version>1.0.6</kernel-crypto-jce.version>
+		<kernel-logger-logback.version>1.0.6</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
+		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>1.0.9</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>0.9</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>

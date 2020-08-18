@@ -13,7 +13,6 @@
 	<name>authentication-common</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<kernel-keymanager-service.version>1.0.9</kernel-keymanager-service.version>
 	</properties>
 	<dependencies>
 		<dependency>
