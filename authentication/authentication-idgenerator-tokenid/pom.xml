@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
-	    <artifactId>authentication-parent</artifactId>
+		<artifactId>authentication-parent</artifactId>
 		<version>1.0.11-SNAPSHOT</version>
 	</parent>
 	<artifactId>authentication-idgenerator-tokenid</artifactId>
@@ -20,6 +20,12 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel-dataaccess-hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
