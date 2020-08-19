@@ -65,6 +65,7 @@
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
 		<module>authentication-keys-generator</module>
+		<module>authentication-idgenerator-tokenid</module>
 	</modules>
 
 	<properties>
@@ -95,7 +96,6 @@
 		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
 		<id-repository-core.version>1.0.9</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<idgenerator-tokenid.version>1.0.8-SNAPSHOT</idgenerator-tokenid.version>
 				<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>

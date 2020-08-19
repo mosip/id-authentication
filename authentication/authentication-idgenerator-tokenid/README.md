@@ -1,6 +1,6 @@
-## kernel-idgenerator-tokenid
+## authentication-idgenerator-tokenid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-tokenid.md)
+[Background & Design](../../docs/design/authentication/authentication-idgenerator-tokenid.md)
 
 [API Documentation]
 
@@ -14,8 +14,8 @@
 
 ```
 	<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-tokenid</artifactId>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-idgenerator-tokenid</artifactId>
 			<version>${project.version}</version>
 	</dependency>
 

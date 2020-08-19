@@ -14,6 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<kernel-keymanager-service.version>1.0.9</kernel-keymanager-service.version>
+		<authentication-idgenerator-tokenid.version>1.0.8-SNAPSHOT</authentication-idgenerator-tokenid.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -102,8 +103,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
-			<artifactId>idgenerator-tokenid</artifactId>
-			<version>${idgenerator-tokenid.version}</version>
+			<artifactId>authentication-idgenerator-tokenid</artifactId>
+			<version>${authentication-idgenerator-tokenid.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
