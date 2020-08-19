@@ -111,8 +111,8 @@ public class KeysGeneratorApplication implements CommandLineRunner {
 	
 	private Key getMasterKeyFromHSM(char[] storePin, Provider provider,DataEncryptKeystoreRepository keysRepo,KeyAliasRepository keyAliasRepository) throws Exception {
 		String alias = UUID.randomUUID().toString();
-		String keyAlias = null;
-		KeyStore hsmStore = KeyStore.getInstance(PKCS11_KEY_STORE_TYPE, provider);
+		String keyAlias = null;		
+		KeyStore hsmStore = KeyStore.getInstance("PKCS11", provider);
 		hsmStore.load(null, storePin);
 		keyAlias = getKeyAlias(keysRepo,keyAliasRepository);
 		System.err.println("keyAlias " + keyAlias);

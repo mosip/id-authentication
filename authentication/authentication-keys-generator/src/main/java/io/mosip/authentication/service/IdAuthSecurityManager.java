@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.entity.DataEncryptKeystoreRepository;
 import io.mosip.authentication.entity.KeyAlias;
 import io.mosip.authentication.entity.KeyAliasRepository;
-import sun.security.pkcs11.SunPKCS11;
 
 /**
  * The Class IdAuthSecurityManager.
@@ -91,8 +90,9 @@ public class IdAuthSecurityManager {
 
 	@PostConstruct
 	public void getProvider() {
-		Provider provider = new SunPKCS11(configPath);
-		Security.addProvider(provider);
+		Provider provider = Security.getProvider("SunPKCS11");
+		provider = provider.configure(configPath);		
+        Security.addProvider(provider);        
 		this.provider = provider;
 	}
 
