@@ -8,7 +8,7 @@
 	    <artifactId>authentication-parent</artifactId>
 		<version>1.0.11-SNAPSHOT</version>
 	</parent>
-	<artifactId>idgenerator-tokenid</artifactId>
+	<artifactId>authentication-idgenerator-tokenid</artifactId>
 	<version>1.0.8-SNAPSHOT</version>
 	<properties>
 		<kernel.core.version>1.0.6</kernel.core.version>
