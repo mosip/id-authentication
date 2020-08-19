@@ -1,4 +1,4 @@
-package io.mosip.kernel.idgenerator.tokenid.test;
+package io.mosip.authentication.idgenerator.tokenid.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
