@@ -75,9 +75,11 @@
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
+		<authentication-idgenerator-tokenid.version>${authentication.parent.version}</authentication-idgenerator-tokenid.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
+		<kernel-keymanager-service.version>1.0.9</kernel-keymanager-service.version>
 		<kernel.parent.version>1.0.6</kernel.parent.version>
 		<kernel-core.version>1.0.9</kernel-core.version>
 		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>

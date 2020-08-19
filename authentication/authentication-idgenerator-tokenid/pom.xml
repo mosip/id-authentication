@@ -9,23 +9,17 @@
 		<version>1.0.11-SNAPSHOT</version>
 	</parent>
 	<artifactId>authentication-idgenerator-tokenid</artifactId>
-	<version>1.0.8-SNAPSHOT</version>
-	<properties>
-		<kernel.core.version>1.0.6</kernel.core.version>
-		<kernel.dataaccess-hibernate.version>1.0.6</kernel.dataaccess-hibernate.version>
-		<kernel.crypto-jce.version>1.0.6</kernel.crypto-jce.version>
-		<h2.version>1.4.197</h2.version>
-	</properties>
+	<version>1.0.11-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel.core.version}</version>
+			<version>${kernel-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel.dataaccess-hibernate.version}</version>
+			<version>${kernel-dataaccess-hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -41,7 +35,10 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-jce</artifactId>
-			<version>${kernel.crypto-jce.version}</version>
+			<version>${kernel-crypto-jce.version}</version>
 		</dependency>
 	</dependencies>
+	<properties>
+		<h2.version>1.4.197</h2.version>
+	</properties>
 </project>
