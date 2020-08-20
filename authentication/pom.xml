@@ -125,7 +125,7 @@
 		<postgresql.version>42.2.2</postgresql.version>
 
 		<!-- Commons -->
-		<commons.lang.version>2.4</commons.lang.version>
+		<commons.lang.version>3.7</commons.lang.version>
 		<commons.codec.version>1.11</commons.codec.version>
 
 		<sourceafis.version>3.4.0</sourceafis.version>
