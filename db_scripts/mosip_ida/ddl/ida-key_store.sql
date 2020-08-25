@@ -7,8 +7,8 @@
 -- Created Date	: 20-Apr-2020
 -- 
 -- Modified Date        Modified By         Comments / Remarks
--- ------------------------------------------------------------------------------------------
--- 
+-- ------------------------- -----------------------------------------------------------------
+-- Aug-2020             Sadanandegowda DM   Changed data type of private_key and added certificate_data attribute
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_store | type: TABLE --
@@ -16,8 +16,8 @@
 CREATE TABLE ida.key_store(
 	id character varying(36) NOT NULL,
 	master_key character varying(36) NOT NULL,
-	private_key bytea NOT NULL,
-	public_key bytea NOT NULL,
+	private_key character varying(2500) NOT NULL,
+	certificate_data character varying(1500) NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
@@ -36,7 +36,7 @@ COMMENT ON COLUMN ida.key_store.master_key IS 'Master Key: Master key is used to
 -- ddl-end --
 COMMENT ON COLUMN ida.key_store.private_key IS 'Private Key: Private key';
 -- ddl-end --
-COMMENT ON COLUMN ida.key_store.public_key IS 'Public Key: Public key';
+COMMENT ON COLUMN ida.key_store.certificate_data IS 'Certificate Data:';
 -- ddl-end --
 COMMENT ON COLUMN ida.key_store.cr_by IS 'Created By : ID or name of the user who create / insert record';
 -- ddl-end --
