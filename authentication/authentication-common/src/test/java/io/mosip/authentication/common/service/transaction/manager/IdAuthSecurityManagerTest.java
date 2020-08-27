@@ -26,9 +26,9 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
-import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.signature.dto.SignatureResponseDto;
 
 /**
  * 

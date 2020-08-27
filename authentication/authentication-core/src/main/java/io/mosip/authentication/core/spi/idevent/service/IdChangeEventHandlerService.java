@@ -1,9 +1,7 @@
 package io.mosip.authentication.core.spi.idevent.service;
 
-import java.util.List;
-
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.idrepository.core.dto.EventDTO;
+import io.mosip.idrepository.core.dto.EventModel;
 
 /**
  * ID Change Event handler service interface.
@@ -18,6 +16,6 @@ public interface IdChangeEventHandlerService {
 	 * @param events the events
 	 * @return true, if successful
 	 */
-	void handleIdEvent(List<EventDTO> events) throws IdAuthenticationBusinessException;
+	void handleIdEvent(EventModel events) throws IdAuthenticationBusinessException;
 	
 }

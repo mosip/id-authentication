@@ -54,6 +54,7 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
+import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -74,7 +75,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		IdAuthSecurityManager.class, RestRequestFactory.class, RestHelperImpl.class, AuthtypeStatusImpl.class,
 		CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class,
 		CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class,
-		TokenIDGenerator.class,PartnerServiceManager.class })
+		TokenIDGenerator.class,PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class })
 @ComponentScan({ "io.mosip.authentication.service.*" })
 public class IdAuthenticationApplication {
 

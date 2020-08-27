@@ -53,6 +53,7 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
+import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -71,7 +72,8 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, DemoNormalizerImpl.class,
 		IdaTransactionInterceptor.class, IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
-		KeymanagerServiceImpl.class, KeymanagerUtil.class,PartnerServiceImpl.class,TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
+		KeymanagerServiceImpl.class, KeymanagerUtil.class, PartnerServiceImpl.class, TokenIDGeneratorServiceImpl.class,
+		TokenIDGenerator.class, PartnerServiceManager.class,ZKCryptoManagerServiceImpl.class})
 public class KycAuthenticationApplication {
 
 	/**

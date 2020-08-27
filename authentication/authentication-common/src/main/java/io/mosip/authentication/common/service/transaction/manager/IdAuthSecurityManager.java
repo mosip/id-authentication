@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.repository.DataEncryptKeystoreRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -44,11 +43,15 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
-import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
+import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
+import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.signature.dto.SignatureRequestDto;
+import io.mosip.kernel.zkcryptoservice.dto.ReEncryptRandomKeyResponseDto;
+import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 
 /**
  * The Class IdAuthSecurityManager.
@@ -123,6 +126,9 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private KeyStore keystore;
+	
+	@Autowired
+	private ZKCryptoManagerService zkCryptoManagerService;
 
 	/**
 	 * Gets the user.
@@ -246,6 +252,23 @@ public class IdAuthSecurityManager {
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
 					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+		}
+	}
+	
+	public String reEncryptRandomKey(String encryptedKey) {
+		 ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = zkCryptoManagerService.zkReEncryptRandomKey(encryptedKey);
+		 return zkReEncryptRandomKeyRespDto.getEncryptedKey();
+	}
+	
+	public void reEncryptAndStoreRandomKey(String index, String key) {
+		if(!repo.existsById(index)) {
+			String reEncryptedKey = reEncryptRandomKey(key);
+			DataEncryptKeystore randomKeyEntity = new DataEncryptKeystore();
+			randomKeyEntity.setId(Integer.valueOf(index));
+			randomKeyEntity.setKey(reEncryptedKey);
+			randomKeyEntity.setCrBy("IDA");
+			randomKeyEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			repo.save(randomKeyEntity);
 		}
 	}
 
