@@ -48,6 +48,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
 	
+	private static final String TOKEN = "TOKEN";
+
 	private static final String IDA = "IDA";
 
 	private static final String EXPIRY_TIME = "expiry_time";
@@ -232,8 +234,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				String idHash = (String) additionalData.get(ID_HASH);
 				String transactionLimit = (String) additionalData.get(TRANSACTION_LIMIT);
 				String expiryTime = (String) additionalData.get(EXPIRY_TIME);
+				String token  = (String) additionalData.get(TOKEN);
 				Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class);
-				storeIdentityEntity(idHash, transactionLimit, expiryTime, credentialData);
+				storeIdentityEntity(idHash, token, transactionLimit, expiryTime, credentialData);
 				
 			} catch (RestServiceException | IDDataValidationException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
@@ -241,7 +244,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 
-	private void storeIdentityEntity(String idHash, String transactionLimit, String expiryTime,
+	private void storeIdentityEntity(String idHash, String token, String transactionLimit, String expiryTime,
 			Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
 		Map<String, Object>[] demoBioData =  splitDemoBioData(credentialData);
 		try {
@@ -259,6 +262,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 				identityEntity.setCrBy(IDA);
 				identityEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 				identityEntity.setId(idHash);
+				identityEntity.setToken(token);
 			}
 			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
 			identityEntity.setExpiryTimestamp(expiryTimestamp);

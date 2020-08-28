@@ -48,8 +48,9 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
-import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.signature.dto.SignRequestDto;
 import io.mosip.kernel.signature.dto.SignatureRequestDto;
+import io.mosip.kernel.signature.service.SignatureService;
 import io.mosip.kernel.zkcryptoservice.dto.ReEncryptRandomKeyResponseDto;
 import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 
@@ -104,7 +105,7 @@ public class IdAuthSecurityManager {
 
 	/** The key manager. */
 	@Autowired
-	private KeymanagerService keyManager;
+	private SignatureService signatureService;
 
 	/** The sign applicationid. */
 	@Value("${mosip.sign.applicationid:KERNEL}")
@@ -312,9 +313,8 @@ public class IdAuthSecurityManager {
 	 */
 	public String sign(String data) {
 		// TODO: check whether any exception will be thrown
-		SignatureRequestDto request = new SignatureRequestDto(signApplicationid, signRefid,
-				DateUtils.getUTCCurrentDateTimeString(), data);
-		return keyManager.sign(request).getData();
+		SignRequestDto request = new SignRequestDto(data);
+		return signatureService.sign(request).getData();
 	}
 
 	public String hash(String id) {

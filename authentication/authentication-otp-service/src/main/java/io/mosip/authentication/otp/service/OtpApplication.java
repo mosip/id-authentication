@@ -49,6 +49,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
+import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
@@ -70,7 +71,7 @@ import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl
 		OTPServiceImpl.class, OTPRequestValidator.class, IdaTransactionInterceptor.class, IdAuthSecurityManager.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
-	  TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class })
+	  TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class, SignatureServiceImpl.class  })
 @ComponentScan(basePackages={ "io.mosip.authentication.otp.service.*" })
 public class OtpApplication {
 
