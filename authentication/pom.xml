@@ -65,7 +65,6 @@
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
 		<module>authentication-keys-generator</module>
-		<module>authentication-idgenerator-tokenid</module>
 	</modules>
 
 	<properties>
@@ -75,32 +74,32 @@
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
-		<authentication-idgenerator-tokenid.version>${authentication.parent.version}</authentication-idgenerator-tokenid.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel-keymanager-service.version>1.0.9</kernel-keymanager-service.version>
-		<kernel.parent.version>1.0.6</kernel.parent.version>
-		<kernel-core.version>1.0.9</kernel-core.version>
-		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
-		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
-		<kernel-idobjectvalidator.version>1.0.7</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>${kernel.parent.version}</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
-		<kernel-keygenerator-bouncycastle.version>${kernel.parent.version}</kernel-keygenerator-bouncycastle.version>
-		<kernel-crypto-jce.version>${kernel.parent.version}</kernel-crypto-jce.version>
-		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
+		<kernel.parent.version>1.2.0-SNAPSHOT</kernel.parent.version>
+		<kernel-core.version>1.2.0-SNAPSHOT</kernel-core.version>
+		<kernel-keymanager-service.version>1.2.0-SNAPSHOT</kernel-keymanager-service.version>
+		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
+		<kernel-idvalidator-uin.version>1.0.6</kernel-idvalidator-uin.version>
+		<kernel-idvalidator-vid.version>1.0.6</kernel-idvalidator-vid.version>
+		<kernel-idobjectvalidator.version>1.0.9</kernel-idobjectvalidator.version>
+		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
+		<kernel-keygenerator-bouncycastle.version>1.0.6</kernel-keygenerator-bouncycastle.version>
+		<kernel-crypto-jce.version>1.0.6</kernel-crypto-jce.version>
+		<kernel-logger-logback.version>1.0.6</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
+		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>1.0.9</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>0.9</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
 		<id-repository-core.version>1.0.9</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven.swagger.version>2.9.2</maven.swagger.version>
@@ -126,7 +125,7 @@
 		<postgresql.version>42.2.2</postgresql.version>
 
 		<!-- Commons -->
-		<commons.lang.version>2.4</commons.lang.version>
+		<commons.lang.version>3.7</commons.lang.version>
 		<commons.codec.version>1.11</commons.codec.version>
 
 		<sourceafis.version>3.4.0</sourceafis.version>
