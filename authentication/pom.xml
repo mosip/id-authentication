@@ -95,7 +95,7 @@
 		<kernel-auth-adapter.version>1.0.9</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>0.9</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
-		<id-repository-core.version>1.0.9</id-repository-core.version>
+		<id-repository-core.version>1.2.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
