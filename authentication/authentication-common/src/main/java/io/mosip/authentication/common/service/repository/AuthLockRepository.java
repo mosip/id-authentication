@@ -30,16 +30,16 @@ public interface AuthLockRepository extends BaseRepository<AuthtypeLock, Integer
 			"            from " + 
 			"                ida.uin_auth_lock      " + 
 			"            where " + 
-			"                uin_hash = :uin_hash " + 
+			"                token = :token " + 
 			"            group by " + 
-			"                uin_hash, " + 
+			"                token, " + 
 			"                auth_type_code  " + 
 			"        ) tm  " + 
 			"            on t.auth_type_code = tm.auth_type_code  " + 
 			"            and t.cr_dtimes = tm.crd  " + 
 			"    where " + 
-			"        t.uin_hash = :uin_hash", 
+			"        t.token = :token", 
 			nativeQuery = true)
-	public List<Object[]> findByUinHash(@Param("uin_hash") String hashedUin);
+	public List<Object[]> findByToken(@Param("token") String token);
 
 }	

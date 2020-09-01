@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.authtype.dto.UpdateAuthtypeStatusResponseDto;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -26,7 +25,6 @@ import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeSt
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * The Class UpdateAuthtypeStatusServiceImpl.
@@ -49,10 +47,6 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	@Autowired
 	private Environment environment;
 	
-	@Autowired
-	private IdAuthSecurityManager securityManager;
-	
-
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
 	 */
@@ -65,9 +59,9 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		Map<String, Object> idResDTO = idService.processIdType(IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
 				authTypeStatusDto.getIndividualId(), false);
 		if (idResDTO != null && !idResDTO.isEmpty()) {
-			String uin = idService.getUin(idResDTO);
+			String token = idService.getToken(idResDTO);
 			List<AuthtypeLock> entities = authTypeStatusDto.getRequest().stream().map(
-					authtypeStatus -> this.putAuthTypeStatus(authtypeStatus, uin, authTypeStatusDto.getRequestTime()))
+					authtypeStatus -> this.putAuthTypeStatus(authtypeStatus, token, authTypeStatusDto.getRequestTime()))
 					.collect(Collectors.toList());
 			authLockRepository.saveAll(entities);
 		}
@@ -83,10 +77,9 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	 * @param reqTime the req time
 	 * @return the authtype lock
 	 */
-	private AuthtypeLock putAuthTypeStatus(AuthtypeStatus authtypeStatus, String uin, String reqTime) {
+	private AuthtypeLock putAuthTypeStatus(AuthtypeStatus authtypeStatus, String token, String reqTime) {
 		AuthtypeLock authtypeLock = new AuthtypeLock();
-		authtypeLock.setUin(uin);
-		authtypeLock.setHashedUin(securityManager.hash(uin));
+		authtypeLock.setToken(token);
 		String authType = authtypeStatus.getAuthType();
 		if (authType.equalsIgnoreCase(Category.BIO.getType())) {
 			authType = authType + "-" + authtypeStatus.getAuthSubType();

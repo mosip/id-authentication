@@ -98,7 +98,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			List<String> allowedKycList = limitedList();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", allowedKycList, "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class KycServiceImplTest {
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", allowedKycList, "abc", idInfo1);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, "abc", idInfo1);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -129,7 +129,7 @@ public class KycServiceImplTest {
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", Collections.emptyList(), "ara", idInfo1);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), "ara", idInfo1);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -144,7 +144,7 @@ public class KycServiceImplTest {
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", null, "ara", null);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, "ara", null);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -156,7 +156,7 @@ public class KycServiceImplTest {
 		try {
 			deleteBootStrapFile();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", limitedList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -168,7 +168,7 @@ public class KycServiceImplTest {
 		try {
 			deleteBootStrapFile();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", limitedList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -180,7 +180,7 @@ public class KycServiceImplTest {
 		try {
 			deleteBootStrapFile();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", limitedList(), "fra", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), "fra", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -192,7 +192,7 @@ public class KycServiceImplTest {
 		try {
 			deleteBootStrapFile();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", Collections.emptyList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -204,7 +204,7 @@ public class KycServiceImplTest {
 		try {
 			deleteBootStrapFile();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", null, null, idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, null, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -226,7 +226,7 @@ public class KycServiceImplTest {
 	public void validUIN2() {
 		try {
 			prepareMap(idInfo);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", limitedList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -237,7 +237,7 @@ public class KycServiceImplTest {
 	public void validUIN3() {
 		try {
 			prepareMap(idInfo);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -248,7 +248,7 @@ public class KycServiceImplTest {
 	public void validUIN4() {
 		try {
 			prepareMap(idInfo);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -259,7 +259,7 @@ public class KycServiceImplTest {
 	public void validUIN5() throws IdAuthenticationDaoException {
 		try {
 			prepareMap(idInfo);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -273,7 +273,7 @@ public class KycServiceImplTest {
 		environment.setProperty("uin.masking.charcount", "2");
 		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
 
-		kycServiceImpl.retrieveKycInfo("12232323121", fullKycList(), "ara", idInfo);
+		kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
