@@ -54,7 +54,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
  *
  * @author Rakesh Roshan
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
