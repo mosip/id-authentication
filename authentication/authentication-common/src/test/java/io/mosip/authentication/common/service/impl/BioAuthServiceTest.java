@@ -61,7 +61,6 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -172,13 +171,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
-		map.put("FINGER_Left IndexFinger_7", new SimpleEntry<>("leftIndex", identityList));
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FINGER_Left IndexFinger_7", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FINGER_Left IndexFinger", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -231,11 +224,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("IRIS_Left_9", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("IRIS_Left", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -306,12 +295,8 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("IRIS_Left_9", value);
-		cbeffValueMap.put("IRIS_Right_9", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("IRIS_Left", identityList);
+		bioIdentity.put("IRIS_Right", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
 				.thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
@@ -739,14 +724,7 @@ public class BioAuthServiceTest {
 		identityLists.add(identityInfoDTOList1);
 		bioIdentity.put("leftIndex", identityList);
 		bioIdentity.put("rightIndex", identityLists);
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
-		map.put("FINGER_Left IndexFinger_7", new SimpleEntry<>("leftIndex", identityList));
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FINGER_Left IndexFinger_7", value);
-		cbeffValueMap.put("FINGER_Left IndexFinger_7", value1);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FINGER_Left IndexFinger", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo authenticate = bioAuthServiceImpl.authenticate(authRequestDTO, individualId, bioIdentity,
 				"1234567890");
@@ -857,11 +835,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("IRIS_Left_9", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("IRIS_Left", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -914,13 +888,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
-		map.put("FINGER_Left IndexFinger_7", new SimpleEntry<>("leftIndex", identityList));
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FINGER_Left IndexFinger_7", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FINGER_Left IndexFinger", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -1100,7 +1068,7 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO leftIndexdto = new BioIdentityInfoDTO();
 		DataDTO leftIndexdatadto = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		leftIndexdatadto.setBioType(BioAuthType.FGR_MIN.getType());
+		leftIndexdatadto.setBioType(BioAuthType.FGR_IMG.getType());
 		leftIndexdatadto.setBioSubType("Left IndexFinger");
 		leftIndexdatadto.setBioValue(value);
 		DigitalId digitalId = new DigitalId();
@@ -1117,7 +1085,7 @@ public class BioAuthServiceTest {
 		String rightValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
 		DataDTO rightIndexdto = new DataDTO();
 		rightIndexdto.setPurpose("AUTH");
-		rightIndexdto.setBioType(BioAuthType.FGR_MIN.getType());
+		rightIndexdto.setBioType(BioAuthType.FGR_IMG.getType());
 		rightIndexdto.setBioSubType("Right IndexFinger");
 		rightIndexdto.setBioValue(rightValue);
 		DigitalId digitalId2 = new DigitalId();
@@ -1148,12 +1116,7 @@ public class BioAuthServiceTest {
 		identityList.add(identityInfoDTO1);
 		identityList.add(identityInfoDTO2);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
-		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FINGER_Left IndexFinger", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
 				.thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
@@ -1181,8 +1144,8 @@ public class BioAuthServiceTest {
 		BioIdentityInfoDTO leftIndexdto = new BioIdentityInfoDTO();
 		DataDTO leftIndexdatadto = new DataDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		leftIndexdatadto.setBioType(BioAuthType.FGR_MIN.getType());
-		leftIndexdatadto.setBioSubType("LEFT_INDEX");
+		leftIndexdatadto.setBioType(BioAuthType.FGR_IMG.getType());
+		leftIndexdatadto.setBioSubType("Left IndexFinger");
 		leftIndexdatadto.setBioValue(value);
 		leftIndexdto.setData(leftIndexdatadto);
 		DigitalId digitalId = new DigitalId();
@@ -1198,7 +1161,7 @@ public class BioAuthServiceTest {
 
 		DataDTO rightIndexdto = new DataDTO();
 		String rightValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
-		rightIndexdto.setBioType(BioAuthType.FGR_MIN.getType());
+		rightIndexdto.setBioType(BioAuthType.FGR_IMG.getType());
 		rightIndexdto.setBioSubType("Right IndexFinger");
 		rightIndexdto.setBioValue(rightValue);
 		DigitalId digitalId2 = new DigitalId();
@@ -1216,7 +1179,7 @@ public class BioAuthServiceTest {
 
 		DataDTO leftmiddledto = new DataDTO();
 		String leftmiddle = "Rk1SACAyMAAAAAEyAAABPAFiAMUAxQEAAAAoLkC8AOaiZEC3AQEoXYCkAQ4aZECLAM80V0CAAP0iZEDXAQQmXUDkAN6pZEBvAOMyV4DqAQAmPEDwAPanV0CpATUFZEDVATYHUEB2AI0nZEDSAVV+PECGAGumZEDDAGDyV4DCAOkzXUCVANMnV0CoAMWkV0ChALoqV0CGAQccZECMARMVZIDGALe/V4DFASQNZEDtAOOrZICUASkJZECYAJQXXUD5AL/FUED0AJ7NZEDfAVYAB0BXAVJ6ZEDCAPKlXYCHAOgpXUDNAQEnXUDZAN06ZEC9ALy0XYCHAMGwV0B0ANeyUEDYARgXV0DWALe/ZEBnAQcXZEB+ATECZECuAIv2XYB4AUsAZEBZAUUFZECcAGMSQwAA";
-		leftmiddledto.setBioType(BioAuthType.FGR_MIN.getType());
+		leftmiddledto.setBioType(BioAuthType.FGR_IMG.getType());
 		leftmiddledto.setBioSubType("Left MiddleFinger");
 		leftmiddledto.setBioValue(leftmiddle);
 		DigitalId digitalId3 = new DigitalId();
@@ -1243,17 +1206,19 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTO2 = new IdentityInfoDTO();
 		identityInfoDTO2.setLanguage(null);
 		identityInfoDTO2.setValue(rightValue);
-		List<IdentityInfoDTO> identityList = new ArrayList<>();
-		identityList.add(identityInfoDTO1);
-		identityList.add(identityInfoDTO2);
+		IdentityInfoDTO identityInfoDTO3 = new IdentityInfoDTO();
+		identityInfoDTO3.setLanguage(null);
+		identityInfoDTO3.setValue(leftmiddle);
+		List<IdentityInfoDTO> identityList1 = new ArrayList<>();
+		List<IdentityInfoDTO> identityList2 = new ArrayList<>();
+		List<IdentityInfoDTO> identityList3 = new ArrayList<>();
+		identityList1.add(identityInfoDTO1);
+		identityList2.add(identityInfoDTO2);
+		identityList3.add(identityInfoDTO3);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
-		cbeffValueMap.put("FINGER_Left MiddleFinger_2", leftmiddle);
-		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FINGER_Left IndexFinger", identityList1);
+		bioIdentity.put("FINGER_Right IndexFinger", identityList2);
+		bioIdentity.put("FINGER_Left MiddleFinger", identityList3);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap()))
 				.thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");

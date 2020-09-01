@@ -199,7 +199,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		Map<String, String> bdbBasedOnType;
 		try {
 			bdbBasedOnType = idEntity.entrySet().stream()
-										.filter(entry -> entry.getKey().equalsIgnoreCase(type.getName()))
+										.filter(entry -> entry.getKey().toLowerCase().startsWith(type.getName().toLowerCase()))
 										.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().get(0).getValue()));
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
