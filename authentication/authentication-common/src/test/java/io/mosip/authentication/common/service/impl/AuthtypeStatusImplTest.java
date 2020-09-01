@@ -54,7 +54,7 @@ public class AuthtypeStatusImplTest {
 		List<Object[]> valuelist = new ArrayList<>();
 		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
 		valuelist.add(authtypeLockStatus);
-		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
 	}
 
@@ -71,7 +71,7 @@ public class AuthtypeStatusImplTest {
 		valuelist.add(authtypeLockStatus);
 		authtypeLockStatus = new Object[] {"demo", "n"};
 		valuelist.add(authtypeLockStatus);
-		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("9172985031",
 				IdType.UIN.getType());
 	}

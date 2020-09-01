@@ -114,37 +114,37 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		boolean isInternal = partnerId != null && partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL);
 		boolean status;
-		String uin = null;
+		String token = null;
 		try {
 			String individualIdType = IdType.getIDTypeStrOrDefault(otpRequestDto.getIndividualIdType());
 			String individualId = otpRequestDto.getIndividualId();
 
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
-			uin = idAuthService.getUin(idResDTO);
+			token = idAuthService.getToken(idResDTO);
 
-			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, uin, individualIdType, idResDTO);
+			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, token, individualIdType, idResDTO);
 			
 			status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
-			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token);
 			
 			return otpResponseDTO;
 
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
-			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, uin);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token);
 			throw e;
 		}
 
 
 	}
 
-	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String uin)
+	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String token)
 			throws IdAuthenticationBusinessException {
-		if (uin != null) {
+		if (token != null) {
 			boolean staticTokenRequired = !isInternal
 					&& env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);
-			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
-			saveTxn(otpRequestDto, uin, staticTokenId, status, partnerId, isInternal);
+			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
+			saveTxn(otpRequestDto, token, staticTokenId, status, partnerId, isInternal);
 		}
 	}
 
@@ -216,13 +216,13 @@ public class OTPServiceImpl implements OTPService {
 	 * Audit txn.
 	 *
 	 * @param otpRequestDto the otp request dto
-	 * @param uin           the uin
+	 * @param token           the uin
 	 * @param staticTokenId the static token id
 	 * @param status        the status
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void saveTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status, String partnerId, boolean isInternal)
+	private void saveTxn(OtpRequestDTO otpRequestDto, String token, String staticTokenId, boolean status, String partnerId, boolean isInternal)
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
@@ -230,7 +230,7 @@ public class OTPServiceImpl implements OTPService {
 				.withRequestType(RequestType.OTP_REQUEST)
 				.withStaticToken(staticTokenId)
 				.withStatus(status)
-				.withUin(uin)
+				.withToken(token)
 				.withPartner(partner)
 				.withInternal(isInternal)
 				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,securityManager);

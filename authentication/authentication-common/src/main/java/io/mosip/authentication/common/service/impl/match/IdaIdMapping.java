@@ -209,15 +209,15 @@ public enum IdaIdMapping implements IdMapping {
 
 	private static String getCbeffMappingForCbeffDocType(SingleType singleType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, CbeffDocType cbeffDocType) {
-		String formatType = String.valueOf(cbeffDocType.getValue());
+		//String formatType = String.valueOf(cbeffDocType.getValue());
 
 		String cbeffKey = null;
 		if (subType == null && singleSubType == null) {// for FACE
-			cbeffKey = singleType.name() + "__" + formatType;
+			cbeffKey = singleType.name();// + "__" + formatType;
 		} else if (subType != null && singleSubType != null) { // for FINGER
-			cbeffKey = singleType.name() + "_" + subType.value() + " " + singleSubType.value() + "_" + formatType;
+			cbeffKey = singleType.name() + "_" + subType.value() + " " + singleSubType.value();// + "_" + formatType;
 		} else if (subType != null && singleSubType == null) {
-			cbeffKey = singleType.name() + "_" + subType.value() + "_" + formatType; // for IRIS
+			cbeffKey = singleType.name() + "_" + subType.value();// + "_" + formatType; // for IRIS
 		}
 		return cbeffKey;
 	}

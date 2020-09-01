@@ -100,7 +100,7 @@ public class InternalAuthTypeControllerTest {
 		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
 		valuelist.add(authtypeLockStatus);
 		
-		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
 		ResponseEntity<AuthtypeResponseDto> authTypeStatus = authTypeController.getAuthTypeStatus(IdType.UIN.getType(),
 				"9172985031");
 	}
@@ -125,7 +125,7 @@ public class InternalAuthTypeControllerTest {
 		valuelist.add(authtypeLockStatus);
 	
 		
-		Mockito.when(authLockRepository.findByUinHash(Mockito.anyString())).thenReturn(valuelist);
+		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
 		try {
 			authTypeController.getAuthTypeStatus(IdType.UIN.getType(), "9172985031");
 		} catch (IdAuthenticationAppException e) {

@@ -28,11 +28,7 @@ public class AuthtypeLock {
 
 	@Id
 	@NotNull
-	private String uin;
-
-	@NotNull
-	@Column(name = "uin_hash")
-	private String hashedUin;
+	private String token;
 
 	@Id
 	@NotNull

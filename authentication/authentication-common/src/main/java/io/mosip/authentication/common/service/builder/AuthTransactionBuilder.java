@@ -66,7 +66,7 @@ public class AuthTransactionBuilder {
 	private AuthRequestDTO authRequestDTO;
 
 	/** The uin. */
-	private String uin;
+	private String token;
 
 	/** The request type. */
 	private RequestType requestType;
@@ -115,8 +115,8 @@ public class AuthTransactionBuilder {
 	 *            the uin
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
-	public AuthTransactionBuilder withUin(String uin) {
-		this.uin = uin;
+	public AuthTransactionBuilder withToken(String token) {
+		this.token = token;
 		return this;
 	}
 
@@ -205,7 +205,8 @@ public class AuthTransactionBuilder {
 				AutnTxn autnTxn = new AutnTxn();
 				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
 				autnTxn.setRefIdType(idvIdType);
-				String id = createId(uin, env);
+				String id = createId(token, env);
+				autnTxn.setToken(token);
 				autnTxn.setId(id);
 				autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 				autnTxn.setStaticTknId(staticTokenId);
@@ -221,14 +222,6 @@ public class AuthTransactionBuilder {
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 
-				int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-				Long uinModulo = (Long.parseLong(uin) % saltModuloConstant);
-				String hashSaltValue = uinHashSaltRepo.retrieveSaltById(uinModulo);
-				autnTxn.setUinHash(HMACUtils.digestAsPlainTextWithSalt(uin.getBytes(), hashSaltValue.getBytes()));
-				String encryptSaltValue = uinEncryptSaltRepo.retrieveSaltById(uinModulo.intValue());
-				autnTxn.setUin(uinModulo + IdAuthCommonConstants.UIN_MODULO_SPLITTER + uin
-						+ IdAuthCommonConstants.UIN_MODULO_SPLITTER + encryptSaltValue);
-				
 				if(isInternal) {
 					autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
 					Optional<String> clientId = Optional.ofNullable(securityManager.getUser());
@@ -276,11 +269,11 @@ public class AuthTransactionBuilder {
 	 *            the env
 	 * @return the string
 	 */
-	private String createId(String uin, PropertyResolver env) {
+	private String createId(String token, PropertyResolver env) {
 		String currentDate = DateUtils.formatDate(new Date(),
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
-		String uinAndDate = uin + "-" + currentDate;
-		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
+		String tokenAndDate = token + "-" + currentDate;
+		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, tokenAndDate).toString();
 	}
 
 	/*
@@ -290,7 +283,7 @@ public class AuthTransactionBuilder {
 	 */
 	@Override
 	public String toString() {
-		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", uin=" + uin + ", requestType="
+		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
 				+ requestType + ", staticTokenId=" + staticTokenId + ", isStatus=" + isStatus + "]";
 	}
 

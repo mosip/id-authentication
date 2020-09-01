@@ -53,5 +53,5 @@ public class PartnerServiceImpl implements PartnerService {
 		partnerServiceResponseMap.putIfAbsent(response.getPartnerId(), response);		
 		return response;
 	}
-
+	
 }

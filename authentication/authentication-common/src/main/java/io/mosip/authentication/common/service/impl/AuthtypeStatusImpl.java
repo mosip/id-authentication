@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -35,9 +34,6 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	@Autowired
 	AuthLockRepository authLockRepository;
 	
-	@Autowired
-	private IdAuthSecurityManager securityManager;
-
 	/** The id service. */
 	@Autowired
 	private IdService<AutnTxn> idService;
@@ -61,24 +57,23 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		List<AuthtypeLock> authTypeLockList;
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty()) {
-			String uin = idService.getUin(idResDTO);
-			authTypeLockList =  getAuthTypeList(uin);
+			String token = idService.getToken(idResDTO);
+			authTypeLockList =  getAuthTypeList(token);
 		} else {
 			authTypeLockList = Collections.emptyList();
 		}
 		return processAuthtypeList(authTypeLockList);
 	}
 	
-	public List<AuthtypeStatus> fetchAuthtypeStatus(String uin) throws IdAuthenticationBusinessException {
-		List<AuthtypeLock> authTypeLockList =  getAuthTypeList(uin);
+	public List<AuthtypeStatus> fetchAuthtypeStatus(String token) throws IdAuthenticationBusinessException {
+		List<AuthtypeLock> authTypeLockList =  getAuthTypeList(token);
 		return processAuthtypeList(authTypeLockList);
 	}
 	
-	public List<AuthtypeLock> getAuthTypeList(String uin)
+	public List<AuthtypeLock> getAuthTypeList(String token)
 			throws IdAuthenticationBusinessException {
 		List<AuthtypeLock> authTypeLockList;
-		String uinHash = securityManager.hash(uin);
-		List<Object[]> authTypeLockObjectsList = authLockRepository.findByUinHash(uinHash);
+		List<Object[]> authTypeLockObjectsList = authLockRepository.findByToken(token);
 		authTypeLockList = authTypeLockObjectsList.stream()
 				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1])).collect(Collectors.toList());
 		return authTypeLockList;

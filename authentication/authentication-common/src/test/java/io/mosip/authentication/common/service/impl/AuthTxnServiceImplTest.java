@@ -68,7 +68,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
@@ -106,7 +106,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
@@ -121,7 +121,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
@@ -137,7 +137,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
@@ -154,7 +154,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
@@ -170,7 +170,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}
@@ -185,7 +185,7 @@ public class AuthTxnServiceImplTest {
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
-		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
 	}

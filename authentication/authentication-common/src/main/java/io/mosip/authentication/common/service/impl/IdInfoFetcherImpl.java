@@ -40,8 +40,6 @@ import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
-import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
-import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * Helper class to fetch identity values from request
@@ -51,18 +49,9 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
 
-	/** The Constant INDIVIDUAL BIOMETRICS. */
-	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
-
 	/** The OTPManager */
 	@Autowired
 	private OTPManager otpManager;
-
-	/**
-	 * The Cbeff Util
-	 */
-	@Autowired
-	private CbeffUtil cbeffUtil;
 
 	@Autowired(required = false)
 	private BioMatcherUtil bioMatcherUtil;
@@ -197,27 +186,21 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
-			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
-		Optional<String> identityValue = getIdentityValue("documents." + INDIVIDUAL_BIOMETRICS, null, idEntity)
-				.findAny();
-		if (identityValue.isPresent()) {
-			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
-			for (CbeffDocType type : types) {
-				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
-			}
-			return cbeffValuesForTypes;
-
-		} else {
-			return Collections.emptyMap();
+		CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
+		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
+		for (CbeffDocType type : types) {
+			cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, idEntity));
 		}
+		return cbeffValuesForTypes;
 	}
 
 	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type,
-			MatchType matchType, Optional<String> identityValue) throws IdAuthenticationBusinessException {
+			MatchType matchType, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, String> bdbBasedOnType;
 		try {
-			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64(identityValue.get()), type.getName(),
-					null);
+			bdbBasedOnType = idEntity.entrySet().stream()
+										.filter(entry -> entry.getKey().equalsIgnoreCase(type.getName()))
+										.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().get(0).getValue()));
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
