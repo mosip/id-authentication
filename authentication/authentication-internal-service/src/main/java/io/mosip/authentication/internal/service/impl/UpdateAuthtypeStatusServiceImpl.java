@@ -51,18 +51,13 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	
 	@Autowired
 	private IdAuthSecurityManager securityManager;
-	
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService#updateAuthtypeStatus(io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto)
-	 */
-	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(AuthTypeStatusDto authTypeStatusDto) throws IdAuthenticationBusinessException {
-		return doUpdateAuthTypeStatus(authTypeStatusDto);
-	}
-	
-	private UpdateAuthtypeStatusResponseDto doUpdateAuthTypeStatus(AuthTypeStatusDto authTypeStatusDto)
+	@Override
+	public UpdateAuthtypeStatusResponseDto updateAuthtypeStatus(String tokenId,
+			List<io.mosip.idrepository.core.dto.AuthtypeStatus> authTypeStatusList)
 			throws IdAuthenticationBusinessException {
-		Map<String, Object> idResDTO = idService.processIdType(IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
+		Map<String, Object> idResDTO = idService.processIdType(
+				IdType.getIDTypeStrOrDefault(authTypeStatusDto.getIndividualIdType()),
 				authTypeStatusDto.getIndividualId(), false);
 		if (idResDTO != null && !idResDTO.isEmpty()) {
 			String uin = idService.getUin(idResDTO);
@@ -71,7 +66,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 					.collect(Collectors.toList());
 			authLockRepository.saveAll(entities);
 		}
-		
+
 		return buildResponse();
 	}
 
